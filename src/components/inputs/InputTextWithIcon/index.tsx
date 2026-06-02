@@ -12,7 +12,7 @@ type Props = {
   maxLength?: number;
   placeholder: string;
 };
-const InputFieldWithIconText: FC<Props> = ({
+const InputTextWithIcon: FC<Props> = ({
   name,
   register,
   errorMessage,
@@ -22,7 +22,7 @@ const InputFieldWithIconText: FC<Props> = ({
 }) => {
   return (
     <div className="w-full flex flex-col justify-start items-start">
-      <div className="h-11 px-3 flex flex-row justify-start items-center gap-2 border border-primary-black/40 rounded-md w-full focus-within:ring-1 focus-within:ring-primary-purple focus-within:border-primary-purple transition-all duration-300 ease-in-out ">
+      <div className="h-11 px-3 flex flex-row justify-start items-center gap-2 border border-base-content/40 rounded-md w-full focus-within:ring-1 transition-all duration-300 ease-in-out ">
         {/* icon */}
         <label htmlFor={name}>
           <UserRound className="w-4 h-4" />
@@ -46,4 +46,4 @@ const InputFieldWithIconText: FC<Props> = ({
   );
 };
 
-export default InputFieldWithIconText;
+export default InputTextWithIcon;

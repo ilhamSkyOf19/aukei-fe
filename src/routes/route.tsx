@@ -1,40 +1,31 @@
 import { createBrowserRouter, redirect } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
+import { AuthServices } from "../services/auth.service";
+import { useAuthStore } from "../stores/authStore";
+import DashboardLayout from "../layouts/DashboardLayout";
+import ProdukPage from "../pages/ProdukPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
 // ============================================================
-// const dashboardLoader = async () => {
-//   try {
-//     // set dosen
-//     const result = await AuthService.me();
-//     if (result && result.meta.statusCode === 200) {
-//       useAuthStore.getState().setDosen(result.data);
-//     }
+const dashboardLoader = async () => {
+  try {
+    // set dosen
+    const result = await AuthServices.me();
+    if (result && result.meta.statusCode === 200) {
+      useAuthStore.getState().setPengguna(result.data);
+    }
 
-//     // set periode
-//     const periode = await PeriodeService.findActive();
-//     if (periode && periode.meta.statusCode === 200) {
-//       periodeStore.getState().setPeriode(periode.data);
-//     }
+    return null;
+  } catch (err: any) {
+    console.log(err);
+    if (err.response?.status === 401) {
+      return redirect("/login");
+    }
 
-//     // set timeline active
-//     const timeline = await TimelineService.find();
-//     if (timeline && timeline.meta.statusCode === 200) {
-//       timelineStore.getState().setTimeline(timeline.data);
-//       return null;
-//     }
-
-//     return null;
-//   } catch (err: any) {
-//     console.log(err);
-//     if (err.response?.status === 401) {
-//       return redirect("/login");
-//     }
-//     timelineStore.getState().setTimeline(null);
-//     return;
-//   }
-// };
+    return;
+  }
+};
 
 // ============================================================
 // LOADER: validasi params ID
@@ -62,7 +53,7 @@ const route = createBrowserRouter([
   // ── Redirect root ────────────────────────────────────────
   {
     path: "/",
-    loader: () => redirect("/login"),
+    loader: () => redirect("/dashboard"),
   },
 
   // ── Login ────────────────────────────────────────────────
@@ -100,12 +91,18 @@ const route = createBrowserRouter([
   //   },
 
   // ── Dashboard (protected) ────────────────────────────────
-  //   {
-  //     path: "/dashboard",
-  //     loader: dashboardLoader,
-  //     shouldRevalidate: () => false,
-  //     element: <DashboardLayout />,
-  //   },
+  {
+    path: "/dashboard",
+    loader: dashboardLoader,
+    shouldRevalidate: () => false,
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: "produk",
+        element: <ProdukPage />,
+      },
+    ],
+  },
 ]);
 
 export default route;

@@ -10,7 +10,8 @@
 
 @theme {
   --font-poppins: "Poppins", sans-serif;
-  --color-primary-purple: #7367f0;
+  --color-custom-primary: #cdde00;
+  --color-custom-secondary: #263d3f;
   --color-primary-white: #f8f8f8;
   --color-secondary-white: #eeeeee;
   --color-primary-black: #282828;

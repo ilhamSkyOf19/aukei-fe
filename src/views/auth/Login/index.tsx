@@ -1,31 +1,26 @@
 import { type FC } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "../../../utils/cn";
+import useLogin from "./useLogin";
+import InputTextWithIcon from "../../../components/inputs/InputTextWithIcon";
+import InputPasswordWithIcon from "../../../components/inputs/InputPasswordWithIcon";
 
 const Login: FC = () => {
+  // call use
+  const { errors, handleSubmit, isPendingLogin, onSubmit, register } =
+    useLogin();
+
   return (
     <div className="w-full h-full flex flex-col justify-center items-center gap-4 lg:flex-row">
       {/* header */}
       <div className="w-full py-4 flex flex-row justify-center items-center gap-4 lg:flex-col">
-        {/* icon */}
-        {/* <img
-          src={logoFikom}
-          alt="logo fikom"
-          loading="lazy"
-          className="w-24 lg:w-70"
-        /> */}
-
         {/* title */}
-        <div className="flex flex-col justify-start items-center gap-1">
+        <div className=" w-40 h-40 lg:w-60 lg:h-60 rounded-full bg-custom-secondary flex justify-center items-center">
           {/* big title */}
-          <h1 className="text-lg font-semibold w-full lg:text-2xl">
-            Aplikasi Manajemen Borang Akreditasi
+          <h1 className="text-3xl lg:text-5xl font-bold">
+            <span className="text-primary-white">AU</span>
+            <span className="text-custom-primary">KEI</span>
           </h1>
-
-          {/* small title */}
-          <h2 className="text-xs font-medium w-full lg:text-base lg:text-center">
-            Fakultas Ilmu Komputer <br /> Universitas Muhammadiyah Metro
-          </h2>
         </div>
       </div>
 
@@ -45,41 +40,61 @@ const Login: FC = () => {
 
           {/* input field */}
           <form
-            // onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onSubmit)}
             className="w-full flex flex-col justify-start items-start mt-5 gap-4 lg:mt-6"
           >
             <div
               className={cn(
                 "w-full flex flex-col justify-start items-start",
-                // errors.identifier || errors.password
-                //   ? "gap-6"
-                //   : "gap-1 lg:gap-2",
+                errors.identifier || errors.password
+                  ? "gap-6"
+                  : "gap-1 lg:gap-2",
               )}
             >
-              {/* input field */}
+              {/* input indentifier */}
+              <InputTextWithIcon
+                register={register("identifier")}
+                name="identifier"
+                placeholder="Masukan username"
+                maxLength={100}
+                minLength={0}
+                errorMessage={errors.identifier?.message}
+              />
+
+              {/* input password */}
+              <InputPasswordWithIcon
+                register={register("password")}
+                name="password"
+                placeholder="Masukan password"
+                maxLength={100}
+                minLength={0}
+                errorMessage={errors.password?.message}
+              />
             </div>
 
             {/* button submit */}
-            <div className="w-full mt-8 lg:mt-4 flex flex-col justify-center items-center gap-4">
+            <div className="w-full mt-1 lg:mt-4 flex flex-col justify-center items-center gap-4">
               {/* forget password */}
               <Link
                 to={"/forget-password"}
                 type="button"
-                className="text-xs text-base-content hover:text-primary-purple transition-colors duration-300 ease-in-out"
+                className="text-xs text-base-content hover:text-custom-primary transition-colors duration-300 ease-in-out"
               >
                 Lupa Password?
               </Link>
               <button
                 className={cn(
-                  "w-full btn btn-sm lg:btn-md bg-primary-purple relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-primary-black/20 before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-300 before:ease-in-out",
+                  "w-full btn btn-md bg-custom-secondary relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-base-content/20 before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-300 before:ease-in-out",
                 )}
                 type="submit"
               >
                 {/* is pending */}
-                {false ? (
-                  <span className="loading loading-spinner loading-xs text-primary-white"></span>
+                {isPendingLogin ? (
+                  <span className="loading loading-spinner loading-sm text-custom-primary" />
                 ) : (
-                  <span className="text-white font-medium">Log in</span>
+                  <span className="text-custom-primary font-medium">
+                    Log in
+                  </span>
                 )}
               </button>
             </div>
