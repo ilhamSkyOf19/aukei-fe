@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { generatePageNumbers } from "../../../helpers/helpers";
 import { cn } from "../../../utils/cn";
@@ -10,6 +9,9 @@ interface PaginationAndLimitProps {
   setPage: (value: string) => void;
   totalPage: number | null;
   setLimit?: (value: string) => void;
+  emptyData?: boolean;
+  customWindowSize?: 3 | 5 | 7;
+  customPositionPagination?: "end" | "start";
 }
 
 export default function PaginationAndLimit({
@@ -17,8 +19,13 @@ export default function PaginationAndLimit({
   totalPage = 1,
   setPage,
   setLimit,
+  emptyData,
+  customPositionPagination,
+  customWindowSize,
 }: PaginationAndLimitProps) {
-  const windowSize = usePaginationWindow();
+  const windowSize = customWindowSize
+    ? customWindowSize
+    : usePaginationWindow();
 
   const pages = generatePageNumbers(currentPage!, totalPage!, windowSize);
 
@@ -33,12 +40,13 @@ export default function PaginationAndLimit({
   return (
     <div
       className={cn(
-        "w-full flex flex-col gap-6 lg:gap-0 lg:flex-row justify-center items-center mt-10 relative",
+        "w-full flex flex-col gap-6 lg:gap-0 lg:flex-row items-center mt-10 relative",
         totalPage! < 2 && setLimit && "h-10",
+        customPositionPagination === "end" ? "justify-end" : "justify-center",
       )}
     >
       {/* limit */}
-      {setLimit && (
+      {setLimit && !emptyData && (
         <div className="block lg:absolute left-0 z-50 text-base-content">
           <DropDown
             listChoose={[

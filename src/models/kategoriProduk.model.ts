@@ -1,3 +1,5 @@
+import type { MetaType } from "../types/constant.type";
+
 export interface IKategoriProdukType {
   id: number;
   nama: string;
@@ -18,4 +20,15 @@ export interface CreateKategoriProdukType extends Pick<
 export interface UpdateKategoriProdukType extends Partial<CreateKategoriProdukType> {}
 
 // response
-export interface KategoriProdukResponseType extends IKategoriProdukType {}
+export interface ResponseKategoriProdukType extends IKategoriProdukType {}
+
+// to response
+export const toKategoriProdukResponse = (
+  kategoriProduk: IKategoriProdukType,
+): ResponseKategoriProdukType => kategoriProduk;
+
+// response with meta
+export interface ResponseKategoriProdukWithMetaType {
+  meta: MetaType;
+  data: ResponseKategoriProdukType[];
+}

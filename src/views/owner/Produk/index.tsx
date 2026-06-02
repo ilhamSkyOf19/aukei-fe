@@ -52,7 +52,7 @@ const Produk = () => {
       </div>
 
       {/* content */}
-      <div className="w-full h-full flex justify-center items-baseline px-4 mt-4">
+      <div className="w-full h-full flex justify-center items-start px-4 mt-4">
         {isActiveCluster === "produk" && (
           <div className="card w-full bg-base-100 flex flex-col justify-start items-start p-4">
             {/* filter */}
@@ -113,7 +113,7 @@ const Produk = () => {
                       </tr>
                     ))
                   ) : isExistDataProduk ? (
-                    dataProduk?.data?.data.map((produk, index) => (
+                    dataProduk?.data?.data.map((produk, _) => (
                       <tr key={produk.id}>
                         <th>
                           <label>
@@ -131,15 +131,23 @@ const Produk = () => {
                           </div>
                         </td>
                         {/* kode */}
-                        <td className="font-semibold">{produk.kode}</td>
+                        <td className="font-semibold text-base-content">
+                          {produk.kode}
+                        </td>
                         {/* nama */}
-                        <td>{produk.nama}</td>
+                        <td className="text-base-content">{produk.nama}</td>
                         {/* kategori */}
-                        <td>{produk.kategori.nama}</td>
+                        <td className="text-base-content">
+                          {produk.kategori.nama}
+                        </td>
                         {/* harga beli */}
-                        <td>{formatRupiah(produk.hargaBeli)}</td>
+                        <td className="text-base-content">
+                          {formatRupiah(produk.hargaBeli)}
+                        </td>
                         {/* harga jual */}
-                        <td>{formatRupiah(produk.hargaJual)}</td>
+                        <td className="text-base-content">
+                          {formatRupiah(produk.hargaJual)}
+                        </td>
                         {/* stok */}
                         <td
                           className={cn(
@@ -155,15 +163,14 @@ const Produk = () => {
                           {produk.stok}
                         </td>
                         {/* isi perbox */}
-                        <td className="font-medium">{produk.isiPerBox}</td>
+                        <td className="font-medium text-base-content">
+                          {produk.isiPerBox}
+                        </td>
                         {/* detail */}
                         <td className="sticky right-0 bg-base-100 z-10">
                           <div
                             className={cn(
-                              "dropdown",
-                              dataProduk?.data?.data?.length === index + 1
-                                ? "dropdown-left dropdown-end"
-                                : "dropdown-left",
+                              "dropdown dropdown-left dropdown-end",
                             )}
                           >
                             <div
@@ -175,7 +182,7 @@ const Produk = () => {
                             </div>
                             <ul
                               tabIndex={-1}
-                              className="z-1 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
+                              className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
                             >
                               <li>
                                 <LabelButtonDropDownWithIcon
@@ -240,6 +247,7 @@ const Produk = () => {
               totalPage={dataProduk?.data?.meta.totalPage || null}
               setPage={handlePage}
               setLimit={handleLimit}
+              emptyData={!isExistDataProduk}
             />
           </div>
         )}

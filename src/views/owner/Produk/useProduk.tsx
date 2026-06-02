@@ -77,11 +77,12 @@ const useProduk = () => {
   });
 
   // is exist data
-  const isExistDataProduk = dataProduk?.data?.data
-    ? dataProduk?.data?.data?.length > 0
-      ? true
-      : false
-    : false;
+  const isExistDataProduk =
+    !isLoadingProduk && dataProduk?.data?.data
+      ? dataProduk?.data?.data?.length > 0
+        ? true
+        : false
+      : false;
 
   return {
     isActiveCluster,
