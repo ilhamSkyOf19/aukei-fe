@@ -17,3 +17,65 @@ export const formatRupiah = (value: number): string => {
     minimumFractionDigits: 0,
   }).format(value);
 };
+
+// generate page numbers
+export const generatePageNumbers = (
+  current: number,
+  total: number,
+  windowSize: number,
+): (number | "...")[] => {
+  if (total <= windowSize + 2) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  const pages: (number | "...")[] = [];
+
+  const sideCount = Math.floor(windowSize / 2);
+
+  let start = current - sideCount;
+  let end = current + sideCount;
+
+  if (start <= 2) {
+    start = 2;
+    end = start + windowSize - 1;
+  }
+
+  if (end >= total - 1) {
+    end = total - 1;
+    start = end - windowSize + 1;
+  }
+
+  pages.push(1);
+
+  if (start > 2) {
+    pages.push("...");
+  }
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+
+  if (end < total - 1) {
+    pages.push("...");
+  }
+
+  pages.push(total);
+
+  return pages;
+};
+
+// color for stok
+export const generateColorForStok = (
+  stok: number,
+  stokMinimum: number,
+): "text-success" | "text-warning" | "text-error" => {
+  if (stok === 0) {
+    return "text-error";
+  }
+
+  if (stok > stokMinimum + 10) {
+    return "text-success";
+  }
+
+  return "text-warning";
+};

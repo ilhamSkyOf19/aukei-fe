@@ -1,4 +1,4 @@
-import { PackagePlus } from "lucide-react";
+import { EllipsisVertical, PackagePlus, Trash, View } from "lucide-react";
 import FilterKategori from "../../../components/filters/Kategori";
 import FilterSort from "../../../components/filters/Sort";
 import InputSearch from "../../../components/inputs/InputSearch";
@@ -7,7 +7,10 @@ import ButtonAdd from "../../../components/ui/button/ButtonWithIcon";
 import { cn } from "../../../utils/cn";
 import KategoriCluster from "./KategoriCluster";
 import useProduk from "./useProduk";
-import { formatRupiah } from "../../../helpers/helpers";
+import { formatRupiah, generateColorForStok } from "../../../helpers/helpers";
+import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
+import LabelButtonDropDownWithIcon from "../../../components/ui/button/LabelButtonDropDownWithIcon";
+import DataEmpty from "../../../components/messages/DataEmpty";
 
 const Produk = () => {
   // call use
@@ -17,6 +20,11 @@ const Produk = () => {
     handleSearch,
     handleSort,
     handleKategori,
+    dataProduk,
+    handleLimit,
+    handlePage,
+    isLoadingProduk,
+    isExistDataProduk,
   } = useProduk();
 
   return (
@@ -74,8 +82,8 @@ const Produk = () => {
             </div>
 
             {/* table */}
-            <div className="overflow-x-auto w-full mt-8">
-              <table className="table lg:table-md">
+            <div className="overflow-x-auto w-full my-8">
+              <table className="table table-sm lg:table-md">
                 {/* head */}
                 <thead>
                   <tr>
@@ -92,70 +100,147 @@ const Produk = () => {
                     <th>Harga Jual Satuan</th>
                     <th>Stok</th>
                     <th>Isi PerBox</th>
-                    <th>Aksi</th>
+                    <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.from({ length: 10 }).map((_, index) => (
-                    <tr key={index}>
-                      <th>
-                        <label>
-                          <input type="checkbox" className="checkbox" />
-                        </label>
-                      </th>
-                      {/* foto */}
-                      <td>
-                        <div className="flex items-center gap-3">
-                          <div className="avatar">
-                            <div className="mask mask-squircle h-12 w-12">
-                              <img
-                                src="http://localhost:3000/uploads/produk/produk-1780252600721-703940578.png"
-                                alt="Foto Produk"
-                              />
+                  {isLoadingProduk ? (
+                    Array.from({ length: 4 }).map((_, index) => (
+                      <tr key={index}>
+                        <td colSpan={10}>
+                          <div className="skeleton h-12 w-full py-1" />
+                        </td>
+                      </tr>
+                    ))
+                  ) : isExistDataProduk ? (
+                    dataProduk?.data?.data.map((produk, index) => (
+                      <tr key={produk.id}>
+                        <th>
+                          <label>
+                            <input type="checkbox" className="checkbox" />
+                          </label>
+                        </th>
+                        {/* foto */}
+                        <td>
+                          <div className="flex items-center gap-3">
+                            <div className="avatar">
+                              <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
+                                <img src={produk.img} alt="Foto Produk" />
+                              </div>
                             </div>
                           </div>
+                        </td>
+                        {/* kode */}
+                        <td className="font-semibold">{produk.kode}</td>
+                        {/* nama */}
+                        <td>{produk.nama}</td>
+                        {/* kategori */}
+                        <td>{produk.kategori.nama}</td>
+                        {/* harga beli */}
+                        <td>{formatRupiah(produk.hargaBeli)}</td>
+                        {/* harga jual */}
+                        <td>{formatRupiah(produk.hargaJual)}</td>
+                        {/* stok */}
+                        <td
+                          className={cn(
+                            "font-medium",
+                            true
+                              ? generateColorForStok(
+                                  produk.stok,
+                                  produk.stokMinimum,
+                                )
+                              : "text-base-content",
+                          )}
+                        >
+                          {produk.stok}
+                        </td>
+                        {/* isi perbox */}
+                        <td className="font-medium">{produk.isiPerBox}</td>
+                        {/* detail */}
+                        <td className="sticky right-0 bg-base-100 z-10">
+                          <div
+                            className={cn(
+                              "dropdown",
+                              dataProduk?.data?.data?.length === index + 1
+                                ? "dropdown-left dropdown-end"
+                                : "dropdown-left",
+                            )}
+                          >
+                            <div
+                              tabIndex={0}
+                              role="button"
+                              className="btn btn-sm m-1"
+                            >
+                              <EllipsisVertical className="size-4" />
+                            </div>
+                            <ul
+                              tabIndex={-1}
+                              className="z-1 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
+                            >
+                              <li>
+                                <LabelButtonDropDownWithIcon
+                                  label="Detail"
+                                  icon={View}
+                                  handleClick={() => {}}
+                                />
+                              </li>
+                              <li>
+                                <LabelButtonDropDownWithIcon
+                                  color="text-error"
+                                  label="Hapus"
+                                  icon={Trash}
+                                  handleClick={() => {}}
+                                />
+                              </li>
+                            </ul>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={10}>
+                        <div className="w-full h-full flex flex-col justify-center items-center">
+                          <DataEmpty
+                            title="Data Produk Tidak Tersedia"
+                            description="Belum ada data produk yang dapat ditampilkan saat ini."
+                          />
                         </div>
                       </td>
-                      {/* kode */}
-                      <td className="font-semibold">JV000{index + 1}</td>
-                      {/* nama */}
-                      <td>Plavon Kayu</td>
-                      {/* kategori */}
-                      <td>Plafon</td>
-                      {/* harga beli */}
-                      <td>{formatRupiah(12000)}</td>
-                      {/* harga jual */}
-                      <td>{formatRupiah(16000)}</td>
-                      {/* stok */}
-                      <td>10</td>
-                      {/* isi perbox */}
-                      <td>20</td>
-                      {/* detail */}
-                      <th>
-                        <button className="btn btn-ghost btn-xs">
-                          details
-                        </button>
-                      </th>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
                 {/* foot */}
-                <tfoot>
-                  <tr>
-                    <th></th>
-                    <th>Foto</th>
-                    <th>Kode</th>
-                    <th>Nama</th>
-                    <th>Kategori</th>
-                    <th>Harga Beli Satuan</th>
-                    <th>Harga Jual Satuan</th>
-                    <th>Stok</th>
-                    <th>Isi PerBox</th>
-                    <th>Aksi</th>
-                  </tr>
-                </tfoot>
+                {!isLoadingProduk &&
+                  isExistDataProduk &&
+                  dataProduk?.data?.data?.length! > 8 && (
+                    <tfoot>
+                      <tr>
+                        <th></th>
+                        <th>Foto</th>
+                        <th>Kode</th>
+                        <th>Nama</th>
+                        <th>Kategori</th>
+                        <th>Harga Beli Satuan</th>
+                        <th>Harga Jual Satuan</th>
+                        <th>Stok</th>
+                        <th>Isi PerBox</th>
+                        <th className="sticky right-0 bg-base-100 z-10">
+                          Aksi
+                        </th>
+                      </tr>
+                    </tfoot>
+                  )}
               </table>
             </div>
+
+            {/* pagination and limits */}
+            <PaginationAndLimit
+              currentPage={dataProduk?.data?.meta.currentPage || null}
+              totalPage={dataProduk?.data?.meta.totalPage || null}
+              setPage={handlePage}
+              setLimit={handleLimit}
+            />
           </div>
         )}
 

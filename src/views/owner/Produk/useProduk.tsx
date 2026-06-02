@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useFilter } from "../../../hooks/useFilter";
+import { useQuery } from "@tanstack/react-query";
+import { ProdukServices } from "../../../services/produk.service";
 
 const useProduk = () => {
   //   is active Cluster inventori
@@ -42,10 +44,44 @@ const useProduk = () => {
     allowQuery: ["asc", "desc"],
   });
 
-  // kategoru filter
+  // kategori filter
   const { filter: kategori, setFilter: handleKategori } = useFilter({
     paramName: "kategori",
   });
+
+  // page filter
+  const { filter: page, setFilter: handlePage } = useFilter({
+    paramName: "page",
+    isNumber: true,
+  });
+
+  // limit filter
+  const { filter: limit, setFilter: handleLimit } = useFilter({
+    paramName: "limit",
+    isNumber: true,
+  });
+
+  // use query
+  const { data: dataProduk, isLoading: isLoadingProduk } = useQuery({
+    queryKey: ["produk", { search, sort, kategori, limit, page }],
+    queryFn: () =>
+      ProdukServices.findAll({
+        ...(search && { search }),
+        ...(sort && { sort }),
+        ...(kategori && { kategori }),
+        ...(limit && { limit }),
+        ...(page && { page }),
+      }),
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  // is exist data
+  const isExistDataProduk = dataProduk?.data?.data
+    ? dataProduk?.data?.data?.length > 0
+      ? true
+      : false
+    : false;
 
   return {
     isActiveCluster,
@@ -53,6 +89,11 @@ const useProduk = () => {
     handleSearch,
     handleSort,
     handleKategori,
+    handleLimit,
+    handlePage,
+    dataProduk,
+    isLoadingProduk,
+    isExistDataProduk,
   };
 };
 

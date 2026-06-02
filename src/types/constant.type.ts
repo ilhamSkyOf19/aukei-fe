@@ -12,3 +12,12 @@ export type RoleInternalType =
 export type OutletContextType = {
   handleTitle: (title: string) => void;
 };
+
+// meta type
+// pagination
+export interface MetaType {
+  totalData: number;
+  currentPage: number;
+  totalPage: number;
+  limit: number;
+}
