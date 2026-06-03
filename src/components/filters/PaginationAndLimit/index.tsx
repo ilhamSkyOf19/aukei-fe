@@ -47,7 +47,7 @@ export default function PaginationAndLimit({
     >
       {/* limit */}
       {setLimit && !emptyData && (
-        <div className="block lg:absolute left-0 z-50 text-base-content">
+        <div className="block lg:absolute left-0 z-40 text-base-content">
           <DropDown
             listChoose={[
               {

@@ -32,3 +32,8 @@ export interface ResponseKategoriProdukWithMetaType {
   meta: MetaType;
   data: ResponseKategoriProdukType[];
 }
+
+export interface ResponseKategoriProdukChooseType {
+  id: number;
+  nama: string;
+}

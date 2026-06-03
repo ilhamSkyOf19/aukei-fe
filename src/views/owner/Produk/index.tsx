@@ -25,6 +25,8 @@ const Produk = () => {
     handlePage,
     isLoadingProduk,
     isExistDataProduk,
+    handleRedirectDetail,
+    handleRedirectTambah,
   } = useProduk();
 
   return (
@@ -52,9 +54,9 @@ const Produk = () => {
       </div>
 
       {/* content */}
-      <div className="w-full h-full flex justify-center items-start px-4 mt-4">
+      <div className="w-full h-full flex justify-center items-start px-2 lg:px-4 mt-4">
         {isActiveCluster === "produk" && (
-          <div className="card w-full bg-base-100 flex flex-col justify-start items-start p-4">
+          <div className="card dark:border dark:border-base-content/10 w-full bg-base-100 flex flex-col justify-start items-start p-4">
             {/* filter */}
             <div className="w-full flex flex-col lg:flex-row justify-start items-start lg:items-center gap-4 lg:gap-0">
               <div className="w-full lg:flex-1 flex flex-row justify-start items-center">
@@ -76,7 +78,7 @@ const Produk = () => {
                 <ButtonAdd
                   icon={PackagePlus}
                   label="Tambah Produk"
-                  handleBtn={() => {}}
+                  handleBtn={() => handleRedirectTambah()}
                 />
               </div>
             </div>
@@ -188,7 +190,9 @@ const Produk = () => {
                                 <LabelButtonDropDownWithIcon
                                   label="Detail"
                                   icon={View}
-                                  handleClick={() => {}}
+                                  handleClick={() =>
+                                    handleRedirectDetail(produk.id)
+                                  }
                                 />
                               </li>
                               <li>

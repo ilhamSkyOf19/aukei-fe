@@ -21,7 +21,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
   return (
     <nav className="navbar w-full bg-custom-secondary shadow-sm flex flex-row justify-between items-center relative ">
       <div className="w-full flex flex-row justify-between items-center">
-        <div className="flex-1 flex flex-row justify-start items-center">
+        <div className="flex-2 flex flex-row justify-start items-center">
           <label
             htmlFor="my-drawer-4"
             aria-label="open sidebar"
@@ -40,7 +40,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             {title}
           </h1>
         </div>
-        <div className="flex-1 flex flex-row justify-end items-center gap-6 pr-2">
+        <div className="flex-1 flex flex-row justify-end items-center gap-2 lg:gap-6 pr-2">
           <div className="dropdown dropdown-end">
             <button
               type="button"

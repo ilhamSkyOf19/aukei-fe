@@ -21,3 +21,6 @@ export interface MetaType {
   totalPage: number;
   limit: number;
 }
+
+// max file size 2 MB
+export const MAX_FILE_SIZE_IMG = 3 * 1024 * 1024;

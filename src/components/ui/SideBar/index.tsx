@@ -15,7 +15,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
   // use has scroll
   const { divRef, hasScroll } = useHasScroll();
   return (
-    <div className="drawer-side is-drawer-close:overflow-visible border-r border-base-content/10">
+    <div className="drawer-side is-drawer-close:overflow-visible border-r border-base-content/10 z-50">
       <label
         htmlFor="my-drawer-4"
         aria-label="close sidebar"

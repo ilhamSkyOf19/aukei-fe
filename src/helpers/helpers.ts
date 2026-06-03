@@ -68,14 +68,35 @@ export const generatePageNumbers = (
 export const generateColorForStok = (
   stok: number,
   stokMinimum: number,
-): "text-success" | "text-warning" | "text-error" => {
+): "text-emerald-600" | "text-warning" | "text-error" => {
   if (stok === 0) {
     return "text-error";
   }
 
   if (stok > stokMinimum + 10) {
-    return "text-success";
+    return "text-emerald-600";
   }
 
   return "text-warning";
+};
+
+// parse id
+export const parseId = (value: string | undefined) => {
+  const numberValue = Number(value);
+
+  if (!value || Number.isNaN(numberValue) || numberValue <= 0) {
+    return null;
+  }
+
+  return numberValue;
+};
+
+export const formatNumber = (value: string) => {
+  if (!value) return "";
+
+  return new Intl.NumberFormat("id-ID").format(Number(value));
+};
+
+export const unformatNumber = (value: string) => {
+  return value.replace(/\D/g, "");
 };

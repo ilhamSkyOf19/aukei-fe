@@ -3,8 +3,15 @@ import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useFilter } from "../../../hooks/useFilter";
 import { useQuery } from "@tanstack/react-query";
 import { ProdukServices } from "../../../services/produk.service";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const useProduk = () => {
+  // current pathname
+  const currentPathname = useLocation().pathname;
+
+  // navigate
+  const navigate = useNavigate();
+
   //   is active Cluster inventori
   const [isActiveCluster, setIsActiveCluster] = useState<
     "produk" | "kategori" | "spesifikasi" | ""
@@ -84,7 +91,19 @@ const useProduk = () => {
         : false
       : false;
 
+  // handle redirect detail
+  const handleRedirectDetail = (id: number) => {
+    navigate(`${currentPathname}/${id}`);
+  };
+
+  // handle redirect tambah
+  const handleRedirectTambah = () => {
+    navigate(`${currentPathname}/tambah`);
+  };
+
   return {
+    handleRedirectDetail,
+    handleRedirectTambah,
     isActiveCluster,
     handleActiveCluster,
     handleSearch,

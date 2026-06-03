@@ -39,7 +39,7 @@ const ShowData = () => {
   } = useShowData();
 
   return (
-    <div className="card flex-2 bg-base-100 flex flex-col justify-start items-start p-4">
+    <div className="card flex-2 bg-base-100 flex flex-col justify-start items-start p-4  dark:border dark:border-base-content/10">
       {/* alert */}
       {alert && (
         <Alert

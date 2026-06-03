@@ -29,6 +29,7 @@ export interface CreateProdukType extends Pick<
   | "stokMinimum"
 > {
   kategoriId: number;
+  img: File;
 }
 
 // update

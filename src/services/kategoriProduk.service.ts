@@ -1,6 +1,7 @@
 import instanceAxios from "../libs/axios";
 import type {
   CreateKategoriProdukType,
+  ResponseKategoriProdukChooseType,
   ResponseKategoriProdukType,
   ResponseKategoriProdukWithMetaType,
   UpdateKategoriProdukType,
@@ -46,6 +47,18 @@ export class KategoriProdukServices {
     const result = await instanceAxios.patch<
       ResponseStructure<ResponseKategoriProdukType | null>
     >(`/kategori-produk/${id}`, req);
+
+    return result.data;
+  }
+
+  // find all for choose
+  static async findAllForChoose(): Promise<
+    ResponseStructure<ResponseKategoriProdukChooseType[] | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseKategoriProdukChooseType[] | null>
+    >(`/kategori-produk/for-choose`);
 
     return result.data;
   }

@@ -16,7 +16,7 @@ const FormulirTambahData = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="hidden lg:flex flex-1 card h-full bg-base-100 flex-col justify-start items-start p-4"
+      className="hidden lg:flex flex-1 card h-full bg-base-100 flex-col justify-start items-start p-4 dark:border dark:border-base-content/10"
     >
       {/* header */}
       <div className="w-full flex flex-row justify-between items-center">

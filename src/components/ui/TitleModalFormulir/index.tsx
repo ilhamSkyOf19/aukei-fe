@@ -7,7 +7,7 @@ type Props = {
 const TitleModalFormulir: FC<Props> = ({ keterangan, title }) => {
   return (
     <div className="w-full flex flex-col justify-start items-start">
-      <h1 className="text-base-content font-semibold text-lg lg:text-xl">
+      <h1 className="text-base-content font-semibold text-base lg:text-xl">
         {title}
       </h1>
 

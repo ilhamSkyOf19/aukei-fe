@@ -4,6 +4,9 @@ import { AuthServices } from "../services/auth.service";
 import { useAuthStore } from "../stores/authStore";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProdukPage from "../pages/ProdukPage";
+import ProdukDetail from "../views/all/ProdukDetail";
+import ProdukDetailPage from "../pages/ProdukDetailPage";
+import FormulirProdukPage from "../pages/FormulirProdukPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -99,7 +102,20 @@ const route = createBrowserRouter([
     children: [
       {
         path: "produk",
-        element: <ProdukPage />,
+        children: [
+          {
+            index: true,
+            element: <ProdukPage />,
+          },
+          {
+            path: "tambah",
+            element: <FormulirProdukPage />,
+          },
+          {
+            path: ":id",
+            element: <ProdukDetailPage />,
+          },
+        ],
       },
     ],
   },
