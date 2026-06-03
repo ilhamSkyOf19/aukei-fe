@@ -18,12 +18,12 @@ const useProduk = () => {
     setIsActiveCluster(Cluster);
 
     //  set localstorage
-    localStorage.setItem("activeCluster", Cluster);
+    localStorage.setItem("active-cluster", Cluster);
   };
 
   useEffect(() => {
     // get localstorage
-    const datalocalStorage = localStorage.getItem("activeCluster");
+    const datalocalStorage = localStorage.getItem("active-cluster");
 
     // check
     if (datalocalStorage) {

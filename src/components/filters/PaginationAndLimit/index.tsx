@@ -82,10 +82,10 @@ export default function PaginationAndLimit({
             disabled={!isPrev}
             aria-label="Previous page"
             className={[
-              "flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 rounded-lg border transition-all duration-150 border-base-content/10 text-base-content/10",
+              "flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 rounded-lg border transition-all duration-150",
               isPrev
                 ? "hover:text-custom-primary hover:bg-custom-secondary active:scale-95"
-                : " cursor-not-allowed",
+                : " cursor-not-allowed border-base-content/10 text-base-content/10",
             ].join(" ")}
           >
             <ChevronLeft size={16} strokeWidth={2.2} />
@@ -129,7 +129,7 @@ export default function PaginationAndLimit({
               "flex border-primary-purple text-primary-purple  items-center justify-center w-8 h-8 lg:w-9 lg:h-9 rounded-lg border transition-all duration-150",
               isNext
                 ? " hover:text-custom-primary hover:bg-custom-secondary active:scale-95"
-                : "  cursor-not-allowed",
+                : "  cursor-not-allowed border-base-content/10 text-base-content/10",
             ].join(" ")}
           >
             <ChevronRight size={16} strokeWidth={2.2} />

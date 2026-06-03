@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import type {
   CreateKategoriProdukType,
-  ResponseKategoriProdukType,
   UpdateKategoriProdukType,
 } from "../models/kategoriProduk.model";
 import { useForm } from "react-hook-form";
@@ -11,14 +10,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { KategoriProdukServices } from "../services/kategoriProduk.service";
 import axios from "axios";
 import type { ErrorResponse } from "../types/response.type";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
-  data?: Pick<ResponseKategoriProdukType, "id" | "nama" | "keterangan">;
+  dataUpdate?: UpdateKategoriProdukType & { id: number };
+  handleCloseModal?: () => void;
 };
 
-const useFormulirKategoriProduk = ({ data }: Props) => {
+const useFormulirKategoriProduk = ({ dataUpdate, handleCloseModal }: Props) => {
   // query client
   const queryClient = useQueryClient();
+
+  // navigate
+  const naviate = useNavigate();
 
   // use form
   const {
@@ -29,7 +33,7 @@ const useFormulirKategoriProduk = ({ data }: Props) => {
     setError,
   } = useForm<CreateKategoriProdukType | UpdateKategoriProdukType>({
     resolver: zodResolver(
-      data
+      dataUpdate
         ? KategoriProdukValidations.UPDATE
         : KategoriProdukValidations.CREATE,
     ),
@@ -37,13 +41,11 @@ const useFormulirKategoriProduk = ({ data }: Props) => {
 
   // reset form
   useEffect(() => {
-    if (data) {
-      reset({
-        nama: data.nama,
-        keterangan: data.keterangan || undefined,
-      });
-    }
-  }, [data, reset]);
+    reset({
+      nama: dataUpdate?.nama ?? "",
+      keterangan: dataUpdate?.keterangan ?? "",
+    });
+  }, [dataUpdate, reset]);
 
   //   use mutation
   const {
@@ -51,9 +53,9 @@ const useFormulirKategoriProduk = ({ data }: Props) => {
     isPending: isPendingMutateKategoriProduk,
   } = useMutation({
     mutationFn: (req: CreateKategoriProdukType | UpdateKategoriProdukType) => {
-      if (data) {
+      if (dataUpdate) {
         return KategoriProdukServices.update({
-          id: data.id,
+          id: dataUpdate.id,
           req: req as UpdateKategoriProdukType,
         });
       } else {
@@ -63,6 +65,16 @@ const useFormulirKategoriProduk = ({ data }: Props) => {
     onSuccess: () => {
       // invalidate
       queryClient.invalidateQueries({ queryKey: ["kategori-produk"] });
+
+      //   close modal
+      handleCloseModal?.();
+
+      // set toast
+      naviate(".", {
+        state: {
+          toast: dataUpdate ? "updated" : "created",
+        },
+      });
 
       //   reset
       reset();
@@ -84,14 +96,14 @@ const useFormulirKategoriProduk = ({ data }: Props) => {
 
   //   handle submit
   const onSubmit = async (
-    data: CreateKategoriProdukType | UpdateKategoriProdukType,
+    dataUpdate: CreateKategoriProdukType | UpdateKategoriProdukType,
   ) => {
     // check keterangan
-    if (data.keterangan === "") {
-      delete data.keterangan;
+    if (dataUpdate.keterangan === "") {
+      delete dataUpdate.keterangan;
     }
 
-    await handleMutateKategoriProduk(data);
+    await handleMutateKategoriProduk(dataUpdate);
   };
 
   return {
@@ -100,6 +112,7 @@ const useFormulirKategoriProduk = ({ data }: Props) => {
     isPendingMutateKategoriProduk,
     onSubmit,
     handleSubmit,
+    reset,
   };
 };
 

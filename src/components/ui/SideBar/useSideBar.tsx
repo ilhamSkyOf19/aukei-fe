@@ -31,7 +31,12 @@ const useSideBar = () => {
     }
   }, [pengguna?.role]);
 
-  return { isNavigation, pathname };
+  // clear localstorage
+  const handleClearDataLocalStorage = () => {
+    localStorage.removeItem("active-cluster");
+  };
+
+  return { isNavigation, pathname, handleClearDataLocalStorage };
 };
 
 export default useSideBar;

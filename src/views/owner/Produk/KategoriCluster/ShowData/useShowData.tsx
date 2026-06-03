@@ -1,9 +1,30 @@
 import { useFilterSearch } from "../../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../../hooks/useFilter";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { KategoriProdukServices } from "../../../../../services/kategoriProduk.service";
+import useModal from "../../../../../hooks/useModal";
+import { useEffect, useState } from "react";
+import type { UpdateKategoriProdukType } from "../../../../../models/kategoriProduk.model";
+import { useToastAnimation } from "../../../../../hooks/useToast";
+import axios from "axios";
+import type { ErrorResponse } from "../../../../../types/response.type";
+import { useAlertAnimation } from "../../../../../hooks/useAlert";
 
 const useShowData = () => {
+  // query client
+  const queryClient = useQueryClient();
+
+  // state data update
+  const [dataKategoriForUpdate, setDataKategoriForUpdate] = useState<
+    (UpdateKategoriProdukType & { id: number }) | null
+  >(null);
+
+  // toast
+  const { toast, handleSetToast } = useToastAnimation();
+
+  // alert
+  const { alert, handleSetAlert } = useAlertAnimation();
+
   // search filter
   const { search, setSearch: handleSearch } = useFilterSearch("search");
 
@@ -48,6 +69,86 @@ const useShowData = () => {
         : false
       : false;
 
+  // use modal
+  const {
+    modalRef: modalFormulirKategoriRef,
+    handleCloseModal: closeModalFormulirKategori,
+    handleShowModal: handleShowModalFormulirKategori,
+    idModal: idModalFormulirKategori,
+  } = useModal();
+
+  // use modal delete
+  const {
+    modalRef: modalDeleteRef,
+    handleCloseModal: handleCloseModalDelete,
+    handleShowModal: handleShowModalDelete,
+    idModal: idModalDelete,
+    dataDelete,
+  } = useModal();
+
+  // set data update
+  useEffect(() => {
+    if (idModalFormulirKategori) {
+      const findData = dataKategoriProduk?.data?.data?.find(
+        (item) => item.id === idModalFormulirKategori,
+      );
+
+      // check
+      if (findData) {
+        setDataKategoriForUpdate({
+          id: findData.id,
+          nama: findData.nama,
+          keterangan: findData.keterangan || undefined,
+        });
+      }
+    }
+  }, [idModalFormulirKategori]);
+
+  // handle close modal
+  const handleCloseModalFormulirKategori = () => {
+    setDataKategoriForUpdate(null);
+    closeModalFormulirKategori();
+  };
+
+  // use mutation delete
+  const { mutateAsync: handleMutateDelete, isPending: isPendingDelete } =
+    useMutation({
+      mutationFn: (id: number) => KategoriProdukServices.delete(id),
+      onSuccess: () => {
+        // handle toast
+        handleSetToast("deleted");
+
+        // refetch
+        queryClient.invalidateQueries({ queryKey: ["kategori-produk"] });
+
+        handleCloseModalDelete();
+      },
+      onError: (err) => {
+        // handle close modal delete
+        handleCloseModalDelete();
+
+        if (axios.isAxiosError<ErrorResponse>(err)) {
+          if (
+            err?.response?.data?.meta?.customField?.includes("KategoriProduk")
+          ) {
+            // show modal alert
+            handleSetAlert("cancel_delete");
+          }
+        }
+      },
+    });
+
+  // handle delete
+  const handleDelete = async () => {
+    try {
+      if (idModalDelete) {
+        await handleMutateDelete(idModalDelete);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     handleSearch,
     handleSort,
@@ -56,6 +157,18 @@ const useShowData = () => {
     dataKategoriProduk,
     isLoadingKategoriProduk,
     isExistDataKategoriProduk,
+    modalFormulirKategoriRef,
+    handleCloseModalFormulirKategori,
+    handleShowModalFormulirKategori,
+    dataKategoriForUpdate,
+    handleDelete,
+    isPendingDelete,
+    modalDeleteRef,
+    handleShowModalDelete,
+    handleCloseModalDelete,
+    dataDelete,
+    toast,
+    alert,
   };
 };
 

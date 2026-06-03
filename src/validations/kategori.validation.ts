@@ -32,7 +32,7 @@ export class KategoriProdukValidations {
   static readonly UPDATE = z
     .object({
       nama: this.onlyCharSchema(3, 100).optional(),
-      keterangan: this.stringSchema(1, 100).optional(),
+      keterangan: this.stringSchema(0, 100).optional(),
     })
     .strict() satisfies z.ZodType<UpdateKategoriProdukType>;
 }

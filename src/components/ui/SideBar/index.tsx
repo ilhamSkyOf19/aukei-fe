@@ -10,7 +10,7 @@ type Props = {
 };
 const Sidebar: FC<Props> = ({ isClose }) => {
   // call use dashboard
-  const { isNavigation, pathname } = useSideBar();
+  const { isNavigation, pathname, handleClearDataLocalStorage } = useSideBar();
 
   // use has scroll
   const { divRef, hasScroll } = useHasScroll();
@@ -67,6 +67,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                       ? pathname === "/dashboard" && "bg-custom-secondary"
                       : pathname.startsWith(item.link) && "bg-custom-secondary",
                   )}
+                  onClick={() => handleClearDataLocalStorage()}
                 >
                   <item.icon
                     className={cn(

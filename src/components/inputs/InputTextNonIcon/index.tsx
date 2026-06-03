@@ -53,7 +53,7 @@ const InputTextNonIcon: FC<Props> = ({
       <div className="w-full text-base-content relative flex flex-row justify-between items-center">
         {label && (
           <div className="flex-2 relative">
-            <label htmlFor={name} className="capitalize text-sm">
+            <label htmlFor={name} className="capitalize text-xs lg:text-sm">
               {label}
             </label>
 
@@ -65,7 +65,7 @@ const InputTextNonIcon: FC<Props> = ({
 
         {/* MAX BERDASARKAN NILAI ANGKA */}
         {max && (
-          <span className="text-xs">
+          <span className="text-[0.625rem] lg:text-xs">
             {isValue.length} / {max}
           </span>
         )}
@@ -73,7 +73,7 @@ const InputTextNonIcon: FC<Props> = ({
       <div
         className={cn(
           "mt-2 flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 ",
-          xs ? "h-8 px-1.5" : "h-10 px-3",
+          xs ? "h-7 lg:h-8 px-1.5" : "h-9 lg:h-10 px-3",
           errorMessage && "border-error",
         )}
       >
@@ -84,8 +84,10 @@ const InputTextNonIcon: FC<Props> = ({
           id={name}
           placeholder={placeholder}
           className={cn(
-            "w-full font-medium text-base-content  h-full border-none outline-none placeholder:text-base-content/50 placeholder:font-light",
-            xs ? "text-xs placeholder:text-xs" : "text-sm placeholder:text-sm",
+            "w-full font-medium text-base-content h-full border-none outline-none placeholder:text-base-content/50 placeholder:font-light",
+            xs
+              ? "text-[0.625rem] lg:text-xs placeholder:text-[0.625rem]  lg:placeholder:text-xs"
+              : "text-xs lg:text-sm  placeholder:text-xs lg:placeholder:text-sm",
           )}
           {...(disabled && { disabled: true })}
           maxLength={max}

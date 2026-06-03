@@ -43,9 +43,19 @@ export class KategoriProdukServices {
     const { id, req } = params;
 
     // call api
-    const result = await instanceAxios.put<
+    const result = await instanceAxios.patch<
       ResponseStructure<ResponseKategoriProdukType | null>
     >(`/kategori-produk/${id}`, req);
+
+    return result.data;
+  }
+
+  // delete
+  static async delete(id: number): Promise<ResponseStructure<null>> {
+    // call api
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/kategori-produk/${id}`,
+    );
 
     return result.data;
   }

@@ -5,6 +5,6 @@
 
 # Branch kategori-produk
 
-- [ ] Menyesuaikan tampilan show kategori (mobile device)
+- [✅] Menyesuaikan tampilan show kategori (mobile device)
 - [ ] Membuat fitur message Toast
 - [ ] Membuat fitur Delete & Update Kategori Produk

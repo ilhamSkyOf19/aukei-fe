@@ -49,7 +49,7 @@ const InputTextAreaNonIcon: FC<Props> = ({
         <div className="flex-2 relative">
           <label
             htmlFor={name}
-            className="capitalize text-sm text-base-content"
+            className="capitalize text-xs lg:text-sm text-base-content"
           >
             {label}
           </label>
@@ -60,7 +60,7 @@ const InputTextAreaNonIcon: FC<Props> = ({
         </div>
 
         {/* MAX BERDASARKAN NILAI ANGKA */}
-        <span className="text-xs">
+        <span className="text-[0.625rem] lg:text-xs">
           {isValue.length} / {max}
         </span>
       </div>
@@ -76,7 +76,7 @@ const InputTextAreaNonIcon: FC<Props> = ({
           name={name}
           id={name}
           placeholder={placeholder}
-          className="w-full font-medium h-full text-base-content border-none outline-none text-sm placeholder:text-sm px-3 py-2 placeholder:text-base-content/50"
+          className="w-full font-medium h-full text-base-content border-none outline-none text-xs lg:text-sm placeholder:text-xs lg:placeholder:text-sm px-3 py-2 placeholder:text-base-content/50"
           maxLength={max}
           onChange={(e) => {
             let value = e.target.value;
