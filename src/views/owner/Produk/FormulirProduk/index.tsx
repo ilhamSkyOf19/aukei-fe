@@ -2,7 +2,6 @@ import InputChoose from "../../../../components/inputs/InputChoose";
 import InputImg from "../../../../components/inputs/InputImg";
 import InputNumber from "../../../../components/inputs/InputNumber";
 import InputPrice from "../../../../components/inputs/InputPrice";
-import InputStatus from "../../../../components/inputs/InputStatus";
 import InputTextNonIcon from "../../../../components/inputs/InputTextNonIcon";
 import ButtonBackNonIcon from "../../../../components/ui/button/ButtonBackNonIcon";
 import ButtonBackText from "../../../../components/ui/button/ButtonBackText";
@@ -24,23 +23,28 @@ const FormulirProduk = () => {
     isLoadingKategori,
     hargaBeliController,
     hargaJualController,
+    handleSubmit,
+    isPendingMutateProduk,
+    onSubmit,
   } = useFormulirProduk();
 
   return (
     <div className="w-full mb-30 flex flex-col justify-start items-start px-2 lg:px-4">
       {/* content */}
-      <div className="w-full card shadow-xs dark:border dark:border-base-content/10 flex mt-4 flex-col justify-start items-start bg-base-100 px-4 py-4">
+      <div className="w-full card shadow-xs dark:border dark:border-base-content/10 flex mt-4 flex-col justify-start items-start bg-base-100 px-4 lg:px-6 py-4">
         {/* header formulir */}
-        <div className="w-full flex flex-row relative justify-center items-center">
+        <div className="w-full flex flex-row lg:flex-col lg:justify-start lg:items-start lg:gap-4 relative justify-center items-center">
           {/* button kembali */}
-          <div className="absolute left-0">
+          <div className="absolute lg:relative left-0">
             <ButtonBackText />
           </div>
 
           {/* title */}
-          <div className="w-full flex flex-col justify-start items-center">
+          <div className="w-full flex flex-col justify-start lg:items-start items-center">
             {/* title */}
-            <h2 className="text-sm font-semibold">Formulir Produk</h2>
+            <h2 className="text-sm lg:text-xl font-semibold text-base-content">
+              Formulir Produk
+            </h2>
 
             {/* keterangan */}
             <p className="text-xs lg:text-sm font-medium text-base-content/50">
@@ -50,103 +54,121 @@ const FormulirProduk = () => {
         </div>
 
         {/* form */}
-        <form className="w-full flex flex-col justify-start items-start mt-8">
-          {/* input img */}
-          <InputImg<CreateProdukType | UpdateProdukType>
-            controller={fileController}
-            label="Foto Produk"
-            name="img"
-            required
-          />
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full flex flex-col justify-start items-start mt-8"
+        >
+          <div className="w-full flex flex-col justify-start items-start lg:flex-row lg:gap-6">
+            {/* input img */}
+            <div className="w-full h-60 lg:w-200 lg:h-105 mb-16 lg:mb-12">
+              <InputImg<CreateProdukType | UpdateProdukType>
+                controller={fileController}
+                label="Foto Produk"
+                name="img"
+                required
+              />
+            </div>
 
-          {/* nama */}
-          <InputTextNonIcon
-            register={register("nama")}
-            name="name"
-            placeholder="Nama Produk"
-            label="Nama Produk"
-            required
-            max={100}
-            errorMessage={errors?.nama?.message}
-          />
+            <div className="w-full flex flex-col justify-start items-start">
+              {/* nama */}
+              <InputTextNonIcon
+                register={register("nama")}
+                name="nama"
+                placeholder="Nama Produk"
+                label="Nama Produk"
+                required
+                max={100}
+                errorMessage={errors?.nama?.message}
+              />
 
-          {/* kode produk */}
-          <InputTextNonIcon
-            register={register("kode")}
-            name="kode"
-            placeholder="Kode Produk"
-            label="Kode Produk"
-            required
-            max={50}
-          />
+              {/* kode produk */}
+              <InputTextNonIcon
+                register={register("kode")}
+                name="kode"
+                placeholder="Kode Produk"
+                label="Kode Produk"
+                required
+                max={50}
+                errorMessage={errors?.kode?.message}
+              />
 
-          {/* kategori */}
-          <InputChoose<CreateProdukType | UpdateProdukType>
-            controller={kategoriController}
-            label="Kategori Produk"
-            chooseList={
-              dataKategori?.data
-                ? dataKategori.data.map((item) => ({
-                    value: item.id,
-                    label: item.nama,
-                  }))
-                : []
-            }
-            required
-            isLoading={isLoadingKategori}
-            placeholder="Pilih kategori"
-          />
+              {/* kategori */}
+              <InputChoose<CreateProdukType | UpdateProdukType>
+                controller={kategoriController}
+                label="Kategori Produk"
+                chooseList={
+                  dataKategori?.data
+                    ? dataKategori.data.map((item) => ({
+                        value: item.id,
+                        label: item.nama,
+                      }))
+                    : []
+                }
+                required
+                isLoading={isLoadingKategori}
+                placeholder="Pilih kategori"
+              />
 
-          <div className="w-full flex flex-row justify-center items-center gap-2">
-            {/* harga beli */}
-            <InputPrice<CreateProdukType | UpdateProdukType>
-              controller={hargaBeliController}
-              label="Harga Beli"
-              placeholder="Harga Beli"
-              required
-            />
+              <div className="w-full flex flex-row justify-center items-center gap-2 lg:gap-6">
+                {/* harga beli */}
+                <InputPrice<CreateProdukType | UpdateProdukType>
+                  controller={hargaBeliController}
+                  label="Harga Beli"
+                  placeholder="Harga Beli"
+                  required
+                />
 
-            {/* harga jual  */}
-            <InputPrice<CreateProdukType | UpdateProdukType>
-              controller={hargaJualController}
-              label="Harga Jual"
-              placeholder="Harga Jual"
-              required
-            />
+                {/* harga jual  */}
+                <InputPrice<CreateProdukType | UpdateProdukType>
+                  controller={hargaJualController}
+                  label="Harga Jual"
+                  placeholder="Harga Jual"
+                  required
+                />
+              </div>
+
+              <div className="w-full flex flex-col justify-start items-start lg:flex-row lg:gap-6 lg:mt-4">
+                {/* stok */}
+                <InputNumber
+                  register={register("stok", {
+                    valueAsNumber: true,
+                  })}
+                  name="stok"
+                  placeholder="Masukkan Stok"
+                  label="Stok"
+                  required
+                  max={9999999999}
+                  errorMessage={errors?.stok?.message}
+                />
+
+                {/* isi per box */}
+                <InputNumber
+                  register={register("isiPerBox", {
+                    valueAsNumber: true,
+                  })}
+                  name="isiPerBox"
+                  placeholder="Isi Per Box"
+                  label="Isi Per Box"
+                  required
+                  max={9999999999}
+                  errorMessage={errors?.isiPerBox?.message}
+                />
+
+                {/* stok minimum */}
+                <InputNumber
+                  register={register("stokMinimum", {
+                    valueAsNumber: true,
+                  })}
+                  name="stokMinimum"
+                  placeholder="Stok Minimum"
+                  label="Stok Minimum"
+                  required
+                  max={9999999999}
+                  errorMessage={errors?.stokMinimum?.message}
+                />
+              </div>
+            </div>
           </div>
-
-          {/* stok */}
-          <InputNumber
-            register={register("stok")}
-            name="stok"
-            placeholder="Masukkan Stok"
-            label="Stok"
-            required
-            max={9999999999}
-            errorMessage={errors?.stok?.message}
-          />
-
-          {/* isi per box */}
-          <InputNumber
-            register={register("isiPerBox")}
-            name="isiPerBox"
-            placeholder="Isi Per Box"
-            label="Isi Per Box"
-            required
-            max={9999999999}
-            errorMessage={errors?.isiPerBox?.message}
-          />
-
-          {/* stok minimum */}
-          <InputNumber
-            register={register("stokMinimum")}
-            name="stokMinimum"
-            placeholder="Stok Minimum"
-            label="Stok Minimum"
-            required
-            max={9999999999}
-            errorMessage={errors?.stokMinimum?.message}
-          />
 
           {/* button aksi */}
           <div className="w-full flex flex-row justify-end items-center gap-4 my-4">
@@ -154,7 +176,10 @@ const FormulirProduk = () => {
             <ButtonBackNonIcon label="Batal" />
 
             {/* button submit */}
-            <ButtonSubmit isLoading={false} />
+            <ButtonSubmit
+              isLoading={isPendingMutateProduk}
+              disable={isPendingMutateProduk}
+            />
           </div>
         </form>
       </div>

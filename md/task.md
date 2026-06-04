@@ -15,9 +15,10 @@
 - [✅] Membuat Halaman detail produk
 - [✅] Membuat UI Halaman Formulir Produk (Mobile)
 
-- [ ] Membuat UI Halaman Formulir Produk (Desktop)
-- [ ] Integrasi API Tambah Produk
-- [ ] Integrasi API Ubah Produk
+- [✅] Membuat UI Halaman Formulir Produk (Desktop)
+- [✅] Integrasi API Tambah Produk
+- [90%] Integrasi API Ubah Produk (Buat Update Status) -> desktop
+- [ ] Integrasi API Ubah Produk -> mobile
 - [ ] Integrasi API Delete Produk
 - [ ] Membuat fitur message Toast
 - [ ] Membuat fitur message Alert

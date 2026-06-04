@@ -4,7 +4,7 @@ import { cn } from "../../../utils/cn";
 import ErrorMessage from "../../messages/ErrorMessage";
 
 type Props<T extends FieldValues = any> = {
-  label: string;
+  label?: string;
   chooseList: { label: string; value: number | string | boolean }[];
   typeValueIsBoolean?: boolean;
   required: boolean;
@@ -12,6 +12,7 @@ type Props<T extends FieldValues = any> = {
   placeholder: string;
   disabled?: boolean;
   isLoading?: boolean;
+  xs?: boolean;
 };
 
 export default function InputChoose<T extends FieldValues = any>({
@@ -23,6 +24,7 @@ export default function InputChoose<T extends FieldValues = any>({
   disabled,
   typeValueIsBoolean,
   isLoading,
+  xs,
 }: Props<T>) {
   // field
   const { field, fieldState } = controller;
@@ -36,23 +38,27 @@ export default function InputChoose<T extends FieldValues = any>({
     >
       {/* label */}
       <div className="w-full text-base relative flex flex-row justify-between items-center">
-        <div className="flex-2 relative">
-          <label
-            htmlFor={""}
-            className="capitalize text-xs lg:text-sm text-base-content"
-          >
-            {label}
-          </label>
+        {label && (
+          <div className="flex-2 relative">
+            <label
+              htmlFor={""}
+              className="capitalize text-xs lg:text-sm text-base-content"
+            >
+              {label}
+            </label>
 
-          <span className="absolute -top-1 ml-1 text-error">
-            {required && !disabled && "*"}
-          </span>
-        </div>
+            <span className="absolute -top-1 ml-1 text-error">
+              {required && !disabled && "*"}
+            </span>
+          </div>
+        )}
       </div>
 
       <div
         className={clsx(
-          "mt-2 h-10 flex flex-row justify-start items-stretch gap-2 border border-base-content/40 rounded-md w-full focus-within:ring-1 focus-within:ring-primary-purple transition-all duration-300 ease-in-out focus-within:border-primary-purple overflow-hidden bg-base-100",
+          "flex flex-row justify-start items-start gap-2 border border-base-content/40 rounded-md w-full focus-within:ring-1 focus-within:ring-base-content transition-all duration-300 ease-in-out overflow-hidden bg-base-100",
+          label && "mt-2 ",
+          xs ? "h-8" : "h-10",
           fieldState.error && "border-error",
           disabled && "cursor-not-allowed border-primary-black/10",
           typeValueIsBoolean &&
@@ -64,7 +70,10 @@ export default function InputChoose<T extends FieldValues = any>({
         )}
       >
         <select
-          className="select select-bordered w-full h-10 outline-none border-none rounded-md text-xs lg:text-sm bg-base-100"
+          className={cn(
+            "select w-full outline-none border-none rounded-md",
+            xs ? "lg:text-xs h-8" : " h-10 text-xs lg:text-sm",
+          )}
           value={
             typeValueIsBoolean && field.value !== undefined
               ? String(field.value)
@@ -85,7 +94,10 @@ export default function InputChoose<T extends FieldValues = any>({
           <option
             value=""
             disabled
-            className="text-xs lg:text-sm text-base-content"
+            className={cn(
+              "text-base-content/50",
+              xs ? "lg:text-xs" : "text-xs lg:text-sm",
+            )}
           >
             {placeholder}
           </option>
@@ -94,7 +106,10 @@ export default function InputChoose<T extends FieldValues = any>({
             <option
               value=""
               disabled
-              className="w-full flex justify-center items-center text-xs lg:text-sm text-base-content"
+              className={cn(
+                "w-full flex justify-center items-center text-base-content",
+                xs ? "lg:text-xs" : "text-xs lg:text-sm",
+              )}
             >
               <div className="loading" />
             </option>
@@ -106,7 +121,10 @@ export default function InputChoose<T extends FieldValues = any>({
                 <option
                   key={idx}
                   value={`${item.value}`}
-                  className="text-base-content text-xs lg:text-sm"
+                  className={cn(
+                    "text-base-content",
+                    xs ? "lg:text-xs" : "text-xs lg:text-sm",
+                  )}
                 >
                   {item.label}
                 </option>

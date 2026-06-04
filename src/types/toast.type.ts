@@ -24,3 +24,25 @@ export const TOAST_CONFIG_KATEGORI_PRODUK: Record<
     message: "Kategori produk berhasil dihapus",
   },
 };
+
+// toast produk
+export const TOAST_CONFIG_PRODUK: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  created_produk: {
+    color: "success",
+    message: "Produk berhasil ditambahkan",
+  },
+  updated_produk: {
+    color: "info",
+    message: "Produk berhasil diubah",
+  },
+  deleted_produk: {
+    color: "error",
+    message: "Produk berhasil dihapus",
+  },
+};

@@ -23,6 +23,31 @@ export class ProdukServices {
     return result.data;
   }
 
+  // create
+  static async create(
+    req: FormData,
+  ): Promise<ResponseStructure<ProdukResponseType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ProdukResponseType | null>
+    >(`/produk`, req);
+
+    return result.data;
+  }
+
+  // update
+  static async update(params: {
+    id: number;
+    req: FormData;
+  }): Promise<ResponseStructure<ProdukResponseType | null>> {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<ProdukResponseType | null>
+    >(`/produk/${params.id}`, params.req);
+
+    return result.data;
+  }
+
   // detail
   static async detail(params: {
     id: number;

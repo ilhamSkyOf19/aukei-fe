@@ -4,6 +4,7 @@ import { useFilter } from "../../../hooks/useFilter";
 import { useQuery } from "@tanstack/react-query";
 import { ProdukServices } from "../../../services/produk.service";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useToastAnimation } from "../../../hooks/useToast";
 
 const useProduk = () => {
   // current pathname
@@ -11,6 +12,9 @@ const useProduk = () => {
 
   // navigate
   const navigate = useNavigate();
+
+  // toast
+  const { toast } = useToastAnimation();
 
   //   is active Cluster inventori
   const [isActiveCluster, setIsActiveCluster] = useState<
@@ -114,6 +118,7 @@ const useProduk = () => {
     dataProduk,
     isLoadingProduk,
     isExistDataProduk,
+    toast,
   };
 };
 

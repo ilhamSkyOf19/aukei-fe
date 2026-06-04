@@ -1,7 +1,7 @@
 import FormulirTambahData from "./FormulirTambahData";
 import ShowData from "./ShowData";
 
-const Produk = () => {
+const KategoriCluster = () => {
   return (
     <div className="w-full mb-30 flex flex-col justify-start items-start">
       {/* content */}
@@ -16,4 +16,4 @@ const Produk = () => {
   );
 };
 
-export default Produk;
+export default KategoriCluster;

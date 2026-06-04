@@ -8,12 +8,13 @@ import { formatNumber, unformatNumber } from "../../../helpers/helpers";
 type Props = {
   name: string;
   placeholder: string;
-  label: string;
+  label?: string;
   required?: boolean;
   errorMessage?: string;
   register: UseFormRegisterReturn;
-  max: number;
+  max?: number;
   defaultValue?: number;
+  xs?: boolean;
 };
 
 const InputNumber: FC<Props> = ({
@@ -25,6 +26,7 @@ const InputNumber: FC<Props> = ({
   register,
   max,
   defaultValue,
+  xs,
 }) => {
   // simpan sebagai number | null
   const [isValue, setIsValue] = useState<number | "">("");
@@ -49,30 +51,36 @@ const InputNumber: FC<Props> = ({
     >
       {/* label */}
       <div className="w-full text-base-content relative flex flex-row justify-between items-center">
-        <div className="flex-2 relative">
-          <label
-            htmlFor={name}
-            className="capitalize text-xs lg:text-sm text-base-content"
-          >
-            {label}
-          </label>
+        {label && (
+          <div className="flex-2 relative">
+            <label
+              htmlFor={name}
+              className="capitalize text-xs lg:text-sm text-base-content"
+            >
+              {label}
+            </label>
 
-          <span className="absolute -top-1 ml-1 text-error">
-            {required && "*"}
-          </span>
-        </div>
+            <span className="absolute -top-1 ml-1 text-error">
+              {required && "*"}
+            </span>
+          </div>
+        )}
 
         {/* MAX BERDASARKAN NILAI ANGKA */}
-        <span className="text-xs text-base-content">
-          {formatNumber(isValue.toString()) || 0} /{" "}
-          {formatNumber(max.toString())}
-        </span>
+        {max && (
+          <span className="text-xs text-base-content">
+            {formatNumber(isValue.toString()) || 0} /{" "}
+            {formatNumber(max.toString())}
+          </span>
+        )}
       </div>
 
       <div
         className={clsx(
-          "mt-2 h-11 flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full focus-within:ring-1 focus-within:ring-primary-purple focus-within:border-primary-purple transition-all duration-300 ease-in-out",
+          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 px-3",
+          xs ? "lg:h-8" : "h-9 lg:h-10",
           errorMessage && "border-error",
+          label && "mt-2",
         )}
       >
         <input
@@ -83,7 +91,10 @@ const InputNumber: FC<Props> = ({
           inputMode="numeric"
           placeholder={placeholder}
           autoComplete="off"
-          className="px-3 font-medium rounded-md w-full h-full outline-none text-xs text-base-content placeholder:text-base-content/50 placeholder:font-light lg:text-sm bg-base-100"
+          className={cn(
+            "font-medium rounded-md w-full h-full outline-none text-base-content placeholder:text-base-content/50 placeholder:font-light lg:text-sm bg-transparent",
+            xs ? "lg:text-xs" : "text-xs lg:text-sm",
+          )}
           value={displayValue}
           onChange={(e) => {
             const rawValue = unformatNumber(e.target.value);
@@ -104,8 +115,10 @@ const InputNumber: FC<Props> = ({
 
             let numberValue = Number(rawValue);
 
-            if (numberValue > max) {
-              numberValue = max;
+            if (max) {
+              if (numberValue > max) {
+                numberValue = max;
+              }
             }
 
             setDisplayValue(formatNumber(String(numberValue)));

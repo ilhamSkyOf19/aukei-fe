@@ -2,6 +2,7 @@ import { ImageIcon } from "lucide-react";
 import type { FieldValues, UseControllerReturn } from "react-hook-form";
 import { useEffect, useState } from "react";
 import ErrorMessage from "../../messages/ErrorMessage";
+import { cn } from "../../../utils/cn";
 
 type Props<T extends FieldValues = any> = {
   label: string;
@@ -50,7 +51,7 @@ export default function InputImg<T extends FieldValues = any>({
   };
 
   return (
-    <div className="space-y-2 w-full">
+    <div className={"space-y-2 w-full h-full"}>
       {/* Label */}
       <div className="relative">
         <label className="capitalize text-xs lg:text-sm text-base-content">
@@ -65,20 +66,18 @@ export default function InputImg<T extends FieldValues = any>({
       {/* Upload Area */}
       <label
         htmlFor={`file-input-${resetKey}`}
-        className={`
-          relative flex h-60 w-full cursor-pointer
+        className={cn(
+          `
+          relative flex w-full cursor-pointer
           flex-col items-center justify-center
           overflow-hidden rounded-xl border
-          border-dashed transition-all mt-2
-
-          ${
-            disabled
-              ? "cursor-not-allowed border-slate-200 bg-slate-100"
-              : "border-slate-300 bg-white hover:border-custom-primary hover:bg-slate-50"
-          }
-
-          ${fieldState.error ? "border-red-500" : ""}
-        `}
+          border-dashed transition-all mt-2 h-full
+        `,
+          disabled
+            ? "cursor-not-allowed border-slate-200 bg-slate-100"
+            : "border-slate-300 bg-base-100 hover:border-custom-primary hover:bg-base-200",
+          fieldState.error ? "border-error" : "",
+        )}
       >
         {preview ? (
           <>

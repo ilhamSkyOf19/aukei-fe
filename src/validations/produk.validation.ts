@@ -6,44 +6,56 @@ import type {
 import { MAX_FILE_SIZE_IMG } from "../types/constant.type";
 
 export class ProdukValidation {
-  private static stringSchema(min: number = 1, max: number = 100) {
-    return z.string().trim().min(min).max(max);
+  private static stringSchema(fieldName: string, max: number = 100) {
+    return z
+      .string()
+      .trim()
+      .min(1, `Mohon isi ${fieldName}`)
+      .max(max, `Maksimal ${max} karakter`);
   }
 
-  private static numberSchema() {
-    return z.number().int().min(0);
+  private static numberSchema(fieldName: string) {
+    return z.number(`Mohon isi ${fieldName}`).min(0, `Mohon isi ${fieldName}`);
   }
 
-  //   file shcmea
+  private static positiveNumberSchema(fieldName: string) {
+    return z
+      .number(`Mohon isi ${fieldName}`)
+      .int()
+      .positive(`Mohon isi ${fieldName}`);
+  }
+
   private static imgSchema = z
-    .instanceof(File, { message: "Foto harus diisi" })
+    .instanceof(File, {
+      message: "Mohon pilih foto produk",
+    })
     .refine((file) => file.size <= MAX_FILE_SIZE_IMG, {
       message: "Maksimal ukuran file 10 MB",
     })
     .refine(
       (file) => ["image/jpeg", "image/png", "image/jpg"].includes(file.type),
       {
-        message: "Format file tidak valid",
+        message: "Format file harus JPG atau PNG",
       },
     );
 
   static readonly CREATE = z
     .object({
-      kategoriId: z.number().int().positive().max(2147483647),
+      kategoriId: this.positiveNumberSchema("kategori"),
 
-      nama: this.stringSchema(3, 150),
+      nama: this.stringSchema("nama produk", 150),
 
-      kode: this.stringSchema(3, 50),
+      kode: this.stringSchema("kode produk", 50),
 
-      hargaBeli: this.numberSchema(),
+      hargaBeli: this.numberSchema("harga beli"),
 
-      hargaJual: this.numberSchema(),
+      hargaJual: this.numberSchema("harga jual"),
 
-      stok: this.numberSchema(),
+      stok: this.numberSchema("stok"),
 
-      isiPerBox: z.number().int().positive(),
+      isiPerBox: this.positiveNumberSchema("isi per box"),
 
-      stokMinimum: this.numberSchema(),
+      stokMinimum: this.numberSchema("stok minimum"),
 
       img: this.imgSchema,
     })
@@ -53,19 +65,31 @@ export class ProdukValidation {
     .object({
       kategoriId: z.number().int().positive().optional(),
 
-      nama: this.stringSchema(3, 150).optional(),
+      nama: this.stringSchema("nama produk", 150).optional(),
 
-      kode: this.stringSchema(3, 50).optional(),
+      kode: this.stringSchema("kode produk", 50).optional(),
 
-      hargaBeli: this.numberSchema().optional(),
+      hargaBeli: z
+        .number("Mohon isi harga beli")
+        .min(0, "Mohon isi harga beli")
+        .optional(),
 
-      hargaJual: this.numberSchema().optional(),
+      hargaJual: z
+        .number("Mohon isi harga jual")
+        .min(0, "Mohon isi harga jual")
+        .optional(),
 
-      stok: this.numberSchema().optional(),
+      stok: z.number("Mohon isi stok").optional(),
 
-      isiPerBox: z.number().int().positive().optional(),
+      isiPerBox: z
+        .number("Mohon isi per box")
+        .min(0, "Mohon isi per box")
+        .optional(),
 
-      stokMinimum: this.numberSchema().optional(),
+      stokMinimum: z
+        .number("Mohon isi stok minimun")
+        .min(0, "Mohon isi stok minimum")
+        .optional(),
 
       img: this.imgSchema.optional(),
     })

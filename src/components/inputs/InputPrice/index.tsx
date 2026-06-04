@@ -33,7 +33,7 @@ export default function InputPrice<T extends FieldValues = any>({
   return (
     <div className="w-full">
       {label && (
-        <label className="text-xs lg:text-sm">
+        <label className="text-xs lg:text-sm text-base-content">
           {label}
 
           {required && <span className="ml-1 text-error">*</span>}
@@ -42,10 +42,11 @@ export default function InputPrice<T extends FieldValues = any>({
 
       <div
         className={cn(
-          "mt-2 flex items-center rounded-md border border-base-content/50 bg-base-100",
-          "focus-within:border-base-content focus-within:ring-1 focus-within:ring-base-content",
+          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full",
+          "focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100",
           xs ? "h-8 px-2" : "h-10 px-3",
           fieldState.error && "border-error",
+          label && "mt-2",
         )}
       >
         <span className="mr-2 text-xs text-base-content/80 font-medium">
@@ -59,7 +60,7 @@ export default function InputPrice<T extends FieldValues = any>({
           disabled={disabled}
           autoComplete="off"
           className={cn(
-            "h-full w-full border-none bg-transparent outline-none font-medium",
+            "h-full w-full border-none bg-transparent outline-none font-medium text-base-content placeholder:font-normal ",
             xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
           )}
           onChange={(e) => {

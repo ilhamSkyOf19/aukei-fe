@@ -52,29 +52,38 @@ const InputTextNonIcon: FC<Props> = ({
       {/* label */}
       <div className="w-full text-base-content relative flex flex-row justify-between items-center">
         {label && (
-          <div className="flex-2 relative">
-            <label htmlFor={name} className="capitalize text-xs lg:text-sm">
-              {label}
-            </label>
+          <>
+            <div className="flex-2 relative">
+              <label
+                htmlFor={name}
+                className={cn(
+                  "capitalize",
+                  xs ? "text-xs" : "text-xs lg:text-sm",
+                )}
+              >
+                {label}
+              </label>
 
-            <span className="absolute -top-1 ml-1 text-error">
-              {required && "*"}
-            </span>
-          </div>
-        )}
+              <span className="absolute -top-1 ml-1 text-error">
+                {required && "*"}
+              </span>
+            </div>
 
-        {/* MAX BERDASARKAN NILAI ANGKA */}
-        {max && (
-          <span className="text-[0.625rem] lg:text-xs">
-            {isValue.length} / {max}
-          </span>
+            {/* MAX BERDASARKAN NILAI ANGKA */}
+            {max && (
+              <span className="text-[0.625rem] lg:text-xs">
+                {isValue.length} / {max}
+              </span>
+            )}
+          </>
         )}
       </div>
       <div
         className={cn(
-          "mt-2 flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 ",
-          xs ? "h-7 lg:h-8 px-1.5" : "h-9 lg:h-10 px-3",
+          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 ",
+          xs ? "h-7 lg:h-8 px-2.5" : "h-9 lg:h-10 px-3",
           errorMessage && "border-error",
+          label && "mt-2",
         )}
       >
         <input

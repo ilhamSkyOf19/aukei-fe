@@ -13,13 +13,11 @@ const ButtonBackText: FC<Props> = ({ label }) => {
   return (
     <button
       type="button"
-      className="p-0.5 flex flex-row justify-start items-center gap-2"
+      className="py-1 px-2.5 text-base-content rounded-sm flex flex-row justify-start items-center gap-2 border border-base-content/0 hover:border-custom-primary transition-all duration-300 ease-in-out"
       onClick={() => navigate(-1)}
     >
-      <ArrowLeft className="size-6" />
-      <span className="text-sm text-base-content hidden lg:block">
-        {label || "Kembali"}
-      </span>
+      <ArrowLeft className="size-5" />
+      <span className="text-sm hidden lg:block">{label || "Kembali"}</span>
     </button>
   );
 };
