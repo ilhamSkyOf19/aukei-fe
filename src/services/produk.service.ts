@@ -48,6 +48,21 @@ export class ProdukServices {
     return result.data;
   }
 
+  // update is active
+  static async updateStatus(params: {
+    id: number;
+    status: boolean;
+  }): Promise<ResponseStructure<ProdukResponseType | null>> {
+    const { id, status } = params;
+
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<ProdukResponseType | null>
+    >(`/produk/${id}/active`, { status });
+
+    return result.data;
+  }
+
   // detail
   static async detail(params: {
     id: number;

@@ -5,7 +5,7 @@ import ErrorMessage from "../../messages/ErrorMessage";
 import { cn } from "../../../utils/cn";
 
 type Props<T extends FieldValues = any> = {
-  label: string;
+  label?: string;
   required?: boolean;
   controller: UseControllerReturn<T>;
   name: string;
@@ -53,15 +53,17 @@ export default function InputImg<T extends FieldValues = any>({
   return (
     <div className={"space-y-2 w-full h-full"}>
       {/* Label */}
-      <div className="relative">
-        <label className="capitalize text-xs lg:text-sm text-base-content">
-          {label}
-        </label>
+      {label && (
+        <div className="relative">
+          <label className="capitalize text-xs lg:text-sm text-base-content">
+            {label}
+          </label>
 
-        <span className="absolute -top-1 ml-1 text-error">
-          {required && "*"}
-        </span>
-      </div>
+          <span className="absolute -top-1 ml-1 text-error">
+            {required && "*"}
+          </span>
+        </div>
+      )}
 
       {/* Upload Area */}
       <label
@@ -71,8 +73,9 @@ export default function InputImg<T extends FieldValues = any>({
           relative flex w-full cursor-pointer
           flex-col items-center justify-center
           overflow-hidden rounded-xl border
-          border-dashed transition-all mt-2 h-full
+          border-dashed transition-all h-full
         `,
+          label && "mt-2",
           disabled
             ? "cursor-not-allowed border-slate-200 bg-slate-100"
             : "border-slate-300 bg-base-100 hover:border-custom-primary hover:bg-base-200",

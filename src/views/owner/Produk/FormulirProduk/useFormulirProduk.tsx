@@ -8,14 +8,33 @@ import { ProdukValidation } from "../../../../validations/produk.validation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { KategoriProdukServices } from "../../../../services/kategoriProduk.service";
 import { ProdukServices } from "../../../../services/produk.service";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { parseId } from "../../../../helpers/helpers";
+import { useEffect } from "react";
 
-const useFormulirProduk = (dataUpdate?: any) => {
+const useFormulirProduk = () => {
+  // get id
+  const { id } = useParams<{ id: string }>();
+
+  // parse id
+  const validatedIdParams = parseId(id);
+
   // navigate
   const navigate = useNavigate();
 
   // current pathname
   const currentPathname = useLocation().pathname;
+
+  // query detail
+  const { data: dataProdukDetail, isLoading: isLoadingProdukDetail } = useQuery(
+    {
+      queryKey: ["detail-produk", validatedIdParams],
+      queryFn: () => ProdukServices.detail({ id: validatedIdParams! }),
+      enabled: !!validatedIdParams,
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  );
 
   // use form
   const {
@@ -23,11 +42,28 @@ const useFormulirProduk = (dataUpdate?: any) => {
     control,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm<CreateProdukType | UpdateProdukType>({
     resolver: zodResolver(
-      dataUpdate ? ProdukValidation.UPDATE : ProdukValidation.CREATE,
+      validatedIdParams ? ProdukValidation.UPDATE : ProdukValidation.CREATE,
     ),
   });
+
+  useEffect(() => {
+    if (dataProdukDetail?.data) {
+      reset({
+        nama: dataProdukDetail.data.nama,
+        kategoriId: dataProdukDetail.data.kategori.id,
+        kode: dataProdukDetail.data.kode,
+        hargaJual: dataProdukDetail.data.hargaJual,
+        hargaBeli: dataProdukDetail.data.hargaBeli,
+        isiPerBox: dataProdukDetail.data.isiPerBox,
+        stok: dataProdukDetail.data.stok,
+        stokMinimum: dataProdukDetail.data.stokMinimum,
+        img: undefined,
+      });
+    }
+  }, [dataProdukDetail?.data]);
 
   // file controller
   const fileController = useController({
@@ -57,9 +93,9 @@ const useFormulirProduk = (dataUpdate?: any) => {
   const { mutateAsync: mutateProduk, isPending: isPendingMutateProduk } =
     useMutation({
       mutationFn: (data: FormData) => {
-        if (dataUpdate) {
+        if (dataProdukDetail?.data) {
           return ProdukServices.update({
-            id: dataUpdate.id,
+            id: dataProdukDetail.data.id,
             req: data,
           });
         } else {
@@ -70,7 +106,7 @@ const useFormulirProduk = (dataUpdate?: any) => {
         // set toast
         navigate(currentPathname.split("/").slice(0, -1).join("/"), {
           state: {
-            toast: dataUpdate ? "updated_produk" : "created_produk",
+            toast: validatedIdParams ? "updated_produk" : "created_produk",
           },
         });
       },
@@ -161,6 +197,8 @@ const useFormulirProduk = (dataUpdate?: any) => {
     onSubmit,
     handleSubmit,
     isPendingMutateProduk,
+    isLoadingProdukDetail,
+    dataProdukDetail,
   };
 };
 

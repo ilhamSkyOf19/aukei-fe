@@ -1,91 +1,78 @@
 import type { FC } from "react";
-import type { UseFormRegisterReturn } from "react-hook-form";
 import { cn } from "../../../utils/cn";
 import ErrorMessage from "../../messages/ErrorMessage";
 
 type Props = {
-  label: string;
-  register: UseFormRegisterReturn;
+  label?: string;
+  value: boolean;
+  onChange: (value: boolean) => void;
   required?: boolean;
-  errorMessage?: string;
   disabled?: boolean;
+  errorMessage?: string;
 };
 
 const InputStatus: FC<Props> = ({
   label,
-  register,
+  value,
+  onChange,
   required,
-  errorMessage,
   disabled,
+  errorMessage,
 }) => {
   return (
-    <div className={cn("w-full flex flex-col", errorMessage && "mb-3")}>
-      {/* Label */}
-      <div className="flex items-center">
-        <label className="text-xs lg:text-sm font-medium text-base-content">
-          {label}
-        </label>
+    <div className="w-full flex flex-col">
+      {/* label */}
+      {label && (
+        <div className="flex items-center">
+          <label className="text-xs lg:text-sm font-medium text-base-content">
+            {label}
+          </label>
 
-        {required && <span className="ml-1 text-error">*</span>}
-      </div>
+          {required && <span className="ml-1 text-error">*</span>}
+        </div>
+      )}
 
-      {/* Radio Group */}
+      {/* radio group */}
       <div
         className={cn(
-          "mt-2 flex h-11 items-center justify-between rounded-md border border-base-content/50 px-3",
-          "focus-within:border-primary-purple",
-          "focus-within:ring-1 focus-within:ring-primary-purple",
-          "transition-all duration-300",
-          errorMessage && "border-error",
+          "mt-2 flex h-11 items-center justify-between rounded-md px-3 gap-4",
           disabled && "cursor-not-allowed opacity-70",
         )}
       >
-        {/* Tidak Aktif */}
+        {/* tidak aktif */}
         <label
           htmlFor="status-false"
           className="flex cursor-pointer items-center gap-2"
         >
           <input
-            {...register}
             id="status-false"
-            type="radio"
-            value="false"
             disabled={disabled}
-            className="
-              radio radio-sm
-              bg-rose-100
-              border-rose-300
-              checked:bg-rose-200
-              checked:text-rose-600
-              checked:border-rose-600
-            "
+            onChange={() => onChange(false)}
+            type="radio"
+            name="radio-2"
+            className="radio radio-md radio-error"
+            defaultChecked={value === false}
           />
 
-          <span className="text-xs lg:text-sm">Tidak Aktif</span>
+          <span className="text-xs text-base-content">Tidak Aktif</span>
         </label>
 
-        {/* Aktif */}
+        {/* aktif */}
         <label
           htmlFor="status-true"
           className="flex cursor-pointer items-center gap-2"
         >
           <input
-            {...register}
             id="status-true"
-            type="radio"
-            value="true"
             disabled={disabled}
-            className="
-              radio radio-sm
-              bg-emerald-100
-              border-emerald-300
-              checked:bg-emerald-200
-              checked:text-emerald-600
-              checked:border-emerald-600
-            "
+            onChange={() => onChange(true)}
+            type="radio"
+            name="radio-2"
+            className="radio radio-md radio-success"
+            defaultChecked={value === true}
           />
 
-          <span className="text-xs lg:text-sm">Aktif</span>
+          <span className="text-xs text-base-content">Aktif</span>
         </label>
       </div>
 

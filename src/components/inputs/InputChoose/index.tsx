@@ -102,7 +102,7 @@ export default function InputChoose<T extends FieldValues = any>({
             {placeholder}
           </option>
 
-          {isLoading && (
+          {/* {isLoading && (
             <option
               value=""
               disabled
@@ -111,9 +111,9 @@ export default function InputChoose<T extends FieldValues = any>({
                 xs ? "lg:text-xs" : "text-xs lg:text-sm",
               )}
             >
-              <div className="loading" />
+              <span className="loading" />
             </option>
-          )}
+          )} */}
 
           {!isLoading && (
             <>

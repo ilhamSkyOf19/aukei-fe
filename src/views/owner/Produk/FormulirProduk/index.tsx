@@ -26,6 +26,8 @@ const FormulirProduk = () => {
     handleSubmit,
     isPendingMutateProduk,
     onSubmit,
+    isLoadingProdukDetail,
+    dataProdukDetail,
   } = useFormulirProduk();
 
   return (
@@ -65,7 +67,13 @@ const FormulirProduk = () => {
                 controller={fileController}
                 label="Foto Produk"
                 name="img"
-                required
+                {...(dataProdukDetail?.data?.img
+                  ? {
+                      required: false,
+                    }
+                  : {
+                      required: true,
+                    })}
               />
             </div>
 
@@ -79,6 +87,7 @@ const FormulirProduk = () => {
                 required
                 max={100}
                 errorMessage={errors?.nama?.message}
+                defaultValue={dataProdukDetail?.data?.nama}
               />
 
               {/* kode produk */}
@@ -90,6 +99,7 @@ const FormulirProduk = () => {
                 required
                 max={50}
                 errorMessage={errors?.kode?.message}
+                defaultValue={dataProdukDetail?.data?.kode}
               />
 
               {/* kategori */}
@@ -139,6 +149,7 @@ const FormulirProduk = () => {
                   required
                   max={9999999999}
                   errorMessage={errors?.stok?.message}
+                  defaultValue={dataProdukDetail?.data?.stok}
                 />
 
                 {/* isi per box */}
@@ -152,6 +163,7 @@ const FormulirProduk = () => {
                   required
                   max={9999999999}
                   errorMessage={errors?.isiPerBox?.message}
+                  defaultValue={dataProdukDetail?.data?.isiPerBox}
                 />
 
                 {/* stok minimum */}
@@ -165,6 +177,7 @@ const FormulirProduk = () => {
                   required
                   max={9999999999}
                   errorMessage={errors?.stokMinimum?.message}
+                  defaultValue={dataProdukDetail?.data?.isiPerBox}
                 />
               </div>
             </div>

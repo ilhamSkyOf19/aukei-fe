@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   Box,
   CalendarDays,
   CircleCheck,
@@ -22,11 +21,14 @@ import type { FC, ReactNode } from "react";
 import InputChoose from "../../../components/inputs/InputChoose";
 import InputPrice from "../../../components/inputs/InputPrice";
 import InputNumber from "../../../components/inputs/InputNumber";
+import InputImg from "../../../components/inputs/InputImg";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_PRODUK_DETAIL } from "../../../types/toast.type";
 
 const ProdukDetail = () => {
   // call use
   const {
-    handleRedirectDetail,
+    handleRedirectFormulir,
     isExistData,
     isLoadingDataProduk,
     dataProduk,
@@ -43,23 +45,35 @@ const ProdukDetail = () => {
     isLoadingKategoriForChoose,
     hargaBeliController,
     hargaJualController,
+    imgController,
+    toast,
   } = useProdukDetail();
 
   return (
     <div className="w-full mb-30 flex flex-col justify-start items-start px-2 lg:px-4">
+      {/* toast */}
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_PRODUK_DETAIL[toast.type].message}
+          color={TOAST_CONFIG_PRODUK_DETAIL[toast.type].color}
+        />
+      )}
+
       {/* Cluster inventori */}
       <div className="card w-full bg-base-100 flex flex-col justify-start items-start p-4 mt-4">
         {/* header */}
         <div className="w-full flex flex-row justify-center items-center gap-2">
           {/* button back */}
           <div className="flex flex-1 flex-row justify-start items-center">
-            <ButtonBackText />
+            <ButtonBackText link="/dashboard/produk" />
           </div>
 
           <div className="flex flex-1 flex-row justify-center items-center">
             {/* title */}
-            <h2 className="text-sm lg:text-base font-semibold text-base-content">
-              Data Produk
+            <h2 className="text-sm lg:text-xl text-center font-semibold text-base-content">
+              Informasi Detail Produk
             </h2>
           </div>
 
@@ -70,7 +84,7 @@ const ProdukDetail = () => {
               <ButtonActionWithIcon
                 icon={PencilLineIcon}
                 label="Ubah"
-                handleClick={() => handleRedirectDetail()}
+                handleClick={() => handleRedirectFormulir()}
                 buttonColor="btn-info"
                 textColor="text-primary-white"
                 iconColor="text-primary-white"
@@ -81,21 +95,54 @@ const ProdukDetail = () => {
 
         <div className="w-full flex lg:flex-row flex-col justify-start items-center gap-0 lg:gap-4">
           {/* img */}
-          <div className="w-full order-1 lg:order-2 flex-2 flex flex-row justify-center items-center">
-            <div
-              className={cn(
-                "w-[95%] h-60 lg:max-h-120 rounded-md mt-8",
-                isLoadingDataProduk && "skeleton",
-              )}
-            >
-              {!isLoadingDataProduk && isExistData && (
-                <img
-                  src={dataProduk?.data?.img}
-                  alt="gambar produk"
-                  className="w-full h-full object-contain"
-                />
-              )}
-            </div>
+          <div className="w-full order-1 lg:order-2 flex-2 flex flex-row lg:flex-col lg:gap-6 justify-center items-center">
+            {keyUpdate !== "img" ? (
+              <>
+                <div
+                  className={cn(
+                    "w-[85%] h-65 lg:max-h-120 rounded-md mt-8",
+                    isLoadingDataProduk && "skeleton",
+                  )}
+                >
+                  {!isLoadingDataProduk && isExistData && (
+                    <img
+                      src={dataProduk?.data?.img}
+                      alt="gambar produk"
+                      className="w-full h-full object-contain"
+                    />
+                  )}
+                </div>
+
+                {/* button update */}
+                <div className="w-full hidden lg:flex flex-row justify-end items-center">
+                  <button
+                    type="button"
+                    className="btn lg:btn-sm btn-info text-primary-white"
+                    onClick={() => handleKeyUpdate("img")}
+                  >
+                    Ganti Foto
+                  </button>
+                </div>
+              </>
+            ) : (
+              <CardForm
+                handleResetForm={handleResetForm}
+                handleSubmit={handleSubmit}
+                onSubmit={onSubmit}
+                isPending={isPendingUpdateProduk}
+                flexColoum
+                hAuto
+              >
+                {/* input text */}
+                <div className="w-120 h-100 mb-4">
+                  <InputImg<UpdateProdukType>
+                    controller={imgController}
+                    name="img"
+                    required
+                  />
+                </div>
+              </CardForm>
+            )}
           </div>
 
           {/* content two */}
@@ -728,6 +775,8 @@ type CardFormProps = {
   handleResetForm: () => void;
   isPending?: boolean;
   btnAksiPosition?: "top";
+  flexColoum?: boolean;
+  hAuto?: boolean;
 };
 const CardForm: FC<CardFormProps> = ({
   children,
@@ -736,11 +785,17 @@ const CardForm: FC<CardFormProps> = ({
   onSubmit,
   isPending,
   btnAksiPosition,
+  flexColoum,
+  hAuto,
 }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="hidden h-14 lg:flex flex-row justify-start items-center gap-3"
+      className={cn(
+        "hidden  lg:flex justify-start gap-3",
+        flexColoum ? "flex-col items-end" : "flex-row items-center",
+        hAuto ? "h-auto" : "h-14",
+      )}
     >
       {/* input text */}
       {children}
@@ -748,7 +803,7 @@ const CardForm: FC<CardFormProps> = ({
       {/* button aksi */}
       <div
         className={cn(
-          "flex h-full flex-row justify-start  gap-2",
+          "flex h-full justify-start gap-2",
           btnAksiPosition === "top" ? "items-start mt-2" : "items-end mb-2",
         )}
       >

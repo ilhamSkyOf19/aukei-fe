@@ -8,6 +8,7 @@ import type { UpdateProdukType } from "../../../models/produk.model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProdukValidation } from "../../../validations/produk.validation";
 import { KategoriProdukServices } from "../../../services/kategoriProduk.service";
+import { useToastAnimation } from "../../../hooks/useToast";
 
 const useProdukDetail = () => {
   // state key update
@@ -18,6 +19,9 @@ const useProdukDetail = () => {
 
   // current pathname
   const currentPathname = useLocation().pathname;
+
+  // toast
+  const { toast, handleSetToast } = useToastAnimation();
 
   // navigate
   const navigate = useNavigate();
@@ -50,9 +54,9 @@ const useProdukDetail = () => {
       retry: false,
     });
 
-  // handle redirect detail
-  const handleRedirectDetail = () => {
-    navigate(`${currentPathname}/${validatedIdParams}`);
+  // handle redirect formulir
+  const handleRedirectFormulir = () => {
+    navigate(`${currentPathname}/ubah`);
   };
 
   // use form
@@ -82,6 +86,12 @@ const useProdukDetail = () => {
   // harga beli controller
   const hargaBeliController = useController({
     name: "hargaBeli",
+    control,
+  });
+
+  // img controller
+  const imgController = useController({
+    name: "img",
     control,
   });
 
@@ -135,6 +145,9 @@ const useProdukDetail = () => {
         queryClient.refetchQueries({
           queryKey: ["detail-produk", validatedIdParams],
         });
+
+        // handle toast
+        handleSetToast("updated_produk");
       },
       onError: (err) => {
         console.log(err);
@@ -144,6 +157,10 @@ const useProdukDetail = () => {
   // handle update
   const onSubmit = async (data: UpdateProdukType) => {
     try {
+      const hasValue = Object.values(data).some((value) => value !== undefined);
+
+      if (!hasValue) return;
+
       // form data
       const formData = new FormData();
 
@@ -187,6 +204,11 @@ const useProdukDetail = () => {
         formData.append("stokMinimum", data.stokMinimum.toString());
       }
 
+      // check img
+      if (data.img) {
+        formData.append("img", data.img);
+      }
+
       await mutateUpdateProduk(formData);
     } catch (error) {
       console.log(error);
@@ -194,7 +216,7 @@ const useProdukDetail = () => {
   };
 
   return {
-    handleRedirectDetail,
+    handleRedirectFormulir,
     isExistData,
     isLoadingDataProduk,
     dataProduk,
@@ -211,6 +233,8 @@ const useProdukDetail = () => {
     isLoadingKategoriForChoose,
     hargaJualController,
     hargaBeliController,
+    imgController,
+    toast,
   };
 };
 

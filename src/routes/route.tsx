@@ -113,7 +113,16 @@ const route = createBrowserRouter([
           },
           {
             path: ":id",
-            element: <ProdukDetailPage />,
+            children: [
+              {
+                index: true,
+                element: <ProdukDetailPage />,
+              },
+              {
+                path: "ubah",
+                element: <FormulirProdukPage />,
+              },
+            ],
           },
         ],
       },

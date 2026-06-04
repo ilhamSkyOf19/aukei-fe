@@ -48,3 +48,8 @@ export interface ResponseProdukWithMetaType {
   meta: MetaType;
   data: ProdukResponseType[];
 }
+
+// update status
+export interface UpdateStatusType {
+  status: boolean;
+}

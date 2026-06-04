@@ -2,6 +2,7 @@ import z from "zod";
 import type {
   CreateProdukType,
   UpdateProdukType,
+  UpdateStatusType,
 } from "../models/produk.model";
 import { MAX_FILE_SIZE_IMG } from "../types/constant.type";
 
@@ -94,4 +95,11 @@ export class ProdukValidation {
       img: this.imgSchema.optional(),
     })
     .strict() satisfies z.ZodType<UpdateProdukType>;
+
+  // update sttaus
+  static readonly UPDATE_STATUS = z
+    .object({
+      status: z.boolean("Mohon isi status"),
+    })
+    .strict() satisfies z.ZodType<UpdateStatusType>;
 }
