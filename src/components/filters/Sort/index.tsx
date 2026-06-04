@@ -14,6 +14,7 @@ const FilterSort: FC<Props> = ({ setSort }) => {
           { value: "desc", label: "Terbaru" },
         ]}
         placeholder="Urutkan"
+        fontWeight="lg:font-medium"
       />
     </div>
   );

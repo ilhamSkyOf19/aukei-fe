@@ -56,7 +56,7 @@ const ModalDelete: FC<Props> = ({
         <div className="w-full flex justify-center mb-4">
           <AlertCircle className="size-20 text-error" />
         </div>
-        <h3 className="font-semibold text-base-content lg:text-lg text-center mb-4">
+        <h3 className="font-semibold text-base-content text-sm lg:text-lg text-center mb-4">
           {bigTitle || "Apakah anda yakin ingin menghapus data ini?"}
         </h3>
 

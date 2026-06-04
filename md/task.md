@@ -19,6 +19,14 @@
 - [✅] Integrasi API Tambah Produk
 - [✅] Integrasi API Ubah Produk (Buat Update Status) -> desktop
 - [✅] Integrasi API Ubah Produk -> mobile
-- [ ] Integrasi API Delete Produk
-- [ ] Membuat fitur message Toast
-- [ ] Membuat fitur message Alert
+- [✅] Integrasi API Delete Produk
+- [✅] Membuat fitur message Toast
+
+## Branch Barang Masuk
+
+- [ ] Membuat UI show barang masuk (Mobile)
+- [ ] Membuat UI show barang masuk (Dekstop)
+- [ ] Membuat message toast
+- [ ] Integrasi API Tambah
+- [ ] Integrasi API Ubah
+- [ ] Integrasi API Delete

@@ -74,4 +74,14 @@ export class ProdukServices {
 
     return result.data;
   }
+
+  // delete
+  static async delete(id: number): Promise<ResponseStructure<null>> {
+    // call api
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/produk/${id}`,
+    );
+
+    return result.data;
+  }
 }

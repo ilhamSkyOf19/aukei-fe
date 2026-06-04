@@ -8,6 +8,7 @@ type Props = {
   isLoading?: boolean;
   value?: string;
   customWidth?: string;
+  fontWeight?: string;
 };
 const DropDown: FC<Props> = ({
   handleChange,
@@ -16,6 +17,7 @@ const DropDown: FC<Props> = ({
   isLoading,
   value,
   customWidth,
+  fontWeight,
 }) => {
   return (
     <div
@@ -29,7 +31,10 @@ const DropDown: FC<Props> = ({
         {...(value !== undefined && value !== ""
           ? { value }
           : { defaultValue: placeholder })}
-        className="text-base-content select w-full border-none outline-none rounded-md select-sm"
+        className={cn(
+          "text-base-content select w-full border-none outline-none rounded-md select-sm",
+          fontWeight,
+        )}
         onChange={handleChange}
       >
         <option disabled={true}>{placeholder}</option>

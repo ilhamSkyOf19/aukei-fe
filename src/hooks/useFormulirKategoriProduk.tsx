@@ -72,7 +72,7 @@ const useFormulirKategoriProduk = ({ dataUpdate, handleCloseModal }: Props) => {
       // set toast
       naviate(".", {
         state: {
-          toast: dataUpdate ? "updated" : "created",
+          toast: dataUpdate ? "updated_produk" : "created_produk",
         },
       });
 

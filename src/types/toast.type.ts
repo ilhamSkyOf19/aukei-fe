@@ -33,9 +33,17 @@ export const TOAST_CONFIG_PRODUK: Record<
     color: "success" | "error" | "info" | "warning" | "neutral";
   }
 > = {
+  created_produk: {
+    color: "success",
+    message: "Produk berhasil ditambahkan",
+  },
   updated_produk: {
     color: "info",
     message: "Produk berhasil diubah",
+  },
+  deleted_produk: {
+    color: "error",
+    message: "Produk berhasil dihapus",
   },
 };
 

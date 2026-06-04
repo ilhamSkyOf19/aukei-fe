@@ -5,6 +5,8 @@ import {
   Clock,
   PencilLineIcon,
   SendHorizonal,
+  Trash,
+  Trash2Icon,
   TriangleAlert,
   X,
 } from "lucide-react";
@@ -24,6 +26,7 @@ import InputNumber from "../../../components/inputs/InputNumber";
 import InputImg from "../../../components/inputs/InputImg";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_PRODUK_DETAIL } from "../../../types/toast.type";
+import ModalDelete from "../../../components/modals/ModalDelete";
 
 const ProdukDetail = () => {
   // call use
@@ -47,6 +50,11 @@ const ProdukDetail = () => {
     hargaJualController,
     imgController,
     toast,
+    handleCloseModalDelete,
+    handleDeleteProduk,
+    handleShowModalDelete,
+    isPendingDeleteProduk,
+    modalDeleteRef,
   } = useProdukDetail();
 
   return (
@@ -79,13 +87,13 @@ const ProdukDetail = () => {
 
           {/* aksi */}
           <div className="flex flex-1 flex-row justify-end items-center">
-            <div className=" lg:hidden">
-              {/* button update */}
+            {/* button update */}
+            <div className="hidden lg:block">
               <ButtonActionWithIcon
-                icon={PencilLineIcon}
-                label="Ubah"
-                handleClick={() => handleRedirectFormulir()}
-                buttonColor="btn-info"
+                icon={Trash}
+                label="Hapus"
+                handleClick={() => handleShowModalDelete()}
+                buttonColor="btn-error"
                 textColor="text-primary-white"
                 iconColor="text-primary-white"
               />
@@ -366,7 +374,7 @@ const ProdukDetail = () => {
                       {/* label */}
                       <div className="w-full flex flex-row justify-between items-center">
                         <span className="text-xs text-base-content">
-                          Harga Jual
+                          Harga Jual Satuan
                         </span>
 
                         {/* button */}
@@ -409,7 +417,7 @@ const ProdukDetail = () => {
                       {/* label */}
                       <div className="w-full flex flex-row justify-between items-center">
                         <span className="text-xs text-base-content">
-                          Harga Beli
+                          Harga Beli Satuan
                         </span>
 
                         {/* button */}
@@ -760,9 +768,40 @@ const ProdukDetail = () => {
                 </>
               )
             )}
+
+            {/* button aksi for mobile device */}
+            <div className="lg:hidden w-full flex flex-row justify-end items-center gap-2 mt-2">
+              {/* button delete */}
+              <ButtonActionWithIcon
+                icon={Trash2Icon}
+                label="Hapus"
+                handleClick={() => handleShowModalDelete()}
+                buttonColor="btn-error"
+                textColor="text-primary-white"
+                iconColor="text-primary-white"
+              />
+              {/* button update */}
+              <ButtonActionWithIcon
+                icon={PencilLineIcon}
+                label="Ubah"
+                handleClick={() => handleRedirectFormulir()}
+                buttonColor="btn-info"
+                textColor="text-primary-white"
+                iconColor="text-primary-white"
+              />
+            </div>
           </div>
         </div>
       </div>
+
+      {/* modal delete */}
+      <ModalDelete
+        modalRef={modalDeleteRef}
+        handleCloseModal={handleCloseModalDelete}
+        handleDelete={() => handleDeleteProduk()}
+        isLoadingDelete={isPendingDeleteProduk}
+        bigTitle={`Apakah anda yakin ingin menghapus data "${dataProduk?.data?.nama}" ini?`}
+      />
     </div>
   );
 };

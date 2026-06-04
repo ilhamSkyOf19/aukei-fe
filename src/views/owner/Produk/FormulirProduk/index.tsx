@@ -123,16 +123,16 @@ const FormulirProduk = () => {
                 {/* harga beli */}
                 <InputPrice<CreateProdukType | UpdateProdukType>
                   controller={hargaBeliController}
-                  label="Harga Beli"
-                  placeholder="Harga Beli"
+                  label="Harga Beli Satuan"
+                  placeholder="Harga Beli Satuan"
                   required
                 />
 
                 {/* harga jual  */}
                 <InputPrice<CreateProdukType | UpdateProdukType>
                   controller={hargaJualController}
-                  label="Harga Jual"
-                  placeholder="Harga Jual"
+                  label="Harga Jual Satuan"
+                  placeholder="Harga Jual Satuan"
                   required
                 />
               </div>

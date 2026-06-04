@@ -13,6 +13,7 @@ import LabelButtonDropDownWithIcon from "../../../components/ui/button/LabelButt
 import DataEmpty from "../../../components/messages/DataEmpty";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_PRODUK } from "../../../types/toast.type";
+import ModalDelete from "../../../components/modals/ModalDelete";
 
 const Produk = () => {
   // call use
@@ -30,6 +31,12 @@ const Produk = () => {
     handleRedirectDetail,
     handleRedirectTambah,
     toast,
+    handleDeleteProduk,
+    handleShowModalDelete,
+    isPendingDeleteProduk,
+    dataDeleteProduk,
+    modalDeleteRef,
+    handleCloseModalDelete,
   } = useProduk();
 
   return (
@@ -214,7 +221,11 @@ const Produk = () => {
                                     color="text-error"
                                     label="Hapus"
                                     icon={Trash}
-                                    handleClick={() => {}}
+                                    handleClick={() =>
+                                      handleShowModalDelete(produk.id, {
+                                        nama: produk.nama,
+                                      })
+                                    }
                                   />
                                 </li>
                               </ul>
@@ -273,6 +284,15 @@ const Produk = () => {
 
         {isActiveCluster === "kategori" && <KategoriCluster />}
       </div>
+
+      {/* modal delete */}
+      <ModalDelete
+        modalRef={modalDeleteRef}
+        handleCloseModal={handleCloseModalDelete}
+        handleDelete={handleDeleteProduk}
+        bigTitle={`Apakah anda yakin ingin menghapus data "${dataDeleteProduk?.nama}" ini?`}
+        isLoadingDelete={isPendingDeleteProduk}
+      />
     </div>
   );
 };

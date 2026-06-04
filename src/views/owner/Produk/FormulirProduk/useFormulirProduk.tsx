@@ -6,11 +6,13 @@ import type {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProdukValidation } from "../../../../validations/produk.validation";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { KategoriProdukServices } from "../../../../services/kategoriProduk.service";
 import { ProdukServices } from "../../../../services/produk.service";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../../helpers/helpers";
 import { useEffect } from "react";
+import axios from "axios";
+import type { ErrorResponse } from "../../../../types/response.type";
+import useKategoriForChoose from "../../../../hooks/useKategoriForChoose";
 
 const useFormulirProduk = () => {
   // get id
@@ -43,6 +45,7 @@ const useFormulirProduk = () => {
     formState: { errors },
     handleSubmit,
     reset,
+    setError,
   } = useForm<CreateProdukType | UpdateProdukType>({
     resolver: zodResolver(
       validatedIdParams ? ProdukValidation.UPDATE : ProdukValidation.CREATE,
@@ -110,8 +113,16 @@ const useFormulirProduk = () => {
           },
         });
       },
-      onError: (error) => {
-        console.log(error);
+      onError: (err) => {
+        if (axios.isAxiosError<ErrorResponse>(err)) {
+          if (
+            err?.response?.data?.meta?.customField?.includes("produk_kode_key")
+          ) {
+            setError("kode", {
+              message: "Kode Produk sudah digunakan",
+            });
+          }
+        }
       },
     });
 
@@ -165,12 +176,6 @@ const useFormulirProduk = () => {
         formdData.append("stokMinimum", data.stokMinimum.toString());
       }
 
-      console.log(data);
-
-      for (const [key, value] of formdData.entries()) {
-        console.log(key, value);
-      }
-
       await mutateProduk(formdData);
     } catch (error) {
       console.log(error);
@@ -178,12 +183,7 @@ const useFormulirProduk = () => {
   };
 
   //   query kategori
-  const { data: dataKategori, isLoading: isLoadingKategori } = useQuery({
-    queryKey: ["kategori"],
-    queryFn: () => KategoriProdukServices.findAllForChoose(),
-    refetchOnWindowFocus: false,
-    retry: false,
-  });
+  const { dataKategori, isLoadingKategori } = useKategoriForChoose();
 
   return {
     register,

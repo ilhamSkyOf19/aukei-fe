@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ProdukValidation } from "../../../validations/produk.validation";
 import { KategoriProdukServices } from "../../../services/kategoriProduk.service";
 import { useToastAnimation } from "../../../hooks/useToast";
+import useModal from "../../../hooks/useModal";
+import useDeleteProduk from "../../../hooks/useDeleteProduk";
 
 const useProdukDetail = () => {
   // state key update
@@ -215,6 +217,20 @@ const useProdukDetail = () => {
     }
   };
 
+  // use modal delete
+  const {
+    modalRef: modalDeleteRef,
+    handleShowModal: handleShowModalDelete,
+    handleCloseModal: handleCloseModalDelete,
+  } = useModal();
+
+  // mutate delete
+  const { handleDeleteProduk, isPendingDeleteProduk } = useDeleteProduk({
+    handleCloseModal: handleCloseModalDelete,
+    validatedIdParams,
+    redirectPathname: currentPathname.split("/").slice(0, -1).join("/"),
+  });
+
   return {
     handleRedirectFormulir,
     isExistData,
@@ -235,6 +251,11 @@ const useProdukDetail = () => {
     hargaBeliController,
     imgController,
     toast,
+    handleDeleteProduk,
+    isPendingDeleteProduk,
+    modalDeleteRef,
+    handleShowModalDelete,
+    handleCloseModalDelete,
   };
 };
 

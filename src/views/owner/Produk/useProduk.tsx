@@ -1,14 +1,37 @@
 import { useEffect, useState } from "react";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useFilter } from "../../../hooks/useFilter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ProdukServices } from "../../../services/produk.service";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useToastAnimation } from "../../../hooks/useToast";
+import useModal from "../../../hooks/useModal";
+import useDeleteProduk from "../../../hooks/useDeleteProduk";
 
 const useProduk = () => {
   // current pathname
   const currentPathname = useLocation().pathname;
+
+  // query client
+  const queryClient = useQueryClient();
+
+  // use modal
+  const {
+    modalRef: modalDeleteRef,
+    handleShowModal: handleShowModalDelete,
+    handleCloseModal: handleCloseModalDelete,
+    idModal: idModalDelete,
+    dataDelete: dataDeleteProduk,
+  } = useModal();
+
+  // use delete
+  const { handleDeleteProduk, isPendingDeleteProduk } = useDeleteProduk({
+    validatedIdParams: idModalDelete || null,
+    handleCloseModal: handleCloseModalDelete,
+    redirectPathname: currentPathname,
+    handleInvalidate: () =>
+      queryClient.invalidateQueries({ queryKey: ["produk"] }),
+  });
 
   // navigate
   const navigate = useNavigate();
@@ -119,6 +142,12 @@ const useProduk = () => {
     isLoadingProduk,
     isExistDataProduk,
     toast,
+    handleShowModalDelete,
+    modalDeleteRef,
+    isPendingDeleteProduk,
+    handleDeleteProduk,
+    dataDeleteProduk,
+    handleCloseModalDelete,
   };
 };
 
