@@ -24,9 +24,11 @@
 
 ## Branch Barang Masuk
 
-- [ ] Membuat UI show barang masuk (Mobile)
-- [ ] Membuat UI show barang masuk (Dekstop)
+- [✅] Membuat UI show barang masuk (Mobile)
+- [✅] Membuat UI show barang masuk (Dekstop)
+- [✅] Fitur Tambah
+
+- [ ] Membuat UI Halaman Detail
 - [ ] Membuat message toast
-- [ ] Integrasi API Tambah
 - [ ] Integrasi API Ubah
 - [ ] Integrasi API Delete

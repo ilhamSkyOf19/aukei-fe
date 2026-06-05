@@ -60,3 +60,21 @@ export const TOAST_CONFIG_PRODUK_DETAIL: Record<
     message: "Produk berhasil diubah",
   },
 };
+
+// toast barang masuk
+export const TOAST_CONFIG_BARANG_MASUK: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  updated_barang_masuk: {
+    color: "info",
+    message: "Produk berhasil diubah",
+  },
+  created_barang_masuk: {
+    color: "info",
+    message: "Produk berhasil diubah",
+  },
+};

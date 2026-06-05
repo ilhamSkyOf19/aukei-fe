@@ -106,7 +106,7 @@ const Produk = () => {
 
               {/* table */}
               <div className="overflow-x-auto w-full my-8">
-                <table className="table table-sm lg:table-md">
+                <table className="table table-xs lg:table-sm">
                   {/* head */}
                   <thead>
                     <tr>
@@ -154,7 +154,7 @@ const Produk = () => {
                             </div>
                           </td>
                           {/* kode */}
-                          <td className="font-semibold text-base-content">
+                          <td className="font-semibold text-info">
                             {produk.kode}
                           </td>
                           {/* nama */}

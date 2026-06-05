@@ -1,11 +1,22 @@
 import type { ElementType } from "react";
-import { Box, Boxes, CheckCircle2, Package, RefreshCcw } from "lucide-react";
+import {
+  Boxes,
+  CheckCircle2,
+  LayoutDashboard,
+  Package,
+  RefreshCcw,
+} from "lucide-react";
 
 export const NAVIGATION_LIST_OWNER: {
   label: string;
   link: string;
   icon: ElementType;
 }[] = [
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    link: "/dashboard",
+  },
   {
     label: "Produk",
     icon: Boxes,
@@ -14,7 +25,7 @@ export const NAVIGATION_LIST_OWNER: {
   {
     label: "Inventori",
     icon: Package,
-    link: "/dashboard",
+    link: "/dashboard/inventori",
   },
 ];
 

@@ -24,7 +24,7 @@ const LabelButtonDropDownWithIcon: FC<Props> = ({
       onClick={handleClick}
     >
       <Icon className="size-4" />
-      <span className="font-medium text-xs lg:text-sm">{label}</span>
+      <span className="font-medium text-[0.625rem] lg:text-sm">{label}</span>
     </button>
   );
 };

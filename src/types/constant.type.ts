@@ -8,6 +8,16 @@ export const ROLE_INTERNAL_TYPE = {
 export type RoleInternalType =
   (typeof ROLE_INTERNAL_TYPE)[keyof typeof ROLE_INTERNAL_TYPE];
 
+// status barang masuk
+export const STATUS_INVENTORI_TYPE = {
+  DRAFT: "DRAFT",
+  POSTED: "POSTED",
+} as const;
+
+// type status barang masuk
+export type StatusInventoriType =
+  (typeof STATUS_INVENTORI_TYPE)[keyof typeof STATUS_INVENTORI_TYPE];
+
 // outlet context type
 export type OutletContextType = {
   handleTitle: (title: string) => void;

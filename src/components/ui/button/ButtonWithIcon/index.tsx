@@ -13,7 +13,7 @@ type Props = {
   icon?: LucideIcon;
   size?: "xs";
 };
-const ButtonAdd: FC<Props> = ({
+const ButtonWithIcon: FC<Props> = ({
   bgColor,
   label,
   textColor,
@@ -32,7 +32,7 @@ const ButtonAdd: FC<Props> = ({
       className={cn(
         "flex justify-center items-center hover-overlay w-auto rounded-md px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
-        size === "xs" ? "h-9" : "h-9.5",
+        size === "xs" ? "h-9" : "h-8 lg:h-9",
       )}
       onClick={() => {
         if (handleBtn) {
@@ -57,14 +57,14 @@ const ButtonAdd: FC<Props> = ({
             <Icon
               className={cn(
                 "text-custom-secondary lg",
-                size ? "size-4" : "size-5",
+                size ? "size-4" : "size-4.5 lg:size-5",
               )}
             />
           ) : (
             <Plus
               className={cn(
                 "text-custom-secondary lg",
-                size ? "size-4" : "size-5",
+                size ? "size-4" : "size-4.5 lg:size-5",
               )}
             />
           )}
@@ -73,7 +73,7 @@ const ButtonAdd: FC<Props> = ({
             className={cn(
               "font-medium",
               textColor ? textColor : "text-custom-secondary",
-              size ? "text-xs" : "text-xs",
+              size ? "text-xs" : "text-[0.625rem] lg:text-xs",
             )}
           >
             {label ? label : "Tambah"}
@@ -84,4 +84,4 @@ const ButtonAdd: FC<Props> = ({
   );
 };
 
-export default ButtonAdd;
+export default ButtonWithIcon;

@@ -111,7 +111,7 @@ const useProduk = () => {
   });
 
   // is exist data
-  const isExistDataProduk =
+  const isExistDataProduk: boolean =
     !isLoadingProduk && dataProduk?.data?.data
       ? dataProduk?.data?.data?.length > 0
         ? true

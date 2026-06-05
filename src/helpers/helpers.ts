@@ -100,3 +100,11 @@ export const formatNumber = (value: string) => {
 export const unformatNumber = (value: string) => {
   return value.replace(/\D/g, "");
 };
+
+export const getCurrentDateTimeLocal = () => {
+  const now = new Date();
+
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+};
