@@ -2,6 +2,7 @@ import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
   ProdukResponseType,
+  ResponseProdukForChooseType,
   ResponseProdukWithMetaType,
 } from "../models/produk.model";
 import type { ResponseStructure } from "../types/response.type";
@@ -72,6 +73,22 @@ export class ProdukServices {
       ResponseStructure<ProdukResponseType | null>
     >(`/produk/${params.id}`);
 
+    return result.data;
+  }
+
+  // find all for choose
+  static async findAllForChoose(params: {
+    search: string;
+  }): Promise<ResponseStructure<ResponseProdukForChooseType[] | null>> {
+    const { search } = params;
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseProdukForChooseType[] | null>
+    >(`/produk/for-choose`, {
+      params: {
+        search,
+      },
+    });
     return result.data;
   }
 

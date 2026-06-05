@@ -9,6 +9,7 @@ import ProdukDetailPage from "../pages/ProdukDetailPage";
 import FormulirProdukPage from "../pages/FormulirProdukPage";
 import DashboardPage from "../pages/DashboardPage";
 import InventoriPage from "../pages/InventoriPage";
+import BarangMasukDetailPage from "../pages/BarangMasukDetailPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -138,6 +139,10 @@ const route = createBrowserRouter([
           {
             index: true,
             element: <InventoriPage />,
+          },
+          {
+            path: "barang-masuk/:id",
+            element: <BarangMasukDetailPage />,
           },
         ],
       },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useFilter } from "../../../hooks/useFilter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useToastAnimation } from "../../../hooks/useToast";
 import useModal from "../../../hooks/useModal";
 import useDeleteProduk from "../../../hooks/useDeleteProduk";
+import { useClickOutside } from "../../../hooks/useClickOutSide";
 
 const useProduk = () => {
   // current pathname
@@ -15,6 +16,26 @@ const useProduk = () => {
   // query client
   const queryClient = useQueryClient();
 
+  // state is active aksi
+  const [isActiveAksi, setIsActiveAksi] = useState<number>(0);
+
+  // handle is active
+  const handleSetIsActiveAksi = (index: number) => setIsActiveAksi(index);
+
+  // use ref
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // use click outside
+  useClickOutside({
+    ref: wrapperRef,
+    callback: () => {
+      if (isActiveAksi !== 0) {
+        setIsActiveAksi(0);
+      } else {
+        return;
+      }
+    },
+  });
   // use modal
   const {
     modalRef: modalDeleteRef,
@@ -148,6 +169,9 @@ const useProduk = () => {
     handleDeleteProduk,
     dataDeleteProduk,
     handleCloseModalDelete,
+    wrapperRef,
+    isActiveAksi,
+    handleSetIsActiveAksi,
   };
 };
 

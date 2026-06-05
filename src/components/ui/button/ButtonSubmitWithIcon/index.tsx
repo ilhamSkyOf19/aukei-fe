@@ -13,7 +13,7 @@ type Props = {
   icon?: LucideIcon;
   size?: "xs";
 };
-const ButtonWithIcon: FC<Props> = ({
+const ButtonSubmitWithIcon: FC<Props> = ({
   bgColor,
   label,
   textColor,
@@ -28,11 +28,12 @@ const ButtonWithIcon: FC<Props> = ({
 
   return (
     <button
-      type="button"
+      type="submit"
+      disabled={isLoading}
       className={cn(
         "flex justify-center items-center hover-overlay w-auto rounded-md px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
-        size === "xs" ? "h-9" : "h-8 lg:h-8.5",
+        size === "xs" ? "h-9" : "h-8 lg:h-10",
       )}
       onClick={() => {
         if (handleBtn) {
@@ -78,7 +79,7 @@ const ButtonWithIcon: FC<Props> = ({
               size ? "text-xs" : "text-[0.625rem] lg:text-xs",
             )}
           >
-            {label ? label : "Tambah"}
+            {label ? label : "Submit"}
           </span>
         </>
       )}
@@ -86,4 +87,4 @@ const ButtonWithIcon: FC<Props> = ({
   );
 };
 
-export default ButtonWithIcon;
+export default ButtonSubmitWithIcon;

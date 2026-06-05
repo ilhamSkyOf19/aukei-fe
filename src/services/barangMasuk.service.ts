@@ -2,6 +2,7 @@ import instanceAxios from "../libs/axios";
 import type {
   CreateBarangMasukForRequestType,
   ResponseBarangMasukType,
+  ResponseBarangMasukWithDetailType,
   ResponseBarangMasukWithMetaType,
   UpdateBarangMasukForRequestType,
 } from "../models/barangMasuk.model";
@@ -48,5 +49,17 @@ export class BarangMasukServices {
     >(`/barang-masuk/${id}`, req);
 
     return result.data;
+  }
+
+  // detail
+  static async detail(params: {
+    id: number;
+  }): Promise<ResponseStructure<ResponseBarangMasukWithDetailType | null>> {
+    // call api
+    const result = instanceAxios.get<
+      ResponseStructure<ResponseBarangMasukWithDetailType | null>
+    >(`/barang-masuk/${params.id}`);
+
+    return (await result).data;
   }
 }

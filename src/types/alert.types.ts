@@ -15,3 +15,14 @@ export const ALERT_CONFIG_KATEGORI_PRODUK: Record<
       "Kategori Produk tidak dapat dihapus karena masih digunakan oleh Produk.",
   },
 };
+
+export const ALERT_CONFIG_BARANG_MASUK_DETAIL: Record<
+  string,
+  {
+    message: string;
+  }
+> = {
+  produk_choose_exist: {
+    message: "Produk sudah dipilih, silahkan pilih produk lain.",
+  },
+};

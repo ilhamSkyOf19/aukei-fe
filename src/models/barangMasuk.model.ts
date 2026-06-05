@@ -7,6 +7,7 @@ export interface IBarangMasukType {
   tanggalMasuk: Date;
   keterangan: string | null;
   status: StatusInventoriType;
+  totalNilai: number;
   detailBarangMasuks: Omit<IBarangMasukDetailType, "barangMasukId">[];
   createdAt: Date;
   updatedAt: Date;

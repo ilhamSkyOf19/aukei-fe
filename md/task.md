@@ -28,7 +28,11 @@
 - [✅] Membuat UI show barang masuk (Dekstop)
 - [✅] Fitur Tambah
 
-- [ ] Membuat UI Halaman Detail
+- [✅] Membuat UI Halaman Detail
+- [✅] Membuat message alert
+- [✅] Membuat fitur tambah barang masuk (Dekstop)
+
+- [ ] Membuat fitur tambah barang masuk (Mobile)
 - [ ] Membuat message toast
 - [ ] Integrasi API Ubah
 - [ ] Integrasi API Delete

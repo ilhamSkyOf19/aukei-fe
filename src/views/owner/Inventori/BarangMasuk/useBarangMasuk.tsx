@@ -4,10 +4,37 @@ import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../hooks/useFilter";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import useModal from "../../../../hooks/useModal";
+import { useRef, useState } from "react";
+import { useClickOutside } from "../../../../hooks/useClickOutSide";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const useBarangMasuk = () => {
+  // navigate
+  const navigate = useNavigate();
+  // current pathname
+  const currentPathname = useLocation().pathname;
+
   // filter search
   const { search, setSearch: handleSearch } = useFilterSearch("search");
+
+  // state is active aksi
+  const [isActiveAksi, setIsActiveAksi] = useState<number>(0);
+
+  // use click outside
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  useClickOutside({
+    ref: wrapperRef,
+    callback: () => {
+      if (isActiveAksi !== 0) {
+        setIsActiveAksi(0);
+      } else {
+        return;
+      }
+    },
+  });
+
+  // handle set is active aksi
+  const handleSetIsActiveAksi = (index: number) => setIsActiveAksi(index);
 
   // use modal formulir barang masuk
   const {
@@ -59,6 +86,11 @@ const useBarangMasuk = () => {
         : false
       : false;
 
+  // handle redirect detail
+  const handleRedirectDetail = (id: number) => {
+    navigate(`${currentPathname}/barang-masuk/${id}`);
+  };
+
   return {
     dataBarangMasuk,
     isLoadingBarangMasuk,
@@ -71,6 +103,10 @@ const useBarangMasuk = () => {
     modalFormulirBarangMasukRef,
     handleCloseModalFormulirBarangMasuk,
     handleShowModalFormulirBarangMasuk,
+    isActiveAksi,
+    handleSetIsActiveAksi,
+    wrapperRef,
+    handleRedirectDetail,
   };
 };
 

@@ -17,13 +17,15 @@ export interface CreateBarangMasukDetailType extends Pick<
   IBarangMasukDetailType,
   "barangMasukId" | "jumlahBox"
 > {
-  produkId: number;
+  produkId: number[];
 }
 
 // update
 export interface UpdateBarangMasukDetailType extends Partial<
-  Omit<CreateBarangMasukDetailType, "barangMasukId">
-> {}
+  Omit<CreateBarangMasukDetailType, "barangMasukId" | "produkId">
+> {
+  produkId?: number;
+}
 
 // response
 export interface ResponseBarangMasukDetailType extends IBarangMasukDetailType {}

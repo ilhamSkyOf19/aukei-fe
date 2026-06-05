@@ -27,6 +27,10 @@ const BarangMasuk = () => {
     handleCloseModalFormulirBarangMasuk,
     handleShowModalFormulirBarangMasuk,
     modalFormulirBarangMasukRef,
+    handleSetIsActiveAksi,
+    isActiveAksi,
+    wrapperRef,
+    handleRedirectDetail,
   } = useBarangMasuk();
 
   return (
@@ -95,7 +99,13 @@ const BarangMasuk = () => {
                 ))
               ) : isExistDataBarangMasuk ? (
                 dataBarangMasuk?.data?.data.map((barang, _) => (
-                  <tr key={barang.id}>
+                  <tr
+                    key={barang.id}
+                    className={cn(
+                      "transition-all duration-75 ease-in-out",
+                      isActiveAksi === barang.id && "bg-custom-primary/50",
+                    )}
+                  >
                     <th>
                       <label>
                         <input type="checkbox" className="checkbox" />
@@ -131,32 +141,27 @@ const BarangMasuk = () => {
                     {/* detail */}
                     <td className="sticky right-0 bg-base-100 z-10">
                       <div
+                        ref={wrapperRef}
                         className={cn("dropdown dropdown-left dropdown-end")}
                       >
-                        <div
-                          tabIndex={0}
-                          role="button"
+                        <button
+                          type="button"
                           className="btn btn-sm m-1"
+                          onClick={() => handleSetIsActiveAksi(barang.id)}
                         >
                           <EllipsisVertical className="size-4" />
-                        </div>
+                        </button>
                         <ul
                           tabIndex={-1}
                           className="z-50 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-40 lg:w-50 p-2 shadow-sm space-y-2 absolute"
                         >
-                          {/* tambah barang masuk */}
-                          <li>
-                            <LabelButtonDropDownWithIcon
-                              label="Tambah Barang"
-                              icon={PackagePlus}
-                              handleClick={() => {}}
-                            />
-                          </li>
                           <li>
                             <LabelButtonDropDownWithIcon
                               label="Detail"
                               icon={View}
-                              handleClick={() => {}}
+                              handleClick={() =>
+                                handleRedirectDetail(barang.id)
+                              }
                             />
                           </li>
                           <li>

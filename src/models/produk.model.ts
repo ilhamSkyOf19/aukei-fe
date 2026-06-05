@@ -53,3 +53,11 @@ export interface ResponseProdukWithMetaType {
 export interface UpdateStatusType {
   status: boolean;
 }
+
+export interface ResponseProdukForChooseType {
+  id: number;
+  nama: string;
+  kode: string;
+  hargaJual: number;
+  img: string;
+}

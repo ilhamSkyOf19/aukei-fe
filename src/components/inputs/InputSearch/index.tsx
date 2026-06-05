@@ -4,10 +4,17 @@ import { useSearchParams } from "react-router-dom";
 
 type Props = {
   handleSearch: (value: string) => void;
+  handleOnFocus?: () => void;
+  handleClear?: () => void;
   placeholder?: string;
 };
 
-const InputSearch: FC<Props> = ({ handleSearch, placeholder }) => {
+const InputSearch: FC<Props> = ({
+  handleSearch,
+  placeholder,
+  handleOnFocus,
+  handleClear,
+}) => {
   const [searchParams] = useSearchParams();
   const defaultValueSearch = searchParams.get("search") ?? "";
 
@@ -47,6 +54,7 @@ const InputSearch: FC<Props> = ({ handleSearch, placeholder }) => {
           maxLength={100}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          onFocus={handleOnFocus ? handleOnFocus : undefined}
         />
 
         {inputValue !== "" && (
@@ -55,6 +63,7 @@ const InputSearch: FC<Props> = ({ handleSearch, placeholder }) => {
             className="h-full bg-base-100 rounded-tr-md rounded-br-md flex justify-center items-center"
             onClick={() => {
               setInputValue("");
+              handleClear?.();
             }}
           >
             <span className="text-xs lg:text-sm text-base-content">

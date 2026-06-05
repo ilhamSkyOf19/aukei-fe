@@ -89,14 +89,18 @@ const ProdukDetail = () => {
           <div className="flex flex-1 flex-row justify-end items-center">
             {/* button update */}
             <div className="hidden lg:block">
-              <ButtonActionWithIcon
-                icon={Trash}
-                label="Hapus"
-                handleClick={() => handleShowModalDelete()}
-                buttonColor="btn-error"
-                textColor="text-primary-white"
-                iconColor="text-primary-white"
-              />
+              {isLoadingDataProduk ? (
+                <div className="w-20 h-9 skeleton" />
+              ) : (
+                <ButtonActionWithIcon
+                  icon={Trash}
+                  label="Hapus"
+                  handleClick={() => handleShowModalDelete()}
+                  buttonColor="btn-error"
+                  textColor="text-primary-white"
+                  iconColor="text-primary-white"
+                />
+              )}
             </div>
           </div>
         </div>
@@ -772,23 +776,32 @@ const ProdukDetail = () => {
             {/* button aksi for mobile device */}
             <div className="lg:hidden w-full flex flex-row justify-end items-center gap-2 mt-2">
               {/* button delete */}
-              <ButtonActionWithIcon
-                icon={Trash2Icon}
-                label="Hapus"
-                handleClick={() => handleShowModalDelete()}
-                buttonColor="btn-error"
-                textColor="text-primary-white"
-                iconColor="text-primary-white"
-              />
-              {/* button update */}
-              <ButtonActionWithIcon
-                icon={PencilLineIcon}
-                label="Ubah"
-                handleClick={() => handleRedirectFormulir()}
-                buttonColor="btn-info"
-                textColor="text-primary-white"
-                iconColor="text-primary-white"
-              />
+              {isLoadingDataProduk ? (
+                <>
+                  <div className="w-20 h-8 skeleton" />
+                  <div className="w-20 h-8 skeleton" />
+                </>
+              ) : (
+                <>
+                  <ButtonActionWithIcon
+                    icon={Trash2Icon}
+                    label="Hapus"
+                    handleClick={() => handleShowModalDelete()}
+                    buttonColor="btn-error"
+                    textColor="text-primary-white"
+                    iconColor="text-primary-white"
+                  />
+                  {/* button update */}
+                  <ButtonActionWithIcon
+                    icon={PencilLineIcon}
+                    label="Ubah"
+                    handleClick={() => handleRedirectFormulir()}
+                    buttonColor="btn-info"
+                    textColor="text-primary-white"
+                    iconColor="text-primary-white"
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
