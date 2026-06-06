@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
-import { useMutation, useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { BarangMasukServices } from "../../../services/barangMasuk.service";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,9 +11,17 @@ import type { ResponseProdukForChooseType } from "../../../models/produk.model";
 import { useEffect, useRef, useState } from "react";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { BarangMasukDetailServices } from "../../../services/barangMasukDetail.service";
+import { useToastAnimation } from "../../../hooks/useToast";
 import { useClickOutside } from "../../../hooks/useClickOutSide";
+import axios from "axios";
+import type { ErrorResponse } from "../../../types/response.type";
+import useConfirm from "../../../hooks/useConfirm";
+import { STATUS_INVENTORI_TYPE } from "../../../types/constant.type";
 
 const useBarangMasukDetail = () => {
+  // query client
+  const queryClient = useQueryClient();
+
   // state active produk choose
   const [activeComponentChooseProduk, setActiveComponentChooseProduk] =
     useState<boolean>(false);
@@ -23,6 +31,14 @@ const useBarangMasukDetail = () => {
     ResponseProdukForChooseType[]
   >([]);
 
+  // show modal konfirmasi ubah
+  const {
+    modalRef: modalKonfirmasiPostingRef,
+    confirm,
+    handleConfirm: handleConfirmPosting,
+    handleCancel: handleCancelConfirmPosting,
+  } = useConfirm();
+
   // state search
   const [search, setSearch] = useState<string>("");
 
@@ -31,6 +47,9 @@ const useBarangMasukDetail = () => {
 
   // use alert
   const { alert, handleSetAlert } = useAlertAnimation();
+
+  // use toast
+  const { toast, handleSetToast } = useToastAnimation();
 
   // get id from params
   const { id } = useParams<{ id: string }>();
@@ -88,6 +107,7 @@ const useBarangMasukDetail = () => {
     formState: { errors },
     handleSubmit,
     setValue,
+    reset,
   } = useForm<CreateBarangMasukDetailType>({
     resolver: zodResolver(BarangMasukDetailValidation.CREATE),
   });
@@ -95,7 +115,7 @@ const useBarangMasukDetail = () => {
   // set value barangMasukId
   useEffect(() => {
     setValue("barangMasukId", validatedId!);
-  }, [validatedId, setValue]);
+  }, [validatedId]);
 
   // use mutation
   const {
@@ -105,16 +125,42 @@ const useBarangMasukDetail = () => {
     mutationFn: (req: CreateBarangMasukDetailType) =>
       BarangMasukDetailServices.addBarang(req),
     onSuccess: () => {
-      handleSetAlert("barang_masuk_detail_add_success");
+      // invalidated
+      queryClient.invalidateQueries({
+        queryKey: ["barang-masuk-detail", validatedId],
+      });
+
+      // set value
+      reset({
+        barangMasukId: validatedId!,
+        produkId: [],
+        jumlahBox: undefined,
+      });
+
+      // set search
+      setSearch("");
+
+      setProdukChoose([]);
+
+      handleSetToast("barang_masuk_detail_add_success");
     },
     onError: (err) => {
       console.log(err);
-      handleSetAlert("barang_masuk_detail_add_failed");
+      if (axios.isAxiosError<ErrorResponse>(err)) {
+        if (err?.response?.data?.meta?.statusCode === 409) {
+          handleSetAlert("produk_choose_exist_in_data");
+        }
+      }
     },
   });
 
   // handle submit
   const onSubmit = async (data: CreateBarangMasukDetailType) => {
+    // check status
+    if (dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED)
+      return;
+
+    // hit
     await mutateBarangMasukDetail(data);
   };
 
@@ -122,21 +168,133 @@ const useBarangMasukDetail = () => {
   const handleSetValueProdukId = (id: number) => {
     if (produkChoose.some((item) => item.id === id)) {
       handleSetAlert("produk_choose_exist");
-
       return;
     }
 
-    // set state
     const findData = dataProdukForChoose?.data?.find((item) => item.id === id);
-    if (findData) {
-      setProdukChoose((prev) => [...prev, findData]);
-    }
 
-    // set value
-    setValue("produkId", [...produkChoose.map((item) => item.id), id]);
+    if (!findData) return;
+
+    const newProdukChoose = [...produkChoose, findData];
+
+    setProdukChoose(newProdukChoose);
+
+    setValue(
+      "produkId",
+      newProdukChoose.map((item) => item.id),
+      { shouldValidate: true },
+    );
 
     handleCloseActiveComponentChooseProduk();
   };
+
+  // handle delete value produkId
+  const handleDeleteValueProdukId = (id: number) => {
+    const newProdukChoose = produkChoose.filter((item) => item.id !== id);
+
+    setProdukChoose(newProdukChoose);
+
+    setValue(
+      "produkId",
+      newProdukChoose.map((item) => item.id),
+    );
+
+    handleCloseActiveComponentChooseProduk();
+  };
+
+  // mutate posting
+  const { mutateAsync: mutatePosting, isPending: isPendingPosting } =
+    useMutation({
+      mutationFn: (id: number) => BarangMasukServices.posted(id),
+      onSuccess: () => {
+        // handle toast
+        handleSetToast("posted");
+
+        // reset
+        reset();
+
+        // revalidated
+        queryClient.invalidateQueries({
+          queryKey: ["barang-masuk-detail", validatedId],
+        });
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    });
+
+  // handle posting
+  const handlePosting = async (id: number) => {
+    try {
+      if (dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED)
+        return;
+
+      // confirm
+      const isConfirm = await confirm();
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await mutatePosting(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // mutate cancel posting
+  const {
+    mutateAsync: mutateCancelPosting,
+    isPending: isPendingCancelPosting,
+  } = useMutation({
+    mutationFn: (id: number) => BarangMasukServices.cancelPosted(id),
+
+    onSuccess: () => {
+      // handle toast
+      handleSetToast("cancel_posted");
+
+      // revalidated
+      queryClient.invalidateQueries({
+        queryKey: ["barang-masuk-detail", validatedId],
+      });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // is expired
+  const isExpired =
+    dataBarangMasukDetail?.data &&
+    Date.now() - new Date(dataBarangMasukDetail?.data?.createdAt).getTime() >
+      24 * 60 * 60 * 1000;
+
+  // handle posting
+  const handleCancelPosting = async (id: number) => {
+    try {
+      if (
+        dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
+        isExpired
+      )
+        return;
+
+      // confirm
+      const isConfirm = await confirm();
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await mutateCancelPosting(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const isStatusPosted =
+    dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED;
+  const isStatusDraft =
+    dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT;
 
   return {
     dataBarangMasukDetail,
@@ -147,6 +305,7 @@ const useBarangMasukDetail = () => {
     handleSubmit,
     handleSearch,
     handleSetValueProdukId,
+    handleDeleteValueProdukId,
     alert,
     onSubmit,
     isPendingBarangMasukDetail,
@@ -156,6 +315,17 @@ const useBarangMasukDetail = () => {
     handleShowActiveComponentChooseProduk,
     handleCloseActiveComponentChooseProduk,
     isLoadingProdukForChoose,
+    toast,
+    handlePosting,
+    isPendingPosting,
+    modalKonfirmasiPostingRef,
+    handleCancelPosting,
+    handleConfirmPosting,
+    handleCancelConfirmPosting,
+    isPendingCancelPosting,
+    isStatusPosted,
+    isStatusDraft,
+    isExpired,
   };
 };
 

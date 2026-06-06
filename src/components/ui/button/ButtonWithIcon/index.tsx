@@ -56,8 +56,7 @@ const ButtonWithIcon: FC<Props> = ({
           {Icon ? (
             <Icon
               className={cn(
-                "lg",
-                size ? "size-4" : "size-4.5 lg:size-5",
+                "lg size-4",
                 textColor ? textColor : "text-custom-secondary",
               )}
             />

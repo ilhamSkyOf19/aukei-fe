@@ -4,9 +4,8 @@ import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../hooks/useFilter";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import useModal from "../../../../hooks/useModal";
-import { useRef, useState } from "react";
-import { useClickOutside } from "../../../../hooks/useClickOutSide";
 import { useLocation, useNavigate } from "react-router-dom";
+import useHighlight from "../../../../hooks/useHighlight";
 
 const useBarangMasuk = () => {
   // navigate
@@ -17,24 +16,12 @@ const useBarangMasuk = () => {
   // filter search
   const { search, setSearch: handleSearch } = useFilterSearch("search");
 
-  // state is active aksi
-  const [isActiveAksi, setIsActiveAksi] = useState<number>(0);
-
-  // use click outside
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  useClickOutside({
-    ref: wrapperRef,
-    callback: () => {
-      if (isActiveAksi !== 0) {
-        setIsActiveAksi(0);
-      } else {
-        return;
-      }
-    },
-  });
-
-  // handle set is active aksi
-  const handleSetIsActiveAksi = (index: number) => setIsActiveAksi(index);
+  // highlight
+  const {
+    handleSetIsHighlight: handleSetIsActiveAksi,
+    isHighlight: isActiveAksi,
+    wrapperRef,
+  } = useHighlight();
 
   // use modal formulir barang masuk
   const {

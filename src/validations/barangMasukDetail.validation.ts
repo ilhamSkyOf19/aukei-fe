@@ -20,8 +20,18 @@ export class BarangMasukDetailValidation {
   static readonly CREATE = z
     .object({
       barangMasukId: z.number().int().positive().max(2147483647),
-      produkId: z.array(z.number().int().positive().max(2147483647)),
-      jumlahBox: z.number().int().positive().max(2147483647),
+      produkId: z
+        .array(
+          z.number().int().positive().max(2147483647),
+          "Mohon pilih produk",
+        )
+        .min(1, "Mohon pilih produk"),
+      jumlahBox: z
+        .number("Mohon isi jumlah box")
+        .int()
+        .positive()
+        .min(1, "Mohon isi jumlah box")
+        .max(2147483647),
     })
     .strict() satisfies z.ZodType<CreateBarangMasukDetailType>;
 

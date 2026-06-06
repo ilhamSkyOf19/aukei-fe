@@ -7,7 +7,11 @@ import ButtonAdd from "../../../components/ui/button/ButtonWithIcon";
 import { cn } from "../../../utils/cn";
 import KategoriCluster from "./KategoriCluster";
 import useProduk from "./useProduk";
-import { formatRupiah, generateColorForStok } from "../../../helpers/helpers";
+import {
+  formatNumber,
+  formatRupiah,
+  generateColorForStok,
+} from "../../../helpers/helpers";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import LabelButtonDropDownWithIcon from "../../../components/ui/button/LabelButtonDropDownWithIcon";
 import DataEmpty from "../../../components/messages/DataEmpty";
@@ -37,6 +41,9 @@ const Produk = () => {
     dataDeleteProduk,
     modalDeleteRef,
     handleCloseModalDelete,
+    handleSetIsActiveAksi,
+    isActiveAksi,
+    wrapperRef,
   } = useProduk();
 
   return (
@@ -137,7 +144,13 @@ const Produk = () => {
                       ))
                     ) : isExistDataProduk ? (
                       dataProduk?.data?.data.map((produk, _) => (
-                        <tr key={produk.id}>
+                        <tr
+                          key={produk.id}
+                          className={cn(
+                            "transition-all duration-75 ease-in-out",
+                            isActiveAksi === produk.id && "bg-base-200",
+                          )}
+                        >
                           <th>
                             <label>
                               <input type="checkbox" className="checkbox" />
@@ -183,7 +196,7 @@ const Produk = () => {
                                 : "text-base-content",
                             )}
                           >
-                            {produk.stok}
+                            {formatNumber(produk.stok.toString())}
                           </td>
                           {/* isi perbox */}
                           <td className="font-medium text-base-content">
@@ -192,17 +205,19 @@ const Produk = () => {
                           {/* detail */}
                           <td className="sticky right-0 bg-base-100 z-10">
                             <div
+                              ref={wrapperRef}
                               className={cn(
                                 "dropdown dropdown-left dropdown-end",
                               )}
                             >
-                              <div
-                                tabIndex={0}
+                              <button
+                                type="button"
                                 role="button"
                                 className="btn btn-sm m-1"
+                                onClick={() => handleSetIsActiveAksi(produk.id)}
                               >
                                 <EllipsisVertical className="size-4" />
-                              </div>
+                              </button>
                               <ul
                                 tabIndex={-1}
                                 className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"

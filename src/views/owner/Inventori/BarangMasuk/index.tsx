@@ -103,7 +103,7 @@ const BarangMasuk = () => {
                     key={barang.id}
                     className={cn(
                       "transition-all duration-75 ease-in-out",
-                      isActiveAksi === barang.id && "bg-custom-primary/50",
+                      isActiveAksi === barang.id && "bg-base-200",
                     )}
                   >
                     <th>

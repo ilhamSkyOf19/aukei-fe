@@ -48,7 +48,7 @@ const ModalDelete: FC<Props> = ({
     <dialog ref={modalRef} id="my_modal_1" className="modal">
       <div
         className={cn(
-          "modal-box  bg-base-200 dark:border dark:border-base-content/10",
+          "modal-box bg-base-200 dark:border dark:border-base-content/10",
           kataKunci ? "w-11/12 lg:w-130" : "w-11/12 lg:w-110",
         )}
       >

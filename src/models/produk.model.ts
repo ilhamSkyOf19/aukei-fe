@@ -33,7 +33,9 @@ export interface CreateProdukType extends Pick<
 }
 
 // update
-export interface UpdateProdukType extends Partial<CreateProdukType> {}
+export interface UpdateProdukType extends Partial<
+  Omit<CreateProdukType, "stok">
+> {}
 
 // response
 export interface ProdukResponseType extends IProduk {}

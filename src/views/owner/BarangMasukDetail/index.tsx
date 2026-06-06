@@ -1,10 +1,12 @@
 import {
+  AlertTriangle,
   BanknoteArrowDown,
   CalendarDays,
   Check,
   Package,
   Printer,
   TextAlignStart,
+  Trash2,
 } from "lucide-react";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
@@ -19,10 +21,10 @@ import InputSearch from "../../../components/inputs/InputSearch";
 import InputNumber from "../../../components/inputs/InputNumber";
 import ButtonSubmitWithIcon from "../../../components/ui/button/ButtonSubmitWithIcon";
 import Alert from "../../../components/messages/Alert";
-import {
-  ALERT_CONFIG_BARANG_MASUK_DETAIL,
-  ALERT_CONFIG_KATEGORI_PRODUK,
-} from "../../../types/alert.types";
+import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/toast.type";
+import ModalAlert from "../../../components/modals/ModalAlert";
 
 const BarangMasukDetail = () => {
   // call use barang masuk detail
@@ -44,6 +46,18 @@ const BarangMasukDetail = () => {
     handleShowActiveComponentChooseProduk,
     isLoadingProdukForChoose,
     handleCloseActiveComponentChooseProduk,
+    toast,
+    handleDeleteValueProdukId,
+    handlePosting,
+    isPendingPosting,
+    handleCancelPosting,
+    handleConfirmPosting,
+    modalKonfirmasiPostingRef,
+    handleCancelConfirmPosting,
+    isPendingCancelPosting,
+    isStatusDraft,
+    isStatusPosted,
+    isExpired,
   } = useBarangMasukDetail();
 
   return (
@@ -54,6 +68,16 @@ const BarangMasukDetail = () => {
           alert={alert?.id !== null}
           isAnimationOut={alert?.isAnimationOut || false}
           label={ALERT_CONFIG_BARANG_MASUK_DETAIL[alert.type].message}
+        />
+      )}
+
+      {/* toast */}
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_BARANG_MASUK_DETAIL[toast.type].message}
+          color={TOAST_CONFIG_BARANG_MASUK_DETAIL[toast.type].color}
         />
       )}
 
@@ -114,21 +138,31 @@ const BarangMasukDetail = () => {
               </div>
 
               {/* button posting */}
-              <button
-                type="button"
-                className="w-full lg:w-40 flex flex-row justify-center items-center h-9 lg:h-8.5 rounded-md bg-custom-primary text-custom-secondary mt-4 lg:mt-0 gap-2 hover-overlay"
-              >
-                {false ? (
-                  <div className="loading loading-xs text-custom-secondary" />
-                ) : (
-                  <>
-                    <Check className="size-4" />
-                    <span className="text-xs font-medium">
-                      Posting Sekarang
-                    </span>
-                  </>
-                )}
-              </button>
+              {(isStatusDraft || (isStatusPosted && !isExpired)) && (
+                <ButtonWithIcon
+                  handleBtn={() => {
+                    if (isStatusDraft) {
+                      handlePosting(dataBarangMasukDetail?.data?.id ?? 0);
+                    } else if (isStatusPosted) {
+                      handleCancelPosting(dataBarangMasukDetail?.data?.id ?? 0);
+                    }
+                  }}
+                  icon={Check}
+                  bgColor={isStatusDraft ? "bg-custom-primary" : "bg-error"}
+                  textColor={
+                    isStatusDraft
+                      ? "text-custom-secondary"
+                      : "text-primary-white"
+                  }
+                  label={
+                    isStatusPosted
+                      ? "Batalkan Posting"
+                      : isStatusDraft
+                        ? "Posting Sekarang"
+                        : ""
+                  }
+                />
+              )}
             </div>
           </div>
         )}
@@ -289,81 +323,137 @@ const BarangMasukDetail = () => {
       {/* daftar produk masuk */}
       <div className="w-full flex flex-col justify-start items-center gap-2 mt-4 lg:mt-0">
         {/* header for sm */}
-        <div className="w-full lg:hidden flex flex-row justify-between items-center">
-          <div className="flex flex-col justify-start items-start gap-1.5">
-            <p className="text-sm font-semibold">Daftar Barang Masuk</p>
-            <p className="text-xs px-3 py-1 rounded-full bg-gray-300">
-              {dataBarangMasukDetail?.data?.detailBarangMasuks.length} barang
-            </p>
-          </div>
+        {dataBarangMasukDetail?.data?.status ===
+          STATUS_INVENTORI_TYPE.DRAFT && (
+          <>
+            <div className="w-full lg:hidden flex flex-row justify-between items-center">
+              <div className="flex flex-col justify-start items-start gap-1.5">
+                <p className="text-md font-semibold">Daftar Barang Masuk</p>
+                <p className="text-xs px-3 py-1 rounded-full bg-gray-300">
+                  {dataBarangMasukDetail?.data?.detailBarangMasuks.length}{" "}
+                  barang
+                </p>
+              </div>
 
-          {/* button add */}
-          <ButtonWithIcon handleBtn={() => {}} />
-        </div>
+              {/* button add */}
+              <ButtonWithIcon handleBtn={() => {}} />
+            </div>
 
-        {/* form for lg */}
-        <div className="hidden lg:flex flex-col justify-start items-start min-h-30 w-full card shadow-xs dark:border dark:border-base-content/10 bg-base-100 p-6">
-          {/* title */}
-          <div className="w-full flex flex-row justify-start items-center">
-            <h2 className="text-base-content text-sm font-semibold">
-              Tambah Barang Masuk
-            </h2>
-          </div>
+            {/* form for lg */}
+            <div className="hidden lg:flex flex-col justify-start items-start min-h-30 w-full card shadow-xs dark:border dark:border-base-content/10 bg-base-100 p-6">
+              {/* title */}
+              <div className="w-full flex flex-row justify-start items-center">
+                <h2 className="text-base-content text-sm font-semibold">
+                  Tambah Barang Masuk
+                </h2>
+              </div>
 
-          {/* form */}
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="w-full flex flex-row justify-start items-start mt-4 gap-8"
-          >
-            {/* produk */}
-            <div
-              ref={wrapperRef}
-              className="flex-2 flex flex-col justify-start items-start gap-2"
-            >
-              <div className="w-full flex flex-col justify-start items-start gap-2 relative">
-                {/* label */}
-                <div className="relative">
-                  <label className="capitalize text-xs lg:text-sm text-base-content">
-                    Cari Produk
-                  </label>
-
-                  <span className="absolute -top-1 ml-1 text-error">{"*"}</span>
-                </div>
-                <InputSearch
-                  handleSearch={handleSearch}
-                  placeholder="Cari produk berdasarkan nama atau kode"
-                  handleOnFocus={() => handleShowActiveComponentChooseProduk()}
-                  handleClear={() => handleCloseActiveComponentChooseProduk()}
-                />
-
-                {/* modal show data produk for choose */}
+              {/* form */}
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="w-full flex flex-row justify-start items-start mt-4 gap-8"
+              >
+                {/* produk */}
                 <div
-                  className={cn(
-                    "absolute bg-base-100 w-full z-40 rounded-lg top-full grid transition-all duration-300 ease-in-out",
-                    activeComponentChooseProduk
-                      ? "grid-rows-[1fr]"
-                      : "grid-rows-[0fr]",
-                  )}
+                  ref={wrapperRef}
+                  className="flex-2 flex flex-col justify-start items-start gap-2"
                 >
-                  <div className="overflow-hidden">
+                  <div className="w-full flex flex-col justify-start items-start gap-2 relative">
+                    {/* label */}
+                    <div className="relative">
+                      <label className="capitalize text-xs lg:text-sm text-base-content">
+                        Cari Produk
+                      </label>
+
+                      <span className="absolute -top-1 ml-1 text-error">
+                        {"*"}
+                      </span>
+                    </div>
+
+                    <InputSearch
+                      handleSearch={handleSearch}
+                      placeholder="Cari produk berdasarkan nama atau kode"
+                      handleOnFocus={() =>
+                        handleShowActiveComponentChooseProduk()
+                      }
+                      handleClear={() =>
+                        handleCloseActiveComponentChooseProduk()
+                      }
+                      errorMessage={errors.produkId?.message}
+                    />
+
+                    {/* modal show data produk for choose */}
                     <div
                       className={cn(
-                        "w-full flex flex-col h-60 rounded-lg shadow-xs border border-base-content/10 p-4 gap-2",
+                        "absolute bg-base-100 w-full z-40 rounded-lg top-full grid transition-all duration-300 ease-in-out",
+                        activeComponentChooseProduk
+                          ? "grid-rows-[1fr]"
+                          : "grid-rows-[0fr]",
                       )}
                     >
-                      {isLoadingProdukForChoose ? (
-                        <div className="w-full h-full flex flex-col justify-center items-center">
-                          <div className="loading loading-xl" />
+                      <div className="overflow-hidden">
+                        <div
+                          className={cn(
+                            "w-full flex flex-col h-60 rounded-lg shadow-xs border border-base-content/10 p-4 gap-2",
+                          )}
+                        >
+                          {isLoadingProdukForChoose ? (
+                            <div className="w-full h-full flex flex-col justify-center items-center">
+                              <div className="loading loading-xl" />
+                            </div>
+                          ) : dataProdukForChoose?.data &&
+                            dataProdukForChoose?.data?.length > 0 ? (
+                            dataProdukForChoose?.data?.map((item, _) => (
+                              <button
+                                type="button"
+                                key={item.id}
+                                className="w-full flex flex-row justify-start items-start gap-4 hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out"
+                                onClick={() => handleSetValueProdukId(item.id)}
+                              >
+                                {/* img */}
+                                <div className="w-11 h-11 rounded-md overflow-hidden">
+                                  <img
+                                    src={item.img}
+                                    alt="foto produk"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+
+                                {/* nama */}
+                                <div className="flex flex-col justify-start items-start gap-1">
+                                  <p className="text-sm font-semibold">
+                                    {item.nama}
+                                  </p>
+                                  <p className="text-xs text-base-content/50 font-semibold">
+                                    {item.kode}
+                                  </p>
+                                </div>
+                              </button>
+                            ))
+                          ) : (
+                            <div className="w-full h-full flex flex-col justify-center items-center">
+                              <p className="text-sm font-medium text-base-content/50">
+                                Data produk tidak ditemukan
+                              </p>
+                            </div>
+                          )}
                         </div>
-                      ) : dataProdukForChoose?.data &&
-                        dataProdukForChoose?.data?.length > 0 ? (
-                        dataProdukForChoose?.data?.map((item, _) => (
-                          <button
-                            type="button"
-                            key={item.id}
-                            className="w-full flex flex-row justify-start items-start gap-4 hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out"
-                            onClick={() => handleSetValueProdukId(item.id)}
-                          >
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* card produk choose */}
+                  {produkChoose.length > 0 && (
+                    <div className="w-full flex flex-col justify-start items-start gap-2 mt-4">
+                      <p className="text-xs font-medium">
+                        Daftar Pilihan Barang:
+                      </p>
+                      {produkChoose.map((item) => (
+                        <div
+                          key={item.id}
+                          className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out"
+                        >
+                          <div className="w-full flex flex-row justify-start items-start gap-4">
                             {/* img */}
                             <div className="w-11 h-11 rounded-md overflow-hidden">
                               <img
@@ -382,79 +472,76 @@ const BarangMasukDetail = () => {
                                 {item.kode}
                               </p>
                             </div>
+                          </div>
+
+                          {/* button trash */}
+                          <button
+                            type="button"
+                            className="p-2 hover-oveerlay rounded-full bg-error text-primary-white"
+                            onClick={() => handleDeleteValueProdukId(item.id)}
+                          >
+                            <Trash2 className="size-4" />
                           </button>
-                        ))
-                      ) : (
-                        <div className="w-full h-full flex flex-col justify-center items-center">
-                          <p className="text-sm font-medium text-base-content/50">
-                            Data produk tidak ditemukan
-                          </p>
                         </div>
-                      )}
+                      ))}
                     </div>
-                  </div>
+                  )}
                 </div>
-              </div>
 
-              {/* card produk choose */}
-              {produkChoose && (
-                <div className="w-full flex flex-col justify-start items-start gap-2 mt-4">
-                  <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
-                  {produkChoose.map((item) => (
-                    <div
-                      key={item.id}
-                      className="w-full flex flex-row justify-start items-start gap-4 hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out"
-                    >
-                      {/* img */}
-                      <div className="w-11 h-11 rounded-md overflow-hidden">
-                        <img
-                          src={item.img}
-                          alt="foto produk"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-
-                      {/* nama */}
-                      <div className="flex flex-col justify-start items-start gap-1">
-                        <p className="text-sm font-semibold">{item.nama}</p>
-                        <p className="text-xs text-base-content/50 font-semibold">
-                          {item.kode}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                {/* input jumlah perbox */}
+                <div className="flex-2 flex flex-row justify-start items-center">
+                  <InputNumber
+                    register={register("jumlahBox", {
+                      valueAsNumber: true,
+                    })}
+                    label="Jumlah Box"
+                    name="jumlahBox"
+                    placeholder="Masukan Jumlah Box"
+                    errorMessage={errors?.jumlahBox?.message}
+                    required
+                  />
                 </div>
-              )}
-            </div>
 
-            {/* input jumlah perbox */}
-            <div className="flex-2 flex flex-row justify-start items-center">
-              <InputNumber
-                register={register("jumlahBox", {
-                  valueAsNumber: true,
-                })}
-                label="Jumlah Box"
-                name="jumlahBox"
-                placeholder="Masukan Jumlah Box"
-                errorMessage={errors?.jumlahBox?.message}
-                required
-              />
+                {/* button submit */}
+                <div className="flex-1 flex flex-row justify-end items-end h-18">
+                  <ButtonSubmitWithIcon
+                    label="Tambah Barang Masuk"
+                    isLoading={isPendingBarangMasukDetail}
+                  />
+                </div>
+              </form>
             </div>
-
-            {/* button submit */}
-            <div className="flex-1 flex flex-row justify-end items-end h-18">
-              <ButtonSubmitWithIcon
-                label="Tambah Barang Masuk"
-                isLoading={isPendingBarangMasukDetail}
-              />
-            </div>
-          </form>
-        </div>
+          </>
+        )}
 
         {/* show data */}
         <ShowDataBarangMasuk
           dataBarangMasukDetail={dataBarangMasukDetail}
           isLoadingBarangMasukDetail={isLoadingBarangMasukDetail}
+        />
+
+        {/* modal konfirmasi */}
+        <ModalAlert
+          modalRef={modalKonfirmasiPostingRef}
+          handleCloseModal={handleCancelConfirmPosting}
+          handleConfirm={handleConfirmPosting}
+          bigTitle={
+            isStatusDraft
+              ? "Apakah Anda yakin ingin memposting data barang masuk?"
+              : isStatusPosted
+                ? "Apakah Anda yakin ingin membatalkan posting data barang masuk?"
+                : ""
+          }
+          smallTitle={
+            isStatusDraft
+              ? "Pastikan seluruh data barang masuk telah sesuai. Setelah diposting, stok barang akan diperbarui dan transaksi akan tercatat dalam sistem."
+              : isStatusPosted
+                ? "Stok akan dikembalikan ke kondisi sebelum posting. Setelah pembatalan, transaksi dapat diedit dan diposting kembali."
+                : ""
+          }
+          isLoading={isPendingPosting || isPendingCancelPosting}
+          icon={AlertTriangle}
+          iconColor="text-warning"
         />
       </div>
     </div>

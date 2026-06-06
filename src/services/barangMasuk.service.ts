@@ -62,4 +62,28 @@ export class BarangMasukServices {
 
     return (await result).data;
   }
+
+  // posted
+  static async posted(
+    barangMasukId: number,
+  ): Promise<ResponseStructure<ResponseBarangMasukWithMetaType | null>> {
+    // call api
+    const result = await instanceAxios.put<
+      ResponseStructure<ResponseBarangMasukWithMetaType | null>
+    >(`/barang-masuk/${barangMasukId}/posted`);
+
+    return result.data;
+  }
+
+  // cancel posted
+  static async cancelPosted(
+    barangMasukId: number,
+  ): Promise<ResponseStructure<ResponseBarangMasukWithMetaType | null>> {
+    // call api
+    const result = await instanceAxios.put<
+      ResponseStructure<ResponseBarangMasukWithMetaType | null>
+    >(`/barang-masuk/${barangMasukId}/cancel-posted`);
+
+    return result.data;
+  }
 }

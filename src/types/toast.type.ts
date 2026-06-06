@@ -78,3 +78,29 @@ export const TOAST_CONFIG_BARANG_MASUK: Record<
     message: "Produk berhasil diubah",
   },
 };
+
+// toast barang masuk detaik
+export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  barang_masuk_detail_add_success: {
+    color: "success",
+    message: "Barang berhasil ditambahkan",
+  },
+  deleted_barang_masuk_detail: {
+    color: "error",
+    message: "Barang berhasil dihapus",
+  },
+  posted: {
+    color: "success",
+    message: "Barang masuk berhasil diposting",
+  },
+  cancel_posted: {
+    color: "error",
+    message: "Barang masuk berhasil dibatalkan",
+  },
+};

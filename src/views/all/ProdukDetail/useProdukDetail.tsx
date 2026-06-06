@@ -117,9 +117,6 @@ const useProdukDetail = () => {
       case "hargaBeli":
         setValue("hargaBeli", dataProduk.data.hargaBeli);
         break;
-      case "stok":
-        setValue("stok", dataProduk.data.stok);
-        break;
       case "isiPerBox":
         setValue("isiPerBox", dataProduk.data.isiPerBox);
         break;
@@ -189,11 +186,6 @@ const useProdukDetail = () => {
       // check harga beli
       if (data.hargaBeli) {
         formData.append("hargaBeli", data.hargaBeli.toString());
-      }
-
-      // check stok
-      if (data.stok) {
-        formData.append("stok", data.stok.toString());
       }
 
       // check isi per box

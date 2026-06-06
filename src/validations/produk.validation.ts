@@ -80,8 +80,6 @@ export class ProdukValidation {
         .min(0, "Mohon isi harga jual")
         .optional(),
 
-      stok: z.number("Mohon isi stok").optional(),
-
       isiPerBox: z
         .number("Mohon isi per box")
         .min(0, "Mohon isi per box")

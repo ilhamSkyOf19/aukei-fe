@@ -493,53 +493,17 @@ const ProdukDetail = () => {
                           Stok Saat Ini
                         </span>
 
-                        {/* stok */}
-                        {keyUpdate !== "stok" ? (
-                          <div className="flex flex-row justify-end items-center gap-4">
-                            <span
-                              className={cn(
-                                "text-xs lg:text-sm font-medium",
-                                generateColorForStok(
-                                  dataProduk?.data?.stok ?? 0,
-                                  dataProduk?.data?.stokMinimum ?? 0,
-                                ),
-                              )}
-                            >
-                              {dataProduk?.data?.stok}
-                            </span>
-
-                            {/* btn update */}
-                            <div className="border-l hidden lg:block border-base-content/30 pl-4">
-                              <BtnUpdate
-                                handleKeyUpdate={handleKeyUpdate}
-                                value="stok"
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          <CardForm
-                            handleResetForm={handleResetForm}
-                            handleSubmit={handleSubmit}
-                            onSubmit={onSubmit}
-                            isPending={isPendingUpdateProduk}
-                            btnAksiPosition="top"
-                          >
-                            {/* input text */}
-                            <div className="w-40">
-                              <InputNumber
-                                register={register("stok", {
-                                  valueAsNumber: true,
-                                })}
-                                name="stok"
-                                placeholder="Stok produk"
-                                errorMessage={errors?.stok?.message}
-                                required
-                                defaultValue={dataProduk?.data?.stok}
-                                xs
-                              />
-                            </div>
-                          </CardForm>
-                        )}
+                        <span
+                          className={cn(
+                            "text-xs lg:text-sm font-medium",
+                            generateColorForStok(
+                              dataProduk?.data?.stok ?? 0,
+                              dataProduk?.data?.stokMinimum ?? 0,
+                            ),
+                          )}
+                        >
+                          {dataProduk?.data?.stok}
+                        </span>
                       </div>
                     </div>
 
