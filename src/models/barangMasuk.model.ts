@@ -25,8 +25,10 @@ export interface UpdateBarangMasukForRequestType extends Partial<CreateBarangMas
 // response
 export interface ResponseBarangMasukType extends Omit<
   IBarangMasukType,
-  "detailBarangMasuks"
-> {}
+  "detailBarangMasuks" | "totalNilai"
+> {
+  totalNilai: string;
+}
 
 // to response
 export const toResponseBarangMasuk = (

@@ -28,6 +28,9 @@ const FormulirProduk = () => {
     onSubmit,
     isLoadingProdukDetail,
     dataProdukDetail,
+    isiPerBoxController,
+    stokController,
+    stokMinimumController,
   } = useFormulirProduk();
 
   return (
@@ -139,45 +142,30 @@ const FormulirProduk = () => {
 
               <div className="w-full flex flex-col justify-start items-start lg:flex-row lg:gap-6 lg:mt-4">
                 {/* stok */}
-                <InputNumber
-                  register={register("stok", {
-                    valueAsNumber: true,
-                  })}
-                  name="stok"
-                  placeholder="Masukkan Stok"
+                <InputNumber<CreateProdukType | UpdateProdukType>
+                  controller={stokController}
                   label="Stok"
+                  placeholder="Masukkan stok"
                   required
                   max={9999999999}
-                  errorMessage={errors?.stok?.message}
-                  defaultValue={dataProdukDetail?.data?.stok}
                 />
 
                 {/* isi per box */}
-                <InputNumber
-                  register={register("isiPerBox", {
-                    valueAsNumber: true,
-                  })}
-                  name="isiPerBox"
-                  placeholder="Isi Per Box"
+                <InputNumber<CreateProdukType | UpdateProdukType>
+                  controller={isiPerBoxController}
                   label="Isi Per Box"
+                  placeholder="Masukkan isi per box"
                   required
                   max={9999999999}
-                  errorMessage={errors?.isiPerBox?.message}
-                  defaultValue={dataProdukDetail?.data?.isiPerBox}
                 />
 
                 {/* stok minimum */}
-                <InputNumber
-                  register={register("stokMinimum", {
-                    valueAsNumber: true,
-                  })}
-                  name="stokMinimum"
-                  placeholder="Stok Minimum"
+                <InputNumber<CreateProdukType | UpdateProdukType>
+                  controller={stokMinimumController}
                   label="Stok Minimum"
+                  placeholder="Masukkan stok minimum"
                   required
                   max={9999999999}
-                  errorMessage={errors?.stokMinimum?.message}
-                  defaultValue={dataProdukDetail?.data?.isiPerBox}
                 />
               </div>
             </div>

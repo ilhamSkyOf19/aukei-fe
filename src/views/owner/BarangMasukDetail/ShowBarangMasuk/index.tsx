@@ -1,13 +1,23 @@
-import { Ellipsis, EllipsisVertical, PencilLine, Trash } from "lucide-react";
-import { formatRupiah } from "../../../../helpers/helpers";
+import {
+  Ellipsis,
+  EllipsisVertical,
+  PencilLine,
+  SendHorizonal,
+  Trash,
+  X,
+} from "lucide-react";
+import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import type { ResponseStructure } from "../../../../types/response.type";
 import type { ResponseBarangMasukWithDetailType } from "../../../../models/barangMasuk.model";
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import { cn } from "../../../../utils/cn";
 import LabelButtonDropDownWithIcon from "../../../../components/ui/button/LabelButtonDropDownWithIcon";
 import useShowBarangMasuk from "./useShowBarangMasuk";
 import ModalDelete from "../../../../components/modals/ModalDelete";
+import type { UseFormHandleSubmit } from "react-hook-form";
+import type { UpdateBarangMasukDetailType } from "../../../../models/barangMasukDetail.model";
+import InputNumber from "../../../../components/inputs/InputNumber";
 
 type Props = {
   isLoadingBarangMasukDetail?: boolean;
@@ -27,6 +37,15 @@ const ShowDataBarangMasuk: FC<Props> = ({
     isPendingDelete,
     dataDelete,
     modalDeleteRef,
+    dataUpdate,
+    handleClearDataUpdate,
+    handleSetDataUpdate,
+    handleSubmit,
+    isPendingUpdate,
+    onSubmit,
+    isStatusPosted,
+    isDirty,
+    jumlahBoxController,
   } = useShowBarangMasuk({
     status: dataBarangMasukDetail?.data?.status,
   });
@@ -54,13 +73,13 @@ const ShowDataBarangMasuk: FC<Props> = ({
           dataBarangMasukDetail?.data?.detailBarangMasuks?.map((item) => (
             <div
               key={item.id}
-              className="flex flex-col py-2.5 px-3 justify-start items-start w-full card bg-base-100 shadow-xs min-h-20"
+              className="flex flex-col p-3 justify-start items-start w-full card bg-base-100 shadow-xs min-h-20 gap-2"
             >
               {/* content one */}
               <div className="w-full h-full flex flex-row justify-start items-start gap-3">
                 {/* img */}
                 <div className="flex-1 flex flex-row justify-start items-center">
-                  <div className="w-18 h-18 overflow-hidden bg-black rounded-md">
+                  <div className="w-12.5 h-12 overflow-hidden bg-black rounded-md">
                     <img
                       src={item.produk.img}
                       alt="foto produk"
@@ -83,54 +102,106 @@ const ShowDataBarangMasuk: FC<Props> = ({
 
                     {/* button aksi */}
                     <div className="flex flex-row justify-end items-start">
-                      <button type="button" className="p-px">
-                        <Ellipsis className="size-4" />
-                      </button>
+                      {!isStatusPosted && (
+                        <div className="sticky right-0 bg-base-100 z-10">
+                          <div
+                            ref={wrapperRef}
+                            className={cn(
+                              "dropdown dropdown-left dropdown-end",
+                            )}
+                          >
+                            <button
+                              type="button"
+                              role="button"
+                              tabIndex={0}
+                              className="m-1"
+                              onFocus={() => handleSetIsActiveAksi(item.id)}
+                              onBlur={() => handleSetIsActiveAksi(0)}
+                            >
+                              <Ellipsis className="size-4" />
+                            </button>
+                            <ul
+                              tabIndex={-1}
+                              className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
+                            >
+                              <li>
+                                <LabelButtonDropDownWithIcon
+                                  label="Ganti Produk"
+                                  icon={PencilLine}
+                                  handleClick={() =>
+                                    handleSetDataUpdate({
+                                      data: {
+                                        id: item.id,
+                                        produkId: item.produk.id,
+                                        jumlahBox: item.jumlahBox,
+                                      },
+                                      type: "produk",
+                                    })
+                                  }
+                                />
+                              </li>
+                              <li>
+                                <LabelButtonDropDownWithIcon
+                                  color="text-error"
+                                  label="Hapus"
+                                  icon={Trash}
+                                  handleClick={() =>
+                                    handleShowModalDelete(item.id, {
+                                      nama: item.produk.nama,
+                                    })
+                                  }
+                                />
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-
-                  {/* data */}
-                  <div className="w-full flex flex-row justify-start items-end mt-2 flex-wrap gap-2">
-                    {/* harga beli */}
-                    <div className="w-30 flex flex-col justify-start items-start">
-                      <span className="text-[0.7rem] font-medium text-base-content/50">
-                        Harga Beli
-                      </span>
-                      <span className="text-xs font-semibold text-base-content">
-                        {formatRupiah(item.produk.hargaBeli)}
-                      </span>
-                    </div>
-                    {/* box */}
-                    <div className="w-12 flex flex-col justify-start items-start">
-                      <span className="text-[0.7rem] font-medium text-base-content/50">
-                        Box
-                      </span>
-                      <span className="text-xs font-semibold text-base-content">
-                        {item.jumlahBox}
-                      </span>
-                    </div>
-                    {/* isi */}
-                    <div className="w-12 flex flex-col justify-start items-start">
-                      <span className="text-[0.7rem] font-medium text-base-content/50">
-                        Isi
-                      </span>
-                      <span className="text-xs font-semibold text-base-content">
-                        {item.produk.isiPerBox}
-                      </span>
-                    </div>
-                    {/* total */}
-                    <div className="w-30 flex flex-col justify-start items-start">
-                      <span className="text-[0.7rem] font-medium text-base-content/50">
-                        Total
-                      </span>
-                      <span className="text-xs font-semibold text-base-content">
-                        {formatRupiah(
-                          item.produk.isiPerBox *
-                            item.jumlahBox *
-                            item.produk.hargaBeli,
-                        )}
-                      </span>
-                    </div>
+                </div>
+              </div>
+              <div className="w-full flex flex-row justify-start items-start gap-2">
+                {/* data */}
+                <div className="w-full flex flex-row justify-start items-end mt-2 flex-wrap gap-2">
+                  {/* harga beli */}
+                  <div className="w-30 flex flex-col justify-start items-start gap-0.5">
+                    <span className="text-[0.625rem] font-medium text-base-content/50">
+                      Harga Beli
+                    </span>
+                    <span className="text-xs font-semibold text-base-content">
+                      {formatRupiah(item.produk.hargaBeli)}
+                    </span>
+                  </div>
+                  {/* box */}
+                  <div className="w-12 flex flex-col justify-start items-start gap-0.5">
+                    <span className="text-[0.625rem] font-medium text-base-content/50">
+                      Box
+                    </span>
+                    <span className="text-xs font-semibold text-base-content">
+                      {item.jumlahBox}
+                    </span>
+                  </div>
+                  {/* isi */}
+                  <div className="w-12 flex flex-col justify-start items-start gap-0.5">
+                    <span className="text-[0.625rem] font-medium text-base-content/50">
+                      Isi
+                    </span>
+                    <span className="text-xs font-semibold text-base-content">
+                      {item.produk.isiPerBox}
+                    </span>
+                  </div>
+                  {/* total */}
+                  <div className="w-30 flex flex-col justify-start items-start gap-0.5">
+                    <span className="text-[0.625rem] font-medium text-base-content/50">
+                      Total
+                    </span>
+                    <span className="text-xs font-semibold text-base-content">
+                      {formatRupiah(
+                        item.produk.isiPerBox *
+                          item.jumlahBox *
+                          item.produk.hargaBeli,
+                      )}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -145,7 +216,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
       </div>
 
       {/* for lg */}
-      <div className="w-full hidden lg:flex card bg-base-100 dark:border dark:border-base-content/10 mt-4 flex-col justify-start items-start p-4">
+      <div className="w-full hidden lg:flex card bg-base-100 dark:border dark:border-base-content/10 mt-3 flex-col justify-start items-start p-4">
         {/* header */}
 
         <div className="w-full flex flex-row justify-between items-center">
@@ -168,9 +239,12 @@ const ShowDataBarangMasuk: FC<Props> = ({
                 <th>Nama</th>
                 <th>Kategori</th>
                 <th>Harga Beli Satuan</th>
+                <th>Jumlah Box</th>
                 <th>Isi PerBox</th>
                 <th>Total</th>
-                <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+                {!isStatusPosted && (
+                  <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -218,9 +292,57 @@ const ShowDataBarangMasuk: FC<Props> = ({
                         {formatRupiah(item.produk.hargaBeli)}
                       </td>
 
+                      {/* jumlah perbox */}
+                      <td className="font-medium text-base-content">
+                        {dataUpdate?.id === item.id &&
+                        dataUpdate?.type === "jumlahBox" ? (
+                          <CardForm
+                            handleResetForm={handleClearDataUpdate}
+                            handleSubmit={handleSubmit}
+                            onSubmit={onSubmit}
+                            isPending={isPendingUpdate}
+                            btnAksiPosition="top"
+                            isDirty={isDirty}
+                          >
+                            {/* input text */}
+                            <div className="w-50">
+                              <InputNumber<UpdateBarangMasukDetailType>
+                                controller={jumlahBoxController}
+                                placeholder="Masukkan Jumlah Box"
+                                required
+                                xs
+                              />
+                            </div>
+                          </CardForm>
+                        ) : (
+                          <div className="flex flex-row justify-start items-start gap-2">
+                            <span>
+                              {formatNumber(item.jumlahBox.toString())}
+                            </span>
+
+                            {/* button update */}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleSetDataUpdate({
+                                  data: {
+                                    id: item.id,
+                                    jumlahBox: item.jumlahBox,
+                                    produkId: item.produk.id,
+                                  },
+                                  type: "jumlahBox",
+                                })
+                              }
+                            >
+                              <PencilLine className="size-4 text-info" />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+
                       {/* isi perbox */}
                       <td className="font-medium text-base-content">
-                        {item.produk.isiPerBox}
+                        {formatNumber(item.produk.isiPerBox.toString())}
                       </td>
 
                       {/* total */}
@@ -232,45 +354,60 @@ const ShowDataBarangMasuk: FC<Props> = ({
                       </td>
 
                       {/* detail */}
-                      <td className="sticky right-0 bg-base-100 z-10">
-                        <div
-                          ref={wrapperRef}
-                          className={cn("dropdown dropdown-left dropdown-end")}
-                        >
-                          <button
-                            type="button"
-                            role="button"
-                            className="btn btn-sm m-1"
-                            onClick={() => handleSetIsActiveAksi(item.id)}
+                      {!isStatusPosted && (
+                        <td className="sticky right-0 bg-base-100 z-10">
+                          <div
+                            ref={wrapperRef}
+                            className={cn(
+                              "dropdown dropdown-left dropdown-end",
+                            )}
                           >
-                            <EllipsisVertical className="size-4" />
-                          </button>
-                          <ul
-                            tabIndex={-1}
-                            className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
-                          >
-                            <li>
-                              <LabelButtonDropDownWithIcon
-                                label="Ubah"
-                                icon={PencilLine}
-                                handleClick={() => {}}
-                              />
-                            </li>
-                            <li>
-                              <LabelButtonDropDownWithIcon
-                                color="text-error"
-                                label="Hapus"
-                                icon={Trash}
-                                handleClick={() =>
-                                  handleShowModalDelete(item.id, {
-                                    nama: item.produk.nama,
-                                  })
-                                }
-                              />
-                            </li>
-                          </ul>
-                        </div>
-                      </td>
+                            <button
+                              type="button"
+                              role="button"
+                              tabIndex={0}
+                              className="btn btn-sm m-1"
+                              onFocus={() => handleSetIsActiveAksi(item.id)}
+                              onBlur={() => handleSetIsActiveAksi(0)}
+                            >
+                              <EllipsisVertical className="size-4" />
+                            </button>
+                            <ul
+                              tabIndex={-1}
+                              className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
+                            >
+                              <li>
+                                <LabelButtonDropDownWithIcon
+                                  label="Ganti Produk"
+                                  icon={PencilLine}
+                                  handleClick={() =>
+                                    handleSetDataUpdate({
+                                      data: {
+                                        id: item.id,
+                                        produkId: item.produk.id,
+                                        jumlahBox: item.jumlahBox,
+                                      },
+                                      type: "produk",
+                                    })
+                                  }
+                                />
+                              </li>
+                              <li>
+                                <LabelButtonDropDownWithIcon
+                                  color="text-error"
+                                  label="Hapus"
+                                  icon={Trash}
+                                  handleClick={() =>
+                                    handleShowModalDelete(item.id, {
+                                      nama: item.produk.nama,
+                                    })
+                                  }
+                                />
+                              </li>
+                            </ul>
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   ),
                 )
@@ -299,8 +436,11 @@ const ShowDataBarangMasuk: FC<Props> = ({
                     <th>Nama</th>
                     <th>Kategori</th>
                     <th>Harga Beli Satuan</th>
+                    <th>Jumlah Box</th>
                     <th>Isi PerBox</th>
-                    <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+                    {!isStatusPosted && (
+                      <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+                    )}
                   </tr>
                 </tfoot>
               )}
@@ -317,6 +457,81 @@ const ShowDataBarangMasuk: FC<Props> = ({
         bigTitle={`Apakah anda yakin ingin menghapus data barang "${dataDelete?.nama}" ini?`}
       />
     </>
+  );
+};
+
+// card form
+type CardFormProps = {
+  handleSubmit: UseFormHandleSubmit<UpdateBarangMasukDetailType>;
+  onSubmit: (data: UpdateBarangMasukDetailType) => Promise<void>;
+  children: ReactNode;
+  handleResetForm: () => void;
+  isPending?: boolean;
+  btnAksiPosition?: "top";
+  flexColoum?: boolean;
+  hAuto?: boolean;
+  isDirty?: boolean;
+};
+const CardForm: FC<CardFormProps> = ({
+  children,
+  handleResetForm,
+  handleSubmit,
+  onSubmit,
+  isPending,
+  btnAksiPosition,
+  flexColoum,
+  hAuto,
+  isDirty,
+}) => {
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={cn(
+        "hidden  lg:flex justify-start gap-3",
+        flexColoum ? "flex-col items-end" : "flex-row items-center",
+        hAuto ? "h-auto" : "h-14",
+      )}
+    >
+      {/* input text */}
+      {children}
+
+      {/* button aksi */}
+      <div
+        className={cn(
+          "flex h-full justify-start gap-2",
+          btnAksiPosition === "top" ? "items-start mt-2" : "items-end mb-2",
+        )}
+      >
+        {/* button close */}
+        <button
+          type="button"
+          className={cn(
+            "text-primary-white btn-sm btn btn-error",
+            isPending && "disabled:bg-error disabled:opacity-50",
+          )}
+          onClick={() => handleResetForm()}
+          disabled={isPending}
+        >
+          <X className="size-3" />
+        </button>
+
+        {/* button submit */}
+        <button
+          type="submit"
+          className={cn(
+            "text-primary-white btn-sm btn btn-success",
+            isPending && "disabled:bg-success",
+          )}
+          disabled={isPending || !isDirty}
+        >
+          {isPending ? (
+            <div className="loading loading-xs" />
+          ) : (
+            <SendHorizonal className="size-3" />
+          )}
+        </button>
+      </div>
+    </form>
   );
 };
 

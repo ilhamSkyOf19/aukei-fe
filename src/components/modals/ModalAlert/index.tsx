@@ -26,7 +26,7 @@ const ModalAlert: FC<Props> = ({
 }) => {
   return (
     <dialog ref={modalRef} id="my_modal_1" className="modal">
-      <div className="modal-box w-120 bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box w-11/12 lg:w-120 bg-base-200 dark:border dark:border-base-content/10">
         {/* icon alert */}
         <div className="w-full flex justify-center mb-4">
           {Icon && <Icon className={cn("size-20", iconColor)} />}

@@ -92,6 +92,24 @@ const useFormulirProduk = () => {
     control,
   });
 
+  // stok controller
+  const stokController = useController({
+    name: "stok",
+    control,
+  });
+
+  // stok minimum controller
+  const stokMinimumController = useController({
+    name: "stokMinimum",
+    control,
+  });
+
+  // isi per box controller
+  const isiPerBoxController = useController({
+    name: "isiPerBox",
+    control,
+  });
+
   // mutation
   const { mutateAsync: mutateProduk, isPending: isPendingMutateProduk } =
     useMutation({
@@ -162,7 +180,7 @@ const useFormulirProduk = () => {
       }
 
       // check stok
-      if (data.stok !== undefined) {
+      if (!validatedIdParams && data.stok !== undefined) {
         formdData.append("stok", data.stok.toString());
       }
 
@@ -199,6 +217,10 @@ const useFormulirProduk = () => {
     isPendingMutateProduk,
     isLoadingProdukDetail,
     dataProdukDetail,
+    stokController,
+
+    stokMinimumController,
+    isiPerBoxController,
   };
 };
 

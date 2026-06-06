@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { BarangMasukServices } from "../../../services/barangMasuk.service";
-import { useForm } from "react-hook-form";
+import { useController, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BarangMasukDetailValidation } from "../../../validations/barangMasukDetail.validation";
 import type { CreateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
@@ -17,6 +17,8 @@ import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import useConfirm from "../../../hooks/useConfirm";
 import { STATUS_INVENTORI_TYPE } from "../../../types/constant.type";
+import type { InputSearchRef } from "../../../types/ref.type";
+import useModal from "../../../hooks/useModal";
 
 const useBarangMasukDetail = () => {
   // query client
@@ -31,6 +33,11 @@ const useBarangMasukDetail = () => {
     ResponseProdukForChooseType[]
   >([]);
 
+  const inputSearchRef = useRef<InputSearchRef>(null);
+
+  // input search ref modal
+  const inputSearchModalRef = useRef<InputSearchRef>(null);
+
   // show modal konfirmasi ubah
   const {
     modalRef: modalKonfirmasiPostingRef,
@@ -39,11 +46,44 @@ const useBarangMasukDetail = () => {
     handleCancel: handleCancelConfirmPosting,
   } = useConfirm();
 
+  // use modal tambah barang masuk
+  const {
+    modalRef: modalFormulirTambahBarangRef,
+    handleCloseModal: closeModalFormulirTambahBarang,
+    handleShowModal: handleShowModalFormulirTambahBarang,
+  } = useModal();
+
+  const handleCloseModalFormulirTambahBarang = () => {
+    // reset produk choose
+    setProdukChoose([]);
+
+    // reset form
+    // set value
+    reset({
+      barangMasukId: validatedId!,
+      produkId: [],
+      jumlahBox: undefined,
+    });
+
+    // reset search
+    setSearchForModal("");
+    inputSearchModalRef.current?.handleReset();
+
+    // reset state
+    setActiveComponentChooseProduk(false);
+
+    closeModalFormulirTambahBarang();
+  };
+
   // state search
   const [search, setSearch] = useState<string>("");
+  const [searchForModal, setSearchForModal] = useState<string>("");
 
   // handle set is search
   const handleSearch = (value: string) => setSearch(value);
+
+  // handle
+  const handleSearchForModal = (value: string) => setSearchForModal(value);
 
   // use alert
   const { alert, handleSetAlert } = useAlertAnimation();
@@ -67,9 +107,10 @@ const useBarangMasukDetail = () => {
         refetchOnWindowFocus: false,
       },
       {
-        queryKey: ["produk-for-choose", search],
-        queryFn: () => ProdukServices.findAllForChoose({ search }),
-        enabled: search !== "",
+        queryKey: ["produk-for-choose", search, searchForModal],
+        queryFn: () =>
+          ProdukServices.findAllForChoose({ search: search || searchForModal }),
+        enabled: search !== "" || searchForModal !== "",
         retry: false,
         refetchOnWindowFocus: false,
       },
@@ -94,8 +135,17 @@ const useBarangMasukDetail = () => {
   // use click outside
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  // wrapper modal
+  const wrapperModalRef = useRef<HTMLDivElement>(null);
+
   useClickOutside({
     ref: wrapperRef,
+    callback: () => {
+      handleCloseActiveComponentChooseProduk();
+    },
+  });
+  useClickOutside({
+    ref: wrapperModalRef,
     callback: () => {
       handleCloseActiveComponentChooseProduk();
     },
@@ -103,13 +153,19 @@ const useBarangMasukDetail = () => {
 
   // use form create
   const {
-    register,
     formState: { errors },
     handleSubmit,
     setValue,
     reset,
+    control,
   } = useForm<CreateBarangMasukDetailType>({
     resolver: zodResolver(BarangMasukDetailValidation.CREATE),
+  });
+
+  // jumlah box controller
+  const jumlahBoxController = useController({
+    control,
+    name: "jumlahBox",
   });
 
   // set value barangMasukId
@@ -137,8 +193,15 @@ const useBarangMasukDetail = () => {
         jumlahBox: undefined,
       });
 
-      // set search
-      setSearch("");
+      // reset
+      handleSearch("");
+
+      // reset
+      inputSearchRef.current?.handleReset();
+      inputSearchModalRef.current?.handleReset();
+
+      // handle close
+      handleCloseModalFormulirTambahBarang();
 
       setProdukChoose([]);
 
@@ -159,6 +222,8 @@ const useBarangMasukDetail = () => {
     // check status
     if (dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED)
       return;
+
+    console.log(data);
 
     // hit
     await mutateBarangMasukDetail(data);
@@ -300,7 +365,6 @@ const useBarangMasukDetail = () => {
     dataBarangMasukDetail,
     isLoadingBarangMasukDetail,
     dataProdukForChoose,
-    register,
     errors,
     handleSubmit,
     handleSearch,
@@ -326,6 +390,14 @@ const useBarangMasukDetail = () => {
     isStatusPosted,
     isStatusDraft,
     isExpired,
+    jumlahBoxController,
+    inputSearchRef,
+    modalFormulirTambahBarangRef,
+    handleShowModalFormulirTambahBarang,
+    handleCloseModalFormulirTambahBarang,
+    inputSearchModalRef,
+    wrapperModalRef,
+    handleSearchForModal,
   };
 };
 

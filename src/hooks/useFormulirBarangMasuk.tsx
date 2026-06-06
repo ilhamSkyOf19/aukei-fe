@@ -94,7 +94,7 @@ const useFormulirBarangMasuk = (params: {
         } else {
           navigate(`${currentPathname}/barang-masuk/${data?.data?.id}`, {
             state: {
-              toast: "updated_barang_masuk",
+              toast: "created_barang_masuk",
             },
           });
         }

@@ -25,6 +25,8 @@ import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/toast.type";
 import ModalAlert from "../../../components/modals/ModalAlert";
+import type { CreateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
+import ModalFormulirTambahBarangMasuk from "../../../components/modals/ModalFormulirTambahBarangMasuk";
 
 const BarangMasukDetail = () => {
   // call use barang masuk detail
@@ -32,6 +34,7 @@ const BarangMasukDetail = () => {
     dataBarangMasukDetail,
     isLoadingBarangMasukDetail,
     handleSearch,
+    handleSearchForModal,
     dataProdukForChoose,
     errors,
     handleSetValueProdukId,
@@ -39,9 +42,9 @@ const BarangMasukDetail = () => {
     isPendingBarangMasukDetail,
     onSubmit,
     alert,
-    register,
     produkChoose,
     wrapperRef,
+    wrapperModalRef,
     activeComponentChooseProduk,
     handleShowActiveComponentChooseProduk,
     isLoadingProdukForChoose,
@@ -58,6 +61,12 @@ const BarangMasukDetail = () => {
     isStatusDraft,
     isStatusPosted,
     isExpired,
+    jumlahBoxController,
+    inputSearchRef,
+    inputSearchModalRef,
+    handleCloseModalFormulirTambahBarang,
+    handleShowModalFormulirTambahBarang,
+    modalFormulirTambahBarangRef,
   } = useBarangMasukDetail();
 
   return (
@@ -126,9 +135,9 @@ const BarangMasukDetail = () => {
               </div>
             </div>
 
-            <div className="w-full lg:flex-1 flex flex-col lg:flex-row justify-start items-start lg:items-center lg:justify-end">
+            <div className="w-full lg:flex-1 flex flex-col lg:flex-row justify-start items-start lg:items-center lg:justify-end gap-3 px-2 lg:px-0 pb-2 lg:pb-0">
               {/* button */}
-              <div className="w-full lg:w-auto px-2 flex flex-row justify-start items-start gap-2 mt-6 lg:mt-0">
+              <div className="w-full lg:w-auto flex flex-row justify-start items-start gap-2  mt-6 lg:mt-0">
                 <ButtonWithIcon
                   textColor="text-primary-white"
                   label="Cetak"
@@ -161,6 +170,7 @@ const BarangMasukDetail = () => {
                         ? "Posting Sekarang"
                         : ""
                   }
+                  customWidth="w-full lg:w-auto"
                 />
               )}
             </div>
@@ -336,7 +346,9 @@ const BarangMasukDetail = () => {
               </div>
 
               {/* button add */}
-              <ButtonWithIcon handleBtn={() => {}} />
+              <ButtonWithIcon
+                handleBtn={() => handleShowModalFormulirTambahBarang()}
+              />
             </div>
 
             {/* form for lg */}
@@ -371,6 +383,7 @@ const BarangMasukDetail = () => {
                     </div>
 
                     <InputSearch
+                      ref={inputSearchRef}
                       handleSearch={handleSearch}
                       placeholder="Cari produk berdasarkan nama atau kode"
                       handleOnFocus={() =>
@@ -490,15 +503,12 @@ const BarangMasukDetail = () => {
 
                 {/* input jumlah perbox */}
                 <div className="flex-2 flex flex-row justify-start items-center">
-                  <InputNumber
-                    register={register("jumlahBox", {
-                      valueAsNumber: true,
-                    })}
+                  <InputNumber<CreateBarangMasukDetailType>
+                    controller={jumlahBoxController}
                     label="Jumlah Box"
-                    name="jumlahBox"
-                    placeholder="Masukan Jumlah Box"
-                    errorMessage={errors?.jumlahBox?.message}
+                    placeholder="Jumlah Box"
                     required
+                    max={9999999999}
                   />
                 </div>
 
@@ -519,31 +529,56 @@ const BarangMasukDetail = () => {
           dataBarangMasukDetail={dataBarangMasukDetail}
           isLoadingBarangMasukDetail={isLoadingBarangMasukDetail}
         />
-
-        {/* modal konfirmasi */}
-        <ModalAlert
-          modalRef={modalKonfirmasiPostingRef}
-          handleCloseModal={handleCancelConfirmPosting}
-          handleConfirm={handleConfirmPosting}
-          bigTitle={
-            isStatusDraft
-              ? "Apakah Anda yakin ingin memposting data barang masuk?"
-              : isStatusPosted
-                ? "Apakah Anda yakin ingin membatalkan posting data barang masuk?"
-                : ""
-          }
-          smallTitle={
-            isStatusDraft
-              ? "Pastikan seluruh data barang masuk telah sesuai. Setelah diposting, stok barang akan diperbarui dan transaksi akan tercatat dalam sistem."
-              : isStatusPosted
-                ? "Stok akan dikembalikan ke kondisi sebelum posting. Setelah pembatalan, transaksi dapat diedit dan diposting kembali."
-                : ""
-          }
-          isLoading={isPendingPosting || isPendingCancelPosting}
-          icon={AlertTriangle}
-          iconColor="text-warning"
-        />
       </div>
+      {/* modal konfirmasi */}
+      <ModalAlert
+        modalRef={modalKonfirmasiPostingRef}
+        handleCloseModal={handleCancelConfirmPosting}
+        handleConfirm={handleConfirmPosting}
+        bigTitle={
+          isStatusDraft
+            ? "Apakah Anda yakin ingin memposting data barang masuk?"
+            : isStatusPosted
+              ? "Apakah Anda yakin ingin membatalkan posting data barang masuk?"
+              : ""
+        }
+        smallTitle={
+          isStatusDraft
+            ? "Pastikan seluruh data barang masuk telah sesuai. Setelah diposting, stok barang akan diperbarui dan transaksi akan tercatat dalam sistem."
+            : isStatusPosted
+              ? "Stok akan dikembalikan ke kondisi sebelum posting. Setelah pembatalan, transaksi dapat diedit dan diposting kembali."
+              : ""
+        }
+        isLoading={isPendingPosting || isPendingCancelPosting}
+        icon={AlertTriangle}
+        iconColor="text-warning"
+      />
+
+      {/* modal formulir barang masuk */}
+      <ModalFormulirTambahBarangMasuk
+        modalRef={modalFormulirTambahBarangRef}
+        handleCloseModal={handleCloseModalFormulirTambahBarang}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        wrapperRef={wrapperModalRef}
+        inputSearchRef={inputSearchModalRef}
+        handleSearch={handleSearchForModal}
+        handleShowActiveComponentChooseProduk={
+          handleShowActiveComponentChooseProduk
+        }
+        handleCloseActiveComponentChooseProduk={
+          handleCloseActiveComponentChooseProduk
+        }
+        errorMessageProdukId={errors?.produkId?.message}
+        activeComponentChooseProduk={activeComponentChooseProduk}
+        isLoadingProdukForChoose={isLoadingProdukForChoose}
+        dataProdukForChoose={dataProdukForChoose?.data ?? []}
+        handleSetValueProdukId={handleSetValueProdukId}
+        produkChoose={produkChoose}
+        handleDeleteValueProdukId={handleSetValueProdukId}
+        jumlahBoxController={jumlahBoxController}
+        isPendingBarangMasukDetail={isPendingBarangMasukDetail}
+      />
     </div>
   );
 };

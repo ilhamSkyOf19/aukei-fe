@@ -97,6 +97,18 @@ const useProdukDetail = () => {
     control,
   });
 
+  // controller isi per box
+  const isiPerBoxController = useController({
+    name: "isiPerBox",
+    control,
+  });
+
+  // controller stok minimum
+  const stokMinimumController = useController({
+    name: "stokMinimum",
+    control,
+  });
+
   // reset
   useEffect(() => {
     if (!keyUpdate || !dataProduk?.data) return;
@@ -248,6 +260,8 @@ const useProdukDetail = () => {
     modalDeleteRef,
     handleShowModalDelete,
     handleCloseModalDelete,
+    isiPerBoxController,
+    stokMinimumController,
   };
 };
 

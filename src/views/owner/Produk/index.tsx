@@ -200,7 +200,7 @@ const Produk = () => {
                           </td>
                           {/* isi perbox */}
                           <td className="font-medium text-base-content">
-                            {produk.isiPerBox}
+                            {formatNumber(produk.isiPerBox.toString())}
                           </td>
                           {/* detail */}
                           <td className="sticky right-0 bg-base-100 z-10">
@@ -213,8 +213,10 @@ const Produk = () => {
                               <button
                                 type="button"
                                 role="button"
+                                tabIndex={0}
                                 className="btn btn-sm m-1"
-                                onClick={() => handleSetIsActiveAksi(produk.id)}
+                                onFocus={() => handleSetIsActiveAksi(produk.id)}
+                                onBlur={() => handleSetIsActiveAksi(0)}
                               >
                                 <EllipsisVertical className="size-4" />
                               </button>

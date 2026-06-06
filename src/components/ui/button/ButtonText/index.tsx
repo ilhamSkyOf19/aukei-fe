@@ -22,7 +22,7 @@ const ButtonText: FC<Props> = ({
     <button
       type="button"
       className={cn(
-        "btn btn-sm lg:btn-md px-4 text-sm font-semibold hover-overlay disabled:opacity-50",
+        "btn btn-sm lg:btn-md px-4 text-xs lg:text-sm font-semibold hover-overlay disabled:opacity-50",
         bgColor,
         textColor,
       )}

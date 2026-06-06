@@ -12,7 +12,11 @@ import {
 } from "lucide-react";
 import ButtonActionWithIcon from "../../../components/ui/button/ButtonActionWithIcon";
 import useProdukDetail from "./useProdukDetail";
-import { formatRupiah, generateColorForStok } from "../../../helpers/helpers";
+import {
+  formatNumber,
+  formatRupiah,
+  generateColorForStok,
+} from "../../../helpers/helpers";
 import { cn } from "../../../utils/cn";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
@@ -55,6 +59,8 @@ const ProdukDetail = () => {
     handleShowModalDelete,
     isPendingDeleteProduk,
     modalDeleteRef,
+    isiPerBoxController,
+    stokMinimumController,
   } = useProdukDetail();
 
   return (
@@ -502,7 +508,9 @@ const ProdukDetail = () => {
                             ),
                           )}
                         >
-                          {dataProduk?.data?.stok}
+                          {formatNumber(
+                            (dataProduk?.data?.stok ?? 0).toString(),
+                          )}
                         </span>
                       </div>
                     </div>
@@ -532,7 +540,9 @@ const ProdukDetail = () => {
                         {keyUpdate !== "isiPerBox" ? (
                           <div className="flex flex-row justify-end items-center gap-4">
                             <span className={"text-xs lg:text-sm font-medium"}>
-                              {dataProduk?.data?.isiPerBox}
+                              {formatNumber(
+                                (dataProduk?.data?.isiPerBox ?? 0).toString(),
+                              )}
                             </span>
 
                             {/* btn update */}
@@ -553,15 +563,10 @@ const ProdukDetail = () => {
                           >
                             {/* input text */}
                             <div className="w-40">
-                              <InputNumber
-                                register={register("isiPerBox", {
-                                  valueAsNumber: true,
-                                })}
-                                name="isiPerBox"
-                                placeholder="Isi Per Box"
-                                errorMessage={errors?.isiPerBox?.message}
+                              <InputNumber<UpdateProdukType>
+                                controller={isiPerBoxController}
+                                placeholder="Masukkan isi per box produk"
                                 required
-                                defaultValue={dataProduk?.data?.isiPerBox}
                                 xs
                               />
                             </div>
@@ -595,7 +600,9 @@ const ProdukDetail = () => {
                         {keyUpdate !== "stokMinimum" ? (
                           <div className="flex flex-row justify-end items-center gap-4">
                             <span className={"text-xs lg:text-sm font-medium"}>
-                              {dataProduk?.data?.stokMinimum}
+                              {formatNumber(
+                                (dataProduk?.data?.stokMinimum ?? 0).toString(),
+                              )}
                             </span>
 
                             {/* btn update */}
@@ -616,15 +623,10 @@ const ProdukDetail = () => {
                           >
                             {/* input text */}
                             <div className="w-40">
-                              <InputNumber
-                                register={register("stokMinimum", {
-                                  valueAsNumber: true,
-                                })}
-                                name="stokMinimum"
-                                placeholder="Isi Per Box"
-                                errorMessage={errors?.stokMinimum?.message}
+                              <InputNumber<UpdateProdukType>
+                                controller={stokMinimumController}
+                                placeholder="Masukkan stok minimum produk"
                                 required
-                                defaultValue={dataProduk?.data?.stokMinimum}
                                 xs
                               />
                             </div>

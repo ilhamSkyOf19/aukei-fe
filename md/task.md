@@ -33,8 +33,9 @@
 - [✅] Membuat fitur tambah barang masuk (Dekstop)
 - [✅] Membuat message toast
 - [✅] Integrasi API Delete (Dekstop)
-- [ ] Integrasi API Ubah (Dekstop)
+- [✅] Integrasi API Ubah Jumlah Box (Dekstop)
+- [✅] Membuat fitur tambah barang masuk (Mobile)
+- [✅] Integrasi API Delete (Mobile)
 
-- [ ] Membuat fitur tambah barang masuk (Mobile)
-- [ ] Integrasi API Delete (Mobile)
+- [ ] Integrasi API Ganti Produk (Dekstop)
 - [ ] Integrasi API Ubah (Mobile)

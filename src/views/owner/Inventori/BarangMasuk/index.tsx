@@ -60,10 +60,10 @@ const BarangMasuk = () => {
             {/* filter sort */}
             <FilterSort setSort={handleSort} />
 
-            {/* button add produk */}
+            {/* button add barang masuk */}
             <ButtonWithIcon
               icon={PackagePlus}
-              label="Tambah Produk"
+              label="Tambah Barang Masuk"
               handleBtn={() => handleShowModalFormulirBarangMasuk()}
             />
           </div>
@@ -147,7 +147,10 @@ const BarangMasuk = () => {
                         <button
                           type="button"
                           className="btn btn-sm m-1"
+                          tabIndex={0}
                           onClick={() => handleSetIsActiveAksi(barang.id)}
+                          onFocus={() => handleSetIsActiveAksi(barang.id)}
+                          onBlur={() => handleSetIsActiveAksi(0)}
                         >
                           <EllipsisVertical className="size-4" />
                         </button>

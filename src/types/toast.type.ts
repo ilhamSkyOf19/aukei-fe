@@ -73,10 +73,6 @@ export const TOAST_CONFIG_BARANG_MASUK: Record<
     color: "info",
     message: "Produk berhasil diubah",
   },
-  created_barang_masuk: {
-    color: "info",
-    message: "Produk berhasil diubah",
-  },
 };
 
 // toast barang masuk detaik
@@ -87,6 +83,10 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
     color: "success" | "error" | "info" | "warning" | "neutral";
   }
 > = {
+  created_barang_masuk: {
+    color: "success",
+    message: "Barang masuk berhasil ditambahkan",
+  },
   barang_masuk_detail_add_success: {
     color: "success",
     message: "Barang berhasil ditambahkan",
@@ -94,6 +94,10 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
   deleted_barang_masuk_detail: {
     color: "error",
     message: "Barang berhasil dihapus",
+  },
+  updated_barang_masuk_detail: {
+    color: "info",
+    message: "Barang berhasil diubah",
   },
   posted: {
     color: "success",

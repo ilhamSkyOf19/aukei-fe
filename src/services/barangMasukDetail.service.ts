@@ -2,6 +2,7 @@ import instanceAxios from "../libs/axios";
 import type {
   CreateBarangMasukDetailType,
   ResponseBarangMasukDetailType,
+  UpdateBarangMasukDetailType,
 } from "../models/barangMasukDetail.model";
 import type { StatusInventoriType } from "../types/constant.type";
 import type { ResponseStructure } from "../types/response.type";
@@ -15,6 +16,20 @@ export class BarangMasukDetailServices {
     const result = await instanceAxios.post<
       ResponseStructure<ResponseBarangMasukDetailType | null>
     >(`/barang-masuk-detail`, req);
+
+    return result.data;
+  }
+
+  // update
+  static async update(params: {
+    id: number;
+    req: UpdateBarangMasukDetailType;
+    status: StatusInventoriType;
+  }): Promise<ResponseStructure<ResponseBarangMasukDetailType | null>> {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponseBarangMasukDetailType | null>
+    >(`/barang-masuk-detail/${params.id}/status/${params.status}`, params.req);
 
     return result.data;
   }

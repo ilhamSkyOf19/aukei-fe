@@ -10,12 +10,12 @@ export const highlightName = (name: string) => {
 };
 
 // format rp
-export const formatRupiah = (value: number): string => {
+export const formatRupiah = (value: number | string): string => {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
     minimumFractionDigits: 0,
-  }).format(value);
+  }).format(Number(value));
 };
 
 // generate page numbers
