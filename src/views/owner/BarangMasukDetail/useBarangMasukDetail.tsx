@@ -35,10 +35,7 @@ const useBarangMasukDetail = () => {
 
   const inputSearchRef = useRef<InputSearchRef>(null);
 
-  // input search ref modal
-  const inputSearchModalRef = useRef<InputSearchRef>(null);
-
-  // show modal konfirmasi ubah
+  // show modal konfirmasi posting
   const {
     modalRef: modalKonfirmasiPostingRef,
     confirm,
@@ -49,41 +46,17 @@ const useBarangMasukDetail = () => {
   // use modal tambah barang masuk
   const {
     modalRef: modalFormulirTambahBarangRef,
-    handleCloseModal: closeModalFormulirTambahBarang,
+    handleCloseModal: handleCloseModalFormulirTambahBarang,
     handleShowModal: handleShowModalFormulirTambahBarang,
   } = useModal();
 
-  const handleCloseModalFormulirTambahBarang = () => {
-    // reset produk choose
-    setProdukChoose([]);
-
-    // reset form
-    // set value
-    reset({
-      barangMasukId: validatedId!,
-      produkId: [],
-      jumlahBox: undefined,
-    });
-
-    // reset search
-    setSearchForModal("");
-    inputSearchModalRef.current?.handleReset();
-
-    // reset state
-    setActiveComponentChooseProduk(false);
-
-    closeModalFormulirTambahBarang();
-  };
-
   // state search
   const [search, setSearch] = useState<string>("");
-  const [searchForModal, setSearchForModal] = useState<string>("");
 
   // handle set is search
   const handleSearch = (value: string) => setSearch(value);
 
   // handle
-  const handleSearchForModal = (value: string) => setSearchForModal(value);
 
   // use alert
   const { alert, handleSetAlert } = useAlertAnimation();
@@ -107,10 +80,9 @@ const useBarangMasukDetail = () => {
         refetchOnWindowFocus: false,
       },
       {
-        queryKey: ["produk-for-choose", search, searchForModal],
-        queryFn: () =>
-          ProdukServices.findAllForChoose({ search: search || searchForModal }),
-        enabled: search !== "" || searchForModal !== "",
+        queryKey: ["produk-for-choose", search],
+        queryFn: () => ProdukServices.findAllForChoose({ search: search }),
+        enabled: search !== "",
         retry: false,
         refetchOnWindowFocus: false,
       },
@@ -136,16 +108,9 @@ const useBarangMasukDetail = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // wrapper modal
-  const wrapperModalRef = useRef<HTMLDivElement>(null);
 
   useClickOutside({
     ref: wrapperRef,
-    callback: () => {
-      handleCloseActiveComponentChooseProduk();
-    },
-  });
-  useClickOutside({
-    ref: wrapperModalRef,
     callback: () => {
       handleCloseActiveComponentChooseProduk();
     },
@@ -198,10 +163,6 @@ const useBarangMasukDetail = () => {
 
       // reset
       inputSearchRef.current?.handleReset();
-      inputSearchModalRef.current?.handleReset();
-
-      // handle close
-      handleCloseModalFormulirTambahBarang();
 
       setProdukChoose([]);
 
@@ -395,9 +356,6 @@ const useBarangMasukDetail = () => {
     modalFormulirTambahBarangRef,
     handleShowModalFormulirTambahBarang,
     handleCloseModalFormulirTambahBarang,
-    inputSearchModalRef,
-    wrapperModalRef,
-    handleSearchForModal,
   };
 };
 

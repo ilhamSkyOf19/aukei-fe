@@ -18,6 +18,7 @@ import ModalDelete from "../../../../components/modals/ModalDelete";
 import type { UseFormHandleSubmit } from "react-hook-form";
 import type { UpdateBarangMasukDetailType } from "../../../../models/barangMasukDetail.model";
 import InputNumber from "../../../../components/inputs/InputNumber";
+import ModalGantiProdukMasuk from "../../../../components/modals/ModalGantiProdukMasuk";
 
 type Props = {
   isLoadingBarangMasukDetail?: boolean;
@@ -46,6 +47,10 @@ const ShowDataBarangMasuk: FC<Props> = ({
     isStatusPosted,
     isDirty,
     jumlahBoxController,
+    handleCloseModalGantiProduk,
+    handleShowModalGantiProduk,
+    idBarangMasuk,
+    modalGantiProdukRef,
   } = useShowBarangMasuk({
     status: dataBarangMasukDetail?.data?.status,
   });
@@ -129,14 +134,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                                   label="Ganti Produk"
                                   icon={PencilLine}
                                   handleClick={() =>
-                                    handleSetDataUpdate({
-                                      data: {
-                                        id: item.id,
-                                        produkId: item.produk.id,
-                                        jumlahBox: item.jumlahBox,
-                                      },
-                                      type: "produk",
-                                    })
+                                    handleShowModalGantiProduk(item.id)
                                   }
                                 />
                               </li>
@@ -165,7 +163,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                 <div className="w-full flex flex-row justify-start items-end mt-2 flex-wrap gap-2">
                   {/* harga beli */}
                   <div className="w-30 flex flex-col justify-start items-start gap-0.5">
-                    <span className="text-[0.625rem] font-medium text-base-content/50">
+                    <span className="text-[0.625rem] text-base-content/50">
                       Harga Beli
                     </span>
                     <span className="text-xs font-semibold text-base-content">
@@ -294,8 +292,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
 
                       {/* jumlah perbox */}
                       <td className="font-medium text-base-content">
-                        {dataUpdate?.id === item.id &&
-                        dataUpdate?.type === "jumlahBox" ? (
+                        {dataUpdate?.id === item.id ? (
                           <CardForm
                             handleResetForm={handleClearDataUpdate}
                             handleSubmit={handleSubmit}
@@ -330,7 +327,6 @@ const ShowDataBarangMasuk: FC<Props> = ({
                                     jumlahBox: item.jumlahBox,
                                     produkId: item.produk.id,
                                   },
-                                  type: "jumlahBox",
                                 })
                               }
                             >
@@ -381,14 +377,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                                   label="Ganti Produk"
                                   icon={PencilLine}
                                   handleClick={() =>
-                                    handleSetDataUpdate({
-                                      data: {
-                                        id: item.id,
-                                        produkId: item.produk.id,
-                                        jumlahBox: item.jumlahBox,
-                                      },
-                                      type: "produk",
-                                    })
+                                    handleShowModalGantiProduk(item.id)
                                   }
                                 />
                               </li>
@@ -455,6 +444,14 @@ const ShowDataBarangMasuk: FC<Props> = ({
         handleDelete={handleDelete}
         isLoadingDelete={isPendingDelete}
         bigTitle={`Apakah anda yakin ingin menghapus data barang "${dataDelete?.nama}" ini?`}
+      />
+
+      {/* modal ganti produk */}
+      <ModalGantiProdukMasuk
+        modalRef={modalGantiProdukRef}
+        handleCloseModal={handleCloseModalGantiProduk}
+        idBarangMasuk={idBarangMasuk}
+        status={dataBarangMasukDetail?.data?.status}
       />
     </>
   );

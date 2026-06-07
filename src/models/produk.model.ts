@@ -58,6 +58,6 @@ export interface ResponseProdukForChooseType {
   id: number;
   nama: string;
   kode: string;
-  hargaJual: number;
+  hargaBeli: number;
   img: string;
 }

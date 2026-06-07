@@ -34,7 +34,6 @@ const BarangMasukDetail = () => {
     dataBarangMasukDetail,
     isLoadingBarangMasukDetail,
     handleSearch,
-    handleSearchForModal,
     dataProdukForChoose,
     errors,
     handleSetValueProdukId,
@@ -44,7 +43,6 @@ const BarangMasukDetail = () => {
     alert,
     produkChoose,
     wrapperRef,
-    wrapperModalRef,
     activeComponentChooseProduk,
     handleShowActiveComponentChooseProduk,
     isLoadingProdukForChoose,
@@ -63,7 +61,6 @@ const BarangMasukDetail = () => {
     isExpired,
     jumlahBoxController,
     inputSearchRef,
-    inputSearchModalRef,
     handleCloseModalFormulirTambahBarang,
     handleShowModalFormulirTambahBarang,
     modalFormulirTambahBarangRef,
@@ -404,7 +401,7 @@ const BarangMasukDetail = () => {
                           : "grid-rows-[0fr]",
                       )}
                     >
-                      <div className="overflow-hidden">
+                      <div className="overflow-y-auto scrollbar-thin">
                         <div
                           className={cn(
                             "w-full flex flex-col h-60 rounded-lg shadow-xs border border-base-content/10 p-4 gap-2",
@@ -420,26 +417,39 @@ const BarangMasukDetail = () => {
                               <button
                                 type="button"
                                 key={item.id}
-                                className="w-full flex flex-row justify-start items-start gap-4 hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out"
+                                className="w-full flex flex-row justify-between items-start gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border-b border-base-content/10"
                                 onClick={() => handleSetValueProdukId(item.id)}
                               >
-                                {/* img */}
-                                <div className="w-11 h-11 rounded-md overflow-hidden">
-                                  <img
-                                    src={item.img}
-                                    alt="foto produk"
-                                    className="w-full h-full object-cover"
-                                  />
+                                <div className="flex-3 flex flex-row col row justify-start items-start gap-4">
+                                  {/* img */}
+                                  <div className="w-11 h-11 rounded-md overflow-hidden">
+                                    <img
+                                      src={item.img}
+                                      alt="foto produk"
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+
+                                  {/* nama */}
+                                  <div className="flex flex-col justify-start items-start gap-1">
+                                    <p className="text-sm font-semibold">
+                                      {item.nama}
+                                    </p>
+                                    <p className="text-xs text-base-content/50 font-semibold">
+                                      {item.kode}
+                                    </p>
+                                  </div>
                                 </div>
 
-                                {/* nama */}
-                                <div className="flex flex-col justify-start items-start gap-1">
-                                  <p className="text-sm font-semibold">
-                                    {item.nama}
-                                  </p>
-                                  <p className="text-xs text-base-content/50 font-semibold">
-                                    {item.kode}
-                                  </p>
+                                <div className="flex-1 flex flex-col justify-start items-start gap-1">
+                                  {/* label */}
+                                  <span className="text-[0.625rem] text-base-content/50">
+                                    Harga Beli
+                                  </span>
+                                  {/* value */}
+                                  <span className="text-[0.625rem] font-semibold text-base-content">
+                                    {formatRupiah(item.hargaBeli)}
+                                  </span>
                                 </div>
                               </button>
                             ))
@@ -466,24 +476,38 @@ const BarangMasukDetail = () => {
                           key={item.id}
                           className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out"
                         >
-                          <div className="w-full flex flex-row justify-start items-start gap-4">
-                            {/* img */}
-                            <div className="w-11 h-11 rounded-md overflow-hidden">
-                              <img
-                                src={item.img}
-                                alt="foto produk"
-                                className="w-full h-full object-cover"
-                              />
+                          <div className="w-full flex flex-row justify-start items-start gap-2">
+                            <div className="flex-2 w-full flex flex-row justify-start items-start gap-4">
+                              {/* img */}
+                              <div className="w-11 h-11 rounded-md overflow-hidden">
+                                <img
+                                  src={item.img}
+                                  alt="foto produk"
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+
+                              {/* nama */}
+                              <div className="flex flex-col justify-start items-start gap-1">
+                                <p className="text-sm font-semibold">
+                                  {item.nama}
+                                </p>
+                                <p className="text-xs text-base-content/50 font-medium">
+                                  {item.kode}
+                                </p>
+                              </div>
                             </div>
 
-                            {/* nama */}
-                            <div className="flex flex-col justify-start items-start gap-1">
-                              <p className="text-sm font-semibold">
-                                {item.nama}
-                              </p>
-                              <p className="text-xs text-base-content/50 font-semibold">
-                                {item.kode}
-                              </p>
+                            {/* harga beli */}
+                            <div className="flex-1 flex flex-col justify-start items-start gap-1">
+                              {/* label */}
+                              <span className="text-[0.625rem] text-base-content/50">
+                                Harga Beli
+                              </span>
+                              {/* value */}
+                              <span className="text-[0.625rem] font-semibold text-base-content">
+                                {formatRupiah(item.hargaBeli)}
+                              </span>
                             </div>
                           </div>
 
@@ -508,7 +532,7 @@ const BarangMasukDetail = () => {
                     label="Jumlah Box"
                     placeholder="Jumlah Box"
                     required
-                    max={9999999999}
+                    max={1000000}
                   />
                 </div>
 
@@ -558,26 +582,6 @@ const BarangMasukDetail = () => {
       <ModalFormulirTambahBarangMasuk
         modalRef={modalFormulirTambahBarangRef}
         handleCloseModal={handleCloseModalFormulirTambahBarang}
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        wrapperRef={wrapperModalRef}
-        inputSearchRef={inputSearchModalRef}
-        handleSearch={handleSearchForModal}
-        handleShowActiveComponentChooseProduk={
-          handleShowActiveComponentChooseProduk
-        }
-        handleCloseActiveComponentChooseProduk={
-          handleCloseActiveComponentChooseProduk
-        }
-        errorMessageProdukId={errors?.produkId?.message}
-        activeComponentChooseProduk={activeComponentChooseProduk}
-        isLoadingProdukForChoose={isLoadingProdukForChoose}
-        dataProdukForChoose={dataProdukForChoose?.data ?? []}
-        handleSetValueProdukId={handleSetValueProdukId}
-        produkChoose={produkChoose}
-        handleDeleteValueProdukId={handleSetValueProdukId}
-        jumlahBoxController={jumlahBoxController}
-        isPendingBarangMasukDetail={isPendingBarangMasukDetail}
       />
     </div>
   );

@@ -3,47 +3,57 @@ import { cn } from "../../../utils/cn";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmitWithIcon from "../../ui/button/ButtonSubmitWithIcon";
-import InputNumber from "../../inputs/InputNumber";
-import type { CreateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
 import { Trash2 } from "lucide-react";
 import InputSearch from "../../inputs/InputSearch";
 import { formatRupiah } from "../../../helpers/helpers";
-import useModalFormulirTambahBarangMasuk from "./useModalFormulirTambahBarangMasuk";
+import useModalGantiProdukMasuk from "./useModalGantiProdukMasuk";
+import type { StatusInventoriType } from "../../../types/constant.type";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
+  idBarangMasuk?: number;
+  status?: StatusInventoriType;
 };
 
-const ModalFormulirTambahBarangMasuk: FC<Props> = ({
+const ModalGantiProdukMasuk: FC<Props> = ({
   modalRef,
   handleCloseModal,
+  idBarangMasuk,
+  status,
 }) => {
   const {
     handleSubmit,
     onSubmit,
+
     wrapperRef,
+
     handleSearch,
     inputSearchRef,
+
     handleCloseActiveComponentChooseProduk,
     handleShowActiveComponentChooseProduk,
+
     errors,
+
     activeComponentChooseProduk,
+
     isLoadingProdukForChoose,
     dataProdukForChoose,
+
     handleSetValueProdukId,
-    produkChoose,
     handleDeleteValueProdukId,
-    jumlahBoxController,
+
+    produkChoose,
+
     isPendingBarangMasukDetail,
+
     alert,
-  } = useModalFormulirTambahBarangMasuk({
-    handleCloseModal,
-  });
+  } = useModalGantiProdukMasuk({ idBarangMasuk, status, handleCloseModal });
 
   return (
-    <dialog ref={modalRef} id="my_modal_4" className="modal lg:hidden">
+    <dialog ref={modalRef} id="my_modal_4" className="modal">
       {alert && (
         <Alert
           alert={alert?.id !== null}
@@ -51,6 +61,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
           label={ALERT_CONFIG_BARANG_MASUK_DETAIL[alert.type].message}
         />
       )}
+
       <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl  h-[80vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
@@ -164,72 +175,56 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
               </div>
 
               {/* card produk choose */}
-              {produkChoose.length > 0 && (
+              {produkChoose !== null && (
                 <div className="w-full flex flex-col justify-start items-start gap-2 mt-4">
                   <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
-                  {produkChoose.map((item) => (
-                    <div
-                      key={item.id}
-                      className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out"
-                    >
-                      <div className="w-full flex flex-row justify-start items-start gap-2">
-                        <div className="flex-2 flex flex-row justify-start items-start gap-4">
-                          {/* img */}
-                          <div className="w-11 shrink-0 h-11 rounded-md overflow-hidden">
-                            <img
-                              src={item.img}
-                              alt="foto produk"
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-
-                          {/* nama */}
-                          <div className="flex flex-col justify-start items-start gap-1">
-                            <p className="text-xs lg:text-sm font-semibold">
-                              {item.nama}
-                            </p>
-                            <p className="text-[0.625rem] lg:text-xs text-base-content/50 font-medium">
-                              {item.kode}
-                            </p>
-                          </div>
+                  <div className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out">
+                    <div className="w-full flex flex-row justify-start items-start gap-2">
+                      <div className="flex-2 flex flex-row justify-start items-start gap-4">
+                        {/* img */}
+                        <div className="w-11 shrink-0 h-11 rounded-md overflow-hidden">
+                          <img
+                            src={produkChoose.img}
+                            alt="foto produk"
+                            className="w-full h-full object-cover"
+                          />
                         </div>
 
-                        {/* harga beli */}
-                        <div className="flex-1 flex flex-col justify-start items-start gap-1">
-                          {/* label */}
-                          <span className="text-[0.625rem] text-base-content/50">
-                            Harga Beli
-                          </span>
-                          {/* value */}
-                          <span className="text-[0.625rem] font-semibold text-base-content">
-                            {formatRupiah(item.hargaBeli)}
-                          </span>
+                        {/* nama */}
+                        <div className="flex flex-col justify-start produkChooses-start gap-1">
+                          <p className="text-xs lg:text-sm font-semibold">
+                            {produkChoose.nama}
+                          </p>
+                          <p className="text-[0.625rem] lg:text-xs text-base-content/50 font-medium">
+                            {produkChoose.kode}
+                          </p>
                         </div>
                       </div>
 
-                      {/* button trash */}
-                      <button
-                        type="button"
-                        className="p-2 hover-oveerlay rounded-full bg-error text-primary-white"
-                        onClick={() => handleDeleteValueProdukId(item.id)}
-                      >
-                        <Trash2 className="size-4" />
-                      </button>
+                      {/* harga beli */}
+                      <div className="flex-1 flex flex-col justify-start items-start gap-1">
+                        {/* label */}
+                        <span className="text-[0.625rem] text-base-content/50">
+                          Harga Beli
+                        </span>
+                        {/* value */}
+                        <span className="text-[0.625rem] font-semibold text-base-content">
+                          {formatRupiah(produkChoose.hargaBeli)}
+                        </span>
+                      </div>
                     </div>
-                  ))}
+
+                    {/* button trash */}
+                    <button
+                      type="button"
+                      className="p-2 hover-oveerlay rounded-full bg-error text-primary-white"
+                      onClick={() => handleDeleteValueProdukId()}
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
                 </div>
               )}
-            </div>
-
-            {/* input jumlah perbox */}
-            <div className="w-full flex flex-row justify-start items-center">
-              <InputNumber<CreateBarangMasukDetailType>
-                controller={jumlahBoxController}
-                label="Jumlah Box"
-                placeholder="Jumlah Box"
-                required
-                max={9999999999}
-              />
             </div>
 
             {/* button submit */}
@@ -248,4 +243,4 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
   );
 };
 
-export default ModalFormulirTambahBarangMasuk;
+export default ModalGantiProdukMasuk;

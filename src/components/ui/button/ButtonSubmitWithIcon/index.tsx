@@ -47,8 +47,9 @@ const ButtonSubmitWithIcon: FC<Props> = ({
         <div className="w-20">
           <div
             className={cn(
-              "loading text-primary-white",
+              "loading ",
               size ? "loading-xs" : "loading-sm",
+              textColor ? textColor : "text-primary-white",
             )}
           />
         </div>

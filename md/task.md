@@ -37,5 +37,6 @@
 - [✅] Membuat fitur tambah barang masuk (Mobile)
 - [✅] Integrasi API Delete (Mobile)
 
-- [ ] Integrasi API Ganti Produk (Dekstop)
-- [ ] Integrasi API Ubah (Mobile)
+- [✅] Integrasi API Ganti Produk (Dekstop)
+- [✅] Integrasi API Ubah (Mobile)
+- [ ] Delete Barang Masuk

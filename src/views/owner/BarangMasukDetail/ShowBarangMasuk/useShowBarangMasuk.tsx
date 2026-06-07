@@ -36,6 +36,14 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     dataDelete,
   } = useModal();
 
+  // use modal ganti produk
+  const {
+    modalRef: modalGantiProdukRef,
+    handleCloseModal: handleCloseModalGantiProduk,
+    handleShowModal: handleShowModalGantiProduk,
+    idModal: idBarangMasuk,
+  } = useModal();
+
   //   use mutation
   const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(
     {
@@ -80,7 +88,6 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
   const [dataUpdate, setDataUpdate] = useState<
     | (UpdateBarangMasukDetailType & {
         id: number;
-        type: "produk" | "jumlahBox";
       })
     | null
   >(null);
@@ -106,16 +113,14 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
   // handle set is data update
   const handleSetDataUpdate = (params: {
     data: (UpdateBarangMasukDetailType & { id: number }) | null;
-    type: "produk" | "jumlahBox";
   }) => {
-    const { data, type } = params;
+    const { data } = params;
 
     // set state
     if (data) {
       // set state
       setDataUpdate({
         id: data.id,
-        type,
         produkId: data.produkId,
         jumlahBox: data.jumlahBox,
       });
@@ -189,15 +194,9 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
 
       let finalData: UpdateBarangMasukDetailType | null = null;
 
-      if (dataUpdate.type === "produk") {
-        finalData = {
-          jumlahBox: data.jumlahBox,
-        };
-      } else {
-        finalData = {
-          jumlahBox: data.jumlahBox,
-        };
-      }
+      finalData = {
+        jumlahBox: data.jumlahBox,
+      };
 
       await mutateUpdate({ ...finalData, id: dataUpdate.id, status });
     } catch (error) {
@@ -234,6 +233,10 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     isStatusPosted,
     isDirty,
     jumlahBoxController,
+    modalGantiProdukRef,
+    handleCloseModalGantiProduk,
+    handleShowModalGantiProduk,
+    idBarangMasuk,
   };
 };
 
