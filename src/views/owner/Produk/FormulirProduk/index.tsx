@@ -27,6 +27,7 @@ const FormulirProduk = () => {
     isPendingMutateProduk,
     onSubmit,
     isLoadingProdukDetail,
+    validatedIdParams,
     dataProdukDetail,
     isiPerBoxController,
     stokController,
@@ -66,121 +67,168 @@ const FormulirProduk = () => {
           <div className="w-full flex flex-col justify-start items-start lg:flex-row lg:gap-6">
             {/* input img */}
             <div className="w-full h-60 lg:w-200 lg:h-105 mb-16 lg:mb-12">
-              <InputImg<CreateProdukType | UpdateProdukType>
-                controller={fileController}
-                label="Foto Produk"
-                name="img"
-                {...(dataProdukDetail?.data?.img
-                  ? {
-                      required: false,
-                    }
-                  : {
-                      required: true,
-                    })}
-              />
+              {isLoadingProdukDetail ? (
+                <div className="skeleton w-full h-full" />
+              ) : (
+                <InputImg<CreateProdukType | UpdateProdukType>
+                  controller={fileController}
+                  label="Foto Produk"
+                  name="img"
+                  {...(dataProdukDetail?.data?.img
+                    ? {
+                        required: false,
+                      }
+                    : {
+                        required: true,
+                      })}
+                />
+              )}
             </div>
 
             <div className="w-full flex flex-col justify-start items-start">
               {/* nama */}
-              <InputTextNonIcon
-                register={register("nama")}
-                name="nama"
-                placeholder="Nama Produk"
-                label="Nama Produk"
-                required
-                max={100}
-                errorMessage={errors?.nama?.message}
-                defaultValue={dataProdukDetail?.data?.nama}
-              />
+              {isLoadingProdukDetail ? (
+                <div className="w-full h-10 skeleton my-3" />
+              ) : (
+                <InputTextNonIcon
+                  register={register("nama")}
+                  name="nama"
+                  placeholder="Nama Produk"
+                  label="Nama Produk"
+                  required
+                  max={100}
+                  errorMessage={errors?.nama?.message}
+                  defaultValue={dataProdukDetail?.data?.nama}
+                />
+              )}
 
               {/* kode produk */}
-              <InputTextNonIcon
-                register={register("kode")}
-                name="kode"
-                placeholder="Kode Produk"
-                label="Kode Produk"
-                required
-                max={50}
-                errorMessage={errors?.kode?.message}
-                defaultValue={dataProdukDetail?.data?.kode}
-              />
+              {isLoadingProdukDetail ? (
+                <div className="w-full h-10 skeleton my-3" />
+              ) : (
+                <InputTextNonIcon
+                  register={register("kode")}
+                  name="kode"
+                  placeholder="Kode Produk"
+                  label="Kode Produk"
+                  required
+                  max={50}
+                  errorMessage={errors?.kode?.message}
+                  defaultValue={dataProdukDetail?.data?.kode}
+                />
+              )}
 
               {/* kategori */}
-              <InputChoose<CreateProdukType | UpdateProdukType>
-                controller={kategoriController}
-                label="Kategori Produk"
-                chooseList={
-                  dataKategori?.data
-                    ? dataKategori.data.map((item) => ({
-                        value: item.id,
-                        label: item.nama,
-                      }))
-                    : []
-                }
-                required
-                isLoading={isLoadingKategori}
-                placeholder="Pilih kategori"
-              />
+
+              {isLoadingProdukDetail ? (
+                <div className="w-full h-10 skeleton my-3" />
+              ) : (
+                <InputChoose<CreateProdukType | UpdateProdukType>
+                  controller={kategoriController}
+                  label="Kategori Produk"
+                  chooseList={
+                    dataKategori?.data
+                      ? dataKategori.data.map((item) => ({
+                          value: item.id,
+                          label: item.nama,
+                        }))
+                      : []
+                  }
+                  required
+                  isLoading={isLoadingKategori}
+                  placeholder="Pilih kategori"
+                />
+              )}
 
               <div className="w-full flex flex-row justify-center items-center gap-2 lg:gap-6">
-                {/* harga beli */}
-                <InputPrice<CreateProdukType | UpdateProdukType>
-                  controller={hargaBeliController}
-                  label="Harga Beli Satuan"
-                  placeholder="Harga Beli Satuan"
-                  required
-                />
+                {isLoadingProdukDetail ? (
+                  <>
+                    <div className="w-full h-10 skeleton my-3" />
+                    <div className="w-full h-10 skeleton my-3" />
+                  </>
+                ) : (
+                  <>
+                    {/* harga beli */}
+                    <InputPrice<CreateProdukType | UpdateProdukType>
+                      controller={hargaBeliController}
+                      label="Harga Beli Satuan"
+                      placeholder="Harga Beli Satuan"
+                      required
+                    />
 
-                {/* harga jual  */}
-                <InputPrice<CreateProdukType | UpdateProdukType>
-                  controller={hargaJualController}
-                  label="Harga Jual Satuan"
-                  placeholder="Harga Jual Satuan"
-                  required
-                />
+                    {/* harga jual  */}
+                    <InputPrice<CreateProdukType | UpdateProdukType>
+                      controller={hargaJualController}
+                      label="Harga Jual Satuan"
+                      placeholder="Harga Jual Satuan"
+                      required
+                    />
+                  </>
+                )}
               </div>
 
               <div className="w-full flex flex-col justify-start items-start lg:flex-row lg:gap-6 lg:mt-4">
-                {/* stok */}
-                <InputNumber<CreateProdukType | UpdateProdukType>
-                  controller={stokController}
-                  label="Stok"
-                  placeholder="Masukkan stok"
-                  required
-                  max={9999999999}
-                />
+                {!validatedIdParams && (
+                  <>
+                    {/* stok */}
+                    <InputNumber<CreateProdukType | UpdateProdukType>
+                      controller={stokController}
+                      label="Stok"
+                      placeholder="Masukkan stok"
+                      required
+                      max={9999999999}
+                    />
+                  </>
+                )}
 
                 {/* isi per box */}
-                <InputNumber<CreateProdukType | UpdateProdukType>
-                  controller={isiPerBoxController}
-                  label="Isi Per Box"
-                  placeholder="Masukkan isi per box"
-                  required
-                  max={9999999999}
-                />
+                {isLoadingProdukDetail ? (
+                  <div className="w-full h-10 skeleton my-3" />
+                ) : (
+                  <InputNumber<CreateProdukType | UpdateProdukType>
+                    controller={isiPerBoxController}
+                    label="Isi Per Box"
+                    placeholder="Masukkan isi per box"
+                    required
+                    max={9999999999}
+                  />
+                )}
 
                 {/* stok minimum */}
-                <InputNumber<CreateProdukType | UpdateProdukType>
-                  controller={stokMinimumController}
-                  label="Stok Minimum"
-                  placeholder="Masukkan stok minimum"
-                  required
-                  max={9999999999}
-                />
+                {isLoadingProdukDetail ? (
+                  <div className="w-full h-10 skeleton my-3" />
+                ) : (
+                  <InputNumber<CreateProdukType | UpdateProdukType>
+                    controller={stokMinimumController}
+                    label="Stok Minimum"
+                    placeholder="Masukkan stok minimum"
+                    required
+                    max={9999999999}
+                  />
+                )}
               </div>
             </div>
           </div>
 
           {/* button aksi */}
           <div className="w-full flex flex-row justify-end items-center gap-4 my-4">
-            {/* button cancel */}
-            <ButtonBackNonIcon label="Batal" />
+            {isLoadingProdukDetail ? (
+              <>
+                <div className="w-1/2 h-10 skeleton" />
+                <div className="w-1/2 h-10 skeleton" />
+              </>
+            ) : (
+              <>
+                {/* button cancel */}
+                <ButtonBackNonIcon label="Batal" />
 
-            {/* button submit */}
-            <ButtonSubmit
-              isLoading={isPendingMutateProduk}
-              disable={isPendingMutateProduk}
-            />
+                {/* button submit */}
+                <ButtonSubmit
+                  isLoading={isPendingMutateProduk}
+                  disable={isPendingMutateProduk}
+                />
+              </>
+            )}
           </div>
         </form>
       </div>

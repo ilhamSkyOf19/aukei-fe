@@ -60,8 +60,8 @@ const useFormulirProduk = () => {
         kode: dataProdukDetail.data.kode,
         hargaJual: dataProdukDetail.data.hargaJual,
         hargaBeli: dataProdukDetail.data.hargaBeli,
+        stok: undefined,
         isiPerBox: dataProdukDetail.data.isiPerBox,
-        stok: dataProdukDetail.data.stok,
         stokMinimum: dataProdukDetail.data.stokMinimum,
         img: undefined,
       });
@@ -147,54 +147,53 @@ const useFormulirProduk = () => {
   // on submit
   const onSubmit = async (data: CreateProdukType | UpdateProdukType) => {
     try {
-      const formdData = new FormData();
+      const formData = new FormData();
 
       // check img
       if (data.img) {
-        formdData.append("img", data.img);
+        formData.append("img", data.img);
       }
 
       // check nama
       if (data.nama) {
-        formdData.append("nama", data.nama);
+        formData.append("nama", data.nama);
       }
 
       // check kode
       if (data.kode) {
-        formdData.append("kode", data.kode);
+        formData.append("kode", data.kode);
       }
 
       // check kategori id
       if (data.kategoriId) {
-        formdData.append("kategoriId", data.kategoriId.toString());
+        formData.append("kategoriId", data.kategoriId.toString());
       }
 
       // check harga beli
       if (data.hargaBeli !== undefined) {
-        formdData.append("hargaBeli", data.hargaBeli.toString());
+        formData.append("hargaBeli", data.hargaBeli.toString());
       }
 
       // check harga jual
       if (data.hargaJual !== undefined) {
-        formdData.append("hargaJual", data.hargaJual.toString());
+        formData.append("hargaJual", data.hargaJual.toString());
       }
 
       // check stok
       if (!validatedIdParams && data.stok !== undefined) {
-        formdData.append("stok", data.stok.toString());
+        formData.append("stok", data.stok.toString());
       }
 
       // check isi perbox
       if (data.isiPerBox !== undefined) {
-        formdData.append("isiPerBox", data.isiPerBox.toString());
+        formData.append("isiPerBox", data.isiPerBox.toString());
       }
 
       // check stok minimum
       if (data.stokMinimum !== undefined) {
-        formdData.append("stokMinimum", data.stokMinimum.toString());
+        formData.append("stokMinimum", data.stokMinimum.toString());
       }
-
-      await mutateProduk(formdData);
+      await mutateProduk(formData);
     } catch (error) {
       console.log(error);
     }
@@ -221,6 +220,8 @@ const useFormulirProduk = () => {
 
     stokMinimumController,
     isiPerBoxController,
+
+    validatedIdParams,
   };
 };
 

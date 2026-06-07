@@ -70,6 +70,8 @@ export class ProdukValidation {
 
       kode: this.stringSchema("kode produk", 50).optional(),
 
+      stok: z.number().max(0).optional(),
+
       hargaBeli: z
         .number("Mohon isi harga beli")
         .min(0, "Mohon isi harga beli")

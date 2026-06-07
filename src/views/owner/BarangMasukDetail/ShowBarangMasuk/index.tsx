@@ -12,6 +12,7 @@ import type { UpdateBarangMasukDetailType } from "../../../../models/barangMasuk
 import InputNumber from "../../../../components/inputs/InputNumber";
 import ModalGantiProdukMasuk from "../../../../components/modals/ModalGantiProdukMasuk";
 import CardForm from "../../../../components/inputs/CardForm";
+import ButtonInline from "../../../../components/ui/button/ButtonInline";
 
 type Props = {
   isLoadingBarangMasukDetail?: boolean;
@@ -311,9 +312,8 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             </span>
 
                             {/* button update */}
-                            <button
-                              type="button"
-                              onClick={() =>
+                            <ButtonInline
+                              handleKeyUpdate={() =>
                                 handleSetDataUpdate({
                                   data: {
                                     id: item.id,
@@ -322,9 +322,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                                   },
                                 })
                               }
-                            >
-                              <PencilLine className="size-4 text-info" />
-                            </button>
+                            />
                           </div>
                         )}
                       </td>
