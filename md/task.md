@@ -39,4 +39,4 @@
 
 - [✅] Integrasi API Ganti Produk (Dekstop)
 - [✅] Integrasi API Ubah (Mobile)
-- [ ] Delete Barang Masuk
+- [✅] Delete Barang Masuk

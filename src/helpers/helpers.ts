@@ -108,3 +108,10 @@ export const getCurrentDateTimeLocal = () => {
     .toISOString()
     .slice(0, 16);
 };
+
+export const expireDateOneDay = (date: Date): Date => {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+
+  return newDate;
+};

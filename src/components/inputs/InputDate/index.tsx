@@ -5,6 +5,7 @@ import { format, setHours, setMinutes } from "date-fns";
 import { useEffect, useState } from "react";
 import type { FieldValues, UseControllerReturn } from "react-hook-form";
 import { cn } from "../../../utils/cn";
+import { id } from "date-fns/locale";
 
 type Props<T extends FieldValues> = {
   controller: UseControllerReturn<T>;
@@ -122,6 +123,7 @@ export const InputDate = <T extends FieldValues>({
       <div className="scale-85 origin-top-left">
         <DayPicker
           mode="single"
+          locale={id}
           selected={selected}
           onSelect={handleDaySelect}
         />

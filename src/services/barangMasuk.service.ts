@@ -86,4 +86,14 @@ export class BarangMasukServices {
 
     return result.data;
   }
+
+  // delete
+  static async delete(id: number): Promise<ResponseStructure<null>> {
+    // call api
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/barang-masuk/${id}`,
+    );
+
+    return result.data;
+  }
 }

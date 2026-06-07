@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BarangMasukServices } from "../../../../services/barangMasuk.service";
 import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../hooks/useFilter";
@@ -6,12 +6,16 @@ import { useToastAnimation } from "../../../../hooks/useToast";
 import useModal from "../../../../hooks/useModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHighlight from "../../../../hooks/useHighlight";
+import useDeleteBarangMasuk from "../../../../hooks/useDeleteBarangMasuk";
 
 const useBarangMasuk = () => {
   // navigate
   const navigate = useNavigate();
   // current pathname
   const currentPathname = useLocation().pathname;
+
+  // query client
+  const queryClient = useQueryClient();
 
   // filter search
   const { search, setSearch: handleSearch } = useFilterSearch("search");
@@ -49,7 +53,7 @@ const useBarangMasuk = () => {
   });
 
   //   toast
-  const { toast } = useToastAnimation();
+  const { toast, handleSetToast } = useToastAnimation();
 
   // query
   const { data: dataBarangMasuk, isLoading: isLoadingBarangMasuk } = useQuery({
@@ -78,6 +82,20 @@ const useBarangMasuk = () => {
     navigate(`${currentPathname}/barang-masuk/${id}`);
   };
 
+  // use delete barang masuk
+  const {
+    dataDelete,
+    handleCloseModalDelete,
+    handleDelete,
+    handleShowModalDelete,
+    isPendingDelete,
+    modalDeleteRef,
+  } = useDeleteBarangMasuk({
+    handleInvalidate: () =>
+      queryClient.refetchQueries({ queryKey: ["barang-masuk"] }),
+    handleToast: handleSetToast,
+  });
+
   return {
     dataBarangMasuk,
     isLoadingBarangMasuk,
@@ -94,6 +112,12 @@ const useBarangMasuk = () => {
     handleSetIsActiveAksi,
     wrapperRef,
     handleRedirectDetail,
+    modalDeleteRef,
+    handleCloseModalDelete,
+    handleShowModalDelete,
+    handleDelete,
+    dataDelete,
+    isPendingDelete,
   };
 };
 

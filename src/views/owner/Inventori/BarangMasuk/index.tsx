@@ -12,6 +12,8 @@ import PaginationAndLimit from "../../../../components/filters/PaginationAndLimi
 import StatusInventori from "../../../../components/ui/StatusInventori";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import ModalFormulirBarangMasuk from "../../../../components/modals/ModalFormulirBarangMasuk";
+import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
+import ModalDelete from "../../../../components/modals/ModalDelete";
 
 const BarangMasuk = () => {
   // call use barang masuk
@@ -31,6 +33,12 @@ const BarangMasuk = () => {
     isActiveAksi,
     wrapperRef,
     handleRedirectDetail,
+    dataDelete,
+    handleCloseModalDelete,
+    handleDelete,
+    modalDeleteRef,
+    handleShowModalDelete,
+    isPendingDelete,
   } = useBarangMasuk();
 
   return (
@@ -167,14 +175,21 @@ const BarangMasuk = () => {
                               }
                             />
                           </li>
-                          <li>
-                            <LabelButtonDropDownWithIcon
-                              color="text-error"
-                              label="Hapus"
-                              icon={Trash}
-                              handleClick={() => {}}
-                            />
-                          </li>
+                          {barang.status === STATUS_INVENTORI_TYPE.DRAFT && (
+                            <li>
+                              <LabelButtonDropDownWithIcon
+                                color="text-error"
+                                label="Hapus"
+                                icon={Trash}
+                                handleClick={() =>
+                                  handleShowModalDelete(
+                                    barang.id,
+                                    barang.kodeReferensi,
+                                  )
+                                }
+                              />
+                            </li>
+                          )}
                         </ul>
                       </div>
                     </td>
@@ -226,6 +241,16 @@ const BarangMasuk = () => {
       <ModalFormulirBarangMasuk
         modalRef={modalFormulirBarangMasukRef}
         handleCloseModal={handleCloseModalFormulirBarangMasuk}
+      />
+
+      {/* modal delete */}
+      <ModalDelete
+        modalRef={modalDeleteRef}
+        handleCloseModal={handleCloseModalDelete}
+        handleDelete={handleDelete}
+        bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
+        highlightData={dataDelete}
+        isLoadingDelete={isPendingDelete}
       />
     </div>
   );

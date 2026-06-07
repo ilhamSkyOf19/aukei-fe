@@ -71,7 +71,11 @@ export const TOAST_CONFIG_BARANG_MASUK: Record<
 > = {
   updated_barang_masuk: {
     color: "info",
-    message: "Produk berhasil diubah",
+    message: "Barang masuk berhasil diubah",
+  },
+  deleted_barang_masuk: {
+    color: "error",
+    message: "Barang masuk berhasil dihapus",
   },
 };
 

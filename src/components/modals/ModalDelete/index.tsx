@@ -14,6 +14,7 @@ type Props = {
   listData?: string[];
   normalMessage?: boolean;
   kataKunci?: string;
+  highlightData?: string;
 };
 const ModalDelete: FC<Props> = ({
   handleCloseModal,
@@ -24,6 +25,7 @@ const ModalDelete: FC<Props> = ({
   listData,
   kataKunci,
   normalMessage,
+  highlightData,
 }) => {
   // state error
   const [isError, setIsError] = useState<boolean>(false);
@@ -59,6 +61,11 @@ const ModalDelete: FC<Props> = ({
         <h3 className="font-semibold text-base-content text-sm lg:text-lg text-center mb-4">
           {bigTitle || "Apakah anda yakin ingin menghapus data ini?"}
         </h3>
+        {/* highlight data */}
+
+        <div className="w-full flex flex-row justify-center items-center">
+          <p className="text-base text-error font-semibold">{highlightData}</p>
+        </div>
 
         {/* content */}
         {normalMessage && (

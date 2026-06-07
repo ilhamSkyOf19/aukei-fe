@@ -3,9 +3,16 @@ import type { IProduk } from "./produk.model";
 export interface IBarangMasukDetailType {
   id: number;
   barangMasukId: number;
-  produk: Omit<
+  produk: Pick<
     IProduk,
-    "createdAt" | "updatedAt" | "stokMinimum" | "hargaJual"
+    | "nama"
+    | "kode"
+    | "kategori"
+    | "img"
+    | "hargaBeli"
+    | "isiPerBox"
+    | "id"
+    | "stok"
   >;
   jumlahBox: number;
   createdAt: Date;

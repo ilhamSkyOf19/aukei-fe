@@ -15,7 +15,7 @@ import { STATUS_INVENTORI_TYPE } from "../../../types/constant.type";
 import useBarangMasukDetail from "./useBarangMasukDetail";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
 import { cn } from "../../../utils/cn";
-import { formatRupiah } from "../../../helpers/helpers";
+import { expireDateOneDay, formatRupiah } from "../../../helpers/helpers";
 import ShowDataBarangMasuk from "./ShowBarangMasuk";
 import InputSearch from "../../../components/inputs/InputSearch";
 import InputNumber from "../../../components/inputs/InputNumber";
@@ -27,6 +27,7 @@ import { TOAST_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/toast.type";
 import ModalAlert from "../../../components/modals/ModalAlert";
 import type { CreateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
 import ModalFormulirTambahBarangMasuk from "../../../components/modals/ModalFormulirTambahBarangMasuk";
+import ModalDelete from "../../../components/modals/ModalDelete";
 
 const BarangMasukDetail = () => {
   // call use barang masuk detail
@@ -64,6 +65,12 @@ const BarangMasukDetail = () => {
     handleCloseModalFormulirTambahBarang,
     handleShowModalFormulirTambahBarang,
     modalFormulirTambahBarangRef,
+    dataDelete,
+    handleCloseModalDelete,
+    handleDelete,
+    isPendingDelete,
+    handleShowModalDelete,
+    modalDeleteRef,
   } = useBarangMasukDetail();
 
   return (
@@ -104,7 +111,7 @@ const BarangMasukDetail = () => {
         ) : (
           <div className="w-full flex flex-col lg:flex-row justify-start items-start lg:items-center">
             {/* kode and status */}
-            <div className="flex lg:flex-1 flex-col justify-start items-start">
+            <div className="flex lg:flex-2 flex-col justify-start items-start">
               <div className="w-full px-2 flex flex-row justify-start items-start gap-2 mt-4">
                 <h2 className="text-base-content text-lg lg:text-xl font-semibold">
                   {dataBarangMasukDetail?.data?.kodeReferensi}
@@ -120,7 +127,7 @@ const BarangMasukDetail = () => {
               </div>
 
               {/* tanggal */}
-              <div className="px-2 mt-2">
+              <div className="px-2 mt-2 flex flex-row justify-start items-center gap-2">
                 <p className="text-xs text-base-content">
                   Dibuat pada tanggal{" "}
                   <span className="font-medium">
@@ -129,6 +136,21 @@ const BarangMasukDetail = () => {
                     )}
                   </span>
                 </p>
+
+                {/* caption */}
+                {isStatusPosted && (
+                  <div className="hidden lg:flex flex-row justify-start items-center gap-2">
+                    <div className="status status-success status-sm" />
+
+                    <span className="text-xs text-base-content">
+                      {`Anda dapat membatalkan postingan sebelum ${formatTanggalLengkap(
+                        expireDateOneDay(
+                          dataBarangMasukDetail?.data?.createdAt ?? new Date(),
+                        ),
+                      )} WIB`}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -141,34 +163,65 @@ const BarangMasukDetail = () => {
                   icon={Printer}
                   bgColor="bg-info"
                 />
+
+                {dataBarangMasukDetail?.data?.status ===
+                  STATUS_INVENTORI_TYPE.DRAFT && (
+                  <ButtonWithIcon
+                    textColor="text-primary-white"
+                    label="Hapus"
+                    icon={Trash2}
+                    bgColor="bg-error"
+                    handleBtn={() =>
+                      handleShowModalDelete(
+                        dataBarangMasukDetail?.data?.id,
+                        dataBarangMasukDetail?.data?.kodeReferensi,
+                      )
+                    }
+                  />
+                )}
               </div>
 
               {/* button posting */}
               {(isStatusDraft || (isStatusPosted && !isExpired)) && (
-                <ButtonWithIcon
-                  handleBtn={() => {
-                    if (isStatusDraft) {
-                      handlePosting(dataBarangMasukDetail?.data?.id ?? 0);
-                    } else if (isStatusPosted) {
-                      handleCancelPosting(dataBarangMasukDetail?.data?.id ?? 0);
+                <div className="flex flex-col justify-start items-start w-full lg:w-auto gap-2 lg:gap-0">
+                  <ButtonWithIcon
+                    handleBtn={() => {
+                      if (isStatusDraft) {
+                        handlePosting(dataBarangMasukDetail?.data?.id ?? 0);
+                      } else if (isStatusPosted) {
+                        handleCancelPosting(
+                          dataBarangMasukDetail?.data?.id ?? 0,
+                        );
+                      }
+                    }}
+                    icon={Check}
+                    bgColor={isStatusDraft ? "bg-custom-primary" : "bg-error"}
+                    textColor={
+                      isStatusDraft
+                        ? "text-custom-secondary"
+                        : "text-primary-white"
                     }
-                  }}
-                  icon={Check}
-                  bgColor={isStatusDraft ? "bg-custom-primary" : "bg-error"}
-                  textColor={
-                    isStatusDraft
-                      ? "text-custom-secondary"
-                      : "text-primary-white"
-                  }
-                  label={
-                    isStatusPosted
-                      ? "Batalkan Posting"
-                      : isStatusDraft
-                        ? "Posting Sekarang"
-                        : ""
-                  }
-                  customWidth="w-full lg:w-auto"
-                />
+                    label={
+                      isStatusPosted
+                        ? "Batalkan Posting"
+                        : isStatusDraft
+                          ? "Posting Sekarang"
+                          : ""
+                    }
+                    customWidth="w-full lg:w-auto"
+                  />
+
+                  {/* caption */}
+                  {isStatusPosted && (
+                    <span className="text-[0.635rem] lg:hidden text-base-content/50">
+                      {`Anda dapat membatalkan postingan sebelum ${formatTanggalLengkap(
+                        expireDateOneDay(
+                          dataBarangMasukDetail?.data?.createdAt ?? new Date(),
+                        ),
+                      )}`}
+                    </span>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -213,7 +266,8 @@ const BarangMasukDetail = () => {
                   <span className={"text-[0.625rem] lg:text-sm font-medium"}>
                     {formatTanggalLengkap(
                       dataBarangMasukDetail?.data?.tanggalMasuk ?? new Date(),
-                    )}
+                    )}{" "}
+                    WIB
                   </span>
                 </div>
               </div>
@@ -582,6 +636,16 @@ const BarangMasukDetail = () => {
       <ModalFormulirTambahBarangMasuk
         modalRef={modalFormulirTambahBarangRef}
         handleCloseModal={handleCloseModalFormulirTambahBarang}
+      />
+
+      {/* modal delete */}
+      <ModalDelete
+        modalRef={modalDeleteRef}
+        handleCloseModal={handleCloseModalDelete}
+        handleDelete={handleDelete}
+        bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
+        highlightData={dataDelete}
+        isLoadingDelete={isPendingDelete}
       />
     </div>
   );

@@ -28,4 +28,7 @@ export const ALERT_CONFIG_BARANG_MASUK_DETAIL: Record<
   produk_choose_exist_in_data: {
     message: "Produk sudah ada dalam data, silahkan pilih produk lain.",
   },
+  empty_barang_masuk: {
+    message: "Data Barang Masuk masih kosong, silahkan tambahkan barang masuk.",
+  },
 };

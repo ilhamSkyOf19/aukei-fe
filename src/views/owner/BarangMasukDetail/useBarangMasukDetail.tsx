@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { BarangMasukServices } from "../../../services/barangMasuk.service";
@@ -19,10 +19,14 @@ import useConfirm from "../../../hooks/useConfirm";
 import { STATUS_INVENTORI_TYPE } from "../../../types/constant.type";
 import type { InputSearchRef } from "../../../types/ref.type";
 import useModal from "../../../hooks/useModal";
+import useDeleteBarangMasuk from "../../../hooks/useDeleteBarangMasuk";
 
 const useBarangMasukDetail = () => {
   // query client
   const queryClient = useQueryClient();
+
+  // navigate
+  const navigate = useNavigate();
 
   // state active produk choose
   const [activeComponentChooseProduk, setActiveComponentChooseProduk] =
@@ -245,7 +249,15 @@ const useBarangMasukDetail = () => {
         });
       },
       onError: (err) => {
-        console.log(err);
+        if (axios.isAxiosError<ErrorResponse>(err)) {
+          if (
+            err?.response?.data?.meta?.customField?.includes(
+              "empty_barang_masuk",
+            )
+          ) {
+            handleSetAlert("empty_barang_masuk");
+          }
+        }
       },
     });
 
@@ -254,6 +266,11 @@ const useBarangMasukDetail = () => {
     try {
       if (dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED)
         return;
+
+      if (dataBarangMasukDetail?.data?.detailBarangMasuks.length === 0) {
+        handleSetAlert("empty_barang_masuk");
+        return;
+      }
 
       // confirm
       const isConfirm = await confirm();
@@ -322,6 +339,24 @@ const useBarangMasukDetail = () => {
   const isStatusDraft =
     dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT;
 
+  // use delete barang masuk
+  const {
+    dataDelete,
+    handleCloseModalDelete,
+    handleDelete,
+    handleShowModalDelete,
+    isPendingDelete,
+    modalDeleteRef,
+  } = useDeleteBarangMasuk({
+    redirect: () => {
+      navigate("/dashboard/inventori", {
+        state: {
+          toast: "deleted_barang_masuk",
+        },
+      });
+    },
+  });
+
   return {
     dataBarangMasukDetail,
     isLoadingBarangMasukDetail,
@@ -356,6 +391,12 @@ const useBarangMasukDetail = () => {
     modalFormulirTambahBarangRef,
     handleShowModalFormulirTambahBarang,
     handleCloseModalFormulirTambahBarang,
+    modalDeleteRef,
+    handleShowModalDelete,
+    handleCloseModalDelete,
+    dataDelete,
+    handleDelete,
+    isPendingDelete,
   };
 };
 

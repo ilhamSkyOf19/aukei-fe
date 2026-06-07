@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import type { Alert } from "../types/alert.types";
 
 export const useAlertAnimation = (
-  duration: number = 3000,
+  duration: number = 4500,
   fadeOut: number = 2000,
 ) => {
   const navigate = useNavigate();
