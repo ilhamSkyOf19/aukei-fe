@@ -1,24 +1,17 @@
-import {
-  Ellipsis,
-  EllipsisVertical,
-  PencilLine,
-  SendHorizonal,
-  Trash,
-  X,
-} from "lucide-react";
+import { Ellipsis, EllipsisVertical, PencilLine, Trash } from "lucide-react";
 import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import type { ResponseStructure } from "../../../../types/response.type";
 import type { ResponseBarangMasukWithDetailType } from "../../../../models/barangMasuk.model";
-import type { FC, ReactNode } from "react";
+import type { FC } from "react";
 import { cn } from "../../../../utils/cn";
 import LabelButtonDropDownWithIcon from "../../../../components/ui/button/LabelButtonDropDownWithIcon";
 import useShowBarangMasuk from "./useShowBarangMasuk";
 import ModalDelete from "../../../../components/modals/ModalDelete";
-import type { UseFormHandleSubmit } from "react-hook-form";
 import type { UpdateBarangMasukDetailType } from "../../../../models/barangMasukDetail.model";
 import InputNumber from "../../../../components/inputs/InputNumber";
 import ModalGantiProdukMasuk from "../../../../components/modals/ModalGantiProdukMasuk";
+import CardForm from "../../../../components/inputs/CardForm";
 
 type Props = {
   isLoadingBarangMasukDetail?: boolean;
@@ -293,7 +286,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                       {/* jumlah perbox */}
                       <td className="font-medium text-base-content">
                         {dataUpdate?.id === item.id ? (
-                          <CardForm
+                          <CardForm<UpdateBarangMasukDetailType>
                             handleResetForm={handleClearDataUpdate}
                             handleSubmit={handleSubmit}
                             onSubmit={onSubmit}
@@ -454,81 +447,6 @@ const ShowDataBarangMasuk: FC<Props> = ({
         status={dataBarangMasukDetail?.data?.status}
       />
     </>
-  );
-};
-
-// card form
-type CardFormProps = {
-  handleSubmit: UseFormHandleSubmit<UpdateBarangMasukDetailType>;
-  onSubmit: (data: UpdateBarangMasukDetailType) => Promise<void>;
-  children: ReactNode;
-  handleResetForm: () => void;
-  isPending?: boolean;
-  btnAksiPosition?: "top";
-  flexColoum?: boolean;
-  hAuto?: boolean;
-  isDirty?: boolean;
-};
-const CardForm: FC<CardFormProps> = ({
-  children,
-  handleResetForm,
-  handleSubmit,
-  onSubmit,
-  isPending,
-  btnAksiPosition,
-  flexColoum,
-  hAuto,
-  isDirty,
-}) => {
-  return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className={cn(
-        "hidden  lg:flex justify-start gap-3",
-        flexColoum ? "flex-col items-end" : "flex-row items-center",
-        hAuto ? "h-auto" : "h-14",
-      )}
-    >
-      {/* input text */}
-      {children}
-
-      {/* button aksi */}
-      <div
-        className={cn(
-          "flex h-full justify-start gap-2",
-          btnAksiPosition === "top" ? "items-start mt-2" : "items-end mb-2",
-        )}
-      >
-        {/* button close */}
-        <button
-          type="button"
-          className={cn(
-            "text-primary-white btn-sm btn btn-error",
-            isPending && "disabled:bg-error disabled:opacity-50",
-          )}
-          onClick={() => handleResetForm()}
-          disabled={isPending}
-        >
-          <X className="size-3" />
-        </button>
-
-        {/* button submit */}
-        <button
-          type="submit"
-          className={cn(
-            "text-primary-white btn-sm btn btn-success",
-            isPending && "disabled:bg-success",
-          )}
-          disabled={isPending || !isDirty}
-        >
-          {isPending ? (
-            <div className="loading loading-xs" />
-          ) : (
-            <SendHorizonal className="size-3" />
-          )}
-        </button>
-      </div>
-    </form>
   );
 };
 

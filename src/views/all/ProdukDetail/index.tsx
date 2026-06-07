@@ -31,6 +31,7 @@ import InputImg from "../../../components/inputs/InputImg";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_PRODUK_DETAIL } from "../../../types/toast.type";
 import ModalDelete from "../../../components/modals/ModalDelete";
+import ButtonInline from "../../../components/ui/button/ButtonInline";
 
 const ProdukDetail = () => {
   // call use
@@ -178,9 +179,8 @@ const ProdukDetail = () => {
                       </h3>
 
                       {/* button pencil */}
-                      <BtnUpdate
-                        handleKeyUpdate={handleKeyUpdate}
-                        value="nama"
+                      <ButtonInline
+                        handleKeyUpdate={() => handleKeyUpdate("nama")}
                       />
                     </>
                   ) : (
@@ -251,9 +251,8 @@ const ProdukDetail = () => {
                           </span>
 
                           {/* button pencil */}
-                          <BtnUpdate
-                            handleKeyUpdate={handleKeyUpdate}
-                            value="kode"
+                          <ButtonInline
+                            handleKeyUpdate={() => handleKeyUpdate("kode")}
                           />
                         </>
                       ) : (
@@ -324,9 +323,10 @@ const ProdukDetail = () => {
                               {dataProduk?.data?.kategori?.nama}
                             </span>
 
-                            <BtnUpdate
-                              handleKeyUpdate={handleKeyUpdate}
-                              value="kategoriId"
+                            <ButtonInline
+                              handleKeyUpdate={() =>
+                                handleKeyUpdate("kategoriId")
+                              }
                             />
                           </>
                         ) : (
@@ -388,9 +388,8 @@ const ProdukDetail = () => {
                         </span>
 
                         {/* button */}
-                        <BtnUpdate
-                          handleKeyUpdate={handleKeyUpdate}
-                          value="hargaJual"
+                        <ButtonInline
+                          handleKeyUpdate={() => handleKeyUpdate("hargaJual")}
                         />
                       </div>
 
@@ -431,9 +430,8 @@ const ProdukDetail = () => {
                         </span>
 
                         {/* button */}
-                        <BtnUpdate
-                          handleKeyUpdate={handleKeyUpdate}
-                          value="hargaBeli"
+                        <ButtonInline
+                          handleKeyUpdate={() => handleKeyUpdate("hargaBeli")}
                         />
                       </div>
 
@@ -547,9 +545,10 @@ const ProdukDetail = () => {
 
                             {/* btn update */}
                             <div className="border-l hidden lg:block border-base-content/30 pl-4">
-                              <BtnUpdate
-                                handleKeyUpdate={handleKeyUpdate}
-                                value="isiPerBox"
+                              <ButtonInline
+                                handleKeyUpdate={() =>
+                                  handleKeyUpdate("isiPerBox")
+                                }
                               />
                             </div>
                           </div>
@@ -607,9 +606,10 @@ const ProdukDetail = () => {
 
                             {/* btn update */}
                             <div className="border-l hidden lg:block border-base-content/30 pl-4">
-                              <BtnUpdate
-                                handleKeyUpdate={handleKeyUpdate}
-                                value="stokMinimum"
+                              <ButtonInline
+                                handleKeyUpdate={() =>
+                                  handleKeyUpdate("stokMinimum")
+                                }
                               />
                             </div>
                           </div>
@@ -855,23 +855,6 @@ const CardForm: FC<CardFormProps> = ({
         </button>
       </div>
     </form>
-  );
-};
-
-// button update
-
-type BtnUpdateProps = {
-  handleKeyUpdate: (value: string) => void;
-  value: string;
-};
-
-const BtnUpdate: FC<BtnUpdateProps> = ({ handleKeyUpdate, value }) => {
-  return (
-    <div className="tooltip hidden lg:block" data-tip="ubah">
-      <button type="button" onClick={() => handleKeyUpdate(value)}>
-        <PencilLineIcon className="size-4 text-info" />
-      </button>
-    </div>
   );
 };
 

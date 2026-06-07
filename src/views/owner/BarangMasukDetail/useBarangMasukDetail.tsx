@@ -397,6 +397,7 @@ const useBarangMasukDetail = () => {
     dataDelete,
     handleDelete,
     isPendingDelete,
+    handleSetToast,
   };
 };
 

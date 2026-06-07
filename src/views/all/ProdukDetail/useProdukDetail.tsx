@@ -11,6 +11,8 @@ import { KategoriProdukServices } from "../../../services/kategoriProduk.service
 import { useToastAnimation } from "../../../hooks/useToast";
 import useModal from "../../../hooks/useModal";
 import useDeleteProduk from "../../../hooks/useDeleteProduk";
+import axios from "axios";
+import type { ErrorResponse } from "../../../types/response.type";
 
 const useProdukDetail = () => {
   // state key update
@@ -66,9 +68,9 @@ const useProdukDetail = () => {
     register,
     control,
     formState: { errors },
-    setValue,
     reset,
     handleSubmit,
+    setError,
   } = useForm<UpdateProdukType>({
     resolver: zodResolver(ProdukValidation.UPDATE),
   });
@@ -115,28 +117,34 @@ const useProdukDetail = () => {
 
     switch (keyUpdate) {
       case "nama":
-        setValue("nama", dataProduk.data.nama);
+        reset({ nama: dataProduk.data.nama });
         break;
+
       case "kode":
-        setValue("kode", dataProduk.data.kode);
+        reset({ kode: dataProduk.data.kode });
         break;
+
       case "kategoriId":
-        setValue("kategoriId", dataProduk.data.kategori.id);
+        reset({ kategoriId: dataProduk.data.kategori.id });
         break;
+
       case "hargaJual":
-        setValue("hargaJual", dataProduk.data.hargaJual);
+        reset({ hargaJual: dataProduk.data.hargaJual });
         break;
+
       case "hargaBeli":
-        setValue("hargaBeli", dataProduk.data.hargaBeli);
+        reset({ hargaBeli: dataProduk.data.hargaBeli });
         break;
+
       case "isiPerBox":
-        setValue("isiPerBox", dataProduk.data.isiPerBox);
+        reset({ isiPerBox: dataProduk.data.isiPerBox });
         break;
+
       case "stokMinimum":
-        setValue("stokMinimum", dataProduk.data.stokMinimum);
+        reset({ stokMinimum: dataProduk.data.stokMinimum });
         break;
     }
-  }, [keyUpdate, dataProduk, setValue]);
+  }, [keyUpdate, dataProduk, reset]);
 
   // handle reset form
   const handleResetForm = () => {
@@ -161,7 +169,19 @@ const useProdukDetail = () => {
         handleSetToast("updated_produk");
       },
       onError: (err) => {
-        console.log(err);
+        if (axios.isAxiosError<ErrorResponse>(err)) {
+          if (err?.response?.data?.meta?.statusCode === 409) {
+            if (
+              err?.response?.data?.meta?.customField?.includes(
+                "produk_kode_key",
+              )
+            ) {
+              setError("kode", {
+                message: "Kode Produk sudah digunakan pada produk lain",
+              });
+            }
+          }
+        }
       },
     });
 

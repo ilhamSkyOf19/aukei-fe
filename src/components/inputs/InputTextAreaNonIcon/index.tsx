@@ -7,13 +7,14 @@ import ErrorMessage from "../../messages/ErrorMessage";
 type Props = {
   name: string;
   placeholder: string;
-  label: string;
+  label?: string;
   required?: boolean;
   errorMessage?: string;
   register: UseFormRegisterReturn;
-  max: number;
+  max?: number;
   defaultValue?: string;
   rows: number;
+  xs?: boolean;
 };
 
 const InputTextAreaNonIcon: FC<Props> = ({
@@ -26,6 +27,7 @@ const InputTextAreaNonIcon: FC<Props> = ({
   max,
   defaultValue,
   rows,
+  xs,
 }) => {
   // simpan sebagai number | null
   const [isValue, setIsValue] = useState<string>("");
@@ -46,23 +48,27 @@ const InputTextAreaNonIcon: FC<Props> = ({
     >
       {/* label */}
       <div className="w-full text-base relative flex flex-row justify-between items-center">
-        <div className="flex-2 relative">
-          <label
-            htmlFor={name}
-            className="capitalize text-xs lg:text-sm text-base-content"
-          >
-            {label}
-          </label>
+        {label && (
+          <div className="flex-2 relative">
+            <label
+              htmlFor={name}
+              className="capitalize text-xs lg:text-sm text-base-content"
+            >
+              {label}
+            </label>
 
-          <span className="absolute -top-1 ml-1 text-error">
-            {required && "*"}
-          </span>
-        </div>
+            <span className="absolute -top-1 ml-1 text-error">
+              {required && "*"}
+            </span>
+          </div>
+        )}
 
         {/* MAX BERDASARKAN NILAI ANGKA */}
-        <span className="text-[0.625rem] lg:text-xs">
-          {isValue.length} / {max}
-        </span>
+        {max && (
+          <span className="text-[0.625rem] lg:text-xs">
+            {isValue.length} / {max}
+          </span>
+        )}
       </div>
 
       <div
@@ -76,7 +82,10 @@ const InputTextAreaNonIcon: FC<Props> = ({
           name={name}
           id={name}
           placeholder={placeholder}
-          className="w-full font-medium h-full text-base-content border-none outline-none text-xs lg:text-sm placeholder:text-xs lg:placeholder:text-sm px-3 py-2 placeholder:text-base-content/50"
+          className={cn(
+            "w-full font-medium h-full text-base-content border-none outline-none  px-3 py-2 placeholder:text-base-content/50",
+            xs ? "text-[0.625rem] lg:text-xs " : "text-xs lg:text-sm ",
+          )}
           maxLength={max}
           onChange={(e) => {
             let value = e.target.value;

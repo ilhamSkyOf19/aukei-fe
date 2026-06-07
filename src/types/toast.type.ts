@@ -111,4 +111,12 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
     color: "error",
     message: "Barang masuk berhasil dibatalkan",
   },
+  updated_tanggalMasuk: {
+    color: "info",
+    message: "Tanggal masuk berhasil diubah",
+  },
+  updated_keterangan: {
+    color: "info",
+    message: "Keterangan barang berhasil diubah",
+  },
 };

@@ -1,13 +1,4 @@
-import {
-  AlertTriangle,
-  BanknoteArrowDown,
-  CalendarDays,
-  Check,
-  Package,
-  Printer,
-  TextAlignStart,
-  Trash2,
-} from "lucide-react";
+import { AlertTriangle, Check, Printer, Trash2 } from "lucide-react";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import StatusInventori from "../../../components/ui/StatusInventori";
@@ -28,6 +19,7 @@ import ModalAlert from "../../../components/modals/ModalAlert";
 import type { CreateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
 import ModalFormulirTambahBarangMasuk from "../../../components/modals/ModalFormulirTambahBarangMasuk";
 import ModalDelete from "../../../components/modals/ModalDelete";
+import InformasiBarangMasuk from "./InformasiBarangMasuk";
 
 const BarangMasukDetail = () => {
   // call use barang masuk detail
@@ -71,6 +63,7 @@ const BarangMasukDetail = () => {
     isPendingDelete,
     handleShowModalDelete,
     modalDeleteRef,
+    handleSetToast,
   } = useBarangMasukDetail();
 
   return (
@@ -229,157 +222,17 @@ const BarangMasukDetail = () => {
       </div>
 
       {/* informasi tanggal dan keterangan */}
-      <div className="w-full flex flex-col justify-start items-center lg:items-start lg:flex-row gap-4">
-        <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-55">
-          {/* title */}
-          <div className="w-full flex flex-row justify-start items-center">
-            <h2 className="text-base-content text-sm font-semibold">
-              Informasi Barang Masuk
-            </h2>
-          </div>
-
-          {isLoadingBarangMasukDetail ? (
-            <>
-              <div className="w-full h-8 skeleton mt-4" />
-              <div className="w-full h-8 skeleton mt-2" />
-            </>
-          ) : (
-            <>
-              {/* tanggal barang masuk */}
-              <div className="w-full flex flex-row justify-between items-start gap-3 mt-8">
-                {/* icon */}
-                <div className="h-full flex flex-row justify-start items-start">
-                  <CalendarDays className="size-5 text-emerald-600" />
-                </div>
-
-                {/* label and value */}
-                <div
-                  className={cn(
-                    "w-full flex flex-row justify-between pb-3 border-b border-base-content/10 items-center",
-                  )}
-                >
-                  {/* label */}
-                  <span className="text-xs lg:text-sm text-base-content/90 font-medium">
-                    Tanggal Barang Masuk
-                  </span>
-
-                  <span className={"text-[0.625rem] lg:text-sm font-medium"}>
-                    {formatTanggalLengkap(
-                      dataBarangMasukDetail?.data?.tanggalMasuk ?? new Date(),
-                    )}{" "}
-                    WIB
-                  </span>
-                </div>
-              </div>
-
-              {/* keterangan barang masuk */}
-              <div className="w-full flex flex-row justify-between items-start gap-3 mt-4">
-                {/* icon */}
-                <div className="h-full flex flex-row justify-start items-start">
-                  <TextAlignStart className="size-5 text-info" />
-                </div>
-
-                {/* label and value */}
-                <div
-                  className={cn(
-                    "w-full flex flex-col justify-between pb-3 border-b border-base-content/10 items-start",
-                  )}
-                >
-                  {/* label */}
-                  <span className="text-xs lg:text-sm text-base-content/90 font-medium">
-                    Keterangan
-                  </span>
-
-                  {/* keterangan */}
-                  <div className="mt-2">
-                    {dataBarangMasukDetail?.data?.keterangan ? (
-                      <span className="text-xs text-base-content font-medium leading-5">
-                        {dataBarangMasukDetail?.data?.keterangan}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-base-content/50 italic">
-                        Tidak ada keterangan
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* informasi ringkasan */}
-        <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-55">
-          {/* title */}
-          <div className="w-full flex flex-row justify-start items-center">
-            <h2 className="text-base-content text-sm font-semibold">
-              Ringkasan
-            </h2>
-          </div>
-
-          {isLoadingBarangMasukDetail ? (
-            <>
-              <div className="w-full h-8 skeleton mt-4" />
-              <div className="w-full h-8 skeleton mt-2" />
-            </>
-          ) : (
-            <>
-              {/* tanggal barang masuk */}
-              <div className="w-full flex flex-row justify-between items-start gap-3 mt-8">
-                {/* icon */}
-                <div className="h-full flex flex-row justify-start items-start">
-                  <Package className="size-5 text-emerald-600" />
-                </div>
-
-                {/* label and value */}
-                <div
-                  className={cn(
-                    "w-full flex flex-row justify-between pb-3 border-b border-base-content/10 items-center",
-                  )}
-                >
-                  {/* label */}
-                  <span className="text-xs lg:text-sm text-base-content font-medium">
-                    Total Barang Masuk
-                  </span>
-
-                  <span className={"text-sm font-medium"}>
-                    {dataBarangMasukDetail?.data?.detailBarangMasuks.length}
-                  </span>
-                </div>
-              </div>
-
-              {/* keterangan barang masuk */}
-              <div className="w-full flex flex-row justify-between items-start gap-3 mt-4">
-                {/* icon */}
-                <div className="h-full flex flex-row justify-start items-start">
-                  <BanknoteArrowDown className="size-5 text-info" />
-                </div>
-
-                {/* label and value */}
-                <div
-                  className={cn(
-                    "w-full flex flex-col justify-between pb-3 border-b border-base-content/10 items-start",
-                  )}
-                >
-                  {/* label */}
-                  <span className="text-xs lg:text-sm text-base-content/90 font-medium">
-                    Total Nilai
-                  </span>
-
-                  {/* keterangan */}
-                  <div className="mt-2">
-                    <span className="text-lg text-base-content font-semibold">
-                      {formatRupiah(
-                        dataBarangMasukDetail?.data?.totalNilai ?? 0,
-                      )}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+      <InformasiBarangMasuk
+        isLoadingBarangMasukDetail={isLoadingBarangMasukDetail}
+        totalBarangMasuk={
+          dataBarangMasukDetail?.data?.detailBarangMasuks?.length ?? 0
+        }
+        tanggalMasuk={dataBarangMasukDetail?.data?.tanggalMasuk}
+        keterangan={dataBarangMasukDetail?.data?.keterangan ?? undefined}
+        totalNilai={dataBarangMasukDetail?.data?.totalNilai ?? undefined}
+        idBarangMasukDetail={dataBarangMasukDetail?.data?.id}
+        handleSetToast={handleSetToast}
+      />
 
       {/* daftar produk masuk */}
       <div className="w-full flex flex-col justify-start items-center gap-2 mt-4 lg:mt-0">
