@@ -13,6 +13,7 @@ import InputNumber from "../../../../components/inputs/InputNumber";
 import ModalGantiProdukMasuk from "../../../../components/modals/ModalGantiProdukMasuk";
 import CardForm from "../../../../components/inputs/CardForm";
 import ButtonInline from "../../../../components/ui/button/ButtonInline";
+import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
 
 type Props = {
   isLoadingBarangMasukDetail?: boolean;
@@ -312,17 +313,20 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             </span>
 
                             {/* button update */}
-                            <ButtonInline
-                              handleKeyUpdate={() =>
-                                handleSetDataUpdate({
-                                  data: {
-                                    id: item.id,
-                                    jumlahBox: item.jumlahBox,
-                                    produkId: item.produk.id,
-                                  },
-                                })
-                              }
-                            />
+                            {dataBarangMasukDetail?.data?.status ===
+                              STATUS_INVENTORI_TYPE.DRAFT && (
+                              <ButtonInline
+                                handleKeyUpdate={() =>
+                                  handleSetDataUpdate({
+                                    data: {
+                                      id: item.id,
+                                      jumlahBox: item.jumlahBox,
+                                      produkId: item.produk.id,
+                                    },
+                                  })
+                                }
+                              />
+                            )}
                           </div>
                         )}
                       </td>

@@ -58,7 +58,7 @@ export default function InputChoose<T extends FieldValues = any>({
         className={clsx(
           "flex flex-row justify-start items-start gap-2 border border-base-content/40 rounded-md w-full focus-within:ring-1 focus-within:ring-base-content transition-all duration-300 ease-in-out overflow-hidden bg-base-100",
           label && "mt-2 ",
-          xs ? "h-8" : "h-10",
+          xs ? "h-7 lg:h-8" : "h-9 lg:h-10",
           fieldState.error && "border-error",
           disabled && "cursor-not-allowed border-primary-black/10",
           typeValueIsBoolean &&
@@ -72,7 +72,9 @@ export default function InputChoose<T extends FieldValues = any>({
         <select
           className={cn(
             "select w-full outline-none border-none rounded-md",
-            xs ? "lg:text-xs h-8" : " h-10 text-xs lg:text-sm",
+            xs
+              ? "text-[0.7rem] lg:text-xs h-7 lg:h-8"
+              : "h-9 lg:h-10 text-xs lg:text-sm",
           )}
           value={
             typeValueIsBoolean && field.value !== undefined
@@ -96,24 +98,24 @@ export default function InputChoose<T extends FieldValues = any>({
             disabled
             className={cn(
               "text-base-content/50",
-              xs ? "lg:text-xs" : "text-xs lg:text-sm",
+              xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
             )}
           >
             {placeholder}
           </option>
 
-          {/* {isLoading && (
+          {isLoading && (
             <option
               value=""
               disabled
               className={cn(
-                "w-full flex justify-center items-center text-base-content",
-                xs ? "lg:text-xs" : "text-xs lg:text-sm",
+                "w-full flex justify-center items-center text-base-content/50",
+                xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
               )}
             >
-              <span className="loading" />
+              loading...
             </option>
-          )} */}
+          )}
 
           {!isLoading && (
             <>
@@ -123,7 +125,7 @@ export default function InputChoose<T extends FieldValues = any>({
                   value={`${item.value}`}
                   className={cn(
                     "text-base-content",
-                    xs ? "lg:text-xs" : "text-xs lg:text-sm",
+                    xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
                   )}
                 >
                   {item.label}

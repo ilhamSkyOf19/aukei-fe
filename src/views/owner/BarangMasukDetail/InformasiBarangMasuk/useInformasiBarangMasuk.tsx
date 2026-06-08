@@ -6,15 +6,25 @@ import { BarangMasukValidation } from "../../../../validations/barangMasuk.valid
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BarangMasukServices } from "../../../../services/barangMasuk.service";
 import useModal from "../../../../hooks/useModal";
+import {
+  STATUS_INVENTORI_TYPE,
+  type StatusInventoriType,
+} from "../../../../types/constant.type";
 
 const useInformasiBarangMasuk = (params: {
   tanggalMasuk?: Date;
   keterangan?: string;
   idBarangMasukDetail?: number;
+  status?: StatusInventoriType;
   handleSetToast: (data: string) => void;
 }) => {
-  const { keterangan, tanggalMasuk, idBarangMasukDetail, handleSetToast } =
-    params;
+  const {
+    keterangan,
+    tanggalMasuk,
+    idBarangMasukDetail,
+    handleSetToast,
+    status,
+  } = params;
   // state key update
   const [keyUpdate, setKeyUpdate] = useState<
     "tanggalMasuk" | "keterangan" | ""
@@ -110,10 +120,14 @@ const useInformasiBarangMasuk = (params: {
         // close modal
         closeModalInputTanggalMasuk();
 
-        // reset timer
-        setTimeout(() => {
+        if (keyUpdate === "tanggalMasuk") {
+          // reset timer
+          setTimeout(() => {
+            handleResetForm();
+          }, 500);
+        } else {
           handleResetForm();
-        }, 500);
+        }
       },
       onError: (err) => {
         console.log(err);
@@ -123,6 +137,8 @@ const useInformasiBarangMasuk = (params: {
 
   const onSubmit = async (data: UpdateBarangMasukForRequestType) => {
     try {
+      if (status === STATUS_INVENTORI_TYPE.POSTED) return;
+
       await mutateUpdate(data);
     } catch (error) {
       console.log(error);

@@ -38,24 +38,26 @@
 - [✅] Integrasi API Delete (Mobile)
 
 - [✅] Integrasi API Ganti Produk (Dekstop)
-- [✅] Integrasi API Ubah (Mobile)
 - [✅] Delete Barang Masuk
+
+- [ ] Integrasi API Ubah Daftar Data Barang Masuk (Mobile)
 
 ## Branch Barang Keluar
 
-- [ ] Membuat UI show barang Keluar (Mobile)
-- [ ] Membuat UI show barang Keluar (Dekstop)
-- [ ] Fitur Tambah
+- [✅] Membuat UI show barang Keluar (Mobile)
+- [✅] Membuat UI show barang Keluar (Dekstop)
+- [✅] Fitur Tambah
 
-- [ ] Membuat UI Halaman Detail
-- [ ] Membuat message alert
-- [ ] Membuat fitur tambah barang Keluar (Dekstop)
-- [ ] Membuat message toast
+- [✅] Membuat UI Halaman Detail
+- [✅] Membuat message alert
+- [✅] Membuat fitur tambah barang Keluar (Dekstop)
+- [✅] Membuat message toast
+- [✅] Integrasi API Ubah Jumlah Stok (Dekstop)
+- [✅] Membuat fitur tambah barang Keluar (Mobile)
+- [✅] Integrasi API Ganti Produk (Dekstop)
+
+- [ ] Membuat Fitur Batalkan Posting
 - [ ] Integrasi API Delete (Dekstop)
-- [ ] Integrasi API Ubah Jumlah Box (Dekstop)
-- [ ] Membuat fitur tambah barang Keluar (Mobile)
 - [ ] Integrasi API Delete (Mobile)
-
-- [ ] Integrasi API Ganti Produk (Dekstop)
-- [ ] Integrasi API Ubah (Mobile)
+- [ ] Integrasi API Ubah Daftar Data Barang Keluar (Mobile)
 - [ ] Delete Barang Keluar

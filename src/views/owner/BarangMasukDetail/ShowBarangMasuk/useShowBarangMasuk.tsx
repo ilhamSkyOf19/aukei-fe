@@ -192,13 +192,11 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     try {
       if (!dataUpdate || !data || !status) return;
 
-      let finalData: UpdateBarangMasukDetailType | null = null;
-
-      finalData = {
+      await mutateUpdate({
         jumlahBox: data.jumlahBox,
-      };
-
-      await mutateUpdate({ ...finalData, id: dataUpdate.id, status });
+        id: dataUpdate.id,
+        status,
+      });
     } catch (error) {
       console.log(error);
     }

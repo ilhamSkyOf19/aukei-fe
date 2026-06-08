@@ -7,7 +7,7 @@ export interface IBarangMasukType {
   tanggalMasuk: Date;
   keterangan: string | null;
   status: StatusInventoriType;
-  totalNilai: number;
+  totalNilai: string;
   detailBarangMasuks: Omit<IBarangMasukDetailType, "barangMasukId">[];
   createdAt: Date;
   updatedAt: Date;
@@ -25,15 +25,8 @@ export interface UpdateBarangMasukForRequestType extends Partial<CreateBarangMas
 // response
 export interface ResponseBarangMasukType extends Omit<
   IBarangMasukType,
-  "detailBarangMasuks" | "totalNilai"
-> {
-  totalNilai: string;
-}
-
-// to response
-export const toResponseBarangMasuk = (
-  barangMasuk: ResponseBarangMasukType,
-): ResponseBarangMasukType => barangMasuk;
+  "detailBarangMasuks"
+> {}
 
 // response with meta
 export interface ResponseBarangMasukWithMetaType {
@@ -47,11 +40,6 @@ export interface ResponseBarangMasukWithMetaType {
 export interface ResponseBarangMasukWithDetailType extends ResponseBarangMasukType {
   detailBarangMasuks: Omit<IBarangMasukDetailType, "barangMasukId">[];
 }
-
-// to response detail
-export const toResponseBarangMasukWithDetail = (
-  barangMasuk: ResponseBarangMasukWithDetailType,
-): ResponseBarangMasukWithDetailType => barangMasuk;
 
 // posted for service
 export interface PostedBarangMasukForServiceType {

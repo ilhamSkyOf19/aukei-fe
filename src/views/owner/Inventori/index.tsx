@@ -1,4 +1,5 @@
 import ButtonCluster from "../../../components/ui/button/ButtonCluster";
+import BarangKeluar from "./BarangKeluar";
 import BarangMasuk from "./BarangMasuk";
 import useInventori from "./useInventori";
 
@@ -28,6 +29,8 @@ const Inventori = () => {
       <div className="w-full h-full flex justify-center items-start px-2 lg:px-4 mt-4">
         {/* show data */}
         {isActiveCluster === "barangMasuk" && <BarangMasuk />}
+        {/* show data */}
+        {isActiveCluster === "barangKeluar" && <BarangKeluar />}
       </div>
     </div>
   );

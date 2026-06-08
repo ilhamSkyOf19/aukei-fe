@@ -16,6 +16,8 @@ type Props<T extends FieldValues> = {
   handleCloseModal: () => void;
   useControll: UseControllerReturn<T>;
   isPending?: boolean;
+  bigTitle: string;
+  smallTitle: string;
 };
 
 const ModalInputDate = <T extends FieldValues>({
@@ -25,6 +27,8 @@ const ModalInputDate = <T extends FieldValues>({
   onSubmit,
   useControll,
   isPending,
+  bigTitle,
+  smallTitle,
 }: Props<T>) => {
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
@@ -32,10 +36,7 @@ const ModalInputDate = <T extends FieldValues>({
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
-            <TitleModalFormulir
-              title="Formulir Barang Masuk"
-              keterangan={`Formulir untuk menambah Barang Masuk`}
-            />
+            <TitleModalFormulir title={bigTitle} keterangan={smallTitle} />
           </div>
 
           {/* form */}

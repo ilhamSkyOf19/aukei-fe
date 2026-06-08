@@ -27,6 +27,8 @@ export default function InputPrice<T extends FieldValues = any>({
   useEffect(() => {
     if (field.value !== undefined && field.value !== null) {
       setDisplayValue(formatRupiah(String(field.value)));
+    } else {
+      setDisplayValue("");
     }
   }, [field.value]);
 
@@ -49,9 +51,7 @@ export default function InputPrice<T extends FieldValues = any>({
           label && "mt-2",
         )}
       >
-        <span className="mr-2 text-xs text-base-content/80 font-medium">
-          Rp
-        </span>
+        <span className="text-xs text-base-content/80 font-medium">Rp</span>
 
         <input
           type="text"
@@ -60,7 +60,7 @@ export default function InputPrice<T extends FieldValues = any>({
           disabled={disabled}
           autoComplete="off"
           className={cn(
-            "h-full w-full border-none bg-transparent outline-none font-medium text-base-content placeholder:font-normal ",
+            "h-full w-full border-none bg-transparent outline-none font-medium text-base-content placeholder:font-normal",
             xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
           )}
           onChange={(e) => {

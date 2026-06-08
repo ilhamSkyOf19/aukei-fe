@@ -11,9 +11,9 @@ import DataEmpty from "../../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import StatusInventori from "../../../../components/ui/StatusInventori";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import ModalFormulirBarangMasuk from "../../../../components/modals/ModalFormulirBarangMasuk";
 import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
 import ModalDelete from "../../../../components/modals/ModalDelete";
+import FormulirBarangMasuk from "../../../../components/forms/FormulirBarangMasuk";
 
 const BarangMasuk = () => {
   // call use barang masuk
@@ -238,7 +238,7 @@ const BarangMasuk = () => {
       </div>
 
       {/* modal formulir barang masuk */}
-      <ModalFormulirBarangMasuk
+      <FormulirBarangMasuk
         modalRef={modalFormulirBarangMasukRef}
         handleCloseModal={handleCloseModalFormulirBarangMasuk}
       />

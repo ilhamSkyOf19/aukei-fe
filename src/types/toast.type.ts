@@ -120,3 +120,44 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
     message: "Keterangan barang berhasil diubah",
   },
 };
+
+export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  created_barang_keluar: {
+    color: "success",
+    message: "Barang keluar berhasil ditambahkan",
+  },
+  barang_keluar_detail_add_success: {
+    color: "success",
+    message: "Barang berhasil ditambahkan",
+  },
+  deleted_barang_keluar_detail: {
+    color: "error",
+    message: "Barang berhasil dihapus",
+  },
+  updated_barang_keluar_detail: {
+    color: "info",
+    message: "Barang berhasil diubah",
+  },
+  posted: {
+    color: "success",
+    message: "Barang keluar berhasil diposting",
+  },
+  cancel_posted: {
+    color: "error",
+    message: "Barang keluar berhasil dibatalkan",
+  },
+  updated_tanggalKeluar: {
+    color: "info",
+    message: "Tanggal keluar berhasil diubah",
+  },
+  updated_keterangan: {
+    color: "info",
+    message: "Keterangan barang berhasil diubah",
+  },
+};

@@ -1,10 +1,9 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BarangMasukDetailValidation } from "../../../validations/barangMasukDetail.validation";
 import type { UpdateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
-import { ProdukServices } from "../../../services/produk.service";
 import type { ResponseProdukForChooseType } from "../../../models/produk.model";
 import { useRef, useState } from "react";
 import { useAlertAnimation } from "../../../hooks/useAlert";
@@ -15,6 +14,7 @@ import type { ErrorResponse } from "../../../types/response.type";
 import type { InputSearchRef } from "../../../types/ref.type";
 import { useForm } from "react-hook-form";
 import type { StatusInventoriType } from "../../../types/constant.type";
+import useDataProdukForChoose from "../../../hooks/useDataProdukForChoose";
 
 const useModalGantiProdukMasuk = (params: {
   idBarangMasuk?: number;
@@ -61,17 +61,8 @@ const useModalGantiProdukMasuk = (params: {
     resolver: zodResolver(BarangMasukDetailValidation.UPDATE),
   });
 
-  const { data: dataProdukForChoose, isLoading: isLoadingProdukForChoose } =
-    useQuery({
-      queryKey: ["produk-for-choose", search],
-      queryFn: () =>
-        ProdukServices.findAllForChoose({
-          search,
-        }),
-      enabled: search !== "",
-      retry: false,
-      refetchOnWindowFocus: false,
-    });
+  const { dataProdukForChoose, isLoadingProdukForChoose } =
+    useDataProdukForChoose({ search });
 
   useClickOutside({
     ref: wrapperRef,
@@ -152,6 +143,12 @@ const useModalGantiProdukMasuk = (params: {
   const handleSetValueProdukId = (id: number) => {
     if (produkChoose?.id === id) {
       handleSetAlert("produk_choose_exist");
+      return;
+    }
+
+    // check same produk id
+    if (produkChoose?.id === id) {
+      handleSetAlert("produk_choose_exist_in_data");
       return;
     }
 

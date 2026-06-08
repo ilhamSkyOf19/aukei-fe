@@ -68,7 +68,7 @@ const ModalGantiProdukMasuk: FC<Props> = ({
           <div className="w-full flex flex-row justify-start items-center">
             <TitleModalFormulir
               title="Formulir Barang Masuk"
-              keterangan={`Formulir untuk menambah Barang Masuk`}
+              keterangan={`Formulir untuk mengganti Produk Barang Masuk`}
             />
           </div>
 
@@ -152,7 +152,7 @@ const ModalGantiProdukMasuk: FC<Props> = ({
 
                             <div className="flex-1 flex flex-col justify-start items-start gap-1">
                               {/* label */}
-                              <span className="text-[0.625rem] text-base-content/50">
+                              <span className="text-[0.625rem] text-left text-base-content/50">
                                 Harga Beli
                               </span>
                               {/* value */}
@@ -204,7 +204,7 @@ const ModalGantiProdukMasuk: FC<Props> = ({
                       {/* harga beli */}
                       <div className="flex-1 flex flex-col justify-start items-start gap-1">
                         {/* label */}
-                        <span className="text-[0.625rem] text-base-content/50">
+                        <span className="text-[0.625rem] text-left text-base-content/50">
                           Harga Beli
                         </span>
                         {/* value */}
@@ -232,7 +232,7 @@ const ModalGantiProdukMasuk: FC<Props> = ({
               <ButtonCloseText handleClose={handleCloseModal} label="Batal" />
 
               <ButtonSubmitWithIcon
-                label="Tambah Barang Masuk"
+                label="Ganti Produk Masuk"
                 isLoading={isPendingBarangMasukDetail}
               />
             </div>

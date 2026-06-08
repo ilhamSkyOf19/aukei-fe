@@ -4,12 +4,12 @@ import { AuthServices } from "../services/auth.service";
 import { useAuthStore } from "../stores/authStore";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProdukPage from "../pages/ProdukPage";
-import ProdukDetail from "../views/all/ProdukDetail";
 import ProdukDetailPage from "../pages/ProdukDetailPage";
 import FormulirProdukPage from "../pages/FormulirProdukPage";
 import DashboardPage from "../pages/DashboardPage";
 import InventoriPage from "../pages/InventoriPage";
 import BarangMasukDetailPage from "../pages/BarangMasukDetailPage";
+import BarangKeluarDetailPage from "../pages/BarangKeluarDetailPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -143,6 +143,10 @@ const route = createBrowserRouter([
           {
             path: "barang-masuk/:id",
             element: <BarangMasukDetailPage />,
+          },
+          {
+            path: "barang-keluar/:id",
+            element: <BarangKeluarDetailPage />,
           },
         ],
       },

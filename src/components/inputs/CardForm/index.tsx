@@ -17,6 +17,9 @@ type CardFormProps<T extends FieldValues> = {
   flexColoum?: boolean;
   hAuto?: boolean;
   isDirty?: boolean;
+  disabled?: boolean;
+  showForSm?: boolean;
+  customFlex?: string;
 };
 
 const CardForm = <T extends FieldValues>({
@@ -29,13 +32,21 @@ const CardForm = <T extends FieldValues>({
   flexColoum,
   hAuto,
   isDirty,
+  disabled,
+  showForSm,
+  customFlex,
 }: CardFormProps<T>) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className={cn(
-        "hidden lg:flex justify-start gap-3",
-        flexColoum ? "flex-col items-end" : "flex-row items-center",
+        "justify-start",
+        customFlex
+          ? customFlex
+          : flexColoum
+            ? "flex-col items-end"
+            : "flex-row items-center gap-3",
+        showForSm ? "flex" : "hidden sm:flex",
         hAuto ? "h-auto" : "h-14",
       )}
     >
@@ -43,8 +54,10 @@ const CardForm = <T extends FieldValues>({
 
       <div
         className={cn(
-          "flex h-full justify-start gap-2",
-          btnAksiPosition === "top" ? "items-start mt-2" : "items-end mb-2",
+          "flex h-full justify-start gap-2.5 lg:gap-2",
+          btnAksiPosition === "top"
+            ? "items-start mb-2 lg:mt-2"
+            : "items-end mb-2",
         )}
       >
         <button
@@ -54,7 +67,7 @@ const CardForm = <T extends FieldValues>({
             isPending && "disabled:bg-error disabled:opacity-50",
           )}
           onClick={handleResetForm}
-          disabled={isPending}
+          disabled={isPending || disabled}
         >
           <X className="size-3" />
         </button>
@@ -65,7 +78,7 @@ const CardForm = <T extends FieldValues>({
             "text-primary-white btn-sm btn btn-success",
             isPending && "disabled:bg-success",
           )}
-          disabled={isPending || (isDirty ? !isDirty : false)}
+          disabled={isPending || disabled || (isDirty ? !isDirty : false)}
         >
           {isPending ? (
             <div className="loading loading-xs" />

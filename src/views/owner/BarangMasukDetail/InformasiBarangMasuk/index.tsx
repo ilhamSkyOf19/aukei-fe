@@ -13,8 +13,11 @@ import ButtonInline from "../../../../components/ui/button/ButtonInline";
 import CardForm from "../../../../components/inputs/CardForm";
 import ModalInputDate from "../../../../components/modals/ModalInputDate";
 import type { UpdateBarangMasukForRequestType } from "../../../../models/barangMasuk.model";
-import InputTextNonIcon from "../../../../components/inputs/InputTextNonIcon";
 import InputTextAreaNonIcon from "../../../../components/inputs/InputTextAreaNonIcon";
+import {
+  STATUS_INVENTORI_TYPE,
+  type StatusInventoriType,
+} from "../../../../types/constant.type";
 
 type Props = {
   isLoadingBarangMasukDetail?: boolean;
@@ -24,6 +27,7 @@ type Props = {
   totalNilai?: string;
   idBarangMasukDetail?: number;
   handleSetToast: (data: string) => void;
+  status?: StatusInventoriType;
 };
 const InformasiBarangMasuk: FC<Props> = ({
   isLoadingBarangMasukDetail,
@@ -33,6 +37,7 @@ const InformasiBarangMasuk: FC<Props> = ({
   totalNilai,
   idBarangMasukDetail,
   handleSetToast,
+  status,
 }) => {
   // call use
   const {
@@ -52,6 +57,7 @@ const InformasiBarangMasuk: FC<Props> = ({
     keterangan,
     tanggalMasuk,
     idBarangMasukDetail,
+    status,
   });
 
   return (
@@ -90,23 +96,26 @@ const InformasiBarangMasuk: FC<Props> = ({
                 </span>
 
                 {/* value */}
-                <div className="flex flex-row justify-end items-start">
+                <div className="flex flex-row justify-end items-center">
                   <span className={"text-[0.625rem] lg:text-sm font-medium"}>
                     {formatTanggalLengkap(tanggalMasuk ?? new Date())} WIB
                   </span>
 
                   {/* button pencil */}
-                  <div className="border-l border-base-content/30 pl-3 ml-3">
-                    <ButtonInline
-                      handleKeyUpdate={() => handleKeyUpdate("tanggalMasuk")}
-                    />
-                  </div>
+                  {status === STATUS_INVENTORI_TYPE.DRAFT && (
+                    <div className="border-l border-base-content/30 pl-3 ml-3">
+                      <ButtonInline
+                        customHidden="block"
+                        handleKeyUpdate={() => handleKeyUpdate("tanggalMasuk")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* keterangan barang masuk */}
-            <div className="w-full flex flex-row justify-between items-start gap-3 mt-4">
+            <div className="w-full flex flex-row justify-between items-start gap-3 mt-6">
               {/* icon */}
               <div className="h-full flex flex-row justify-start items-start">
                 <TextAlignStart className="size-5 text-info" />
@@ -116,7 +125,6 @@ const InformasiBarangMasuk: FC<Props> = ({
               <div
                 className={cn(
                   "w-full flex flex-col justify-start pb-3 border-b border-base-content/10 items-start",
-                  keyUpdate === "keterangan" && "gap-6",
                 )}
               >
                 {/* label */}
@@ -124,9 +132,13 @@ const InformasiBarangMasuk: FC<Props> = ({
                   Keterangan
                 </span>
 
-                <div className="flex w-full flex-row justify-start items-start gap-4">
+                <div
+                  className={cn(
+                    "flex w-full flex-row justify-start items-start gap-4",
+                  )}
+                >
                   {keyUpdate !== "keterangan" ? (
-                    <div className="w-full flex flex-row justify-between items-start gap-4">
+                    <div className="w-full flex flex-row justify-between items-center gap-4">
                       <div className="mt-2">
                         {keterangan ? (
                           <span className="text-xs text-base-content leading-5">
@@ -140,11 +152,16 @@ const InformasiBarangMasuk: FC<Props> = ({
                       </div>
 
                       {/* button pencil */}
-                      <div className="border-l border-base-content/30 pl-3 ml-3">
-                        <ButtonInline
-                          handleKeyUpdate={() => handleKeyUpdate("keterangan")}
-                        />
-                      </div>
+                      {status === STATUS_INVENTORI_TYPE.DRAFT && (
+                        <div className="border-l border-base-content/30 pl-3 ml-3">
+                          <ButtonInline
+                            customHidden="block"
+                            handleKeyUpdate={() =>
+                              handleKeyUpdate("keterangan")
+                            }
+                          />
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <CardForm
@@ -152,9 +169,13 @@ const InformasiBarangMasuk: FC<Props> = ({
                       handleSubmit={handleSubmit}
                       onSubmit={onSubmit}
                       isPending={isPendingUpdate}
+                      showForSm
+                      hAuto
+                      btnAksiPosition="top"
+                      customFlex="flex-col items-end lg:flex-row lg:items-center lg:gap-3"
                     >
                       {/* input text */}
-                      <div className="w-80">
+                      <div className="w-60 lg:w-80">
                         <InputTextAreaNonIcon
                           register={register("keterangan")}
                           name="keterangan"
@@ -213,7 +234,7 @@ const InformasiBarangMasuk: FC<Props> = ({
             </div>
 
             {/* keterangan barang masuk */}
-            <div className="w-full flex flex-row justify-between items-start gap-3 mt-4">
+            <div className="w-full flex flex-row justify-between items-start gap-3 mt-6">
               {/* icon */}
               <div className="h-full flex flex-row justify-start items-start">
                 <BanknoteArrowDown className="size-5 text-info" />
@@ -250,6 +271,8 @@ const InformasiBarangMasuk: FC<Props> = ({
         onSubmit={onSubmit}
         useControll={tanggalMasukController}
         isPending={isPendingUpdate}
+        bigTitle="Formulir Ubah Tanggal Barang Masuk"
+        smallTitle="Ubah tanggal barang masuk"
       />
     </div>
   );

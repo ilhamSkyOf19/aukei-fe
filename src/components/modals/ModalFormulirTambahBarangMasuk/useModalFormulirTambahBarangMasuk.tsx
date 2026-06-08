@@ -1,11 +1,10 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useController, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BarangMasukDetailValidation } from "../../../validations/barangMasukDetail.validation";
 import type { CreateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
-import { ProdukServices } from "../../../services/produk.service";
 import type { ResponseProdukForChooseType } from "../../../models/produk.model";
 import { useEffect, useRef, useState } from "react";
 import { useAlertAnimation } from "../../../hooks/useAlert";
@@ -14,6 +13,7 @@ import { useClickOutside } from "../../../hooks/useClickOutSide";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import type { InputSearchRef } from "../../../types/ref.type";
+import useDataProdukForChoose from "../../../hooks/useDataProdukForChoose";
 
 const useModalFormulirTambahBarangMasuk = (params: {
   handleCloseModal: () => void;
@@ -66,17 +66,9 @@ const useModalFormulirTambahBarangMasuk = (params: {
     setValue("barangMasukId", validatedId!);
   }, [validatedId, setValue]);
 
-  const { data: dataProdukForChoose, isLoading: isLoadingProdukForChoose } =
-    useQuery({
-      queryKey: ["produk-for-choose", search],
-      queryFn: () =>
-        ProdukServices.findAllForChoose({
-          search,
-        }),
-      enabled: search !== "",
-      retry: false,
-      refetchOnWindowFocus: false,
-    });
+  // use produk for choose
+  const { dataProdukForChoose, isLoadingProdukForChoose } =
+    useDataProdukForChoose({ search });
 
   useClickOutside({
     ref: wrapperRef,
@@ -140,7 +132,11 @@ const useModalFormulirTambahBarangMasuk = (params: {
   });
 
   const onSubmit = async (data: CreateBarangMasukDetailType) => {
-    await mutateBarangMasukDetail(data);
+    try {
+      await mutateBarangMasukDetail(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSetValueProdukId = (id: number) => {

@@ -69,7 +69,7 @@ export const generateColorForStok = (
   stok: number,
   stokMinimum: number,
 ): "text-emerald-600" | "text-warning" | "text-error" => {
-  if (stok === 0) {
+  if (stok === 0 || stok < 0) {
     return "text-error";
   }
 
