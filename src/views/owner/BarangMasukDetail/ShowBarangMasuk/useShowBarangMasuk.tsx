@@ -33,16 +33,17 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     handleCloseModal: handleCloseModalDelete,
     handleShowModal: handleShowModalDelete,
     idModal: idDelete,
-    dataDelete,
-  } = useModal();
+    dataModal: dataDelete,
+  } = useModal<{ nama: string }>();
 
-  // use modal ganti produk
+  // use modal Ubah produk
   const {
-    modalRef: modalGantiProdukRef,
-    handleCloseModal: handleCloseModalGantiProduk,
-    handleShowModal: handleShowModalGantiProduk,
+    modalRef: modalUbahProdukRef,
+    handleCloseModal: handleCloseModalUbahProduk,
+    handleShowModal: handleShowModalUbahProduk,
     idModal: idBarangMasuk,
-  } = useModal();
+    dataModal: dataUpdateBarangMasuk,
+  } = useModal<{ produkId: number; jumlahBox: number }>();
 
   //   use mutation
   const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(
@@ -231,10 +232,11 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     isStatusPosted,
     isDirty,
     jumlahBoxController,
-    modalGantiProdukRef,
-    handleCloseModalGantiProduk,
-    handleShowModalGantiProduk,
+    modalUbahProdukRef,
+    handleCloseModalUbahProduk,
+    handleShowModalUbahProduk,
     idBarangMasuk,
+    dataUpdateBarangMasuk,
   };
 };
 

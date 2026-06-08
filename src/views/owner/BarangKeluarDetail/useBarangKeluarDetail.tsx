@@ -7,8 +7,8 @@ import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import useConfirm from "../../../hooks/useConfirm";
 import { STATUS_INVENTORI_TYPE } from "../../../types/constant.type";
-import useDeleteBarangMasuk from "../../../hooks/useDeleteBarangMasuk";
 import { BarangKeluarServices } from "../../../services/barangKeluar.service";
+import useDeleteBarangKeluar from "../../../hooks/useDeleteBarangKeluar";
 
 const useBarangKeluarDetail = () => {
   // query client
@@ -162,11 +162,11 @@ const useBarangKeluarDetail = () => {
     handleShowModalDelete,
     isPendingDelete,
     modalDeleteRef,
-  } = useDeleteBarangMasuk({
+  } = useDeleteBarangKeluar({
     redirect: () => {
       navigate("/dashboard/inventori", {
         state: {
-          toast: "deleted_barang_masuk",
+          toast: "deleted_barang_keluar",
         },
       });
     },

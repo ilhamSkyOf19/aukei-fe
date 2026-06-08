@@ -5,24 +5,33 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { BarangMasukDetailValidation } from "../../../validations/barangMasukDetail.validation";
 import type { UpdateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
 import type { ResponseProdukForChooseType } from "../../../models/produk.model";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { BarangMasukDetailServices } from "../../../services/barangMasukDetail.service";
 import { useClickOutside } from "../../../hooks/useClickOutSide";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import type { InputSearchRef } from "../../../types/ref.type";
-import { useForm } from "react-hook-form";
+import { useController, useForm } from "react-hook-form";
 import type { StatusInventoriType } from "../../../types/constant.type";
 import useDataProdukForChoose from "../../../hooks/useDataProdukForChoose";
 
-const useModalGantiProdukMasuk = (params: {
+const useModalUbahProdukMasuk = (params: {
   idBarangMasuk?: number;
   status?: StatusInventoriType;
+  dataUpdate: {
+    produkId?: number;
+    jumlahBox?: number;
+  };
   handleCloseModal: () => void;
 }) => {
   // params
-  const { idBarangMasuk, status, handleCloseModal } = params;
+  const {
+    idBarangMasuk,
+    status,
+    handleCloseModal,
+    dataUpdate: { jumlahBox, produkId },
+  } = params;
 
   // navigate
   const navigate = useNavigate();
@@ -57,8 +66,24 @@ const useModalGantiProdukMasuk = (params: {
     handleSubmit,
     setValue,
     reset,
+    setError,
+    control,
   } = useForm<UpdateBarangMasukDetailType>({
     resolver: zodResolver(BarangMasukDetailValidation.UPDATE),
+  });
+
+  // reset
+  useEffect(() => {
+    reset({
+      produkId,
+      jumlahBox,
+    });
+  }, [reset, jumlahBox]);
+
+  // jumlah box controller
+  const jumlahBoxController = useController({
+    control,
+    name: "jumlahBox",
   });
 
   const { dataProdukForChoose, isLoadingProdukForChoose } =
@@ -88,19 +113,22 @@ const useModalGantiProdukMasuk = (params: {
         id: idBarangMasuk!,
         req: {
           produkId: req.produkId,
+          jumlahBox: req.jumlahBox,
         },
         status: status!,
       }),
 
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ["barang-masuk-detail", validatedId],
       });
 
-      reset({
-        produkId: undefined,
-        jumlahBox: undefined,
-      });
+      if (data?.data) {
+        reset({
+          produkId: data.data.produk.id,
+          jumlahBox: data.data.jumlahBox,
+        });
+      }
 
       setSearch("");
 
@@ -126,6 +154,15 @@ const useModalGantiProdukMasuk = (params: {
         if (err.response?.data?.meta?.customField?.includes("same_produk")) {
           handleSetAlert("produk_choose_exist_in_data");
         }
+        if (err.response?.data?.meta?.statusCode === 409) {
+          if (
+            err.response?.data?.meta?.customField?.includes(
+              "detail_barang_masuk_barangMasukId_produkId_key",
+            )
+          ) {
+            handleSetAlert("produk_choose_exist_in_data");
+          }
+        }
       }
     },
   });
@@ -134,7 +171,32 @@ const useModalGantiProdukMasuk = (params: {
     try {
       if (!idBarangMasuk || !status) return;
 
-      await mutateBarangMasukDetail(data);
+      const isProdukChanged =
+        produkChoose === null ? false : data.produkId !== produkId;
+      const isJumlahChanged = data.jumlahBox !== jumlahBox;
+      if (!isProdukChanged && produkChoose) {
+        handleSetAlert("produk_choose_exist_in_data");
+        return;
+      }
+
+      if (!isProdukChanged && !isJumlahChanged) {
+        setError("produkId", {
+          message: "Minimal ubah produk atau jumlah box",
+        });
+
+        setError("jumlahBox", {
+          message: "Minimal ubah produk atau jumlah box",
+        });
+
+        return;
+      }
+
+      const payload: UpdateBarangMasukDetailType = {
+        produkId: isProdukChanged ? data.produkId : undefined,
+        jumlahBox: isJumlahChanged ? data.jumlahBox : undefined,
+      };
+
+      await mutateBarangMasukDetail(payload);
     } catch (error) {
       console.log(error);
     }
@@ -200,7 +262,9 @@ const useModalGantiProdukMasuk = (params: {
     isPendingBarangMasukDetail,
 
     alert,
+
+    jumlahBoxController,
   };
 };
 
-export default useModalGantiProdukMasuk;
+export default useModalUbahProdukMasuk;

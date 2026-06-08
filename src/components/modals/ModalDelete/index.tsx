@@ -15,6 +15,7 @@ type Props = {
   normalMessage?: boolean;
   kataKunci?: string;
   highlightData?: string;
+  highlightDatas?: string[];
 };
 const ModalDelete: FC<Props> = ({
   handleCloseModal,
@@ -26,6 +27,7 @@ const ModalDelete: FC<Props> = ({
   kataKunci,
   normalMessage,
   highlightData,
+  highlightDatas,
 }) => {
   // state error
   const [isError, setIsError] = useState<boolean>(false);
@@ -63,9 +65,23 @@ const ModalDelete: FC<Props> = ({
         </h3>
         {/* highlight data */}
 
-        <div className="w-full flex flex-row justify-center items-center">
-          <p className="text-base text-error font-semibold">{highlightData}</p>
-        </div>
+        {highlightData && (
+          <div className="w-full flex flex-row justify-center items-center">
+            <p className="text-base text-error font-semibold">
+              {highlightData}
+            </p>
+          </div>
+        )}
+
+        {highlightDatas && (
+          <div className="w-full flex flex-col justify-center items-center">
+            {highlightDatas.map((item, index) => (
+              <p key={index} className="text-base text-error font-semibold">
+                {item}
+              </p>
+            ))}
+          </div>
+        )}
 
         {/* content */}
         {normalMessage && (
@@ -145,7 +161,10 @@ const ModalDelete: FC<Props> = ({
 
         <div className="w-full flex flex-row justify-end items-end gap-2 mt-8">
           {/* button close */}
-          <ButtonCloseText handleClose={handleCloseModal} />
+          <ButtonCloseText
+            handleClose={handleCloseModal}
+            disabled={isLoadingDelete}
+          />
 
           {/* button delete */}
           <ButtonDelete handleDelete={handleNext} isLoading={isLoadingDelete} />

@@ -1,4 +1,10 @@
-import { EllipsisVertical, PackagePlus, Trash, View } from "lucide-react";
+import {
+  EllipsisVertical,
+  PackagePlus,
+  Trash,
+  Trash2,
+  View,
+} from "lucide-react";
 import FilterSort from "../../../../components/filters/Sort";
 import InputSearch from "../../../../components/inputs/InputSearch";
 import Toast from "../../../../components/messages/Toast";
@@ -39,6 +45,14 @@ const BarangMasuk = () => {
     modalDeleteRef,
     handleShowModalDelete,
     isPendingDelete,
+    chooseBarangMasuk,
+    handleSetChooseBarangMasuk,
+    dataDeleteMany,
+    handleCloseModalDeleteMany,
+    handleDeleteMany,
+    handleShowModalDeleteMany,
+    isPendingDeleteMany,
+    modalDeleteManyRef,
   } = useBarangMasuk();
 
   return (
@@ -55,7 +69,7 @@ const BarangMasuk = () => {
 
       <div className="card dark:border dark:border-base-content/10 w-full bg-base-100 flex flex-col justify-start items-start p-4">
         {/* filter */}
-        <div className=" w-full flex flex-col lg:flex-row justify-start items-start lg:items-center gap-4 lg:gap-0">
+        <div className=" w-full flex flex-col lg:flex-row justify-start items-start lg:items-start gap-4 lg:gap-0">
           <div className="w-full lg:flex-1 flex flex-row justify-start items-center">
             {/* input search */}
             <InputSearch
@@ -83,11 +97,7 @@ const BarangMasuk = () => {
             {/* head */}
             <thead>
               <tr>
-                <th>
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
-                </th>
+                <th>Pilih</th>
                 <th>Kode Referensi</th>
                 <th>Tanggal Masuk</th>
                 <th>Keterangan</th>
@@ -116,7 +126,22 @@ const BarangMasuk = () => {
                   >
                     <th>
                       <label>
-                        <input type="checkbox" className="checkbox" />
+                        <input
+                          type="checkbox"
+                          className="checkbox"
+                          disabled={
+                            barang.status === STATUS_INVENTORI_TYPE.POSTED
+                          }
+                          checked={chooseBarangMasuk.some(
+                            (item) => item.id === barang.id,
+                          )}
+                          onChange={() => {
+                            handleSetChooseBarangMasuk({
+                              id: barang.id,
+                              kodeReferensi: barang.kodeReferensi,
+                            });
+                          }}
+                        />
                       </label>
                     </th>
                     {/* kode */}
@@ -182,10 +207,9 @@ const BarangMasuk = () => {
                                 label="Hapus"
                                 icon={Trash}
                                 handleClick={() =>
-                                  handleShowModalDelete(
-                                    barang.id,
-                                    barang.kodeReferensi,
-                                  )
+                                  handleShowModalDelete(barang.id, {
+                                    kodeReferensi: barang.kodeReferensi,
+                                  })
                                 }
                               />
                             </li>
@@ -209,21 +233,55 @@ const BarangMasuk = () => {
               )}
             </tbody>
             {/* foot */}
-            {!isLoadingBarangMasuk &&
-              isExistDataBarangMasuk &&
-              dataBarangMasuk?.data?.data?.length! > 8 && (
-                <tfoot>
-                  <tr>
-                    <th></th>
+            <tfoot>
+              <tr>
+                <th>
+                  <button
+                    type="button"
+                    className="hover group disabled:opacity-50"
+                    disabled={chooseBarangMasuk.length === 0}
+                    style={{
+                      cursor:
+                        chooseBarangMasuk.length === 0 ? "not-allowed" : "",
+                    }}
+                  >
+                    <Trash2
+                      className={cn(
+                        "size-6 text-rose-600 transition-all duration-150 ease-in-out",
+                        chooseBarangMasuk.length > 0 &&
+                          "group-hover:text-rose-400",
+                      )}
+                      onClick={() =>
+                        handleShowModalDeleteMany(undefined, {
+                          data: chooseBarangMasuk,
+                        })
+                      }
+                    />
+                  </button>
+                </th>
+                {!isLoadingBarangMasuk &&
+                isExistDataBarangMasuk &&
+                dataBarangMasuk?.data?.data?.length! > 8 ? (
+                  <>
                     <th>Kode Referensi</th>
                     <th>Tanggal Masuk</th>
                     <th>Keterangan</th>
                     <th>Jumlah Barang Masuk</th>
                     <th>Status</th>
                     <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
-                  </tr>
-                </tfoot>
-              )}
+                  </>
+                ) : (
+                  <>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </>
+                )}
+              </tr>
+            </tfoot>
           </table>
         </div>
 
@@ -249,8 +307,18 @@ const BarangMasuk = () => {
         handleCloseModal={handleCloseModalDelete}
         handleDelete={handleDelete}
         bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
-        highlightData={dataDelete}
+        highlightData={dataDelete?.kodeReferensi}
         isLoadingDelete={isPendingDelete}
+      />
+
+      {/* modal delete many */}
+      <ModalDelete
+        modalRef={modalDeleteManyRef}
+        handleCloseModal={handleCloseModalDeleteMany}
+        handleDelete={handleDeleteMany}
+        bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
+        highlightDatas={dataDeleteMany?.data?.map((item) => item.kodeReferensi)}
+        isLoadingDelete={isPendingDeleteMany}
       />
     </div>
   );

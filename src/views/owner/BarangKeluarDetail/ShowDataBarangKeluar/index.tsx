@@ -13,8 +13,9 @@ import type { ResponseBarangKeluarWithDetailType } from "../../../../models/bara
 import useShowBarangKeluar from "./useShowBarangKeluar";
 import type { UpdateBarangKeluarDetailType } from "../../../../models/barangKeluarDetail.model";
 import InputPrice from "../../../../components/inputs/InputPrice";
-import ModalGantiProdukKeluar from "../../../../components/modals/ModalGantiProdukKeluar";
+import ModalUbahProdukKeluar from "../../../../components/modals/ModalUbahProdukKeluar";
 import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
+import InputNumber from "../../../../components/inputs/InputNumber";
 
 type Props = {
   isLoadingBarangKeluarDetail?: boolean;
@@ -43,11 +44,12 @@ const ShowDataBarangKeluar: FC<Props> = ({
     isStatusPosted,
     isDirty,
     jumlahStokController,
-    handleCloseModalGantiProduk,
-    handleShowModalGantiProduk,
+    handleCloseModalUbahProduk,
+    handleShowModalUbahProduk,
     idBarangKeluar,
-    modalGantiProdukRef,
+    modalUbahProdukRef,
     hargaModalSatuanController,
+    dataUpdateBarangKeluar,
   } = useShowBarangKeluar({
     status: dataBarangKeluarDetail?.data?.status,
   });
@@ -128,10 +130,14 @@ const ShowDataBarangKeluar: FC<Props> = ({
                             >
                               <li>
                                 <LabelButtonDropDownWithIcon
-                                  label="Ganti Produk"
+                                  label="Ubah Produk"
                                   icon={PencilLine}
                                   handleClick={() =>
-                                    handleShowModalGantiProduk(item.id)
+                                    handleShowModalUbahProduk(item.id, {
+                                      produkId: item.produk.id,
+                                      hargaModalSatuan: item.hargaModalSatuan,
+                                      jumlahStok: item.jumlahStok,
+                                    })
                                   }
                                 />
                               </li>
@@ -330,7 +336,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                           >
                             {/* input text */}
                             <div className="w-50">
-                              <InputPrice<UpdateBarangKeluarDetailType>
+                              <InputNumber<UpdateBarangKeluarDetailType>
                                 controller={jumlahStokController}
                                 placeholder="Jumlah Stok"
                                 required
@@ -393,10 +399,14 @@ const ShowDataBarangKeluar: FC<Props> = ({
                             >
                               <li>
                                 <LabelButtonDropDownWithIcon
-                                  label="Ganti Produk"
+                                  label="Ubah Produk"
                                   icon={PencilLine}
                                   handleClick={() =>
-                                    handleShowModalGantiProduk(item.id)
+                                    handleShowModalUbahProduk(item.id, {
+                                      produkId: item.produk.id,
+                                      hargaModalSatuan: item.hargaModalSatuan,
+                                      jumlahStok: item.jumlahStok,
+                                    })
                                   }
                                 />
                               </li>
@@ -465,12 +475,17 @@ const ShowDataBarangKeluar: FC<Props> = ({
         bigTitle={`Apakah anda yakin ingin menghapus data barang "${dataDelete?.nama}" ini?`}
       />
 
-      {/* modal ganti produk */}
-      <ModalGantiProdukKeluar
-        modalRef={modalGantiProdukRef}
-        handleCloseModal={handleCloseModalGantiProduk}
+      {/* modal Ubah produk */}
+      <ModalUbahProdukKeluar
+        modalRef={modalUbahProdukRef}
+        handleCloseModal={handleCloseModalUbahProduk}
         idBarangKeluar={idBarangKeluar}
         status={dataBarangKeluarDetail?.data?.status}
+        dataUpdate={{
+          hargaModalSatuan: dataUpdateBarangKeluar?.hargaModalSatuan,
+          jumlahStok: dataUpdateBarangKeluar?.jumlahStok,
+          produkId: dataUpdateBarangKeluar?.produkId,
+        }}
       />
     </>
   );

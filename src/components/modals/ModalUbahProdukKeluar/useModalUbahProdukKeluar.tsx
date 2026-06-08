@@ -5,24 +5,34 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { BarangKeluarDetailValidation } from "../../../validations/barangKeluarDetail.validation";
 import type { UpdateBarangKeluarDetailType } from "../../../models/barangKeluarDetail.model";
 import type { ResponseProdukForChooseType } from "../../../models/produk.model";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { BarangKeluarDetailServices } from "../../../services/barangKeluarDetail.service";
 import { useClickOutside } from "../../../hooks/useClickOutSide";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import type { InputSearchRef } from "../../../types/ref.type";
-import { useForm } from "react-hook-form";
+import { useController, useForm } from "react-hook-form";
 import type { StatusInventoriType } from "../../../types/constant.type";
 import useDataProdukForChoose from "../../../hooks/useDataProdukForChoose";
 
-const useModalGantiProdukKeluar = (params: {
+const useModalUbahProdukKeluar = (params: {
   idBarangKeluar?: number;
   status?: StatusInventoriType;
+  dataUpdate: {
+    jumlahStok?: number;
+    hargaModalSatuan?: number;
+    produkId?: number;
+  };
   handleCloseModal: () => void;
 }) => {
   // params
-  const { idBarangKeluar, status, handleCloseModal } = params;
+  const {
+    idBarangKeluar,
+    status,
+    handleCloseModal,
+    dataUpdate: { jumlahStok, hargaModalSatuan, produkId },
+  } = params;
 
   // navigate
   const navigate = useNavigate();
@@ -57,8 +67,31 @@ const useModalGantiProdukKeluar = (params: {
     handleSubmit,
     setValue,
     reset,
+    setError,
+    control,
   } = useForm<UpdateBarangKeluarDetailType>({
     resolver: zodResolver(BarangKeluarDetailValidation.UPDATE),
+  });
+
+  // reset
+  useEffect(() => {
+    reset({
+      produkId,
+      jumlahStok,
+      hargaModalSatuan,
+    });
+  }, [reset, jumlahStok, hargaModalSatuan]);
+
+  // jumlah stok control
+  const jumlahStokController = useController({
+    control,
+    name: "jumlahStok",
+  });
+
+  // harga modal satuan control
+  const hargaModalSatuanController = useController({
+    control,
+    name: "hargaModalSatuan",
   });
 
   const { dataProdukForChoose, isLoadingProdukForChoose } =
@@ -88,20 +121,24 @@ const useModalGantiProdukKeluar = (params: {
         id: idBarangKeluar!,
         req: {
           produkId: req.produkId,
+          jumlahStok: req.jumlahStok,
+          hargaModalSatuan: req.hargaModalSatuan,
         },
         status: status!,
       }),
 
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["barang-Keluar-detail", validatedId],
+        queryKey: ["barang-keluar-detail", validatedId],
       });
 
-      reset({
-        produkId: undefined,
-        jumlahStok: undefined,
-        hargaModalSatuan: undefined,
-      });
+      if (data?.data) {
+        reset({
+          produkId: data.data.produk.id,
+          jumlahStok: data.data.jumlahStok,
+          hargaModalSatuan: data.data.hargaModalSatuan,
+        });
+      }
 
       setSearch("");
 
@@ -127,6 +164,15 @@ const useModalGantiProdukKeluar = (params: {
         if (err.response?.data?.meta?.customField?.includes("same_produk")) {
           handleSetAlert("produk_choose_exist_in_data");
         }
+        if (err.response?.data?.meta?.statusCode === 409) {
+          if (
+            err.response?.data?.meta?.customField?.includes(
+              "detail_barang_keluar_barangKeluarId_produkId_key",
+            )
+          ) {
+            handleSetAlert("produk_choose_exist_in_data");
+          }
+        }
       }
     },
   });
@@ -135,7 +181,49 @@ const useModalGantiProdukKeluar = (params: {
     try {
       if (!idBarangKeluar || !status) return;
 
-      await mutateBarangKeluarDetail(data);
+      const isProdukChanged =
+        produkChoose === null ? false : data.produkId !== produkId;
+      const isJumlahStokChanged = data.jumlahStok !== jumlahStok;
+      const isHargaModalSatuanChanged =
+        data.hargaModalSatuan !== hargaModalSatuan;
+
+      if (!isProdukChanged && produkChoose) {
+        handleSetAlert("produk_choose_exist_in_data");
+        return;
+      }
+
+      // check
+      if (
+        !isProdukChanged &&
+        !isJumlahStokChanged &&
+        !isHargaModalSatuanChanged
+      ) {
+        setError("produkId", {
+          message: "Minimal ubah produk, jumlah stok atau harga modal satuan",
+        });
+
+        setError("jumlahStok", {
+          message: "Minimal ubah produk, jumlah stok atau harga modal satuan",
+        });
+
+        setError("hargaModalSatuan", {
+          message: "Minimal ubah produk, jumlah stok atau harga modal satuan",
+        });
+
+        return;
+      }
+
+      const payload: UpdateBarangKeluarDetailType = {
+        produkId: isProdukChanged ? data.produkId : undefined,
+        jumlahStok: isJumlahStokChanged ? data.jumlahStok : undefined,
+        hargaModalSatuan: isHargaModalSatuanChanged
+          ? data.hargaModalSatuan
+          : undefined,
+      };
+
+      console.log(payload);
+
+      await mutateBarangKeluarDetail(payload);
     } catch (error) {
       console.log(error);
     }
@@ -195,7 +283,10 @@ const useModalGantiProdukKeluar = (params: {
     isPendingBarangKeluarDetail,
 
     alert,
+
+    jumlahStokController,
+    hargaModalSatuanController,
   };
 };
 
-export default useModalGantiProdukKeluar;
+export default useModalUbahProdukKeluar;

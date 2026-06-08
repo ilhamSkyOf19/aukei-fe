@@ -8,13 +8,24 @@ export class BarangKeluarValidation {
   static readonly CREATE = z
     .object({
       tanggalKeluar: z
-        .string()
+        .string({
+          message: "Mohon pilih tanggal keluar",
+        })
         .refine((date) => !isNaN(new Date(date).getTime()), {
-          message: "tanggalkeluar harus berupa tanggal valid",
+          message: "Tanggal keluar tidak valid",
         }),
 
-      keterangan: z.string().trim().max(300).optional(),
-      jenisKeluarId: z.number().int().positive().max(2147483647),
+      keterangan: z
+        .string()
+        .trim()
+        .max(300, "Keterangan maksimal 300 karakter")
+        .optional(),
+
+      jenisKeluarId: z
+        .number("Mohon pilih jenis keluar")
+        .int()
+        .positive("Mohon pilih jenis keluar")
+        .max(2147483647),
     })
     .strict() satisfies z.ZodType<CreateBarangKeluarForRequestType>;
 
@@ -24,12 +35,22 @@ export class BarangKeluarValidation {
       tanggalKeluar: z
         .string()
         .refine((date) => !isNaN(new Date(date).getTime()), {
-          message: "tanggalkeluar harus berupa tanggal valid",
+          message: "Tanggal keluar tidak valid",
         })
         .optional(),
 
-      keterangan: z.string().trim().max(300).optional(),
-      jenisKeluarId: z.number().int().positive().max(2147483647).optional(),
+      keterangan: z
+        .string()
+        .trim()
+        .max(300, "Keterangan maksimal 300 karakter")
+        .optional(),
+
+      jenisKeluarId: z
+        .number("Mohon pilih jenis keluar")
+        .int()
+        .positive("Mohon pilih jenis keluar")
+        .max(2147483647)
+        .optional(),
     })
     .strict() satisfies z.ZodType<UpdateBarangKeluarForRequestType>;
 }

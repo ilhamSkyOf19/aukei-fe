@@ -28,8 +28,8 @@ const useProduk = () => {
     handleShowModal: handleShowModalDelete,
     handleCloseModal: handleCloseModalDelete,
     idModal: idModalDelete,
-    dataDelete: dataDeleteProduk,
-  } = useModal();
+    dataModal: dataDeleteProduk,
+  } = useModal<{ nama: string }>();
 
   // use delete
   const { handleDeleteProduk, isPendingDeleteProduk } = useDeleteProduk({

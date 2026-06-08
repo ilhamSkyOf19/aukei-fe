@@ -96,4 +96,15 @@ export class BarangMasukServices {
 
     return result.data;
   }
+
+  // delete many
+  static async deleteMany(ids: number[]): Promise<ResponseStructure<null>> {
+    // call api
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/barang-masuk/delete-many`,
+      { data: { ids } },
+    );
+
+    return result.data;
+  }
 }

@@ -79,6 +79,24 @@ export const TOAST_CONFIG_BARANG_MASUK: Record<
   },
 };
 
+// toast barang keluar
+export const TOAST_CONFIG_BARANG_KELUAR: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  updated_barang_keluar: {
+    color: "info",
+    message: "Barang masuk berhasil diubah",
+  },
+  deleted_barang_keluar: {
+    color: "error",
+    message: "Barang masuk berhasil dihapus",
+  },
+};
+
 // toast barang masuk detaik
 export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
   string,

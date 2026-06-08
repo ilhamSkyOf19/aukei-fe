@@ -13,8 +13,8 @@ const useDeleteBarangMasuk = (params: {
     handleShowModal: handleShowModalDelete,
     handleCloseModal: handleCloseModalDelete,
     idModal: idModalDelete,
-    dataDelete: dataDelete,
-  } = useModal();
+    dataModal: dataDelete,
+  } = useModal<{ kodeReferensi?: string }>();
 
   // use mutation delete
   const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(

@@ -6,22 +6,29 @@ import ButtonSubmitWithIcon from "../../ui/button/ButtonSubmitWithIcon";
 import { Trash2 } from "lucide-react";
 import InputSearch from "../../inputs/InputSearch";
 import { formatRupiah } from "../../../helpers/helpers";
-import useModalGantiProdukMasuk from "./useModalGantiProdukMasuk";
+import useModalUbahProdukMasuk from "./useModalUbahProdukMasuk";
 import type { StatusInventoriType } from "../../../types/constant.type";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
+import InputNumber from "../../inputs/InputNumber";
+import type { UpdateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
   idBarangMasuk?: number;
+  dataUpdate: {
+    jumlahBox?: number;
+    produkId?: number;
+  };
   status?: StatusInventoriType;
 };
 
-const ModalGantiProdukMasuk: FC<Props> = ({
+const ModalUbahProdukMasuk: FC<Props> = ({
   modalRef,
   handleCloseModal,
   idBarangMasuk,
   status,
+  dataUpdate: { jumlahBox, produkId },
 }) => {
   const {
     handleSubmit,
@@ -50,7 +57,13 @@ const ModalGantiProdukMasuk: FC<Props> = ({
     isPendingBarangMasukDetail,
 
     alert,
-  } = useModalGantiProdukMasuk({ idBarangMasuk, status, handleCloseModal });
+    jumlahBoxController,
+  } = useModalUbahProdukMasuk({
+    idBarangMasuk,
+    status,
+    handleCloseModal,
+    dataUpdate: { jumlahBox, produkId },
+  });
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
@@ -176,7 +189,7 @@ const ModalGantiProdukMasuk: FC<Props> = ({
 
               {/* card produk choose */}
               {produkChoose !== null && (
-                <div className="w-full flex flex-col justify-start items-start gap-2 mt-4">
+                <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
                   <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
                   <div className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out">
                     <div className="w-full flex flex-row justify-start items-start gap-2">
@@ -227,6 +240,17 @@ const ModalGantiProdukMasuk: FC<Props> = ({
               )}
             </div>
 
+            {/* jumlah box  */}
+            <div className="w-full lg:hidden">
+              <InputNumber<UpdateBarangMasukDetailType>
+                controller={jumlahBoxController}
+                label="Jumlah Box"
+                placeholder="Jumlah Box"
+                max={1000000}
+                required
+              />
+            </div>
+
             {/* button submit */}
             <div className="w-full flex flex-row justify-end items-end gap-4 mt-2">
               <ButtonCloseText handleClose={handleCloseModal} label="Batal" />
@@ -243,4 +267,4 @@ const ModalGantiProdukMasuk: FC<Props> = ({
   );
 };
 
-export default ModalGantiProdukMasuk;
+export default ModalUbahProdukMasuk;

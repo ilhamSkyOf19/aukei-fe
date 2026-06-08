@@ -83,8 +83,8 @@ const useShowData = () => {
     handleCloseModal: handleCloseModalDelete,
     handleShowModal: handleShowModalDelete,
     idModal: idModalDelete,
-    dataDelete,
-  } = useModal();
+    dataModal: dataDelete,
+  } = useModal<{ nama: string }>();
 
   // set data update
   useEffect(() => {

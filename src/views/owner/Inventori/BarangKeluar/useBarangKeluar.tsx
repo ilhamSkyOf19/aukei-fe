@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BarangKeluarServices } from "../../../../services/barangKeluar.service";
 import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../hooks/useFilter";
@@ -7,6 +7,7 @@ import useModal from "../../../../hooks/useModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHighlight from "../../../../hooks/useHighlight";
 import useDeleteBarangKeluar from "../../../../hooks/useDeleteBarangKeluar";
+import { useState } from "react";
 
 const useBarangKeluar = () => {
   // navigate
@@ -19,6 +20,25 @@ const useBarangKeluar = () => {
 
   // filter search
   const { search, setSearch: handleSearch } = useFilterSearch("search");
+
+  // state choose barang
+  const [chooseBarangKeluar, setChooseBarangKeluar] = useState<
+    { id: number; kodeReferensi: string }[]
+  >([]);
+
+  // handle set choose
+  const handleSetChooseBarangKeluar = (data: {
+    id: number;
+    kodeReferensi: string;
+  }) => {
+    if (chooseBarangKeluar.some((item) => item.id === data.id)) {
+      setChooseBarangKeluar(
+        chooseBarangKeluar.filter((item) => item.id !== data.id),
+      );
+    } else {
+      setChooseBarangKeluar((prev) => [...prev, data]);
+    }
+  };
 
   // highlight
   const {
@@ -33,6 +53,19 @@ const useBarangKeluar = () => {
     handleCloseModal: handleCloseModalFormulirBarangKeluar,
     handleShowModal: handleShowModalFormulirBarangKeluar,
   } = useModal();
+
+  // use modal delete
+  const {
+    modalRef: modalDeleteManyRef,
+    handleCloseModal: handleCloseModalDeleteMany,
+    handleShowModal: handleShowModalDeleteMany,
+    dataModal: dataDeleteMany,
+  } = useModal<{
+    data: {
+      id: number;
+      kodeReferensi: string;
+    }[];
+  }>();
 
   // filter sort
   const { filter: sort, setFilter: handleSort } = useFilter({
@@ -84,6 +117,53 @@ const useBarangKeluar = () => {
     navigate(`${currentPathname}/barang-keluar/${id}`);
   };
 
+  // use mutation delete many
+  const { mutateAsync: deleteMany, isPending: isPendingDeleteMany } =
+    useMutation({
+      mutationFn: (ids: number[]) => BarangKeluarServices.deleteMany(ids),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["barang-keluar"] });
+
+        // handle toast
+        handleSetToast("deleted_barang_keluar");
+
+        // close modal
+        handleCloseModalDeleteMany();
+
+        // reset choose
+        setChooseBarangKeluar([]);
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    });
+
+  // handle delete many
+  const handleDeleteMany = async () => {
+    try {
+      // check choose barang
+      if (chooseBarangKeluar.length === 0) {
+        return;
+      }
+
+      // check
+      const isSame =
+        dataBarangKeluar?.data?.data.length === chooseBarangKeluar.length &&
+        dataBarangKeluar?.data?.data.every((item) =>
+          chooseBarangKeluar.includes({
+            id: item.id,
+            kodeReferensi: item.kodeReferensi,
+          }),
+        );
+
+      if (isSame) return;
+
+      await deleteMany(chooseBarangKeluar.map((item) => item.id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // use delete barang Keluar
   const {
     dataDelete,
@@ -120,6 +200,14 @@ const useBarangKeluar = () => {
     handleDelete,
     dataDelete,
     isPendingDelete,
+    modalDeleteManyRef,
+    handleCloseModalDeleteMany,
+    handleShowModalDeleteMany,
+    handleDeleteMany,
+    dataDeleteMany,
+    isPendingDeleteMany,
+    chooseBarangKeluar,
+    handleSetChooseBarangKeluar,
   };
 };
 

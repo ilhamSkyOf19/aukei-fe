@@ -6,22 +6,32 @@ import ButtonSubmitWithIcon from "../../ui/button/ButtonSubmitWithIcon";
 import { Trash2 } from "lucide-react";
 import InputSearch from "../../inputs/InputSearch";
 import { formatRupiah } from "../../../helpers/helpers";
-import useModalGantiProdukKeluar from "./useModalGantiProdukKeluar";
 import type { StatusInventoriType } from "../../../types/constant.type";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
+import useModalUbahProdukKeluar from "./useModalUbahProdukKeluar";
+import InputPrice from "../../inputs/InputPrice";
+import type { UpdateBarangKeluarDetailType } from "../../../models/barangKeluarDetail.model";
+import InputNumber from "../../inputs/InputNumber";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
-  idBarangKeluar?: number;
+  jumlahStok?: number;
+  dataUpdate: {
+    hargaModalSatuan?: number;
+    jumlahStok?: number;
+    produkId?: number;
+  };
   status?: StatusInventoriType;
+  idBarangKeluar?: number;
 };
 
-const ModalGantiProdukKeluar: FC<Props> = ({
+const ModalUbahProdukKeluar: FC<Props> = ({
   modalRef,
   handleCloseModal,
-  idBarangKeluar,
   status,
+  idBarangKeluar,
+  dataUpdate: { hargaModalSatuan, jumlahStok, produkId },
 }) => {
   const {
     handleSubmit,
@@ -50,7 +60,18 @@ const ModalGantiProdukKeluar: FC<Props> = ({
     isPendingBarangKeluarDetail,
 
     alert,
-  } = useModalGantiProdukKeluar({ idBarangKeluar, status, handleCloseModal });
+    hargaModalSatuanController,
+    jumlahStokController,
+  } = useModalUbahProdukKeluar({
+    idBarangKeluar,
+    status,
+    dataUpdate: {
+      hargaModalSatuan,
+      jumlahStok,
+      produkId,
+    },
+    handleCloseModal,
+  });
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
@@ -176,7 +197,7 @@ const ModalGantiProdukKeluar: FC<Props> = ({
 
               {/* card produk choose */}
               {produkChoose !== null && (
-                <div className="w-full flex flex-col justify-start items-start gap-2 mt-4">
+                <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
                   <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
                   <div className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out">
                     <div className="w-full flex flex-row justify-start items-start gap-2">
@@ -227,6 +248,27 @@ const ModalGantiProdukKeluar: FC<Props> = ({
               )}
             </div>
 
+            {/* harga modal satuan */}
+            <div className="w-full lg:hidden">
+              <InputPrice<UpdateBarangKeluarDetailType>
+                controller={hargaModalSatuanController}
+                label="Harga Modal Satuan"
+                placeholder="Harga Modal Satuan"
+                required
+              />
+            </div>
+
+            {/* jumlah stok */}
+            <div className="w-full lg:hidden">
+              <InputNumber<UpdateBarangKeluarDetailType>
+                controller={jumlahStokController}
+                label="Jumlah Stok"
+                placeholder="Jumlah Stok"
+                required
+                max={1000000}
+              />
+            </div>
+
             {/* button submit */}
             <div className="w-full flex flex-row justify-end items-end gap-4 mt-2">
               <ButtonCloseText handleClose={handleCloseModal} label="Batal" />
@@ -243,4 +285,4 @@ const ModalGantiProdukKeluar: FC<Props> = ({
   );
 };
 
-export default ModalGantiProdukKeluar;
+export default ModalUbahProdukKeluar;

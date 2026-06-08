@@ -1,5 +1,7 @@
 # Task
 
+# Sprint !
+
 - [✅] Membuat halaman login + Integrasi API
 - [✅] Membuat halaman produk + Integrasi API show produk
 
@@ -40,7 +42,7 @@
 - [✅] Integrasi API Ganti Produk (Dekstop)
 - [✅] Delete Barang Masuk
 
-- [ ] Integrasi API Ubah Daftar Data Barang Masuk (Mobile)
+- [✅] Integrasi API Ubah Daftar Data Barang Masuk (Mobile)
 
 ## Branch Barang Keluar
 
@@ -55,9 +57,9 @@
 - [✅] Integrasi API Ubah Jumlah Stok (Dekstop)
 - [✅] Membuat fitur tambah barang Keluar (Mobile)
 - [✅] Integrasi API Ganti Produk (Dekstop)
+- [✅] Membuat Fitur Batalkan Posting
 
-- [ ] Membuat Fitur Batalkan Posting
-- [ ] Integrasi API Delete (Dekstop)
-- [ ] Integrasi API Delete (Mobile)
-- [ ] Integrasi API Ubah Daftar Data Barang Keluar (Mobile)
-- [ ] Delete Barang Keluar
+- [✅] Integrasi API Delete (Dekstop)
+- [✅] Integrasi API Delete (Mobile)
+- [✅] Integrasi API Ubah Daftar Data Barang Keluar (Mobile)
+- [✅] Delete Barang Keluar

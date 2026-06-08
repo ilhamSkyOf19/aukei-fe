@@ -10,7 +10,7 @@ import useShowBarangMasuk from "./useShowBarangMasuk";
 import ModalDelete from "../../../../components/modals/ModalDelete";
 import type { UpdateBarangMasukDetailType } from "../../../../models/barangMasukDetail.model";
 import InputNumber from "../../../../components/inputs/InputNumber";
-import ModalGantiProdukMasuk from "../../../../components/modals/ModalGantiProdukMasuk";
+import ModalUbahProdukMasuk from "../../../../components/modals/ModalUbahProdukMasuk";
 import CardForm from "../../../../components/inputs/CardForm";
 import ButtonInline from "../../../../components/ui/button/ButtonInline";
 import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
@@ -42,10 +42,11 @@ const ShowDataBarangMasuk: FC<Props> = ({
     isStatusPosted,
     isDirty,
     jumlahBoxController,
-    handleCloseModalGantiProduk,
-    handleShowModalGantiProduk,
+    handleCloseModalUbahProduk,
+    handleShowModalUbahProduk,
     idBarangMasuk,
-    modalGantiProdukRef,
+    modalUbahProdukRef,
+    dataUpdateBarangMasuk,
   } = useShowBarangMasuk({
     status: dataBarangMasukDetail?.data?.status,
   });
@@ -126,10 +127,13 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             >
                               <li>
                                 <LabelButtonDropDownWithIcon
-                                  label="Ganti Produk"
+                                  label="Ubah Produk"
                                   icon={PencilLine}
                                   handleClick={() =>
-                                    handleShowModalGantiProduk(item.id)
+                                    handleShowModalUbahProduk(item.id, {
+                                      jumlahBox: item.jumlahBox,
+                                      produkId: item.produk.id,
+                                    })
                                   }
                                 />
                               </li>
@@ -369,10 +373,13 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             >
                               <li>
                                 <LabelButtonDropDownWithIcon
-                                  label="Ganti Produk"
+                                  label="Ubah Produk"
                                   icon={PencilLine}
                                   handleClick={() =>
-                                    handleShowModalGantiProduk(item.id)
+                                    handleShowModalUbahProduk(item.id, {
+                                      produkId: item.produk.id,
+                                      jumlahBox: item.jumlahBox,
+                                    })
                                   }
                                 />
                               </li>
@@ -441,12 +448,16 @@ const ShowDataBarangMasuk: FC<Props> = ({
         bigTitle={`Apakah anda yakin ingin menghapus data barang "${dataDelete?.nama}" ini?`}
       />
 
-      {/* modal ganti produk */}
-      <ModalGantiProdukMasuk
-        modalRef={modalGantiProdukRef}
-        handleCloseModal={handleCloseModalGantiProduk}
+      {/* modal Ubah produk */}
+      <ModalUbahProdukMasuk
+        modalRef={modalUbahProdukRef}
+        handleCloseModal={handleCloseModalUbahProduk}
         idBarangMasuk={idBarangMasuk}
         status={dataBarangMasukDetail?.data?.status}
+        dataUpdate={{
+          jumlahBox: dataUpdateBarangMasuk?.jumlahBox,
+          produkId: dataUpdateBarangMasuk?.produkId,
+        }}
       />
     </>
   );

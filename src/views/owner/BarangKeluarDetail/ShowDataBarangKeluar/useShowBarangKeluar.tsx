@@ -33,16 +33,21 @@ const useShowBarangKeluar = (params: { status?: StatusInventoriType }) => {
     handleCloseModal: handleCloseModalDelete,
     handleShowModal: handleShowModalDelete,
     idModal: idDelete,
-    dataDelete,
-  } = useModal();
+    dataModal: dataDelete,
+  } = useModal<{ nama: string }>();
 
-  // use modal ganti produk
+  // use modal Ubah produk
   const {
-    modalRef: modalGantiProdukRef,
-    handleCloseModal: handleCloseModalGantiProduk,
-    handleShowModal: handleShowModalGantiProduk,
+    modalRef: modalUbahProdukRef,
+    handleCloseModal: handleCloseModalUbahProduk,
+    handleShowModal: handleShowModalUbahProduk,
     idModal: idBarangKeluar,
-  } = useModal();
+    dataModal: dataUpdateBarangKeluar,
+  } = useModal<{
+    produkId: number;
+    jumlahStok: number;
+    hargaModalSatuan: number;
+  }>();
 
   //   use mutation
   const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(
@@ -270,11 +275,12 @@ const useShowBarangKeluar = (params: { status?: StatusInventoriType }) => {
     isStatusPosted,
     isDirty,
     jumlahStokController,
-    modalGantiProdukRef,
-    handleCloseModalGantiProduk,
-    handleShowModalGantiProduk,
+    modalUbahProdukRef,
+    handleCloseModalUbahProduk,
+    handleShowModalUbahProduk,
     idBarangKeluar,
     hargaModalSatuanController,
+    dataUpdateBarangKeluar,
   };
 };
 

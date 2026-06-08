@@ -1,8 +1,14 @@
-import { EllipsisVertical, PackagePlus, Trash, View } from "lucide-react";
+import {
+  EllipsisVertical,
+  PackagePlus,
+  Trash,
+  Trash2,
+  View,
+} from "lucide-react";
 import FilterSort from "../../../../components/filters/Sort";
 import InputSearch from "../../../../components/inputs/InputSearch";
 import Toast from "../../../../components/messages/Toast";
-import { TOAST_CONFIG_BARANG_MASUK } from "../../../../types/toast.type";
+import { TOAST_CONFIG_BARANG_KELUAR } from "../../../../types/toast.type";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
 import { cn } from "../../../../utils/cn";
 import LabelButtonDropDownWithIcon from "../../../../components/ui/button/LabelButtonDropDownWithIcon";
@@ -40,6 +46,14 @@ const BarangKeluar = () => {
     modalDeleteRef,
     handleShowModalDelete,
     isPendingDelete,
+    chooseBarangKeluar,
+    dataDeleteMany,
+    handleCloseModalDeleteMany,
+    handleDeleteMany,
+    handleSetChooseBarangKeluar,
+    handleShowModalDeleteMany,
+    isPendingDeleteMany,
+    modalDeleteManyRef,
   } = useBarangKeluar();
 
   return (
@@ -49,14 +63,14 @@ const BarangKeluar = () => {
         <Toast
           toast={toast?.id !== null}
           isAnimationOut={toast?.isAnimationOut || false}
-          label={TOAST_CONFIG_BARANG_MASUK[toast.type].message}
-          color={TOAST_CONFIG_BARANG_MASUK[toast.type].color}
+          label={TOAST_CONFIG_BARANG_KELUAR[toast.type].message}
+          color={TOAST_CONFIG_BARANG_KELUAR[toast.type].color}
         />
       )}
 
       <div className="card dark:border dark:border-base-content/10 w-full bg-base-100 flex flex-col justify-start items-start p-4">
         {/* filter */}
-        <div className=" w-full flex flex-col lg:flex-row justify-start items-start lg:items-center gap-4 lg:gap-0">
+        <div className=" w-full flex flex-col lg:flex-row justify-start items-start lg:items-start gap-4 lg:gap-0">
           <div className="w-full lg:flex-1 flex flex-row justify-start items-center">
             {/* input search */}
             <InputSearch
@@ -84,11 +98,7 @@ const BarangKeluar = () => {
             {/* head */}
             <thead>
               <tr>
-                <th>
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
-                </th>
+                <th>Pilih</th>
                 <th>Kode Referensi</th>
                 <th>Tanggal Keluar</th>
                 <th>Keterangan</th>
@@ -118,7 +128,22 @@ const BarangKeluar = () => {
                   >
                     <th>
                       <label>
-                        <input type="checkbox" className="checkbox" />
+                        <input
+                          type="checkbox"
+                          className="checkbox"
+                          disabled={
+                            barang.status === STATUS_INVENTORI_TYPE.POSTED
+                          }
+                          checked={chooseBarangKeluar.some(
+                            (item) => item.id === barang.id,
+                          )}
+                          onChange={() => {
+                            handleSetChooseBarangKeluar({
+                              id: barang.id,
+                              kodeReferensi: barang.kodeReferensi,
+                            });
+                          }}
+                        />
                       </label>
                     </th>
                     {/* kode */}
@@ -188,10 +213,9 @@ const BarangKeluar = () => {
                                 label="Hapus"
                                 icon={Trash}
                                 handleClick={() =>
-                                  handleShowModalDelete(
-                                    barang.id,
-                                    barang.kodeReferensi,
-                                  )
+                                  handleShowModalDelete(barang.id, {
+                                    kodeReferensi: barang.kodeReferensi,
+                                  })
                                 }
                               />
                             </li>
@@ -215,12 +239,36 @@ const BarangKeluar = () => {
               )}
             </tbody>
             {/* foot */}
-            {!isLoadingBarangKeluar &&
-              isExistDataBarangKeluar &&
-              dataBarangKeluar?.data?.data?.length! > 8 && (
-                <tfoot>
-                  <tr>
-                    <th></th>
+            <tfoot>
+              <tr>
+                <th>
+                  <button
+                    type="button"
+                    className="hover group disabled:opacity-50"
+                    disabled={chooseBarangKeluar.length === 0}
+                    style={{
+                      cursor:
+                        chooseBarangKeluar.length === 0 ? "not-allowed" : "",
+                    }}
+                  >
+                    <Trash2
+                      className={cn(
+                        "size-6 text-rose-600 transition-all duration-150 ease-in-out",
+                        chooseBarangKeluar.length > 0 &&
+                          "group-hover:text-rose-400",
+                      )}
+                      onClick={() =>
+                        handleShowModalDeleteMany(undefined, {
+                          data: chooseBarangKeluar,
+                        })
+                      }
+                    />
+                  </button>
+                </th>
+                {!isLoadingBarangKeluar &&
+                isExistDataBarangKeluar &&
+                dataBarangKeluar?.data?.data?.length! > 8 ? (
+                  <>
                     <th>Kode Referensi</th>
                     <th>Tanggal Keluar</th>
                     <th>Keterangan</th>
@@ -228,9 +276,20 @@ const BarangKeluar = () => {
                     <th>Jenis Keluar</th>
                     <th>Status</th>
                     <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
-                  </tr>
-                </tfoot>
-              )}
+                  </>
+                ) : (
+                  <>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </>
+                )}
+              </tr>
+            </tfoot>
           </table>
         </div>
 
@@ -256,8 +315,18 @@ const BarangKeluar = () => {
         handleCloseModal={handleCloseModalDelete}
         handleDelete={handleDelete}
         bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
-        highlightData={dataDelete}
+        highlightData={dataDelete?.kodeReferensi}
         isLoadingDelete={isPendingDelete}
+      />
+
+      {/* modal delete many */}
+      <ModalDelete
+        modalRef={modalDeleteManyRef}
+        handleCloseModal={handleCloseModalDeleteMany}
+        handleDelete={handleDeleteMany}
+        bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
+        highlightDatas={dataDeleteMany?.data?.map((item) => item.kodeReferensi)}
+        isLoadingDelete={isPendingDeleteMany}
       />
     </div>
   );

@@ -147,10 +147,10 @@ const BarangKeluarDetail = () => {
                     icon={Trash2}
                     bgColor="bg-error"
                     handleBtn={() =>
-                      handleShowModalDelete(
-                        dataBarangKeluarDetail?.data?.id,
-                        dataBarangKeluarDetail?.data?.kodeReferensi,
-                      )
+                      handleShowModalDelete(dataBarangKeluarDetail?.data?.id, {
+                        kodeReferensi:
+                          dataBarangKeluarDetail?.data?.kodeReferensi,
+                      })
                     }
                   />
                 )}
@@ -264,7 +264,7 @@ const BarangKeluarDetail = () => {
         handleCloseModal={handleCloseModalDelete}
         handleDelete={handleDelete}
         bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
-        highlightData={dataDelete}
+        highlightData={dataDelete?.kodeReferensi}
         isLoadingDelete={isPendingDelete}
       />
     </div>

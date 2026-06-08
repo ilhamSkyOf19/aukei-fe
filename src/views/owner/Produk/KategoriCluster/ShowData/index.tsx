@@ -97,7 +97,9 @@ const ShowData = () => {
               key={item.id}
               data={item}
               handleUpdate={handleShowModalFormulirKategori}
-              handleDelete={() => handleShowModalDelete(item.id, item.nama)}
+              handleDelete={() =>
+                handleShowModalDelete(item.id, { nama: item.nama })
+              }
             />
           ))
         ) : (
