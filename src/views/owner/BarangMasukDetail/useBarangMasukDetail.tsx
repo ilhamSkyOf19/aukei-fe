@@ -61,6 +61,12 @@ const useBarangMasukDetail = () => {
         queryClient.invalidateQueries({
           queryKey: ["barang-masuk-detail", validatedId],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["notifikasi-global"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["notifikasi-produk"],
+        });
       },
       onError: (err) => {
         if (axios.isAxiosError<ErrorResponse>(err)) {
@@ -113,6 +119,12 @@ const useBarangMasukDetail = () => {
       // revalidated
       queryClient.invalidateQueries({
         queryKey: ["barang-masuk-detail", validatedId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-global"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-produk"],
       });
     },
     onError: (err) => {

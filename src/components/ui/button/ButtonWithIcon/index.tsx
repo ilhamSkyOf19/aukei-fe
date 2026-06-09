@@ -11,7 +11,6 @@ type Props = {
   handleBtn?: () => void;
   isLoading?: boolean;
   icon?: LucideIcon;
-  size?: "xs";
   customWidth?: string;
 };
 const ButtonWithIcon: FC<Props> = ({
@@ -22,7 +21,6 @@ const ButtonWithIcon: FC<Props> = ({
   handleBtn,
   isLoading,
   icon: Icon,
-  size,
   customWidth,
 }) => {
   // navigation
@@ -32,9 +30,8 @@ const ButtonWithIcon: FC<Props> = ({
     <button
       type="button"
       className={cn(
-        "flex justify-center items-center hover-overlay rounded-md px-3 gap-2",
+        "flex justify-center h-8 lg:h-8.5 items-center hover-overlay rounded-md px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
-        size === "xs" ? "h-9" : "h-8 lg:h-8.5",
         customWidth ? customWidth : "w-auto",
       )}
       onClick={() => {
@@ -47,12 +44,7 @@ const ButtonWithIcon: FC<Props> = ({
     >
       {isLoading ? (
         <div className="w-20">
-          <div
-            className={cn(
-              "loading text-primary-white",
-              size ? "loading-xs" : "loading-sm",
-            )}
-          />
+          <div className={cn("loading loading-sm text-primary-white")} />
         </div>
       ) : (
         <>
@@ -66,8 +58,7 @@ const ButtonWithIcon: FC<Props> = ({
           ) : (
             <Plus
               className={cn(
-                "lg",
-                size ? "size-4" : "size-4.5 lg:size-5",
+                "lg size-4.5 lg:size-5",
                 textColor ? textColor : "text-custom-secondary",
               )}
             />
@@ -75,9 +66,8 @@ const ButtonWithIcon: FC<Props> = ({
 
           <span
             className={cn(
-              "font-medium",
+              "font-medium text-[0.625rem] lg:text-xs",
               textColor ? textColor : "text-custom-secondary",
-              size ? "text-xs" : "text-[0.625rem] lg:text-xs",
             )}
           >
             {label ? label : "Tambah"}

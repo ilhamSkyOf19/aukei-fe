@@ -13,6 +13,7 @@ import { TOAST_CONFIG_KATEGORI_PRODUK } from "../../../../../types/toast.type";
 import Alert from "../../../../../components/messages/Alert";
 import { ALERT_CONFIG_KATEGORI_PRODUK } from "../../../../../types/alert.types";
 import ModalDelete from "../../../../../components/modals/ModalDelete";
+import ButtonWithIcon from "../../../../../components/ui/button/ButtonWithIcon";
 
 const ShowData = () => {
   // call use
@@ -75,11 +76,10 @@ const ShowData = () => {
 
           {/* button add  */}
           <div className="lg:hidden block">
-            <ButtonAdd
+            <ButtonWithIcon
               icon={Tag}
               label="Tambah Kategori"
               handleBtn={() => handleShowModalFormulirKategori()}
-              size="xs"
             />
           </div>
         </div>

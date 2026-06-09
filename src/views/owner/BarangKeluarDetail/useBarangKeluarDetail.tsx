@@ -62,6 +62,16 @@ const useBarangKeluarDetail = () => {
         queryClient.invalidateQueries({
           queryKey: ["barang-keluar-detail", validatedId],
         });
+
+        // revalidated
+        queryClient.invalidateQueries({
+          queryKey: ["notifikasi-global"],
+        });
+
+        // revalidated
+        queryClient.invalidateQueries({
+          queryKey: ["notifikasi-produk"],
+        });
       },
       onError: (err) => {
         if (axios.isAxiosError<ErrorResponse>(err)) {
@@ -114,6 +124,16 @@ const useBarangKeluarDetail = () => {
       // revalidated
       queryClient.invalidateQueries({
         queryKey: ["barang-keluar-detail", validatedId],
+      });
+
+      // revalidated
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-global"],
+      });
+
+      // revalidated
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-produk"],
       });
     },
     onError: (err) => {

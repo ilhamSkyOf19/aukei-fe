@@ -22,7 +22,7 @@ const ButtonActionWithIcon: FC<Props> = ({
     <button
       type="button"
       className={cn(
-        "btn btn-sm lg:btn-md hover-overlay flex flex-row justify-start items-center gap-1.5",
+        "btn btn-sm hover-overlay flex flex-row justify-start items-center gap-1.5",
         buttonColor,
       )}
       onClick={() => {
@@ -36,10 +36,7 @@ const ButtonActionWithIcon: FC<Props> = ({
 
       {/* label */}
       <span
-        className={cn(
-          "text-xs lg:text-sm",
-          textColor ? textColor : "text-base-content",
-        )}
+        className={cn("text-xs", textColor ? textColor : "text-base-content")}
       >
         {label}
       </span>

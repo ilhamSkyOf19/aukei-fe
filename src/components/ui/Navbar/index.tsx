@@ -1,4 +1,10 @@
-import { ChevronDown, LogOut, PanelRightClose } from "lucide-react";
+import {
+  Bell,
+  ChevronDown,
+  LogOut,
+  PanelRightClose,
+  RefreshCw,
+} from "lucide-react";
 import { type FC } from "react";
 import { useAuthStore } from "../../../stores/authStore";
 import useNavbar from "./useNavbar";
@@ -6,6 +12,8 @@ import { cn } from "../../../utils/cn";
 import ButtonTheme from "../button/ButtonTheme";
 import { highlightName } from "../../../helpers/helpers";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
+import JenisNotifikasiProduk from "../JenisNotifikasiProduk";
+import { Link } from "react-router-dom";
 type Props = {
   handleSidebar: () => void;
   isClose: boolean;
@@ -16,7 +24,15 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
   const pengguna = useAuthStore((state) => state.pengguna);
 
   // get use navbar
-  const { handleLogout } = useNavbar();
+  const {
+    handleLogout,
+    isLoadingNotifikasiGlobal,
+    notifikasiGlobal,
+    dataNotifikasiProduk,
+    refetchNotifikasi,
+    // isShowCountNotifikasi,
+    // setIsShowCountNotifikasi,
+  } = useNavbar();
 
   return (
     <nav className="navbar w-full bg-custom-secondary shadow-sm flex flex-row justify-between items-center relative ">
@@ -41,6 +57,123 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           </h1>
         </div>
         <div className="flex-1 flex flex-row justify-end items-center gap-2 lg:gap-6 pr-2">
+          {/* notifikasi */}
+          <div className="dropdown dropdown-end">
+            <button
+              type="button"
+              tabIndex={0}
+              role="button"
+              className="cursor-pointer p-2 focus:bg-custom-primary/50 hover:bg-custom-primary/50 rounded-full transition-all duration-150 ease-in-out relative"
+              // onFocus={() => setIsShowCountNotifikasi(false)}
+            >
+              <Bell className="size-6 text-primary-white" />
+
+              {/* count */}
+              {dataNotifikasiProduk && dataNotifikasiProduk?.length > 0 && (
+                <p className="absolute text-[0.625rem] -top-1 font-semibold bg-error w-4 h-4 flex flex-col justify-center items-center rounded-full right-0 text-primary-white">
+                  {dataNotifikasiProduk?.length}
+                </p>
+              )}
+            </button>
+            <ul
+              tabIndex={-1}
+              className="dropdown-content  overflow-hidden menu bg-base-100 rounded-box z-50 w-80 min-h-90 -mr-25 lg:mr-0 lg:w-130 p-2 shadow-sm mt-1.5"
+            >
+              <li className="mb-1">
+                <div className="w-full flex flex-row justify-between items-center hover:bg-transparent active:bg-transparent cursor-default ">
+                  {/* title */}
+                  <p className="text-xs font-semibold text-base-content">
+                    Notifikasi
+                  </p>
+
+                  {/* action refresh */}
+                  <button
+                    type="button"
+                    className={cn(
+                      "cursor-pointer",
+                      !isLoadingNotifikasiGlobal && "p-1",
+                    )}
+                    disabled={isLoadingNotifikasiGlobal}
+                    onClick={() => refetchNotifikasi()}
+                  >
+                    {isLoadingNotifikasiGlobal ? (
+                      <div className="loading-xs text-base-content loading" />
+                    ) : (
+                      <RefreshCw className="size-4 text-base-content" />
+                    )}
+                  </button>
+                </div>
+              </li>
+
+              {/* choose */}
+              <li className="mb-4 w-full">
+                <div className="w-full flex scrollbar-thin flex-row py-2.5 gap-2.5 justify-start overflow-x-auto items-start hover:bg-transparent active:bg-transparent cursor-default ">
+                  {Array.from({ length: 8 }, (_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className="px-2 py-1 bg-gray-200 rounded-lg text-base-content text-[0.7rem] hover:bg-gray-600 hover:text-primary-white transition-all duration-150 ease-in-out"
+                    >
+                      Produk
+                    </button>
+                  ))}
+                </div>
+              </li>
+
+              {notifikasiGlobal?.data ? (
+                dataNotifikasiProduk &&
+                dataNotifikasiProduk.length > 0 &&
+                dataNotifikasiProduk.map((data, _) => (
+                  <li key={data.id}>
+                    <Link
+                      to={`/dashboard/produk/${data.produk.id}`}
+                      type="button"
+                      className="w-full flex py-2.5 flex-row justify-between items-center"
+                      onClick={() =>
+                        (document.activeElement as HTMLElement)?.blur()
+                      }
+                    >
+                      <div className="flex-2 flex flex-row justify-start items-start gap-3">
+                        {/* img */}
+                        <div className="w-11 h-11 rounded-md overflow-hidden">
+                          <img
+                            src={data.produk.img}
+                            alt="foto produk"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        {/* info */}
+                        <div className="flex flex-col justify-start items-start">
+                          <span className="font-semibold text-xs text-base-content">
+                            {data.produk.nama}
+                          </span>
+                          <span className="text-[0.625rem] font-semibold text-base-content/50">
+                            {data.produk.kode}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* status */}
+                      <div className="flex-1 flex flex-row justify-end items-center">
+                        <JenisNotifikasiProduk
+                          jenisNotifikasi={data.jenisNotifikasiProduk}
+                        />
+                      </div>
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li className="pointer-events-none">
+                  <div className="w-full flex flex-col justify-center items-center h-20">
+                    <span>Tidak ada notifikasi</span>
+                  </div>
+                </li>
+              )}
+            </ul>
+          </div>
+
+          {/* profile */}
           <div className="dropdown dropdown-end">
             <button
               type="button"
@@ -62,7 +195,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             </button>
             <ul
               tabIndex={-1}
-              className="dropdown-content menu bg-base-100 rounded-box z-1 w-60 p-2 shadow-sm gap-2"
+              className="dropdown-content menu bg-base-100 rounded-box z-1 w-60 p-2 shadow-sm gap-2 mt-1.5"
             >
               <li className="pointer-events-none">
                 <div className="w-full flex flex-row justify-start items-center gap-3 pb-4 border-b border-base-content/10">

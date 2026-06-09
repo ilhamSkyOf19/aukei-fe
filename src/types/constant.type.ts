@@ -18,6 +18,15 @@ export const STATUS_INVENTORI_TYPE = {
 export type StatusInventoriType =
   (typeof STATUS_INVENTORI_TYPE)[keyof typeof STATUS_INVENTORI_TYPE];
 
+export const JENIS_NOTIFIKASI_PRODUK_TYPE = {
+  STOK_MINUS: "STOK_MINUS",
+  STOK_EMPTY: "STOK_EMPTY",
+  STOK_MINIMUM: "STOK_MINIMUM",
+};
+
+export type JenisNotifikasiProdukType =
+  (typeof JENIS_NOTIFIKASI_PRODUK_TYPE)[keyof typeof JENIS_NOTIFIKASI_PRODUK_TYPE];
+
 // outlet context type
 export type OutletContextType = {
   handleTitle: (title: string) => void;
