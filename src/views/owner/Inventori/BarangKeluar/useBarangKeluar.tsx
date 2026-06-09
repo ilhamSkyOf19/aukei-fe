@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useHighlight from "../../../../hooks/useHighlight";
 import useDeleteBarangKeluar from "../../../../hooks/useDeleteBarangKeluar";
 import { useState } from "react";
+import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
 
 const useBarangKeluar = () => {
   // navigate
@@ -85,19 +86,32 @@ const useBarangKeluar = () => {
     isNumber: true,
   });
 
+  // filter range date
+  const { startDate, endDate } = useFilterRangeDate();
+
   //   toast
   const { toast, handleSetToast } = useToastAnimation();
 
   // query
   const { data: dataBarangKeluar, isLoading: isLoadingBarangKeluar } = useQuery(
     {
-      queryKey: ["barang-keluar", search, sort, limit, page],
+      queryKey: [
+        "barang-keluar",
+        search,
+        sort,
+        limit,
+        page,
+        startDate,
+        endDate,
+      ],
       queryFn: () =>
         BarangKeluarServices.all({
           ...(search && { search }),
           ...(sort && { sort }),
           ...(limit && { limit }),
           ...(page && { page }),
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
         }),
       retry: false,
       refetchOnWindowFocus: false,

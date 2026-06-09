@@ -30,8 +30,8 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
     notifikasiGlobal,
     dataNotifikasiProduk,
     refetchNotifikasi,
-    // isShowCountNotifikasi,
-    // setIsShowCountNotifikasi,
+    isShowCountNotifikasi,
+    setIsShowCountNotifikasi,
   } = useNavbar();
 
   return (
@@ -64,16 +64,18 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
               tabIndex={0}
               role="button"
               className="cursor-pointer p-2 focus:bg-custom-primary/50 hover:bg-custom-primary/50 rounded-full transition-all duration-150 ease-in-out relative"
-              // onFocus={() => setIsShowCountNotifikasi(false)}
+              onFocus={() => setIsShowCountNotifikasi(false)}
             >
               <Bell className="size-6 text-primary-white" />
 
               {/* count */}
-              {dataNotifikasiProduk && dataNotifikasiProduk?.length > 0 && (
-                <p className="absolute text-[0.625rem] -top-1 font-semibold bg-error w-4 h-4 flex flex-col justify-center items-center rounded-full right-0 text-primary-white">
-                  {dataNotifikasiProduk?.length}
-                </p>
-              )}
+              {isShowCountNotifikasi &&
+                dataNotifikasiProduk &&
+                dataNotifikasiProduk?.length > 0 && (
+                  <p className="absolute text-[0.625rem] -top-1 font-semibold bg-error w-4 h-4 flex flex-col justify-center items-center rounded-full right-0 text-primary-white">
+                    {dataNotifikasiProduk?.length}
+                  </p>
+                )}
             </button>
             <ul
               tabIndex={-1}

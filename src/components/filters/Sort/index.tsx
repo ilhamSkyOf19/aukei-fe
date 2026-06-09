@@ -6,7 +6,7 @@ type Props = {
 };
 const FilterSort: FC<Props> = ({ setSort }) => {
   return (
-    <div className="w-30 flex flex-row justify-start items-center">
+    <div className="w-40 flex flex-row justify-start items-center">
       <DropDown
         handleChange={(e) => setSort(e.target.value)}
         listChoose={[
@@ -14,7 +14,6 @@ const FilterSort: FC<Props> = ({ setSort }) => {
           { value: "desc", label: "Terbaru" },
         ]}
         placeholder="Urutkan"
-        fontWeight="lg:font-medium"
       />
     </div>
   );

@@ -30,7 +30,7 @@ const ButtonWithIcon: FC<Props> = ({
     <button
       type="button"
       className={cn(
-        "flex justify-center h-8 lg:h-8.5 items-center hover-overlay rounded-md px-3 gap-2",
+        "flex justify-center h-8.5 items-center hover-overlay rounded-md px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
         customWidth ? customWidth : "w-auto",
       )}

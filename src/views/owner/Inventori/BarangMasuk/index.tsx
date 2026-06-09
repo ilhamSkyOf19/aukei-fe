@@ -20,6 +20,7 @@ import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
 import ModalDelete from "../../../../components/modals/ModalDelete";
 import FormulirBarangMasuk from "../../../../components/forms/FormulirBarangMasuk";
+import RangeDate from "../../../../components/filters/RangeDate";
 
 const BarangMasuk = () => {
   // call use barang masuk
@@ -78,7 +79,9 @@ const BarangMasuk = () => {
             />
           </div>
 
-          <div className="w-full  flex-wrap lg:flex-2 flex flex-row justify-start lg:justify-end items-center gap-4">
+          <div className="w-full  flex-wrap lg:flex-2 flex flex-row justify-start lg:justify-end items-start gap-4 lg:min-h-18">
+            {/* input range date */}
+            <RangeDate />
             {/* filter sort */}
             <FilterSort setSort={handleSort} />
 

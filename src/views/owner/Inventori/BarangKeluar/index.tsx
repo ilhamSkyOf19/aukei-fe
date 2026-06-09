@@ -21,6 +21,7 @@ import ModalDelete from "../../../../components/modals/ModalDelete";
 import useBarangKeluar from "./useBarangKeluar";
 import JenisKeluar from "../../../../components/ui/JenisKeluar";
 import FormulirBarangKeluar from "../../../../components/forms/FormulirBarangKeluar";
+import RangeDate from "../../../../components/filters/RangeDate";
 
 const BarangKeluar = () => {
   // call use barang masuk
@@ -79,7 +80,10 @@ const BarangKeluar = () => {
             />
           </div>
 
-          <div className="w-full  flex-wrap lg:flex-2 flex flex-row justify-start lg:justify-end items-center gap-4">
+          <div className="w-full  flex-wrap lg:flex-2 flex flex-row justify-start lg:justify-end items-center lg:items-start gap-4 lg:min-h-18">
+            {/* input range date */}
+            <RangeDate />
+
             {/* filter sort */}
             <FilterSort setSort={handleSort} />
 

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useResetParams } from "../../../hooks/useResetParams";
+import { useSearchParams } from "react-router-dom";
 
 const useInventori = () => {
   //   is active Cluster inventori
@@ -6,10 +8,15 @@ const useInventori = () => {
     "barangMasuk" | "barangKeluar" | ""
   >("");
 
+  const [_searchParams, setSearchParams] = useSearchParams();
+
   // handle is active
   const handleActiveCluster = (
     Cluster: "barangMasuk" | "barangKeluar" | "",
   ) => {
+    //
+    useResetParams(setSearchParams);
+
     // set state
     setIsActiveCluster(Cluster);
 

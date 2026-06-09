@@ -12,7 +12,10 @@ import type { ResponseStructure } from "../types/response.type";
 export class BarangKeluarServices {
   // find all
   static async all(
-    query: PaginationType,
+    query: PaginationType & {
+      startDate?: string;
+      endDate?: string;
+    },
   ): Promise<ResponseStructure<ResponseBarangKeluarWithMetaType | null>> {
     // call api
     const result = await instanceAxios.get<
