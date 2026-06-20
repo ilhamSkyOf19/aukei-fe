@@ -179,3 +179,25 @@ export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<
     message: "Keterangan barang berhasil diubah",
   },
 };
+
+// toast pegawai
+export const TOAST_CONFIG_PEGAWAI: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  updated_pegawai: {
+    color: "info",
+    message: "Pegawai berhasil diubah",
+  },
+  created_pegawai: {
+    color: "success",
+    message: "Pegawai berhasil dibuat",
+  },
+  deleted_pegawai: {
+    color: "error",
+    message: "Pegawai berhasil dihapus",
+  },
+};

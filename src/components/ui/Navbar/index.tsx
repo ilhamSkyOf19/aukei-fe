@@ -79,7 +79,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             </button>
             <ul
               tabIndex={-1}
-              className="dropdown-content  overflow-hidden menu bg-base-100 rounded-box z-50 w-80 min-h-90 -mr-25 lg:mr-0 lg:w-130 p-2 shadow-sm mt-1.5"
+              className="dropdown-content  overflow-hidden menu bg-base-100 rounded-box z-50 w-80 min-h-90 border border-base-content/10 lg:w-130 p-2 shadow-sm mt-1.5"
             >
               <li className="mb-1">
                 <div className="w-full flex flex-row justify-between items-center hover:bg-transparent active:bg-transparent cursor-default ">
@@ -176,7 +176,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           </div>
 
           {/* profile */}
-          <div className="dropdown dropdown-end">
+          <div className="dropdown dropdown-end hidden md:block">
             <button
               type="button"
               tabIndex={0}
@@ -203,8 +203,8 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
                 <div className="w-full flex flex-row justify-start items-center gap-3 pb-4 border-b border-base-content/10">
                   {/* avatar */}
                   <div className="avatar avatar-placeholder">
-                    <div className="bg-custom-secondary text-neutral-content w-10 rounded-full">
-                      <span className="text-xl text-custom-primary font-medium">
+                    <div className="bg-custom-primary text-neutral-content w-10 rounded-full">
+                      <span className="text-base uppercase text-custom-secondary font-medium">
                         {highlightName(pengguna?.nama ?? "")}
                       </span>
                     </div>

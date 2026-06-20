@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Package,
   RefreshCcw,
+  UsersRound,
 } from "lucide-react";
 
 export const NAVIGATION_LIST_OWNER: {
@@ -26,6 +27,11 @@ export const NAVIGATION_LIST_OWNER: {
     label: "Inventori",
     icon: Package,
     link: "/dashboard/inventori",
+  },
+  {
+    label: "Pegawai",
+    icon: UsersRound,
+    link: "/dashboard/pegawai",
   },
 ];
 

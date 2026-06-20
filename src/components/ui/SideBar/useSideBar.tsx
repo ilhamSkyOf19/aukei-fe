@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import { useAuthStore } from "../../../stores/authStore";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import { NAVIGATION_LIST_OWNER } from "../../../utils/navigation";
+import useLogOut from "../../../hooks/useLogOut";
+import useHasScroll from "../../../hooks/useHasScroll";
 
 const useSideBar = () => {
   // get auth context
@@ -36,7 +38,22 @@ const useSideBar = () => {
     localStorage.removeItem("active-cluster");
   };
 
-  return { isNavigation, pathname, handleClearDataLocalStorage };
+  // auth
+
+  const { handleLogout } = useLogOut({ redirectUrl: true });
+
+  // use has scroll
+  const { divRef, hasScroll } = useHasScroll();
+
+  return {
+    isNavigation,
+    pathname,
+    handleClearDataLocalStorage,
+    pengguna,
+    handleLogout,
+    divRef,
+    hasScroll,
+  };
 };
 
 export default useSideBar;

@@ -25,7 +25,7 @@ const DropDown: FC<Props> = ({
     <div
       className={cn(
         "h-8.5 overflow-hidden border border-base-content rounded-md focus-within:ring-1 focus-within:ring-base-content transition-all duration-200 ease-in-out",
-        customWidth ? customWidth : "w-40",
+        customWidth ? customWidth : "w-full",
       )}
     >
       {/* filter status */}

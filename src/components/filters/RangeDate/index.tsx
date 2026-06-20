@@ -13,7 +13,12 @@ import ButtonSubmit from "../../ui/button/ButtonSubmit";
 import { useState, type FC } from "react";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 
-const RangeDate: FC = () => {
+// props
+type Props = {
+  customWidth?: string;
+};
+
+const RangeDate: FC<Props> = ({ customWidth }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [selected, setSelected] = useState<DateRange | undefined>();
@@ -94,8 +99,15 @@ const RangeDate: FC = () => {
   };
 
   return (
-    <div className="flex flex-col justify-start items-col gap-2">
-      <div className="w-60 flex flex-row justify-start items-center ">
+    <div
+      className={cn("flex flex-col justify-start items-col gap-2", customWidth)}
+    >
+      <div
+        className={cn(
+          "flex flex-row justify-start items-center",
+          customWidth ? customWidth : "w-60",
+        )}
+      >
         <DropDown
           customWidth="w-full"
           handleChange={(e) => {

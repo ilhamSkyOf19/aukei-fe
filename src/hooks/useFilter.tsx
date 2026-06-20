@@ -56,6 +56,10 @@ export const useFilter = (params: {
       newParams.set("page", "1");
     }
 
+    if (paramName === "limit") {
+      newParams.set("page", "1");
+    }
+
     if (valLower === "semua" || valLower === "") {
       newParams.delete(paramName);
     } else {

@@ -12,6 +12,7 @@ type Props = {
   isLoading?: boolean;
   icon?: LucideIcon;
   customWidth?: string;
+  customClass?: string;
 };
 const ButtonWithIcon: FC<Props> = ({
   bgColor,
@@ -22,6 +23,7 @@ const ButtonWithIcon: FC<Props> = ({
   isLoading,
   icon: Icon,
   customWidth,
+  customClass,
 }) => {
   // navigation
   const navigate = useNavigate();
@@ -30,9 +32,10 @@ const ButtonWithIcon: FC<Props> = ({
     <button
       type="button"
       className={cn(
-        "flex justify-center h-8.5 items-center hover-overlay rounded-md px-3 gap-2",
+        "flex justify-center h-10.5 md:h-9 items-center hover-overlay rounded-md px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
         customWidth ? customWidth : "w-auto",
+        customClass,
       )}
       onClick={() => {
         if (handleBtn) {
@@ -51,14 +54,14 @@ const ButtonWithIcon: FC<Props> = ({
           {Icon ? (
             <Icon
               className={cn(
-                "lg size-4",
+                "size-4",
                 textColor ? textColor : "text-custom-secondary",
               )}
             />
           ) : (
             <Plus
               className={cn(
-                "lg size-4.5 lg:size-5",
+                "size-5",
                 textColor ? textColor : "text-custom-secondary",
               )}
             />
@@ -66,7 +69,7 @@ const ButtonWithIcon: FC<Props> = ({
 
           <span
             className={cn(
-              "font-medium text-[0.625rem] lg:text-xs",
+              "font-medium text-xs",
               textColor ? textColor : "text-custom-secondary",
             )}
           >

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const useModal = <T = undefined,>() => {
   // state
@@ -20,12 +20,31 @@ const useModal = <T = undefined,>() => {
   };
 
   // close modal
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const handleCloseModal = () => {
-    if (modalRef.current) {
-      setIdModal(undefined);
-      modalRef.current.close();
+    if (!modalRef.current) return;
+
+    modalRef.current.close();
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
+
+    timeoutRef.current = setTimeout(() => {
+      setIdModal(undefined);
+      setDataModal(undefined);
+    }, 300);
   };
+
+  // clear timeout
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return {
     modalRef,

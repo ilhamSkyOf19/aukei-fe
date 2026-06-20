@@ -49,7 +49,7 @@ const Produk = () => {
   return (
     <div className="w-full mb-30 flex flex-col justify-start items-start">
       {/* button cluster */}
-      <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-14 p-2 gap-2 dark:border dark:border-base-content/10">
+      <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-14 p-2 gap-2 dark:border dark:border-base-content/10 sticky top-0 left-0 right-0 z-40">
         {/* produk */}
         <ButtonCluster
           isActive={isActiveCluster === "produk"}
@@ -86,33 +86,47 @@ const Produk = () => {
 
             <div className="card dark:border dark:border-base-content/10 w-full bg-base-100 flex flex-col justify-start items-start p-4">
               {/* filter */}
-              <div className="w-full flex flex-col lg:flex-row justify-start items-start lg:items-start gap-4 lg:gap-0">
-                <div className="w-full lg:flex-1 flex flex-row justify-start items-center">
+              <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start">
+                <ButtonAdd
+                  icon={PackagePlus}
+                  label="Tambah Produk"
+                  handleBtn={() => handleRedirectTambah()}
+                  customClass="md:hidden w-full mb-3"
+                />
+
+                <div className="w-full md:flex-1 flex flex-row justify-start items-center">
                   {/* input search */}
                   <InputSearch
                     handleSearch={handleSearch}
-                    placeholder="Cari produk berdasarkan nama atau kode"
+                    placeholder="Cari produk"
                   />
                 </div>
 
-                <div className="w-full flex-wrap lg:flex-2 flex flex-row justify-start lg:justify-end items-center gap-4">
+                <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center gap-3 md:gap-4">
                   {/* filter kategori */}
-                  <FilterKategori setKategori={handleKategori} />
+                  <FilterKategori
+                    setKategori={handleKategori}
+                    customWidth="w-full md:w-auto"
+                  />
 
                   {/* filter sort */}
-                  <FilterSort setSort={handleSort} />
+                  <FilterSort
+                    setSort={handleSort}
+                    customWidth="w-full md:w-40"
+                  />
 
                   {/* button add produk */}
                   <ButtonAdd
                     icon={PackagePlus}
                     label="Tambah Produk"
                     handleBtn={() => handleRedirectTambah()}
+                    customClass="hidden md:flex"
                   />
                 </div>
               </div>
 
               {/* table */}
-              <div className="overflow-x-auto w-full my-8">
+              <div className="overflow-x-auto w-full mt-8 lg:mt-0 mb-2">
                 <table className="table table-xs lg:table-sm">
                   {/* head */}
                   <thead>

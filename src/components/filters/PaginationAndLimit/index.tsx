@@ -40,14 +40,14 @@ export default function PaginationAndLimit({
   return (
     <div
       className={cn(
-        "w-full flex flex-col gap-6 lg:gap-0 lg:flex-row items-center mt-10 relative",
+        "w-full flex flex-col gap-6 md:gap-0 md:flex-row items-center mt-10 relative",
         totalPage! < 2 && setLimit && "h-10",
         customPositionPagination === "end" ? "justify-end" : "justify-center",
       )}
     >
       {/* limit */}
       {setLimit && !emptyData && (
-        <div className="block lg:absolute left-0 z-40 text-base-content">
+        <div className="block md:absolute left-0 z-40 text-base-content">
           <DropDown
             listChoose={[
               {

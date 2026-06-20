@@ -70,33 +70,39 @@ const BarangMasuk = () => {
 
       <div className="card dark:border dark:border-base-content/10 w-full bg-base-100 flex flex-col justify-start items-start p-4">
         {/* filter */}
-        <div className=" w-full flex flex-col lg:flex-row justify-start items-start lg:items-start gap-4 lg:gap-0">
-          <div className="w-full lg:flex-1 flex flex-row justify-start items-center">
+        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start">
+          {/* button add barang masuk */}
+          <ButtonWithIcon
+            icon={PackagePlus}
+            label="Tambah Barang Masuk"
+            handleBtn={() => handleShowModalFormulirBarangMasuk()}
+            customClass="md:hidden w-full mb-3"
+          />
+
+          <div className="w-full  md:flex-1 flex flex-row justify-start items-center">
             {/* input search */}
-            <InputSearch
-              handleSearch={handleSearch}
-              placeholder="Cari produk berdasarkan nama atau kode"
-            />
+            <InputSearch handleSearch={handleSearch} placeholder="Cari kode" />
           </div>
 
-          <div className="w-full  flex-wrap lg:flex-2 flex flex-row justify-start lg:justify-end items-start gap-4 lg:min-h-18">
+          <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-4 lg:min-h-18">
             {/* input range date */}
-            <RangeDate />
+            <RangeDate customWidth="w-full md:w-60" />
             {/* filter sort */}
-            <FilterSort setSort={handleSort} />
+            <FilterSort setSort={handleSort} customWidth="w-full md:w-40" />
 
             {/* button add barang masuk */}
             <ButtonWithIcon
               icon={PackagePlus}
               label="Tambah Barang Masuk"
               handleBtn={() => handleShowModalFormulirBarangMasuk()}
+              customClass="hidden md:flex"
             />
           </div>
         </div>
 
         {/* table */}
         <div className="overflow-x-auto w-full">
-          <table className="w-full table table-xs lg:table-sm my-8">
+          <table className="w-full table table-xs lg:table-sm mt-8 lg:mt-0 mb-2">
             {/* head */}
             <thead>
               <tr>

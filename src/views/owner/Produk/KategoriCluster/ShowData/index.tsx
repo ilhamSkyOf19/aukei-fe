@@ -61,25 +61,33 @@ const ShowData = () => {
       )}
 
       {/* filter */}
-      <div className="w-full flex flex-col lg:flex-row justify-start items-start lg:items-center gap-4 lg:gap-0">
-        <div className="w-full  lg:flex-3 flex flex-row justify-start items-center">
+      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start mb-4 lg:mb-0">
+        {/* button add  */}
+        <div className="md:hidden block w-full mb-3">
+          <ButtonWithIcon
+            icon={Tag}
+            label="Tambah Kategori"
+            handleBtn={() => handleShowModalFormulirKategori()}
+            customWidth="w-full"
+          />
+        </div>
+        <div className="w-full md:flex-1 lg:flex-3  flex flex-row justify-start items-center">
           {/* input search */}
           <InputSearch
             handleSearch={handleSearch}
-            placeholder="Cari kategori berdasarkan nama"
+            placeholder="Cari kategori"
           />
         </div>
-
-        <div className="w-full flex-wrap lg:flex-2 flex flex-row justify-start lg:justify-end items-center gap-4">
+        <div className="w-full md:flex-1 flex flex-row justify-end items-start md:gap-3 lg:gap-0">
           {/* filter sort */}
-          <FilterSort setSort={handleSort} />
+          <FilterSort setSort={handleSort} customWidth="w-full md:w-40" />
 
-          {/* button add  */}
-          <div className="lg:hidden block">
+          <div className="hidden lg:hidden md:block w-40 mb-3">
             <ButtonWithIcon
               icon={Tag}
               label="Tambah Kategori"
               handleBtn={() => handleShowModalFormulirKategori()}
+              customWidth="w-full"
             />
           </div>
         </div>
@@ -136,7 +144,8 @@ const ShowData = () => {
         handleCloseModal={handleCloseModalDelete}
         handleDelete={handleDelete}
         isLoadingDelete={isPendingDelete}
-        bigTitle={`Apakah anda yakin ingin menghapus data "${dataDelete}" ?`}
+        bigTitle={`Apakah anda yakin ingin menghapus data ini?`}
+        highlightData={dataDelete?.nama}
       />
     </div>
   );
@@ -172,7 +181,7 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
 
       {/* aksi */}
       <div className="lg:flex-1 flex flex-row justify-end items-center mx-1">
-        <div className="w-full hidden lg:flex flex-row justify-end items-center gap-2.5">
+        <div className="w-full hidden md:flex flex-row justify-end items-center gap-2.5">
           <button
             type="button"
             className="btn btn-xs btn-info text-primary-white"
@@ -190,7 +199,7 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
         </div>
 
         {/* dropdowm */}
-        <div className="lg:hidden h-9 flex dropdown dropdown-left dropdown-end">
+        <div className="md:hidden h-9 flex dropdown dropdown-left dropdown-end">
           <div
             tabIndex={0}
             role="button"

@@ -5,14 +5,23 @@ import { useSearchParams } from "react-router-dom";
 const useInventori = () => {
   //   is active Cluster inventori
   const [isActiveCluster, setIsActiveCluster] = useState<
-    "barangMasuk" | "barangKeluar" | ""
+    | "barangMasuk"
+    | "pengajuanBarangMasuk"
+    | "barangKeluar"
+    | "pengajuanBarangKeluar"
+    | ""
   >("");
 
   const [_searchParams, setSearchParams] = useSearchParams();
 
   // handle is active
   const handleActiveCluster = (
-    Cluster: "barangMasuk" | "barangKeluar" | "",
+    Cluster:
+      | "barangMasuk"
+      | "pengajuanBarangMasuk"
+      | "barangKeluar"
+      | "pengajuanBarangKeluar"
+      | "",
   ) => {
     //
     useResetParams(setSearchParams);

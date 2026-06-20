@@ -36,8 +36,8 @@ const ModalFormulirKategoriProduk: FC<Props> = ({
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
             <TitleModalFormulir
-              title="Formulir Folder"
-              keterangan={`Formulir untuk menambah Folder`}
+              title="Formulir Kategori"
+              keterangan={`Formulir untuk menambah Kategori Produk`}
             />
           </div>
 

@@ -10,6 +10,7 @@ import DashboardPage from "../pages/DashboardPage";
 import InventoriPage from "../pages/InventoriPage";
 import BarangMasukDetailPage from "../pages/BarangMasukDetailPage";
 import BarangKeluarDetailPage from "../pages/BarangKeluarDetailPage";
+import PegawaiPage from "../pages/PegawaiPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -147,6 +148,16 @@ const route = createBrowserRouter([
           {
             path: "barang-keluar/:id",
             element: <BarangKeluarDetailPage />,
+          },
+        ],
+      },
+      {
+        path: "pegawai",
+        children: [
+          {
+            index: true,
+            // baut halaman akun
+            element: <PegawaiPage />,
           },
         ],
       },

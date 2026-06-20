@@ -63,3 +63,7 @@
 - [✅] Integrasi API Delete (Mobile)
 - [✅] Integrasi API Ubah Daftar Data Barang Keluar (Mobile)
 - [✅] Delete Barang Keluar
+
+# Sprint 2
+
+- [ ] Buat halaman akun

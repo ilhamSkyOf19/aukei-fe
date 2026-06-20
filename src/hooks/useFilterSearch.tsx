@@ -30,6 +30,15 @@ export const useFilterSearch = (
       return;
     }
 
+    const currentSearch = (
+      searchParams.get(searchParamName) ?? ""
+    ).toLowerCase();
+
+    // tidak perlu update URL jika nilai sama
+    if (currentSearch === valLower) {
+      return;
+    }
+
     // mode URL (behavior lama)
     const params = new URLSearchParams(searchParams);
     params.set(pageParamName, "1");
