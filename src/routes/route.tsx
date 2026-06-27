@@ -11,6 +11,9 @@ import InventoriPage from "../pages/InventoriPage";
 import BarangMasukDetailPage from "../pages/BarangMasukDetailPage";
 import BarangKeluarDetailPage from "../pages/BarangKeluarDetailPage";
 import PegawaiPage from "../pages/PegawaiPage";
+import RoleGuard from "../Guards/RoleGuard";
+import { ROLE_INTERNAL_TYPE } from "../types/constant.type";
+import KasirPage from "../pages/KasirPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -113,22 +116,38 @@ const route = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <ProdukPage />,
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <ProdukPage />
+              </RoleGuard>
+            ),
           },
           {
             path: "tambah",
-            element: <FormulirProdukPage />,
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <FormulirProdukPage />
+              </RoleGuard>
+            ),
           },
           {
             path: ":id",
             children: [
               {
                 index: true,
-                element: <ProdukDetailPage />,
+                element: (
+                  <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                    <ProdukDetailPage />
+                  </RoleGuard>
+                ),
               },
               {
                 path: "ubah",
-                element: <FormulirProdukPage />,
+                element: (
+                  <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                    <FormulirProdukPage />
+                  </RoleGuard>
+                ),
               },
             ],
           },
@@ -139,15 +158,27 @@ const route = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <InventoriPage />,
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <InventoriPage />
+              </RoleGuard>
+            ),
           },
           {
             path: "barang-masuk/:id",
-            element: <BarangMasukDetailPage />,
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <BarangMasukDetailPage />
+              </RoleGuard>
+            ),
           },
           {
             path: "barang-keluar/:id",
-            element: <BarangKeluarDetailPage />,
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <BarangKeluarDetailPage />
+              </RoleGuard>
+            ),
           },
         ],
       },
@@ -156,8 +187,22 @@ const route = createBrowserRouter([
         children: [
           {
             index: true,
-            // baut halaman akun
-            element: <PegawaiPage />,
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <PegawaiPage />
+              </RoleGuard>
+            ),
+          },
+        ],
+      },
+
+      // kasir
+      {
+        path: "kasir",
+        children: [
+          {
+            index: true,
+            element: <KasirPage />,
           },
         ],
       },

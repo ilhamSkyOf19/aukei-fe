@@ -27,6 +27,48 @@ export const JENIS_NOTIFIKASI_PRODUK_TYPE = {
 export type JenisNotifikasiProdukType =
   (typeof JENIS_NOTIFIKASI_PRODUK_TYPE)[keyof typeof JENIS_NOTIFIKASI_PRODUK_TYPE];
 
+// payment method
+export const PAYMENT_METHOD_TYPE = {
+  CASH: "CASH",
+  QRIS: "QRIS",
+  TRANSFER: "TRANSFER",
+  TEMPO: "TEMPO",
+};
+
+export type PaymentMethodType =
+  (typeof PAYMENT_METHOD_TYPE)[keyof typeof PAYMENT_METHOD_TYPE];
+
+// tempo status
+export const TEMPO_STATUS_TYPE = {
+  UNPAID: "UNPAID",
+  PARTIAL: "PARTIAL",
+  PAID: "PAID",
+  OVERDUE: "OVERDUE",
+};
+
+export type TempoStatusType =
+  (typeof TEMPO_STATUS_TYPE)[keyof typeof TEMPO_STATUS_TYPE];
+
+// installment status
+export const INSTALLMENT_STATUS_TYPE = {
+  UNPAID: "UNPAID",
+  PAID: "PAID",
+  OVERDUE: "OVERDUE",
+};
+
+export type InstallmentStatusType =
+  (typeof INSTALLMENT_STATUS_TYPE)[keyof typeof INSTALLMENT_STATUS_TYPE];
+
+// status transaction
+export const TRANSACTION_STATUS_TYPE = {
+  CART: "CART",
+  PENDING: "PENDING",
+  COMPLETED: "COMPLETED",
+};
+
+export type TransactionStatusType =
+  (typeof TRANSACTION_STATUS_TYPE)[keyof typeof TRANSACTION_STATUS_TYPE];
+
 // outlet context type
 export type OutletContextType = {
   handleTitle: (title: string) => void;

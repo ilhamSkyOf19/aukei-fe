@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useLogOut from "../../../hooks/useLogOut";
 import { NotifikasiGlobalServices } from "../../../services/notifikasiGlobal.service";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const useNavbar = () => {
   const { handleLogout } = useLogOut({ redirectUrl: true });
@@ -9,6 +10,9 @@ const useNavbar = () => {
   // state show count notifikasi
   const [isShowCountNotifikasi, setIsShowCountNotifikasi] =
     useState<boolean>(true);
+
+  // navigate
+  const navigate = useNavigate();
 
   // query notifikasi global
   const {
@@ -33,6 +37,7 @@ const useNavbar = () => {
     refetchNotifikasi,
     isShowCountNotifikasi,
     setIsShowCountNotifikasi,
+    navigate,
   };
 };
 

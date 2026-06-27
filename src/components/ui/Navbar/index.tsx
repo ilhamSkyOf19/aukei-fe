@@ -13,7 +13,6 @@ import ButtonTheme from "../button/ButtonTheme";
 import { highlightName } from "../../../helpers/helpers";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import JenisNotifikasiProduk from "../JenisNotifikasiProduk";
-import { Link } from "react-router-dom";
 type Props = {
   handleSidebar: () => void;
   isClose: boolean;
@@ -32,6 +31,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
     refetchNotifikasi,
     isShowCountNotifikasi,
     setIsShowCountNotifikasi,
+    navigate,
   } = useNavbar();
 
   return (
@@ -127,13 +127,14 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
                 dataNotifikasiProduk.length > 0 &&
                 dataNotifikasiProduk.map((data, _) => (
                   <li key={data.id}>
-                    <Link
-                      to={`/dashboard/produk/${data.produk.id}`}
+                    <button
+                      disabled={pengguna?.role === ROLE_INTERNAL_TYPE.KASIR}
                       type="button"
                       className="w-full flex py-2.5 flex-row justify-between items-center"
-                      onClick={() =>
-                        (document.activeElement as HTMLElement)?.blur()
-                      }
+                      onClick={() => {
+                        navigate(`/dashboard/produk/${data.produk.id}`);
+                        (document.activeElement as HTMLElement)?.blur();
+                      }}
                     >
                       <div className="flex-2 flex flex-row justify-start items-start gap-3">
                         {/* img */}
@@ -162,7 +163,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
                           jenisNotifikasi={data.jenisNotifikasiProduk}
                         />
                       </div>
-                    </Link>
+                    </button>
                   </li>
                 ))
               ) : (
@@ -197,7 +198,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             </button>
             <ul
               tabIndex={-1}
-              className="dropdown-content menu bg-base-100 rounded-box z-1 w-60 p-2 shadow-sm gap-2 mt-1.5"
+              className="dropdown-content menu bg-base-100 rounded-box z-50 w-60 p-2 shadow-sm gap-2 mt-1.5"
             >
               <li className="pointer-events-none">
                 <div className="w-full flex flex-row justify-start items-center gap-3 pb-4 border-b border-base-content/10">

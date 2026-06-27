@@ -3,7 +3,10 @@ import { useEffect, useState, type ElementType } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuthStore } from "../../../stores/authStore";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
-import { NAVIGATION_LIST_OWNER } from "../../../utils/navigation";
+import {
+  NAVIGATION_LIST_KASIR,
+  NAVIGATION_LIST_OWNER,
+} from "../../../utils/navigation";
 import useLogOut from "../../../hooks/useLogOut";
 import useHasScroll from "../../../hooks/useHasScroll";
 
@@ -27,7 +30,7 @@ const useSideBar = () => {
           break;
 
         default:
-          setIsNavigation([]);
+          setIsNavigation(NAVIGATION_LIST_KASIR);
           break;
       }
     }

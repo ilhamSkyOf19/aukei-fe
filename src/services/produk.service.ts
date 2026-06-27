@@ -3,6 +3,7 @@ import type { PaginationType } from "../models/pagination.model";
 import type {
   ProdukResponseType,
   ResponseProdukForChooseType,
+  ResponseProdukForKasirWithMetaType,
   ResponseProdukWithMetaType,
 } from "../models/produk.model";
 import type { ResponseStructure } from "../types/response.type";
@@ -89,6 +90,29 @@ export class ProdukServices {
         search,
       },
     });
+    return result.data;
+  }
+
+  // find all for kasir
+  static async findAllForKasir(params: {
+    search?: string;
+    page?: string;
+    kategori?: string;
+    pelangganId?: number;
+  }): Promise<ResponseStructure<ResponseProdukForKasirWithMetaType | null>> {
+    const { search, kategori, page, pelangganId } = params;
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseProdukForKasirWithMetaType | null>
+    >(`/produk/for-kasir`, {
+      params: {
+        search,
+        page,
+        kategori,
+        pelangganId,
+      },
+    });
+
     return result.data;
   }
 

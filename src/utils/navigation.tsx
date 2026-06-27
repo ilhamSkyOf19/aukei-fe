@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Package,
   RefreshCcw,
+  Store,
   UsersRound,
 } from "lucide-react";
 
@@ -32,6 +33,23 @@ export const NAVIGATION_LIST_OWNER: {
     label: "Pegawai",
     icon: UsersRound,
     link: "/dashboard/pegawai",
+  },
+];
+
+export const NAVIGATION_LIST_KASIR: {
+  label: string;
+  link: string;
+  icon: ElementType;
+}[] = [
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    link: "/dashboard",
+  },
+  {
+    label: "Kasir",
+    icon: Store,
+    link: "/dashboard/kasir",
   },
 ];
 

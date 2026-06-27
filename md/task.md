@@ -66,4 +66,6 @@
 
 # Sprint 2
 
-- [ ] Buat halaman akun
+- [✅] Buat halaman akun
+
+- [ ] Buat halaman transaksi

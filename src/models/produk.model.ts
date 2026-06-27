@@ -61,3 +61,17 @@ export interface ResponseProdukForChooseType {
   hargaBeli: number;
   img: string;
 }
+
+// response produk for kasir
+export interface ResponseProdukForKasirType extends Pick<
+  IProduk,
+  "id" | "nama" | "kode" | "hargaJual" | "stok" | "img"
+> {
+  hargaJualTerakhirTransaksi?: number;
+}
+
+// response for kasir with meta
+export interface ResponseProdukForKasirWithMetaType {
+  meta: MetaType;
+  data: ResponseProdukForKasirType[];
+}
