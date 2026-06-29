@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Package,
   RefreshCcw,
+  ShoppingCart,
   Store,
   UsersRound,
 } from "lucide-react";
@@ -50,6 +51,11 @@ export const NAVIGATION_LIST_KASIR: {
     label: "Kasir",
     icon: Store,
     link: "/dashboard/kasir",
+  },
+  {
+    label: "Keranjang",
+    icon: ShoppingCart,
+    link: "/dashboard/keranjang",
   },
 ];
 

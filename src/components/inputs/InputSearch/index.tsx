@@ -57,7 +57,7 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
           errorMessage && "mb-3",
         )}
       >
-        <div className="w-full h-10 lg:h-10 flex flex-row justify-start items-center bg-base-100">
+        <div className="w-full h-9 flex flex-row justify-start items-center bg-base-100">
           <div
             className={cn(
               "h-full px-3 flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full focus-within:ring-1 transition-all duration-300 ease-in-out",

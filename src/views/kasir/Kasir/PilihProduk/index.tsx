@@ -1,112 +1,147 @@
-import React, { type FC } from "react";
-import ShowProduk from "../ShowProduk";
-import { Minus, Receipt, ShoppingCart, Trash2, UsersRound } from "lucide-react";
-import { formatRupiah, highlightName } from "../../../../helpers/helpers";
+import { type FC } from "react";
+import ShowProduk from "./ShowProduk";
 import {
-  useController,
-  type Control,
-  type FieldArrayWithId,
-  type UseFieldArrayRemove,
-} from "react-hook-form";
-import type {
-  CreateTransactionForRequestType,
-  DetailsForCreate,
-  UpdateTransactionForRequestType,
-} from "../../../../models/transaction.model";
-import type { ResponseProdukForKasirType } from "../../../../models/produk.model";
+  Minus,
+  Phone,
+  Receipt,
+  ShoppingCart,
+  Trash2,
+  UsersRound,
+} from "lucide-react";
+import { formatNumberPhone, formatRupiah } from "../../../../helpers/helpers";
+import { useController, type Control } from "react-hook-form";
+import type { DetailsForCreate } from "../../../../models/transaction.model";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import InputQtyInTable from "../../../../components/inputs/InputQtyInTable";
 import InputNumberInTable from "../../../../components/inputs/InputNumberInTable";
-import DataEmpty from "../../../../components/messages/DataEmpty";
+import usePilihProduk from "./usePilihProduk";
+import ModalChoosePelanggan from "../../../../components/modals/ModalChoosePelanggan";
+import Alert from "../../../../components/messages/Alert";
+import { ALERT_CONFIG_TRANSACTION } from "../../../../types/alert.types";
+import { cn } from "../../../../utils/cn";
+import Avatar from "../../../../components/ui/Avatar";
 
 type Props = {
-  fieldsDetails: FieldArrayWithId<
-    UpdateTransactionForRequestType | CreateTransactionForRequestType,
-    "details",
-    "id"
-  >[];
-  handleAppend: (
-    produk: Pick<DetailsForCreate, "hargaJual" | "quantity" | "produkId"> &
-      Omit<ResponseProdukForKasirType, "id">,
-  ) => void;
-  removeDetails: UseFieldArrayRemove;
-  produkDetails: (Pick<
-    ResponseProdukForKasirType,
-    "hargaJual" | "id" | "nama" | "kode" | "img" | "hargaJualTerakhirTransaksi"
-  > & {
-    subTotal: number;
-    diskon: number;
-  })[];
-  control: Control<
-    UpdateTransactionForRequestType | CreateTransactionForRequestType,
-    any,
-    UpdateTransactionForRequestType | CreateTransactionForRequestType
-  >;
-  handleStepsNext: () => void;
+  step: number;
+  handleSteps: (value: number) => void;
+  handleToast: (value: string) => void;
 };
+const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
+  // call use
+  const {
+    control,
+    fieldsDetails,
+    handleAppend,
+    handleRemoveAll,
+    handleSetPelanggan,
+    handleStepsNext,
+    isErrorsFormState,
+    pelanggan,
+    produkDetails,
+    removeDetails,
+    handleCloseModalChoosePelanggan,
+    handleShowModalChoosePelanggan,
+    modalChoosePelangganRef,
+    alert,
+    isUpdate,
+    handleSimpanKeranjang,
+    isPendingSimpanKeranjang,
+  } = usePilihProduk({ handleSteps, step, handleToast });
 
-const PilihProduk: FC<Props> = ({
-  control,
-  fieldsDetails,
-  handleAppend,
-  produkDetails,
-  removeDetails,
-  handleStepsNext,
-}) => {
   return (
     <div className="w-full flex flex-row justify-between items-start gap-4 p-4">
+      {alert && (
+        <Alert
+          alert={alert?.id !== null}
+          isAnimationOut={alert?.isAnimationOut || false}
+          label={ALERT_CONFIG_TRANSACTION[alert.type].message}
+        />
+      )}
+
       {/* content left */}
       <div className="w-full flex-1 flex flex-col justify-start items-start gap-4">
         {/* pelanggan */}
-        <div className="w-full flex flex-row justify-between items-center border border-base-content/10 rounded-lg p-2.5">
+        <div
+          className={cn(
+            "w-full flex flex-row justify-between items-center border rounded-lg py-2.5 px-3",
+            isErrorsFormState.includes("pelanggan")
+              ? "border-error"
+              : "border-base-content/10",
+          )}
+        >
           {/* avatar, name, no telp */}
-          <div className="flex-1 flex flex-row justify-start items-center gap-2">
-            {/* avatar */}
-            <div className="avatar avatar-placeholder">
-              <div className="bg-custom-primary text-neutral-content w-11 rounded-full">
-                <span className="text-base text-custom-secondary font-medium uppercase">
-                  {highlightName("Budi Santoso")}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col justify-start items-start gap-1">
-              {/* name */}
-              <span className="text-base-content font-medium text-sm">
-                Budi Santoso
+          <div className="flex-1 flex flex-row justify-start items-center gap-3">
+            {pelanggan === null ? (
+              <span className="text-sm text-base-content/80 font-medium">
+                Silahkan pilih pelanggan
               </span>
-              {/* no telp */}
-              <span className="text-base-content/50 font-semibold text-xs">
-                08123456789
-              </span>
-            </div>
+            ) : (
+              <>
+                {/* avatar */}
+                <Avatar nama={pelanggan.nama} />
+                <div className="flex flex-col justify-start items-start gap-1">
+                  {/* name */}
+                  <span className="text-base-content font-medium text-sm">
+                    {pelanggan.nama}
+                  </span>
+                  {/* no telp */}
+                  <div className="w-full flex flex-row justify-start items-center gap-2">
+                    <Phone className="size-3 text-base-content/50" />
+                    <span className="text-base-content/50 font-semibold text-xs">
+                      {formatNumberPhone(pelanggan.noWa)}
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* button */}
           <div className="flex-1 flex flex-row justify-end items-center">
             <ButtonWithIcon
               icon={UsersRound}
-              label="Ganti Pelanggan"
-              handleBtn={() => {}}
+              label="Pilih Pelanggan"
+              handleBtn={() => handleShowModalChoosePelanggan()}
             />
           </div>
         </div>
 
         {/* preview produk */}
-        <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10">
+        <div
+          className={cn(
+            "w-full flex flex-col justify-start items-start rounded-lg border",
+            isErrorsFormState.includes("details")
+              ? "border-error"
+              : "border-base-content/10",
+          )}
+        >
           {/* header */}
-          <div className="w-full flex flex-row justify-start items-center px-2.5 py-4">
+          <div className="w-full flex flex-row justify-between items-center px-4 py-3">
             <h3 className="text-sm font-medium text-base-content">
               Data Transaksi
             </h3>
+
+            {produkDetails.length > 0 && (
+              <button
+                type="button"
+                className="py-1.5 px-2 flex flex-row justify-start items-center gap-2 border border-transparent hover:border-error rounded-md transition-all duration-150 ease-in-out"
+                onClick={handleRemoveAll}
+              >
+                <Trash2 className="size-4 text-error" />
+                <span className="text-[0.7rem] font-medium text-error">
+                  Kosongkan Semua
+                </span>
+              </button>
+            )}
           </div>
 
           {/* data */}
-          <div className="w-full flex flex-col justify-start items-start">
+          <div className="w-full flex flex-col justify-start items-start pb-6">
             <div className="overflow-x-auto w-full">
               <table className="table table-xs">
                 {/* head */}
                 <thead>
-                  <tr className="text-[0.625rem]">
+                  <tr className="text-[0.625rem] bg-base-content/5 h-8">
                     <th>Gambar</th>
                     <th>Nama Produk</th>
                     <th>Harga Terakhir</th>
@@ -121,7 +156,7 @@ const PilihProduk: FC<Props> = ({
                   {/* row 1 */}
                   {fieldsDetails.length > 0 ? (
                     fieldsDetails.map((item, index) => (
-                      <tr key={item.id}>
+                      <tr key={item.id} className="h-18">
                         <td>
                           <div className="avatar">
                             <div className="mask mask-squircle h-10 w-10">
@@ -141,7 +176,7 @@ const PilihProduk: FC<Props> = ({
                           </div>
                         </td>
                         <td>
-                          <span>
+                          <span className="-translate-y-1/2">
                             {produkDetails[index].hargaJualTerakhirTransaksi
                               ? formatRupiah(
                                   produkDetails[index]
@@ -167,8 +202,8 @@ const PilihProduk: FC<Props> = ({
                         <td>
                           <InputQty control={control} index={index} />
                         </td>
-                        <td>
-                          <span className="font-medium text-base-content">
+                        <td className="h-full">
+                          <span className="-translate-y-1/2 font-medium text-base-content h-full flex flex-row justify-start items-start">
                             {formatRupiah(
                               produkDetails[index].subTotal -
                                 produkDetails[index].diskon,
@@ -178,46 +213,33 @@ const PilihProduk: FC<Props> = ({
                         <td>
                           <button
                             type="button"
-                            className="opacity-50 hover:opacity-100 transition-opacity duration-200 ease-in-out group"
+                            className="opacity-50 hover:opacity-100 transition-opacity duration-200 ease-in-out group p-px"
                             onClick={() => removeDetails(index)}
                           >
-                            <Trash2 className="size-4 group-hover:text-error" />
+                            <Trash2 className="size-4 group-hover:text-error transition-color duration-200 ease-in-out" />
                           </button>
                         </td>
                       </tr>
                     ))
                   ) : (
-                    <td colSpan={8}>
-                      <div className="w-full flex flex-row justify-center items-center pt-10">
-                        <span className="text-sm text-base-content/50">
-                          Silahkan pilih produk
-                        </span>
-                      </div>
-                    </td>
+                    <tr>
+                      <td colSpan={8}>
+                        <div className="w-full flex flex-row justify-center items-center pt-10">
+                          <span className="text-sm text-base-content/50">
+                            Silahkan pilih produk
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
-            </div>
-
-            {/* button delete all */}
-            <div className="w-full flex flex-row justify-start items-start pt-8 pb-4 px-2">
-              {produkDetails.length > 0 && (
-                <button
-                  type="button"
-                  className="py-1.5 px-2 flex flex-row justify-start items-center gap-2 bg-error btn btn-sm hover-overlay"
-                >
-                  <Trash2 className="size-4 text-primary-white" />
-                  <span className="text-[0.7rem] font-medium text-primary-white">
-                    Kosongkan Semua
-                  </span>
-                </button>
-              )}
             </div>
           </div>
         </div>
 
         {/* total */}
-        <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10 px-2.5 py-4">
+        <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10 px-3 py-4">
           {/* sub total & total diskon */}
           <div className="w-full flex flex-col justify-start items-start gap-2.5 pb-4 border-b border-base-content/10">
             {/* sub total */}
@@ -270,12 +292,19 @@ const PilihProduk: FC<Props> = ({
           <button
             type="button"
             className="flex flex-row justify-center items-center gap-4 h-12 flex-1 rounded-lg border border-custom-primary hover-overlay hover:border-base-content/10"
+            onClick={handleSimpanKeranjang}
           >
-            {/* icon */}
-            <ShoppingCart className="size-5 text-base-content" />
-            <span className="text-base-content text-xs font-semibold">
-              Masukan ke Keranjang
-            </span>
+            {isPendingSimpanKeranjang ? (
+              <div className="loading loading-sm text-base-content" />
+            ) : (
+              <>
+                {/* icon */}
+                <ShoppingCart className="size-5 text-base-content" />
+                <span className="text-base-content text-xs font-semibold">
+                  Masukan ke Keranjang
+                </span>
+              </>
+            )}
           </button>
           <button
             type="button"
@@ -285,22 +314,27 @@ const PilihProduk: FC<Props> = ({
             {/* icon */}
             <Receipt className="size-4 text-custom-secondary" />
             <span className="text-custom-secondary text-xs font-semibold">
-              Buat Transaksi
+              {isUpdate ? "Simpan Transaksi" : "Buat Transaksi"}
             </span>
           </button>
         </div>
       </div>
 
       {/* content right */}
-      <ShowProduk handleAppend={handleAppend} />
+      <ShowProduk handleAppend={handleAppend} step={step} />
+
+      {/* modal choose pelanggan  */}
+      <ModalChoosePelanggan
+        handleChoose={handleSetPelanggan}
+        modalRef={modalChoosePelangganRef}
+        handleCloseModal={handleCloseModalChoosePelanggan}
+      />
     </div>
   );
 };
 
 type InputNumberProps = {
-  control: Control<
-    UpdateTransactionForRequestType | CreateTransactionForRequestType
-  >;
+  control: Control<{ details: DetailsForCreate[] }>;
   field: "hargaJual" | "diskon";
   index: number;
 };
@@ -312,9 +346,7 @@ const InputNumber: FC<InputNumberProps> = ({ control, index, field }) => {
   });
 
   return (
-    <InputNumberInTable<
-      UpdateTransactionForRequestType | CreateTransactionForRequestType
-    >
+    <InputNumberInTable<{ details: DetailsForCreate[] }>
       controller={controller}
       required
     />
@@ -323,9 +355,7 @@ const InputNumber: FC<InputNumberProps> = ({ control, index, field }) => {
 
 // qty props
 type QtyProps = {
-  control: Control<
-    UpdateTransactionForRequestType | CreateTransactionForRequestType
-  >;
+  control: Control<{ details: DetailsForCreate[] }>;
   index: number;
 };
 
@@ -337,9 +367,7 @@ const InputQty: FC<QtyProps> = ({ control, index }) => {
   });
 
   return (
-    <InputQtyInTable<
-      UpdateTransactionForRequestType | CreateTransactionForRequestType
-    >
+    <InputQtyInTable<{ details: DetailsForCreate[] }>
       controller={controller}
       required
     />

@@ -4,17 +4,20 @@ import type {
   TransactionStatusType,
 } from "../types/constant.type";
 import type { IPelangganType } from "./pelanggan.model";
+import type { IPenggunaInternalType } from "./penggunaInternal.model";
 import type { ITempo } from "./tempo.model";
 import type { ITransactionDetailType } from "./transactionDetail.model";
 
 export interface ITransactionType {
   id: number;
-  nomorTransaksi: string;
+  nomorTransaksi: string | null;
   pelangganId: number;
+  kasirId: number | null;
   totalItem: number;
   totalDiskon: number;
   totalBayar: number;
-  metodePembayaran: PaymentMethodType;
+  diBayar: number | null;
+  metodePembayaran: PaymentMethodType | null;
   details: Omit<ITransactionDetailType, "createdAt" | "updatedAt">[];
   tempo?: number;
   status: TransactionStatusType;
@@ -30,32 +33,41 @@ export interface DetailsForCreate extends Pick<
   produkId: number;
 }
 
+export interface DetailsLocalStorageType {
+  produkId: number;
+  quantity: number;
+  hargaJual: number;
+  diskon: number;
+  img: string;
+  nama: string;
+  kode: string;
+}
+
 // created transaction
 export interface CreateTransactionForRequestType extends Pick<
   ITransactionType,
   "metodePembayaran" | "pelangganId" | "tempo"
 > {
+  diBayar: number;
+  kasirId: number;
   details: DetailsForCreate[];
 }
 
-// update transaction for request
-export interface UpdateTransactionForRequestType extends Partial<
-  Omit<CreateTransactionForRequestType, "details">
+// create transaction to keranjang
+export interface CreateTransactionForKeranjangType extends Pick<
+  ITransactionType,
+  "pelangganId"
 > {
-  details?: (Pick<
-    ITransactionDetailType,
-    "diskon" | "hargaJual" | "quantity"
-  > & {
-    id?: number;
-    produkId: number;
-  })[];
+  details: DetailsForCreate[];
 }
+
 // response
 export interface ResponseTransactionType extends Omit<
   ITransactionType,
-  "tempo" | "pelangganId"
+  "tempo" | "pelangganId" | "kasirId"
 > {
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
+  kasir: Pick<IPenggunaInternalType, "id" | "nama"> | null;
   tempo: Pick<ITempo, "id" | "jumlahCicilan" | "totalTagihan"> | null;
 }
 
@@ -74,3 +86,16 @@ export interface ResponseTransactionWithMetaType {
 export const toResponseTransactionWithMeta = (
   transaction: ResponseTransactionWithMetaType,
 ): ResponseTransactionWithMetaType => transaction;
+
+// response transaction for keranjang
+export interface ResponseTransactionForKeranjangType extends Pick<
+  ITransactionType,
+  "details" | "status" | "totalBayar" | "totalDiskon" | "totalItem"
+> {
+  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
+}
+
+// to response
+export const toResponseTransactionForKeranjang = (
+  transaction: ResponseTransactionForKeranjangType,
+): ResponseTransactionForKeranjangType => transaction;

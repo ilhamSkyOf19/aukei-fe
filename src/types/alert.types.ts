@@ -32,3 +32,21 @@ export const ALERT_CONFIG_BARANG_MASUK_DETAIL: Record<
     message: "Data Barang Masuk masih kosong, silahkan tambahkan barang masuk.",
   },
 };
+
+export const ALERT_CONFIG_TRANSACTION: Record<
+  string,
+  {
+    message: string;
+  }
+> = {
+  transaksi_kosong: {
+    message: "Data transaksi masih kosong, silahkan tambahkan transaksi.",
+  },
+  pelanggan_kosong: {
+    message: "Data pelanggan masih kosong, silahkan tambahkan pelanggan.",
+  },
+  existing_keranjang: {
+    message:
+      "Pelanggan sudah memiliki keranjang, silahkan pilih pelanggan lain.",
+  },
+};

@@ -35,7 +35,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
   } = useNavbar();
 
   return (
-    <nav className="navbar w-full bg-custom-secondary shadow-sm flex flex-row justify-between items-center relative ">
+    <nav className="navbar w-full bg-base-100 shadow-sm flex flex-row justify-between items-center relative border-b border-base-content/10">
       <div className="w-full flex flex-row justify-between items-center">
         <div className="flex-2 flex flex-row justify-start items-center">
           <label
@@ -47,12 +47,12 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             {/* Sidebar toggle icon */}
             <PanelRightClose
               className={cn(
-                "size-6 text-primary-white",
+                "size-6 text-base-content",
                 !isClose && "lg:rotate-180",
               )}
             />
           </label>
-          <h1 className="text-primary-white px-4 font-medium capitalize lg:text-lg text-sm lg:font-semibold">
+          <h1 className="text-base-content px-4 font-medium capitalize lg:text-lg text-sm lg:font-semibold">
             {title}
           </h1>
         </div>
@@ -66,7 +66,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
               className="cursor-pointer p-2 focus:bg-custom-primary/50 hover:bg-custom-primary/50 rounded-full transition-all duration-150 ease-in-out relative"
               onFocus={() => setIsShowCountNotifikasi(false)}
             >
-              <Bell className="size-6 text-primary-white" />
+              <Bell className="size-6 text-base-content" />
 
               {/* count */}
               {isShowCountNotifikasi &&
@@ -194,7 +194,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
               </div>
 
               {/* chevron */}
-              <ChevronDown className="w-4 h-4 ml-2 text-primary-white" />
+              <ChevronDown className="w-4 h-4 ml-2 text-base-content" />
             </button>
             <ul
               tabIndex={-1}

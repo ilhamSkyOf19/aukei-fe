@@ -1,22 +1,24 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import FilterKategori from "../../../../components/filters/Kategori";
-import InputSearch from "../../../../components/inputs/InputSearch";
+import FilterKategori from "../../../../../components/filters/Kategori";
+import InputSearch from "../../../../../components/inputs/InputSearch";
 import useShowProduk from "./useShowProduk";
-import { formatRupiah } from "../../../../helpers/helpers";
-import type { DetailsForCreate } from "../../../../models/transaction.model";
-import type { ResponseProdukForKasirType } from "../../../../models/produk.model";
-import type { FC } from "react";
+import { formatRupiah } from "../../../../../helpers/helpers";
+import type { DetailsForCreate } from "../../../../../models/transaction.model";
+import type { ResponseProdukForKasirType } from "../../../../../models/produk.model";
+import { type FC } from "react";
+import DataEmpty from "../../../../../components/messages/DataEmpty";
 
 // props
 type Props = {
   pelangganId?: number;
   handleAppend: (
     produk: Pick<DetailsForCreate, "hargaJual" | "produkId" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id">,
+      Omit<ResponseProdukForKasirType, "id"> & { diskon?: number },
   ) => void;
+  step: number;
 };
 
-const ShowProduk: FC<Props> = ({ handleAppend, pelangganId }) => {
+const ShowProduk: FC<Props> = ({ handleAppend, pelangganId, step }) => {
   // call use
   const {
     dataProduk,
@@ -25,7 +27,7 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId }) => {
     isLoadingProduk,
     setSearch,
     isExistDataProduk,
-  } = useShowProduk({ pelangganId });
+  } = useShowProduk({ pelangganId, step, handleAppend });
 
   return (
     <div className="flex-1 flex flex-col justify-start items-center">
@@ -43,14 +45,20 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId }) => {
       </div>
 
       {/* daftar produk */}
-      <div className="grid grid-cols-4 lg:gap-2 xl:gap-4">
+      <div className="grid grid-cols-4 gap-2">
         {/* card */}
-        {isExistDataProduk ? (
+        {isLoadingProduk ? (
+          Array.from({ length: 8 }, (_, i) => i).map((item) => (
+            <div key={item} className="col-span-1 lg:h-50 xl:h-55 p-1.5">
+              <div className=" skeleton w-40 h-full" />
+            </div>
+          ))
+        ) : isExistDataProduk ? (
           dataProduk?.data?.data.map((item) => (
             <button
               type="button"
               key={item.id}
-              className="col-span-1 lg:h-50 xl:h-60 flex flex-row justify-start items-start p-1.5 group"
+              className="col-span-1 lg:h-50 xl:h-55 flex flex-row justify-start items-start p-1.5 group"
               onClick={() =>
                 handleAppend({
                   hargaJual: item.hargaJual,
@@ -65,7 +73,7 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId }) => {
               }
             >
               <div className="w-full h-full flex flex-col justify-start items-start rounded-md shadow-sm overflow-hidden gap-2 group-hover:shadow-custom-primary group-hover:shadow-sm transition-all duration-300 ease-in-out group-hover:scale-102">
-                <div className="w-full flex-4 flex flex-row justify-center items-center overflow-hidden">
+                <div className="w-full flex-1 flex flex-row justify-center items-center overflow-hidden">
                   <img
                     src={item.img}
                     alt="wall panel"
@@ -73,7 +81,7 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId }) => {
                   />
                 </div>
 
-                <div className="w-full flex-3 flex flex-col justify-start items-start px-2 gap-2.5">
+                <div className="w-full flex-1 flex flex-col justify-start items-start px-2 gap-2.5">
                   {/* name */}
                   <div className="w-full flex flex-col justify-start items-start gap-0.5">
                     <p className="text-xs font-medium text-base-content">
@@ -100,7 +108,13 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId }) => {
             </button>
           ))
         ) : (
-          <div></div>
+          <div className="col-span-4 flex-row justify-center items-center">
+            <DataEmpty
+              title="Data Produk Tidak Tersedia"
+              description="Belum ada data produk yang dapat ditampilkan saat ini"
+              xs
+            />
+          </div>
         )}
       </div>
 

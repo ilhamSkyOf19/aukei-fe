@@ -12,9 +12,19 @@
   --font-poppins: "Poppins", sans-serif;
   --color-custom-primary: #cdde00;
   --color-custom-secondary: #263d3f;
+
   --color-primary-white: #f8f8f8;
   --color-secondary-white: #eeeeee;
   --color-primary-black: #282828;
+}
+
+@layer daisyui.l1.l2 {
+  .step-primary::before,
+  .step-primary::after,
+  .step-primary > .step-icon {
+    --step-bg: var(--color-custom-primary);
+    --step-fg: var(--color-primary-black);
+  }
 }
 
 @layer utilities {
@@ -67,4 +77,85 @@ input:-webkit-autofill:active {
     --color-primary-black
   ) !important; /* tetap hitam */
   transition: background-color 5000s ease-in-out 0s;
+}
+
+@theme {
+  --animate-radio-active: radio-active 180ms ease-out;
+
+  @keyframes radio-active {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    60% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+
+    85% {
+      transform: scale(1.02);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  --animate-pop-in: pop-in 180ms ease-out;
+
+  @keyframes pop-in {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    60% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
+    85% {
+      transform: scale(1.01);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  --animate-reverse-pop-in: reverse-pop-in 180ms ease-out;
+
+  @keyframes reverse-pop-in {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    40% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(0);
+      opacity: 0;
+    }
+  }
+
+  --animate-pop-in-active: pop-in-active 180ms ease-out;
+
+  @keyframes pop-in-active {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.1);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
 }

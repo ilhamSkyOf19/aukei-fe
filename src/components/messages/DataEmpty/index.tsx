@@ -1,5 +1,6 @@
 import type { ElementType, FC } from "react";
 import { PackageX, Plus } from "lucide-react";
+import { cn } from "../../../utils/cn";
 
 type Props = {
   title?: string;
@@ -9,6 +10,7 @@ type Props = {
   buttonText?: boolean;
   iconData?: ElementType;
   labelButtonText?: string;
+  xs?: boolean;
 };
 
 const DataEmpty: FC<Props> = ({
@@ -19,27 +21,52 @@ const DataEmpty: FC<Props> = ({
   buttonIcon,
   buttonText,
   labelButtonText,
+  xs,
 }: Props) => {
   return (
     <div className="flex flex-col items-center justify-center py-14 px-6 text-center">
       {/* Icon ring */}
       <div className="relative mb-6">
-        <div className="w-24 h-24 rounded-full bg-base-200 border-2 border-dashed border-base-300 flex items-center justify-center">
-          <div className="w-16 h-16 rounded-full bg-base-100 flex items-center justify-center shadow-inner">
+        <div
+          className={cn(
+            " rounded-full bg-base-200 border-2 border-dashed border-base-300 flex items-center justify-center",
+            xs ? "w-20 h-20" : "w-24 h-24",
+          )}
+        >
+          <div
+            className={cn(
+              "rounded-full bg-base-100 flex items-center justify-center shadow-inner",
+              xs ? "w-14 h-14" : "w-16 h-16",
+            )}
+          >
             {Icon ? (
-              <Icon className="size-6 text-base-content" />
+              <Icon
+                className={cn(" text-base-content", xs ? "size-4" : "size-6")}
+              />
             ) : (
-              <PackageX className="size-6 text-base-content" />
+              <PackageX
+                className={cn(" text-base-content", xs ? "size-4" : "size-6")}
+              />
             )}
           </div>
         </div>
       </div>
 
       {/* Text */}
-      <h3 className="text-sm lg:text-base font-semibold text-base-content mb-1 tracking-tight">
+      <h3
+        className={cn(
+          "font-semibold text-base-content mb-1 tracking-tight",
+          xs ? "text-xs lg:text-sm" : "text-sm lg:text-base",
+        )}
+      >
         {title}
       </h3>
-      <p className="text-xs lg:text-sm text-base-content/55 max-w-xs leading-relaxed">
+      <p
+        className={cn(
+          "text-base-content/55 max-w-xs leading-relaxed",
+          xs ? "text-[0.625rem] lg:text-xs" : "text-xs lg:text-sm ",
+        )}
+      >
         {description}
       </p>
 

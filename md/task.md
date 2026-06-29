@@ -68,4 +68,14 @@
 
 - [✅] Buat halaman akun
 
-- [ ] Buat halaman transaksi
+- [✅] Buat halaman transaksi
+- [✅] Membuat pilihan pelanggan
+- [✅] menyelesaikan kalkulator
+- [✅] Membuat fitur simpan keranjang
+
+- [ ] Menyelesaikan halaman keranjang
+- [ ] Membuat fitur struk pembayaran
+
+- [ ] Membuat formulir add pelanggan
+- [ ] Membuat halaman pembayaran
+- [ ] Membuat halaman update transaksi

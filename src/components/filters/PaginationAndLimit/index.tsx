@@ -1,8 +1,8 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { generatePageNumbers } from "../../../helpers/helpers";
 import { cn } from "../../../utils/cn";
 import DropDown from "../../inputs/DropDown";
 import { usePaginationWindow } from "../../../hooks/usePaginationWindows";
+import Pagination from "../../ui/Pagination";
 
 interface PaginationAndLimitProps {
   currentPage: number | null;
@@ -72,69 +72,13 @@ export default function PaginationAndLimit({
 
       {/* pagiantion */}
       {totalPage! > 1 && (
-        <nav
-          aria-label="PaginationAndLimit"
-          className="flex items-center gap-1 select-none font-sans "
-        >
-          {/* Prev Button */}
-          <button
-            onClick={() => goTo(currentPage! - 1)}
-            disabled={!isPrev}
-            aria-label="Previous page"
-            className={[
-              "flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 rounded-lg border transition-all duration-150",
-              isPrev
-                ? "hover:text-custom-primary hover:bg-custom-secondary active:scale-95"
-                : " cursor-not-allowed border-base-content/10 text-base-content/10",
-            ].join(" ")}
-          >
-            <ChevronLeft size={16} strokeWidth={2.2} />
-          </button>
-
-          {/* Page Numbers */}
-          <div className="flex items-center gap-1">
-            {pages.map((page, idx) =>
-              page === "..." ? (
-                <span
-                  key={`ellipsis-${idx}`}
-                  className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 text-sm text-base-content tracking-widest"
-                >
-                  ···
-                </span>
-              ) : (
-                <button
-                  key={page}
-                  onClick={() => goTo(page as number)}
-                  aria-label={`Page ${page}`}
-                  aria-current={currentPage === page ? "page" : undefined}
-                  className={[
-                    "flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 rounded-lg text-sm font-medium transition-all duration-150 active:scale-95",
-                    currentPage === page
-                      ? "bg-custom-secondary text-custom-primary shadow-sm shadow-slate-900/20"
-                      : "text-base-content/60 hover:bg-primary-purple/20 hover:text-base-content",
-                  ].join(" ")}
-                >
-                  {page}
-                </button>
-              ),
-            )}
-          </div>
-
-          {/* Next Button */}
-          <button
-            onClick={() => goTo(currentPage! + 1)}
-            disabled={!isNext}
-            aria-label="Next page"
-            className={[
-              "flex border-primary-purple text-primary-purple  items-center justify-center w-8 h-8 lg:w-9 lg:h-9 rounded-lg border transition-all duration-150",
-              isNext
-                ? " hover:text-custom-primary hover:bg-custom-secondary active:scale-95"
-                : "  cursor-not-allowed border-base-content/10 text-base-content/10",
-            ].join(" ")}
-          >
-            <ChevronRight size={16} strokeWidth={2.2} />
-          </button>
-        </nav>
+        <Pagination
+          currentPage={currentPage}
+          goTo={goTo}
+          isNext={isNext}
+          isPrev={isPrev}
+          pages={pages}
+        />
       )}
     </div>
   );

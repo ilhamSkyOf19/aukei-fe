@@ -1,11 +1,11 @@
 import { type FC } from "react";
-import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { cn } from "../../../utils/cn";
 import useSideBar from "./useSideBar";
 import { highlightName } from "../../../helpers/helpers";
-import { LogOut } from "lucide-react";
+import { LogOut, Receipt } from "lucide-react";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
+import ModalAlert from "../../modals/ModalAlert";
 
 type Props = {
   isClose: boolean;
@@ -15,11 +15,14 @@ const Sidebar: FC<Props> = ({ isClose }) => {
   const {
     isNavigation,
     pathname,
-    handleClearDataLocalStorage,
     divRef,
     handleLogout,
     hasScroll,
     pengguna,
+    handleCancel,
+    handleConfirm,
+    handleLink,
+    modalConfirmRef,
   } = useSideBar();
 
   return (
@@ -32,7 +35,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
       <div
         ref={divRef}
         className={cn(
-          "flex h-screen overflow-hidden overflow-y-auto flex-col items-start justify-between bg-base-100 is-drawer-close:w-16 lg:is-drawer-open:w-75 is-drawer-open:w-70",
+          "flex h-screen overflow-hidden overflow-y-auto flex-col items-start justify-between is-drawer-close:w-16 lg:is-drawer-open:w-50 is-drawer-open:w-70 bg-custom-secondary",
           hasScroll && "is-drawer-close:w-18",
         )}
       >
@@ -44,13 +47,15 @@ const Sidebar: FC<Props> = ({ isClose }) => {
             )}
           >
             {/* title is closed */}
-            <div className="w-full h-14 flex flex-row justify-center items-center border bg-custom-secondary rounded-b-4xl">
-              <p className="is-drawer-open:hidden text-custom-primary font-semibold text-base lg:text-2xl">
-                A
-              </p>
+            <div className="w-full h-14 flex flex-row justify-center items-center">
+              <div className="is-drawer-open:hidden rounded-full bg-custom-primary w-11 h-11 flex flex-row justify-center items-center">
+                <p className="text-base-content font-semibold text-base lg:text-xl ">
+                  A
+                </p>
+              </div>
 
               {/* heading */}
-              <p className="is-drawer-close:hidden text-primary-black font-semibold text-base lg:text-2xl">
+              <p className="is-drawer-close:hidden text-primary-black font-semibold text-base lg:text-3xl">
                 <span className="text-primary-white">AU</span>
                 <span className="text-custom-primary">KEI</span>
               </p>
@@ -63,43 +68,50 @@ const Sidebar: FC<Props> = ({ isClose }) => {
 
               {isNavigation.map((item, index) => (
                 <li key={index} className="flex-1">
-                  <Link
-                    to={item.link}
+                  <button
+                    type="button"
                     {...(!isClose && {
                       "data-tooltip-id": "sidebar-tooltip",
                       "data-tooltip-content": item.label,
                     })}
                     data-tooltip-place="right"
                     className={cn(
-                      "hover:bg-custom-secondary group",
+                      "hover:bg-custom-primary group",
                       item.link === "/dashboard"
-                        ? pathname === "/dashboard" && "bg-custom-secondary"
-                        : pathname.startsWith(item.link) &&
-                            "bg-custom-secondary",
+                        ? pathname === "/dashboard" && "bg-custom-primary"
+                        : pathname.startsWith(item.link) && "bg-custom-primary",
                     )}
-                    onClick={() => handleClearDataLocalStorage()}
+                    onClick={() => {
+                      handleLink(item.link);
+                    }}
                   >
                     <item.icon
                       className={cn(
-                        "my-1.5 inline-block size-6 text-base-content group-hover:text-primary-white transition-all duration-150 ease-in-out",
+                        "my-1.5 inline-block size-6 text-base-content group-hover:text-base-content transition-all duration-150 ease-in-out",
                         item.link === "/dashboard"
-                          ? pathname === "/dashboard" && "text-primary-white"
-                          : pathname.startsWith(item.link) &&
-                              "text-primary-white",
+                          ? pathname === "/dashboard"
+                            ? "text-base-content"
+                            : "text-primary-white"
+                          : pathname.startsWith(item.link)
+                            ? "text-base-content"
+                            : "text-primary-white",
                       )}
                     />
                     <span
                       className={cn(
-                        "is-drawer-close:hidden group-hover:text-primary-white text-base-content capitalize transition-all duration-150 ease-in-out",
+                        "is-drawer-close:hidden group-hover:text-base-content text-base-content capitalize transition-all duration-150 ease-in-out",
                         item.link === "/dashboard"
-                          ? pathname === "/dashboard" && "text-primary-white"
-                          : pathname.startsWith(item.link) &&
-                              "text-primary-white",
+                          ? pathname === "/dashboard"
+                            ? "text-base-content"
+                            : "text-primary-white"
+                          : pathname.startsWith(item.link)
+                            ? "text-base-content"
+                            : "text-primary-white",
                       )}
                     >
                       {item.label}
                     </span>
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -193,6 +205,18 @@ const Sidebar: FC<Props> = ({ isClose }) => {
           padding: "3px 12px",
           fontSize: "14px",
         }}
+      />
+
+      <ModalAlert
+        modalRef={modalConfirmRef}
+        handleCloseModal={handleCancel}
+        handleConfirm={handleConfirm}
+        bigTitle={"Apakah Anda yakin ingin membatalkan transaksi?"}
+        smallTitle={
+          "Semua data pada transaksi ini akan dibatalkan dan tidak dapat dikembalikan."
+        }
+        icon={Receipt}
+        iconColor="text-warning"
       />
     </div>
   );

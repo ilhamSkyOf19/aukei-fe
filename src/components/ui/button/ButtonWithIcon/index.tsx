@@ -12,6 +12,7 @@ type Props = {
   isLoading?: boolean;
   icon?: LucideIcon;
   customWidth?: string;
+  customHeight?: string;
   customClass?: string;
 };
 const ButtonWithIcon: FC<Props> = ({
@@ -23,6 +24,7 @@ const ButtonWithIcon: FC<Props> = ({
   isLoading,
   icon: Icon,
   customWidth,
+  customHeight,
   customClass,
 }) => {
   // navigation
@@ -31,11 +33,13 @@ const ButtonWithIcon: FC<Props> = ({
   return (
     <button
       type="button"
+      disabled={isLoading}
       className={cn(
-        "flex justify-center h-10.5 md:h-9 items-center hover-overlay rounded-md px-3 gap-2",
+        "flex justify-center items-center hover-overlay rounded-md px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
         customWidth ? customWidth : "w-auto",
         customClass,
+        customHeight ? customHeight : "h-10.5 md:h-9",
       )}
       onClick={() => {
         if (handleBtn) {

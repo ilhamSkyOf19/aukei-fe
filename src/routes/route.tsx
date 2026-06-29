@@ -14,6 +14,7 @@ import PegawaiPage from "../pages/PegawaiPage";
 import RoleGuard from "../Guards/RoleGuard";
 import { ROLE_INTERNAL_TYPE } from "../types/constant.type";
 import KasirPage from "../pages/KasirPage";
+import KeranjangPage from "../pages/KeranjangPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -203,6 +204,15 @@ const route = createBrowserRouter([
           {
             index: true,
             element: <KasirPage />,
+          },
+        ],
+      },
+      {
+        path: "keranjang",
+        children: [
+          {
+            index: true,
+            element: <KeranjangPage />,
           },
         ],
       },

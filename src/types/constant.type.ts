@@ -22,7 +22,7 @@ export const JENIS_NOTIFIKASI_PRODUK_TYPE = {
   STOK_MINUS: "STOK_MINUS",
   STOK_EMPTY: "STOK_EMPTY",
   STOK_MINIMUM: "STOK_MINIMUM",
-};
+} as const;
 
 export type JenisNotifikasiProdukType =
   (typeof JENIS_NOTIFIKASI_PRODUK_TYPE)[keyof typeof JENIS_NOTIFIKASI_PRODUK_TYPE];
@@ -33,7 +33,7 @@ export const PAYMENT_METHOD_TYPE = {
   QRIS: "QRIS",
   TRANSFER: "TRANSFER",
   TEMPO: "TEMPO",
-};
+} as const;
 
 export type PaymentMethodType =
   (typeof PAYMENT_METHOD_TYPE)[keyof typeof PAYMENT_METHOD_TYPE];
@@ -44,7 +44,7 @@ export const TEMPO_STATUS_TYPE = {
   PARTIAL: "PARTIAL",
   PAID: "PAID",
   OVERDUE: "OVERDUE",
-};
+} as const;
 
 export type TempoStatusType =
   (typeof TEMPO_STATUS_TYPE)[keyof typeof TEMPO_STATUS_TYPE];
@@ -54,7 +54,7 @@ export const INSTALLMENT_STATUS_TYPE = {
   UNPAID: "UNPAID",
   PAID: "PAID",
   OVERDUE: "OVERDUE",
-};
+} as const;
 
 export type InstallmentStatusType =
   (typeof INSTALLMENT_STATUS_TYPE)[keyof typeof INSTALLMENT_STATUS_TYPE];
@@ -62,9 +62,8 @@ export type InstallmentStatusType =
 // status transaction
 export const TRANSACTION_STATUS_TYPE = {
   CART: "CART",
-  PENDING: "PENDING",
   COMPLETED: "COMPLETED",
-};
+} as const;
 
 export type TransactionStatusType =
   (typeof TRANSACTION_STATUS_TYPE)[keyof typeof TRANSACTION_STATUS_TYPE];

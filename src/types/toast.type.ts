@@ -201,3 +201,21 @@ export const TOAST_CONFIG_PEGAWAI: Record<
     message: "Pegawai berhasil dihapus",
   },
 };
+
+// toast transaction
+export const TOAST_CONFIG_TRANSACTION: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  created_transaction: {
+    color: "success",
+    message: "Transaksi berhasil dibuat",
+  },
+  simpan_keranjang: {
+    color: "success",
+    message: "Data berhasil di simpan ke keranjang",
+  },
+};

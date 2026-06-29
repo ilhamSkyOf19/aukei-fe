@@ -115,3 +115,10 @@ export const expireDateOneDay = (date: Date): Date => {
 
   return newDate;
 };
+
+// format number phone
+export const formatNumberPhone = (value: string) => {
+  const numbers = value.replace(/\D/g, "");
+
+  return `${numbers.slice(0, 4)} ${numbers.slice(4, 8)} ${numbers.slice(8)}`;
+};

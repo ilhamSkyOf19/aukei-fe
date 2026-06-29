@@ -1,11 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
-import { useFilterSearch } from "../../../../hooks/useFilterSearch";
-import { useFilter } from "../../../../hooks/useFilter";
-import { ProdukServices } from "../../../../services/produk.service";
+import { useFilterSearch } from "../../../../../hooks/useFilterSearch";
+import { useFilter } from "../../../../../hooks/useFilter";
+import { ProdukServices } from "../../../../../services/produk.service";
 import { useSearchParams } from "react-router-dom";
+import type {
+  DetailsForCreate,
+  DetailsLocalStorageType,
+} from "../../../../../models/transaction.model";
+import type { ResponseProdukForKasirType } from "../../../../../models/produk.model";
+import { useEffect } from "react";
 
-const useShowProduk = (params: { pelangganId?: number }) => {
-  const { pelangganId } = params;
+const useShowProduk = (params: {
+  pelangganId?: number;
+  step: number;
+  handleAppend: (
+    produk: Pick<DetailsForCreate, "hargaJual" | "produkId" | "quantity"> &
+      Omit<ResponseProdukForKasirType, "id"> & { diskon?: number },
+  ) => void;
+}) => {
+  const { pelangganId, step, handleAppend } = params;
 
   //   get current page form search params
   const [searchParams] = useSearchParams();
@@ -45,7 +58,7 @@ const useShowProduk = (params: { pelangganId?: number }) => {
 
   // query
   const { data: dataProduk, isLoading: isLoadingProduk } = useQuery({
-    queryKey: ["produk", search, page, kategori],
+    queryKey: ["produk", search, page, kategori, step],
     queryFn: () =>
       ProdukServices.findAllForKasir({
         ...(search && { search }),
@@ -58,13 +71,43 @@ const useShowProduk = (params: { pelangganId?: number }) => {
   });
 
   //   is existing produk
-  // is exist data
   const isExistDataProduk: boolean =
     !isLoadingProduk && dataProduk?.data
       ? dataProduk?.data?.data?.length > 0
         ? true
         : false
       : false;
+
+  // check local storage
+  useEffect(() => {
+    if (!dataProduk?.data?.data) return;
+
+    const details = localStorage.getItem("details");
+    const diBayar = localStorage.getItem("diBayar");
+
+    if (!details) {
+      if (diBayar) localStorage.removeItem("diBayar");
+      return;
+    }
+
+    const detailsParse: DetailsLocalStorageType[] = JSON.parse(details);
+
+    detailsParse.forEach((item) => {
+      const produk = dataProduk?.data?.data.find((p) => p.id === item.produkId);
+
+      handleAppend({
+        produkId: item.produkId,
+        hargaJual: item.hargaJual,
+        img: item.img,
+        kode: item.kode,
+        nama: item.nama,
+        quantity: item.quantity,
+        diskon: item.diskon,
+        stok: produk?.stok ?? 0,
+        hargaJualTerakhirTransaksi: produk?.hargaJualTerakhirTransaksi ?? 0,
+      });
+    });
+  }, [dataProduk]);
 
   return {
     dataProduk,

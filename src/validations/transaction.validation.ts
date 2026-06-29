@@ -1,9 +1,7 @@
 import z from "zod";
-import type { ITransactionDetailType } from "../models/transactionDetail.model";
-import { PAYMENT_METHOD_TYPE } from "../types/constant.type";
 import type {
-  CreateTransactionForRequestType,
-  UpdateTransactionForRequestType,
+  CreateTransactionForKeranjangType,
+  DetailsForCreate,
 } from "../models/transaction.model";
 
 export class TransactionValidation {
@@ -25,34 +23,10 @@ export class TransactionValidation {
       hargaJual: this.numberSchema("harga jual", 0, 2147483647),
       quantity: this.numberSchema("quantity", 1, 2147483647),
     })
-    .strict() satisfies z.ZodType<
-    Pick<ITransactionDetailType, "diskon" | "hargaJual" | "quantity"> & {
-      produkId: number;
-    }
-  >;
+    .strict() satisfies z.ZodType<DetailsForCreate>;
 
-  private static readonly detailsSchemaWithId = z
-    .object({
-      id: this.numberSchema("id", 1, 2147483647).optional(),
-      produkId: this.numberSchema("produk", 1, 2147483647),
-      diskon: z.number().int().max(2147483647),
-      hargaJual: z.number().int().max(2147483647),
-      quantity: z.number().int().max(2147483647),
-    })
-    .strict() satisfies z.ZodType<
-    Pick<ITransactionDetailType, "diskon" | "hargaJual" | "quantity"> & {
-      id?: number;
-      produkId: number;
-    }
-  >;
-
-  // create
   static readonly CREATE = z
     .object({
-      pelangganId: this.numberSchema("pelanggan", 1, 2147483647),
-      metodePembayaran: z.enum(PAYMENT_METHOD_TYPE, {
-        message: "Metode pembayaran mohon diisi",
-      }),
       details: z.array(this.detailsSchema).min(1),
     })
     .superRefine((data, ctx) => {
@@ -66,27 +40,25 @@ export class TransactionValidation {
         });
       }
     })
-    .strict() satisfies z.ZodType<CreateTransactionForRequestType>;
+    .strict() satisfies z.ZodType<{
+    details: DetailsForCreate[];
+  }>;
 
-  // update
-  static readonly UPDATE = z
+  static readonly CREATE_FOR_KERANJANG = z
     .object({
-      pelangganId: this.numberSchema("pelanggan", 1, 2147483647).optional(),
-      metodePembayaran: z.enum(PAYMENT_METHOD_TYPE).optional(),
-      details: z.array(this.detailsSchemaWithId).optional(),
+      pelangganId: z.number().int().positive().max(2147483647),
+      details: z.array(this.detailsSchema).min(1),
     })
     .superRefine((data, ctx) => {
       // check details produk id
-      if (data.details && data.details.length > 0) {
-        const produkIds = data.details.map((detail) => detail.produkId);
-        if (produkIds.length !== new Set(produkIds).size) {
-          ctx.addIssue({
-            code: "custom",
-            message: "produk id tidak boleh sama",
-            path: ["details"],
-          });
-        }
+      const produkIds = data.details.map((detail) => detail.produkId);
+      if (produkIds.length !== new Set(produkIds).size) {
+        ctx.addIssue({
+          code: "custom",
+          message: "produk id tidak boleh sama",
+          path: ["details"],
+        });
       }
     })
-    .strict() satisfies z.ZodType<UpdateTransactionForRequestType>;
+    .strict() satisfies z.ZodType<CreateTransactionForKeranjangType>;
 }
