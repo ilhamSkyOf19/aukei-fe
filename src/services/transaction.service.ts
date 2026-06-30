@@ -43,4 +43,16 @@ export class TransactionServices {
 
     return result.data;
   }
+
+  // find for keranjang by pelanggan id
+  static async findForKeranjangByPelangganId(params: {
+    id: number;
+  }): Promise<ResponseStructure<ResponseTransactionForKeranjangType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseTransactionForKeranjangType | null>
+    >(`/transaction/for-keranjang/${params.id}`);
+
+    return result.data;
+  }
 }

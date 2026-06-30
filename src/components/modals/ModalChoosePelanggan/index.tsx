@@ -9,14 +9,17 @@ import Pagination from "../../ui/Pagination";
 import DataEmpty from "../../messages/DataEmpty";
 import type { IPelangganType } from "../../../models/pelanggan.model";
 import Avatar from "../../ui/Avatar";
+import ModalFormulirPelanggan from "../ModalFormulirPelanggan";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
+  handleShowModal: () => void;
   handleChoose: (data: Pick<IPelangganType, "id" | "nama" | "noWa">) => void;
 };
 const ModalChoosePelanggan: FC<Props> = ({
   modalRef,
   handleCloseModal,
+  handleShowModal,
   handleChoose,
 }) => {
   // call use
@@ -31,11 +34,17 @@ const ModalChoosePelanggan: FC<Props> = ({
     pages,
     currentPage,
     isExistDataPelanggan,
-  } = useModalChoosePelanggan();
+    modalFormulirPelangganRef,
+    handleCloseModalFormulirPelanggan,
+    handleShowModalFormulirPelanggan,
+  } = useModalChoosePelanggan({
+    handleCloseModalChoosePelanggan: handleCloseModal,
+    handleShowModalChoosePelanggan: handleShowModal,
+  });
 
   return (
     <dialog ref={modalRef} id="my_modal_3" className="modal">
-      <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box max-h-[90vh] lg:w-2/5 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-between items-start">
@@ -69,12 +78,16 @@ const ModalChoosePelanggan: FC<Props> = ({
 
             <div className="w-55 flex flex-row justify-end items-start">
               {/* btn */}
-              <ButtonWithIcon icon={UserPlus} label="Pelanggan Baru" />
+              <ButtonWithIcon
+                icon={UserPlus}
+                label="Pelanggan Baru"
+                handleBtn={handleShowModalFormulirPelanggan}
+              />
             </div>
           </div>
 
           {/* daftar pelanggan */}
-          <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10 overflow-y-auto scrollbar-thin">
+          <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10 overflow-y-auto scrollbar-thin h-120">
             {/* card pelanggan */}
             {isLoadingPelanggan ? (
               <div className="w-full flex flex-col justify-start items-start gap-1 p-2">
@@ -87,7 +100,7 @@ const ModalChoosePelanggan: FC<Props> = ({
                 <button
                   type="button"
                   key={item.id}
-                  className="w-full flex flex-row justify-between items-center px-4 py-3 border-b border-base-content/10 hover-overlay"
+                  className="w-full flex flex-row justify-between items-center px-4 py-3 border-b border-base-content/10 hover-overlay shrink-0"
                   onClick={() => {
                     handleChoose({
                       id: item.id,
@@ -153,6 +166,12 @@ const ModalChoosePelanggan: FC<Props> = ({
           </div>
         </div>
       </div>
+
+      {/* modal formulir pelanggan */}
+      <ModalFormulirPelanggan
+        modalRef={modalFormulirPelangganRef}
+        handleCloseModal={handleCloseModalFormulirPelanggan}
+      />
     </dialog>
   );
 };

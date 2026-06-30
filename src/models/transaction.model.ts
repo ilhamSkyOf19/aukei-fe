@@ -82,11 +82,6 @@ export interface ResponseTransactionWithMetaType {
   data: ResponseTransactionType[];
 }
 
-// to response
-export const toResponseTransactionWithMeta = (
-  transaction: ResponseTransactionWithMetaType,
-): ResponseTransactionWithMetaType => transaction;
-
 // response transaction for keranjang
 export interface ResponseTransactionForKeranjangType extends Pick<
   ITransactionType,
@@ -94,8 +89,3 @@ export interface ResponseTransactionForKeranjangType extends Pick<
 > {
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
 }
-
-// to response
-export const toResponseTransactionForKeranjang = (
-  transaction: ResponseTransactionForKeranjangType,
-): ResponseTransactionForKeranjangType => transaction;

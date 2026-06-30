@@ -14,6 +14,7 @@ type Props = {
   customWidth?: string;
   customHeight?: string;
   customClass?: string;
+  reverse?: boolean;
 };
 const ButtonWithIcon: FC<Props> = ({
   bgColor,
@@ -26,6 +27,7 @@ const ButtonWithIcon: FC<Props> = ({
   customWidth,
   customHeight,
   customClass,
+  reverse,
 }) => {
   // navigation
   const navigate = useNavigate();
@@ -60,6 +62,7 @@ const ButtonWithIcon: FC<Props> = ({
               className={cn(
                 "size-4",
                 textColor ? textColor : "text-custom-secondary",
+                reverse && "order-2",
               )}
             />
           ) : (
@@ -67,6 +70,7 @@ const ButtonWithIcon: FC<Props> = ({
               className={cn(
                 "size-5",
                 textColor ? textColor : "text-custom-secondary",
+                reverse && "order-2",
               )}
             />
           )}
@@ -75,6 +79,7 @@ const ButtonWithIcon: FC<Props> = ({
             className={cn(
               "font-medium text-xs",
               textColor ? textColor : "text-custom-secondary",
+              reverse && "order-1",
             )}
           >
             {label ? label : "Tambah"}

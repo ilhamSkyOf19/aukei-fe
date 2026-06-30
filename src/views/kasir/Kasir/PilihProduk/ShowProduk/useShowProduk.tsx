@@ -58,7 +58,7 @@ const useShowProduk = (params: {
 
   // query
   const { data: dataProduk, isLoading: isLoadingProduk } = useQuery({
-    queryKey: ["produk", search, page, kategori, step],
+    queryKey: ["produk", search, page, kategori, step, pelangganId],
     queryFn: () =>
       ProdukServices.findAllForKasir({
         ...(search && { search }),

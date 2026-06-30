@@ -74,6 +74,7 @@
 - [✅] Membuat fitur simpan keranjang
 
 - [ ] Menyelesaikan halaman keranjang
+
 - [ ] Membuat fitur struk pembayaran
 
 - [ ] Membuat formulir add pelanggan

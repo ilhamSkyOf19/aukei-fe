@@ -1,8 +1,11 @@
 import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
+  CreatePelangganType,
   ResponsePelangganForKeranjangWithMetaType,
+  ResponsePelangganType,
   ResponsePelangganWithMetaType,
+  UpdatePelangganType,
 } from "../models/pelanggan.model";
 import type { ResponseStructure } from "../types/response.type";
 
@@ -23,7 +26,7 @@ export class PelangganServices {
 
   // find all for keranjang
   static async findAllForKeranjang(
-    query: PaginationType,
+    query: Pick<PaginationType, "page" | "search">,
   ): Promise<
     ResponseStructure<ResponsePelangganForKeranjangWithMetaType | null>
   > {
@@ -33,6 +36,31 @@ export class PelangganServices {
     >(`/pelanggan/for-keranjang`, {
       params: query,
     });
+
+    return result.data;
+  }
+
+  // create
+  static async create(
+    req: CreatePelangganType,
+  ): Promise<ResponseStructure<ResponsePelangganType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponsePelangganType | null>
+    >(`/pelanggan`, req);
+
+    return result.data;
+  }
+
+  // update
+  static async update(params: {
+    id: number;
+    req: UpdatePelangganType;
+  }): Promise<ResponseStructure<ResponsePelangganType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponsePelangganType | null>
+    >(`/pelanggan/${params.id}`, params.req);
 
     return result.data;
   }

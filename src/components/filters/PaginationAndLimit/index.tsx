@@ -1,4 +1,4 @@
-import { generatePageNumbers } from "../../../helpers/helpers";
+import { handlePagination } from "../../../helpers/helpers";
 import { cn } from "../../../utils/cn";
 import DropDown from "../../inputs/DropDown";
 import { usePaginationWindow } from "../../../hooks/usePaginationWindows";
@@ -27,15 +27,13 @@ export default function PaginationAndLimit({
     ? customWindowSize
     : usePaginationWindow();
 
-  const pages = generatePageNumbers(currentPage!, totalPage!, windowSize);
-
-  const goTo = (page: number) => {
-    if (page < 1 || page > totalPage!) return;
-    setPage(String(page));
-  };
-
-  const isPrev = currentPage! > 1;
-  const isNext = currentPage! < totalPage!;
+  // handle pagination
+  const { goTo, isNext, isPrev, pages } = handlePagination({
+    setPage,
+    currentPage,
+    totalPage,
+    windowSize,
+  });
 
   return (
     <div

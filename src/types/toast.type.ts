@@ -218,4 +218,8 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     color: "success",
     message: "Data berhasil di simpan ke keranjang",
   },
+  created_pelanggan: {
+    color: "success",
+    message: "Pelanggan berhasil ditambahkan",
+  },
 };

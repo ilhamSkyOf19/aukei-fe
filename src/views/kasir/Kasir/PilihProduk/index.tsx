@@ -321,11 +321,16 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
       </div>
 
       {/* content right */}
-      <ShowProduk handleAppend={handleAppend} step={step} />
+      <ShowProduk
+        handleAppend={handleAppend}
+        step={step}
+        pelangganId={pelanggan?.id}
+      />
 
       {/* modal choose pelanggan  */}
       <ModalChoosePelanggan
         handleChoose={handleSetPelanggan}
+        handleShowModal={handleShowModalChoosePelanggan}
         modalRef={modalChoosePelangganRef}
         handleCloseModal={handleCloseModalChoosePelanggan}
       />

@@ -41,11 +41,11 @@ const DataEmpty: FC<Props> = ({
           >
             {Icon ? (
               <Icon
-                className={cn(" text-base-content", xs ? "size-4" : "size-6")}
+                className={cn(" text-base-content", xs ? "size-5" : "size-6")}
               />
             ) : (
               <PackageX
-                className={cn(" text-base-content", xs ? "size-4" : "size-6")}
+                className={cn(" text-base-content", xs ? "size-5" : "size-6")}
               />
             )}
           </div>

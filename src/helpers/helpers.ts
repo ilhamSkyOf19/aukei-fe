@@ -122,3 +122,54 @@ export const formatNumberPhone = (value: string) => {
 
   return `${numbers.slice(0, 4)} ${numbers.slice(4, 8)} ${numbers.slice(8)}`;
 };
+
+export const formatNumberPhoneWithDash = (value: string) => {
+  const numbers = value.replace(/\D/g, "");
+
+  const parts = [];
+
+  if (numbers.length > 0) {
+    parts.push(numbers.slice(0, 4));
+  }
+
+  if (numbers.length > 4) {
+    parts.push(numbers.slice(4, 8));
+  }
+
+  if (numbers.length > 8) {
+    parts.push(numbers.slice(8));
+  }
+
+  return parts.join(" - ");
+};
+
+// handler pagination
+export const handlePagination = (params: {
+  currentPage?: number | null;
+  totalPage?: number | null;
+  windowSize?: number;
+  setPage: (value: string) => void;
+}) => {
+  const { currentPage, totalPage, setPage, windowSize } = params;
+
+  const pages = generatePageNumbers(
+    currentPage || 1,
+    totalPage || 1,
+    windowSize || 3,
+  );
+
+  const goTo = (page: number) => {
+    if (page < 1 || page > (totalPage || 1)) return;
+    setPage(String(page));
+  };
+
+  const isPrev = (currentPage || 1) > 1;
+  const isNext = (currentPage || 1) < totalPage!;
+
+  return {
+    pages,
+    goTo,
+    isPrev,
+    isNext,
+  };
+};

@@ -3,6 +3,7 @@ import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 import { useSearchParams } from "react-router-dom";
 import { useFilter } from "../../../../hooks/useFilter";
 import { PelangganServices } from "../../../../services/pelanggan.service";
+import { handlePagination } from "../../../../helpers/helpers";
 
 const useDataPelanggan = () => {
   // set params
@@ -49,6 +50,13 @@ const useDataPelanggan = () => {
         : false
       : false;
 
+  // handle pagination
+  const { goTo, isNext, isPrev, pages } = handlePagination({
+    setPage: handlePage,
+    currentPage: dataPelanggan?.data?.meta?.currentPage,
+    totalPage: dataPelanggan?.data?.meta?.totalPage,
+  });
+
   return {
     isChoosePelanggan,
     dataPelanggan,
@@ -56,7 +64,10 @@ const useDataPelanggan = () => {
     handleSearch,
     isExistDataProduk,
     handleSetIsChoosePelanggan,
-    handlePage,
+    goTo,
+    isNext,
+    isPrev,
+    pages,
   };
 };
 

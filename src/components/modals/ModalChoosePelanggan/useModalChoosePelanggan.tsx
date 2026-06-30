@@ -1,8 +1,40 @@
 import useDataPelanggan from "../../../hooks/useDataPelanggan";
-import { generatePageNumbers } from "../../../helpers/helpers";
+import { handlePagination } from "../../../helpers/helpers";
 import { useState } from "react";
+import useModal from "../../../hooks/useModal";
 
-const useModalChoosePelanggan = () => {
+const useModalChoosePelanggan = (params: {
+  handleCloseModalChoosePelanggan: () => void;
+  handleShowModalChoosePelanggan: () => void;
+}) => {
+  const { handleCloseModalChoosePelanggan, handleShowModalChoosePelanggan } =
+    params;
+
+  // use modal formulir pelanggan
+  const {
+    modalRef: modalFormulirPelangganRef,
+    handleCloseModal: closeModalFormulirPelanggan,
+    handleShowModal: showModalFormulirPelanggan,
+  } = useModal();
+
+  // handle show modal formulir pelanggan
+  const handleShowModalFormulirPelanggan = () => {
+    // close modal choose pelanggan
+    handleCloseModalChoosePelanggan();
+
+    // show modal formulir pelanggan
+    showModalFormulirPelanggan();
+  };
+
+  // handle close modal formulir pelanggan
+  const handleCloseModalFormulirPelanggan = () => {
+    // close modal formulir pelanggan
+    closeModalFormulirPelanggan();
+
+    // show modal choose pelanggan
+    handleShowModalChoosePelanggan();
+  };
+
   // filter search
   const [search, setSearch] = useState<string>("");
 
@@ -15,18 +47,12 @@ const useModalChoosePelanggan = () => {
     search,
   });
 
-  const currentPage = dataPelanggan?.data?.meta?.currentPage ?? 1;
-  const totalPage = dataPelanggan?.data?.meta?.totalPage ?? 1;
-
-  const pages = generatePageNumbers(currentPage, totalPage, 3);
-
-  const goTo = (page: number) => {
-    if (page < 1 || page > totalPage) return;
-    setPage(String(page));
-  };
-
-  const isPrev = currentPage > 1;
-  const isNext = currentPage < totalPage!;
+  // handle pagination
+  const { goTo, isNext, isPrev, pages } = handlePagination({
+    setPage,
+    currentPage: dataPelanggan?.data?.meta?.currentPage,
+    totalPage: dataPelanggan?.data?.meta?.totalPage,
+  });
 
   //   is existing data pelanggan
   const isExistDataPelanggan: boolean =
@@ -45,8 +71,11 @@ const useModalChoosePelanggan = () => {
     goTo,
     isPrev,
     isNext,
-    currentPage,
+    currentPage: dataPelanggan?.data?.meta?.currentPage || 1,
     isExistDataPelanggan,
+    modalFormulirPelangganRef,
+    handleShowModalFormulirPelanggan,
+    handleCloseModalFormulirPelanggan,
   };
 };
 

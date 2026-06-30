@@ -3,8 +3,9 @@ import InputSearch from "../../../../components/inputs/InputSearch";
 import Avatar from "../../../../components/ui/Avatar";
 import { cn } from "../../../../utils/cn";
 import useDataPelanggan from "./useDataPelanggan";
-import { formatNumberPhone } from "../../../../helpers/helpers";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
+import Pagination from "../../../../components/ui/Pagination";
+import DataEmpty from "../../../../components/messages/DataEmpty";
 
 const DataPelanggan = () => {
   // use call
@@ -15,11 +16,14 @@ const DataPelanggan = () => {
     isLoadingPelanggan,
     isExistDataProduk,
     handleSetIsChoosePelanggan,
-    handlePage,
+    goTo,
+    isNext,
+    isPrev,
+    pages,
   } = useDataPelanggan();
 
   return (
-    <div className="w-full rounded-lg h-90 bg-base-100 shadow-sm p-4">
+    <div className="w-full rounded-lg lg:h-120 xl:h-160 bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
       {/* header */}
       <div className="w-full flex flex-col justify-start items-start gap-2">
         {/* title */}
@@ -34,10 +38,12 @@ const DataPelanggan = () => {
       </div>
 
       {/* daftar pelanggan */}
-      <div className="w-full flex flex-col justify-start items-start mt-2">
+      <div className="w-full flex flex-col lg:h-75 xl:h-110 overflow-y-auto scrollbar-thin justify-start items-start mt-2">
         {/* card */}
         {isLoadingPelanggan ? (
-          <div></div>
+          Array.from({ length: 8 }, (_, i) => i).map((item) => (
+            <div key={item} className="w-full h-12 skeleton my-1" />
+          ))
         ) : isExistDataProduk ? (
           dataPelanggan?.data?.data?.map((item, index) => (
             <CardPelanggan
@@ -51,8 +57,26 @@ const DataPelanggan = () => {
             />
           ))
         ) : (
-          <div></div>
+          <div className="w-full flex flex-col justify-center items-center h-100">
+            <DataEmpty
+              title="Data Pelanggan Tidak Tersedia"
+              description="Belum ada data pelanggan yang dapat ditampilkan untuk saat ini"
+              xs
+            />
+          </div>
         )}
+      </div>
+
+      <div className="w-full flex flex-row justify-center items-center lg:mt-6 xl:mt-8">
+        {/* buat pagination pelanggan */}
+        <Pagination
+          currentPage={dataPelanggan?.data?.meta?.currentPage || 1}
+          goTo={goTo}
+          isNext={isNext}
+          isPrev={isPrev}
+          pages={pages}
+          xs
+        />
       </div>
     </div>
   );
@@ -78,7 +102,7 @@ const CardPelanggan: FC<CardPelangganProps> = ({
   return (
     <div
       className={cn(
-        "w-full border-b",
+        "w-full border-b shrink-0",
         isChoose ? "border-transparent" : "border-base-content/10",
       )}
     >
@@ -93,15 +117,15 @@ const CardPelanggan: FC<CardPelangganProps> = ({
         disabled={isChoose}
         onClick={() => handleChoose(id)}
       >
-        <div className="flex-2 flex flex-row justify-start items-center gap-4">
+        <div className="flex-4 flex flex-row justify-start items-center gap-4">
           {/* avatar */}
           <Avatar index={index} nama="John Doe" xs />
 
           <div className="flex flex-col justify-start items-start gap-0.5">
-            <span className="text-sm font-semibold text-base-content">
+            <span className="lg:text-xs xl:text-sm font-semibold text-base-content">
               {nama}
             </span>
-            <span className="text-[0.625rem] text-base-content/50 font-medium">
+            <span className="text-[0.625rem] text-left text-base-content/50 font-medium">
               Diupdate: {formatTanggalLengkap(updatedAt)}
             </span>
           </div>

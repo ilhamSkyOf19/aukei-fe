@@ -246,7 +246,6 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
                   <th>Diskon (Rp)</th>
                   <th>Jumlah</th>
                   <th>Subtotal</th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
