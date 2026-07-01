@@ -22,8 +22,3 @@ export interface ResponseKeranjangType extends Pick<
 > {
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
 }
-
-// to response
-export const toResponseKeranjang = (
-  transaction: ResponseKeranjangType,
-): ResponseKeranjangType => transaction;

@@ -43,7 +43,7 @@ export interface DetailsLocalStorageType {
   kode: string;
 }
 
-// created transaction
+// // created transaction
 export interface CreateTransactionForRequestType extends Pick<
   ITransactionType,
   "metodePembayaran" | "pelangganId" | "tempo"
@@ -62,11 +62,6 @@ export interface ResponseTransactionType extends Omit<
   kasir: Pick<IPenggunaInternalType, "id" | "nama"> | null;
   tempo: Pick<ITempo, "id" | "jumlahCicilan" | "totalTagihan"> | null;
 }
-
-// to response
-export const toResponseTransaction = (
-  transaction: ResponseTransactionType,
-): ResponseTransactionType => transaction;
 
 // response with meta
 export interface ResponseTransactionWithMetaType {

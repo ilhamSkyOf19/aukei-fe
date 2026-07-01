@@ -11,23 +11,3 @@ export interface ITransactionDetailType {
   createdAt: Date;
   updatedAt: Date;
 }
-
-// request detail for service
-export interface CreateTransactionDetailForServiceType extends Omit<
-  ITransactionDetailType,
-  "id" | "createdAt" | "updatedAt" | "produk"
-> {
-  produkId: number;
-  namaProduk: string;
-  kodeProduk: string;
-}
-
-// response detail for service
-export interface ResponseTransactionDetailType extends Omit<
-  ITransactionDetailType,
-  "createdAt" | "updatedAt"
-> {}
-
-export const toResponseTransactionDetail = (
-  transactionDetail: ResponseTransactionDetailType,
-): ResponseTransactionDetailType => transactionDetail;
