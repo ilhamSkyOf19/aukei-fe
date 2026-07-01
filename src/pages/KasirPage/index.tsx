@@ -1,6 +1,6 @@
 import { useEffect, type FC } from "react";
 import HeaderPage from "../../layouts/HeaderPage";
-import { useOutletContext } from "react-router-dom";
+import { useLocation, useOutletContext } from "react-router-dom";
 import type { OutletContextType } from "../../types/constant.type";
 import Kasir from "../../views/kasir/Kasir";
 
@@ -15,6 +15,8 @@ const KasirPage: FC<Props> = ({ isUpdateKeranjang }) => {
     handleTitle(isUpdateKeranjang ? "Keranjang" : "Kasir");
   }, [handleTitle]);
 
+  const location = useLocation();
+
   return (
     <>
       {/* header page */}
@@ -23,7 +25,7 @@ const KasirPage: FC<Props> = ({ isUpdateKeranjang }) => {
       />
 
       {/* view toko */}
-      <Kasir isUpdateKeranjang={isUpdateKeranjang} />
+      <Kasir key={location.pathname} isUpdateKeranjang={isUpdateKeranjang} />
     </>
   );
 };

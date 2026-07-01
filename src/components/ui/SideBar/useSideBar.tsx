@@ -74,11 +74,11 @@ const useSideBar = () => {
   const handleLink = async (link: string) => {
     if (!link) return;
 
-    const isUpdateKeranjang = localStorage.getItem("isUpdateKeranjang");
+    // const isUpdateKeranjang = localStorage.getItem("isUpdateKeranjang");
 
-    if (isUpdateKeranjang) {
-      localStorage.removeItem("isUpdateKeranjang");
-    }
+    // if (isUpdateKeranjang) {
+    //   localStorage.removeItem("isUpdateKeranjang");
+    // }
 
     // jika sedang berada di halaman yang sama
     if (link === "/dashboard/kasir" && pathname === "/dashboard/kasir") {
@@ -97,6 +97,7 @@ const useSideBar = () => {
     // check path keranjang
     if (pathname.includes("/dashboard/keranjang")) {
       // clear keranjang
+      console.log("ok");
       clearTransactionStorage();
     }
 

@@ -20,11 +20,11 @@ const Struk: FC<Props> = ({ handleSteps }) => {
   } = useStruk({ handleSteps });
 
   return (
-    <div className="w-full flex flex-row justify-between items-start gap-4 p-4">
+    <div className="w-full flex flex-row justify-between items-start gap-4">
       {/* content left */}
-      <div className="flex-1 flex flex-col justify-start items-start gap-4 pb-6 ">
+      <div className="flex-1 flex flex-col justify-start items-start gap-4 pb-6">
         {/* informasi transaksi */}
-        <div className="w-full flex flex-col justify-start items-start p-4 rounded-lg border border-base-content/10">
+        <div className="w-full flex flex-col justify-start items-start p-4 rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm">
           {/* header */}
           <h3 className="text-base-content font-medium text-sm">
             Informasi Transaksi
@@ -97,7 +97,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
         {/* detail produk */}
         <div
           className={cn(
-            "w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10",
+            "w-full flex flex-col justify-start items-start rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm",
           )}
         >
           {/* header */}
@@ -113,7 +113,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
               <table className="table table-xs">
                 {/* head */}
                 <thead>
-                  <tr className="text-[0.625rem] bg-base-content/5 h-8">
+                  <tr className="text-[0.625rem] bg-base-content/5 h-10">
                     <th>No</th>
                     <th>Gambar</th>
                     <th>Nama Produk</th>
@@ -171,7 +171,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
 
                       <tr>
                         <td colSpan={6} className="h-10">
-                          <span className="text-xs font-medium text-base-content/50">
+                          <span className="text-xs font-medium text-base-content/80">
                             Total {dataTransaction?.data?.details.length} Item
                           </span>
                         </td>
@@ -201,7 +201,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
           </div>
         </div>
 
-        <div className="w-full flex flex-col justify-start items-start p-4 rounded-lg border border-base-content/10">
+        <div className="w-full flex flex-col justify-start items-start p-4 rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm">
           {/* header */}
           <h3 className="text-base-content font-medium text-sm">
             Ringkasan Pembayaran
@@ -210,25 +210,25 @@ const Struk: FC<Props> = ({ handleSteps }) => {
             <div className="flex-2 flex flex-col justify-start items-start">
               <div className="w-full flex flex-col justify-start items-start gap-2 pb-2 border-b border-base-content/10">
                 <div className="w-full flex flex-row justify-between items-center">
-                  <span className="text-[0.625rem] text-base-content/50 font-semibold">
+                  <span className="text-xs text-base-content/50 font-semibold">
                     Subtotal
                   </span>
                   {isLoadingTransaction ? (
                     <div className="w-30 h-4 skeleton" />
                   ) : (
-                    <span className="text-[0.625rem] text-base-content font-semibold">
+                    <span className="text-xs text-base-content font-semibold">
                       {formatRupiah(300000)}
                     </span>
                   )}
                 </div>
                 <div className="w-full flex flex-row justify-between items-center">
-                  <span className="text-[0.625rem] text-base-content/50 font-semibold">
+                  <span className="text-xs text-base-content/50 font-semibold">
                     Total Diskon
                   </span>
                   {isLoadingTransaction ? (
                     <div className="w-30 h-4 skeleton" />
                   ) : (
-                    <span className="text-[0.625rem] text-error font-semibold">
+                    <span className="text-xs text-error font-semibold">
                       - {formatRupiah(dataTransaction?.data?.totalDiskon ?? 0)}
                     </span>
                   )}
@@ -254,25 +254,25 @@ const Struk: FC<Props> = ({ handleSteps }) => {
 
             <div className="flex-2 flex flex-col justify-start items-start">
               <div className="w-full flex flex-row justify-between items-center pb-2 border-b border-base-content/10">
-                <span className="text-[0.625rem] text-base-content/50 font-semibold">
+                <span className="text-xs text-base-content/50 font-semibold">
                   Dibayar
                 </span>
                 {isLoadingTransaction ? (
                   <div className="w-30 h-4 skeleton" />
                 ) : (
-                  <span className="text-[0.625rem] text-base-content font-semibold">
+                  <span className="text-xs text-base-content font-semibold">
                     {formatRupiah(dataTransaction?.data?.diBayar ?? 0)}
                   </span>
                 )}
               </div>
               <div className="w-full flex flex-row justify-between items-center pt-2">
-                <span className="text-[0.625rem] text-base-content/50 font-semibold">
+                <span className="text-xs text-base-content/50 font-semibold">
                   Kembalian
                 </span>
                 {isLoadingTransaction ? (
                   <div className="w-30 h-4 skeleton" />
                 ) : (
-                  <span className="text-[0.625rem] text-emerald-600 font-semibold">
+                  <span className="text-xs text-emerald-600 font-semibold">
                     {formatRupiah(
                       (dataTransaction?.data?.diBayar ?? 0) -
                         (dataTransaction?.data?.totalBayar ?? 0),
@@ -311,7 +311,7 @@ const CardInformasiTransaksi: FC<CardInformasiTransaksiProps> = ({
   return (
     <div className="w-full flex flex-col justify-start items-start gap-1">
       {/* label */}
-      <span className="text-[0.625rem] text-base-content/50 font-semibold">
+      <span className="text-[0.7rem] text-base-content/50 font-semibold">
         {label}
       </span>
       <span
@@ -336,7 +336,7 @@ const CardInformasiMetodePembayaran: FC<CardInformasiMetodePembayaranProps> = ({
   return (
     <div className="w-full flex flex-col justify-start items-start gap-1">
       {/* label */}
-      <span className="text-[0.625rem] text-base-content/50 font-semibold">
+      <span className="text-[0.7rem] text-base-content/50 font-semibold">
         Metode Pembayaran
       </span>
 

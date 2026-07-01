@@ -80,6 +80,8 @@
 
 - [✅] Handle Bug ketika berpindah halaman update keranjang ke transaksi data nya tidak hilang
 
+- [ ] Menyesuaikan design baru
+
 - [ ] Memperbaiki bugs pada tampilan data di kasir saat memakai tombol simpan perubahan
 
 - [ ] Rapihkan get item local storage agar di satukan dengan state (jika memungkinkan)

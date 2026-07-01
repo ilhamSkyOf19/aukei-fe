@@ -61,9 +61,9 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
   });
 
   return (
-    <div className="w-full flex flex-row justify-between items-start gap-6 p-4">
+    <div className="w-full flex flex-row justify-between items-start gap-6">
       {/* metode pembayaran */}
-      <div className="flex-3 flex flex-col justify-start items-start rounded-lg border border-base-content/10 p-4">
+      <div className="flex-3 flex flex-col justify-start items-start rounded-lg bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm p-4">
         {/* title */}
         <TitleModalFormulir
           title="Pilih Metode Pembayaran"
@@ -167,7 +167,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
       {/* daftar produk */}
       <div className="flex-4 flex flex-col justify-start items-start gap-4">
         {/* header */}
-        <div className="w-full flex flex-row justify-between items-center">
+        <div className="w-full flex flex-row justify-between items-center bg-base-100 p-4 rounded-lg border border-transparent dark:border-base-content/10 shadow-sm">
           {/* title */}
           <h3 className="text-sm font-medium text-base-content">
             Ringkasan Transaksi
@@ -184,49 +184,48 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
         </div>
 
         {/* data pelanggan */}
-        <div
-          className={cn(
-            "w-full flex flex-row justify-between items-center border rounded-lg py-3 px-4 border-base-content/10",
-          )}
-        >
-          {/* avatar, name, no telp */}
-          <div className="flex-1 flex flex-row justify-start items-center gap-3">
-            {pelanggan === null ? (
-              <span className="text-sm text-base-content/80 font-medium">
-                Tidak ada pelanggan
-              </span>
-            ) : (
-              <div className="w-full flex flex-col justify-start items-start gap-2.5">
-                {/* label */}
-                <p className="text-sm text-base-content/50 font-medium">
-                  Pelanggan
-                </p>
-
-                <div className="w-full flex flex-row justify-start items-center gap-3">
-                  {/* avatar */}
-                  <div className="avatar avatar-placeholder">
-                    <div className="bg-custom-primary text-neutral-content w-10 rounded-full">
-                      <span className="text-base text-custom-secondary font-medium uppercase">
-                        {highlightName(pelanggan.nama)}
-                      </span>
+        <div className="w-full flex flex-col justify-start items-start gap-2">
+          {/* header */}
+          <p className="text-xs text-base-content/80 font-medium">Pelanggan</p>
+          <div
+            className={cn(
+              "w-full flex flex-row justify-between items-center border rounded-lg py-3 px-4 border-transparent bg-base-100 shadow-sm dark:border-base-content/10",
+            )}
+          >
+            {/* avatar, name, no telp */}
+            <div className="flex-1 flex flex-row justify-start items-center gap-3">
+              {pelanggan === null ? (
+                <span className="text-sm text-base-content/80 font-medium">
+                  Tidak ada pelanggan
+                </span>
+              ) : (
+                <div className="w-full flex flex-col justify-start items-start gap-2.5">
+                  <div className="w-full flex flex-row justify-start items-center gap-3">
+                    {/* avatar */}
+                    <div className="avatar avatar-placeholder">
+                      <div className="bg-custom-primary text-neutral-content w-10 rounded-full">
+                        <span className="text-base text-custom-secondary font-medium uppercase">
+                          {highlightName(pelanggan.nama)}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col justify-start items-start gap-1">
-                    {/* name */}
-                    <span className="text-base-content font-medium text-sm">
-                      {pelanggan.nama}
-                    </span>
-                    {/* no telp */}
-                    <div className="w-full flex flex-row justify-start items-center gap-2">
-                      <Phone className="size-3 text-base-content/50" />
-                      <span className="text-base-content/50 font-semibold text-xs">
-                        {formatNumberPhone(pelanggan.noWa)}
+                    <div className="flex flex-col justify-start items-start gap-1">
+                      {/* name */}
+                      <span className="text-base-content font-medium text-sm">
+                        {pelanggan.nama}
                       </span>
+                      {/* no telp */}
+                      <div className="w-full flex flex-row justify-start items-center gap-2">
+                        <Phone className="size-3 text-base-content/50" />
+                        <span className="text-base-content/50 font-semibold text-xs">
+                          {formatNumberPhone(pelanggan.noWa)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
@@ -235,7 +234,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
           <p className="text-xs text-base-content/80 font-medium">
             Detail Produk ({dataDetails && dataDetails.length})
           </p>
-          <div className="overflow-x-auto w-full rounded-lg border border-base-content/10 pb-6">
+          <div className="overflow-x-auto w-full rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6">
             <table className="table table-xs">
               {/* head */}
               <thead className="bg-base-content/5 h-10">
@@ -251,8 +250,8 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
               <tbody>
                 {/* row 1 */}
                 {dataDetails && dataDetails.length > 0 ? (
-                  dataDetails.map((item, index) => (
-                    <tr key={index} className="h-15">
+                  dataDetails.map((item) => (
+                    <tr key={item.produkId} className="h-15">
                       <td>
                         <div className="avatar">
                           <div className="mask mask-squircle h-10 w-10">
@@ -291,7 +290,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
         </div>
 
         {/* sub total */}
-        <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10 px-3 py-4">
+        <div className="w-full flex flex-col justify-start items-start rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4">
           {dataDetails && (
             <>
               {/* sub total & total diskon */}
@@ -452,9 +451,9 @@ const CardMetodePembayaran: FC<CardMetodePembayaranProps> = ({
       className={cn(
         "w-full flex flex-row justify-between items-center rounded-lg shadow-sm p-3 border  transition-all duration-150 ease-in-out",
         isActive
-          ? "border-emerald-600 bg-emerald-600/5"
+          ? "border-emerald-600 bg-emerald-600/10"
           : isError
-            ? "border-rose-600 bg-rose-600/5"
+            ? "border-rose-600 bg-rose-600/10"
             : "border-transparent hover:border-emerald-600",
       )}
       onClick={handleClick}

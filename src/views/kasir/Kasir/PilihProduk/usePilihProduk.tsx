@@ -2,7 +2,7 @@ import type {
   DetailsForCreate,
   DetailsLocalStorageType,
 } from "../../../../models/transaction.model";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { ResponseProdukForKasirType } from "../../../../models/produk.model";
 import type { IPelangganType } from "../../../../models/pelanggan.model";
 import { useAlertAnimation } from "../../../../hooks/useAlert";
@@ -21,10 +21,8 @@ import { parseId } from "../../../../helpers/helpers";
 const usePilihProduk = (props: {
   handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
-  step: number;
-  isUpdateKeranjangFromRoute?: boolean;
 }) => {
-  const { handleSteps, step, handleToast, isUpdateKeranjangFromRoute } = props;
+  const { handleSteps, handleToast } = props;
 
   // get search params keranjang id
   const { keranjangId } = useParams<{ keranjangId: string }>();
@@ -101,6 +99,7 @@ const usePilihProduk = (props: {
     if (isUpdate) {
       // delete is update keranjang
       localStorage.removeItem("isUpdateKeranjang");
+      localStorage.removeItem("isLanjutTransaction");
       return JSON.parse(isUpdate);
     } else {
       return false;
@@ -108,13 +107,14 @@ const usePilihProduk = (props: {
   });
 
   // is update keranjang
-  const [isUpdateKeranjang, setIsUpdateKeranjang] = useState<{
+  const [isUpdateKeranjang, _setIsUpdateKeranjang] = useState<{
     pelangganId: number;
   } | null>(() => {
     const isUpdateKeranjang = localStorage.getItem("isUpdateKeranjang");
     if (isUpdateKeranjang) {
       // delete is update transaction
       localStorage.removeItem("isUpdateTransaction");
+      localStorage.removeItem("isLanjutTransaction");
       return JSON.parse(isUpdateKeranjang);
     } else {
       return null;
@@ -228,62 +228,18 @@ const usePilihProduk = (props: {
   };
 
   const handleAppendMany = (
-    produkList: (Pick<DetailsForCreate, "hargaJual" | "produkId" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id"> & { diskon?: number })[],
+    produkList: (Pick<
+      ResponseProdukForKasirType,
+      | "nama"
+      | "img"
+      | "hargaJual"
+      | "kode"
+      | "hargaJualTerakhirTransaksi"
+      | "id"
+      | "stok"
+    > & { subTotal: number; diskon: number; quantity: number })[],
   ) => {
-    if (isErrorsFormState.includes("details")) handleClearErrors("details");
-
-    const newItems: any[] = [];
-    const newProdukDetails: any[] = [];
-    const qtyUpdates: { index: number; qty: number }[] = [];
-
-    produkList.forEach((produk) => {
-      // cek di existing form state
-      const existingIndex = produkDetails.findIndex(
-        (item) => item.id === produk.produkId,
-      );
-
-      // cek juga di batch baru yang lagi disiapkan (biar gak duplikat dalam 1 batch)
-      const newIndex = newItems.findIndex(
-        (item) => item.produkId === produk.produkId,
-      );
-
-      if (existingIndex !== -1) {
-        qtyUpdates.push({
-          index: existingIndex,
-          qty: produkDetails[existingIndex].quantity + produk.quantity,
-        });
-        return;
-      }
-
-      if (newIndex !== -1) {
-        newItems[newIndex].quantity += produk.quantity;
-        return;
-      }
-
-      newItems.push({
-        produkId: produk.produkId,
-        hargaJual: produk.hargaJual,
-        diskon: produk.diskon ?? 0,
-        quantity: produk.quantity,
-      });
-
-      newProdukDetails.push({
-        nama: produk.nama,
-        kode: produk.kode,
-        img: produk.img,
-        id: produk.produkId,
-        hargaJual: produk.hargaJual,
-        hargaJualTerakhirTransaksi: produk.hargaJualTerakhirTransaksi,
-        subTotal: produk.hargaJual * produk.quantity,
-        diskon: 0,
-      });
-    });
-
-    // append semua item baru sekaligus
-    if (newItems.length) {
-      setProdukDetails((prev) => [...prev, ...newProdukDetails]);
-    }
+    setProdukDetails(produkList);
   };
 
   // handle local storage
@@ -500,20 +456,6 @@ const usePilihProduk = (props: {
       console.log(error);
     }
   };
-
-  // clear
-  useEffect(() => {
-    if (!isUpdate && !isUpdateKeranjangFromRoute) {
-      // set is update keranjang
-      setIsUpdateKeranjang(null);
-
-      // set is update pelanggan
-      setPelanggan(null);
-
-      // remove details
-      setProdukDetails([]);
-    }
-  }, [isUpdate, isUpdateKeranjangFromRoute]);
 
   return {
     handleAddDetails,

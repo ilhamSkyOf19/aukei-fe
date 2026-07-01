@@ -35,7 +35,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
   } = useNavbar();
 
   return (
-    <nav className="navbar w-full bg-custom-secondary shadow-sm flex flex-row justify-between items-center relative border-b border-custom-border">
+    <nav className="navbar w-full bg-base-100 shadow-sm flex flex-row justify-between items-center relative border-b border-base-content/10">
       <div className="w-full flex flex-row justify-between items-center">
         <div className="flex-2 flex flex-row justify-start items-center">
           <label

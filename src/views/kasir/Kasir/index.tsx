@@ -24,7 +24,7 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
   } = useKasir();
 
   return (
-    <div className="w-full p-3 mb-28 md:mb-20 bg-custom-secondary">
+    <div className="w-full p-3 mb-28 md:mb-20">
       {toast && (
         <Toast
           toast={toast?.id !== null}
@@ -36,107 +36,147 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
 
       <div
         className={cn(
-          "min-h-[85vh] w-full flex flex-col justify-start items-start",
+          "min-h-[85vh] w-full flex flex-col justify-start items-start transition-all duration-500 ease-in-out",
           isModeKasir &&
-            "fixed z-60 top-0 left-0 right-0 bottom-0 bg-custom-secondary",
+            "fixed z-60 top-0 left-0 right-0 bottom-0 bg-base-300 p-2",
         )}
       >
         <div
           className={cn(
-            "w-full h-full flex flex-col justify-start items-center gap-3",
+            "w-full h-full flex flex-col justify-start items-center gap-2.5",
             isModeKasir && "h-screen",
           )}
         >
           {/* header */}
           {!isUpdateKeranjang && (
-            <div className="w-full flex flex-row justify-between items-center py-1">
+            <div
+              className={cn(
+                "w-full flex flex-row justify-between items-center py-1 rounded-lg border border-transparent dark:border-base-content/10 shadow-sm",
+                isModeKasir ? "bg-custom-secondary " : "bg-base-100",
+              )}
+            >
               {/* title */}
               <div className="flex flex-1 justify-start items-center gap-3">
-                {isModeKasir ? (
-                  <>
-                    {/* icon */}
-                    <Store className="size-6 tetx-custom-primary" />
-                    <h2 className="text-base-content font-semibold text-lg">
-                      Kasir
-                    </h2>
-                  </>
-                ) : (
-                  <ul className="steps step text-xs text-primary-white">
-                    <li
-                      data-content={step > 1 ? "✓" : "1"}
-                      className={cn(
-                        "step after:w-6 after:h-6",
-                        step >= 1 && "step-primary",
-                      )}
-                    >
-                      Pilih Produk
-                    </li>
+                <div className={cn("h-full px-4")}>
+                  <div className="flex flex-row justify-start items-center gap-4">
+                    <div className="flex flex-row justify-start items-center gap-4">
+                      {/* icon */}
+                      <Store
+                        className={cn(
+                          "size-6",
+                          isModeKasir
+                            ? "text-primary-white"
+                            : "text-base-content",
+                        )}
+                      />
+                      <h2
+                        className={cn(
+                          " font-semibold text-lg",
+                          isModeKasir
+                            ? "text-primary-white"
+                            : "text-base-content",
+                        )}
+                      >
+                        Kasir
+                      </h2>
+                    </div>
 
-                    <li
-                      data-content={step > 2 ? "✓" : "2"}
+                    {/* line */}
+                    <div
                       className={cn(
-                        "step before:h-1 after:w-6 after:h-6",
-                        step >= 2 && "step-primary",
+                        "h-8 w-px ",
+                        isModeKasir
+                          ? "bg-primary-white/50"
+                          : "bg-base-content/50",
+                      )}
+                    />
+
+                    {/* aukei */}
+                    <p
+                      className={cn(
+                        "text-lg font-bold ",
+                        isModeKasir
+                          ? "text-primary-white"
+                          : "text-custom-secondary",
                       )}
                     >
-                      Pembayaran
-                    </li>
-                    <li
-                      data-content={step === 3 ? "✓" : "3"}
-                      className={cn(
-                        "step before:h-1 after:w-6 after:h-6",
-                        step === 3 && "step-primary",
-                      )}
-                    >
-                      Struk Pembayaran
-                    </li>
-                  </ul>
-                )}
+                      AU<span className="text-custom-primary">KEI</span>
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              {isModeKasir && (
-                <ul className="steps step text-xs text-base-content">
-                  <li
-                    data-content={step > 1 ? "✓" : "1"}
-                    className={cn(
-                      "step after:w-6 after:h-6",
-                      step >= 1 && "step-primary",
-                    )}
-                  >
-                    Pilih Produk
-                  </li>
+              <ul
+                className={cn(
+                  "steps step text-xs",
+                  isModeKasir ? "text-primary-white" : "text-base-content",
+                )}
+              >
+                <li
+                  data-content={step > 1 ? "✓" : "1"}
+                  className={cn(
+                    "step after:w-6 after:h-6",
+                    step >= 1 && "step-primary",
+                  )}
+                >
+                  Pilih Produk
+                </li>
 
-                  <li
-                    data-content={step > 2 ? "✓" : "2"}
-                    className={cn(
-                      "step before:h-1 after:w-6 after:h-6",
-                      step >= 2 && "step-primary",
-                    )}
-                  >
-                    Pembayaran
-                  </li>
-                  <li
-                    data-content={step === 3 ? "✓" : "3"}
-                    className={cn(
-                      "step before:h-1 after:w-6 after:h-6",
-                      step === 3 && "step-primary",
-                    )}
-                  >
-                    Struk Pembayaran
-                  </li>
-                </ul>
-              )}
+                <li
+                  data-content={step > 2 ? "✓" : "2"}
+                  className={cn(
+                    "step before:h-1 after:w-6 after:h-6",
+                    step >= 2 && "step-primary",
+                  )}
+                >
+                  Pembayaran
+                </li>
+                <li
+                  data-content={step === 3 ? "✓" : "3"}
+                  className={cn(
+                    "step before:h-1 after:w-6 after:h-6",
+                    step === 3 && "step-primary",
+                  )}
+                >
+                  Struk Pembayaran
+                </li>
+              </ul>
 
               <div className="flex flex-1 flex-row justify-end items-start">
                 {/* kasir */}
-                <div className="h-14 rounded-lg border border-custom-border px-4 flex flex-row justify-start items-center gap-12 bg-custom-surface">
+                <div
+                  className={cn(
+                    "h-14 rounded-lg flex flex-row justify-start items-center gap-12 px-4",
+                  )}
+                >
                   <div className="flex flex-row justify-start items-center gap-2">
-                    <SquareUserRound className="size-7 text-primary-white" />
+                    <SquareUserRound
+                      className={cn(
+                        "size-7",
+                        isModeKasir
+                          ? "text-primary-white"
+                          : "text-base-content",
+                      )}
+                    />
                     <div className="flex flex-col justify-start items-start gap-1">
-                      <span className="text-[0.625rem] font-semibold text-primary-white/50">
+                      <span
+                        className={cn(
+                          "text-[0.625rem] font-semibold",
+                          isModeKasir
+                            ? "text-primary-white"
+                            : "text-base-content/50",
+                        )}
+                      >
                         Kasir:
                       </span>
-                      <span className="text-xs font-semibold text-primary-white">
+                      <span
+                        className={cn(
+                          "text-xs font-semibold",
+                          isModeKasir
+                            ? "text-primary-white"
+                            : "text-base-content",
+                        )}
+                      >
                         {pengguna?.nama}
                       </span>
                     </div>
@@ -146,10 +186,15 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
                   <button
                     type="button"
                     onClick={() => setIsModeKasir((prev) => !prev)}
-                    className="flex flex-row justify-center items-center gap-2 py-2 px-4 border rounded-md shadow-sm border-custom-border hover:bg-custom-secondary hover:border-custom-primary hover:shadow-sm hover:shadow-custom-primary transition-all duration-300 ease-in-out"
+                    className={cn(
+                      "flex flex-row justify-center items-center gap-2 py-2 px-4 border rounded-md shadow-sm  hover:border-custom-primary hover:shadow-sm hover:shadow-custom-primary transition-all duration-300 ease-in-out hover:scale-102 origin-center",
+                      isModeKasir
+                        ? "border-primary-white text-primary-white"
+                        : "border-base-content tetx-base-content",
+                    )}
                   >
-                    <Store className="size-4 text-primary-white" />
-                    <span className="text-primary-white text-xs font-medium">
+                    <Store className="size-4" />
+                    <span className="text-xs font-medium">
                       {isModeKasir ? "Keluar Mode Kasir" : "Mode Kasir"}
                     </span>
                   </button>
@@ -164,7 +209,6 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
               handleSteps={handleSteps}
               step={step}
               handleToast={handleSetToast}
-              isUpdateKeranjangFromRoute={isUpdateKeranjang}
             />
           )}
           {/* pembayaran */}

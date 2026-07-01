@@ -67,11 +67,11 @@ const ModalFormulirTransaksi: FC<Props> = ({
             <div className="flex-1 flex flex-col justify-start items-start gap-4 mt-4">
               {/* img */}
               {data?.img && (
-                <div className="w-full h-70 rounded-lg overflow-hidden flex justify-center items-center group">
+                <div className="w-full flex justify-center items-center group">
                   <img
                     src={data.img}
                     alt="wall panel"
-                    className="w-full h-full object-cover group-hover:scale-102 transition-all duration-300 origin-center"
+                    className="w-full h-80 object-contain group-hover:scale-102 transition-all duration-300 origin-center"
                   />
                 </div>
               )}

@@ -102,7 +102,7 @@ const CardPelanggan: FC<CardPelangganProps> = ({
   return (
     <div
       className={cn(
-        "w-full border-b shrink-0",
+        "w-full border-b shrink-0 ",
         isChoose ? "border-transparent" : "border-base-content/10",
       )}
     >

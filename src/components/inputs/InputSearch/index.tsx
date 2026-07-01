@@ -60,19 +60,19 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
         <div className="w-full h-9 flex flex-row justify-start items-center">
           <div
             className={cn(
-              "h-full px-3 flex flex-row justify-start items-center gap-2 border border-primary-white rounded-md w-full focus-within:ring-1 focus-within:ring-primary-white transition-all duration-300 ease-in-out",
+              "h-full px-3 flex flex-row justify-start items-center gap-2 border border-base-content rounded-md w-full focus-within:ring-1 focus-within:ring-base-content transition-all duration-300 ease-in-out",
               errorMessage && "border-error",
             )}
           >
             <label htmlFor="search">
-              <Search className="w-4 h-4 text-primary-white" />
+              <Search className="w-4 h-4 text-base-content" />
             </label>
 
             <input
               type="text"
               id="search"
               placeholder={placeholder ?? "Search"}
-              className="w-full h-full text-primary-white bg-transparent outline-none text-xs placeholder:text-xs placeholder:text-primary-white/80 placeholder:font-light lg:text-sm"
+              className="w-full h-full text-base-content bg-transparent outline-none text-xs placeholder:text-xs placeholder:text-base-content/80 placeholder:font-light lg:text-sm"
               autoComplete="off"
               minLength={1}
               maxLength={100}

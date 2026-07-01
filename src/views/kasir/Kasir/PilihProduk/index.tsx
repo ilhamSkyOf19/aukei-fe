@@ -25,14 +25,8 @@ type Props = {
   step: number;
   handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
-  isUpdateKeranjangFromRoute?: boolean;
 };
-const PilihProduk: FC<Props> = ({
-  handleSteps,
-  step,
-  handleToast,
-  isUpdateKeranjangFromRoute,
-}) => {
+const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
   // call use
   const {
     handleAddDetails,
@@ -63,9 +57,7 @@ const PilihProduk: FC<Props> = ({
     handleShowModalFormulirTransaksiForUpdate,
   } = usePilihProduk({
     handleSteps,
-    step,
     handleToast,
-    isUpdateKeranjangFromRoute,
   });
 
   return (
@@ -79,21 +71,21 @@ const PilihProduk: FC<Props> = ({
       )}
 
       {/* content left */}
-      <div className="w-full flex-1 flex flex-col justify-start items-start gap-3">
+      <div className="w-full flex-1 flex flex-col justify-start items-start gap-2.5">
         {/* pelanggan */}
         {!isUpdateKeranjang && (
           <div
             className={cn(
-              "w-full flex flex-row justify-between items-center border rounded-lg py-2.5 px-3 bg-custom-surface border-custom-border",
+              "w-full flex flex-row justify-between items-center shadow-sm border rounded-lg py-2.5 px-3 bg-base-100",
               isErrorsFormState.includes("pelanggan")
                 ? "border-error"
-                : "border-base-content/10",
+                : "border-transparent dark:border-base-content/10",
             )}
           >
             {/* avatar, name, no telp */}
-            <div className="flex-1 flex flex-row justify-start items-center gap-3">
+            <div className="flex-1 flex flex-row justify-start items-center gap-3 h-10">
               {!pelanggan ? (
-                <span className="text-sm text-primary-white font-medium">
+                <span className="text-sm text-base-content font-medium">
                   Silahkan pilih pelanggan
                 </span>
               ) : (
@@ -102,13 +94,13 @@ const PilihProduk: FC<Props> = ({
                   <Avatar nama={pelanggan?.nama} />
                   <div className="flex flex-col justify-start items-start gap-1">
                     {/* name */}
-                    <span className="text-primary-white font-medium text-sm">
+                    <span className="text-base-content font-medium text-sm">
                       {pelanggan?.nama}
                     </span>
                     {/* no telp */}
                     <div className="w-full flex flex-row justify-start items-center gap-2">
-                      <Phone className="size-3 text-primary-white" />
-                      <span className="text-primary-white font-semibold text-xs">
+                      <Phone className="size-3 text-base-content/80" />
+                      <span className="text-base-content/80 font-semibold text-xs">
                         {formatNumberPhone(pelanggan?.noWa)}
                       </span>
                     </div>
@@ -163,7 +155,7 @@ const PilihProduk: FC<Props> = ({
               <table className="table table-xs table-zebra">
                 {/* head */}
                 <thead>
-                  <tr className="text-[0.625rem] bg-base-content/5">
+                  <tr className="text-[0.625rem] bg-base-content/5 h-8">
                     <th>Gambar</th>
                     <th>Nama Produk</th>
                     <th>Harga Terakhir</th>
@@ -302,7 +294,7 @@ const PilihProduk: FC<Props> = ({
 
         {/* button chart and transaksi */}
         {isUpdateKeranjang ? (
-          <div className="w-full flex flex-row justify-between items-center gap-4 ">
+          <div className="w-full flex flex-row justify-between items-center gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg p-3">
             {/* button batalkan */}
             <button
               type="button"
@@ -335,7 +327,7 @@ const PilihProduk: FC<Props> = ({
             </button>
           </div>
         ) : (
-          <div className="w-full flex flex-row justify-between items-center gap-4 bg-custom-surface shadow-sm rounded-lg p-3">
+          <div className="w-full flex flex-row justify-between items-center gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg p-3">
             {/* button chart */}
             <button
               type="button"
@@ -352,11 +344,11 @@ const PilihProduk: FC<Props> = ({
                 <>
                   {/* icon */}
                   {isUpdate ? (
-                    <X className="size-5 text-primary-white" />
+                    <X className="size-5 text-base-content" />
                   ) : (
-                    <ShoppingCart className="size-5 text-primary-white" />
+                    <ShoppingCart className="size-5 text-base-content" />
                   )}
-                  <span className="text-primary-white text-xs font-semibold">
+                  <span className="text-base-content text-xs font-semibold">
                     {isUpdate ? "Batalkan" : "Masukan ke Keranjang"}
                   </span>
                 </>

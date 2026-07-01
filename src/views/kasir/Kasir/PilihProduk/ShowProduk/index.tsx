@@ -7,6 +7,7 @@ import type { DetailsForCreate } from "../../../../../models/transaction.model";
 import type { ResponseProdukForKasirType } from "../../../../../models/produk.model";
 import { type FC } from "react";
 import DataEmpty from "../../../../../components/messages/DataEmpty";
+import Pagination from "../../../../../components/ui/Pagination";
 
 // props
 type Props = {
@@ -17,10 +18,16 @@ type Props = {
   ) => void;
   step: number;
   onAppendMany: (
-    produkList: (Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id"> & {
-        diskon?: number;
-      })[],
+    produkList: (Pick<
+      ResponseProdukForKasirType,
+      | "nama"
+      | "img"
+      | "hargaJual"
+      | "kode"
+      | "hargaJualTerakhirTransaksi"
+      | "id"
+      | "stok"
+    > & { subTotal: number; diskon: number; quantity: number })[],
   ) => void;
 };
 
@@ -38,12 +45,16 @@ const ShowProduk: FC<Props> = ({
     isLoadingProduk,
     setSearch,
     isExistDataProduk,
+    goTo,
+    isNext,
+    isPrev,
+    pages,
   } = useShowProduk({ pelangganId, step, onAppendMany });
 
   return (
     <div className="flex-1 flex flex-col justify-start items-center gap-3">
       {/* header */}
-      <div className="w-full flex flex-row justify-between items-start border border-custom-border p-3 bg-custom-surface shadow-sm rounded-lg">
+      <div className="w-full flex flex-row justify-between items-start border border-transparent dark:border-base-content/10 p-3 bg-base-100 shadow-sm rounded-lg">
         {/* search */}
         <div className="flex-1">
           <InputSearch handleSearch={setSearch} />
@@ -84,7 +95,7 @@ const ShowProduk: FC<Props> = ({
                 })
               }
             >
-              <div className="w-full h-full flex flex-col justify-start items-start rounded-lg shadow-sm overflow-hidden gap-2 group-hover:shadow-custom-primary group-hover:shadow-sm transition-all duration-300 ease-in-out group-hover:scale-102 bg-base-100 p-3">
+              <div className="w-full h-full flex flex-col justify-start items-start border border-transparent rounded-lg shadow-sm overflow-hidden gap-2 group-hover:border-custom-secondary group-hover:shadow-sm transition-all duration-300 ease-in-out group-hover:scale-102 bg-base-100 p-3">
                 <div className="w-full flex-2 rounded-lg flex flex-row justify-center items-center overflow-hidden">
                   <img
                     src={item.img}
@@ -131,11 +142,11 @@ const ShowProduk: FC<Props> = ({
       </div>
 
       {/* prev and next */}
-      <div className="w-full flex flex-row justify-between items-start py-4 px-1">
+      <div className="w-full flex flex-row justify-between items-start py-4 border border-transparent dark:border-base-content/10 bg-base-100 rounded-lg px-4">
         {/* button prev */}
         <button
           type="button"
-          className="flex flex-row justify-start items-center gap-2 border border-base-content/10 rounded-md py-2 px-3 hover-overlay"
+          className="flex flex-row justify-start items-center gap-2 border border-base-content rounded-md py-2 px-3 hover:shadow-sm hover:shadow-custom-primary hover:border-custom-primary hover:scale-102 transition-all duration-150 ease-in-out origin-center"
           onClick={() => handlePage("prev")}
         >
           <ArrowLeft className="size-4 text-base-content" />
@@ -143,10 +154,21 @@ const ShowProduk: FC<Props> = ({
             Sebelumnya
           </span>
         </button>
+
+        {/* pagination */}
+        <Pagination
+          currentPage={dataProduk?.data?.meta?.currentPage ?? 1}
+          goTo={goTo}
+          isNext={isNext}
+          isPrev={isPrev}
+          pages={pages}
+          xs
+        />
+
         {/* button prev */}
         <button
           type="button"
-          className="flex flex-row justify-start items-center gap-2 border border-base-content/10 rounded-md py-2 px-3 hover-overlay"
+          className="flex flex-row justify-start items-center gap-2 border border-base-content rounded-md py-2 px-3 hover:shadow-sm hover:shadow-custom-primary hover:border-custom-primary hover:scale-102 transition-all duration-150 ease-in-out origin-center"
           onClick={() => handlePage("next")}
         >
           <span className="text-xs font-semibold text-base-content">

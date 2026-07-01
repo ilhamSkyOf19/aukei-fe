@@ -11,6 +11,7 @@ type Props = {
   iconData?: ElementType;
   labelButtonText?: string;
   xs?: boolean;
+  white?: boolean;
 };
 
 const DataEmpty: FC<Props> = ({
@@ -21,6 +22,7 @@ const DataEmpty: FC<Props> = ({
   buttonIcon,
   buttonText,
   labelButtonText,
+  white,
   xs,
 }: Props) => {
   return (
@@ -29,8 +31,9 @@ const DataEmpty: FC<Props> = ({
       <div className="relative mb-6">
         <div
           className={cn(
-            " rounded-full bg-base-200 border-2 border-dashed border-base-300 flex items-center justify-center",
+            " rounded-full border-2 border-dashed border-base-300 flex items-center justify-center",
             xs ? "w-20 h-20" : "w-24 h-24",
+            !white && "bg-base-200",
           )}
         >
           <div
@@ -55,16 +58,18 @@ const DataEmpty: FC<Props> = ({
       {/* Text */}
       <h3
         className={cn(
-          "font-semibold text-base-content mb-1 tracking-tight",
+          "font-semibold mb-1 tracking-tight",
           xs ? "text-xs lg:text-sm" : "text-sm lg:text-base",
+          white ? "text-primary-white" : "text-base-content",
         )}
       >
         {title}
       </h3>
       <p
         className={cn(
-          "text-base-content/55 max-w-xs leading-relaxed",
+          "max-w-xs leading-relaxed",
           xs ? "text-[0.625rem] lg:text-xs" : "text-xs lg:text-sm ",
+          white ? "text-primary-white/55" : "text-base-content/55",
         )}
       >
         {description}

@@ -3,21 +3,25 @@ import { useFilterSearch } from "../../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../../hooks/useFilter";
 import { ProdukServices } from "../../../../../services/produk.service";
 import { useSearchParams } from "react-router-dom";
-import type {
-  DetailsForCreate,
-  DetailsLocalStorageType,
-} from "../../../../../models/transaction.model";
+import type { DetailsLocalStorageType } from "../../../../../models/transaction.model";
 import type { ResponseProdukForKasirType } from "../../../../../models/produk.model";
 import { useEffect } from "react";
+import { handlePagination } from "../../../../../helpers/helpers";
 
 const useShowProduk = (params: {
   pelangganId?: number;
   step: number;
   onAppendMany: (
-    produkList: (Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id"> & {
-        diskon?: number;
-      })[],
+    produkList: (Pick<
+      ResponseProdukForKasirType,
+      | "nama"
+      | "img"
+      | "hargaJual"
+      | "kode"
+      | "hargaJualTerakhirTransaksi"
+      | "id"
+      | "stok"
+    > & { subTotal: number; diskon: number; quantity: number })[],
   ) => void;
 }) => {
   const { pelangganId, step, onAppendMany } = params;
@@ -31,26 +35,10 @@ const useShowProduk = (params: {
   const { search, setSearch } = useFilterSearch("search", "page");
 
   // page filter
-  const { filter: page, setFilter } = useFilter({
+  const { filter: page, setFilter: setPage } = useFilter({
     paramName: "page",
     isNumber: true,
   });
-
-  //   handle page
-  const handlePage = (val: "prev" | "next") => {
-    if (val === "next") {
-      if (Number(currentPage) > 1) {
-        setFilter((Number(currentPage) + 1).toString());
-      } else {
-        return;
-      }
-    } else if (val === "prev") {
-      if (Number(currentPage) <= 1) {
-        return;
-      }
-      setFilter((Number(currentPage) - 1).toString());
-    }
-  };
 
   // kategori filter
   const { filter: kategori, setFilter: handleKategori } = useFilter({
@@ -108,12 +96,44 @@ const useShowProduk = (params: {
         quantity: item.quantity,
         diskon: item.diskon,
         stok: produk?.stok ?? 0,
+        subTotal: item.hargaJual * item.quantity,
         hargaJualTerakhirTransaksi: produk?.hargaJualTerakhirTransaksi ?? 0,
       };
     });
 
-    onAppendMany(produkList); // sekali panggil, bawa semua data
+    onAppendMany(
+      produkList.map((item) => ({
+        ...item,
+        id: item.produkId,
+      })),
+    );
   }, [dataProduk]);
+
+  // pagination
+  const { goTo, isNext, isPrev, pages } = handlePagination({
+    setPage,
+    currentPage: dataProduk?.data?.meta?.currentPage,
+    totalPage: dataProduk?.data?.meta?.totalPage,
+  });
+
+  //   handle page
+  const handlePage = (val: "prev" | "next") => {
+    if (val === "next") {
+      if (
+        Number(currentPage) >= 1 &&
+        Number(currentPage) < dataProduk?.data?.meta?.totalPage!
+      ) {
+        return setPage((Number(currentPage) + 1).toString());
+      } else {
+        return;
+      }
+    } else if (val === "prev") {
+      if (Number(currentPage) <= 1) {
+        return;
+      }
+      return setPage((Number(currentPage) - 1).toString());
+    }
+  };
 
   return {
     dataProduk,
@@ -122,6 +142,10 @@ const useShowProduk = (params: {
     handlePage,
     handleKategori,
     isExistDataProduk,
+    goTo,
+    isNext,
+    isPrev,
+    pages,
   };
 };
 
