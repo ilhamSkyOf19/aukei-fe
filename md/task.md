@@ -73,10 +73,21 @@
 - [✅] menyelesaikan kalkulator
 - [✅] Membuat fitur simpan keranjang
 
-- [ ] Menyelesaikan halaman keranjang
+- [✅] Menyelesaikan halaman keranjang
+- [✅] Membuat formulir add pelanggan
+- [✅] Membuat halaman pembayaran
+- [✅] Membuat halaman update transaksi
+
+- [✅] Handle Bug ketika berpindah halaman update keranjang ke transaksi data nya tidak hilang
+
+- [ ] Memperbaiki bugs pada tampilan data di kasir saat memakai tombol simpan perubahan
+
+- [ ] Rapihkan get item local storage agar di satukan dengan state (jika memungkinkan)
+
+- [ ] Membuat fitur update keranjang
+
+- [ ] Membuat fitur update pelanggan di keranjang
+
+- [ ] Membuat formulir update pelanggan (Owner)
 
 - [ ] Membuat fitur struk pembayaran
-
-- [ ] Membuat formulir add pelanggan
-- [ ] Membuat halaman pembayaran
-- [ ] Membuat halaman update transaksi

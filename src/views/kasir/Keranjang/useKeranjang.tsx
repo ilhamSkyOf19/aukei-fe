@@ -1,11 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { TransactionServices } from "../../../services/transaction.service";
 import type { DetailsLocalStorageType } from "../../../models/transaction.model";
+import { KeranjangServices } from "../../../services/keranjang.service";
+import { useToastAnimation } from "../../../hooks/useToast";
 
 const useKeranjang = () => {
   // set params
   const [searchParams] = useSearchParams();
+
+  // toast
+  const { toast } = useToastAnimation();
 
   //   is choose pelanggan
   const isChoosePelanggan = Number(searchParams.get("pelangganId") ?? 0);
@@ -17,7 +21,7 @@ const useKeranjang = () => {
   const { data: dataKeranjang, isLoading: isLoadingKeranjang } = useQuery({
     queryKey: ["keranjang", isChoosePelanggan],
     queryFn: () =>
-      TransactionServices.findForKeranjangByPelangganId({
+      KeranjangServices.findByPelangganId({
         id: isChoosePelanggan,
       }),
     enabled: !!isChoosePelanggan,
@@ -47,7 +51,8 @@ const useKeranjang = () => {
       0,
     ) ?? 0;
 
-  const handleLanjutTransaksi = (isUpdate?: boolean) => {
+  // handle set local storage
+  const handleSetLocalStorage = () => {
     // data
     const data: DetailsLocalStorageType[] | null =
       dataKeranjang?.data?.details?.map((item, _) => ({
@@ -68,6 +73,11 @@ const useKeranjang = () => {
       "pelanggan",
       JSON.stringify(dataKeranjang?.data?.pelanggan),
     );
+  };
+
+  const handleLanjutTransaksi = (isUpdate?: boolean) => {
+    // data
+    handleSetLocalStorage();
 
     // check is update
     if (isUpdate) {
@@ -76,8 +86,23 @@ const useKeranjang = () => {
 
     // navigate
     navigate("/dashboard/kasir");
+  };
 
-    return true;
+  // handle ubah keranjang
+  const handleUbahKeranjang = () => {
+    // set local storage is update keranjang
+    localStorage.setItem(
+      "isUpdateKeranjang",
+      JSON.stringify({
+        pelangganId: dataKeranjang?.data?.pelanggan?.id,
+      }),
+    );
+
+    // handle local storage
+    handleSetLocalStorage();
+
+    // navigate
+    navigate(`/dashboard/keranjang/${dataKeranjang?.data?.id}`);
   };
 
   return {
@@ -88,6 +113,8 @@ const useKeranjang = () => {
     subTotalBeforeDiskon,
     totalAfterDiskon,
     handleLanjutTransaksi,
+    handleUbahKeranjang,
+    toast,
   };
 };
 

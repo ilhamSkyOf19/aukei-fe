@@ -57,22 +57,22 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
           errorMessage && "mb-3",
         )}
       >
-        <div className="w-full h-9 flex flex-row justify-start items-center bg-base-100">
+        <div className="w-full h-9 flex flex-row justify-start items-center">
           <div
             className={cn(
-              "h-full px-3 flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full focus-within:ring-1 transition-all duration-300 ease-in-out",
+              "h-full px-3 flex flex-row justify-start items-center gap-2 border border-primary-white rounded-md w-full focus-within:ring-1 focus-within:ring-primary-white transition-all duration-300 ease-in-out",
               errorMessage && "border-error",
             )}
           >
             <label htmlFor="search">
-              <Search className="w-4 h-4 text-base-content" />
+              <Search className="w-4 h-4 text-primary-white" />
             </label>
 
             <input
               type="text"
               id="search"
               placeholder={placeholder ?? "Search"}
-              className="w-full h-full text-base-content bg-transparent outline-none text-xs placeholder:text-xs placeholder:text-base-content/80 placeholder:font-light lg:text-sm"
+              className="w-full h-full text-primary-white bg-transparent outline-none text-xs placeholder:text-xs placeholder:text-primary-white/80 placeholder:font-light lg:text-sm"
               autoComplete="off"
               minLength={1}
               maxLength={100}
@@ -84,16 +84,16 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
             {inputValue !== "" && (
               <button
                 type="button"
-                className="h-full bg-base-100 rounded-tr-md rounded-br-md flex justify-center items-center"
+                className="h-full rounded-tr-md rounded-br-md flex justify-center items-center"
                 onClick={handleReset}
               >
-                <X className="size-4" />
+                <X className="size-4 text-primary-white" />
               </button>
             )}
           </div>
         </div>
-
-        <ErrorMessage errorMessage={errorMessage} />
+        {/* error message */}
+        {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
       </div>
     );
   },

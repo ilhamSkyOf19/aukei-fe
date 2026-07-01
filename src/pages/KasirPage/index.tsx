@@ -4,21 +4,26 @@ import { useOutletContext } from "react-router-dom";
 import type { OutletContextType } from "../../types/constant.type";
 import Kasir from "../../views/kasir/Kasir";
 
-const KasirPage: FC = () => {
+type Props = {
+  isUpdateKeranjang?: boolean;
+};
+const KasirPage: FC<Props> = ({ isUpdateKeranjang }) => {
   // get context
   const { handleTitle } = useOutletContext<OutletContextType>();
 
   useEffect(() => {
-    handleTitle("Kasir");
+    handleTitle(isUpdateKeranjang ? "Keranjang" : "Kasir");
   }, [handleTitle]);
 
   return (
     <>
       {/* header page */}
-      <HeaderPage title="Kasir | AUKEI" />
+      <HeaderPage
+        title={`${isUpdateKeranjang ? "Keranjang" : "Kasir"} | AUKEI`}
+      />
 
       {/* view toko */}
-      <Kasir />
+      <Kasir isUpdateKeranjang={isUpdateKeranjang} />
     </>
   );
 };

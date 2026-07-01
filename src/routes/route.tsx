@@ -214,6 +214,10 @@ const route = createBrowserRouter([
             index: true,
             element: <KeranjangPage />,
           },
+          {
+            path: ":keranjangId",
+            element: <KasirPage isUpdateKeranjang />,
+          },
         ],
       },
     ],

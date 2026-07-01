@@ -1,8 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { TransactionValidation } from "../../../../validations/transaction.validation";
 import type {
-  CreateTransactionForKeranjangType,
   DetailsForCreate,
   DetailsLocalStorageType,
 } from "../../../../models/transaction.model";
@@ -12,48 +8,131 @@ import type { IPelangganType } from "../../../../models/pelanggan.model";
 import { useAlertAnimation } from "../../../../hooks/useAlert";
 import useModal from "../../../../hooks/useModal";
 import { useMutation } from "@tanstack/react-query";
-import { TransactionServices } from "../../../../services/transaction.service";
 import axios from "axios";
 import type { ErrorResponse } from "../../../../types/response.type";
+import { useNavigate, useParams } from "react-router-dom";
+import type {
+  CreateKeranjangType,
+  UpdateKeranjangType,
+} from "../../../../models/keranjang.model";
+import { KeranjangServices } from "../../../../services/keranjang.service";
+import { parseId } from "../../../../helpers/helpers";
 
-const useProduk = (props: {
+const usePilihProduk = (props: {
   handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
   step: number;
+  isUpdateKeranjangFromRoute?: boolean;
 }) => {
-  const { handleSteps, step, handleToast } = props;
+  const { handleSteps, step, handleToast, isUpdateKeranjangFromRoute } = props;
+
+  // get search params keranjang id
+  const { keranjangId } = useParams<{ keranjangId: string }>();
+
+  // parse
+  const keranjangIdParse = parseId(keranjangId);
+
+  // navigate
+  const navigate = useNavigate();
 
   // state error
   const [isErrorsFormState, setIsErrorsFormState] = useState<string[]>([]);
 
+  // use modal add transaksi
+  const {
+    modalRef: modalFormulirTransaksiRef,
+    handleShowModal: showModalFormulirTransaksi,
+    handleCloseModal: handleCloseModalFormulirTransaksi,
+    dataModal: dataModalFormulirTransaksi,
+    idModal: idModalUpdateTransaksi,
+  } = useModal<
+    Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
+      Omit<ResponseProdukForKasirType, "id"> & {
+        diskon?: number;
+      }
+  >();
+
+  //   state img details
+  const [produkDetails, setProdukDetails] = useState<
+    (Pick<
+      ResponseProdukForKasirType,
+      | "nama"
+      | "img"
+      | "hargaJual"
+      | "kode"
+      | "hargaJualTerakhirTransaksi"
+      | "id"
+      | "stok"
+    > & { subTotal: number; diskon: number; quantity: number })[]
+  >([]);
+
+  // handle show modal add transaksi
+  const handleShowModalFormulirTransaksi = (
+    params: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
+      Omit<ResponseProdukForKasirType, "id"> & {
+        diskon?: number;
+      },
+  ) => {
+    const checkExistingProduk = handleAddQuantityForExistingProduk(
+      params.produkId,
+    );
+
+    if (checkExistingProduk) return;
+
+    showModalFormulirTransaksi(undefined, params);
+  };
+
+  // handle show modal formulir transaksi for update
+  const handleShowModalFormulirTransaksiForUpdate = (produkId: number) => {
+    // find produk details
+    const findProduk = produkDetails.find((item) => item.id === produkId);
+
+    if (!findProduk) return;
+
+    showModalFormulirTransaksi(findProduk.id, {
+      ...findProduk,
+      produkId: findProduk.id,
+    });
+  };
+
   // is update
-  const [isUpdate, setIsUpdate] = useState<boolean>(false);
-
-  // set is update
-  useEffect(() => {
+  const [isUpdate, _setIsUpdate] = useState<boolean>(() => {
     const isUpdate = localStorage.getItem("isUpdateTransaction");
-
     if (isUpdate) {
-      const isUpdateParse: boolean = JSON.parse(isUpdate);
-      setIsUpdate(isUpdateParse);
+      // delete is update keranjang
+      localStorage.removeItem("isUpdateKeranjang");
+      return JSON.parse(isUpdate);
+    } else {
+      return false;
     }
-  }, [step]);
+  });
+
+  // is update keranjang
+  const [isUpdateKeranjang, setIsUpdateKeranjang] = useState<{
+    pelangganId: number;
+  } | null>(() => {
+    const isUpdateKeranjang = localStorage.getItem("isUpdateKeranjang");
+    if (isUpdateKeranjang) {
+      // delete is update transaction
+      localStorage.removeItem("isUpdateTransaction");
+      return JSON.parse(isUpdateKeranjang);
+    } else {
+      return null;
+    }
+  });
 
   // state pelanggan
   const [pelanggan, setPelanggan] = useState<Pick<
     IPelangganType,
     "id" | "nama" | "noWa"
-  > | null>(null);
-
-  // check local storage
-  useEffect(() => {
+  > | null>(() => {
     const pelanggan = localStorage.getItem("pelanggan");
     if (pelanggan) {
-      const pelangganParse: Pick<IPelangganType, "id" | "nama" | "noWa"> =
-        JSON.parse(pelanggan);
-      setPelanggan(pelangganParse);
+      return JSON.parse(pelanggan);
+    } else {
+      return null;
     }
-  }, [step]);
+  });
 
   // handle set pelanggan
   const handleSetPelanggan = (
@@ -81,9 +160,9 @@ const useProduk = (props: {
     handleCloseModal: handleCloseModalChoosePelanggan,
   } = useModal();
 
-  //   state img details
-  const [produkDetails, setProdukDetails] = useState<
-    (Pick<
+  //   handle append
+  const handleAddDetails = (
+    produk: Pick<
       ResponseProdukForKasirType,
       | "nama"
       | "img"
@@ -91,95 +170,105 @@ const useProduk = (props: {
       | "kode"
       | "hargaJualTerakhirTransaksi"
       | "id"
-    > & { subTotal: number; diskon: number })[]
-  >([]);
-
-  // use form
-  const { control, getValues, setValue } = useForm<{
-    details: DetailsForCreate[];
-  }>({
-    resolver: zodResolver(TransactionValidation.CREATE),
-  });
-
-  const details = useWatch({
-    control,
-    name: "details",
-  });
-
-  // update details
-  useEffect(() => {
-    if (step !== 1 || !details) return;
-
-    setProdukDetails((prev) =>
-      prev.map((item, index) => {
-        const newSubTotal =
-          (details?.[index]?.hargaJual ?? 0) *
-          (details?.[index]?.quantity ?? 1);
-        const newDiskon = details?.[index]?.diskon ?? 0;
-
-        // jika keduanya tidak berubah
-        if (item.subTotal === newSubTotal && item.diskon === newDiskon) {
-          return item;
-        }
-
-        return {
-          ...item,
-          subTotal: newSubTotal,
-          diskon: newDiskon,
-        };
-      }),
-    );
-  }, [details, step]);
-
-  //   controll details
-  const {
-    fields: fieldsDetails,
-    append,
-    remove: removeDetails,
-  } = useFieldArray({
-    control,
-    name: "details",
-  });
-
-  //   handle append
-  const handleAppend = (
-    produk: Pick<DetailsForCreate, "hargaJual" | "produkId" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id"> & { diskon?: number },
+      | "stok"
+    > & { subTotal: number; diskon: number; quantity: number },
   ) => {
-    // clear erros if existing
-    if (isErrorsFormState.includes("details")) handleClearErrors("details");
+    setProdukDetails((prev) => {
+      const index = prev.findIndex((item) => item.id === produk.id);
 
-    const details = getValues("details");
+      const newItem = {
+        nama: produk.nama,
+        kode: produk.kode,
+        img: produk.img,
+        id: produk.id,
+        hargaJual: produk.hargaJual,
+        hargaJualTerakhirTransaksi: produk.hargaJualTerakhirTransaksi,
+        subTotal: produk.hargaJual * produk.quantity,
+        diskon: produk.diskon,
+        quantity: produk.quantity,
+        stok: produk.stok,
+      };
 
-    // check existing
-    const existingIndex = details?.findIndex(
-      (item) => item.produkId === produk.produkId,
+      // jika belum ada, tambahkan
+      if (index === -1) {
+        return [...prev, newItem];
+      }
+
+      // jika sudah ada, update
+      const updated = [...prev];
+      updated[index] = newItem;
+
+      return updated;
+    });
+  };
+
+  // handle add quantity for existing produk
+  const handleAddQuantityForExistingProduk = (produkId: number) => {
+    const existingIndex = produkDetails.findIndex(
+      (item) => item.id === produkId,
     );
 
-    // console.log(existingIndex);
-
-    if (existingIndex !== undefined && existingIndex !== -1) {
-      const currentQty = details?.[existingIndex ?? 0].quantity ?? 1;
-
-      setValue(`details.${existingIndex ?? 0}.quantity`, currentQty + 1, {
-        shouldDirty: true,
-        shouldValidate: true,
+    if (existingIndex !== -1) {
+      setProdukDetails((prev) => {
+        const updatedDetails = [...prev];
+        const existingItem = updatedDetails[existingIndex];
+        const newQuantity = existingItem.quantity + 1;
+        updatedDetails[existingIndex] = {
+          ...existingItem,
+          quantity: newQuantity,
+          subTotal: existingItem.hargaJual * newQuantity,
+        };
+        return updatedDetails;
       });
-      return;
+
+      return true;
     }
 
-    // jika belum ada produk sama
-    append({
-      produkId: produk.produkId,
-      hargaJual: produk.hargaJual,
-      diskon: produk.diskon ?? 0,
-      quantity: produk.quantity,
-    });
+    return false;
+  };
 
-    // set state
-    setProdukDetails((prev) => [
-      ...prev,
-      {
+  const handleAppendMany = (
+    produkList: (Pick<DetailsForCreate, "hargaJual" | "produkId" | "quantity"> &
+      Omit<ResponseProdukForKasirType, "id"> & { diskon?: number })[],
+  ) => {
+    if (isErrorsFormState.includes("details")) handleClearErrors("details");
+
+    const newItems: any[] = [];
+    const newProdukDetails: any[] = [];
+    const qtyUpdates: { index: number; qty: number }[] = [];
+
+    produkList.forEach((produk) => {
+      // cek di existing form state
+      const existingIndex = produkDetails.findIndex(
+        (item) => item.id === produk.produkId,
+      );
+
+      // cek juga di batch baru yang lagi disiapkan (biar gak duplikat dalam 1 batch)
+      const newIndex = newItems.findIndex(
+        (item) => item.produkId === produk.produkId,
+      );
+
+      if (existingIndex !== -1) {
+        qtyUpdates.push({
+          index: existingIndex,
+          qty: produkDetails[existingIndex].quantity + produk.quantity,
+        });
+        return;
+      }
+
+      if (newIndex !== -1) {
+        newItems[newIndex].quantity += produk.quantity;
+        return;
+      }
+
+      newItems.push({
+        produkId: produk.produkId,
+        hargaJual: produk.hargaJual,
+        diskon: produk.diskon ?? 0,
+        quantity: produk.quantity,
+      });
+
+      newProdukDetails.push({
         nama: produk.nama,
         kode: produk.kode,
         img: produk.img,
@@ -188,17 +277,20 @@ const useProduk = (props: {
         hargaJualTerakhirTransaksi: produk.hargaJualTerakhirTransaksi,
         subTotal: produk.hargaJual * produk.quantity,
         diskon: 0,
-      },
-    ]);
+      });
+    });
+
+    // append semua item baru sekaligus
+    if (newItems.length) {
+      setProdukDetails((prev) => [...prev, ...newProdukDetails]);
+    }
   };
 
   // handle local storage
   const handleLocalStorage = () => {
-    const details = getValues("details");
-
     // check
-    if (details?.length === 0 || !pelanggan) {
-      if (details?.length === 0 && !pelanggan) {
+    if (produkDetails?.length === 0 || !pelanggan) {
+      if (produkDetails?.length === 0 && !pelanggan) {
         setIsErrorsFormState(["pelanggan", "details"]);
       }
 
@@ -208,7 +300,7 @@ const useProduk = (props: {
         return false;
       }
 
-      if (details?.length === 0) {
+      if (produkDetails?.length === 0) {
         handleSetAlert("transaksi_kosong");
         setIsErrorsFormState((prev) => [...prev, "details"]);
         return false;
@@ -217,13 +309,13 @@ const useProduk = (props: {
 
     // data
     const data: DetailsLocalStorageType[] | null =
-      details?.map((item, index) => ({
-        nama: produkDetails[index].nama,
-        kode: produkDetails[index].kode,
-        img: produkDetails[index].img,
+      produkDetails.map((item) => ({
+        nama: item.nama,
+        kode: item.kode,
+        img: item.img,
         diskon: item.diskon,
         hargaJual: item.hargaJual,
-        produkId: item.produkId,
+        produkId: item.id,
         quantity: item.quantity,
       })) ?? null;
 
@@ -250,46 +342,76 @@ const useProduk = (props: {
     handleSteps(2);
   };
 
+  // handle batalkan update transaction
+  const handleBatalkanUpdateTransaction = () => {
+    handleSteps(2);
+  };
+
   // handle remove all
   const handleRemoveAll = () => {
-    removeDetails();
     setProdukDetails([]);
   };
 
   // handle mutation simpan keranjang
-  const {
-    mutateAsync: mutateSimpanKeranjang,
-    isPending: isPendingSimpanKeranjang,
-  } = useMutation({
-    mutationFn: (req: CreateTransactionForKeranjangType) => {
-      return TransactionServices.createForKeranjang(req);
-    },
-    onSuccess: () => {
-      // set state
-      handleRemoveAll();
-
-      // set pelanggan
-      setPelanggan(null);
-
-      handleToast("simpan_keranjang");
-    },
-    onError: (error) => {
-      if (axios.isAxiosError<ErrorResponse>(error)) {
-        if (error.response?.data?.meta?.statusCode === 400) {
-          handleSetAlert("existing_keranjang");
+  const { mutateAsync: mutateKeranjang, isPending: isPendingKeranjang } =
+    useMutation({
+      mutationFn: (req: CreateKeranjangType | UpdateKeranjangType) => {
+        if (keranjangIdParse) {
+          return KeranjangServices.update({
+            id: keranjangIdParse,
+            req: req as UpdateKeranjangType,
+          });
+        } else {
+          return KeranjangServices.create(req as CreateKeranjangType);
         }
-      }
-    },
-  });
+      },
+      onSuccess: (data) => {
+        // set state
+        handleRemoveAll();
+
+        // set pelanggan
+        setPelanggan(null);
+
+        // check is Update keranjang
+        if (isUpdateKeranjang) {
+          return navigate(
+            `/dashboard/keranjang?pelangganId=${data?.data?.pelanggan?.id}`,
+            {
+              state: {
+                toast: "updated_keranjang",
+              },
+            },
+          );
+        }
+
+        handleToast("simpan_keranjang");
+      },
+      onError: (error) => {
+        if (axios.isAxiosError<ErrorResponse>(error)) {
+          if (error.response?.data?.meta?.statusCode === 400) {
+            if (
+              error.response?.data?.meta?.customField?.includes(
+                "existing_keranjang",
+              )
+            ) {
+              handleSetAlert("existing_keranjang");
+            }
+          }
+        }
+      },
+    });
+
+  // remove produk in daftar
+  const removeDetails = (id: number) => {
+    setProdukDetails((prev) => prev.filter((item) => item.id !== id));
+  };
 
   // handle simpan keranjang
   const handleSimpanKeranjang = async () => {
     try {
-      const details = getValues("details");
-
       // check
-      if (details?.length === 0 || !pelanggan) {
-        if (details?.length === 0 && !pelanggan) {
+      if (produkDetails?.length === 0 || !pelanggan) {
+        if (produkDetails?.length === 0 && !pelanggan) {
           setIsErrorsFormState(["pelanggan", "details"]);
         }
 
@@ -299,21 +421,21 @@ const useProduk = (props: {
           return false;
         }
 
-        if (details?.length === 0) {
+        if (produkDetails?.length === 0) {
           handleSetAlert("transaksi_kosong");
           setIsErrorsFormState((prev) => [...prev, "details"]);
           return false;
         }
       }
 
-      const dataDetails: DetailsForCreate[] = details.map((item) => ({
+      const dataDetails: DetailsForCreate[] = produkDetails.map((item) => ({
         diskon: item.diskon,
         hargaJual: item.hargaJual,
-        produkId: item.produkId,
+        produkId: item.id,
         quantity: item.quantity,
       }));
 
-      await mutateSimpanKeranjang({
+      await mutateKeranjang({
         details: dataDetails,
         pelangganId: pelanggan?.id,
       });
@@ -322,12 +444,80 @@ const useProduk = (props: {
     }
   };
 
+  // handle batalkan simpan keranjang
+  const handleBatalkanSimpanKeranjang = () => {
+    console.log(isUpdateKeranjang?.pelangganId);
+
+    // remove local storage
+    localStorage.removeItem("details");
+    localStorage.removeItem("pelanggan");
+    localStorage.removeItem("isUpdateKeranjang");
+
+    // navigate
+    navigate(
+      `/dashboard/keranjang?pelangganId=${isUpdateKeranjang?.pelangganId}`,
+    );
+  };
+
+  // mambuat simpan perubahan keranjang
+  const handleSimpanPerubahanKeranjang = async () => {
+    try {
+      // check
+      if (produkDetails?.length === 0 || !pelanggan) {
+        if (produkDetails?.length === 0 && !pelanggan) {
+          setIsErrorsFormState(["pelanggan", "details"]);
+        }
+
+        if (!pelanggan) {
+          handleSetAlert("pelanggan_kosong");
+          setIsErrorsFormState((prev) => [...prev, "pelanggan"]);
+          return false;
+        }
+
+        if (produkDetails?.length === 0) {
+          handleSetAlert("transaksi_kosong");
+          setIsErrorsFormState((prev) => [...prev, "details"]);
+          return false;
+        }
+      }
+
+      const dataDetails: DetailsForCreate[] = produkDetails.map((item) => ({
+        diskon: item.diskon,
+        hargaJual: item.hargaJual,
+        produkId: item.id,
+        quantity: item.quantity,
+      }));
+
+      // clear local storage
+      localStorage.removeItem("details");
+      localStorage.removeItem("pelanggan");
+      localStorage.removeItem("isUpdateKeranjang");
+
+      await mutateKeranjang({
+        details: dataDetails,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // clear
+  useEffect(() => {
+    if (!isUpdate && !isUpdateKeranjangFromRoute) {
+      // set is update keranjang
+      setIsUpdateKeranjang(null);
+
+      // set is update pelanggan
+      setPelanggan(null);
+
+      // remove details
+      setProdukDetails([]);
+    }
+  }, [isUpdate, isUpdateKeranjangFromRoute]);
+
   return {
-    fieldsDetails,
-    removeDetails,
-    handleAppend,
+    handleAddDetails,
     produkDetails,
-    control,
     handleStepsNext,
     handleRemoveAll,
     pelanggan,
@@ -339,8 +529,20 @@ const useProduk = (props: {
     alert,
     isUpdate,
     handleSimpanKeranjang,
-    isPendingSimpanKeranjang,
+    handleSimpanPerubahanKeranjang,
+    isPendingKeranjang,
+    isUpdateKeranjang,
+    handleBatalkanSimpanKeranjang,
+    handleBatalkanUpdateTransaction,
+    handleAppendMany,
+    modalFormulirTransaksiRef,
+    handleShowModalFormulirTransaksi,
+    handleCloseModalFormulirTransaksi,
+    dataModalFormulirTransaksi,
+    idModalUpdateTransaksi,
+    removeDetails,
+    handleShowModalFormulirTransaksiForUpdate,
   };
 };
 
-export default useProduk;
+export default usePilihProduk;

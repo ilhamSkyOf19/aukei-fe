@@ -119,7 +119,7 @@ const CardPelanggan: FC<CardPelangganProps> = ({
       >
         <div className="flex-4 flex flex-row justify-start items-center gap-4">
           {/* avatar */}
-          <Avatar index={index} nama="John Doe" xs />
+          <Avatar index={index} nama={nama} xs />
 
           <div className="flex flex-col justify-start items-start gap-0.5">
             <span className="lg:text-xs xl:text-sm font-semibold text-base-content">

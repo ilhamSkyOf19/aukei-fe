@@ -11,14 +11,25 @@ import DataEmpty from "../../../../../components/messages/DataEmpty";
 // props
 type Props = {
   pelangganId?: number;
-  handleAppend: (
+  handleShowModalFormulirTransaksi: (
     produk: Pick<DetailsForCreate, "hargaJual" | "produkId" | "quantity"> &
       Omit<ResponseProdukForKasirType, "id"> & { diskon?: number },
   ) => void;
   step: number;
+  onAppendMany: (
+    produkList: (Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
+      Omit<ResponseProdukForKasirType, "id"> & {
+        diskon?: number;
+      })[],
+  ) => void;
 };
 
-const ShowProduk: FC<Props> = ({ handleAppend, pelangganId, step }) => {
+const ShowProduk: FC<Props> = ({
+  pelangganId,
+  step,
+  onAppendMany,
+  handleShowModalFormulirTransaksi,
+}) => {
   // call use
   const {
     dataProduk,
@@ -27,12 +38,12 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId, step }) => {
     isLoadingProduk,
     setSearch,
     isExistDataProduk,
-  } = useShowProduk({ pelangganId, step, handleAppend });
+  } = useShowProduk({ pelangganId, step, onAppendMany });
 
   return (
-    <div className="flex-1 flex flex-col justify-start items-center">
+    <div className="flex-1 flex flex-col justify-start items-center gap-3">
       {/* header */}
-      <div className="w-full flex flex-row justify-between items-start">
+      <div className="w-full flex flex-row justify-between items-start border border-custom-border p-3 bg-custom-surface shadow-sm rounded-lg">
         {/* search */}
         <div className="flex-1">
           <InputSearch handleSearch={setSearch} />
@@ -45,7 +56,7 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId, step }) => {
       </div>
 
       {/* daftar produk */}
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         {/* card */}
         {isLoadingProduk ? (
           Array.from({ length: 8 }, (_, i) => i).map((item) => (
@@ -54,26 +65,27 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId, step }) => {
             </div>
           ))
         ) : isExistDataProduk ? (
-          dataProduk?.data?.data.map((item) => (
+          dataProduk?.data?.data.map((item, index) => (
             <button
               type="button"
-              key={item.id}
-              className="col-span-1 lg:h-50 xl:h-55 flex flex-row justify-start items-start p-1.5 group"
+              key={index}
+              className="col-span-1 lg:h-50 xl:h-60 flex flex-row justify-start items-start p-1.5 group"
               onClick={() =>
-                handleAppend({
-                  hargaJual: item.hargaJual,
+                handleShowModalFormulirTransaksi({
                   produkId: item.id,
-                  quantity: 1,
-                  img: item.img,
-                  kode: item.kode,
                   nama: item.nama,
-                  stok: item.stok,
+                  img: item.img,
+                  hargaJual: item.hargaJual,
+                  kode: item.kode,
                   hargaJualTerakhirTransaksi: item.hargaJualTerakhirTransaksi,
+                  diskon: 0,
+                  quantity: 1,
+                  stok: item.stok,
                 })
               }
             >
-              <div className="w-full h-full flex flex-col justify-start items-start rounded-md shadow-sm overflow-hidden gap-2 group-hover:shadow-custom-primary group-hover:shadow-sm transition-all duration-300 ease-in-out group-hover:scale-102">
-                <div className="w-full flex-1 flex flex-row justify-center items-center overflow-hidden">
+              <div className="w-full h-full flex flex-col justify-start items-start rounded-lg shadow-sm overflow-hidden gap-2 group-hover:shadow-custom-primary group-hover:shadow-sm transition-all duration-300 ease-in-out group-hover:scale-102 bg-base-100 p-3">
+                <div className="w-full flex-2 rounded-lg flex flex-row justify-center items-center overflow-hidden">
                   <img
                     src={item.img}
                     alt="wall panel"
@@ -81,7 +93,7 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId, step }) => {
                   />
                 </div>
 
-                <div className="w-full flex-1 flex flex-col justify-start items-start px-2 gap-2.5">
+                <div className="w-full flex-1 flex flex-col justify-start items-start px-2 gap-2.5 ">
                   {/* name */}
                   <div className="w-full flex flex-col justify-start items-start gap-0.5">
                     <p className="text-xs font-medium text-base-content">
@@ -92,7 +104,7 @@ const ShowProduk: FC<Props> = ({ handleAppend, pelangganId, step }) => {
                       {item.kode}
                     </p>
                   </div>
-                  <div className="w-full flex flex-col justify-start items-start gap-2">
+                  <div className="w-full flex flex-row justify-between items-start gap-2">
                     {/* harga */}
                     <p className="text-xs font-semibold text-base-content">
                       {formatRupiah(item.hargaJual)}

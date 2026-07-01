@@ -40,6 +40,8 @@ const useSideBar = () => {
     localStorage.removeItem("diBayar");
     localStorage.removeItem("metodePembayaran");
     localStorage.removeItem("steps");
+    localStorage.removeItem("isUpdateKeranjang");
+    localStorage.removeItem("isUpdateTransaction");
   };
 
   const canLeaveTransaction = async (): Promise<boolean> => {
@@ -72,6 +74,12 @@ const useSideBar = () => {
   const handleLink = async (link: string) => {
     if (!link) return;
 
+    const isUpdateKeranjang = localStorage.getItem("isUpdateKeranjang");
+
+    if (isUpdateKeranjang) {
+      localStorage.removeItem("isUpdateKeranjang");
+    }
+
     // jika sedang berada di halaman yang sama
     if (link === "/dashboard/kasir" && pathname === "/dashboard/kasir") {
       return;
@@ -84,6 +92,12 @@ const useSideBar = () => {
       if (!canLeave) {
         return;
       }
+    }
+
+    // check path keranjang
+    if (pathname.includes("/dashboard/keranjang")) {
+      // clear keranjang
+      clearTransactionStorage();
     }
 
     // clear cluster

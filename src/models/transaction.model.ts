@@ -53,14 +53,6 @@ export interface CreateTransactionForRequestType extends Pick<
   details: DetailsForCreate[];
 }
 
-// create transaction to keranjang
-export interface CreateTransactionForKeranjangType extends Pick<
-  ITransactionType,
-  "pelangganId"
-> {
-  details: DetailsForCreate[];
-}
-
 // response
 export interface ResponseTransactionType extends Omit<
   ITransactionType,
@@ -80,12 +72,4 @@ export const toResponseTransaction = (
 export interface ResponseTransactionWithMetaType {
   meta: MetaType;
   data: ResponseTransactionType[];
-}
-
-// response transaction for keranjang
-export interface ResponseTransactionForKeranjangType extends Pick<
-  ITransactionType,
-  "details" | "status" | "totalBayar" | "totalDiskon" | "totalItem"
-> {
-  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
 }

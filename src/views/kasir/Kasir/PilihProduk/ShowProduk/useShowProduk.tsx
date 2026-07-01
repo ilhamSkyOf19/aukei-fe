@@ -13,12 +13,14 @@ import { useEffect } from "react";
 const useShowProduk = (params: {
   pelangganId?: number;
   step: number;
-  handleAppend: (
-    produk: Pick<DetailsForCreate, "hargaJual" | "produkId" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id"> & { diskon?: number },
+  onAppendMany: (
+    produkList: (Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
+      Omit<ResponseProdukForKasirType, "id"> & {
+        diskon?: number;
+      })[],
   ) => void;
 }) => {
-  const { pelangganId, step, handleAppend } = params;
+  const { pelangganId, step, onAppendMany } = params;
 
   //   get current page form search params
   const [searchParams] = useSearchParams();
@@ -78,12 +80,15 @@ const useShowProduk = (params: {
         : false
       : false;
 
+  const details = localStorage.getItem("details");
+  const diBayar = localStorage.getItem("diBayar");
+
   // check local storage
+
   useEffect(() => {
     if (!dataProduk?.data?.data) return;
 
-    const details = localStorage.getItem("details");
-    const diBayar = localStorage.getItem("diBayar");
+    // hasRestore.current = true;
 
     if (!details) {
       if (diBayar) localStorage.removeItem("diBayar");
@@ -92,10 +97,9 @@ const useShowProduk = (params: {
 
     const detailsParse: DetailsLocalStorageType[] = JSON.parse(details);
 
-    detailsParse.forEach((item) => {
+    const produkList = detailsParse.map((item) => {
       const produk = dataProduk?.data?.data.find((p) => p.id === item.produkId);
-
-      handleAppend({
+      return {
         produkId: item.produkId,
         hargaJual: item.hargaJual,
         img: item.img,
@@ -105,8 +109,10 @@ const useShowProduk = (params: {
         diskon: item.diskon,
         stok: produk?.stok ?? 0,
         hargaJualTerakhirTransaksi: produk?.hargaJualTerakhirTransaksi ?? 0,
-      });
+      };
     });
+
+    onAppendMany(produkList); // sekali panggil, bawa semua data
   }, [dataProduk]);
 
   return {

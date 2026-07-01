@@ -15,7 +15,10 @@ export const useToastAnimation = (
   useEffect(() => {
     if (location.state?.toast) {
       addToast(location.state.toast);
-      navigate(location.pathname, { replace: true, state: null });
+      navigate(location.pathname + location.search, {
+        replace: true,
+        state: null,
+      });
     }
   }, [location.state, location.pathname]);
 

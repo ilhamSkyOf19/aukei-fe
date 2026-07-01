@@ -15,6 +15,8 @@ import DataPelanggan from "./DataPelanggan";
 import useKeranjang from "./useKeranjang";
 import { formatNumberPhone, formatRupiah } from "../../../helpers/helpers";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_KERANJANG } from "../../../types/toast.type";
 
 const Keranjang = () => {
   // use call
@@ -26,12 +28,23 @@ const Keranjang = () => {
     totalAfterDiskon,
     totalDiskon,
     handleLanjutTransaksi,
+    handleUbahKeranjang,
+    toast,
   } = useKeranjang();
 
   return (
     <div className="w-full flex flex-row justify-between items-start p-4 gap-4 ">
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_KERANJANG[toast.type].message}
+          color={TOAST_CONFIG_KERANJANG[toast.type].color}
+        />
+      )}
+
       {/* left */}
-      <div className="lg:flex-3 xl:flex-2 flex flex-col justify-start items-start gap-4">
+      <div className="flex-3 flex flex-col justify-start items-start gap-4">
         {/* daftar pelanggan */}
         <DataPelanggan />
       </div>
@@ -144,6 +157,7 @@ const Keranjang = () => {
                   bgColor="bg-info"
                   textColor="text-primary-white"
                   label="Ubah Keranjang"
+                  handleBtn={handleUbahKeranjang}
                 />
               </div>
             </div>

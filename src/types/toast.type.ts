@@ -223,3 +223,17 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     message: "Pelanggan berhasil ditambahkan",
   },
 };
+
+// toast keranjang
+export const TOAST_CONFIG_KERANJANG: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  updated_keranjang: {
+    color: "success",
+    message: "Keranjang berhasil diubah",
+  },
+};

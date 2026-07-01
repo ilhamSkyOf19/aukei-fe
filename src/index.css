@@ -11,7 +11,9 @@
 @theme {
   --font-poppins: "Poppins", sans-serif;
   --color-custom-primary: #cdde00;
-  --color-custom-secondary: #263d3f;
+  --color-custom-secondary: #28484b;
+  --color-custom-surface: #315659;
+  --color-custom-border: #3a6265;
 
   --color-primary-white: #f8f8f8;
   --color-secondary-white: #eeeeee;
