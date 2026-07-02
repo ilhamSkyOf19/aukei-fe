@@ -56,10 +56,7 @@ const InputTextNonIcon: FC<Props> = ({
             <div className="flex-2 relative">
               <label
                 htmlFor={name}
-                className={cn(
-                  "capitalize",
-                  xs ? "text-xs" : "text-xs lg:text-sm",
-                )}
+                className={cn("capitalize", xs ? "text-xs" : "lg:text-sm")}
               >
                 {label}
               </label>

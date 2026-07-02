@@ -17,20 +17,25 @@ const Struk: FC<Props> = ({ handleSteps }) => {
     isExistingDataTransaction,
     isLoadingTransaction,
     handleBackTransaksi,
+    isModeKasir,
   } = useStruk({ handleSteps });
 
   return (
-    <div className="w-full flex flex-row justify-between items-start gap-4">
+    <div
+      className={cn(
+        "w-full flex flex-row justify-between items-start gap-4 overflow-y-auto",
+      )}
+    >
       {/* content left */}
-      <div className="flex-1 flex flex-col justify-start items-start gap-4 pb-6">
+      <div className="flex-1 flex flex-col justify-start items-start gap-2">
         {/* informasi transaksi */}
         <div className="w-full flex flex-col justify-start items-start p-4 rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm">
           {/* header */}
-          <h3 className="text-base-content font-medium text-sm">
+          <h3 className="text-base-content font-medium text-xs">
             Informasi Transaksi
           </h3>
 
-          <div className="w-full flex flex-row justify-evenly items-start pt-6 pb-4 border-b border-base-content/10">
+          <div className="w-full flex flex-row justify-evenly items-start pt-4 pb-2 border-b border-base-content/10">
             {isLoadingTransaction ? (
               Array.from({ length: 4 }, (_, i) => i).map((item) => (
                 <div
@@ -53,10 +58,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                     dataTransaction?.data?.createdAt || "-",
                   )}
                 />
-                <CardInformasiTransaksi
-                  label="Kasir"
-                  value={dataTransaction?.data?.kasir?.nama || "-"}
-                />
+
                 <CardInformasiMetodePembayaran
                   metodePembayaran={
                     dataTransaction?.data?.metodePembayaran ?? undefined
@@ -67,7 +69,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
           </div>
 
           {/* pelanggan */}
-          <div className="w-full flex flex-row justify-evenly items-start pt-4">
+          <div className="w-full flex flex-row justify-evenly items-start pt-2">
             {isLoadingTransaction ? (
               Array.from({ length: 2 }, (_, i) => i).map((item) => (
                 <div
@@ -79,6 +81,11 @@ const Struk: FC<Props> = ({ handleSteps }) => {
               ))
             ) : (
               <>
+                <CardInformasiTransaksi
+                  label="Kasir"
+                  value={dataTransaction?.data?.kasir?.nama || "-"}
+                />
+
                 <CardInformasiTransaksi
                   label="Pelanggan"
                   value={dataTransaction?.data?.pelanggan?.nama || "-"}
@@ -102,7 +109,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
         >
           {/* header */}
           <div className="w-full flex flex-row justify-between items-center px-4 py-3">
-            <h3 className="text-sm font-medium text-base-content">
+            <h3 className="text-xs font-medium text-base-content">
               Detail Produk
             </h3>
           </div>
@@ -150,17 +157,35 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                           </td>
                           <td>
                             <div className="flex flex-col justify-start items-start gap-px">
-                              <p>{item.produk.nama}</p>
-                              <span className="font-medium text-base-content/50">
+                              <p className="xl:text-[0.7rem] text-base-content">
+                                {item.produk.nama}
+                              </p>
+                              <span className="xl:text-[0.7rem] font-medium text-base-content/50">
                                 {item.produk.kode}
                               </span>
                             </div>
                           </td>
-                          <td>{formatRupiah(item.hargaJual)}</td>
-                          <td>{formatRupiah(item.diskon)}</td>
-                          <td>{item.quantity}</td>
+                          <td>
+                            {" "}
+                            <span className="xl:text-[0.7rem] text-base-content">
+                              {/* harga jual */}
+                              {formatRupiah(item.hargaJual)}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="xl:text-[0.7rem] text-base-content">
+                              {formatRupiah(item.diskon)}
+                            </span>
+                          </td>
+                          <td>
+                            {" "}
+                            <span className="xl:text-[0.7rem] text-base-content">
+                              {/* qty */}
+                              {item.quantity} x
+                            </span>
+                          </td>
                           <td className="h-full">
-                            <span className="-translate-y-1/2 font-medium text-base-content h-full flex flex-row justify-start items-start">
+                            <span className="-translate-y-1/2 font-medium h-full flex flex-row justify-start items-start xl:text-[0.7rem] text-base-content">
                               {formatRupiah(
                                 item.hargaJual * item.quantity - item.diskon,
                               )}
@@ -203,26 +228,31 @@ const Struk: FC<Props> = ({ handleSteps }) => {
 
         <div className="w-full flex flex-col justify-start items-start p-4 rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm">
           {/* header */}
-          <h3 className="text-base-content font-medium text-sm">
+          <h3 className="text-base-content font-medium text-xs">
             Ringkasan Pembayaran
           </h3>
           <div className="w-full h-auto flex flex-row justify-evenly items-start pt-6">
             <div className="flex-2 flex flex-col justify-start items-start">
               <div className="w-full flex flex-col justify-start items-start gap-2 pb-2 border-b border-base-content/10">
                 <div className="w-full flex flex-row justify-between items-center">
-                  <span className="text-xs text-base-content/50 font-semibold">
+                  <span className="text-xs text-base-content/50 font-medium">
                     Subtotal
                   </span>
                   {isLoadingTransaction ? (
                     <div className="w-30 h-4 skeleton" />
                   ) : (
                     <span className="text-xs text-base-content font-semibold">
-                      {formatRupiah(300000)}
+                      {formatRupiah(
+                        dataTransaction?.data?.details?.reduce(
+                          (a, b) => a + (b.hargaJual ?? 0) * (b.quantity ?? 0),
+                          0,
+                        ) ?? 0,
+                      )}
                     </span>
                   )}
                 </div>
                 <div className="w-full flex flex-row justify-between items-center">
-                  <span className="text-xs text-base-content/50 font-semibold">
+                  <span className="text-xs text-base-content/50 font-medium">
                     Total Diskon
                   </span>
                   {isLoadingTransaction ? (
@@ -237,13 +267,13 @@ const Struk: FC<Props> = ({ handleSteps }) => {
 
               {/* total bayar */}
               <div className="w-full flex flex-row justify-between items-center pt-4">
-                <span className="text-sm text-base-content font-semibold">
+                <span className="text-xs text-base-content font-medium">
                   Total Pembayaran
                 </span>
                 {isLoadingTransaction ? (
                   <div className="w-30 h-4 skeleton" />
                 ) : (
-                  <span className="text-sm text-info font-semibold">
+                  <span className="text-xs text-info font-semibold">
                     {formatRupiah(dataTransaction?.data?.totalBayar ?? 0)}
                   </span>
                 )}
@@ -254,7 +284,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
 
             <div className="flex-2 flex flex-col justify-start items-start">
               <div className="w-full flex flex-row justify-between items-center pb-2 border-b border-base-content/10">
-                <span className="text-xs text-base-content/50 font-semibold">
+                <span className="text-xs text-base-content/50 font-medium">
                   Dibayar
                 </span>
                 {isLoadingTransaction ? (
@@ -266,7 +296,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                 )}
               </div>
               <div className="w-full flex flex-row justify-between items-center pt-2">
-                <span className="text-xs text-base-content/50 font-semibold">
+                <span className="text-xs text-base-content/50 font-medium">
                   Kembalian
                 </span>
                 {isLoadingTransaction ? (
@@ -274,8 +304,8 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                 ) : (
                   <span className="text-xs text-emerald-600 font-semibold">
                     {formatRupiah(
-                      (dataTransaction?.data?.diBayar ?? 0) -
-                        (dataTransaction?.data?.totalBayar ?? 0),
+                      (dataTransaction?.data?.totalBayar ?? 0) -
+                        (dataTransaction?.data?.diBayar ?? 0),
                     )}
                   </span>
                 )}
@@ -285,11 +315,18 @@ const Struk: FC<Props> = ({ handleSteps }) => {
         </div>
 
         {/* button back */}
-        <ButtonWithIcon
-          icon={Undo}
-          label="Kembali ke Transaksi"
-          handleBtn={() => handleBackTransaksi()}
-        />
+        <div
+          className={cn(
+            "w-full flex flex-row justify-start items-center",
+            isModeKasir ? "pb-4" : "pb-12",
+          )}
+        >
+          <ButtonWithIcon
+            icon={Undo}
+            label="Kembali ke Transaksi"
+            handleBtn={() => handleBackTransaksi()}
+          />
+        </div>
       </div>
 
       <div className="flex-1 flex flex-col justify-start items-start gap-4"></div>

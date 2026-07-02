@@ -26,7 +26,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
   } = useSideBar();
 
   return (
-    <div className="drawer-side is-drawer-close:overflow-visible border-r border-base-content/10 z-50">
+    <div className="drawer-side is-drawer-close:overflow-visible border-r border-base-content/10 z-30">
       <label
         htmlFor="my-drawer-4"
         aria-label="close sidebar"

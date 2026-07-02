@@ -8,6 +8,8 @@ type Props = {
   isLoading?: boolean;
   bgColor?: string;
   textColor?: string;
+  customHeight?: string;
+  customWidth?: string;
 };
 
 const ButtonText: FC<Props> = ({
@@ -17,6 +19,8 @@ const ButtonText: FC<Props> = ({
   bgColor,
   textColor,
   handleClick,
+  customHeight,
+  customWidth,
 }) => {
   return (
     <button
@@ -25,6 +29,9 @@ const ButtonText: FC<Props> = ({
         "btn btn-sm lg:btn-md px-4 text-xs lg:text-sm font-semibold hover-overlay disabled:opacity-50",
         bgColor,
         textColor,
+        customHeight,
+        customHeight,
+        customWidth,
       )}
       disabled={disable || isLoading}
       onClick={() => handleClick?.()}

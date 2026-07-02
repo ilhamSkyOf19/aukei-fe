@@ -87,7 +87,7 @@ const ModalChoosePelanggan: FC<Props> = ({
           </div>
 
           {/* daftar pelanggan */}
-          <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10 overflow-y-auto scrollbar-thin h-120 mt-4">
+          <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10 overflow-y-auto scrollbar-thin h-100 mt-4">
             {/* card pelanggan */}
             {isLoadingPelanggan ? (
               <div className="w-full flex flex-col justify-start items-start gap-1 p-2">
@@ -119,7 +119,7 @@ const ModalChoosePelanggan: FC<Props> = ({
                       <span className="text-sm font-medium text-base-content">
                         {item.nama}
                       </span>
-                      <span className="text-xs text-base-content/50">
+                      <span className="text-xs font-medium text-base-content/50">
                         {formatNumberPhone(item.noWa.toString())}
                       </span>
                     </div>

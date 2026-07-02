@@ -35,8 +35,8 @@ const ModalCashPayment: FC<Props> = ({
         {/* HEADER */}
         <div className="border-b  border-base-content/10 px-6 py-3">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Calculator className="size-6 text-primary" />
+            <div className="w-16 h-14 rounded-xl bg-custom-primary flex items-center justify-center">
+              <Calculator className="size-6 text-custom-secondary" />
             </div>
 
             <TitleModalFormulir
@@ -73,7 +73,7 @@ const ModalCashPayment: FC<Props> = ({
                   </span>
                 </div>
 
-                <span className="text-lg font-medium">
+                <span className="text-base font-semibold text-info">
                   {formatRupiah(amount)}
                 </span>
               </div>
@@ -87,7 +87,7 @@ const ModalCashPayment: FC<Props> = ({
                   </span>
                 </div>
 
-                <span className="text-lg font-medium">
+                <span className="text-base font-semibold text-success">
                   {formatRupiah(change)}
                 </span>
               </div>
@@ -160,11 +160,10 @@ const ModalCashPayment: FC<Props> = ({
               ))}
 
               <button
-                className="btn btn-primary row-span-2 h-full"
+                className=" font-semibold bg-custom-primary rounded-lg text-custom-secondary row-span-2 h-full disabled:opacity-50 not-disabled:hover-overlay"
                 disabled={amount < total}
                 onClick={() => {
                   handlePay(amount);
-                  clear();
                 }}
               >
                 OK

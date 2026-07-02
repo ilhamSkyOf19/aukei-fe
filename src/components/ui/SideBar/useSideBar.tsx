@@ -21,10 +21,10 @@ const useSideBar = () => {
   // navigate
   const navigate = useNavigate();
 
-  // clear localstorage
-  const handleClearDataActiveCluster = () => {
-    localStorage.removeItem("active-cluster");
-  };
+  // // clear localstorage
+  // const handleClearDataActiveCluster = () => {
+  //   localStorage.removeItem("active-cluster");
+  // };
 
   // use confirm
   const {
@@ -37,11 +37,11 @@ const useSideBar = () => {
   const clearTransactionStorage = () => {
     localStorage.removeItem("pelanggan");
     localStorage.removeItem("details");
-    localStorage.removeItem("diBayar");
-    localStorage.removeItem("metodePembayaran");
-    localStorage.removeItem("steps");
-    localStorage.removeItem("isUpdateKeranjang");
-    localStorage.removeItem("isUpdateTransaction");
+    localStorage.removeItem("di-bayar");
+    localStorage.removeItem("metode-pembayaran");
+    localStorage.removeItem("is-update-keranjang");
+    localStorage.removeItem("is-update-transaction");
+    localStorage.removeItem("data-from-keranjang");
   };
 
   const canLeaveTransaction = async (): Promise<boolean> => {
@@ -74,10 +74,10 @@ const useSideBar = () => {
   const handleLink = async (link: string) => {
     if (!link) return;
 
-    // const isUpdateKeranjang = localStorage.getItem("isUpdateKeranjang");
+    // const isUpdateKeranjang = localStorage.getItem("is-update-keranjang");
 
     // if (isUpdateKeranjang) {
-    //   localStorage.removeItem("isUpdateKeranjang");
+    //   localStorage.removeItem("is-update-keranjang");
     // }
 
     // jika sedang berada di halaman yang sama
@@ -101,8 +101,21 @@ const useSideBar = () => {
       clearTransactionStorage();
     }
 
+    // check path owner
+    if (
+      pathname.includes("/dashboard/produk") ||
+      pathname.includes("/dashboard/inventori")
+    ) {
+      // clear active cluster
+      localStorage.removeItem("active-cluster");
+    }
+
+    // clear transaction and steps
+    localStorage.removeItem("steps");
+    localStorage.removeItem("transaction");
+
     // clear cluster
-    handleClearDataActiveCluster();
+    // handleClearDataActiveCluster();
 
     // pindah halaman
     navigate(link);

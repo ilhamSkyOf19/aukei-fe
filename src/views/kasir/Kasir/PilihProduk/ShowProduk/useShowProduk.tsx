@@ -7,6 +7,7 @@ import type { DetailsLocalStorageType } from "../../../../../models/transaction.
 import type { ResponseProdukForKasirType } from "../../../../../models/produk.model";
 import { useEffect } from "react";
 import { handlePagination } from "../../../../../helpers/helpers";
+import useIsModeKasirStore from "../../../../../stores/iseModaKasirStore";
 
 const useShowProduk = (params: {
   pelangganId?: number;
@@ -26,10 +27,11 @@ const useShowProduk = (params: {
 }) => {
   const { pelangganId, step, onAppendMany } = params;
 
+  // get is mode kasir from store
+  const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
+
   //   get current page form search params
   const [searchParams] = useSearchParams();
-
-  const currentPage = searchParams.get("page") ?? "";
 
   // search filter
   const { search, setSearch } = useFilterSearch("search", "page");
@@ -69,7 +71,7 @@ const useShowProduk = (params: {
       : false;
 
   const details = localStorage.getItem("details");
-  const diBayar = localStorage.getItem("diBayar");
+  const diBayar = localStorage.getItem("di-bayar");
 
   // check local storage
 
@@ -79,7 +81,7 @@ const useShowProduk = (params: {
     // hasRestore.current = true;
 
     if (!details) {
-      if (diBayar) localStorage.removeItem("diBayar");
+      if (diBayar) localStorage.removeItem("di-bayar");
       return;
     }
 
@@ -109,10 +111,12 @@ const useShowProduk = (params: {
     );
   }, [dataProduk]);
 
+  const currentPage = dataProduk?.data?.meta?.currentPage ?? 1;
+
   // pagination
   const { goTo, isNext, isPrev, pages } = handlePagination({
     setPage,
-    currentPage: dataProduk?.data?.meta?.currentPage,
+    currentPage,
     totalPage: dataProduk?.data?.meta?.totalPage,
   });
 
@@ -146,6 +150,7 @@ const useShowProduk = (params: {
     isNext,
     isPrev,
     pages,
+    isModeKasir,
   };
 };
 

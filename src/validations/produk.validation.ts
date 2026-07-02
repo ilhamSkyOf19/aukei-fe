@@ -34,9 +34,12 @@ export class ProdukValidation {
       message: "Maksimal ukuran file 10 MB",
     })
     .refine(
-      (file) => ["image/jpeg", "image/png", "image/jpg"].includes(file.type),
+      (file) =>
+        ["image/jpeg", "image/png", "image/jpg", "image/webp"].includes(
+          file.type,
+        ),
       {
-        message: "Format file harus JPG atau PNG",
+        message: "Format file harus JPG, JPEG, PNG, atau WebP",
       },
     );
 

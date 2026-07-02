@@ -23,7 +23,7 @@ const DataPelanggan = () => {
   } = useDataPelanggan();
 
   return (
-    <div className="w-full rounded-lg lg:h-120 xl:h-160 bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
+    <div className="w-full rounded-lg lg:h-120 xl:h-155 bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
       {/* header */}
       <div className="w-full flex flex-col justify-start items-start gap-2">
         {/* title */}
@@ -38,7 +38,7 @@ const DataPelanggan = () => {
       </div>
 
       {/* daftar pelanggan */}
-      <div className="w-full flex flex-col lg:h-75 xl:h-110 overflow-y-auto scrollbar-thin justify-start items-start mt-2">
+      <div className="w-full flex flex-col lg:h-75 xl:h-115 overflow-y-auto scrollbar-thin justify-start items-start mt-2">
         {/* card */}
         {isLoadingPelanggan ? (
           Array.from({ length: 8 }, (_, i) => i).map((item) => (
@@ -67,7 +67,7 @@ const DataPelanggan = () => {
         )}
       </div>
 
-      <div className="w-full flex flex-row justify-center items-center lg:mt-6 xl:mt-8">
+      <div className="w-full flex flex-row justify-center items-center mt-4">
         {/* buat pagination pelanggan */}
         <Pagination
           currentPage={dataPelanggan?.data?.meta?.currentPage || 1}

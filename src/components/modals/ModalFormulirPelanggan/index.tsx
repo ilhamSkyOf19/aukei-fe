@@ -40,7 +40,7 @@ const ModalFormulirPelanggan: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box lg:w-2/6 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box lg:w-2/5 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
@@ -60,11 +60,11 @@ const ModalFormulirPelanggan: FC<Props> = ({
             {/* nama */}
             <InputTextNonIcon
               register={register(`nama`)}
-              label={`Nama Pegawai`}
+              label={`Nama Pelanggan`}
               max={100}
               name="nama"
               required={true}
-              placeholder={`Masukan nama pegawai`}
+              placeholder={`Masukan nama pelanggan`}
               errorMessage={errors.nama?.message}
               defaultValue={data?.nama}
             />

@@ -29,6 +29,14 @@ const useModalCashPayment = (params: {
 
   useEffect(() => {
     if (!modalRef.current?.open) return;
+    // check di bayar from local storage
+    const diBayar = localStorage.getItem("di-bayar");
+    if (diBayar) setValue(String(JSON.parse(diBayar)));
+    else setValue("0");
+  }, [modalRef?.current?.open]);
+
+  useEffect(() => {
+    if (!modalRef.current?.open) return;
 
     const handler = (e: KeyboardEvent) => {
       if (/^[0-9]$/.test(e.key)) {
@@ -48,7 +56,6 @@ const useModalCashPayment = (params: {
         e.stopPropagation();
         if (amount >= total) {
           handlePay(amount);
-          clear();
         }
       }
     };

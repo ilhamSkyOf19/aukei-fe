@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import type { DetailsLocalStorageType } from "../../../../models/transaction.model";
 import { KeranjangServices } from "../../../../services/keranjang.service";
+import useModal from "../../../../hooks/useModal";
 
 const useDaftarKeranjang = () => {
   // set params
@@ -10,8 +11,22 @@ const useDaftarKeranjang = () => {
   //   is choose pelanggan
   const isChoosePelanggan = Number(searchParams.get("pelangganId") ?? 0);
 
+  // current pathname
+  const currentPathname = useLocation().pathname;
+
   // navigate
   const navigate = useNavigate();
+
+  // query client
+  const queryClient = useQueryClient();
+
+  // use modal delete keranjang
+  const {
+    modalRef: modalDeleteKeranjangRef,
+    handleShowModal: handleShowModalDeleteKeranjang,
+    handleCloseModal: handleCloseModalDeleteKeranjang,
+    dataModal: dataDeleteKeranjang,
+  } = useModal<{ id?: number; pelanggan: { id?: number; nama?: string } }>();
 
   // use query
   const { data: dataKeranjang, isLoading: isLoadingKeranjang } = useQuery({
@@ -71,14 +86,15 @@ const useDaftarKeranjang = () => {
     );
   };
 
-  const handleLanjutTransaksi = (isUpdate?: boolean) => {
+  const handleLanjutTransaksi = (transactionId?: number) => {
     // data
     handleSetLocalStorage();
 
-    // check is update
-    if (isUpdate) {
-      localStorage.setItem("isUpdateTransaction", "true");
-    }
+    // set local storage
+    localStorage.setItem(
+      "data-from-keranjang",
+      JSON.stringify({ transactionId }),
+    );
 
     // navigate
     navigate("/dashboard/kasir");
@@ -88,7 +104,7 @@ const useDaftarKeranjang = () => {
   const handleUbahKeranjang = () => {
     // set local storage is update keranjang
     localStorage.setItem(
-      "isUpdateKeranjang",
+      "is-update-keranjang",
       JSON.stringify({
         pelangganId: dataKeranjang?.data?.pelanggan?.id,
       }),
@@ -98,7 +114,50 @@ const useDaftarKeranjang = () => {
     handleSetLocalStorage();
 
     // navigate
-    navigate(`/dashboard/keranjang/${dataKeranjang?.data?.id}`);
+    navigate(`${currentPathname}/${dataKeranjang?.data?.id}`);
+  };
+
+  // mutation delete keranjang
+  const {
+    mutateAsync: mutateDeleteKeranjang,
+    isPending: isPendingDeleteKeranjang,
+  } = useMutation({
+    mutationFn: (data: { id: number; pelangganId: number }) =>
+      KeranjangServices.delete({ id: data.id, pelangganId: data.pelangganId }),
+    onSuccess: () => {
+      // invalidate
+      queryClient.invalidateQueries({ queryKey: ["pelanggan"] });
+
+      // set toast
+      navigate(currentPathname, {
+        state: {
+          toast: "deleted_keranjang",
+        },
+      });
+
+      // close modal
+      handleCloseModalDeleteKeranjang();
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // handle delete
+  const handleDeleteKeranjang = async () => {
+    try {
+      if (!dataDeleteKeranjang) return;
+
+      const {
+        id,
+        pelanggan: { id: pelangganId },
+      } = dataDeleteKeranjang;
+
+      // check id and pelanggan id
+      if (id && pelangganId) await mutateDeleteKeranjang({ id, pelangganId });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return {
@@ -110,6 +169,12 @@ const useDaftarKeranjang = () => {
     totalAfterDiskon,
     handleLanjutTransaksi,
     handleUbahKeranjang,
+    handleDeleteKeranjang,
+    isPendingDeleteKeranjang,
+    modalDeleteKeranjangRef,
+    handleCloseModalDeleteKeranjang,
+    handleShowModalDeleteKeranjang,
+    dataDeleteKeranjang,
   };
 };
 

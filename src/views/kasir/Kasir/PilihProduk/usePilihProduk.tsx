@@ -10,19 +10,25 @@ import useModal from "../../../../hooks/useModal";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import type { ErrorResponse } from "../../../../types/response.type";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type {
   CreateKeranjangType,
   UpdateKeranjangType,
 } from "../../../../models/keranjang.model";
 import { KeranjangServices } from "../../../../services/keranjang.service";
 import { parseId } from "../../../../helpers/helpers";
+import useIsModeKasirStore from "../../../../stores/iseModaKasirStore";
+
+type IsErrorsType = "pelanggan" | "details";
 
 const usePilihProduk = (props: {
   handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
 }) => {
   const { handleSteps, handleToast } = props;
+
+  // get is mode kasir
+  const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
 
   // get search params keranjang id
   const { keranjangId } = useParams<{ keranjangId: string }>();
@@ -33,8 +39,13 @@ const usePilihProduk = (props: {
   // navigate
   const navigate = useNavigate();
 
+  // current pathname
+  const currentPathname = useLocation().pathname;
+
   // state error
-  const [isErrorsFormState, setIsErrorsFormState] = useState<string[]>([]);
+  const [isErrorsFormState, setIsErrorsFormState] = useState<IsErrorsType[]>(
+    [],
+  );
 
   // use modal add transaksi
   const {
@@ -94,27 +105,27 @@ const usePilihProduk = (props: {
   };
 
   // is update
-  const [isUpdate, _setIsUpdate] = useState<boolean>(() => {
-    const isUpdate = localStorage.getItem("isUpdateTransaction");
-    if (isUpdate) {
-      // delete is update keranjang
-      localStorage.removeItem("isUpdateKeranjang");
-      localStorage.removeItem("isLanjutTransaction");
-      return JSON.parse(isUpdate);
-    } else {
-      return false;
-    }
-  });
+  const [isUpdateTransaction, setIsUpdateTransaction] = useState<boolean>(
+    () => {
+      const isUpdateTransaction = localStorage.getItem("is-update-transaction");
+      if (isUpdateTransaction) {
+        // delete is update keranjang
+        localStorage.removeItem("is-update-keranjang");
+        return JSON.parse(isUpdateTransaction);
+      } else {
+        return false;
+      }
+    },
+  );
 
   // is update keranjang
   const [isUpdateKeranjang, _setIsUpdateKeranjang] = useState<{
     pelangganId: number;
   } | null>(() => {
-    const isUpdateKeranjang = localStorage.getItem("isUpdateKeranjang");
+    const isUpdateKeranjang = localStorage.getItem("is-update-keranjang");
     if (isUpdateKeranjang) {
       // delete is update transaction
-      localStorage.removeItem("isUpdateTransaction");
-      localStorage.removeItem("isLanjutTransaction");
+      localStorage.removeItem("is-update-transaction");
       return JSON.parse(isUpdateKeranjang);
     } else {
       return null;
@@ -143,6 +154,9 @@ const usePilihProduk = (props: {
     // clear error if existing
     if (isErrorsFormState.includes("pelanggan")) handleClearErrors("pelanggan");
     setPelanggan(params);
+
+    // clear local storage data from keranjang
+    localStorage.removeItem("data-from-keranjang");
   };
 
   // handle clear errors
@@ -173,6 +187,9 @@ const usePilihProduk = (props: {
       | "stok"
     > & { subTotal: number; diskon: number; quantity: number },
   ) => {
+    // clear errors
+    setIsErrorsFormState((prev) => prev.filter((item) => item !== "details"));
+
     setProdukDetails((prev) => {
       const index = prev.findIndex((item) => item.id === produk.id);
 
@@ -282,9 +299,7 @@ const usePilihProduk = (props: {
     localStorage.setItem("pelanggan", JSON.stringify(pelanggan));
 
     // check is update
-    if (isUpdate) {
-      localStorage.removeItem("isUpdateTransaction");
-    }
+    localStorage.removeItem("is-update-transaction");
 
     return true;
   };
@@ -295,16 +310,26 @@ const usePilihProduk = (props: {
 
     if (!canNext) return;
 
+    if (isUpdateTransaction)
+      navigate(currentPathname, {
+        state: {
+          toast: "updated_transaction",
+        },
+      });
+
     handleSteps(2);
   };
 
   // handle batalkan update transaction
   const handleBatalkanUpdateTransaction = () => {
+    // remove is update transaction
+    localStorage.removeItem("is-update-transaction");
+
     handleSteps(2);
   };
 
   // handle remove all
-  const handleRemoveAll = () => {
+  const handleRemoveAllDetails = () => {
     setProdukDetails([]);
   };
 
@@ -323,7 +348,7 @@ const usePilihProduk = (props: {
       },
       onSuccess: (data) => {
         // set state
-        handleRemoveAll();
+        handleRemoveAllDetails();
 
         // set pelanggan
         setPelanggan(null);
@@ -338,6 +363,16 @@ const usePilihProduk = (props: {
               },
             },
           );
+        }
+
+        // check is update transaction
+        if (isUpdateTransaction) {
+          localStorage.removeItem("details");
+          localStorage.removeItem("is-update-transaction");
+          localStorage.removeItem("metode-pembayaran");
+          localStorage.removeItem("pelanggan");
+
+          setIsUpdateTransaction(false);
         }
 
         handleToast("simpan_keranjang");
@@ -407,7 +442,7 @@ const usePilihProduk = (props: {
     // remove local storage
     localStorage.removeItem("details");
     localStorage.removeItem("pelanggan");
-    localStorage.removeItem("isUpdateKeranjang");
+    localStorage.removeItem("is-update-keranjang");
 
     // navigate
     navigate(
@@ -447,7 +482,7 @@ const usePilihProduk = (props: {
       // clear local storage
       localStorage.removeItem("details");
       localStorage.removeItem("pelanggan");
-      localStorage.removeItem("isUpdateKeranjang");
+      localStorage.removeItem("is-update-keranjang");
 
       await mutateKeranjang({
         details: dataDetails,
@@ -461,7 +496,7 @@ const usePilihProduk = (props: {
     handleAddDetails,
     produkDetails,
     handleStepsNext,
-    handleRemoveAll,
+    handleRemoveAllDetails,
     pelanggan,
     handleSetPelanggan,
     isErrorsFormState,
@@ -469,7 +504,7 @@ const usePilihProduk = (props: {
     handleShowModalChoosePelanggan,
     handleCloseModalChoosePelanggan,
     alert,
-    isUpdate,
+    isUpdateTransaction,
     handleSimpanKeranjang,
     handleSimpanPerubahanKeranjang,
     isPendingKeranjang,
@@ -484,6 +519,7 @@ const usePilihProduk = (props: {
     idModalUpdateTransaksi,
     removeDetails,
     handleShowModalFormulirTransaksiForUpdate,
+    isModeKasir,
   };
 };
 

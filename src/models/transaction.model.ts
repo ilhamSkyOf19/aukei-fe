@@ -48,6 +48,7 @@ export interface CreateTransactionForRequestType extends Pick<
   ITransactionType,
   "metodePembayaran" | "pelangganId" | "tempo"
 > {
+  id?: number;
   diBayar: number;
   kasirId: number;
   details: DetailsForCreate[];

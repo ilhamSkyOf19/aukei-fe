@@ -23,7 +23,7 @@ const Toast: FC<Props> = ({ toast, isAnimationOut, label, color }) => {
               color === "neutral" && "alert-vertical",
             )}
           >
-            <span>{label}</span>
+            <span className="font-medium">{label}</span>
           </div>
         </div>
       )}

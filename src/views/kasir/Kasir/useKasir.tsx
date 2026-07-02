@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
-import { useAuthStore } from "../../../stores/authStore";
 import { useToastAnimation } from "../../../hooks/useToast";
+import useIsModeKasirStore from "../../../stores/iseModaKasirStore";
 
 const useKasir = () => {
-  const pengguna = useAuthStore((state) => state.pengguna);
+  // get is mode kasir from store
+  const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
 
   // handle toast
   const { handleSetToast, toast } = useToastAnimation();
-
-  // state mode kasir
-  const [isModeKasir, setIsModeKasir] = useState<boolean>(false);
 
   // state steps
   const [step, setStep] = useState<number>(1);
@@ -32,9 +30,7 @@ const useKasir = () => {
   return {
     step,
     handleSteps,
-    pengguna,
     isModeKasir,
-    setIsModeKasir,
     handleSetToast,
     toast,
   };

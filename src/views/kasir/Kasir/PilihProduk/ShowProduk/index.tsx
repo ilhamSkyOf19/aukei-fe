@@ -8,6 +8,7 @@ import type { ResponseProdukForKasirType } from "../../../../../models/produk.mo
 import { type FC } from "react";
 import DataEmpty from "../../../../../components/messages/DataEmpty";
 import Pagination from "../../../../../components/ui/Pagination";
+import { cn } from "../../../../../utils/cn";
 
 // props
 type Props = {
@@ -49,10 +50,11 @@ const ShowProduk: FC<Props> = ({
     isNext,
     isPrev,
     pages,
+    isModeKasir,
   } = useShowProduk({ pelangganId, step, onAppendMany });
 
   return (
-    <div className="flex-1 flex flex-col justify-start items-center gap-3">
+    <div className="lg:flex-2 xl:flex-1 flex flex-col justify-start items-center gap-3">
       {/* header */}
       <div className="w-full flex flex-row justify-between items-start border border-transparent dark:border-base-content/10 p-3 bg-base-100 shadow-sm rounded-lg">
         {/* search */}
@@ -67,11 +69,16 @@ const ShowProduk: FC<Props> = ({
       </div>
 
       {/* daftar produk */}
-      <div className="grid grid-cols-3 gap-2">
+      <div
+        className={cn(
+          "grid grid-cols-5 gap-2 overflow-y-auto scrollbar-thumb-custom-secondary",
+          isModeKasir ? "lg:h-100 xl:h-120" : "xl:h-101",
+        )}
+      >
         {/* card */}
         {isLoadingProduk ? (
           Array.from({ length: 8 }, (_, i) => i).map((item) => (
-            <div key={item} className="col-span-1 lg:h-50 xl:h-55 p-1.5">
+            <div key={item} className="col-span-1 xl:h-55 p-1.5">
               <div className=" skeleton w-40 h-full" />
             </div>
           ))
@@ -80,7 +87,7 @@ const ShowProduk: FC<Props> = ({
             <button
               type="button"
               key={index}
-              className="col-span-1 lg:h-50 xl:h-60 flex flex-row justify-start items-start p-1.5 group"
+              className="col-span-1 lg:h-40 xl:h-50 flex flex-row justify-start items-start group"
               onClick={() =>
                 handleShowModalFormulirTransaksi({
                   produkId: item.id,
@@ -95,29 +102,32 @@ const ShowProduk: FC<Props> = ({
                 })
               }
             >
-              <div className="w-full h-full flex flex-col justify-start items-start border border-transparent rounded-lg shadow-sm overflow-hidden gap-2 group-hover:border-custom-secondary group-hover:shadow-sm transition-all duration-300 ease-in-out group-hover:scale-102 bg-base-100 p-3">
-                <div className="w-full flex-2 rounded-lg flex flex-row justify-center items-center overflow-hidden">
+              <div className="w-full h-full flex flex-col justify-start items-start border border-transparent rounded-lg shadow-sm overflow-hidden gap-2 group-hover:border-custom-secondary group-hover:shadow-sm transition-all duration-300 ease-in-out bg-base-100 p-1">
+                <div className="w-full h-90 shadow-md shadow-base-content/20 rounded-lg flex flex-row justify-center items-center overflow-hidden">
                   <img
                     src={item.img}
                     alt="wall panel"
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                 </div>
 
-                <div className="w-full flex-1 flex flex-col justify-start items-start px-2 gap-2.5 ">
+                <div className="w-full h-80 flex flex-col justify-start items-start px-2 gap-2">
                   {/* name */}
                   <div className="w-full flex flex-col justify-start items-start gap-0.5">
-                    <p className="text-xs font-medium text-base-content">
-                      {item.nama}
+                    <p className="text-xs text-start font-medium text-base-content">
+                      {`${item.nama}`.length > 30
+                        ? item.nama.slice(0, 30) + "..."
+                        : item.nama}{" "}
                     </p>
                     {/* kode */}
-                    <p className="text-xs font-medium text-base-content/50">
+                    <p className="text-[0.625rem] font-semibold text-base-content/80">
                       {item.kode}
                     </p>
                   </div>
-                  <div className="w-full flex flex-row justify-between items-start gap-2">
+                  <div className="w-full flex flex-col justify-between items-start gap-1">
                     {/* harga */}
-                    <p className="text-xs font-semibold text-base-content">
+                    <p className="text-[0.7rem] font-semibold text-base-content">
                       {formatRupiah(item.hargaJual)}
                     </p>
 
@@ -131,7 +141,7 @@ const ShowProduk: FC<Props> = ({
             </button>
           ))
         ) : (
-          <div className="col-span-4 flex-row justify-center items-center">
+          <div className="col-span-5 h-100  flex flex-row justify-center items-center">
             <DataEmpty
               title="Data Produk Tidak Tersedia"
               description="Belum ada data produk yang dapat ditampilkan saat ini"
@@ -142,15 +152,21 @@ const ShowProduk: FC<Props> = ({
       </div>
 
       {/* prev and next */}
-      <div className="w-full flex flex-row justify-between items-start py-4 border border-transparent dark:border-base-content/10 bg-base-100 rounded-lg px-4">
+      <div className="w-full flex flex-row justify-between items-center h-10.5 border border-transparent dark:border-base-content/10 bg-base-100 rounded-lg px-4">
         {/* button prev */}
         <button
           type="button"
-          className="flex flex-row justify-start items-center gap-2 border border-base-content rounded-md py-2 px-3 hover:shadow-sm hover:shadow-custom-primary hover:border-custom-primary hover:scale-102 transition-all duration-150 ease-in-out origin-center"
+          disabled={dataProduk?.data?.meta?.currentPage === 1}
+          className={cn(
+            "flex flex-row justify-start items-center gap-2 border border-base-content rounded-md py-1.5 px-3",
+            dataProduk?.data?.meta?.currentPage === 1
+              ? "opacity-50"
+              : " hover:shadow-sm hover:shadow-custom-primary hover:border-custom-primary hover:scale-102 transition-all duration-150 ease-in-out origin-center",
+          )}
           onClick={() => handlePage("prev")}
         >
-          <ArrowLeft className="size-4 text-base-content" />
-          <span className="text-xs font-semibold text-base-content">
+          <ArrowLeft className="xl:size-3 text-base-content" />
+          <span className="xl:text-[0.625rem] font-semibold text-base-content">
             Sebelumnya
           </span>
         </button>
@@ -168,13 +184,23 @@ const ShowProduk: FC<Props> = ({
         {/* button prev */}
         <button
           type="button"
-          className="flex flex-row justify-start items-center gap-2 border border-base-content rounded-md py-2 px-3 hover:shadow-sm hover:shadow-custom-primary hover:border-custom-primary hover:scale-102 transition-all duration-150 ease-in-out origin-center"
+          disabled={
+            dataProduk?.data?.meta?.currentPage ===
+            dataProduk?.data?.meta?.totalPage
+          }
+          className={cn(
+            "flex flex-row justify-start items-center gap-2 border border-base-content rounded-md py-1.5 px-3",
+            dataProduk?.data?.meta?.currentPage ===
+              dataProduk?.data?.meta?.totalPage
+              ? "opacity-50"
+              : " hover:shadow-sm hover:shadow-custom-primary hover:border-custom-primary hover:scale-102 transition-all duration-150 ease-in-out origin-center",
+          )}
           onClick={() => handlePage("next")}
         >
-          <span className="text-xs font-semibold text-base-content">
+          <span className="xl:text-[0.625rem] font-semibold text-base-content">
             Selanjutnya
           </span>
-          <ArrowRight className="size-4 text-base-content" />
+          <ArrowRight className="xl:size-3 text-base-content" />
         </button>
       </div>
     </div>

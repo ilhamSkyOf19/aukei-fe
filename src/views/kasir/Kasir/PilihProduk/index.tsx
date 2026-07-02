@@ -30,7 +30,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
   // call use
   const {
     handleAddDetails,
-    handleRemoveAll,
+    handleRemoveAllDetails,
     handleSetPelanggan,
     handleStepsNext,
     isErrorsFormState,
@@ -41,7 +41,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
     handleShowModalChoosePelanggan,
     modalChoosePelangganRef,
     alert,
-    isUpdate,
+    isUpdateTransaction,
     handleSimpanKeranjang,
     isPendingKeranjang,
     isUpdateKeranjang,
@@ -55,6 +55,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
     idModalUpdateTransaksi,
     dataModalFormulirTransaksi,
     handleShowModalFormulirTransaksiForUpdate,
+    isModeKasir,
   } = usePilihProduk({
     handleSteps,
     handleToast,
@@ -67,11 +68,12 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
           alert={alert?.id !== null}
           isAnimationOut={alert?.isAnimationOut || false}
           label={ALERT_CONFIG_TRANSACTION[alert.type].message}
+          full
         />
       )}
 
       {/* content left */}
-      <div className="w-full flex-1 flex flex-col justify-start items-start gap-2.5">
+      <div className="w-full lg:flex-3 xl:flex-1 flex flex-col justify-start items-start gap-2.5">
         {/* pelanggan */}
         {!isUpdateKeranjang && (
           <div
@@ -83,9 +85,9 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
             )}
           >
             {/* avatar, name, no telp */}
-            <div className="flex-1 flex flex-row justify-start items-center gap-3 h-10">
+            <div className="flex-1 flex flex-row justify-start items-center gap-3 lg:h-8 xl:h-10">
               {!pelanggan ? (
-                <span className="text-sm text-base-content font-medium">
+                <span className="xl:text-xs text-base-content font-medium">
                   Silahkan pilih pelanggan
                 </span>
               ) : (
@@ -130,8 +132,8 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
           )}
         >
           {/* header */}
-          <div className="w-full flex flex-row justify-between items-center px-4 py-3">
-            <h3 className="text-sm font-medium text-base-content">
+          <div className="w-full flex flex-row justify-between items-center px-4 pt-3 pb-2">
+            <h3 className="xl:text-xs font-medium text-base-content">
               {isUpdateKeranjang ? "Ubah Keranjang" : "Data Transaksi"}
             </h3>
 
@@ -139,10 +141,10 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
               <button
                 type="button"
                 className="py-1.5 px-2 flex flex-row justify-start items-center gap-2 border border-transparent hover:border-error rounded-md transition-all duration-150 ease-in-out"
-                onClick={handleRemoveAll}
+                onClick={handleRemoveAllDetails}
               >
-                <Trash2 className="size-4 text-error" />
-                <span className="text-[0.7rem] font-medium text-error">
+                <Trash2 className="lg:size-3.5 xl:size-4 text-error" />
+                <span className="lg:text-[0.625rem] xl:text-[0.7rem] font-medium text-error">
                   Kosongkan Semua
                 </span>
               </button>
@@ -151,8 +153,17 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
 
           {/* data */}
           <div className="w-full flex flex-col justify-start items-start pb-6">
-            <div className="overflow-x-auto w-full">
-              <table className="table table-xs table-zebra">
+            <div
+              className={cn(
+                "overflow-y-auto w-full scrollbar-thumb-custom-secondary transition-all duration-500 ease-in-out",
+                isModeKasir
+                  ? isUpdateKeranjang
+                    ? "xl:h-85"
+                    : "xl:h-67"
+                  : "xl:h-53",
+              )}
+            >
+              <table className="table table-xs table-zebra table-pin-rows table-pin-cols">
                 {/* head */}
                 <thead>
                   <tr className="text-[0.625rem] bg-base-content/5 h-8">
@@ -173,35 +184,49 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                       <tr key={item.id} className="h-12">
                         <td>
                           <div className="avatar">
-                            <div className="mask mask-squircle h-10 w-10">
+                            <div className="mask mask-squircle lg:h-9 lg:w-9 xl:h-10 xl:w-10">
                               <img src={item.img} alt="gambar produk" />
                             </div>
                           </div>
                         </td>
                         <td>
                           <div className="flex flex-col justify-start items-start gap-px">
-                            <p>{item.nama}</p>
-                            <span className="font-medium text-base-content/50">
+                            <p className="xl:text-[0.7rem] text-base-content">
+                              {item.nama}
+                            </p>
+                            <span className="xl:text-[0.625rem] font-medium text-base-content/50">
                               {item.kode}
                             </span>
                           </div>
                         </td>
                         <td>
-                          {item.hargaJualTerakhirTransaksi
-                            ? formatRupiah(item.hargaJualTerakhirTransaksi)
-                            : "-"}
+                          <span className="xl:text-[0.7rem] text-base-content">
+                            {item.hargaJualTerakhirTransaksi
+                              ? formatRupiah(item.hargaJualTerakhirTransaksi)
+                              : "-"}
+                          </span>
                         </td>
                         <td>
-                          {/* harga jual */}
-                          {formatRupiah(item.hargaJual)}
+                          <span className="xl:text-[0.7rem] text-base-content">
+                            {/* harga jual */}
+                            {formatRupiah(item.hargaJual)}
+                          </span>
                         </td>
-                        <td>{formatRupiah(item.diskon)}</td>
                         <td>
-                          {/* qty */}
-                          {item.quantity} x
+                          <span className="xl:text-[0.7rem] text-base-content">
+                            {formatRupiah(item.diskon)}
+                          </span>
                         </td>
-                        <td className="h-full">
-                          {formatRupiah(item.subTotal - item.diskon)}
+                        <td>
+                          <span className="xl:text-[0.7rem] text-base-content">
+                            {/* qty */}
+                            {item.quantity} x
+                          </span>
+                        </td>
+                        <td>
+                          <span className=" xl:text-[0.7rem] text-base-content">
+                            {formatRupiah(item.subTotal - item.diskon)}
+                          </span>
                         </td>
                         <td>
                           <div className="flex flex-row justify-start items-start gap-1">
@@ -230,7 +255,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                   ) : (
                     <tr>
                       <td colSpan={8}>
-                        <div className="w-full flex flex-row justify-center items-center pt-10">
+                        <div className="w-full h-40 flex flex-row justify-center items-center pt-10">
                           <span className="text-sm text-base-content/50">
                             Silahkan pilih produk
                           </span>
@@ -250,10 +275,10 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
           <div className="w-full flex flex-col justify-start items-start gap-2.5 pb-4 border-b border-base-content/10">
             {/* sub total */}
             <div className="w-full flex flex-row justify-between items-center">
-              <span className="text-xs font-medium text-base-content/60">
+              <span className="lg:text-[0.625rem] xl:text-xs font-medium text-base-content/60">
                 Subtotal
               </span>
-              <span className="text-xs font-medium text-base-content">
+              <span className="lg:text-[0.625rem] xl:text-xs font-semibold text-base-content">
                 {formatRupiah(
                   produkDetails.reduce((a, b) => a + b.subTotal, 0),
                 )}
@@ -262,17 +287,17 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
 
             {/* total diskon */}
             <div className="w-full flex flex-row justify-between items-center">
-              <span className="text-xs font-medium text-base-content/60">
+              <span className="lg:text-[0.625rem] xl:text-xs font-medium text-base-content/60">
                 Total Diskon
               </span>
               <div className="flex flex-row justify-start items-center gap-1">
                 {produkDetails.reduce((a, b) => a + b.diskon, 0) > 0 && (
-                  <span className="text-xs font-medium text-error">
+                  <span className="lg:text-[0.625rem] xl:text-xs font-semibold text-error">
                     <Minus className="size-2" />
                   </span>
                 )}
 
-                <span className="text-xs font-medium text-error">
+                <span className="lg:text-[0.625rem] xl:text-xs font-semibold text-error">
                   {formatRupiah(
                     produkDetails.reduce((a, b) => a + b.diskon, 0),
                   )}
@@ -282,9 +307,11 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
           </div>
 
           {/* total */}
-          <div className="w-full flex flex-row justify-between items-center pt-4 pb-1">
-            <span className="text-sm font-medium text-base-content">Total</span>
-            <span className="text-base font-medium text-emerald-600">
+          <div className="w-full flex flex-row justify-between items-center pt-3 pb-1">
+            <span className="xl:text-sm font-semibold text-base-content">
+              Total
+            </span>
+            <span className="xl:text-sm font-medium text-emerald-600">
               {formatRupiah(
                 produkDetails.reduce((a, b) => a + (b.subTotal - b.diskon), 0),
               )}
@@ -294,15 +321,15 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
 
         {/* button chart and transaksi */}
         {isUpdateKeranjang ? (
-          <div className="w-full flex flex-row justify-between items-center gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg p-3">
+          <div className="w-full flex flex-row justify-between items-center gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg  xl:p-1 h-12">
             {/* button batalkan */}
             <button
               type="button"
-              className="flex flex-row justify-center items-center gap-4 h-12 flex-1 rounded-lg border border-custom-primary hover-overlay hover:border-base-content/10"
+              className="flex flex-row justify-center items-center gap-4 h-full flex-1 rounded-lg border border-custom-primary hover-overlay"
               onClick={() => handleBatalkanSimpanKeranjang()}
             >
-              <X className="size-5 text-base-content" />
-              <span className="text-base-content text-xs font-semibold">
+              <X className="xl:size-5 lg:size-4 text-base-content" />
+              <span className="text-base-content lg:text-[0.625rem] xl:text-xs font-semibold">
                 Batalkan
               </span>
             </button>
@@ -310,16 +337,16 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
             {/* simpan */}
             <button
               type="button"
-              className="flex flex-row justify-center items-center gap-4 h-12 border border-custom-primary flex-1 rounded-lg bg-custom-primary hover-overlay"
+              className="flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-lg bg-custom-primary hover-overlay"
               onClick={() => handleSimpanPerubahanKeranjang()}
             >
               {isPendingKeranjang ? (
-                <div className="loading loading-sm text-custom-secondary" />
+                <div className="loading lg:loading-xs xl:loading-sm text-custom-secondary" />
               ) : (
                 <>
                   {/* icon */}
-                  <Save className="size-4 text-custom-secondary" />
-                  <span className="text-custom-secondary text-xs font-semibold">
+                  <Save className="xl:size-4 text-custom-secondary" />
+                  <span className="text-custom-secondary xl:text-xs font-semibold">
                     Simpan Perubahan
                   </span>
                 </>
@@ -327,48 +354,74 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
             </button>
           </div>
         ) : (
-          <div className="w-full flex flex-row justify-between items-center gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg p-3">
+          <div
+            className={cn(
+              "w-full flex flex-row justify-between items-center bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg xl:p-1 h-12",
+              isUpdateTransaction ? "gap-2" : "gap-4",
+            )}
+          >
             {/* button chart */}
             <button
               type="button"
-              className="flex flex-row justify-center items-center gap-4 h-12 flex-1 rounded-lg border border-custom-primary hover-overlay "
+              className={cn(
+                "flex-1 flex flex-row justify-center items-center gap-4 xl:h-full rounded-lg border border-custom-primary hover-overlay",
+              )}
               onClick={() => {
-                isUpdate
-                  ? handleBatalkanUpdateTransaction()
-                  : handleSimpanKeranjang();
+                handleSimpanKeranjang();
               }}
             >
               {isPendingKeranjang ? (
-                <div className="loading loading-sm text-base-content" />
+                <div className="loading lg:loading-xs xl:loading-sm text-base-content" />
               ) : (
                 <>
                   {/* icon */}
-                  {isUpdate ? (
-                    <X className="size-5 text-base-content" />
-                  ) : (
-                    <ShoppingCart className="size-5 text-base-content" />
-                  )}
-                  <span className="text-base-content text-xs font-semibold">
-                    {isUpdate ? "Batalkan" : "Masukan ke Keranjang"}
+                  <ShoppingCart className="xl:size-4 text-base-content" />
+                  <span className="text-base-content xl:text-xs font-semibold">
+                    Masukan ke Keranjang
                   </span>
                 </>
               )}
             </button>
-            <button
-              type="button"
-              className="flex flex-row justify-center items-center gap-4 h-12 border border-custom-primary flex-1 rounded-lg bg-custom-primary hover-overlay"
-              onClick={handleStepsNext}
-            >
-              {/* icon */}
-              {isUpdate ? (
-                <Save className="size-4 text-custom-secondary" />
-              ) : (
-                <Receipt className="size-4 text-custom-secondary" />
+
+            <div
+              className={cn(
+                "flex-1 flex flex-row h-full justify-end items-center gap-2",
               )}
-              <span className="text-custom-secondary text-xs font-semibold">
-                {isUpdate ? "Simpan Transaksi" : "Buat Transaksi"}
-              </span>
-            </button>
+            >
+              {isUpdateTransaction && (
+                <button
+                  type="button"
+                  className="flex flex-row justify-center items-center gap-4 h-full flex-1 rounded-lg bg-error hover-overlay "
+                  onClick={() => {
+                    handleBatalkanUpdateTransaction();
+                  }}
+                >
+                  <>
+                    {/* icon */}
+                    <X className="size-4 text-primary-white" />
+                    <span className="text-primary-white text-xs font-semibold">
+                      Batalkan
+                    </span>
+                  </>
+                </button>
+              )}
+
+              <button
+                type="button"
+                className="flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-lg bg-custom-primary hover-overlay"
+                onClick={handleStepsNext}
+              >
+                {/* icon */}
+                {isUpdateTransaction ? (
+                  <Save className="size-4 text-custom-secondary" />
+                ) : (
+                  <Receipt className="size-4 text-custom-secondary" />
+                )}
+                <span className="text-custom-secondary xl:text-xs font-semibold">
+                  {isUpdateTransaction ? "Simpan" : "Buat Transaksi"}
+                </span>
+              </button>
+            </div>
           </div>
         )}
       </div>

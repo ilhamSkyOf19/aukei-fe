@@ -214,6 +214,10 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     color: "success",
     message: "Transaksi berhasil dibuat",
   },
+  updated_transaction: {
+    color: "success",
+    message: "Transaksi berhasil diperbarui",
+  },
   simpan_keranjang: {
     color: "success",
     message: "Data berhasil di simpan ke keranjang",
@@ -235,5 +239,9 @@ export const TOAST_CONFIG_KERANJANG: Record<
   updated_keranjang: {
     color: "success",
     message: "Keranjang berhasil diubah",
+  },
+  deleted_keranjang: {
+    color: "error",
+    message: "Keranjang berhasil dihapus",
   },
 };

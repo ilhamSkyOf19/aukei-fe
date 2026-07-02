@@ -93,17 +93,17 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 </div>
 
                 <div className="w-full flex flex-row justify-around items-start gap-4">
-                  {/* harga terakhir transaksi */}
-                  <Label
-                    label={`Harga Jual Terakhir Transaksi`}
-                    value={formatRupiah(data?.hargaJualTerakhirTransaksi ?? "")}
-                    small
-                  />
-
                   {/* harga jual */}
                   <Label
                     label={`Harga Jual Patokan`}
                     value={formatRupiah(data?.hargaJual ?? "")}
+                    small
+                  />
+
+                  {/* harga terakhir transaksi */}
+                  <Label
+                    label={`Harga Jual Terakhir Transaksi`}
+                    value={formatRupiah(data?.hargaJualTerakhirTransaksi ?? "")}
                     small
                     lastIndex
                   />

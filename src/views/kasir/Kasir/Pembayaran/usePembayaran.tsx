@@ -8,6 +8,7 @@ import { TransactionServices } from "../../../../services/transaction.service";
 import { useAuthStore } from "../../../../stores/authStore";
 import useConfirm from "../../../../hooks/useConfirm";
 import triggerAnimation from "../../../../hooks/triggerAnimation";
+import useIsModeKasirStore from "../../../../stores/iseModaKasirStore";
 
 type ErrorType = "METODE_PEMBAYARAN_KOSONG" | "DATA_DI_BAYAR_KOSONG";
 
@@ -16,6 +17,9 @@ const usePembayaran = (params: {
   handleToast: (value: string) => void;
 }) => {
   const { handleSteps, handleToast } = params;
+
+  // is mode kasir
+  const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
 
   const kasir = useAuthStore((state) => state.pengguna);
 
@@ -28,10 +32,18 @@ const usePembayaran = (params: {
 
   // state metode is metode pembayaran
   const [metodePembayaran, setMetodePembayaran] =
-    useState<PaymentMethodType | null>(null);
+    useState<PaymentMethodType | null>(() => {
+      const metodePembayaran = localStorage.getItem("metode-pembayaran");
+
+      if (metodePembayaran) {
+        return JSON.parse(metodePembayaran);
+      } else {
+        return null;
+      }
+    });
 
   // state data details
-  const [dataDetails, setDataDetails] = useState<
+  const [dataDetails, _setDataDetails] = useState<
     | {
         produkId: number;
         quantity: number;
@@ -42,25 +54,42 @@ const usePembayaran = (params: {
         kode: string;
       }[]
     | null
-  >(null);
+  >(() => {
+    const details = localStorage.getItem("details");
+
+    if (details) {
+      return JSON.parse(details);
+    } else {
+      return null;
+    }
+  });
 
   //   state data pelanggan
-  const [pelanggan, setPelanggan] = useState<Pick<
+  const [pelanggan, _setPelanggan] = useState<Pick<
     IPelangganType,
     "id" | "nama" | "noWa"
-  > | null>(null);
-
-  //   get data form localstorage
-  useEffect(() => {
-    const details = localStorage.getItem("details");
+  > | null>(() => {
     const pelanggan = localStorage.getItem("pelanggan");
-    if (details && pelanggan) {
-      setDataDetails(JSON.parse(details));
-      setPelanggan(JSON.parse(pelanggan));
+
+    if (pelanggan) {
+      return JSON.parse(pelanggan);
     } else {
-      handleSteps(1);
+      return null;
     }
-  }, []);
+  });
+
+  // state data from keranjang
+  const [dataFromKeranjang, _setDataFromKeranjang] = useState<{
+    transactionId: number;
+  } | null>(() => {
+    const dataFromKeranjang = localStorage.getItem("data-from-keranjang");
+
+    if (dataFromKeranjang) {
+      return JSON.parse(dataFromKeranjang);
+    } else {
+      return null;
+    }
+  });
 
   // total diskon
   const totalDiskon = dataDetails?.reduce((a, b) => a + b.diskon, 0) ?? 0;
@@ -80,6 +109,11 @@ const usePembayaran = (params: {
   const handleMetodePembayaran = (metode: PaymentMethodType) => {
     if (metodePembayaran === metode) return;
     setMetodePembayaran(metode);
+
+    // set local storage
+    localStorage.setItem("metode-pembayaran", JSON.stringify(metode));
+
+    if (metode !== "CASH") localStorage.removeItem("di-bayar");
     setIsErrors((prev) =>
       prev.filter((item) => item !== "METODE_PEMBAYARAN_KOSONG"),
     );
@@ -112,7 +146,7 @@ const usePembayaran = (params: {
   // handle pay
   const handlePay = (value: number) => {
     // set local storage
-    localStorage.setItem("diBayar", JSON.stringify(value));
+    localStorage.setItem("di-bayar", JSON.stringify(value));
 
     // set data di bayar
     setDataDiBayar(value);
@@ -123,13 +157,22 @@ const usePembayaran = (params: {
 
   useEffect(() => {
     if (metodePembayaran === "CASH") {
-      setDataDiBayar(0);
+      // get data di bayar from local storage
+      const diBayar = localStorage.getItem("di-bayar");
+
+      if (diBayar) {
+        // set data di bayar
+        setDataDiBayar(JSON.parse(diBayar));
+      } else {
+        // set data di bayar
+        setDataDiBayar(0);
+      }
       return;
     }
 
     const debounce = setTimeout(() => {
       localStorage.setItem(
-        "metodePembayaran",
+        "metode-pembayaran",
         JSON.stringify(metodePembayaran),
       );
 
@@ -149,8 +192,9 @@ const usePembayaran = (params: {
         // clear local storage
         localStorage.removeItem("pelanggan");
         localStorage.removeItem("details");
-        localStorage.removeItem("diBayar");
-        localStorage.removeItem("metodePembayaran");
+        localStorage.removeItem("di-bayar");
+        localStorage.removeItem("metode-pembayaran");
+        localStorage.removeItem("data-from-keranjang");
 
         // set local storage
         localStorage.setItem(
@@ -183,6 +227,7 @@ const usePembayaran = (params: {
       if (!dataDetails || !pelanggan || !kasir) return;
 
       const dataTransaction: CreateTransactionForRequestType = {
+        ...(dataFromKeranjang && { id: dataFromKeranjang.transactionId }),
         details: dataDetails.map((item) => ({
           diskon: item.diskon,
           hargaJual: item.hargaJual,
@@ -211,8 +256,17 @@ const usePembayaran = (params: {
   // handle ubah transaction
   const handleUbahTransaction = () => {
     // set local storage
-    localStorage.setItem("isUpdateTransaction", "true");
+    localStorage.setItem("is-update-transaction", "true");
 
+    handleSteps(1);
+  };
+
+  // handle batal transaction
+  const handleBatalTransaction = () => {
+    localStorage.removeItem("details");
+    localStorage.removeItem("metode-pembayaran");
+    localStorage.removeItem("pelanggan");
+    localStorage.removeItem("data-from-keranjang");
     handleSteps(1);
   };
 
@@ -238,6 +292,8 @@ const usePembayaran = (params: {
     handleConfirm,
     handleCancel,
     buttonBayarRef,
+    handleBatalTransaction,
+    isModeKasir,
   };
 };
 

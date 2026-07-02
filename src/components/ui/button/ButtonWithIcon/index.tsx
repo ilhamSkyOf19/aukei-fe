@@ -14,6 +14,7 @@ type Props = {
   customWidth?: string;
   customHeight?: string;
   customClass?: string;
+  customSize?: "lg";
   reverse?: boolean;
 };
 const ButtonWithIcon: FC<Props> = ({
@@ -28,6 +29,7 @@ const ButtonWithIcon: FC<Props> = ({
   customHeight,
   customClass,
   reverse,
+  customSize,
 }) => {
   // navigation
   const navigate = useNavigate();
@@ -37,11 +39,12 @@ const ButtonWithIcon: FC<Props> = ({
       type="button"
       disabled={isLoading}
       className={cn(
-        "flex justify-center items-center hover-overlay rounded-md px-3 gap-2",
+        "flex justify-center items-center rounded-md px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
         customWidth ? customWidth : "w-auto",
         customClass,
-        customHeight ? customHeight : "h-10.5 md:h-9",
+        customHeight ? customHeight : "lg:h-9 xl:h-9",
+        isLoading ? "opacity-50" : "hover-overlay",
       )}
       onClick={() => {
         if (handleBtn) {
@@ -53,14 +56,20 @@ const ButtonWithIcon: FC<Props> = ({
     >
       {isLoading ? (
         <div className="w-20">
-          <div className={cn("loading loading-sm text-primary-white")} />
+          <div
+            className={cn(
+              "loading",
+              customSize ? "loading-md" : "loading-sm",
+              textColor ? textColor : "text-custom-secondary",
+            )}
+          />
         </div>
       ) : (
         <>
           {Icon ? (
             <Icon
               className={cn(
-                "size-4",
+                customSize ? "size-6" : "lg:size-3.5 xl:size-4",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-2",
               )}
@@ -68,7 +77,7 @@ const ButtonWithIcon: FC<Props> = ({
           ) : (
             <Plus
               className={cn(
-                "size-5",
+                customSize ? "size-6" : "lg:size-4.5 xl:size-5",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-2",
               )}
@@ -77,7 +86,8 @@ const ButtonWithIcon: FC<Props> = ({
 
           <span
             className={cn(
-              "font-medium text-xs",
+              "font-medium",
+              customSize ? "text-sm" : "lg:text-[0.625rem] xl:text-xs",
               textColor ? textColor : "text-custom-secondary",
               reverse && "order-1",
             )}

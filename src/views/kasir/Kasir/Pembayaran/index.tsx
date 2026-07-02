@@ -11,6 +11,7 @@ import {
   ShoppingBasketIcon,
   ShoppingCart,
   Tag,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import TitleModalFormulir from "../../../../components/ui/TitleModalFormulir";
@@ -26,6 +27,7 @@ import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
 import ModalAlert from "../../../../components/modals/ModalAlert";
+import ButtonText from "../../../../components/ui/button/ButtonText";
 
 type Props = {
   handleSteps: (value: number) => void;
@@ -55,173 +57,54 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
     buttonBayarRef,
     handleConfirm,
     handleUbahTransaction,
+    handleBatalTransaction,
+    isModeKasir,
   } = usePembayaran({
     handleSteps,
     handleToast,
   });
 
   return (
-    <div className="w-full flex flex-row justify-between items-start gap-6">
-      {/* metode pembayaran */}
-      <div className="flex-3 flex flex-col justify-start items-start rounded-lg bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm p-4">
-        {/* title */}
-        <TitleModalFormulir
-          title="Pilih Metode Pembayaran"
-          keterangan="Pilih metode pembayaran untuk menyelesaikan transaksi"
-        />
-
-        {/* metode pembayaran */}
-        <div className="w-full flex flex-col justify-start items-start mt-6 gap-2">
-          {/* header */}
-          <p className="text-xs text-base-content/80 font-medium">
-            Metode Pembayaran
-          </p>
-
-          {/* card */}
-          <div className="w-full flex flex-col justify-start items-start gap-3">
-            {/* cash */}
-            <CardMetodePembayaran
-              icon={Banknote}
-              bgColor="bg-emerald-50"
-              iconColor="text-emerald-500"
-              label="Tunai"
-              description="Bayar dengan uang tunai."
-              handleClick={() => handleMetodePembayaran("CASH")}
-              isActive={metodePembayaran === "CASH"}
-              isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
-            />
-
-            {/* transfer */}
-            <CardMetodePembayaran
-              icon={Landmark}
-              bgColor="bg-blue-50"
-              iconColor="text-blue-500"
-              label="Transfer Bank"
-              description="Bayar melalui transfer bank."
-              handleClick={() => handleMetodePembayaran("TRANSFER")}
-              isActive={metodePembayaran === "TRANSFER"}
-              isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
-            />
-
-            {/* qris */}
-            <CardMetodePembayaran
-              icon={QrCode}
-              bgColor="bg-purple-50"
-              iconColor="text-purple-500"
-              label="QRIS"
-              description="Bayar melalui QRIS."
-              handleClick={() => handleMetodePembayaran("QRIS")}
-              isActive={metodePembayaran === "QRIS"}
-              isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
-            />
-
-            {/* tempo */}
-            <CardMetodePembayaran
-              icon={CalendarClock}
-              bgColor="bg-amber-50"
-              iconColor="text-amber-500"
-              label="Kredit / Cicilan"
-              description="Bayar melalui kredit atau cicilan."
-              handleClick={() => handleMetodePembayaran("TEMPO")}
-              isActive={metodePembayaran === "TEMPO"}
-              isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
-            />
-          </div>
-
-          {/* message error */}
-          {isErrors.includes("METODE_PEMBAYARAN_KOSONG") && (
-            <ErrorMessage errorMessage="Harap pilih metode pembayaran" />
-          )}
-        </div>
-
-        {/* button bayar */}
-        <div className="w-full flex flex-col justify-start items-start">
-          <button
-            ref={buttonBayarRef}
-            type="button"
-            className={cn(
-              "w-full h-10 bg-emerald-600 rounded-lg flex flex-row hover-overlay justify-center items-center mt-4",
-              metodePembayaran === "CASH"
-                ? isErrors.includes("DATA_DI_BAYAR_KOSONG")
-                  ? "animate-pop-in-active"
-                  : "animate-pop-in"
-                : "hidden",
-            )}
-            onClick={() => handleShowModalCalculator()}
-          >
-            <span className="text-xs font-medium text-primary-white">
-              Bayar
-            </span>
-          </button>
-
-          <ErrorMessage
-            errorMessage={
-              isErrors.includes("DATA_DI_BAYAR_KOSONG")
-                ? "Harap lakukan pembayaran terlebih dahulu"
-                : ""
-            }
-          />
-        </div>
-      </div>
-
-      {/* daftar produk */}
-      <div className="flex-4 flex flex-col justify-start items-start gap-4">
-        {/* header */}
-        <div className="w-full flex flex-row justify-between items-center bg-base-100 p-4 rounded-lg border border-transparent dark:border-base-content/10 shadow-sm">
-          {/* title */}
-          <h3 className="text-sm font-medium text-base-content">
-            Ringkasan Transaksi
-          </h3>
-
-          {/* button update transaksi */}
-          <ButtonWithIcon
-            handleBtn={() => handleUbahTransaction()}
-            icon={Pencil}
-            bgColor="bg-info"
-            textColor="text-primary-white"
-            label="Ubah Transaksi"
-          />
-        </div>
-
+    <div className="w-full flex flex-row justify-start items-start gap-4">
+      <div className="flex-3  flex flex-col justify-start items-start gap-2">
         {/* data pelanggan */}
+
         <div className="w-full flex flex-col justify-start items-start gap-2">
-          {/* header */}
-          <p className="text-xs text-base-content/80 font-medium">Pelanggan</p>
           <div
             className={cn(
-              "w-full flex flex-row justify-between items-center border rounded-lg py-3 px-4 border-transparent bg-base-100 shadow-sm dark:border-base-content/10",
+              "w-full flex flex-row justify-between items-center border rounded-lg py-3 px-4 border-transparent bg-base-100 shadow-sm dark:border-base-content/10 h-15",
             )}
           >
+            <div className="flex-1 flex flex-row justify-start items-center">
+              <p className="text-sm text-base-content font-medium">
+                Data Pelanggan
+              </p>
+            </div>
+
             {/* avatar, name, no telp */}
-            <div className="flex-1 flex flex-row justify-start items-center gap-3">
+            <div className="flex-2 flex flex-row justify-end items-center gap-3">
               {pelanggan === null ? (
                 <span className="text-sm text-base-content/80 font-medium">
                   Tidak ada pelanggan
                 </span>
               ) : (
-                <div className="w-full flex flex-col justify-start items-start gap-2.5">
-                  <div className="w-full flex flex-row justify-start items-center gap-3">
-                    {/* avatar */}
-                    <div className="avatar avatar-placeholder">
-                      <div className="bg-custom-primary text-neutral-content w-10 rounded-full">
-                        <span className="text-base text-custom-secondary font-medium uppercase">
-                          {highlightName(pelanggan.nama)}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col justify-start items-start gap-1">
-                      {/* name */}
-                      <span className="text-base-content font-medium text-sm">
-                        {pelanggan.nama}
-                      </span>
-                      {/* no telp */}
-                      <div className="w-full flex flex-row justify-start items-center gap-2">
-                        <Phone className="size-3 text-base-content/50" />
-                        <span className="text-base-content/50 font-semibold text-xs">
-                          {formatNumberPhone(pelanggan.noWa)}
-                        </span>
-                      </div>
-                    </div>
+                <div className="w-full flex flex-row justify-end items-start gap-4">
+                  {/* name */}
+                  <div className="w-35 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
+                    <span className="text-base-content/50 font-semibold text-[0.625rem]">
+                      Nama
+                    </span>
+                    <span className="text-base-content font-semibold text-xs">
+                      {pelanggan.nama}
+                    </span>
+                  </div>
+                  <div className="w-30 flex flex-col justify-start items-start gap-0.5">
+                    <span className="text-base-content/50 font-semibold text-[0.625rem]">
+                      No Whatsapp
+                    </span>
+                    <span className="text-base-content font-semibold text-xs">
+                      {formatNumberPhone(pelanggan.noWa)}
+                    </span>
                   </div>
                 </div>
               )}
@@ -229,13 +112,146 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
           </div>
         </div>
 
-        <div className="w-full flex flex-col justify-start items-start gap-2">
-          {/* header */}
-          <p className="text-xs text-base-content/80 font-medium">
-            Detail Produk ({dataDetails && dataDetails.length})
-          </p>
-          <div className="overflow-x-auto w-full rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6">
-            <table className="table table-xs">
+        {/* metode pembayaran */}
+        <div className="w-full flex flex-col justify-start items-start rounded-lg bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm p-4">
+          {/* title */}
+          <TitleModalFormulir
+            title="Pilih Metode Pembayaran"
+            keterangan="Pilih metode pembayaran untuk menyelesaikan transaksi"
+          />
+
+          {/* metode pembayaran */}
+          <div className="w-full flex flex-col justify-start items-start mt-4 gap-2">
+            {/* header */}
+            <p className="text-xs text-base-content/80 font-medium">
+              Metode Pembayaran
+            </p>
+
+            {/* card */}
+            <div className="w-full flex flex-col justify-start items-start gap-3">
+              {/* cash */}
+              <CardMetodePembayaran
+                icon={Banknote}
+                bgColor="bg-emerald-50"
+                iconColor="text-emerald-500"
+                label="Tunai"
+                description="Bayar dengan uang tunai."
+                handleClick={() => handleMetodePembayaran("CASH")}
+                isActive={metodePembayaran === "CASH"}
+                isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
+              />
+
+              {/* transfer */}
+              <CardMetodePembayaran
+                icon={Landmark}
+                bgColor="bg-blue-50"
+                iconColor="text-blue-500"
+                label="Transfer Bank"
+                description="Bayar melalui transfer bank."
+                handleClick={() => handleMetodePembayaran("TRANSFER")}
+                isActive={metodePembayaran === "TRANSFER"}
+                isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
+              />
+
+              {/* qris */}
+              <CardMetodePembayaran
+                icon={QrCode}
+                bgColor="bg-purple-50"
+                iconColor="text-purple-500"
+                label="QRIS"
+                description="Bayar melalui QRIS."
+                handleClick={() => handleMetodePembayaran("QRIS")}
+                isActive={metodePembayaran === "QRIS"}
+                isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
+              />
+
+              {/* tempo */}
+              <CardMetodePembayaran
+                icon={CalendarClock}
+                bgColor="bg-amber-50"
+                iconColor="text-amber-500"
+                label="Kredit / Cicilan"
+                description="Bayar melalui kredit atau cicilan."
+                handleClick={() => handleMetodePembayaran("TEMPO")}
+                isActive={metodePembayaran === "TEMPO"}
+                isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
+              />
+            </div>
+
+            {/* message error */}
+            {isErrors.includes("METODE_PEMBAYARAN_KOSONG") && (
+              <ErrorMessage errorMessage="Harap pilih metode pembayaran" />
+            )}
+          </div>
+
+          {/* button bayar */}
+          <div className="w-full flex flex-col justify-start items-start">
+            <button
+              ref={buttonBayarRef}
+              type="button"
+              className={cn(
+                "w-full h-10 bg-emerald-600 rounded-lg flex flex-row hover-overlay justify-center items-center mt-4",
+                metodePembayaran === "CASH"
+                  ? isErrors.includes("DATA_DI_BAYAR_KOSONG")
+                    ? "animate-pop-in-active"
+                    : "animate-pop-in"
+                  : "hidden",
+              )}
+              onClick={() => handleShowModalCalculator()}
+            >
+              <span className="text-xs font-medium text-primary-white">
+                Bayar
+              </span>
+            </button>
+
+            <ErrorMessage
+              errorMessage={
+                isErrors.includes("DATA_DI_BAYAR_KOSONG")
+                  ? "Harap lakukan pembayaran terlebih dahulu"
+                  : ""
+              }
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* daftar produk */}
+      <div className="flex-4 flex h-full flex-col justify-start items-start gap-2">
+        {/* header */}
+        <div className="w-full h-15 flex flex-row justify-between items-center bg-base-100 p-4 rounded-lg border border-transparent dark:border-base-content/10 shadow-sm">
+          {/* title */}
+          <h3 className="text-sm font-medium text-base-content">
+            Ringkasan Transaksi
+          </h3>
+
+          <div className="flex flex-row justify-end items-center gap-4">
+            {/* button update transaksi */}
+            <ButtonWithIcon
+              handleBtn={() => handleBatalTransaction()}
+              icon={X}
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              label="Batalkan Transaksi"
+            />
+            {/* button update transaksi */}
+            <ButtonWithIcon
+              handleBtn={() => handleUbahTransaction()}
+              icon={Pencil}
+              bgColor="bg-info"
+              textColor="text-primary-white"
+              label="Ubah Transaksi"
+            />
+          </div>
+        </div>
+
+        <div className="w-full flex flex-col justify-start items-start">
+          <div
+            className={cn(
+              "overflow-y-auto w-full rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6",
+              isModeKasir ? "xl:h-85" : "xl:h-74.5",
+            )}
+          >
+            <table className="table table-xs table-pin-rows table-pin-cols table-zebra">
               {/* head */}
               <thead className="bg-base-content/5 h-10">
                 <tr className="text-[0.625rem]">
@@ -261,17 +277,34 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
                       </td>
                       <td>
                         <div className="flex flex-col justify-start items-start gap-px">
-                          <p>{item.nama}</p>
-                          <span className="font-medium text-base-content/50">
+                          <p className="xl:text-[0.7rem] text-base-content">
+                            {item.nama}
+                          </p>
+                          <span className="xl:text-[0.625rem] font-medium text-base-content/50">
                             {item.kode}
                           </span>
                         </div>
                       </td>
-                      <td>{formatRupiah(item.hargaJual)}</td>
-                      <td>{formatRupiah(item.diskon)}</td>
-                      <td>{item.quantity}</td>
                       <td>
-                        <span className="font-medium text-base-content">
+                        <span className="xl:text-[0.7rem] text-base-content">
+                          {/* harga jual */}
+                          {formatRupiah(item.hargaJual)}
+                        </span>
+                      </td>
+                      <td>
+                        {" "}
+                        <span className="xl:text-[0.7rem] text-base-content">
+                          {formatRupiah(item.diskon)}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="xl:text-[0.7rem] text-base-content">
+                          {/* qty */}
+                          {item.quantity} x
+                        </span>
+                      </td>
+                      <td>
+                        <span className=" xl:text-[0.7rem] text-base-content">
                           {formatRupiah(
                             item.hargaJual * item.quantity - item.diskon,
                           )}
@@ -289,116 +322,120 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
           </div>
         </div>
 
-        {/* sub total */}
-        <div className="w-full flex flex-col justify-start items-start rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4">
-          {dataDetails && (
-            <>
-              {/* sub total & total diskon */}
-              <div className="w-full flex flex-col justify-start items-start gap-3 pb-4 border-b border-base-content/10">
-                {/* sub total */}
-                <div className="w-full flex flex-row justify-between items-center">
-                  <div className="flex flex-row justify-start items-center gap-4">
-                    {/* icon */}
-                    <ShoppingBasketIcon className="size-4 text-base-content/60" />
-                    <span className="text-xs font-medium text-base-content/60">
-                      Subtotal
-                    </span>
-                  </div>
-                  <span className="text-xs font-medium text-base-content">
-                    {formatRupiah(subTotalBeforeDiskon)}
-                  </span>
-                </div>
-
-                {/* total diskon */}
-                <div className="w-full flex flex-row justify-between items-center">
-                  <div className="flex flex-row justify-start items-center gap-4">
-                    {/* icon */}
-                    <Tag className="size-4 text-base-content/60" />
-                    <span className="text-xs font-medium text-base-content/60">
-                      Total Diskon
-                    </span>
-                  </div>
-                  <div className="flex flex-row justify-start items-center gap-1">
-                    {totalDiskon > 0 && (
-                      <span className="text-xs font-medium text-error">
-                        <Minus className="size-2" />
-                      </span>
-                    )}
-
-                    <span className="text-xs font-medium text-error">
-                      {formatRupiah(totalDiskon)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* total */}
-              <div className="w-full flex flex-col justify-start items-start gap-3 pt-4">
-                <div className="w-full flex flex-row justify-between items-center">
-                  <div className="flex flex-row justify-start items-center gap-4">
-                    {/* icon */}
-                    <ShoppingCart className="size-4 text-base-content/60" />
-                    <span className="text-sm font-medium text-base-content/60">
-                      Total
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-blue-400">
-                    {formatRupiah(totalAfterDiskon)}
-                  </span>
-                </div>
-
-                {/* total di bayar */}
-                {metodePembayaran && (
+        <div className="w-full h-45 flex flex-row justify-between items-center gap-4">
+          {/* sub total */}
+          <div className="w-full h-full flex flex-col justify-start items-start rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4">
+            {dataDetails && (
+              <>
+                {/* sub total & total diskon */}
+                <div className="w-full flex flex-col justify-start items-start gap-3 pb-4 border-b border-base-content/10">
+                  {/* sub total */}
                   <div className="w-full flex flex-row justify-between items-center">
                     <div className="flex flex-row justify-start items-center gap-4">
                       {/* icon */}
-                      <Banknote className="size-4 text-base-content/60" />
-                      <span className="text-sm font-medium text-base-content/60">
-                        {metodePembayaran === "CASH" && "Tunai"}
-                        {metodePembayaran === "QRIS" && "QRIS"}
-                        {metodePembayaran === "TRANSFER" && "Transfer"}
+                      <ShoppingBasketIcon className="size-4 text-base-content/60" />
+                      <span className="text-xs font-medium text-base-content/60">
+                        Subtotal
                       </span>
                     </div>
-                    <span className="text-sm font-medium text-base-content">
-                      {formatRupiah(dataDiBayar)}
+                    <span className="text-xs font-medium text-base-content">
+                      {formatRupiah(subTotalBeforeDiskon)}
                     </span>
                   </div>
-                )}
 
-                {metodePembayaran === "CASH" && (
-                  <>
-                    {/* kembalian */}
+                  {/* total diskon */}
+                  <div className="w-full flex flex-row justify-between items-center">
+                    <div className="flex flex-row justify-start items-center gap-4">
+                      {/* icon */}
+                      <Tag className="size-4 text-base-content/60" />
+                      <span className="text-xs font-medium text-base-content/60">
+                        Total Diskon
+                      </span>
+                    </div>
+                    <div className="flex flex-row justify-start items-center gap-1">
+                      {totalDiskon > 0 && (
+                        <span className="text-xs font-medium text-error">
+                          <Minus className="size-2" />
+                        </span>
+                      )}
+
+                      <span className="text-xs font-medium text-error">
+                        {formatRupiah(totalDiskon)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* total */}
+                <div className="w-full flex flex-col justify-start items-start gap-3 pt-4">
+                  <div className="w-full flex flex-row justify-between items-center">
+                    <div className="flex flex-row justify-start items-center gap-4">
+                      {/* icon */}
+                      <ShoppingCart className="size-4 text-base-content/60" />
+                      <span className="text-xs font-medium text-base-content/60">
+                        Total
+                      </span>
+                    </div>
+                    <span className="text-xs font-medium text-blue-400">
+                      {formatRupiah(totalAfterDiskon)}
+                    </span>
+                  </div>
+
+                  {/* total di bayar */}
+                  {metodePembayaran && (
                     <div className="w-full flex flex-row justify-between items-center">
                       <div className="flex flex-row justify-start items-center gap-4">
                         {/* icon */}
-                        <Coins className="size-4 text-base-content/60" />
-                        <span className="text-sm font-medium text-base-content/60">
-                          Kembalian
+                        <Banknote className="size-4 text-base-content/60" />
+                        <span className="text-xs font-medium text-base-content/60">
+                          {metodePembayaran === "CASH" && "Tunai"}
+                          {metodePembayaran === "QRIS" && "QRIS"}
+                          {metodePembayaran === "TRANSFER" && "Transfer"}
                         </span>
                       </div>
-                      <span className="text-sm font-medium text-emerald-600">
-                        {formatRupiah(
-                          dataDiBayar === 0
-                            ? 0
-                            : dataDiBayar - totalAfterDiskon,
-                        )}
+                      <span className="text-xs font-medium text-base-content">
+                        {formatRupiah(dataDiBayar)}
                       </span>
                     </div>
-                  </>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+                  )}
 
-        {/* button selesaikan transaksi */}
-        <ButtonWithIcon
-          icon={BadgeCheck}
-          customClass="w-full"
-          label="Selesaikan Transaksi"
-          handleBtn={() => handleTransaction()}
-          isLoading={isPendingTransaction}
-        />
+                  {metodePembayaran === "CASH" && (
+                    <>
+                      {/* kembalian */}
+                      <div className="w-full flex flex-row justify-between items-center">
+                        <div className="flex flex-row justify-start items-center gap-4">
+                          {/* icon */}
+                          <Coins className="size-4 text-base-content/60" />
+                          <span className="text-xs font-medium text-base-content/60">
+                            Kembalian
+                          </span>
+                        </div>
+                        <span className="text-xs font-medium text-emerald-600">
+                          {formatRupiah(
+                            dataDiBayar === 0
+                              ? 0
+                              : dataDiBayar - totalAfterDiskon,
+                          )}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* button selesaikan transaksi */}
+          <ButtonText
+            customHeight="h-full shrink-0"
+            customWidth="w-40"
+            label="Selesaikan Transaksi"
+            handleClick={() => handleTransaction()}
+            isLoading={isPendingTransaction}
+            bgColor="bg-custom-primary rounded-lg"
+            textColor="text-custom-secondary"
+          />
+        </div>
       </div>
 
       {/* modal calculator */}

@@ -15,6 +15,7 @@ import Avatar from "../../../../components/ui/Avatar";
 import useDaftarKeranjang from "./useDaftarKeranjang";
 import { formatNumberPhone, formatRupiah } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
+import ModalDelete from "../../../../components/modals/ModalDelete";
 
 const DaftarKeranjang = () => {
   const {
@@ -26,9 +27,15 @@ const DaftarKeranjang = () => {
     subTotalBeforeDiskon,
     totalAfterDiskon,
     totalDiskon,
+    handleDeleteKeranjang,
+    isPendingDeleteKeranjang,
+    handleCloseModalDeleteKeranjang,
+    handleShowModalDeleteKeranjang,
+    modalDeleteKeranjangRef,
+    dataDeleteKeranjang,
   } = useDaftarKeranjang();
   return (
-    <div className="flex-6 flex flex-col justify-start items-start gap-4">
+    <div className="flex-6 flex flex-col justify-start items-start gap-2">
       {isLoadingKeranjang ? (
         <div></div>
       ) : isExistDataProduk ? (
@@ -211,13 +218,30 @@ const DaftarKeranjang = () => {
             </div>
 
             {/* button transaction */}
-            <div className="w-100 flex flex-row justify-end items-center">
+            <div className="w-100 flex flex-row justify-end items-center gap-4">
+              <ButtonWithIcon
+                icon={Trash2}
+                bgColor="bg-error"
+                textColor="text-primary-white"
+                label="Hapus Keranjang"
+                customWidth="w-full"
+                isLoading={isPendingDeleteKeranjang}
+                handleBtn={() =>
+                  handleShowModalDeleteKeranjang(undefined, {
+                    id: dataKeranjang?.data?.id,
+                    pelanggan: {
+                      id: dataKeranjang?.data?.pelanggan?.id,
+                      nama: dataKeranjang?.data?.pelanggan?.nama,
+                    },
+                  })
+                }
+              />
               <ButtonWithIcon
                 icon={ChevronRight}
                 label="Lanjut ke Transaksi"
                 reverse
-                customWidth="w-[50%]"
-                handleBtn={handleLanjutTransaksi}
+                customWidth="w-full"
+                handleBtn={() => handleLanjutTransaksi(dataKeranjang?.data?.id)}
               />
             </div>
           </div>
@@ -251,6 +275,15 @@ const DaftarKeranjang = () => {
           </div>
         </div>
       )}
+
+      {/* use modal delete */}
+      <ModalDelete
+        modalRef={modalDeleteKeranjangRef}
+        handleCloseModal={handleCloseModalDeleteKeranjang}
+        handleDelete={handleDeleteKeranjang}
+        highlightData={dataDeleteKeranjang?.pelanggan?.nama}
+        bigTitle="Apakah anda yakin ingin menghapus keranjang pelanggan dengan nama dibawah ini?"
+      />
     </div>
   );
 };
