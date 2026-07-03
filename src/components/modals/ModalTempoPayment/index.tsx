@@ -1,14 +1,7 @@
 import type { FC, RefObject } from "react";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
-import { cn } from "../../../utils/cn";
 import { formatRupiah, getDaysFromWeeks } from "../../../helpers/helpers";
-import {
-  CalendarDays,
-  CalendarDaysIcon,
-  CircleDollarSign,
-  Receipt,
-  Trash2,
-} from "lucide-react";
+import { CalendarDays, CircleDollarSign, Receipt } from "lucide-react";
 import InputPrice from "../../inputs/InputPrice";
 import type {
   CreateTempoType,
@@ -17,9 +10,9 @@ import type {
 import useModalTempoPayment from "./useModalTempoPayment";
 import InputChoose from "../../inputs/InputChoose";
 import InputNumber from "../../inputs/InputNumber";
-import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmit from "../../ui/button/ButtonSubmit";
+import RowJadwaTempo from "../../ui/RowJadwalTempo";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -144,64 +137,7 @@ const ModalTempoPayment: FC<Props> = ({
           </div>
 
           {/* jadwal tempo */}
-          <div className="w-full flex flex-col justify-start items-start gap-2">
-            {/* title */}
-            <h3 className="text-xs font-medium text-base-content">
-              Jadwal Cicilan Tempo
-            </h3>
-
-            <div className="w-full flex flex-col justify-start items-start border overflow-hidden border-base-content/10 rounded-lg">
-              {/* header */}
-              <div className="w-full grid grid-cols-10 gap-2 px-4 py-3 bg-gray-200 sticky top-0 z-10">
-                {/* number */}
-                <div className="col-span-1 flex flex-row justify-start items-center">
-                  <span className="text-xs font-semibold text-base-content/80">
-                    No
-                  </span>
-                </div>
-
-                <div className="col-span-4 flex flex-row justify-start items-center gap-4">
-                  <span className="text-xs font-semibold text-base-content/80">
-                    Tanggal Jatuh Tempo
-                  </span>
-                </div>
-
-                {/* nominal */}
-                <div className="col-span-3 flex flex-row justify-start items-center">
-                  <span className="text-xs font-semibold text-base-content/80">
-                    Nominal
-                  </span>
-                </div>
-
-                <div className="col-span-2 flex flex-row justify-end items-center">
-                  <span className="text-xs font-semibold text-base-content/80">
-                    Aksi
-                  </span>
-                </div>
-              </div>
-
-              {/* rows data */}
-              <div className="w-full flex flex-col justify-start items-start  max-h-60 overflow-y-auto scrollbar-thumb-custom-secondary">
-                {dataTempo.length > 0 ? (
-                  dataTempo.map((item) => (
-                    <Rows
-                      key={item.cicilanKe}
-                      number={item.cicilanKe}
-                      nominal={item.nominal}
-                      jatuhTempo={item.jatuhTempo}
-                      lastIndex={item.cicilanKe === dataTempo.length}
-                    />
-                  ))
-                ) : (
-                  <div className="col-span-10 flex flex-row w-full justify-center items-center py-12 px-4">
-                    <span className="text-xs text-base-content/50">
-                      Silahkan pilih jumlah cicilan dan tenor
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <RowJadwaTempo aksi={true} dataTempo={dataTempo} />
         </div>
 
         {/* button batal dan simpan */}
@@ -219,53 +155,4 @@ const ModalTempoPayment: FC<Props> = ({
 };
 
 // rows
-type RowsType = {
-  number: number;
-  jatuhTempo: Date;
-  nominal: number;
-  lastIndex?: boolean;
-};
-const Rows: FC<RowsType> = ({ nominal, number, jatuhTempo, lastIndex }) => {
-  return (
-    <div
-      className={cn(
-        "w-full grid grid-cols-10 gap-2 px-4 py-3",
-        !lastIndex && "border-b border-base-content/10",
-      )}
-    >
-      {/* number */}
-      <div className="col-span-1 flex flex-row justify-start items-center">
-        <div className="w-6 h-6 flex flex-row justify-center items-center rounded-full bg-custom-primary/50">
-          <span className="text-custom-secondary text-[0.625rem] font-medium">
-            {number}
-          </span>
-        </div>
-      </div>
-
-      {/* date */}
-      <div className="col-span-4 flex flex-row justify-start items-center gap-4">
-        {/* icon */}
-        <CalendarDaysIcon className="size-4 text-base-content" />
-
-        {/* date */}
-        <span className="text-xs font-medium text-base-content">
-          {formatTanggalPanjang(jatuhTempo)}
-        </span>
-      </div>
-
-      {/* nominal */}
-      <div className="col-span-3 flex flex-row justify-start items-center">
-        <span className="text-xs font-semibold text-info">
-          {formatRupiah(nominal)}
-        </span>
-      </div>
-
-      <div className="col-span-2 flex flex-row justify-end items-center">
-        <button type="button" className="group">
-          <Trash2 className="size-4 text-base-content/50 group-hover:text-error transition-all duration-150 ease-in-out" />
-        </button>
-      </div>
-    </div>
-  );
-};
 export default ModalTempoPayment;

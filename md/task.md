@@ -86,7 +86,11 @@
 
 - [✅] Membuat fitur update keranjang
 
-- [ ] Fitur Hapus Details pada halaman keranjang
+- [✅] Fitur Hapus Details pada halaman keranjang
+
+- [✅] Pembayaran Tempo
+
+- [ ] Menyesuaikan preview struk untuk pembayaran tempo
 
 - [ ] Membuat fitur update pelanggan di keranjang
 
