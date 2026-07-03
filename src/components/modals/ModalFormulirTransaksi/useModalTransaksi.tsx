@@ -69,7 +69,7 @@ const useModalTransaksi = (params: {
         (diskon ?? data?.diskon ?? 0);
 
       setSubTotal(total);
-    }, 500);
+    }, 300);
 
     return () => clearTimeout(timeout);
   }, [

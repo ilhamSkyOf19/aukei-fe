@@ -17,7 +17,7 @@ export const TOAST_CONFIG_KATEGORI_PRODUK: Record<
   },
   updated: {
     color: "info",
-    message: "Kategori produk berhasil diubah",
+    message: "Kategori produk berhasil diperbarui",
   },
   deleted: {
     color: "error",
@@ -39,7 +39,7 @@ export const TOAST_CONFIG_PRODUK: Record<
   },
   updated_produk: {
     color: "info",
-    message: "Produk berhasil diubah",
+    message: "Produk berhasil diperbarui",
   },
   deleted_produk: {
     color: "error",
@@ -57,7 +57,7 @@ export const TOAST_CONFIG_PRODUK_DETAIL: Record<
 > = {
   updated_produk: {
     color: "info",
-    message: "Produk berhasil diubah",
+    message: "Produk berhasil diperbarui",
   },
 };
 
@@ -71,7 +71,7 @@ export const TOAST_CONFIG_BARANG_MASUK: Record<
 > = {
   updated_barang_masuk: {
     color: "info",
-    message: "Barang masuk berhasil diubah",
+    message: "Barang masuk berhasil diperbarui",
   },
   deleted_barang_masuk: {
     color: "error",
@@ -89,7 +89,7 @@ export const TOAST_CONFIG_BARANG_KELUAR: Record<
 > = {
   updated_barang_keluar: {
     color: "info",
-    message: "Barang masuk berhasil diubah",
+    message: "Barang masuk berhasil diperbarui",
   },
   deleted_barang_keluar: {
     color: "error",
@@ -119,7 +119,7 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
   },
   updated_barang_masuk_detail: {
     color: "info",
-    message: "Barang berhasil diubah",
+    message: "Barang berhasil diperbarui",
   },
   posted: {
     color: "success",
@@ -131,11 +131,11 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
   },
   updated_tanggalMasuk: {
     color: "info",
-    message: "Tanggal masuk berhasil diubah",
+    message: "Tanggal masuk berhasil diperbarui",
   },
   updated_keterangan: {
     color: "info",
-    message: "Keterangan barang berhasil diubah",
+    message: "Keterangan barang berhasil diperbarui",
   },
 };
 
@@ -160,7 +160,7 @@ export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<
   },
   updated_barang_keluar_detail: {
     color: "info",
-    message: "Barang berhasil diubah",
+    message: "Barang berhasil diperbarui",
   },
   posted: {
     color: "success",
@@ -172,11 +172,11 @@ export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<
   },
   updated_tanggalKeluar: {
     color: "info",
-    message: "Tanggal keluar berhasil diubah",
+    message: "Tanggal keluar berhasil diperbarui",
   },
   updated_keterangan: {
     color: "info",
-    message: "Keterangan barang berhasil diubah",
+    message: "Keterangan barang berhasil diperbarui",
   },
 };
 
@@ -190,7 +190,7 @@ export const TOAST_CONFIG_PEGAWAI: Record<
 > = {
   updated_pegawai: {
     color: "info",
-    message: "Pegawai berhasil diubah",
+    message: "Pegawai berhasil diperbarui",
   },
   created_pegawai: {
     color: "success",
@@ -238,7 +238,7 @@ export const TOAST_CONFIG_KERANJANG: Record<
 > = {
   updated_keranjang: {
     color: "success",
-    message: "Keranjang berhasil diubah",
+    message: "Keranjang berhasil diperbarui",
   },
   deleted_keranjang: {
     color: "error",

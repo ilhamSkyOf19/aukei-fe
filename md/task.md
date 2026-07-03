@@ -86,6 +86,8 @@
 
 - [✅] Membuat fitur update keranjang
 
+- [ ] Fitur Hapus Details pada halaman keranjang
+
 - [ ] Membuat fitur update pelanggan di keranjang
 
 - [ ] Membuat formulir update pelanggan (Owner)

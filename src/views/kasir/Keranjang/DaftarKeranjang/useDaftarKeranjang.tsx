@@ -26,7 +26,11 @@ const useDaftarKeranjang = () => {
     handleShowModal: handleShowModalDeleteKeranjang,
     handleCloseModal: handleCloseModalDeleteKeranjang,
     dataModal: dataDeleteKeranjang,
-  } = useModal<{ id?: number; pelanggan: { id?: number; nama?: string } }>();
+  } = useModal<{
+    id?: number;
+    pelanggan: { id?: number; nama?: string };
+    fromDetails?: boolean;
+  }>();
 
   // use query
   const { data: dataKeranjang, isLoading: isLoadingKeranjang } = useQuery({
@@ -160,6 +164,64 @@ const useDaftarKeranjang = () => {
     }
   };
 
+  const {
+    mutateAsync: mutateDeleteProdukInKeranjang,
+    isPending: isPendingDeleteProdukInKeranjang,
+  } = useMutation({
+    mutationFn: (data: { id: number }) =>
+      KeranjangServices.deleteProdukInKeranjang({
+        id: data.id,
+      }),
+    onSuccess: () => {
+      // invalidate
+      queryClient.invalidateQueries({
+        queryKey: ["keranjang", isChoosePelanggan],
+      });
+
+      // set toast
+      navigate(
+        {
+          pathname: currentPathname,
+          search: `?pelangganId=${isChoosePelanggan}`,
+        },
+        {
+          state: {
+            toast: "updated_keranjang",
+          },
+        },
+      );
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // handle delete produk in keranjang
+  const handleDeleteProdukInKeranjang = async (data: { id: number }) => {
+    try {
+      // check count produk in keranjang
+      if (dataKeranjang?.data?.details?.length === 1) {
+        // check data keranjang
+        if (!dataKeranjang?.data) return;
+
+        // delete keranjang
+        return handleShowModalDeleteKeranjang(undefined, {
+          id: dataKeranjang.data.id,
+          pelanggan: {
+            id: dataKeranjang.data.pelanggan.id,
+            nama: dataKeranjang.data.pelanggan.nama,
+          },
+          fromDetails: true,
+        });
+      } else {
+        // delete produk in keranjang
+        return await mutateDeleteProdukInKeranjang(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     isExistDataProduk,
     dataKeranjang,
@@ -175,6 +237,8 @@ const useDaftarKeranjang = () => {
     handleCloseModalDeleteKeranjang,
     handleShowModalDeleteKeranjang,
     dataDeleteKeranjang,
+    handleDeleteProdukInKeranjang,
+    isPendingDeleteProdukInKeranjang,
   };
 };
 

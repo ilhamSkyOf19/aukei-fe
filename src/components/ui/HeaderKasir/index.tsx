@@ -92,14 +92,14 @@ const HeaderKasir: FC<Props> = ({ step }) => {
       {step && (
         <ul
           className={cn(
-            "steps step text-xs",
+            "steps step text-[0.625rem]",
             isModeKasir ? "text-primary-white" : "text-base-content",
           )}
         >
           <li
             data-content={step > 1 ? "✓" : "1"}
             className={cn(
-              "step after:w-6 after:h-6",
+              "step after:w-5.5 after:h-5.5",
               step >= 1 && "step-primary",
             )}
           >
@@ -109,7 +109,7 @@ const HeaderKasir: FC<Props> = ({ step }) => {
           <li
             data-content={step > 2 ? "✓" : "2"}
             className={cn(
-              "step before:h-1 after:w-6 after:h-6",
+              "step before:h-1 after:w-5.5 after:h-5.5",
               step >= 2 && "step-primary",
             )}
           >
@@ -118,7 +118,7 @@ const HeaderKasir: FC<Props> = ({ step }) => {
           <li
             data-content={step === 3 ? "✓" : "3"}
             className={cn(
-              "step before:h-1 after:w-6 after:h-6",
+              "step before:h-1 after:w-5.5 after:h-5.5",
               step === 3 && "step-primary",
             )}
           >
@@ -141,10 +141,10 @@ const HeaderKasir: FC<Props> = ({ step }) => {
                 isModeKasir ? "text-primary-white" : "text-base-content",
               )}
             />
-            <div className="flex flex-col justify-start items-start gap-1">
+            <div className="flex flex-col justify-start items-start gap-px">
               <span
                 className={cn(
-                  "text-[0.625rem] font-semibold",
+                  "text-[0.625rem] font-medium",
                   isModeKasir ? "text-primary-white" : "text-base-content/50",
                 )}
               >
@@ -152,7 +152,7 @@ const HeaderKasir: FC<Props> = ({ step }) => {
               </span>
               <span
                 className={cn(
-                  "text-xs font-semibold",
+                  "text-xs font-medium",
                   isModeKasir ? "text-primary-white" : "text-base-content",
                 )}
               >

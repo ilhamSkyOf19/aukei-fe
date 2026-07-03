@@ -13,7 +13,7 @@ const Keranjang = () => {
   return (
     <div
       className={cn(
-        "w-full flex flex-col justify-start items-start gap-4",
+        "w-full flex flex-col justify-start items-start gap-2",
         isModeKasir
           ? "fixed z-40 top-0 left-0 right-0 bottom-0 bg-base-300"
           : "p-4",
@@ -32,7 +32,7 @@ const Keranjang = () => {
 
       <div className="w-full flex flex-row justify-between items-start gap-4 p-2">
         {/* left */}
-        <div className="flex-3 flex flex-col justify-start items-start gap-4">
+        <div className="flex-3 flex flex-col justify-start items-start">
           {/* daftar pelanggan */}
           <DataPelanggan />
         </div>

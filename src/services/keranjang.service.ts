@@ -57,4 +57,16 @@ export class KeranjangServices {
 
     return result.data;
   }
+
+  // delete produk in keranjang
+  static async deleteProdukInKeranjang(params: {
+    id: number;
+  }): Promise<ResponseStructure<null>> {
+    // call api
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/keranjang/${params.id}`,
+    );
+
+    return result.data;
+  }
 }

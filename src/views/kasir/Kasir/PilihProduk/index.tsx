@@ -2,6 +2,7 @@ import { type FC } from "react";
 import ShowProduk from "./ShowProduk";
 import {
   Minus,
+  PackagePlus,
   Pencil,
   Phone,
   Receipt,
@@ -20,6 +21,7 @@ import { ALERT_CONFIG_TRANSACTION } from "../../../../types/alert.types";
 import { cn } from "../../../../utils/cn";
 import Avatar from "../../../../components/ui/Avatar";
 import ModalFormulirTransaksi from "../../../../components/modals/ModalFormulirTransaksi";
+import DataEmpty from "../../../../components/messages/DataEmpty";
 
 type Props = {
   step: number;
@@ -255,10 +257,13 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                   ) : (
                     <tr>
                       <td colSpan={8}>
-                        <div className="w-full h-40 flex flex-row justify-center items-center pt-10">
-                          <span className="text-sm text-base-content/50">
-                            Silahkan pilih produk
-                          </span>
+                        <div className="w-full flex flex-col justify-center items-center scale-90 h-50">
+                          <DataEmpty
+                            iconData={PackagePlus}
+                            title="Silahkan Pilih Produk"
+                            description="Pilih produk dari daftar untuk menambahkannya ke transaksi"
+                            xs
+                          />
                         </div>
                       </td>
                     </tr>
@@ -336,8 +341,15 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
 
             {/* simpan */}
             <button
+              disabled={produkDetails.length === 0}
               type="button"
-              className="flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-lg bg-custom-primary hover-overlay"
+              className={cn(
+                "flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-lg bg-custom-primary disabled:opacity-50",
+                produkDetails.length !== 0 && "hover-overlay",
+              )}
+              style={{
+                cursor: produkDetails.length === 0 ? "not-allowed" : "pointer",
+              }}
               onClick={() => handleSimpanPerubahanKeranjang()}
             >
               {isPendingKeranjang ? (
@@ -363,9 +375,17 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
             {/* button chart */}
             <button
               type="button"
+              disabled={produkDetails.length === 0 || !pelanggan}
               className={cn(
-                "flex-1 flex flex-row justify-center items-center gap-4 xl:h-full rounded-lg border border-custom-primary hover-overlay",
+                "flex-1 flex flex-row justify-center items-center gap-4 xl:h-full rounded-lg border border-custom-primary disabled:opacity-50",
+                (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
               )}
+              style={{
+                cursor:
+                  produkDetails.length === 0 || !pelanggan
+                    ? "not-allowed"
+                    : "pointer",
+              }}
               onClick={() => {
                 handleSimpanKeranjang();
               }}
@@ -408,7 +428,17 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
 
               <button
                 type="button"
-                className="flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-lg bg-custom-primary hover-overlay"
+                disabled={produkDetails?.length === 0 || !pelanggan}
+                className={cn(
+                  "flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-lg bg-custom-primary disabled:opacity-50",
+                  (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
+                )}
+                style={{
+                  cursor:
+                    produkDetails?.length === 0 || !pelanggan
+                      ? "not-allowed"
+                      : "pointer",
+                }}
                 onClick={handleStepsNext}
               >
                 {/* icon */}

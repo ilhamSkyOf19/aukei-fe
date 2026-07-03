@@ -33,7 +33,10 @@ const DaftarKeranjang = () => {
     handleShowModalDeleteKeranjang,
     modalDeleteKeranjangRef,
     dataDeleteKeranjang,
+    handleDeleteProdukInKeranjang,
+    isPendingDeleteProdukInKeranjang,
   } = useDaftarKeranjang();
+
   return (
     <div className="flex-6 flex flex-col justify-start items-start gap-2">
       {isLoadingKeranjang ? (
@@ -117,9 +120,17 @@ const DaftarKeranjang = () => {
                           <button
                             type="button"
                             className="opacity-50 hover:opacity-100 transition-opacity duration-200 ease-in-out group p-px"
-                            onClick={() => {}}
+                            onClick={() =>
+                              handleDeleteProdukInKeranjang({
+                                id: item.id,
+                              })
+                            }
                           >
-                            <Trash2 className="size-4 group-hover:text-error transition-color duration-200 ease-in-out" />
+                            {isPendingDeleteProdukInKeranjang ? (
+                              <div className="loading-xs" />
+                            ) : (
+                              <Trash2 className="size-4 group-hover:text-error transition-color duration-200 ease-in-out" />
+                            )}
                           </button>
                         </td>
                       </tr>
@@ -282,7 +293,11 @@ const DaftarKeranjang = () => {
         handleCloseModal={handleCloseModalDeleteKeranjang}
         handleDelete={handleDeleteKeranjang}
         highlightData={dataDeleteKeranjang?.pelanggan?.nama}
-        bigTitle="Apakah anda yakin ingin menghapus keranjang pelanggan dengan nama dibawah ini?"
+        bigTitle={
+          dataDeleteKeranjang?.fromDetails
+            ? "Produk yang dipilih merupakan item terakhir. Jika dihapus, seluruh keranjang pelanggan berikut juga akan terhapus. Lanjutkan?"
+            : "Apakah Anda yakin ingin menghapus keranjang pelanggan berikut?"
+        }
       />
     </div>
   );
