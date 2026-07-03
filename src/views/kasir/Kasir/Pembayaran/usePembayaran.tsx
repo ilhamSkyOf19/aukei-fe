@@ -231,6 +231,7 @@ const usePembayaran = (params: {
         localStorage.removeItem("di-bayar");
         localStorage.removeItem("metode-pembayaran");
         localStorage.removeItem("data-from-keranjang");
+        localStorage.removeItem("tempo");
 
         // set local storage
         localStorage.setItem(
@@ -269,6 +270,7 @@ const usePembayaran = (params: {
 
       const dataTransaction: CreateTransactionForRequestType = {
         ...(dataFromKeranjang && { id: dataFromKeranjang.transactionId }),
+        ...(dataTempo && { tempo: dataTempo }),
         details: dataDetails.map((item) => ({
           diskon: item.diskon,
           hargaJual: item.hargaJual,

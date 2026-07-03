@@ -7,11 +7,24 @@ const instanceAxios = axios.create({
   withCredentials: true,
 });
 
+const clearLocalStorage = () => {
+  localStorage.removeItem("pelanggan");
+  localStorage.removeItem("details");
+  localStorage.removeItem("di-bayar");
+  localStorage.removeItem("metode-pembayaran");
+  localStorage.removeItem("is-update-keranjang");
+  localStorage.removeItem("is-update-transaction");
+  localStorage.removeItem("data-from-keranjang");
+  localStorage.removeItem("data-tempo");
+};
+
 instanceAxios.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
+    // clear transaction storage
+    clearLocalStorage();
     // TIMEOUT
     if (error.code === "ECONNABORTED") {
       return (window.location.href = "/");

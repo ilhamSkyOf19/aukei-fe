@@ -72,7 +72,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
               {isShowCountNotifikasi &&
                 dataNotifikasiProduk &&
                 dataNotifikasiProduk?.length > 0 && (
-                  <p className="absolute text-[0.625rem] -top-1 font-semibold bg-error w-4 h-4 flex flex-col justify-center items-center rounded-full right-0 text-primary-white">
+                  <p className="absolute text-[0.625rem] top-0 font-medium bg-error w-4 h-4 flex flex-col justify-center items-center rounded-full right-0 text-primary-white">
                     {dataNotifikasiProduk?.length}
                   </p>
                 )}

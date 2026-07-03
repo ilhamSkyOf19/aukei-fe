@@ -10,6 +10,7 @@ export interface ITempo {
   transactionId: number;
   totalTagihan: number;
   uangMuka: number;
+  tenor: number;
   jumlahCicilan: number;
   status: TempoStatusType;
   installments: Omit<ITempoInstallmentType, "tempoId">[];
@@ -21,10 +22,8 @@ export interface ITempo {
 // create
 export interface CreateTempoType extends Pick<
   ITempo,
-  "uangMuka" | "jumlahCicilan"
-> {
-  tenor: number;
-}
+  "uangMuka" | "jumlahCicilan" | "tenor"
+> {}
 
 // data tempo
 export interface DataTempoType extends CreateTempoType {

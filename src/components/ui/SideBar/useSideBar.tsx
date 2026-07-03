@@ -42,6 +42,7 @@ const useSideBar = () => {
     localStorage.removeItem("is-update-keranjang");
     localStorage.removeItem("is-update-transaction");
     localStorage.removeItem("data-from-keranjang");
+    localStorage.removeItem("tempo");
   };
 
   const canLeaveTransaction = async (): Promise<boolean> => {

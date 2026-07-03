@@ -31,6 +31,15 @@ const dashboardLoader = async () => {
   } catch (err: any) {
     console.log(err);
     if (err.response?.status === 401) {
+      localStorage.removeItem("pelanggan");
+      localStorage.removeItem("details");
+      localStorage.removeItem("di-bayar");
+      localStorage.removeItem("metode-pembayaran");
+      localStorage.removeItem("is-update-keranjang");
+      localStorage.removeItem("is-update-transaction");
+      localStorage.removeItem("data-from-keranjang");
+      localStorage.removeItem("tempo");
+
       return redirect("/login");
     }
 

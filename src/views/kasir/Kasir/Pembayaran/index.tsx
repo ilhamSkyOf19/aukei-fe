@@ -510,7 +510,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
               {dataTempo ? (
                 <>
                   {/* jadwal cicilan */}
-                  <div className="w-full flex flex-col justify-between items-center mt-2.5 pb-2 gap-2 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary">
+                  <div className="w-full flex flex-col justify-start items-center mt-2.5 pb-2 gap-2 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary">
                     {dataTempo?.installments.map((item) => (
                       <div
                         key={item.cicilanKe}

@@ -5,7 +5,8 @@ import type {
 } from "../types/constant.type";
 import type { IPelangganType } from "./pelanggan.model";
 import type { IPenggunaInternalType } from "./penggunaInternal.model";
-import type { ITempo } from "./tempo.model";
+import type { DataTempoType, ITempo } from "./tempo.model";
+import type { ITempoInstallmentType } from "./tempoInstallment.model";
 import type { ITransactionDetailType } from "./transactionDetail.model";
 
 export interface ITransactionType {
@@ -46,12 +47,23 @@ export interface DetailsLocalStorageType {
 // // created transaction
 export interface CreateTransactionForRequestType extends Pick<
   ITransactionType,
-  "metodePembayaran" | "pelangganId" | "tempo"
+  "metodePembayaran" | "pelangganId"
 > {
   id?: number;
   diBayar: number;
   kasirId: number;
   details: DetailsForCreate[];
+  tempo?: DataTempoType;
+}
+
+export interface ResponseFieldTempo extends Pick<
+  ITempo,
+  "id" | "jumlahCicilan" | "totalTagihan" | "uangMuka"
+> {
+  installments: Pick<
+    ITempoInstallmentType,
+    "id" | "cicilanKe" | "jatuhTempo" | "nominal"
+  >[];
 }
 
 // response
@@ -61,7 +73,7 @@ export interface ResponseTransactionType extends Omit<
 > {
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
   kasir: Pick<IPenggunaInternalType, "id" | "nama"> | null;
-  tempo: Pick<ITempo, "id" | "jumlahCicilan" | "totalTagihan"> | null;
+  tempo: ResponseFieldTempo | null;
 }
 
 // response with meta
