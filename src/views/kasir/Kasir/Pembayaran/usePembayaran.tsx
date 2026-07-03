@@ -9,8 +9,12 @@ import { useAuthStore } from "../../../../stores/authStore";
 import useConfirm from "../../../../hooks/useConfirm";
 import triggerAnimation from "../../../../hooks/triggerAnimation";
 import useIsModeKasirStore from "../../../../stores/iseModaKasirStore";
+import type { DataTempoType } from "../../../../models/tempo.model";
 
-type ErrorType = "METODE_PEMBAYARAN_KOSONG" | "DATA_DI_BAYAR_KOSONG";
+type ErrorType =
+  | "METODE_PEMBAYARAN_KOSONG"
+  | "DATA_DI_BAYAR_KOSONG"
+  | "DATA_TEMPO_KOSONG";
 
 const usePembayaran = (params: {
   handleSteps: (value: number) => void;
@@ -29,6 +33,7 @@ const usePembayaran = (params: {
   const [dataDiBayar, setDataDiBayar] = useState<number>(0);
 
   const buttonBayarRef = useRef<HTMLButtonElement>(null);
+  const buttonAturTempoRef = useRef<HTMLButtonElement>(null);
 
   // state metode is metode pembayaran
   const [metodePembayaran, setMetodePembayaran] =
@@ -43,7 +48,7 @@ const usePembayaran = (params: {
     });
 
   // state data details
-  const [dataDetails, _setDataDetails] = useState<
+  const [dataDetails] = useState<
     | {
         produkId: number;
         quantity: number;
@@ -59,6 +64,17 @@ const usePembayaran = (params: {
 
     if (details) {
       return JSON.parse(details);
+    } else {
+      return null;
+    }
+  });
+
+  // state data tempo
+  const [dataTempo, setDataTempo] = useState<DataTempoType | null>(() => {
+    const tempo = localStorage.getItem("tempo");
+
+    if (tempo) {
+      return JSON.parse(tempo);
     } else {
       return null;
     }
@@ -114,6 +130,12 @@ const usePembayaran = (params: {
     localStorage.setItem("metode-pembayaran", JSON.stringify(metode));
 
     if (metode !== "CASH") localStorage.removeItem("di-bayar");
+    if (metode !== "TEMPO") {
+      // remove local storage
+      localStorage.removeItem("tempo");
+      // clear state
+      setDataTempo(null);
+    }
     setIsErrors((prev) =>
       prev.filter((item) => item !== "METODE_PEMBAYARAN_KOSONG"),
     );
@@ -126,6 +148,13 @@ const usePembayaran = (params: {
     handleCloseModal: handleCloseModalCalculator,
   } = useModal();
 
+  // use modal tempo
+  const {
+    modalRef: modalTempoRef,
+    handleShowModal: showModalTempo,
+    handleCloseModal: handleCloseModalTempo,
+  } = useModal();
+
   // handle show modal calculator
   const handleShowModalCalculator = () => {
     // clear error
@@ -133,6 +162,13 @@ const usePembayaran = (params: {
       prev.filter((item) => item !== "DATA_DI_BAYAR_KOSONG"),
     );
     showModalCalculator();
+  };
+
+  // handle show modal tempo
+  const handleShowModalTempo = () => {
+    // clear error
+    setIsErrors((prev) => prev.filter((item) => item !== "DATA_TEMPO_KOSONG"));
+    showModalTempo();
   };
 
   // use confirm
@@ -219,9 +255,14 @@ const usePembayaran = (params: {
         return setIsErrors((prev) => [...prev, "METODE_PEMBAYARAN_KOSONG"]);
       }
 
-      if (!dataDiBayar) {
+      if (!dataDiBayar && metodePembayaran !== "TEMPO") {
         triggerAnimation(buttonBayarRef);
         return setIsErrors((prev) => [...prev, "DATA_DI_BAYAR_KOSONG"]);
+      }
+
+      if (metodePembayaran === "TEMPO" && !dataTempo) {
+        triggerAnimation(buttonAturTempoRef);
+        return setIsErrors((prev) => [...prev, "DATA_TEMPO_KOSONG"]);
       }
 
       if (!dataDetails || !pelanggan || !kasir) return;
@@ -294,6 +335,12 @@ const usePembayaran = (params: {
     buttonBayarRef,
     handleBatalTransaction,
     isModeKasir,
+    dataTempo,
+    buttonAturTempoRef,
+    modalTempoRef,
+    handleShowModalTempo,
+    handleCloseModalTempo,
+    handleSetDataTempo: setDataTempo,
   };
 };
 

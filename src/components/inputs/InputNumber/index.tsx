@@ -52,19 +52,17 @@ const InputNumber = <T extends FieldValues = any>({
       <div className="w-full text-base-content relative flex flex-row justify-between items-center">
         {label && (
           <div className="flex-2 relative">
-            <label className="capitalize text-xs lg:text-sm text-base-content">
+            <label className="capitalize text-xs text-base-content">
               {label}
             </label>
 
-            {required && (
-              <span className="absolute -top-1 ml-1 text-error">*</span>
-            )}
+            {required && <span className="absolute ml-px text-error">*</span>}
           </div>
         )}
 
         {/* Max */}
         {max && (
-          <span className="text-xs text-base-content">
+          <span className="text-[0.625rem] text-base-content">
             {formatNumber(String(field.value ?? 0))} /{" "}
             {formatNumber(String(max))}
           </span>
@@ -88,8 +86,8 @@ const InputNumber = <T extends FieldValues = any>({
           value={displayValue}
           onBlur={field.onBlur}
           className={cn(
-            "font-medium rounded-md w-full h-full outline-none text-base-content placeholder:text-base-content/50 placeholder:font-light bg-transparent",
-            xs ? "lg:text-xs" : "text-xs lg:text-sm",
+            "font-medium rounded-md w-full h-full outline-none text-base-content placeholder:text-base-content/50 placeholder:font-normal bg-transparent",
+            xs ? "lg:text-xs" : "text-xs",
           )}
           onChange={(e) => {
             const rawValue = unformatNumber(e.target.value);

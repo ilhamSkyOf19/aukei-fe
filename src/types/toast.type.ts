@@ -226,6 +226,10 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     color: "success",
     message: "Pelanggan berhasil ditambahkan",
   },
+  set_tempo: {
+    color: "success",
+    message: "Tempo berhasil diatur",
+  },
 };
 
 // toast keranjang

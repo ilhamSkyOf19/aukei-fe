@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { FieldValues, UseControllerReturn } from "react-hook-form";
 import { cn } from "../../../utils/cn";
 import ErrorMessage from "../../messages/ErrorMessage";
+import { maxValue } from "../../../helpers/helpers";
 
 type Props<T extends FieldValues = any> = {
   label?: string;
@@ -10,6 +11,8 @@ type Props<T extends FieldValues = any> = {
   controller: UseControllerReturn<T>;
   disabled?: boolean;
   xs?: boolean;
+  caption?: string;
+  max?: number;
 };
 
 export default function InputPrice<T extends FieldValues = any>({
@@ -19,6 +22,8 @@ export default function InputPrice<T extends FieldValues = any>({
   controller,
   disabled,
   xs,
+  caption,
+  max,
 }: Props<T>) {
   const { field, fieldState } = controller;
 
@@ -35,7 +40,7 @@ export default function InputPrice<T extends FieldValues = any>({
   return (
     <div className="w-full">
       {label && (
-        <label className="text-xs lg:text-sm text-base-content">
+        <label className="text-xs text-base-content">
           {label}
 
           {required && <span className="ml-1 text-error">*</span>}
@@ -61,18 +66,28 @@ export default function InputPrice<T extends FieldValues = any>({
           autoComplete="off"
           className={cn(
             "h-full w-full border-none bg-transparent outline-none font-medium text-base-content placeholder:font-normal",
-            xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
+            xs ? "text-[0.7rem]" : "text-xs",
           )}
           onChange={(e) => {
             const raw = unformatRupiah(e.target.value);
 
-            setDisplayValue(formatRupiah(raw));
+            const value = maxValue(raw, max ?? 10000000);
 
-            field.onChange(raw === "" ? null : Number(raw));
+            setDisplayValue(formatRupiah(value));
+
+            field.onChange(value === "" ? null : Number(value));
           }}
           onBlur={field.onBlur}
         />
       </div>
+
+      {caption && (
+        <div className="w-full text-xs mt-1.5">
+          <span className={cn("text-base-content/80 text-[0.625rem]")}>
+            {caption}
+          </span>
+        </div>
+      )}
 
       <ErrorMessage xs={xs} errorMessage={fieldState.error?.message} />
     </div>

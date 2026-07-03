@@ -173,3 +173,24 @@ export const handlePagination = (params: {
     isNext,
   };
 };
+
+// add days
+export const addDaysHandler = (params: { days: number; date: Date }): Date => {
+  const { date, days } = params;
+
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
+export const getDaysFromWeeks = (weeks: number): number => {
+  return weeks * 7;
+};
+
+export const maxValue = (value: string | number, max: number): string => {
+  const num = Number(value) || 0;
+
+  const result = Math.min(num, max);
+
+  return result.toString();
+};

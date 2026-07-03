@@ -6,8 +6,14 @@ export interface ITempoInstallmentType {
   cicilanKe: number;
   jatuhTempo: Date;
   nominal: number;
-  statsus: InstallmentStatusType;
+  status: InstallmentStatusType;
   tanggalLunas: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
+
+// create installment
+export interface CreateInstallmentType extends Pick<
+  ITempoInstallmentType,
+  "cicilanKe" | "jatuhTempo" | "nominal"
+> {}

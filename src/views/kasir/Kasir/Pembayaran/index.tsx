@@ -1,12 +1,11 @@
 import {
-  BadgeCheck,
   Banknote,
   CalendarClock,
   Coins,
+  HandCoins,
   Landmark,
   Minus,
   Pencil,
-  Phone,
   QrCode,
   ShoppingBasketIcon,
   ShoppingCart,
@@ -18,16 +17,14 @@ import TitleModalFormulir from "../../../../components/ui/TitleModalFormulir";
 import usePembayaran from "./usePembayaran";
 import type { FC } from "react";
 import { cn } from "../../../../utils/cn";
-import {
-  formatNumberPhone,
-  formatRupiah,
-  highlightName,
-} from "../../../../helpers/helpers";
+import { formatNumberPhone, formatRupiah } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
 import ModalAlert from "../../../../components/modals/ModalAlert";
 import ButtonText from "../../../../components/ui/button/ButtonText";
+import ModalTempoPayment from "../../../../components/modals/ModalTempoPayment";
+import { formatTanggalPanjang } from "../../../../helpers/formatDate";
 
 type Props = {
   handleSteps: (value: number) => void;
@@ -59,6 +56,12 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
     handleUbahTransaction,
     handleBatalTransaction,
     isModeKasir,
+    buttonAturTempoRef,
+    dataTempo,
+    handleCloseModalTempo,
+    handleShowModalTempo,
+    modalTempoRef,
+    handleSetDataTempo,
   } = usePembayaran({
     handleSteps,
     handleToast,
@@ -66,7 +69,12 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
 
   return (
     <div className="w-full flex flex-row justify-start items-start gap-4">
-      <div className="flex-3  flex flex-col justify-start items-start gap-2">
+      <div
+        className={cn(
+          "  flex flex-col justify-start items-start gap-2 transition-all duration-200 ease-in-out",
+          metodePembayaran === "TEMPO" ? "flex-2" : "flex-3",
+        )}
+      >
         {/* data pelanggan */}
 
         <div className="w-full flex flex-col justify-start items-start gap-2">
@@ -81,7 +89,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
               </p>
             </div>
 
-            {/* avatar, name, no telp */}
+            {/* name, no telp */}
             <div className="flex-2 flex flex-row justify-end items-center gap-3">
               {pelanggan === null ? (
                 <span className="text-sm text-base-content/80 font-medium">
@@ -90,7 +98,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
               ) : (
                 <div className="w-full flex flex-row justify-end items-start gap-4">
                   {/* name */}
-                  <div className="w-35 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
+                  <div className="w-25 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
                     <span className="text-base-content/50 font-semibold text-[0.625rem]">
                       Nama
                     </span>
@@ -185,33 +193,66 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
           </div>
 
           {/* button bayar */}
-          <div className="w-full flex flex-col justify-start items-start">
-            <button
-              ref={buttonBayarRef}
-              type="button"
-              className={cn(
-                "w-full h-10 bg-emerald-600 rounded-lg flex flex-row hover-overlay justify-center items-center mt-4",
-                metodePembayaran === "CASH"
-                  ? isErrors.includes("DATA_DI_BAYAR_KOSONG")
-                    ? "animate-pop-in-active"
-                    : "animate-pop-in"
-                  : "hidden",
-              )}
-              onClick={() => handleShowModalCalculator()}
-            >
-              <span className="text-xs font-medium text-primary-white">
-                Bayar
-              </span>
-            </button>
+          {metodePembayaran === "CASH" && (
+            <div className="w-full flex flex-col justify-start items-start">
+              <button
+                ref={buttonBayarRef}
+                type="button"
+                className={cn(
+                  "w-full h-10 bg-emerald-600 rounded-lg flex flex-row hover-overlay justify-center items-center mt-4",
+                  metodePembayaran === "CASH"
+                    ? isErrors.includes("DATA_DI_BAYAR_KOSONG")
+                      ? "animate-pop-in-active"
+                      : "animate-pop-in"
+                    : "hidden",
+                )}
+                onClick={() => handleShowModalCalculator()}
+              >
+                <span className="text-xs font-medium text-primary-white">
+                  Bayar
+                </span>
+              </button>
 
-            <ErrorMessage
-              errorMessage={
-                isErrors.includes("DATA_DI_BAYAR_KOSONG")
-                  ? "Harap lakukan pembayaran terlebih dahulu"
-                  : ""
-              }
-            />
-          </div>
+              <ErrorMessage
+                errorMessage={
+                  isErrors.includes("DATA_DI_BAYAR_KOSONG")
+                    ? "Harap lakukan pembayaran terlebih dahulu"
+                    : ""
+                }
+              />
+            </div>
+          )}
+
+          {/* button tempo */}
+          {metodePembayaran === "TEMPO" && (
+            <div className="w-full flex flex-col justify-start items-start">
+              <button
+                ref={buttonAturTempoRef}
+                type="button"
+                className={cn(
+                  "w-full h-10 bg-emerald-600 rounded-lg flex flex-row hover-overlay justify-center items-center mt-4",
+                  metodePembayaran === "TEMPO"
+                    ? isErrors.includes("DATA_TEMPO_KOSONG")
+                      ? "animate-pop-in-active"
+                      : "animate-pop-in"
+                    : "hidden",
+                )}
+                onClick={() => handleShowModalTempo()}
+              >
+                <span className="text-xs font-medium text-primary-white">
+                  Atur Tempo Cicilan
+                </span>
+              </button>
+
+              <ErrorMessage
+                errorMessage={
+                  isErrors.includes("DATA_TEMPO_KOSONG")
+                    ? "Harap lakukan pengaturan tempo terlebih dahulu"
+                    : ""
+                }
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -322,7 +363,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
           </div>
         </div>
 
-        <div className="w-full h-45 flex flex-row justify-between items-center gap-4">
+        <div className="w-full h-45 flex flex-row justify-between items-center gap-4 ">
           {/* sub total */}
           <div className="w-full h-full flex flex-col justify-start items-start rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4">
             {dataDetails && (
@@ -391,14 +432,20 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
                           {metodePembayaran === "CASH" && "Tunai"}
                           {metodePembayaran === "QRIS" && "QRIS"}
                           {metodePembayaran === "TRANSFER" && "Transfer"}
+                          {metodePembayaran === "TEMPO" && "Kredit"}
                         </span>
                       </div>
                       <span className="text-xs font-medium text-base-content">
-                        {formatRupiah(dataDiBayar)}
+                        {metodePembayaran === "TEMPO"
+                          ? dataTempo?.tenor
+                            ? `${dataTempo?.tenor} Minggu`
+                            : "-"
+                          : formatRupiah(dataDiBayar)}
                       </span>
                     </div>
                   )}
 
+                  {/* cash */}
                   {metodePembayaran === "CASH" && (
                     <>
                       {/* kembalian */}
@@ -420,11 +467,93 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
                       </div>
                     </>
                   )}
+
+                  {/* tempo */}
+                  {metodePembayaran === "TEMPO" && (
+                    <>
+                      {/* Uang Muka */}
+                      <div className="w-full flex flex-row justify-between items-center">
+                        <div className="flex flex-row justify-start items-center gap-4">
+                          {/* icon */}
+                          <HandCoins className="size-4 text-base-content/60" />
+                          <span className="text-xs font-medium text-base-content/60">
+                            Uang Muka
+                          </span>
+                        </div>
+                        <span className="text-xs font-medium text-emerald-600">
+                          {dataTempo?.uangMuka
+                            ? formatRupiah(dataTempo?.uangMuka)
+                            : "-"}
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </>
             )}
           </div>
 
+          {/* atur preview tempo */}
+          {metodePembayaran === "TEMPO" && (
+            <div className="w-full h-full flex flex-col justify-start items-start rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4">
+              {/* header */}
+              <div className="w-full flex flex-col justify-start items-start">
+                <span className="text-xs font-medium">
+                  Ringkasan Jadwal Cicilan{" "}
+                  <span>
+                    {dataTempo?.jumlahCicilan
+                      ? `(${dataTempo?.jumlahCicilan}x)`
+                      : "-"}
+                  </span>
+                </span>
+              </div>
+              {dataTempo ? (
+                <>
+                  {/* jadwal cicilan */}
+                  <div className="w-full flex flex-col justify-between items-center mt-2.5 pb-2 gap-2 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary">
+                    {dataTempo?.installments.map((item) => (
+                      <div
+                        key={item.cicilanKe}
+                        className={cn(
+                          "w-full grid grid-cols-7 pb-1",
+                          item.cicilanKe !== dataTempo?.jumlahCicilan &&
+                            "border-b border-base-content/10",
+                        )}
+                      >
+                        {/* number */}
+                        <div className="col-span-1 flex flex-row justify-start items-center">
+                          <div className="w-5 h-5 flex flex-row justify-center items-center rounded-full bg-custom-primary/50">
+                            <span className="text-[0.625rem] font-semibold text-custom-secondary">
+                              {item.cicilanKe}
+                            </span>
+                          </div>
+                        </div>
+                        {/* tanggal */}
+                        <div className="col-span-3 flex flex-row justify-start items-center">
+                          <span className="text-[0.625rem] font-semibold text-base-content">
+                            {formatTanggalPanjang(item.jatuhTempo)}
+                          </span>
+                        </div>
+
+                        {/* nominal */}
+                        <div className="col-span-3 flex flex-row justify-start items-center">
+                          <span className="text-[0.625rem] font-semibold text-base-content">
+                            {formatRupiah(item.nominal)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="w-full h-full flex flex-row justify-center items-center">
+                  <span className="text-xs font-medium text-base-content/50">
+                    Silahkan atur tempo terlebih dahulu
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
           {/* button selesaikan transaksi */}
           <ButtonText
             customHeight="h-full shrink-0"
@@ -455,6 +584,14 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
         smallTitle={
           "Pastikan data transaksi telah sesuai. Setelah diproses, transaksi akan disimpan dan siap untuk dicetak."
         }
+      />
+
+      {/* modal formulir tempo */}
+      <ModalTempoPayment
+        data={{ total: totalAfterDiskon }}
+        modalRef={modalTempoRef}
+        handleCloseModal={handleCloseModalTempo}
+        handleSetDataTempo={handleSetDataTempo}
       />
     </div>
   );

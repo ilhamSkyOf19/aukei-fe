@@ -3,13 +3,13 @@ import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import { cn } from "../../../utils/cn";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmit from "../../ui/button/ButtonSubmit";
-import { AlertCircle } from "lucide-react";
 import useModalTransaksi from "./useModalTransaksi";
 import type { DetailsForCreate } from "../../../models/transaction.model";
 import type { ResponseProdukForKasirType } from "../../../models/produk.model";
 import InputQty from "../../inputs/InputQty";
 import InputPrice from "../../inputs/InputPrice";
 import { formatRupiah } from "../../../helpers/helpers";
+import AlertLabel from "../../messages/AlertLabel";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -72,6 +72,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
                     src={data.img}
                     alt="wall panel"
                     className="w-full h-80 object-contain group-hover:scale-102 transition-all duration-300 origin-center"
+                    loading="lazy"
                   />
                 </div>
               )}
@@ -149,11 +150,8 @@ const ModalFormulirTransaksi: FC<Props> = ({
               </div>
 
               {/* alert */}
-              <div className="w-full gap-2.5 flex flex-row justify-start items-center px-4 py-3 mt-4 rounded-lg bg-blue-600/5 border border-blue-600">
-                <AlertCircle className="size-4 text-blue-600" />
-                <span className="text-xs">
-                  Pastikan data yang diinputkan sudah benar
-                </span>
+              <div className="w-full mt-4">
+                <AlertLabel message="Pastikan data yang diinputkan sudah benar" />
               </div>
 
               {/* action */}

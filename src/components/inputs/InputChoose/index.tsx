@@ -42,12 +42,12 @@ export default function InputChoose<T extends FieldValues = any>({
           <div className="flex-2 relative">
             <label
               htmlFor={""}
-              className="capitalize text-xs lg:text-sm text-base-content"
+              className="capitalize text-xs text-base-content"
             >
               {label}
             </label>
 
-            <span className="absolute -top-1 ml-1 text-error">
+            <span className="absolute  ml-px text-error">
               {required && !disabled && "*"}
             </span>
           </div>
@@ -72,9 +72,7 @@ export default function InputChoose<T extends FieldValues = any>({
         <select
           className={cn(
             "select w-full outline-none border-none rounded-md",
-            xs
-              ? "text-[0.7rem] lg:text-xs h-7 lg:h-8"
-              : "h-9 lg:h-10 text-xs lg:text-sm",
+            xs ? "text-[0.7rem]  h-7 lg:h-8" : "h-9 lg:h-10 text-xs",
           )}
           value={
             typeValueIsBoolean && field.value !== undefined
@@ -98,7 +96,7 @@ export default function InputChoose<T extends FieldValues = any>({
             disabled
             className={cn(
               "text-base-content/50",
-              xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
+              xs ? "text-[0.7rem]" : "text-xs",
             )}
           >
             {placeholder}
@@ -110,7 +108,7 @@ export default function InputChoose<T extends FieldValues = any>({
               disabled
               className={cn(
                 "w-full flex justify-center items-center text-base-content/50",
-                xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
+                xs ? "text-[0.7rem]" : "text-xs",
               )}
             >
               loading...
@@ -125,7 +123,7 @@ export default function InputChoose<T extends FieldValues = any>({
                   value={`${item.value}`}
                   className={cn(
                     "text-base-content",
-                    xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
+                    xs ? "text-[0.7rem]" : "text-xs",
                   )}
                 >
                   {item.label}
