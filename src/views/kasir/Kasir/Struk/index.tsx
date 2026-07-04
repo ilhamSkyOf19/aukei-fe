@@ -3,7 +3,15 @@ import useStruk from "./useStruk";
 import { cn } from "../../../../utils/cn";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
 import type { PaymentMethodType } from "../../../../types/constant.type";
-import { Banknote, CalendarClock, Landmark, QrCode, Undo } from "lucide-react";
+import {
+  Banknote,
+  CalendarClock,
+  FileDown,
+  Landmark,
+  Printer,
+  QrCode,
+  Undo,
+} from "lucide-react";
 import { formatNumberPhone, formatRupiah } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import RowJadwaTempo from "../../../../components/ui/RowJadwalTempo";
@@ -388,6 +396,25 @@ const Struk: FC<Props> = ({ handleSteps }) => {
               </table>
             </div>
           </div>
+        </div>
+
+        {/* button aksi */}
+        <div className="w-full flex flex-row justify-between items-start gap-2">
+          {/* cetak struk */}
+          <ButtonWithIcon
+            icon={Printer}
+            customWidth="w-full"
+            label="Cetak Struk"
+          />
+
+          {/* download struk */}
+          <ButtonWithIcon
+            icon={FileDown}
+            customWidth="w-full"
+            bgColor="bg-gray-400"
+            label="Download PDF"
+            textColor="text-primary-white"
+          />
         </div>
       </div>
     </div>

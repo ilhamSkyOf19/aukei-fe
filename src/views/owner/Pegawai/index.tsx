@@ -61,9 +61,9 @@ const Pegawai = () => {
         />
       )}
 
-      <div className="card dark:border dark:border-base-content/10 w-full bg-base-100 flex flex-col justify-start items-start p-4">
+      <div className="card flex flex-col justify-start items-start">
         {/* filter */}
-        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start">
+        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 py-2 px-4 rounded-lg shadow-sm border border-transparent dark:border-base-content/10">
           <ButtonWithIcon
             icon={PackagePlus}
             label="Tambah Pegawai"
@@ -78,22 +78,28 @@ const Pegawai = () => {
             />
           </div>
 
-          <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-4 lg:min-h-18">
+          <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
             {/* filter sort */}
             <FilterSort setSort={handleSort} customWidth="w-full md:w-40" />
 
             {/* button add pegawai */}
-            <ButtonWithIcon
-              icon={PackagePlus}
-              label="Tambah Pegawai"
-              handleBtn={() => handleShowModalFormulirPegawai()}
-              customClass="hidden md:flex"
-            />
+            <div className="flex-col justify-start items-start gap-1.5 hidden md:flex">
+              <span className="text-xs text-base-content/80 font-medium">
+                Aksi
+              </span>
+
+              <ButtonWithIcon
+                icon={PackagePlus}
+                label="Tambah Pegawai"
+                handleBtn={() => handleShowModalFormulirPegawai()}
+                customClass="hidden md:flex"
+              />
+            </div>
           </div>
         </div>
 
         {/* content sm */}
-        <div className="w-full flex flex-col justify-start items-center gap-6 mt-8 md:hidden">
+        <div className="w-full flex flex-col justify-start items-center gap-4 mt-4 md:hidden">
           {/* card */}
           {isExistDataPegawai &&
           dataPegawai?.data &&
@@ -101,7 +107,7 @@ const Pegawai = () => {
             dataPegawai.data.data.map((pegawai, _) => (
               <div
                 key={pegawai.id}
-                className="card w-full shadow-sm flex flex-col justify-start items-start p-3 dark:border dark:border-base-content/10"
+                className="card w-full shadow-sm flex flex-col rounded-xl justify-start items-start p-3 dark:border dark:border-base-content/10 bg-base-100"
               >
                 <div className="w-full flex flex-row justify-start items-center gap-4 pb-4 border-b border-base-content/10">
                   {/* avatar */}
@@ -206,16 +212,16 @@ const Pegawai = () => {
         </div>
 
         {/* content lg */}
-        <div className="overflow-x-auto w-full hidden md:block">
-          <table className="w-full table table-xs lg:table-sm mb-2 md:mt-8 lg:mt-0">
+        <div className="overflow-x-auto w-full hidden md:block bg-base-100 rounded-xl mt-4 shadow-sm border border-transparent dark:border-base-content/10">
+          <table className="w-full table table-xs lg:table-sm mb-2">
             {/* head */}
             <thead>
-              <tr>
+              <tr className="text-xs h-12 bg-base-200">
                 <th>Pilih</th>
                 <th>Nama Pegawai</th>
                 <th>Role</th>
                 <th>Username</th>
-                <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+                <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
               </tr>
             </thead>
             <tbody>

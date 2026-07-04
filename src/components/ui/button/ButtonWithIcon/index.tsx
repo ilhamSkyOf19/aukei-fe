@@ -43,7 +43,7 @@ const ButtonWithIcon: FC<Props> = ({
         bgColor ? bgColor : "bg-custom-primary",
         customWidth ? customWidth : "w-auto",
         customClass,
-        customHeight ? customHeight : "lg:h-9 xl:h-9",
+        customHeight ? customHeight : "h-10.5 lg:h-9 xl:h-9",
         isLoading ? "opacity-50" : "hover-overlay",
       )}
       onClick={() => {
@@ -69,7 +69,7 @@ const ButtonWithIcon: FC<Props> = ({
           {Icon ? (
             <Icon
               className={cn(
-                customSize ? "size-6" : "lg:size-3.5 xl:size-4",
+                customSize ? "size-6" : "size-5 lg:size-3.5 xl:size-4",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-2",
               )}
@@ -77,7 +77,7 @@ const ButtonWithIcon: FC<Props> = ({
           ) : (
             <Plus
               className={cn(
-                customSize ? "size-6" : "lg:size-4.5 xl:size-5",
+                customSize ? "size-6" : "size-5 lg:size-4.5 xl:size-5",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-2",
               )}
@@ -87,7 +87,7 @@ const ButtonWithIcon: FC<Props> = ({
           <span
             className={cn(
               "font-medium",
-              customSize ? "text-sm" : "lg:text-[0.625rem] xl:text-xs",
+              customSize ? "text-sm" : "text-sm lg:text-[0.625rem] xl:text-xs",
               textColor ? textColor : "text-custom-secondary",
               reverse && "order-1",
             )}

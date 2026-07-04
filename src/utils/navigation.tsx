@@ -35,6 +35,11 @@ export const NAVIGATION_LIST_OWNER: {
     icon: UsersRound,
     link: "/dashboard/pegawai",
   },
+  {
+    label: "Transaksi",
+    icon: ShoppingCart,
+    link: "/dashboard/transaksi",
+  },
 ];
 
 export const NAVIGATION_LIST_KASIR: {

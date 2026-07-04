@@ -22,6 +22,7 @@ const Inventori = () => {
           isActive={isActiveCluster === "pengajuanBarangMasuk"}
           label="Pengajuan Barang Masuk"
           handleActive={() => handleActiveCluster("pengajuanBarangMasuk")}
+          customWidth="w-50"
         />
 
         {/* barang keluar */}
@@ -36,6 +37,7 @@ const Inventori = () => {
           isActive={isActiveCluster === "pengajuanBarangKeluar"}
           label="Pengajuan Barang Keluar"
           handleActive={() => handleActiveCluster("pengajuanBarangKeluar")}
+          customWidth="w-50"
         />
       </div>
 

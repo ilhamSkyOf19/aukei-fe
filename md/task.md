@@ -90,7 +90,9 @@
 
 - [✅] Pembayaran Tempo
 
-- [ ] Menyesuaikan preview struk untuk pembayaran tempo
+- [✅] Menyesuaikan preview struk untuk pembayaran tempo
+
+- [ ] Membuat ui tombol tombol pada preview after transaksi
 
 - [ ] Membuat fitur update pelanggan di keranjang
 

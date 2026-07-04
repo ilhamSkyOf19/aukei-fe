@@ -3,7 +3,7 @@ import { Tooltip } from "react-tooltip";
 import { cn } from "../../../utils/cn";
 import useSideBar from "./useSideBar";
 import { highlightName } from "../../../helpers/helpers";
-import { LogOut, Receipt } from "lucide-react";
+import { ChevronRight, LogOut, Receipt } from "lucide-react";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import ModalAlert from "../../modals/ModalAlert";
 
@@ -125,28 +125,33 @@ const Sidebar: FC<Props> = ({ isClose }) => {
               type="button"
               tabIndex={0}
               role="button"
-              className="m-1 flex flex-row justify-start items-center w-full hover:bg-custom-secondary/10 px-2 py-2 rounded-md gap-3"
+              className="m-1 flex flex-row justify-between items-center w-full hover:bg-primary-white px-2 py-2 rounded-md"
             >
-              {/* avatar */}
-              <div className="avatar avatar-placeholder">
-                <div className="bg-custom-primary text-neutral-content w-10 rounded-full">
-                  <span className="text-base lg:text-sm text-custom-secondary font-semibold uppercase">
-                    {highlightName(pengguna?.nama ?? "")}
-                  </span>
+              <div className="flex flex-row justify-start items-center gap-3">
+                {/* avatar */}
+                <div className="avatar avatar-placeholder">
+                  <div className="bg-custom-primary text-neutral-content w-10 rounded-full">
+                    <span className="text-base lg:text-sm text-custom-secondary font-semibold uppercase">
+                      {highlightName(pengguna?.nama ?? "")}
+                    </span>
+                  </div>
+                </div>
+
+                {/* nama and role active */}
+                <div className="flex flex-col justify-start items-start">
+                  <p className="text-base font-semibold text-primary-white">
+                    {pengguna?.nama}
+                  </p>
+                  <p className="text-xs text-primary-white">
+                    {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+                      ? "Owner"
+                      : "Admin"}
+                  </p>
                 </div>
               </div>
 
-              {/* nama and role active */}
-              <div className="flex flex-col justify-start items-start">
-                <p className="text-base font-semibold text-base-content">
-                  {pengguna?.nama}
-                </p>
-                <p className="text-xs text-base-content/70">
-                  {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-                    ? "Owner"
-                    : "Admin"}
-                </p>
-              </div>
+              {/* icon */}
+              <ChevronRight className="text-primary-white" />
             </button>
             <ul
               tabIndex={-1}

@@ -12,6 +12,7 @@ interface PaginationAndLimitProps {
   emptyData?: boolean;
   customWindowSize?: 3 | 5 | 7;
   customPositionPagination?: "end" | "start";
+  limit?: number;
 }
 
 export default function PaginationAndLimit({
@@ -22,6 +23,7 @@ export default function PaginationAndLimit({
   emptyData,
   customPositionPagination,
   customWindowSize,
+  limit,
 }: PaginationAndLimitProps) {
   const windowSize = customWindowSize
     ? customWindowSize
@@ -38,33 +40,38 @@ export default function PaginationAndLimit({
   return (
     <div
       className={cn(
-        "w-full flex flex-col gap-6 md:gap-0 md:flex-row items-center mt-10 relative",
-        totalPage! < 2 && setLimit && "h-10",
+        "w-full flex flex-col gap-2 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm md:gap-0 md:flex-row items-center mt-2 relative p-4 rounded-lg",
+        totalPage! < 2 && setLimit && "h-15",
         customPositionPagination === "end" ? "justify-end" : "justify-center",
+        emptyData && "hidden",
       )}
     >
       {/* limit */}
       {setLimit && !emptyData && (
-        <div className="block md:absolute left-0 z-40 text-base-content">
+        <div className="flex md:absolute md:left-4 z-30 text-base-content flex-row justify-center items-center gap-2">
+          <span className="text-xs text-base-content/50">Tampilkan</span>
+
           <DropDown
             listChoose={[
               {
-                label: "8 / Halaman",
+                label: "8",
                 value: "8",
               },
               {
-                label: "16 / Halaman",
+                label: "16",
                 value: "16",
               },
               {
-                label: "24 / Halaman",
+                label: "24",
                 value: "24",
               },
             ]}
-            placeholder="Pilih data per halaman"
+            placeholder="-"
             handleChange={(e) => setLimit(e.target.value)}
-            customWidth="w-50"
+            customWidth="w-15"
           />
+
+          <span className="text-xs text-base-content/50">Halaman</span>
         </div>
       )}
 

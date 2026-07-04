@@ -69,9 +69,9 @@ const BarangKeluar = () => {
         />
       )}
 
-      <div className="card dark:border dark:border-base-content/10 w-full bg-base-100 flex flex-col justify-start items-start p-4">
+      <div className="card flex flex-col justify-start items-start">
         {/* filter */}
-        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start">
+        <div className="w-full bg-base-100 py-2 px-4 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-lg shadow-sm">
           <ButtonWithIcon
             icon={PackagePlus}
             label="Tambah Barang Keluar"
@@ -82,8 +82,7 @@ const BarangKeluar = () => {
             {/* input search */}
             <InputSearch handleSearch={handleSearch} placeholder="Cari kode" />
           </div>
-
-          <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-4 lg:min-h-18">
+          <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
             {/* input range date */}
             <RangeDate customWidth="w-full md:w-60" />
 
@@ -91,29 +90,34 @@ const BarangKeluar = () => {
             <FilterSort setSort={handleSort} customWidth="w-full md:w-40" />
 
             {/* button add barang masuk */}
-            <ButtonWithIcon
-              icon={PackagePlus}
-              label="Tambah Barang Keluar"
-              handleBtn={() => handleShowModalFormulirBarangKeluar()}
-              customClass="hidden md:flex"
-            />
+            <div className="flex-col justify-start items-start gap-1.5 hidden md:flex">
+              <span className="text-xs text-base-content/80 font-medium">
+                Aksi
+              </span>
+              <ButtonWithIcon
+                icon={PackagePlus}
+                label="Tambah Barang Keluar"
+                handleBtn={() => handleShowModalFormulirBarangKeluar()}
+                customClass="hidden md:flex"
+              />
+            </div>
           </div>
         </div>
 
         {/* table */}
-        <div className="overflow-x-auto w-full">
-          <table className="w-full table table-xs lg:table-sm mt-8 lg:mt-0 mb-2">
+        <div className="overflow-x-auto w-full bg-base-100 rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-4">
+          <table className="w-full table table-xs lg:table-sm mb-2">
             {/* head */}
             <thead>
-              <tr>
+              <tr className="h-12 bg-base-200 text-xs">
                 <th>Pilih</th>
                 <th>Kode Referensi</th>
                 <th>Tanggal Keluar</th>
                 <th>Keterangan</th>
-                <th>Jumlah Barang Keluar</th>
+                <th>Jumlah</th>
                 <th>Jenis Keluar</th>
                 <th>Status</th>
-                <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+                <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -130,7 +134,7 @@ const BarangKeluar = () => {
                   <tr
                     key={barang.id}
                     className={cn(
-                      "transition-all duration-75 ease-in-out",
+                      "transition-all duration-75 ease-in-out h-18",
                       isActiveAksi === barang.id && "bg-base-200",
                     )}
                   >
@@ -172,7 +176,7 @@ const BarangKeluar = () => {
                         </span>
                       )}
                     </td>
-                    {/* jumlah barang keluar */}
+                    {/* jumlah */}
                     <td className="text-base-content">
                       {barang.countDetailBarangKeluar}
                     </td>
@@ -238,8 +242,8 @@ const BarangKeluar = () => {
                   <td colSpan={10}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
-                        title="Data Barang Masuk Tidak Tersedia"
-                        description="Belum ada data barang masuk yang dapat ditampilkan saat ini."
+                        title="Data Barang Keluar Tidak Tersedia"
+                        description="Belum ada data barang keluar yang dapat ditampilkan saat ini."
                       />
                     </div>
                   </td>
@@ -280,7 +284,7 @@ const BarangKeluar = () => {
                     <th>Kode Referensi</th>
                     <th>Tanggal Keluar</th>
                     <th>Keterangan</th>
-                    <th>Jumlah Barang Keluar</th>
+                    <th>Jumlah</th>
                     <th>Jenis Keluar</th>
                     <th>Status</th>
                     <th className="sticky right-0 bg-base-100 z-10">Aksi</th>

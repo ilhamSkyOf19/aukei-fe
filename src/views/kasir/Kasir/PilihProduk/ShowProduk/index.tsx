@@ -64,7 +64,7 @@ const ShowProduk: FC<Props> = ({
 
         <div className="flex-1 flex flex-row justify-end items-start flex-wrap">
           {/* filter kategori */}
-          <FilterKategori setKategori={handleKategori} customWidth="w-30" />
+          <FilterKategori setKategori={handleKategori} customWidth="w-40" />
         </div>
       </div>
 

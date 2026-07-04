@@ -49,7 +49,7 @@ const Produk = () => {
   return (
     <div className="w-full mb-30 flex flex-col justify-start items-start">
       {/* button cluster */}
-      <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-14 p-2 gap-2 dark:border dark:border-base-content/10 sticky top-0 left-0 right-0 z-40">
+      <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-14 p-2 gap-2 dark:border dark:border-base-content/10 sticky top-0 left-0 right-0 z-30">
         {/* produk */}
         <ButtonCluster
           isActive={isActiveCluster === "produk"}
@@ -84,9 +84,9 @@ const Produk = () => {
               />
             )}
 
-            <div className="card dark:border dark:border-base-content/10 w-full bg-base-100 flex flex-col justify-start items-start p-4">
+            <div className="card w-full flex flex-col justify-start items-start">
               {/* filter */}
-              <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start">
+              <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 py-2 px-4 rounded-lg shadow-sm border border-transparent dark:border-base-content/10">
                 <ButtonAdd
                   icon={PackagePlus}
                   label="Tambah Produk"
@@ -94,43 +94,47 @@ const Produk = () => {
                   customClass="md:hidden w-full mb-3"
                 />
 
-                <div className="w-full md:flex-1 flex flex-row justify-start items-center">
-                  {/* input search */}
+                <div className="w-full md:flex-1 flex flex-col justify-start items-start gap-1.5">
                   <InputSearch
                     handleSearch={handleSearch}
                     placeholder="Cari produk"
                   />
                 </div>
 
-                <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center gap-3 md:gap-4">
+                <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center gap-3 md:gap-4 mt-3 md:mt-0">
                   {/* filter kategori */}
                   <FilterKategori
                     setKategori={handleKategori}
-                    customWidth="w-full md:w-auto"
+                    customWidth="w-full md:w-40"
                   />
 
                   {/* filter sort */}
                   <FilterSort
                     setSort={handleSort}
-                    customWidth="w-full md:w-40"
+                    customWidth="w-full md:w-30"
                   />
 
                   {/* button add produk */}
-                  <ButtonAdd
-                    icon={PackagePlus}
-                    label="Tambah Produk"
-                    handleBtn={() => handleRedirectTambah()}
-                    customClass="hidden md:flex"
-                  />
+                  <div className="flex-col justify-start items-start gap-1.5 hidden md:flex">
+                    <span className="text-xs text-base-content/80 font-medium">
+                      Aksi
+                    </span>
+
+                    <ButtonAdd
+                      icon={PackagePlus}
+                      label="Tambah Produk"
+                      handleBtn={() => handleRedirectTambah()}
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* table */}
-              <div className="overflow-x-auto w-full mt-8 lg:mt-0 mb-2">
+              <div className="overflow-x-auto w-full mt-4 mb-2 bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm">
                 <table className="table table-xs lg:table-sm">
                   {/* head */}
                   <thead>
-                    <tr>
+                    <tr className="h-12 bg-base-200 text-xs">
                       <th>
                         <label>
                           <input type="checkbox" className="checkbox" />
@@ -140,11 +144,11 @@ const Produk = () => {
                       <th>Kode</th>
                       <th>Nama</th>
                       <th>Kategori</th>
-                      <th>Harga Beli Satuan</th>
-                      <th>Harga Jual Satuan</th>
+                      <th>Harga Beli</th>
+                      <th>Harga Jual</th>
                       <th>Stok</th>
                       <th>Isi PerBox</th>
-                      <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+                      <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -161,7 +165,7 @@ const Produk = () => {
                         <tr
                           key={produk.id}
                           className={cn(
-                            "transition-all duration-75 ease-in-out",
+                            "transition-all duration-75 ease-in-out h-18",
                             isActiveAksi === produk.id && "bg-base-200",
                           )}
                         >

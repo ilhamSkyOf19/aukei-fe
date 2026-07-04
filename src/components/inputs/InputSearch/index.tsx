@@ -53,10 +53,13 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
     return (
       <div
         className={cn(
-          "w-full flex flex-col justify-start items-start",
+          "w-full flex flex-col justify-start items-start gap-1.5",
           errorMessage && "mb-3",
         )}
       >
+        <span className="text-xs text-base-content/80 font-medium hidden lg:block">
+          Cari
+        </span>
         <div className="w-full h-9 flex flex-row justify-start items-center">
           <div
             className={cn(
@@ -72,7 +75,7 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
               type="text"
               id="search"
               placeholder={placeholder ?? "Search"}
-              className="w-full h-full text-base-content bg-transparent outline-none text-xs placeholder:text-xs placeholder:text-base-content/80 placeholder:font-light lg:text-sm"
+              className="w-full h-full text-base-content bg-transparent outline-none text-xs placeholder:text-xs placeholder:text-base-content/80 placeholder:font-normal lg:text-sm"
               autoComplete="off"
               minLength={1}
               maxLength={100}
@@ -87,7 +90,7 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
                 className="h-full rounded-tr-md rounded-br-md flex justify-center items-center"
                 onClick={handleReset}
               >
-                <X className="size-4 text-primary-white" />
+                <X className="size-4 text-base-content" />
               </button>
             )}
           </div>

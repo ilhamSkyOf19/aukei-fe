@@ -79,10 +79,10 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             </button>
             <ul
               tabIndex={-1}
-              className="dropdown-content  overflow-hidden menu bg-base-100 rounded-box z-50 w-80 min-h-90 border border-base-content/10 lg:w-130 p-2 shadow-sm mt-1.5"
+              className="dropdown-content overflow-hidden menu bg-base-100 rounded-box z-50 w-80 border border-base-content/10 lg:w-130 p-2 shadow-sm mt-1.5"
             >
               <li className="mb-1">
-                <div className="w-full flex flex-row justify-between items-center hover:bg-transparent active:bg-transparent cursor-default ">
+                <div className="w-full flex flex-row justify-between items-center hover:bg-transparent active:bg-transparent cursor-default h-full overflow-y-auto scrollbar-thumb-custom-secondary">
                   {/* title */}
                   <p className="text-xs font-semibold text-base-content">
                     Notifikasi
@@ -108,8 +108,8 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
               </li>
 
               {/* choose */}
-              <li className="mb-4 w-full">
-                <div className="w-full flex scrollbar-thin flex-row py-2.5 gap-2.5 justify-start overflow-x-auto items-start hover:bg-transparent active:bg-transparent cursor-default ">
+              <li className="mb-4 w-full ">
+                <div className="w-full flex scrollbar-thin flex-row py-2.5 gap-2.5 justify-start overflow-x-auto items-start hover:bg-transparent active:bg-transparent cursor-default">
                   {Array.from({ length: 8 }, (_, index) => (
                     <button
                       key={index}
@@ -122,57 +122,62 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
                 </div>
               </li>
 
-              {notifikasiGlobal?.data ? (
-                dataNotifikasiProduk &&
-                dataNotifikasiProduk.length > 0 &&
-                dataNotifikasiProduk.map((data, _) => (
-                  <li key={data.id}>
-                    <button
-                      disabled={pengguna?.role === ROLE_INTERNAL_TYPE.KASIR}
-                      type="button"
-                      className="w-full flex py-2.5 flex-row justify-between items-center"
-                      onClick={() => {
-                        navigate(`/dashboard/produk/${data.produk.id}`);
-                        (document.activeElement as HTMLElement)?.blur();
-                      }}
+              <li className="w-full h-110 flex flex-row justify-start items-start overflow-y-auto scrollbar-thumb-custom-secondary">
+                {notifikasiGlobal?.data ? (
+                  dataNotifikasiProduk &&
+                  dataNotifikasiProduk.length > 0 &&
+                  dataNotifikasiProduk.map((data, _) => (
+                    <div
+                      key={data.id}
+                      className="w-full flex flex-row justify-between items-center"
                     >
-                      <div className="flex-2 flex flex-row justify-start items-start gap-3">
-                        {/* img */}
-                        <div className="w-11 h-11 rounded-md overflow-hidden">
-                          <img
-                            src={data.produk.img}
-                            alt="foto produk"
-                            className="w-full h-full object-cover"
+                      <button
+                        disabled={pengguna?.role === ROLE_INTERNAL_TYPE.KASIR}
+                        type="button"
+                        className="w-full flex py-0.5 flex-row justify-between items-center"
+                        onClick={() => {
+                          navigate(`/dashboard/produk/${data.produk.id}`);
+                          (document.activeElement as HTMLElement)?.blur();
+                        }}
+                      >
+                        <div className="flex-2 flex flex-row justify-start items-start gap-3">
+                          {/* img */}
+                          <div className="w-11 h-11 rounded-md overflow-hidden">
+                            <img
+                              src={data.produk.img}
+                              alt="foto produk"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+
+                          {/* info */}
+                          <div className="flex flex-col justify-start items-start">
+                            <span className="font-semibold text-xs text-base-content">
+                              {data.produk.nama}
+                            </span>
+                            <span className="text-[0.625rem] font-semibold text-base-content/50">
+                              {data.produk.kode}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* status */}
+                        <div className="flex-1 flex flex-row justify-end items-center">
+                          <JenisNotifikasiProduk
+                            jenisNotifikasi={data.jenisNotifikasiProduk}
                           />
                         </div>
-
-                        {/* info */}
-                        <div className="flex flex-col justify-start items-start">
-                          <span className="font-semibold text-xs text-base-content">
-                            {data.produk.nama}
-                          </span>
-                          <span className="text-[0.625rem] font-semibold text-base-content/50">
-                            {data.produk.kode}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* status */}
-                      <div className="flex-1 flex flex-row justify-end items-center">
-                        <JenisNotifikasiProduk
-                          jenisNotifikasi={data.jenisNotifikasiProduk}
-                        />
-                      </div>
-                    </button>
-                  </li>
-                ))
-              ) : (
-                <li className="pointer-events-none">
-                  <div className="w-full flex flex-col justify-center items-center h-20">
-                    <span>Tidak ada notifikasi</span>
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="pointer-events-none">
+                    <div className="w-full flex flex-col justify-center items-center h-20">
+                      <span>Tidak ada notifikasi</span>
+                    </div>
                   </div>
-                </li>
-              )}
+                )}
+              </li>
             </ul>
           </div>
 

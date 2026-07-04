@@ -8,8 +8,8 @@ const useFilterRangeDate = () => {
   const [searchParams] = useSearchParams();
 
   return useMemo(() => {
-    const startDateParam = searchParams.get("startDate");
-    const endDateParam = searchParams.get("endDate");
+    const startDateParam = searchParams.get("start-date");
+    const endDateParam = searchParams.get("end-date");
 
     const startDate =
       startDateParam && DateSchema.safeParse(startDateParam).success

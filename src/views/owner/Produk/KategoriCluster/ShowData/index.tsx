@@ -6,7 +6,6 @@ import FilterSort from "../../../../../components/filters/Sort";
 import { EllipsisVertical, Tag } from "lucide-react";
 import type { ResponseKategoriProdukType } from "../../../../../models/kategoriProduk.model";
 import DataEmpty from "../../../../../components/messages/DataEmpty";
-import ButtonAdd from "../../../../../components/ui/button/ButtonWithIcon";
 import ModalFormulirKategoriProduk from "../../../../../components/modals/ModalFormulirKategoriProduk";
 import Toast from "../../../../../components/messages/Toast";
 import { TOAST_CONFIG_KATEGORI_PRODUK } from "../../../../../types/toast.type";
@@ -40,7 +39,7 @@ const ShowData = () => {
   } = useShowData();
 
   return (
-    <div className="card flex-2 bg-base-100 flex flex-col justify-start items-start p-4  dark:border dark:border-base-content/10">
+    <div className="card flex-2 bg-base-100 flex flex-col justify-start items-start p-4 dark:border dark:border-base-content/10">
       {/* alert */}
       {alert && (
         <Alert
@@ -78,7 +77,7 @@ const ShowData = () => {
             placeholder="Cari kategori"
           />
         </div>
-        <div className="w-full md:flex-1 flex flex-row justify-end items-start md:gap-3 lg:gap-0">
+        <div className="w-full md:flex-1 flex flex-row justify-end items-start md:gap-3 lg:gap-0 mt-3 md:mt-0">
           {/* filter sort */}
           <FilterSort setSort={handleSort} customWidth="w-full md:w-40" />
 
@@ -173,8 +172,10 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
       </div>
 
       <div className="flex-2 flex flex-col justify-center items-start">
-        <span className="text-[0.625rem] font-semibold">Keterangan:</span>
-        <span className="text-[0.625rem] lg:text-[0.7rem]">
+        <span className="text-[0.625rem] font-semibold text-base-content">
+          Keterangan:
+        </span>
+        <span className="text-[0.625rem] lg:text-[0.7rem] text-base-content">
           {data.keterangan || "-"}
         </span>
       </div>

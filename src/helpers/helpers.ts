@@ -194,3 +194,28 @@ export const maxValue = (value: string | number, max: number): string => {
 
   return result.toString();
 };
+
+// format rupiah
+export const formatRupiahShort = (value: number): string => {
+  if (!value) return "Rp 0";
+
+  // Miliar
+  if (value >= 1_000_000_000) {
+    return `Rp ${(value / 1_000_000_000).toFixed(2).replace(".", ",")} M`;
+  }
+
+  // Juta
+  if (value >= 1_000_000) {
+    return `Rp ${(value / 1_000_000)
+      .toFixed(3)
+      .replace(/\.?0+$/, "")
+      .replace(".", ",")} Jt`;
+  }
+
+  // Ribu
+  if (value >= 1_000) {
+    return `Rp ${(value / 1_000).toFixed(0).replace(".", ",")}K`;
+  }
+
+  return `Rp ${value.toLocaleString("id-ID")}`;
+};

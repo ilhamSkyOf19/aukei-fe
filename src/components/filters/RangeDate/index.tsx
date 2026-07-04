@@ -100,8 +100,12 @@ const RangeDate: FC<Props> = ({ customWidth }) => {
 
   return (
     <div
-      className={cn("flex flex-col justify-start items-col gap-2", customWidth)}
+      className={cn(
+        "flex flex-col justify-start items-start gap-1.5",
+        customWidth,
+      )}
     >
+      <span className="text-xs text-base-content/80 font-medium">Urutkan</span>
       <div
         className={cn(
           "flex flex-row justify-start items-center",

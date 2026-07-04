@@ -21,6 +21,9 @@ export const useFilter = (params: {
 
   const isWhitelistActive = !!allowQuery?.length;
 
+  const normalizedAllowQuery =
+    allowQuery?.map((item) => item.toLowerCase()) ?? [];
+
   let defaultValue = "";
 
   switch (paramName) {
@@ -41,7 +44,7 @@ export const useFilter = (params: {
   const filter = isInvalidNumber
     ? defaultValue
     : isWhitelistActive
-      ? allowQuery.includes(rawFilter)
+      ? normalizedAllowQuery.includes(rawFilter)
         ? rawFilter
         : defaultValue
       : rawFilter || defaultValue;
@@ -50,7 +53,11 @@ export const useFilter = (params: {
     const newParams = new URLSearchParams(searchParams);
     const valLower = val.toLowerCase();
 
-    if (isWhitelistActive && !allowQuery.includes(valLower)) return;
+    if (isWhitelistActive && !normalizedAllowQuery.includes(valLower)) return;
+
+    if (paramName === "metode-pembayaran" && valLower !== "tempo") {
+      newParams.delete("status-tempo");
+    }
 
     if (resetPage) {
       newParams.set("page", "1");

@@ -14,10 +14,11 @@ const FilterKategori: FC<Props> = ({ setKategori, customWidth }) => {
   return (
     <div
       className={cn(
-        "flex flex-row justify-start items-center",
+        "flex flex-col gap-1.5 justify-start items-start",
         customWidth ? customWidth : "w-auto",
       )}
     >
+      <span className="text-xs text-base-content/80 font-medium">Kategori</span>
       <DropDown
         handleChange={(e) => setKategori(e.target.value)}
         listChoose={[
@@ -33,6 +34,7 @@ const FilterKategori: FC<Props> = ({ setKategori, customWidth }) => {
         placeholder="Kategori"
         isLoading={isLoadingKategori}
         fontWeight="lg:font-medium"
+        defaultValue="semua"
       />
     </div>
   );

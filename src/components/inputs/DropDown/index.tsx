@@ -7,32 +7,34 @@ type Props = {
   listBtn?: { handleClick: () => void; label: string; value: string }[];
   placeholder: string;
   isLoading?: boolean;
-  value?: string;
   customWidth?: string;
   fontWeight?: string;
+  noBorder?: boolean;
+  defaultValue?: string;
 };
 const DropDown: FC<Props> = ({
   handleChange,
   listChoose,
   placeholder,
   isLoading,
-  value,
   customWidth,
   fontWeight,
   listBtn,
+  noBorder,
+  defaultValue,
 }) => {
   return (
     <div
       className={cn(
-        "h-8.5 overflow-hidden border border-base-content rounded-md focus-within:ring-1 focus-within:ring-base-content transition-all duration-200 ease-in-out",
+        "h-8.5 overflow-hidden transition-all duration-200 ease-in-out",
         customWidth ? customWidth : "w-full",
+        !noBorder &&
+          "border border-base-content rounded-md focus-within:ring-1 focus-within:ring-base-content",
       )}
     >
       {/* filter status */}
       <select
-        {...(value !== undefined && value !== ""
-          ? { value }
-          : { defaultValue: placeholder })}
+        defaultValue={defaultValue}
         className={cn(
           "text-base-content select w-full border-none outline-none rounded-md select-sm",
           fontWeight,

@@ -98,7 +98,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                   <Avatar nama={pelanggan?.nama} />
                   <div className="flex flex-col justify-start items-start gap-1">
                     {/* name */}
-                    <span className="text-base-content font-medium text-sm">
+                    <span className="text-base-content font-semibold text-sm">
                       {pelanggan?.nama}
                     </span>
                     {/* no telp */}
@@ -368,9 +368,14 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
         ) : (
           <div
             className={cn(
-              "w-full flex flex-row justify-between items-center bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg xl:p-1 h-12",
+              "w-full flex flex-row justify-between items-center bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg xl:p-1 h-12 tooltip",
               isUpdateTransaction ? "gap-2" : "gap-4",
             )}
+            data-tip={
+              !pelanggan || produkDetails.length === 0
+                ? "Silahkan lengkapi data pelanggan dan produk terlebih dahulu"
+                : ""
+            }
           >
             {/* button chart */}
             <button
