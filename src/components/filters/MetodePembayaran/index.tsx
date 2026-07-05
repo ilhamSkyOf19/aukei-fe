@@ -25,6 +25,7 @@ const MetodePembayaran: FC<Props> = ({ setMetode, customWidth }) => {
           { value: "semua", label: "Semua" },
         ]}
         placeholder="Metode"
+        defaultValue={"semua"}
       />
     </div>
   );

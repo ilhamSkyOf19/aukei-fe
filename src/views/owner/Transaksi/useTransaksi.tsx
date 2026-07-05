@@ -1,6 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { useFilter } from "../../../hooks/useFilter";
+import useSizeWindows from "../../../hooks/useSizeWindows";
 
 const useTransaksi = () => {
+  // window size
+  const windowSize = useSizeWindows();
+
+  // navigate
+  const navigate = useNavigate();
+
   // filter metode pembayaran
   const { filter: metodePembayaran, setFilter: handleSetMetodePembayaran } =
     useFilter({
@@ -16,10 +24,17 @@ const useTransaksi = () => {
     defaultValueCustom: "semua",
   });
 
+  // handle detail
+  const handleRedirectDetail = () => {
+    navigate(`/dashboard/transaksi/statistik`);
+  };
+
   return {
     metodePembayaran,
     handleSetMetodePembayaran,
     setTempo,
+    windowSize,
+    handleRedirectDetail,
   };
 };
 

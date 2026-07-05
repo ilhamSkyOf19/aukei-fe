@@ -5,6 +5,7 @@ import { cn } from "../../../utils/cn";
 type Props = {
   nama: string;
   index?: number;
+  sm?: boolean;
   xs?: boolean;
 };
 
@@ -24,7 +25,7 @@ const defaultColor = {
   text: "text-custom-secondary",
 };
 
-const Avatar: FC<Props> = ({ index, nama, xs }) => {
+const Avatar: FC<Props> = ({ index, nama, xs, sm }) => {
   const color =
     index === undefined || index === null
       ? defaultColor
@@ -32,8 +33,20 @@ const Avatar: FC<Props> = ({ index, nama, xs }) => {
 
   return (
     <div className="avatar avatar-placeholder">
-      <div className={cn("rounded-full", color.bg, xs ? "w-10" : "w-11")}>
-        <span className={`text-base font-medium uppercase ${color.text}`}>
+      <div
+        className={cn(
+          "rounded-full",
+          color.bg,
+          xs ? "w-7.5" : sm ? "w-10" : "w-11",
+        )}
+      >
+        <span
+          className={cn(
+            `font-medium uppercase`,
+            xs ? "text-xs" : "text-base",
+            color.text,
+          )}
+        >
           {highlightName(nama)}
         </span>
       </div>

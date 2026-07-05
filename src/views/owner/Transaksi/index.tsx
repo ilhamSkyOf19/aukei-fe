@@ -2,14 +2,18 @@ import {
   Banknote,
   BanknoteArrowDown,
   CalendarClock,
+  ChartColumn,
   ChevronRight,
   Clock3,
   Dot,
+  Eye,
+  FileText,
   Landmark,
   Package,
   PackageOpen,
   QrCode,
   Receipt,
+  Sheet,
   ShoppingBag,
   TrendingUp,
   type LucideIcon,
@@ -19,6 +23,7 @@ import type { FC } from "react";
 import { cn } from "../../../utils/cn";
 import {
   formatNumber,
+  formatNumberPhone,
   formatRupiah,
   formatRupiahShort,
 } from "../../../helpers/helpers";
@@ -38,84 +43,36 @@ import {
   type TransactionStatusType,
 } from "../../../types/constant.type";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
+import RangeDate from "../../../components/filters/RangeDate";
+import listDateRangeLong from "../../../utils/listDateRangeLong";
+import DataEmpty from "../../../components/messages/DataEmpty";
+import Avatar from "../../../components/ui/Avatar";
+import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
+import CardStatistik from "../../../components/ui/cards/CardStatistik";
 
 const Transaksi = () => {
-  const { metodePembayaran, handleSetMetodePembayaran, setTempo } =
-    useTransaksi();
+  const {
+    metodePembayaran,
+    handleSetMetodePembayaran,
+    setTempo,
+    windowSize,
+    handleRedirectDetail,
+  } = useTransaksi();
 
   return (
     <div className="w-full mb-30 flex flex-col justify-start items-start p-2 gap-2">
       {/* search */}
-      <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg">
+      <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg md:hidden">
         <InputSearch handleSearch={() => {}} />
       </div>
 
-      {/* data */}
-      <div className="w-full grid grid-cols-2 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-2">
-        <CardStatistik
-          icon={{
-            icon: Receipt,
-            bgColor: "bg-blue-100",
-            iconColor: "text-blue-400",
-          }}
-          label="Transaksi"
-          value={formatNumber("30000")}
-        />
-
-        <CardStatistik
-          icon={{
-            icon: BanknoteArrowDown,
-            bgColor: "bg-emerald-100",
-            iconColor: "text-emerald-400",
-          }}
-          label="Omzet"
-          value={formatRupiahShort(20342423)}
-        />
-
-        <CardStatistik
-          icon={{
-            icon: Package,
-            bgColor: "bg-amber-100",
-            iconColor: "text-amber-400",
-          }}
-          label="Modal"
-          value={formatRupiahShort(20342423)}
-        />
-
-        <CardStatistik
-          icon={{
-            icon: TrendingUp,
-            bgColor: "bg-green-100",
-            iconColor: "text-green-400",
-          }}
-          label="Laba"
-          value={formatRupiahShort(20342423)}
-        />
-
-        <CardStatistik
-          icon={{
-            icon: Clock3,
-            bgColor: "bg-red-100",
-            iconColor: "text-red-400",
-          }}
-          label="Piutang"
-          value={formatRupiahShort(20342423)}
-        />
-
-        <CardStatistik
-          icon={{
-            icon: ShoppingBag,
-            bgColor: "bg-purple-100",
-            iconColor: "text-purple-400",
-          }}
-          label="Item"
-          value={formatNumber("30000")}
-        />
-      </div>
-
       {/* filter */}
-      <div className="w-full grid grid-cols-2 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-2">
-        <div className="col-span-2">
+      <div className="w-full grid grid-cols-2 md:grid-cols-4 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-2 md:gap-12">
+        <div className="col-span-1 hidden md:flex">
+          <InputSearch handleSearch={() => {}} />
+        </div>
+
+        <div className="col-span-2 md:hidden">
           <RangeDateLarge
             defaultStartDate={format(
               new Date(
@@ -128,24 +85,239 @@ const Transaksi = () => {
             defaultEndDate={format(new Date(), "yyyy-MM-dd")}
           />
         </div>
+
+        <div className="col-span-1 hidden md:flex">
+          <RangeDate
+            defaultStartDate={format(
+              new Date(
+                new Date().getFullYear(),
+                new Date().getMonth() - 1,
+                new Date().getDate(),
+              ),
+              "yyyy-MM-dd",
+            )}
+            defaultEndDate={format(new Date(), "yyyy-MM-dd")}
+            listDate={listDateRangeLong}
+            customWidth="w-full"
+          />
+        </div>
+
         <div className="col-span-1">
           <FilterSort setSort={() => {}} customWidth="w-full" />
         </div>
-        <div className="col-span-1">
+
+        <div className="col-span-1 flex flex-row justify-start items-start gap-2">
           <MetodePembayaran
             setMetode={handleSetMetodePembayaran}
             customWidth="w-full"
           />
+          {metodePembayaran === "tempo" && (
+            <div className="hidden md:flex">
+              <StatusTempo setStatusTempo={setTempo} />
+            </div>
+          )}
         </div>
         {metodePembayaran === "tempo" && (
-          <div className="col-span-1">
+          <div className="col-span-1 md:hidden">
             <StatusTempo setStatusTempo={setTempo} />
           </div>
         )}
       </div>
 
+      <div className="flex my-2 flex-row justify-end w-full items-center gap-2 md:hidden">
+        <ButtonWithIcon
+          icon={FileText}
+          label="Export PDF"
+          bgColor="bg-error"
+          textColor="text-primary-white"
+          customHeight="h-9"
+        />
+        <ButtonWithIcon
+          icon={Sheet}
+          label="Export Excel"
+          bgColor="bg-success"
+          textColor="text-primary-white"
+          customHeight="h-9"
+        />
+      </div>
+
       {/* data */}
-      <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-lg border border-transparent dark:border-base-content/10 p-2 gap-2">
+      <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
+        <div className="w-full flex flex-row justify-between items-start">
+          {/* title */}
+          <h3 className="text-sm font-semibold text-base-content">
+            Ringkasan Statistik
+          </h3>
+
+          {/* aksi */}
+          <div className="flex flex-row justify-end items-center gap-2">
+            {/* button detail */}
+            <ButtonWithIcon
+              icon={Eye}
+              label="Lihat Detail"
+              customHeight="h-9 md:h-9"
+              handleBtn={() => handleRedirectDetail()}
+            />
+            {/* button export */}
+            <div className="md:flex flex-row justify-start items-center gap-2 hidden">
+              <ButtonWithIcon
+                icon={FileText}
+                label="Export PDF"
+                bgColor="bg-error"
+                textColor="text-primary-white"
+              />
+              <ButtonWithIcon
+                icon={Sheet}
+                label="Export Excel"
+                bgColor="bg-success"
+                textColor="text-primary-white"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2">
+          <CardStatistik
+            icon={{
+              icon: Receipt,
+              bgColor: "bg-blue-100",
+              iconColor: "text-blue-400",
+            }}
+            label={windowSize === "sm" ? "Transaksi" : "Total Transaksi"}
+            value={formatNumber("30000")}
+            caption={
+              windowSize !== "sm"
+                ? "Jumlah transaksi berdasarkan tanggal"
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            icon={{
+              icon: BanknoteArrowDown,
+              bgColor: "bg-emerald-100",
+              iconColor: "text-emerald-400",
+            }}
+            label={windowSize === "sm" ? "Omzet" : "Total Omzet"}
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(20342423)
+                : formatRupiah(20342423)
+            }
+            caption={
+              windowSize !== "sm"
+                ? "Total omzet dari transaksi penjualan"
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            icon={{
+              icon: ChartColumn,
+              bgColor: "bg-emerald-100",
+              iconColor: "text-emerald-400",
+            }}
+            label={
+              windowSize === "sm" ? "Rata-rata" : "Total Rata-rata transaksi"
+            }
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(20342423)
+                : formatRupiah(20342423)
+            }
+            caption={
+              windowSize !== "sm"
+                ? "Total omzet dari transaksi penjualan"
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            icon={{
+              icon: Package,
+              bgColor: "bg-amber-100",
+              iconColor: "text-amber-400",
+            }}
+            label={windowSize === "sm" ? "Modal" : "Total Modal"}
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(20342423)
+                : formatRupiah(20342423)
+            }
+            caption={
+              windowSize !== "sm"
+                ? "Total biaya modal untuk transaksi penjualan"
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            icon={{
+              icon: TrendingUp,
+              bgColor: "bg-green-100",
+              iconColor: "text-green-400",
+            }}
+            label={windowSize === "sm" ? "Laba" : "Total Laba"}
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(20342423)
+                : formatRupiah(20342423)
+            }
+            caption={
+              windowSize !== "sm"
+                ? "Total keuntungan dari transaksi penjualan"
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            icon={{
+              icon: Clock3,
+              bgColor: "bg-red-100",
+              iconColor: "text-red-400",
+            }}
+            label={windowSize === "sm" ? "Piutang" : "Total Piutang"}
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(20342423)
+                : formatRupiah(20342423)
+            }
+            caption={
+              windowSize !== "sm"
+                ? "Total nilai piutang yang belum dibayar"
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            icon={{
+              icon: ShoppingBag,
+              bgColor: "bg-purple-100",
+              iconColor: "text-purple-400",
+            }}
+            label={windowSize === "sm" ? "Produk" : "Total Produk Terjual"}
+            value={formatNumber("30000")}
+            caption={
+              windowSize !== "sm" ? "Jumlah produk yang terjual" : undefined
+            }
+          />
+
+          <CardStatistik
+            icon={{
+              icon: Package,
+              bgColor: "bg-indigo-100",
+              iconColor: "text-indigo-400",
+            }}
+            label={windowSize === "sm" ? "Item" : "Total Item Terjual"}
+            value={formatNumber("30000")}
+            caption={
+              windowSize !== "sm" ? "Jumlah item yang terjual" : undefined
+            }
+          />
+        </div>
+      </div>
+
+      {/* data untuk mobile */}
+      <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-lg border border-transparent dark:border-base-content/10 p-2 gap-2 order-3 md:hidden">
         {/* card data */}
         <CardData
           kodeReferensi="AU-TS-20260704-0003"
@@ -197,47 +369,132 @@ const Transaksi = () => {
         />
       </div>
 
-      {/* pagination */}
-      <PaginationAndLimit
-        currentPage={1}
-        setPage={() => {}}
-        totalPage={10}
-        limit={8}
-        setLimit={() => {}}
-      />
-    </div>
-  );
-};
-
-// card statistik
-type CardStatistikProps = {
-  label: string;
-  value: string;
-  icon: {
-    icon: LucideIcon;
-    iconColor: string;
-    bgColor: string;
-  };
-};
-const CardStatistik: FC<CardStatistikProps> = ({ icon, label, value }) => {
-  return (
-    <div className="grid-cols-1 flex flex-row justify-start items-center gap-2.5 border border-base-content/10 rounded-lg p-2">
-      {/* icon */}
-      <div
-        className={cn(
-          "w-10 h-10 rounded-lg flex flex-row justify-center items-center",
-          icon.bgColor,
-        )}
-      >
-        <icon.icon className={cn("size-5", icon.iconColor)} />
+      {/* data untuk > mobile */}
+      {/* MEMBUAT TABLE DATA */}
+      <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex order-3">
+        <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
+          {/* head */}
+          <thead>
+            <tr className="h-12 bg-base-200 text-xs">
+              <th>No. Transaksi</th>
+              <th>Tanggal</th>
+              <th>Pelanggan</th>
+              <th>Total Item</th>
+              <th>Total Pembayaran</th>
+              <th>Metode Pembayaran</th>
+              <th>Status</th>
+              <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {false ? (
+              Array.from({ length: 4 }).map((_, index) => (
+                <tr key={index}>
+                  <td colSpan={8}>
+                    <div className="skeleton h-12 w-full py-1" />
+                  </td>
+                </tr>
+              ))
+            ) : true ? (
+              [1, 2, 3, 4].map((barang, _) => (
+                <tr
+                  key={barang}
+                  className={cn(
+                    "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
+                    // false === true && "bg-base-200",
+                  )}
+                >
+                  <td>
+                    <span className="font-medium text-info">
+                      AU-TS-20260704-0003
+                    </span>
+                  </td>
+                  <td>{formatTanggalLengkap(new Date())}</td>
+                  {/* pelanggan */}
+                  <td>
+                    <div className="w-full flex flex-row justify-start items-center gap-2">
+                      {/* avatar */}
+                      <Avatar nama="Ilham R" index={1} xs />
+                      <div className="flex flex-col justify-start items-start">
+                        {/* nama */}
+                        <span className="font-semibold text-[0.625rem]">
+                          Ilham R
+                        </span>
+                        {/* no wa */}
+                        <span className="font-semibold text-[0.625rem] text-base-content/50">
+                          {formatNumberPhone("085896890881")}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{formatNumber(20)} item</td>
+                  <td>{formatRupiah(2000000)}</td>
+                  <td>
+                    <MetodePembayaranComponent metodePembayaran="CASH" />
+                  </td>
+                  <td>
+                    <StatusComponent status="COMPLETED" />
+                  </td>
+                  <td>
+                    <button type="button" className="text-info hover:underline">
+                      detail
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={10}>
+                  <div className="w-full h-full flex flex-col justify-center items-center">
+                    <DataEmpty
+                      title="Data Riwayat Transaksi Tidak Tersedia"
+                      description="Belum ada data riwayat transaksi yang dapat ditampilkan saat ini."
+                    />
+                  </div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+          {/* foot */}
+          <tfoot>
+            <tr>
+              {!true && true && [1].length! > 8 ? (
+                <>
+                  <th>No. Transaksi</th>
+                  <th>Tanggal</th>
+                  <th>Pelanggan</th>
+                  <th>Total Item</th>
+                  <th>Total Pembayaran</th>
+                  <th>Metode Pembayaran</th>
+                  <th>Status</th>
+                  <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
+                </>
+              ) : (
+                <>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </>
+              )}
+            </tr>
+          </tfoot>
+        </table>
       </div>
 
-      {/* label */}
-      <div className="flex flex-col justify-start items-start gap-0.5">
-        <span className="text-xs font-medium text-base-content/50">
-          {label}
-        </span>
-        <span className="text-xs font-semibold text-base-content">{value}</span>
+      {/* pagination */}
+      <div className="w-full order-4 -mt-2">
+        <PaginationAndLimit
+          currentPage={1}
+          setPage={() => {}}
+          totalPage={10}
+          limit={8}
+          setLimit={() => {}}
+        />
       </div>
     </div>
   );
@@ -336,30 +593,80 @@ const CardData: FC<CardDataType> = ({
           </span>
 
           {/* status */}
-          <span
-            className={cn(
-              "px-2 py-0.5 rounded-md text-[0.625rem]",
-              status === TRANSACTION_STATUS_TYPE.COMPLETED &&
-                "bg-green-100 text-green-600",
-              statusTempo === TEMPO_STATUS_TYPE.UNPAID &&
-                "bg-amber-100 text-amber-600",
-              statusTempo === TEMPO_STATUS_TYPE.PAID &&
-                "bg-green-100 text-green-600",
-              statusTempo === TEMPO_STATUS_TYPE.OVERDUE &&
-                "bg-red-100 text-red-600",
-            )}
-          >
-            {status === TRANSACTION_STATUS_TYPE.COMPLETED && "Lunas"}
-            {statusTempo === TEMPO_STATUS_TYPE.UNPAID && "Belum Lunas"}
-            {statusTempo === TEMPO_STATUS_TYPE.PAID && "Lunas"}
-            {statusTempo === TEMPO_STATUS_TYPE.OVERDUE && "Terlambat"}
-          </span>
+          <StatusComponent status={status} statusTempo={statusTempo} />
         </div>
 
         {/* icon */}
         <ChevronRight className="size-4 text-base-content" />
       </div>
     </button>
+  );
+};
+
+// status component
+type StatusComponentProps = {
+  status?: TransactionStatusType;
+  statusTempo?: TempoStatusType;
+};
+const StatusComponent: FC<StatusComponentProps> = ({ status, statusTempo }) => {
+  return (
+    <>
+      <span
+        className={cn(
+          "px-2 py-0.5 rounded-md text-[0.625rem]",
+          status === TRANSACTION_STATUS_TYPE.COMPLETED &&
+            "bg-green-100 text-green-600",
+          statusTempo === TEMPO_STATUS_TYPE.UNPAID &&
+            "bg-amber-100 text-amber-600",
+          statusTempo === TEMPO_STATUS_TYPE.PAID &&
+            "bg-green-100 text-green-600",
+          statusTempo === TEMPO_STATUS_TYPE.OVERDUE &&
+            "bg-red-100 text-red-600",
+        )}
+      >
+        {status === TRANSACTION_STATUS_TYPE.COMPLETED && "Lunas"}
+        {statusTempo === TEMPO_STATUS_TYPE.UNPAID && "Belum Lunas"}
+        {statusTempo === TEMPO_STATUS_TYPE.PAID && "Lunas"}
+        {statusTempo === TEMPO_STATUS_TYPE.OVERDUE && "Terlambat"}
+      </span>
+    </>
+  );
+};
+
+// metode pembayaran
+type MetodePembayaranProps = {
+  metodePembayaran: PaymentMethodType;
+};
+const MetodePembayaranComponent: FC<MetodePembayaranProps> = ({
+  metodePembayaran,
+}) => {
+  return (
+    <div className="flex gap-2 flex-row justify-start items-center">
+      {metodePembayaran === "TRANSFER" && (
+        <Landmark className="size-4 text-blue-400" />
+      )}
+      {metodePembayaran === "QRIS" && (
+        <QrCode className="size-4 text-purple-400" />
+      )}
+      {metodePembayaran === "CASH" && (
+        <Banknote className="size-4 text-emerald-400" />
+      )}
+      {metodePembayaran === "TEMPO" && (
+        <CalendarClock className="size-4 text-amber-400" />
+      )}
+
+      <span
+        className={cn(
+          "font-medium",
+          metodePembayaran === "CASH" && "text-emerald-400",
+          metodePembayaran === "QRIS" && "text-purple-400",
+          metodePembayaran === "TEMPO" && "text-amber-400",
+          metodePembayaran === "TRANSFER" && "text-blue-400",
+        )}
+      >
+        Transfer
+      </span>
+    </div>
   );
 };
 

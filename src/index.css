@@ -18,6 +18,11 @@
   --color-primary-white: #f8f8f8;
   --color-secondary-white: #eeeeee;
   --color-primary-black: #282828;
+
+  --color-custom-blue: oklch(70.7% 0.165 254.624);
+  --color-custom-green: oklch(76.5% 0.177 163.223);
+  --color-custom-yellow: oklch(82.8% 0.189 84.429);
+  --color-custom-purple: oklch(71.4% 0.203 305.504);
 }
 
 @layer daisyui.l1.l2 {
@@ -159,5 +164,46 @@ input:-webkit-autofill:active {
     100% {
       transform: scale(1);
     }
+  }
+}
+
+.recharts-surface:focus,
+.recharts-surface:focus-visible {
+  outline: none !important;
+}
+
+.recharts-wrapper:focus,
+.recharts-wrapper:focus-visible {
+  outline: none !important;
+}
+
+.status-custom-blue {
+  @layer daisyui.l1.l2 {
+    background-color: var(--color-custom-blue) /* var(--color-primary) */;
+    color: var(--color-custom-blue) /* var(--color-primary) */;
+  }
+}
+.status-custom-yellow {
+  @layer daisyui.l1.l2 {
+    background-color: var(--color-custom-yellow) /* var(--color-primary) */;
+    color: var(--color-custom-yellow) /* var(--color-primary) */;
+  }
+}
+.status-custom-purple {
+  @layer daisyui.l1.l2 {
+    background-color: var(--color-custom-purple) /* var(--color-primary) */;
+    color: var(--color-custom-purple) /* var(--color-primary) */;
+  }
+}
+.status-custom-green {
+  @layer daisyui.l1.l2 {
+    background-color: var(--color-custom-green) /* var(--color-primary) */;
+    color: var(--color-custom-green) /* var(--color-primary) */;
+  }
+}
+
+.progress-custom-primary {
+  @layer daisyui.l1.l2 {
+    color: var(--color-custom-primary);
   }
 }

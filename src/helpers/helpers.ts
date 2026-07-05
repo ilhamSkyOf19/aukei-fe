@@ -1,3 +1,6 @@
+import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
+import { id } from "date-fns/locale";
+
 export const highlightName = (name: string) => {
   const words = name.split(" ");
 
@@ -91,7 +94,7 @@ export const parseId = (value: string | undefined) => {
   return numberValue;
 };
 
-export const formatNumber = (value: string) => {
+export const formatNumber = (value: string | number) => {
   if (!value) return "";
 
   return new Intl.NumberFormat("id-ID").format(Number(value));
@@ -195,6 +198,22 @@ export const maxValue = (value: string | number, max: number): string => {
   return result.toString();
 };
 
+export const formatNumberK = (value: number): string => {
+  if (value >= 1_000_000_000) {
+    return `${(value / 1_000_000_000).toFixed(1)}B`;
+  }
+
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(1)}M`;
+  }
+
+  if (value >= 1_000) {
+    return `${(value / 1_000).toFixed(1)}K`;
+  }
+
+  return value.toString();
+};
+
 // format rupiah
 export const formatRupiahShort = (value: number): string => {
   if (!value) return "Rp 0";
@@ -218,4 +237,48 @@ export const formatRupiahShort = (value: number): string => {
   }
 
   return `Rp ${value.toLocaleString("id-ID")}`;
+};
+
+export const formatRupiahChartValue = (value: number) => {
+  if (value >= 1000000) {
+    return `${(value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1)} jt`;
+  }
+
+  if (value >= 1000) {
+    return `${(value / 1000).toFixed(value % 1000 === 0 ? 0 : 1)} rb`;
+  }
+
+  return value.toString();
+};
+
+export const getDateTicks = (startDate: string, endDate: string): string[] => {
+  const start = parseISO(startDate);
+  const end = parseISO(endDate);
+
+  const totalDays = differenceInCalendarDays(end, start) + 1;
+
+  // Jika <= 7 hari, tampilkan semua
+  if (totalDays <= 7) {
+    return Array.from({ length: totalDays }, (_, i) =>
+      format(addDays(start, i), "d MMM", {
+        locale: id,
+      }),
+    );
+  }
+
+  // Jika > 7 hari, ambil 7 titik
+  const result: string[] = [];
+  const step = (totalDays - 1) / 6;
+
+  for (let i = 0; i < 7; i++) {
+    const dayIndex = Math.round(i * step);
+
+    result.push(
+      format(addDays(start, dayIndex), "d MMM yyyy", {
+        locale: id,
+      }),
+    );
+  }
+
+  return result;
 };

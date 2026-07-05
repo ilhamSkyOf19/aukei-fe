@@ -135,7 +135,7 @@ const BarangMasuk = () => {
                   <tr
                     key={barang.id}
                     className={cn(
-                      "transition-all duration-75 ease-in-out h-18",
+                      "transition-all duration-75 ease-in-out h-18 text-xs text-base-content",
                       isActiveAksi === barang.id && "bg-base-200",
                     )}
                   >
@@ -160,27 +160,23 @@ const BarangMasuk = () => {
                       </label>
                     </th>
                     {/* kode */}
-                    <td className="font-semibold text-info">
+                    <td className="font-medium text-info">
                       {barang.kodeReferensi}
                     </td>
                     {/* tanggal */}
-                    <td className="text-base-content">
-                      {formatTanggalLengkap(barang.tanggalMasuk)} WIB
-                    </td>
+                    <td>{formatTanggalLengkap(barang.tanggalMasuk)} WIB</td>
                     {/* keterangan */}
-                    <td className="text-base-content">
+                    <td>
                       {barang.keterangan ? (
                         <span>{barang.keterangan}</span>
                       ) : (
-                        <span className="text-xs italic text-base-content/50">
+                        <span className="italic text-base-content/50">
                           Tidak ada keterangan
                         </span>
                       )}
                     </td>
                     {/* jumlah */}
-                    <td className="text-base-content">
-                      {barang.countDetailBarangMasuk}
-                    </td>
+                    <td>{barang.countDetailBarangMasuk}</td>
                     {/* status */}
                     <td>
                       <StatusInventori status={barang.status} />

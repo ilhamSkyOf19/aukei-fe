@@ -16,6 +16,7 @@ import { ROLE_INTERNAL_TYPE } from "../types/constant.type";
 import KasirPage from "../pages/KasirPage";
 import KeranjangPage from "../pages/KeranjangPage";
 import TransaksiPage from "../pages/TransaksiPage";
+import StatistikTransaksiPage from "../pages/StatistikTransaksiPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -214,6 +215,14 @@ const route = createBrowserRouter([
             element: (
               <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
                 <TransaksiPage />
+              </RoleGuard>
+            ),
+          },
+          {
+            path: "statistik",
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <StatistikTransaksiPage />
               </RoleGuard>
             ),
           },

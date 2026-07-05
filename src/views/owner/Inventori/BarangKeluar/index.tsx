@@ -134,7 +134,7 @@ const BarangKeluar = () => {
                   <tr
                     key={barang.id}
                     className={cn(
-                      "transition-all duration-75 ease-in-out h-18",
+                      "transition-all duration-75 ease-in-out h-18 text-xs text-base-content",
                       isActiveAksi === barang.id && "bg-base-200",
                     )}
                   >
@@ -159,29 +159,25 @@ const BarangKeluar = () => {
                       </label>
                     </th>
                     {/* kode */}
-                    <td className="font-semibold text-info">
+                    <td className="font-medium text-info">
                       {barang.kodeReferensi}
                     </td>
                     {/* tanggal */}
-                    <td className="text-base-content">
-                      {formatTanggalLengkap(barang.tanggalKeluar)} WIB
-                    </td>
+                    <td>{formatTanggalLengkap(barang.tanggalKeluar)} WIB</td>
                     {/* keterangan */}
-                    <td className="text-base-content">
+                    <td>
                       {barang.keterangan ? (
                         <span>{barang.keterangan}</span>
                       ) : (
-                        <span className="text-xs italic text-base-content/50">
+                        <span className="italic text-base-content/50">
                           Tidak ada keterangan
                         </span>
                       )}
                     </td>
                     {/* jumlah */}
-                    <td className="text-base-content">
-                      {barang.countDetailBarangKeluar}
-                    </td>
+                    <td>{barang.countDetailBarangKeluar}</td>
                     {/* jumlah barang masuk */}
-                    <td className="text-base-content">
+                    <td>
                       <JenisKeluar jenisKeluar={barang.jenisKeluar.nama} />
                     </td>
                     {/* status */}

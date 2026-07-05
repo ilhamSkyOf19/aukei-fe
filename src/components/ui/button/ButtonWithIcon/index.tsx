@@ -69,7 +69,7 @@ const ButtonWithIcon: FC<Props> = ({
           {Icon ? (
             <Icon
               className={cn(
-                customSize ? "size-6" : "size-5 lg:size-3.5 xl:size-4",
+                customSize ? "size-6" : "size-4.5 lg:size-3.5 xl:size-4",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-2",
               )}
@@ -77,7 +77,7 @@ const ButtonWithIcon: FC<Props> = ({
           ) : (
             <Plus
               className={cn(
-                customSize ? "size-6" : "size-5 lg:size-4.5 xl:size-5",
+                customSize ? "size-6" : "size-4.5 lg:size-4.5 xl:size-5",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-2",
               )}

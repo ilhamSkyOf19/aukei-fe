@@ -1,143 +1,102 @@
 import "react-day-picker/style.css";
 
-import { DayPicker, type DateRange } from "react-day-picker";
-import { format } from "date-fns";
+import { DayPicker } from "react-day-picker";
 import { cn } from "../../../utils/cn";
 import { id } from "date-fns/locale";
-import { useSearchParams } from "react-router-dom";
-import useModal from "../../../hooks/useModal";
 import DropDown from "../../inputs/DropDown";
 import listDateRange from "../../../utils/listDateRange";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmit from "../../ui/button/ButtonSubmit";
-import { useState, type FC } from "react";
+import { type FC } from "react";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
+import useRangeDate from "../../../hooks/useRangeDate";
+import { format } from "date-fns";
+import { CalendarDays } from "lucide-react";
 
 // props
 type Props = {
   customWidth?: string;
+  defaultStartDate?: string;
+  defaultEndDate?: string;
+  listDate?: { label: string; value: string }[];
+  noLabel?: boolean;
 };
 
-const RangeDate: FC<Props> = ({ customWidth }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [selected, setSelected] = useState<DateRange | undefined>();
-
-  const setRangeDate = (reset: boolean, startDate: string, endDate: string) => {
-    // mode URL (behavior lama)
-    const params = new URLSearchParams(searchParams);
-
-    if (reset) {
-      params.delete("startDate");
-      params.delete("endDate");
-    }
-
-    if (startDate) {
-      params.set("startDate", startDate);
-    }
-
-    if (endDate) {
-      params.set("endDate", endDate);
-    }
-
-    setSearchParams(params.toString());
-  };
-
-  //   use modal
+const RangeDate: FC<Props> = ({
+  customWidth,
+  defaultStartDate = format(
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() - 1,
+      new Date().getDate(),
+    ),
+    "yyyy-MM-dd",
+  ),
+  defaultEndDate = format(new Date(), "yyyy-MM-dd"),
+  noLabel,
+  listDate,
+}) => {
+  // use hook
   const {
-    modalRef: modalDateRef,
-    handleShowModal: handleShowModalDate,
-    handleCloseModal: closeModalDate,
-  } = useModal();
-
-  //   handle range date
-  const handleOnChangeDropDown = (value: string) => {
-    if (value === "aturTanggal") {
-      handleShowModalDate();
-      return;
-    }
-
-    if (value === "reset") {
-      setRangeDate(true, "", "");
-      selected && setSelected(undefined);
-      return;
-    }
-
-    const range = JSON.parse(value) as {
-      startDate: string;
-      endDate: string;
-    };
-
-    if (range) {
-      setRangeDate(false, range.startDate, range.endDate);
-      selected && setSelected(undefined);
-    }
-  };
-
-  //   handle apply
-  const handleApply = () => {
-    if (selected?.from && selected?.to) {
-      const startDate = format(selected.from, "yyyy-MM-dd");
-      const endDate = format(selected.to, "yyyy-MM-dd");
-      setRangeDate(false, startDate, endDate);
-
-      closeModalDate();
-    }
-  };
-
-  const handleCloseModalDete = () => {
-    setSelected({
-      from: searchParams.get("startDate")
-        ? new Date(searchParams.get("startDate") ?? "")
-        : undefined,
-      to: searchParams.get("endDate")
-        ? new Date(searchParams.get("endDate") ?? "")
-        : undefined,
-    });
-
-    closeModalDate();
-  };
+    closeModalDate,
+    handleApply,
+    handleOnChangeDropDown,
+    searchParams,
+    modalDateRef,
+    selected,
+    setSelected,
+  } = useRangeDate({
+    listDate: listDate ?? listDateRange,
+    defaultStartDate,
+    defaultEndDate,
+  });
 
   return (
     <div
       className={cn(
-        "flex flex-col justify-start items-start gap-1.5",
-        customWidth,
+        "flex  justify-start items-start",
+        noLabel ? "flex-row gap-2" : "flex-col gap-1.5",
+        customWidth ? customWidth : "w-60",
       )}
     >
-      <span className="text-xs text-base-content/80 font-medium">Urutkan</span>
-      <div
-        className={cn(
-          "flex flex-row justify-start items-center",
-          customWidth ? customWidth : "w-60",
-        )}
-      >
-        <DropDown
-          customWidth="w-full"
-          handleChange={(e) => {
-            handleOnChangeDropDown(e.target.value);
-          }}
-          listChoose={listDateRange}
-          placeholder="Filter Tanggal"
-          listBtn={[
-            {
-              handleClick: () => handleShowModalDate(),
-              label: "Kustom Tanggal",
-              value: "",
-            },
-          ]}
-        />
-      </div>
-
-      {/* show date */}
-      {searchParams.get("startDate") && searchParams.get("endDate") && (
-        <div className="flex flex-row justify-start items-center">
-          <span className="text-xs font-medium">
-            {formatTanggalPanjang(searchParams.get("startDate") ?? "")} -{" "}
-            {formatTanggalPanjang(searchParams.get("endDate") ?? "")}
-          </span>
-        </div>
+      {/* icon */}
+      {noLabel && (
+        <CalendarDays className="size-7 md:size-8 text-base-content" />
       )}
+
+      <div className="flex w-full flex-col justify-start items-start gap-1.5">
+        {!noLabel && (
+          <span className="text-xs text-base-content/80 font-medium">
+            Urutkan
+          </span>
+        )}
+        <div className={cn("flex w-full flex-row justify-start items-center")}>
+          <DropDown
+            customWidth="w-full"
+            handleChange={(e) => {
+              handleOnChangeDropDown(e.target.value);
+            }}
+            listChoose={listDate ?? listDateRange}
+            placeholder="Filter Tanggal"
+            listBtn={[
+              {
+                handleClick: () => handleOnChangeDropDown("aturTanggal"),
+                label: "Kustom Tanggal",
+                value: "aturTanggal",
+              },
+            ]}
+            defaultValue={"aturTanggal"}
+          />
+        </div>
+
+        {searchParams.get("start-date") && searchParams.get("end-date") && (
+          <span className="text-xs font-medium text-base-content">
+            {formatTanggalPanjang(searchParams.get("start-date")!)}
+            {" - "}
+            {formatTanggalPanjang(searchParams.get("end-date")!)}
+          </span>
+        )}
+      </div>
 
       <dialog ref={modalDateRef} id="my_modal_1" className="modal">
         <div
@@ -177,12 +136,12 @@ const RangeDate: FC<Props> = ({ customWidth }) => {
             <ButtonCloseText
               handleClose={() => {
                 handleOnChangeDropDown("reset");
-                handleCloseModalDete();
+                closeModalDate();
               }}
               label="Reset"
             />
 
-            <ButtonCloseText handleClose={handleCloseModalDete} />
+            <ButtonCloseText handleClose={closeModalDate} />
 
             {/* handle apply */}
             <ButtonSubmit

@@ -165,7 +165,7 @@ const Produk = () => {
                         <tr
                           key={produk.id}
                           className={cn(
-                            "transition-all duration-75 ease-in-out h-18",
+                            "transition-all duration-75 ease-in-out h-18 text-xs text-base-content",
                             isActiveAksi === produk.id && "bg-base-200",
                           )}
                         >
@@ -185,23 +185,17 @@ const Produk = () => {
                             </div>
                           </td>
                           {/* kode */}
-                          <td className="font-semibold text-info">
+                          <td className="font-medium text-info">
                             {produk.kode}
                           </td>
                           {/* nama */}
-                          <td className="text-base-content">{produk.nama}</td>
+                          <td>{produk.nama}</td>
                           {/* kategori */}
-                          <td className="text-base-content">
-                            {produk.kategori.nama}
-                          </td>
+                          <td>{produk.kategori.nama}</td>
                           {/* harga beli */}
-                          <td className="text-base-content">
-                            {formatRupiah(produk.hargaBeli)}
-                          </td>
+                          <td>{formatRupiah(produk.hargaBeli)}</td>
                           {/* harga jual */}
-                          <td className="text-base-content">
-                            {formatRupiah(produk.hargaJual)}
-                          </td>
+                          <td>{formatRupiah(produk.hargaJual)}</td>
                           {/* stok */}
                           <td
                             className={cn(
@@ -217,7 +211,7 @@ const Produk = () => {
                             {formatNumber(produk.stok.toString())}
                           </td>
                           {/* isi perbox */}
-                          <td className="font-medium text-base-content">
+                          <td className="font-medium">
                             {formatNumber(produk.isiPerBox.toString())}
                           </td>
                           {/* detail */}

@@ -26,6 +26,7 @@ const StatusTempo: FC<Props> = ({ setStatusTempo, customWidth }) => {
           { value: "semua", label: "Semua" },
         ]}
         placeholder="Status Tempo"
+        defaultValue="semua"
       />
     </div>
   );
