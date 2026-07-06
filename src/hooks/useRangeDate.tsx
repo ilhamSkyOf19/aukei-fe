@@ -119,6 +119,8 @@ const useRangeDate = (params: {
     if (!startDate || !endDate) return "";
 
     const found = listDate.find((item) => {
+      if (item.value === "reset") return false;
+
       const range = JSON.parse(item.value);
 
       return range.startDate === startDate && range.endDate === endDate;

@@ -60,7 +60,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
         <>
           <div className="w-full lg:hidden flex flex-row justify-between items-center">
             <div className="flex flex-col justify-start items-start gap-1.5">
-              <p className="text-md font-semibold">Daftar Barang Masuk</p>
+              <p className="text-md font-semibold">Daftar Barang Keluar</p>
               <p className="text-xs px-3 py-1 rounded-full bg-gray-300">
                 {totalBarang} barang
               </p>
@@ -77,7 +77,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
             {/* title */}
             <div className="w-full flex flex-row justify-start items-center">
               <h2 className="text-base-content text-sm font-semibold">
-                Tambah Barang Masuk
+                Tambah Barang Keluar
               </h2>
             </div>
 
@@ -112,6 +112,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
                     }
                     handleClear={() => handleCloseActiveComponentChooseProduk()}
                     errorMessage={errors.produkId?.message}
+                    customHeight="h-10"
                   />
 
                   {/* modal show data produk for choose */}
@@ -269,7 +270,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
               {/* button submit */}
               <div className="flex-1 flex flex-row justify-end items-end h-18">
                 <ButtonSubmitWithIcon
-                  label="Tambah Barang Masuk"
+                  label="Tambah Barang Keluar"
                   isLoading={isPendingBarangKeluarDetail}
                 />
               </div>

@@ -22,7 +22,7 @@ type GrafikLineProps = {
   windowSize: "sm" | "md" | "lg";
 };
 const GrafikLine: FC<GrafikLineProps> = ({ windowSize }) => {
-  const { isChoose, data, handleSetIsChoose } = useGrafikLine();
+  const { isChoose, handleSetIsChoose, isLoadingOmzet, raw } = useGrafikLine();
   return (
     <div
       className={cn(
@@ -81,7 +81,7 @@ const GrafikLine: FC<GrafikLineProps> = ({ windowSize }) => {
           height: "100%",
         }}
         responsive
-        data={data}
+        data={raw}
         margin={{
           top: 10,
           right: windowSize !== "sm" ? 35 : 30,

@@ -92,6 +92,10 @@
 
 - [✅] Menyesuaikan preview struk untuk pembayaran tempo
 
+- [✅] Integrasi data ringkasan transaksi
+
+- [ ] Integrasi Chart
+
 - [ ] Membuat ui tombol tombol pada preview after transaksi
 
 - [ ] Membuat fitur update pelanggan di keranjang

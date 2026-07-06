@@ -18,7 +18,6 @@ import {
   formatNumberK,
   formatRupiah,
   formatRupiahShort,
-  getDateTicks,
 } from "../../../helpers/helpers";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import RangeDate from "../../../components/filters/RangeDate";
@@ -28,7 +27,9 @@ import GrafikPieMetodePembayaran from "../../../components/grafik/GrafikPieMetod
 import type { FC } from "react";
 
 const StatistikTransaksi = () => {
-  const { windowSize, navigate } = useStatistikTransaksi();
+  const { windowSize, navigate, isExistingData, isLoading, statistik } =
+    useStatistikTransaksi();
+
   return (
     <div className="w-full mb-30 flex flex-col justify-start items-start p-2 gap-4">
       <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
@@ -79,15 +80,19 @@ const StatistikTransaksi = () => {
               iconColor: "text-blue-400",
             }}
             label={windowSize === "sm" ? "Transaksi" : "Total Transaksi"}
-            value={formatNumber("30000")}
+            value={formatNumber(statistik?.data?.totalTransaksi.total ?? 0)}
             caption={
               windowSize !== "sm"
                 ? "Jumlah transaksi berdasarkan tanggal"
                 : undefined
             }
-            detail={{
-              up: 12.9,
-            }}
+            detail={
+              statistik?.data?.totalTransaksi?.persentase
+                ? statistik?.data?.totalTransaksi?.persentase > 0
+                  ? { up: statistik?.data?.totalTransaksi?.persentase }
+                  : { down: statistik?.data?.totalTransaksi?.persentase }
+                : undefined
+            }
           />
 
           <CardStatistik
@@ -99,17 +104,21 @@ const StatistikTransaksi = () => {
             label={windowSize === "sm" ? "Omzet" : "Total Omzet"}
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(statistik?.data?.totalOmzet.total ?? 0)
+                : formatRupiah(statistik?.data?.totalOmzet.total ?? 0)
             }
             caption={
               windowSize !== "sm"
                 ? "Total omzet dari transaksi penjualan"
                 : undefined
             }
-            detail={{
-              up: 1.9,
-            }}
+            detail={
+              statistik?.data?.totalOmzet?.persentase
+                ? statistik?.data?.totalOmzet?.persentase > 0
+                  ? { up: statistik?.data?.totalOmzet?.persentase }
+                  : { down: statistik?.data?.totalOmzet?.persentase }
+                : undefined
+            }
           />
 
           <CardStatistik
@@ -123,17 +132,27 @@ const StatistikTransaksi = () => {
             }
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(
+                    statistik?.data?.totalRataRataTransaksi.total ?? 0,
+                  )
+                : formatRupiah(
+                    statistik?.data?.totalRataRataTransaksi.total ?? 0,
+                  )
             }
             caption={
               windowSize !== "sm"
                 ? "Total omzet dari transaksi penjualan"
                 : undefined
             }
-            detail={{
-              down: 12.9,
-            }}
+            detail={
+              statistik?.data?.totalRataRataTransaksi?.persentase
+                ? statistik?.data?.totalRataRataTransaksi?.persentase > 0
+                  ? { up: statistik?.data?.totalRataRataTransaksi?.persentase }
+                  : {
+                      down: statistik?.data?.totalRataRataTransaksi?.persentase,
+                    }
+                : undefined
+            }
           />
 
           <CardStatistik
@@ -145,17 +164,21 @@ const StatistikTransaksi = () => {
             label={windowSize === "sm" ? "Modal" : "Total Modal"}
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(statistik?.data?.totalModal.total ?? 0)
+                : formatRupiah(statistik?.data?.totalModal.total ?? 0)
             }
             caption={
               windowSize !== "sm"
                 ? "Total biaya modal untuk transaksi penjualan"
                 : undefined
             }
-            detail={{
-              up: 22.9,
-            }}
+            detail={
+              statistik?.data?.totalModal?.persentase
+                ? statistik?.data?.totalModal?.persentase > 0
+                  ? { up: statistik?.data?.totalModal?.persentase }
+                  : { down: statistik?.data?.totalModal?.persentase }
+                : undefined
+            }
           />
 
           <CardStatistik
@@ -167,17 +190,21 @@ const StatistikTransaksi = () => {
             label={windowSize === "sm" ? "Laba" : "Total Laba"}
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(statistik?.data?.totalLaba.total ?? 0)
+                : formatRupiah(statistik?.data?.totalLaba.total ?? 0)
             }
             caption={
               windowSize !== "sm"
                 ? "Total keuntungan dari transaksi penjualan"
                 : undefined
             }
-            detail={{
-              down: 12.9,
-            }}
+            detail={
+              statistik?.data?.totalLaba?.persentase
+                ? statistik?.data?.totalLaba?.persentase > 0
+                  ? { up: statistik?.data?.totalLaba?.persentase }
+                  : { down: statistik?.data?.totalLaba?.persentase }
+                : undefined
+            }
           />
 
           <CardStatistik
@@ -189,17 +216,21 @@ const StatistikTransaksi = () => {
             label={windowSize === "sm" ? "Piutang" : "Total Piutang"}
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(statistik?.data?.totalPiutang.total ?? 0)
+                : formatRupiah(statistik?.data?.totalPiutang.total ?? 0)
             }
             caption={
               windowSize !== "sm"
                 ? "Total nilai piutang yang belum dibayar"
                 : undefined
             }
-            detail={{
-              up: 3.9,
-            }}
+            detail={
+              statistik?.data?.totalPiutang?.persentase
+                ? statistik?.data?.totalPiutang?.persentase > 0
+                  ? { up: statistik?.data?.totalPiutang?.persentase }
+                  : { down: statistik?.data?.totalPiutang?.persentase }
+                : undefined
+            }
           />
 
           <CardStatistik
@@ -209,13 +240,17 @@ const StatistikTransaksi = () => {
               iconColor: "text-purple-400",
             }}
             label={windowSize === "sm" ? "Produk" : "Total Produk Terjual"}
-            value={formatNumber("30000")}
+            value={formatNumber(statistik?.data?.totalProdukTerjual.total ?? 0)}
             caption={
               windowSize !== "sm" ? "Jumlah produk yang terjual" : undefined
             }
-            detail={{
-              down: 12.9,
-            }}
+            detail={
+              statistik?.data?.totalProdukTerjual?.persentase
+                ? statistik?.data?.totalProdukTerjual?.persentase > 0
+                  ? { up: statistik?.data?.totalProdukTerjual?.persentase }
+                  : { down: statistik?.data?.totalProdukTerjual?.persentase }
+                : undefined
+            }
           />
 
           <CardStatistik
@@ -225,13 +260,17 @@ const StatistikTransaksi = () => {
               iconColor: "text-indigo-400",
             }}
             label={windowSize === "sm" ? "Item" : "Total Item Terjual"}
-            value={formatNumber("30000")}
+            value={formatNumber(statistik?.data?.totalItemTerjual.total ?? 0)}
             caption={
               windowSize !== "sm" ? "Jumlah item yang terjual" : undefined
             }
-            detail={{
-              down: 12.9,
-            }}
+            detail={
+              statistik?.data?.totalItemTerjual?.persentase
+                ? statistik?.data?.totalItemTerjual?.persentase > 0
+                  ? { up: statistik?.data?.totalItemTerjual?.persentase }
+                  : { down: statistik?.data?.totalItemTerjual?.persentase }
+                : undefined
+            }
           />
         </div>
       </div>

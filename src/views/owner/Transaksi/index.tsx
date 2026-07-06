@@ -8,6 +8,7 @@ import {
   Dot,
   Eye,
   FileText,
+  History,
   Landmark,
   Package,
   PackageOpen,
@@ -57,19 +58,28 @@ const Transaksi = () => {
     setTempo,
     windowSize,
     handleRedirectDetail,
+    isLoadingRingkasanStatistik,
+    ringkasanStatistik,
+    dataRiwayatTransaksi,
+    handleSearch,
+    isExistDataRiwayatTransaksi,
+    isLoadingRiwayatTransaksi,
+    setLimit,
+    setPage,
+    setSort,
   } = useTransaksi();
 
   return (
     <div className="w-full mb-30 flex flex-col justify-start items-start p-2 gap-2">
       {/* search */}
       <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg md:hidden">
-        <InputSearch handleSearch={() => {}} />
+        <InputSearch handleSearch={handleSearch} />
       </div>
 
       {/* filter */}
       <div className="w-full grid grid-cols-2 md:grid-cols-4 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-2 md:gap-12">
         <div className="col-span-1 hidden md:flex">
-          <InputSearch handleSearch={() => {}} />
+          <InputSearch handleSearch={handleSearch} withLabel />
         </div>
 
         <div className="col-span-2 md:hidden">
@@ -103,7 +113,7 @@ const Transaksi = () => {
         </div>
 
         <div className="col-span-1">
-          <FilterSort setSort={() => {}} customWidth="w-full" />
+          <FilterSort setSort={setSort} customWidth="w-full" />
         </div>
 
         <div className="col-span-1 flex flex-row justify-start items-start gap-2">
@@ -177,13 +187,16 @@ const Transaksi = () => {
         </div>
         <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2">
           <CardStatistik
+            isLoading={isLoadingRingkasanStatistik}
             icon={{
               icon: Receipt,
               bgColor: "bg-blue-100",
               iconColor: "text-blue-400",
             }}
             label={windowSize === "sm" ? "Transaksi" : "Total Transaksi"}
-            value={formatNumber("30000")}
+            value={
+              formatNumber(ringkasanStatistik?.data?.totalTransaksi ?? 0) || "0"
+            }
             caption={
               windowSize !== "sm"
                 ? "Jumlah transaksi berdasarkan tanggal"
@@ -192,6 +205,7 @@ const Transaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoadingRingkasanStatistik}
             icon={{
               icon: BanknoteArrowDown,
               bgColor: "bg-emerald-100",
@@ -200,8 +214,8 @@ const Transaksi = () => {
             label={windowSize === "sm" ? "Omzet" : "Total Omzet"}
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(ringkasanStatistik?.data?.totalOmzet ?? 0)
+                : formatRupiah(ringkasanStatistik?.data?.totalOmzet ?? 0)
             }
             caption={
               windowSize !== "sm"
@@ -211,6 +225,7 @@ const Transaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoadingRingkasanStatistik}
             icon={{
               icon: ChartColumn,
               bgColor: "bg-emerald-100",
@@ -221,8 +236,12 @@ const Transaksi = () => {
             }
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(
+                    ringkasanStatistik?.data?.totalRataRataTransaksi ?? 0,
+                  )
+                : formatRupiah(
+                    ringkasanStatistik?.data?.totalRataRataTransaksi ?? 0,
+                  )
             }
             caption={
               windowSize !== "sm"
@@ -232,6 +251,7 @@ const Transaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoadingRingkasanStatistik}
             icon={{
               icon: Package,
               bgColor: "bg-amber-100",
@@ -240,8 +260,8 @@ const Transaksi = () => {
             label={windowSize === "sm" ? "Modal" : "Total Modal"}
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(ringkasanStatistik?.data?.totalModal ?? 0)
+                : formatRupiah(ringkasanStatistik?.data?.totalModal ?? 0)
             }
             caption={
               windowSize !== "sm"
@@ -251,6 +271,7 @@ const Transaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoadingRingkasanStatistik}
             icon={{
               icon: TrendingUp,
               bgColor: "bg-green-100",
@@ -259,8 +280,8 @@ const Transaksi = () => {
             label={windowSize === "sm" ? "Laba" : "Total Laba"}
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(ringkasanStatistik?.data?.totalLaba ?? 0)
+                : formatRupiah(ringkasanStatistik?.data?.totalLaba ?? 0)
             }
             caption={
               windowSize !== "sm"
@@ -270,6 +291,7 @@ const Transaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoadingRingkasanStatistik}
             icon={{
               icon: Clock3,
               bgColor: "bg-red-100",
@@ -278,8 +300,8 @@ const Transaksi = () => {
             label={windowSize === "sm" ? "Piutang" : "Total Piutang"}
             value={
               windowSize === "sm"
-                ? formatRupiahShort(20342423)
-                : formatRupiah(20342423)
+                ? formatRupiahShort(ringkasanStatistik?.data?.totalPiutang ?? 0)
+                : formatRupiah(ringkasanStatistik?.data?.totalPiutang ?? 0)
             }
             caption={
               windowSize !== "sm"
@@ -289,26 +311,38 @@ const Transaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoadingRingkasanStatistik}
             icon={{
               icon: ShoppingBag,
               bgColor: "bg-purple-100",
               iconColor: "text-purple-400",
             }}
             label={windowSize === "sm" ? "Produk" : "Total Produk Terjual"}
-            value={formatNumber("30000")}
+            value={
+              ringkasanStatistik?.data?.totalProdukTerjual
+                ? formatNumber(
+                    ringkasanStatistik?.data?.totalProdukTerjual ?? 0,
+                  )
+                : "0"
+            }
             caption={
               windowSize !== "sm" ? "Jumlah produk yang terjual" : undefined
             }
           />
 
           <CardStatistik
+            isLoading={isLoadingRingkasanStatistik}
             icon={{
               icon: Package,
               bgColor: "bg-indigo-100",
               iconColor: "text-indigo-400",
             }}
             label={windowSize === "sm" ? "Item" : "Total Item Terjual"}
-            value={formatNumber("30000")}
+            value={
+              ringkasanStatistik?.data?.totalItemTerjual
+                ? formatNumber(ringkasanStatistik?.data?.totalItemTerjual ?? 0)
+                : "0"
+            }
             caption={
               windowSize !== "sm" ? "Jumlah item yang terjual" : undefined
             }
@@ -318,59 +352,35 @@ const Transaksi = () => {
 
       {/* data untuk mobile */}
       <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-lg border border-transparent dark:border-base-content/10 p-2 gap-2 order-3 md:hidden">
-        {/* card data */}
-        <CardData
-          kodeReferensi="AU-TS-20260704-0003"
-          tanggal={new Date()}
-          metodePembayaran="CASH"
-          status="COMPLETED"
-          totalItem={20}
-          totalTransaksi={12000000}
-        />
-        <CardData
-          kodeReferensi="AU-TS-20260704-0003"
-          tanggal={new Date()}
-          metodePembayaran="QRIS"
-          status="COMPLETED"
-          totalItem={20}
-          totalTransaksi={12000000}
-        />
-        <CardData
-          kodeReferensi="AU-TS-20260704-0003"
-          tanggal={new Date()}
-          metodePembayaran="TRANSFER"
-          status="COMPLETED"
-          totalItem={20}
-          totalTransaksi={12000000}
-        />
-        <CardData
-          kodeReferensi="AU-TS-20260704-0003"
-          tanggal={new Date()}
-          metodePembayaran="TEMPO"
-          statusTempo="UNPAID"
-          totalItem={20}
-          totalTransaksi={12000000}
-        />
-        <CardData
-          kodeReferensi="AU-TS-20260704-0003"
-          tanggal={new Date()}
-          metodePembayaran="TEMPO"
-          statusTempo="PAID"
-          totalItem={20}
-          totalTransaksi={12000000}
-        />
-        <CardData
-          kodeReferensi="AU-TS-20260704-0003"
-          tanggal={new Date()}
-          metodePembayaran="TEMPO"
-          statusTempo="OVERDUE"
-          totalItem={20}
-          totalTransaksi={12000000}
-        />
+        {isLoadingRiwayatTransaksi ? (
+          Array.from({ length: 4 }, (_, i) => (
+            <div key={i} className="w-full h-14 skeleton" />
+          ))
+        ) : isExistDataRiwayatTransaksi && dataRiwayatTransaksi ? (
+          dataRiwayatTransaksi?.data?.data.map((item) => (
+            <CardData
+              key={item.id}
+              nomorReferensi={item.nomorTransaksi || ""}
+              tanggal={item?.completedAt || new Date()}
+              metodePembayaran={item.metodePembayaran || "CASH"}
+              statusTempo={item.statusTempo}
+              totalItem={item.totalItem}
+              totalTransaksi={item.totalBayar}
+              status={item.status}
+            />
+          ))
+        ) : (
+          <div className="w-full flex flex-col justify-center items-center">
+            <DataEmpty
+              iconData={History}
+              title="Riwayat Tidak Tersedia"
+              description="Belum ada data riwayat yang dapat ditampilkan saat ini"
+            />
+          </div>
+        )}
       </div>
 
       {/* data untuk > mobile */}
-      {/* MEMBUAT TABLE DATA */}
       <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex order-3">
         <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
           {/* head */}
@@ -395,10 +405,10 @@ const Transaksi = () => {
                   </td>
                 </tr>
               ))
-            ) : true ? (
-              [1, 2, 3, 4].map((barang, _) => (
+            ) : isExistDataRiwayatTransaksi ? (
+              dataRiwayatTransaksi?.data?.data.map((item, _) => (
                 <tr
-                  key={barang}
+                  key={item.id}
                   className={cn(
                     "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
                     // false === true && "bg-base-200",
@@ -406,34 +416,45 @@ const Transaksi = () => {
                 >
                   <td>
                     <span className="font-medium text-info">
-                      AU-TS-20260704-0003
+                      {item.nomorTransaksi}
                     </span>
                   </td>
-                  <td>{formatTanggalLengkap(new Date())}</td>
+                  <td>
+                    {formatTanggalLengkap(item.completedAt ?? new Date())}
+                  </td>
                   {/* pelanggan */}
                   <td>
                     <div className="w-full flex flex-row justify-start items-center gap-2">
                       {/* avatar */}
-                      <Avatar nama="Ilham R" index={1} xs />
+                      <Avatar
+                        nama={item.pelanggan.nama}
+                        index={item.pelanggan.id}
+                        xs
+                      />
                       <div className="flex flex-col justify-start items-start">
                         {/* nama */}
                         <span className="font-semibold text-[0.625rem]">
-                          Ilham R
+                          {item.pelanggan.nama}
                         </span>
                         {/* no wa */}
                         <span className="font-semibold text-[0.625rem] text-base-content/50">
-                          {formatNumberPhone("085896890881")}
+                          {formatNumberPhone(item.pelanggan.noWa)}
                         </span>
                       </div>
                     </div>
                   </td>
-                  <td>{formatNumber(20)} item</td>
-                  <td>{formatRupiah(2000000)}</td>
+                  <td>{formatNumber(item.totalItem)} item</td>
+                  <td>{formatRupiah(item.totalBayar)}</td>
                   <td>
-                    <MetodePembayaranComponent metodePembayaran="CASH" />
+                    <MetodePembayaranComponent
+                      metodePembayaran={item.metodePembayaran || "CASH"}
+                    />
                   </td>
                   <td>
-                    <StatusComponent status="COMPLETED" />
+                    <StatusComponent
+                      status={item.status}
+                      statusTempo={item.statusTempo}
+                    />
                   </td>
                   <td>
                     <button type="button" className="text-info hover:underline">
@@ -489,11 +510,11 @@ const Transaksi = () => {
       {/* pagination */}
       <div className="w-full order-4 -mt-2">
         <PaginationAndLimit
-          currentPage={1}
-          setPage={() => {}}
-          totalPage={10}
-          limit={8}
-          setLimit={() => {}}
+          currentPage={dataRiwayatTransaksi?.data?.meta?.currentPage || 1}
+          setPage={setPage}
+          totalPage={dataRiwayatTransaksi?.data?.meta?.totalPage || 1}
+          limit={dataRiwayatTransaksi?.data?.meta?.limit || 8}
+          setLimit={setLimit}
         />
       </div>
     </div>
@@ -502,7 +523,7 @@ const Transaksi = () => {
 
 // card data
 type CardDataType = {
-  kodeReferensi: string;
+  nomorReferensi: string;
   tanggal: Date;
   totalItem: number;
   metodePembayaran: PaymentMethodType;
@@ -511,7 +532,7 @@ type CardDataType = {
   statusTempo?: TempoStatusType;
 };
 const CardData: FC<CardDataType> = ({
-  kodeReferensi,
+  nomorReferensi,
   metodePembayaran,
   status,
   tanggal,
@@ -553,7 +574,7 @@ const CardData: FC<CardDataType> = ({
         <div className="flex flex-col justify-start items-start gap-0.5">
           {/* kode referensi */}
           <span className="text-[0.625rem] font-semibold text-base-content">
-            {kodeReferensi}
+            {nomorReferensi}
           </span>
 
           {/* date */}
@@ -624,7 +645,9 @@ const StatusComponent: FC<StatusComponentProps> = ({ status, statusTempo }) => {
             "bg-red-100 text-red-600",
         )}
       >
-        {status === TRANSACTION_STATUS_TYPE.COMPLETED && "Lunas"}
+        {status === TRANSACTION_STATUS_TYPE.COMPLETED &&
+          !statusTempo &&
+          "Lunas"}
         {statusTempo === TEMPO_STATUS_TYPE.UNPAID && "Belum Lunas"}
         {statusTempo === TEMPO_STATUS_TYPE.PAID && "Lunas"}
         {statusTempo === TEMPO_STATUS_TYPE.OVERDUE && "Terlambat"}
@@ -657,14 +680,14 @@ const MetodePembayaranComponent: FC<MetodePembayaranProps> = ({
 
       <span
         className={cn(
-          "font-medium",
+          "font-medium capitalize",
           metodePembayaran === "CASH" && "text-emerald-400",
           metodePembayaran === "QRIS" && "text-purple-400",
           metodePembayaran === "TEMPO" && "text-amber-400",
           metodePembayaran === "TRANSFER" && "text-blue-400",
         )}
       >
-        Transfer
+        {metodePembayaran.toLowerCase()}
       </span>
     </div>
   );

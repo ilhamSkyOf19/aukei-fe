@@ -12,11 +12,21 @@ type Props = {
   handleClear?: () => void;
   placeholder?: string;
   errorMessage?: string;
+  withLabel?: boolean;
+  customHeight?: string;
 };
 
 const InputSearch = forwardRef<InputSearchRef, Props>(
   (
-    { handleSearch, handleOnFocus, handleClear, placeholder, errorMessage },
+    {
+      handleSearch,
+      handleOnFocus,
+      handleClear,
+      placeholder,
+      errorMessage,
+      withLabel,
+      customHeight,
+    },
     ref,
   ) => {
     const [searchParams] = useSearchParams();
@@ -57,10 +67,17 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
           errorMessage && "mb-3",
         )}
       >
-        <span className="text-xs text-base-content/80 font-medium hidden lg:block">
-          Cari
-        </span>
-        <div className="w-full h-9 flex flex-row justify-start items-center">
+        {withLabel && (
+          <span className="text-xs text-base-content/80 font-medium hidden lg:block">
+            Cari
+          </span>
+        )}
+        <div
+          className={cn(
+            "w-full flex flex-row justify-start items-center",
+            customHeight ? customHeight : "h-9",
+          )}
+        >
           <div
             className={cn(
               "h-full px-3 flex flex-row justify-start items-center gap-2 border border-base-content rounded-md w-full focus-within:ring-1 focus-within:ring-base-content transition-all duration-300 ease-in-out",

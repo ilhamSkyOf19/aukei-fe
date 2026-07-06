@@ -1,5 +1,13 @@
-import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
+import {
+  addDays,
+  differenceInCalendarDays,
+  endOfDay,
+  format,
+  parseISO,
+  startOfDay,
+} from "date-fns";
 import { id } from "date-fns/locale";
+import type { ChartBucketType } from "../models/transaction.model";
 
 export const highlightName = (name: string) => {
   const words = name.split(" ");
@@ -281,4 +289,53 @@ export const getDateTicks = (startDate: string, endDate: string): string[] => {
   }
 
   return result;
+};
+
+export const createChartBuckets = (
+  startDate: Date,
+  endDate: Date,
+): ChartBucketType[] => {
+  const start = startOfDay(startDate);
+  const end = endOfDay(endDate);
+
+  const totalDays = differenceInCalendarDays(end, start) + 1;
+
+  const buckets: ChartBucketType[] = [];
+
+  // tampilkan semua hari jika <=7
+  if (totalDays <= 7) {
+    for (let i = 0; i < totalDays; i++) {
+      const date = addDays(start, i);
+
+      buckets.push({
+        label: format(date, "d MMM", {
+          locale: id,
+        }),
+        startDate: startOfDay(date),
+        endDate: endOfDay(date),
+      });
+    }
+
+    return buckets;
+  }
+
+  // bagi menjadi 7 bagian
+  const step = totalDays / 7;
+
+  for (let i = 0; i < 7; i++) {
+    const bucketStart = startOfDay(addDays(start, Math.floor(i * step)));
+
+    const bucketEnd =
+      i === 6 ? end : endOfDay(addDays(start, Math.floor((i + 1) * step) - 1));
+
+    buckets.push({
+      label: format(bucketStart, "d MMM yyyy", {
+        locale: id,
+      }),
+      startDate: bucketStart,
+      endDate: bucketEnd,
+    });
+  }
+
+  return buckets;
 };

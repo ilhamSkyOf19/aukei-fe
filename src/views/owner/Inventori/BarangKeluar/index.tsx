@@ -80,7 +80,11 @@ const BarangKeluar = () => {
           />
           <div className="w-full md:flex-1 flex flex-row justify-start items-center">
             {/* input search */}
-            <InputSearch handleSearch={handleSearch} placeholder="Cari kode" />
+            <InputSearch
+              handleSearch={handleSearch}
+              placeholder="Cari kode"
+              withLabel
+            />
           </div>
           <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
             {/* input range date */}

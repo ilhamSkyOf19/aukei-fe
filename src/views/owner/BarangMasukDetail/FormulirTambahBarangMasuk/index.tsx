@@ -110,6 +110,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
                     }
                     handleClear={() => handleCloseActiveComponentChooseProduk()}
                     errorMessage={errors.produkId?.message}
+                    customHeight="h-10"
                   />
 
                   {/* modal show data produk for choose */}
