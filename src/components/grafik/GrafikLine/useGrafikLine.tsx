@@ -1,15 +1,7 @@
-import { useState } from "react";
-import { getDateTicks } from "../../../helpers/helpers";
+import { useMemo, useState } from "react";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useQueries } from "@tanstack/react-query";
-import { TransactionServices } from "../../../services/transaction.service";
-
-// get ticks
-const dates = getDateTicks("2021-06-01", "2023-06-04");
-const dataRaw = dates.map((date) => ({
-  date: date,
-  value: Math.floor(Math.random() * 10000000),
-}));
+import { StatistikServices } from "../../../services/statistik.service";
 
 const useGrafikLine = () => {
   // state isChoose grafik
@@ -24,33 +16,90 @@ const useGrafikLine = () => {
       {
         queryKey: ["chart-omzet", startDate, endDate],
         queryFn: () =>
-          TransactionServices.chartOmzet({
-            startDate,
-            endDate,
+          StatistikServices.chartOmzet({
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
           }),
         retry: false,
         refetchOnWindowFocus: false,
-        enabled: isChoose === "omzet",
+        enabled: isChoose === "omzet" && !!startDate && !!endDate,
+      },
+      {
+        queryKey: ["chart-modal", startDate, endDate],
+        queryFn: () =>
+          StatistikServices.chartModal({
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+          }),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: isChoose === "modal" && !!startDate && !!endDate,
+      },
+      {
+        queryKey: ["chart-laba", startDate, endDate],
+        queryFn: () =>
+          StatistikServices.chartLaba({
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+          }),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: isChoose === "laba" && !!startDate && !!endDate,
       },
     ],
   });
 
-  const [{ data: dataOmzet, isLoading: isLoadingOmzet }] = data;
+  const [
+    { data: dataOmzet, isLoading: isLoadingOmzet, isFetching: isFetchingOmzet },
+    { data: dataModal, isLoading: isLoadingModal, isFetching: isFetchingModal },
+    { data: dataLaba, isLoading: isLoadingLaba, isFetching: isFetchingLaba },
+  ] = data;
 
-  const [raw, setRaw] = useState(dataOmzet?.data || []);
+  // data chart
+  const dataChart = useMemo(() => {
+    if (isChoose === "omzet") {
+      return dataOmzet?.data ?? [];
+    }
+    if (isChoose === "modal") {
+      return dataModal?.data ?? [];
+    }
+    if (isChoose === "laba") {
+      return dataLaba?.data ?? [];
+    }
+  }, [isChoose, dataOmzet, dataModal, dataLaba]);
 
-  //   handle set is choose
+  // loading chart aktif
+  const isLoading = useMemo(() => {
+    if (isChoose === "omzet") {
+      return isLoadingOmzet || isFetchingOmzet;
+    }
+    if (isChoose === "modal") {
+      return isLoadingModal || isFetchingModal;
+    }
+    if (isChoose === "laba") {
+      return isLoadingLaba || isFetchingLaba;
+    }
+  }, [
+    isChoose,
+    isLoadingOmzet,
+    isFetchingOmzet,
+    isLoadingModal,
+    isFetchingModal,
+    isLoadingLaba,
+    isFetchingLaba,
+  ]);
+
   const handleSetIsChoose = (value: string) => {
-    if (value === "omzet") setRaw(dataOmzet?.data || []);
-    else setRaw(dataRaw);
     setIsChoose(value);
   };
 
   return {
     isChoose,
     handleSetIsChoose,
-    isLoadingOmzet,
-    raw,
+    isLoading,
+    dataChart,
+    startDate,
+    endDate,
   };
 };
 

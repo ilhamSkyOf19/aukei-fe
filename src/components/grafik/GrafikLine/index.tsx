@@ -10,10 +10,7 @@ import {
 } from "recharts";
 import { formatRupiah, formatRupiahChartValue } from "../../../helpers/helpers";
 import { RechartsDevtools } from "@recharts/devtools";
-import {
-  formatTanggalLengkap,
-  formatTanggalPanjang,
-} from "../../../helpers/formatDate";
+import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import DropDown from "../../inputs/DropDown";
 import useGrafikLine from "./useGrafikLine";
 
@@ -22,7 +19,14 @@ type GrafikLineProps = {
   windowSize: "sm" | "md" | "lg";
 };
 const GrafikLine: FC<GrafikLineProps> = ({ windowSize }) => {
-  const { isChoose, handleSetIsChoose, isLoadingOmzet, raw } = useGrafikLine();
+  const {
+    isChoose,
+    handleSetIsChoose,
+    isLoading,
+    dataChart,
+    endDate,
+    startDate,
+  } = useGrafikLine();
   return (
     <div
       className={cn(
@@ -37,14 +41,16 @@ const GrafikLine: FC<GrafikLineProps> = ({ windowSize }) => {
             Grafik {isChoose}
           </h3>
 
-          <span className="text-xs font-medium text-base-content/50">
-            Grafik {isChoose} selama periode {formatTanggalPanjang(new Date())}{" "}
-            - {formatTanggalLengkap(new Date())}
+          <span className="text-xs font-medium text-base-content/80">
+            Grafik {isChoose} selama periode {formatTanggalPanjang(startDate)} -{" "}
+            {formatTanggalPanjang(endDate)}
           </span>
         </div>
 
         {/* dropdown */}
         <DropDown
+          value={isChoose}
+          isLoading={isLoading}
           listChoose={[
             {
               label: "Omzet",
@@ -58,14 +64,6 @@ const GrafikLine: FC<GrafikLineProps> = ({ windowSize }) => {
               label: "Laba",
               value: "laba",
             },
-            {
-              label: "Produk",
-              value: "produk",
-            },
-            {
-              label: "Item",
-              value: "item",
-            },
           ]}
           handleChange={(e) => handleSetIsChoose(e.target.value)}
           placeholder="Jenis"
@@ -75,73 +73,100 @@ const GrafikLine: FC<GrafikLineProps> = ({ windowSize }) => {
       </div>
 
       {/* graifk  */}
-      <AreaChart
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-        responsive
-        data={raw}
-        margin={{
-          top: 10,
-          right: windowSize !== "sm" ? 35 : 30,
-          left: windowSize !== "sm" ? -15 : -20,
-          bottom: 15,
-        }}
-      >
-        <defs>
-          <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#cdde00" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#cdde00" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="date"
-          tick={{
-            fontSize: windowSize === "sm" ? 10 : 11,
-            fontWeight: "500",
+      {isLoading ? (
+        <div className="w-full h-full p-4">
+          <div className="w-full h-full skeleton flex justify-center items-center">
+            <span className="skeleton skeleton-text">
+              Menampilkan grafik...
+            </span>
+          </div>
+        </div>
+      ) : (
+        <AreaChart
+          style={{
+            width: "100%",
+            height: "100%",
           }}
-          interval={windowSize === "sm" ? 2 : 0}
-        />
-        <YAxis
-          width={60}
-          tickFormatter={formatRupiahChartValue}
-          tick={{
-            fontSize: windowSize === "sm" ? 10 : 11,
-            fontWeight: "500",
+          responsive
+          data={dataChart}
+          margin={{
+            top: 10,
+            right: windowSize !== "sm" ? 35 : 30,
+            left: windowSize !== "sm" ? -15 : -20,
+            bottom: 15,
           }}
-        />
-        <Tooltip
-          content={({ active, payload }) => {
-            if (!active || !payload?.length) return null;
+        >
+          <defs>
+            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#cdde00" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#cdde00" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            tick={{
+              fontSize: windowSize === "sm" ? 10 : 11,
+              fontWeight: "500",
+            }}
+            interval={
+              windowSize === "sm"
+                ? 5
+                : dataChart
+                  ? dataChart?.length > 25
+                    ? 3
+                    : dataChart?.length > 16
+                      ? 2
+                      : dataChart?.length > 12
+                        ? 1
+                        : 0
+                  : 0
+            }
+          />
+          <YAxis
+            width={60}
+            tickFormatter={formatRupiahChartValue}
+            tick={{
+              fontSize: windowSize === "sm" ? 10 : 11,
+              fontWeight: "500",
+            }}
+          />
+          <Tooltip
+            content={({ active, payload }) => {
+              if (!active || !payload?.length) return null;
 
-            const data = payload[0].payload;
+              const data = payload[0].payload;
 
-            return (
-              <div className="rounded-2xl border bg-base-100 p-4 shadow-xl w-30">
-                <p className="text-xs font-medium text-base-content/80">
-                  {data.date}
-                </p>
-                <p className="text-sm font-semibold text-base-content">
-                  {formatRupiah(data.value)}
-                </p>
-              </div>
-            );
-          }}
-        />
-        <Area
-          type="monotone"
-          dataKey="value"
-          stroke="#28484b"
-          fillOpacity={1}
-          fill="url(#colorValue)"
-          isAnimationActive={true}
-          animationBegin={200}
-          animationDuration={500}
-        />
-        <RechartsDevtools />
-      </AreaChart>
+              return (
+                <div className="rounded-2xl border bg-base-100 p-4 shadow-xl w-50 flex flex-col justify-start items-start gap-2">
+                  <p className="text-xs font-medium text-base-content/80">
+                    {data.date}
+                  </p>
+                  <p
+                    className={cn(
+                      "text-sm font-semibold",
+                      data.value < 0 ? "text-error" : "text-base-content",
+                    )}
+                  >
+                    {formatRupiah(data.value)}
+                  </p>
+                </div>
+              );
+            }}
+          />
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke="#28484b"
+            fillOpacity={1}
+            fill="url(#colorValue)"
+            isAnimationActive={true}
+            animationBegin={200}
+            animationDuration={500}
+          />
+          <RechartsDevtools />
+        </AreaChart>
+      )}
     </div>
   );
 };

@@ -207,3 +207,26 @@ input:-webkit-autofill:active {
     color: var(--color-custom-primary);
   }
 }
+
+.tooltip-custom {
+  @layer daisyui.l1.l2 {
+    --tt-bg: var(--color-base-content);
+
+    > .tooltip-content,
+    &[data-tip]::before {
+      color: var(--color-primary-white);
+      border: 1px solid
+        color-mix(in srgb, var(--color-base-content) 15%, transparent);
+
+      height: 3rem;
+      width: 14rem;
+      min-height: 32px;
+      padding-inline: 12px;
+      padding-block: 0;
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+      line-height: 1;
+    }
+  }
+}

@@ -13,10 +13,7 @@ import type { FC } from "react";
 import useSizeWindows from "../../../hooks/useSizeWindows";
 import { RechartsDevtools } from "@recharts/devtools";
 import DropDown from "../../inputs/DropDown";
-import {
-  formatTanggalLengkap,
-  formatTanggalPanjang,
-} from "../../../helpers/formatDate";
+import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import useGrafikBatang from "./useGrafikBatang";
 
 const renderCustomizedLabel = (props: LabelProps) => {
@@ -52,7 +49,14 @@ type GrafikBatangProps = {
   windowSize: "sm" | "md" | "lg";
 };
 const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
-  const { isChoose, data, handleSetIsChoose } = useGrafikBatang();
+  const {
+    isChoose,
+    handleSetIsChoose,
+    isLoading,
+    chartData,
+    endDate,
+    startDate,
+  } = useGrafikBatang();
   return (
     <div className="md:flex-1 flex flex-col justify-between items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg gap-4 h-80 md:h-90">
       {/* header */}
@@ -65,13 +69,14 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
 
           <span className="text-xs font-medium text-base-content/50">
             Grafik {isChoose} terjual selama periode{" "}
-            {formatTanggalPanjang(new Date())} -{" "}
-            {formatTanggalLengkap(new Date())}
+            {formatTanggalPanjang(startDate)} - {formatTanggalPanjang(endDate)}
           </span>
         </div>
 
         {/* dropdown */}
         <DropDown
+          value={isChoose}
+          isLoading={isLoading}
           listChoose={[
             {
               label: "Produk",
@@ -88,35 +93,45 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
           customWidth="w-40 md:w-30"
         />
       </div>
-      <BarChart
-        margin={{
-          top: 20,
-          right: windowSize === "sm" ? 15 : 20,
-          left: -15,
-          bottom: 15,
-        }}
-        responsive
-        height="100%"
-        width="100%"
-        data={data}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="date"
-          tick={{
-            fontSize: windowSize === "sm" ? 10 : 11,
-            fontWeight: "500",
-          }}
-        />
-        <YAxis
-          tickFormatter={(value) => formatNumberK(value)}
-          tick={{
-            fontSize: windowSize === "sm" ? 10 : 11,
-            fontWeight: "500",
-          }}
-        />
 
-        {windowSize === "sm" && (
+      {isLoading ? (
+        <div className="w-full h-full p-4">
+          <div className="w-full h-full skeleton flex justify-center items-center">
+            <span className="skeleton skeleton-text">
+              Menampilkan grafik...
+            </span>
+          </div>
+        </div>
+      ) : (
+        <BarChart
+          margin={{
+            top: 20,
+            right: windowSize === "sm" ? 25 : 25,
+            left: windowSize === "sm" ? -25 : -20,
+            bottom: 15,
+          }}
+          responsive
+          height="100%"
+          width="100%"
+          data={chartData}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            tick={{
+              fontSize: windowSize === "sm" ? 10 : 11,
+              fontWeight: "500",
+            }}
+            interval={windowSize === "sm" ? 4 : 2}
+          />
+          <YAxis
+            tickFormatter={(value) => formatNumberK(value)}
+            tick={{
+              fontSize: windowSize === "sm" ? 10 : 11,
+              fontWeight: "500",
+            }}
+          />
+
           <Tooltip
             content={({ active, payload }) => {
               if (!active || !payload?.length) return null;
@@ -135,23 +150,23 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
               );
             }}
           />
-        )}
-        <Bar
-          fill="#cdde00"
-          stroke="#28484b"
-          dataKey="value"
-          isAnimationActive={true}
-          barSize={windowSize === "sm" ? 25 : 40}
-        >
-          <LabelList
+          <Bar
+            fill="#cdde00"
+            stroke="#28484b"
             dataKey="value"
-            content={renderCustomizedLabel}
-            offset={10}
-          />
-        </Bar>
+            isAnimationActive={true}
+            barSize={windowSize === "sm" ? 25 : 40}
+          >
+            <LabelList
+              dataKey="value"
+              content={renderCustomizedLabel}
+              offset={10}
+            />
+          </Bar>
 
-        <RechartsDevtools />
-      </BarChart>
+          <RechartsDevtools />
+        </BarChart>
+      )}
     </div>
   );
 };

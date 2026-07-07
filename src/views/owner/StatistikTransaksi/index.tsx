@@ -1,17 +1,19 @@
 import {
   ArrowLeft,
-  ArrowRight,
   BanknoteArrowDown,
   ChartColumn,
   Clock3,
   FileText,
   Package,
+  PackageMinus,
+  PackageX,
   Receipt,
   Sheet,
   ShoppingBag,
+  TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import CardStatistik from "../../../components/ui/cards/CardStatistik";
+
 import useStatistikTransaksi from "./useStatistikTransaksi";
 import {
   formatNumber,
@@ -24,10 +26,13 @@ import RangeDate from "../../../components/filters/RangeDate";
 import GrafikBatang from "../../../components/grafik/GrafikBatang";
 import GrafikLine from "../../../components/grafik/GrafikLine";
 import GrafikPieMetodePembayaran from "../../../components/grafik/GrafikPieMetodePembayaran";
-import type { FC } from "react";
+import listDateRangeLong from "../../../utils/listDateRangeLong";
+import StatistikTopPelanggan from "../../../components/grafik/StatistikTopPelanggan";
+import StatistikTopProduk from "../../../components/grafik/StatistikTopProduk";
+import CardStatistik from "../../../components/ui/cards/CardStatistik";
 
 const StatistikTransaksi = () => {
-  const { windowSize, navigate, isExistingData, isLoading, statistik } =
+  const { windowSize, navigate, isLoading, statistik } =
     useStatistikTransaksi();
 
   return (
@@ -54,7 +59,11 @@ const StatistikTransaksi = () => {
           {/* aksi */}
           <div className="flex flex-row justify-end items-start gap-2">
             {/* button filter */}
-            <RangeDate noLabel customWidth="w-50" />
+            <RangeDate
+              noLabel
+              customWidth="w-50"
+              listDate={listDateRangeLong}
+            />
             {/* button export */}
             <div className="md:flex flex-row justify-start items-center gap-2 hidden">
               <ButtonWithIcon
@@ -74,13 +83,18 @@ const StatistikTransaksi = () => {
         </div>
         <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2">
           <CardStatistik
+            isLoading={isLoading}
             icon={{
               icon: Receipt,
               bgColor: "bg-blue-100",
               iconColor: "text-blue-400",
             }}
             label={windowSize === "sm" ? "Transaksi" : "Total Transaksi"}
-            value={formatNumber(statistik?.data?.totalTransaksi.total ?? 0)}
+            value={
+              windowSize === "sm"
+                ? formatNumberK(statistik?.data?.totalTransaksi.total ?? 0)
+                : formatNumber(statistik?.data?.totalTransaksi.total ?? 0)
+            }
             caption={
               windowSize !== "sm"
                 ? "Jumlah transaksi berdasarkan tanggal"
@@ -96,6 +110,7 @@ const StatistikTransaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoading}
             icon={{
               icon: BanknoteArrowDown,
               bgColor: "bg-emerald-100",
@@ -122,6 +137,7 @@ const StatistikTransaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoading}
             icon={{
               icon: ChartColumn,
               bgColor: "bg-emerald-100",
@@ -156,6 +172,7 @@ const StatistikTransaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoading}
             icon={{
               icon: Package,
               bgColor: "bg-amber-100",
@@ -182,32 +199,7 @@ const StatistikTransaksi = () => {
           />
 
           <CardStatistik
-            icon={{
-              icon: TrendingUp,
-              bgColor: "bg-green-100",
-              iconColor: "text-green-400",
-            }}
-            label={windowSize === "sm" ? "Laba" : "Total Laba"}
-            value={
-              windowSize === "sm"
-                ? formatRupiahShort(statistik?.data?.totalLaba.total ?? 0)
-                : formatRupiah(statistik?.data?.totalLaba.total ?? 0)
-            }
-            caption={
-              windowSize !== "sm"
-                ? "Total keuntungan dari transaksi penjualan"
-                : undefined
-            }
-            detail={
-              statistik?.data?.totalLaba?.persentase
-                ? statistik?.data?.totalLaba?.persentase > 0
-                  ? { up: statistik?.data?.totalLaba?.persentase }
-                  : { down: statistik?.data?.totalLaba?.persentase }
-                : undefined
-            }
-          />
-
-          <CardStatistik
+            isLoading={isLoading}
             icon={{
               icon: Clock3,
               bgColor: "bg-red-100",
@@ -234,13 +226,18 @@ const StatistikTransaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoading}
             icon={{
               icon: ShoppingBag,
               bgColor: "bg-purple-100",
               iconColor: "text-purple-400",
             }}
             label={windowSize === "sm" ? "Produk" : "Total Produk Terjual"}
-            value={formatNumber(statistik?.data?.totalProdukTerjual.total ?? 0)}
+            value={
+              windowSize === "sm"
+                ? formatNumberK(statistik?.data?.totalProdukTerjual.total ?? 0)
+                : formatNumber(statistik?.data?.totalProdukTerjual.total ?? 0)
+            }
             caption={
               windowSize !== "sm" ? "Jumlah produk yang terjual" : undefined
             }
@@ -254,13 +251,18 @@ const StatistikTransaksi = () => {
           />
 
           <CardStatistik
+            isLoading={isLoading}
             icon={{
               icon: Package,
               bgColor: "bg-indigo-100",
               iconColor: "text-indigo-400",
             }}
             label={windowSize === "sm" ? "Item" : "Total Item Terjual"}
-            value={formatNumber(statistik?.data?.totalItemTerjual.total ?? 0)}
+            value={
+              windowSize === "sm"
+                ? formatNumberK(statistik?.data?.totalItemTerjual.total ?? 0)
+                : formatNumber(statistik?.data?.totalItemTerjual.total ?? 0)
+            }
             caption={
               windowSize !== "sm" ? "Jumlah item yang terjual" : undefined
             }
@@ -269,6 +271,126 @@ const StatistikTransaksi = () => {
                 ? statistik?.data?.totalItemTerjual?.persentase > 0
                   ? { up: statistik?.data?.totalItemTerjual?.persentase }
                   : { down: statistik?.data?.totalItemTerjual?.persentase }
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            isLoading={isLoading}
+            icon={{
+              icon: TrendingUp,
+              bgColor: "bg-green-100",
+              iconColor: "text-green-400",
+            }}
+            label={windowSize === "sm" ? "Laba" : "Total Laba"}
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(statistik?.data?.totalLaba.total ?? 0)
+                : formatRupiah(statistik?.data?.totalLaba.total ?? 0)
+            }
+            minus={(statistik?.data?.totalLaba?.total ?? 0) < 0}
+            caption={
+              windowSize !== "sm"
+                ? "Total keuntungan dari transaksi penjualan"
+                : undefined
+            }
+            withAlert={`Data Laba sudah dikurangi kerugian`}
+            detail={
+              statistik?.data?.totalLaba?.persentase
+                ? statistik?.data?.totalLaba?.persentase > 0
+                  ? { up: statistik?.data?.totalLaba?.persentase }
+                  : { down: statistik?.data?.totalLaba?.persentase }
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            isLoading={isLoading}
+            icon={{
+              icon: TrendingDown,
+              bgColor: "bg-rose-100",
+              iconColor: "text-rose-400",
+            }}
+            label={windowSize === "sm" ? "Kerugian" : "Total Kerugian"}
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(statistik?.data?.totalKerugian.total ?? 0)
+                : formatRupiah(statistik?.data?.totalKerugian.total ?? 0)
+            }
+            caption={
+              windowSize !== "sm"
+                ? "Total kerugian dari barang keluar"
+                : undefined
+            }
+            detail={
+              statistik?.data?.totalKerugian?.persentase
+                ? statistik?.data?.totalKerugian?.persentase > 0
+                  ? {
+                      up: statistik?.data?.totalKerugian?.persentase,
+                      reverseColor: true,
+                    }
+                  : {
+                      down: statistik?.data?.totalKerugian?.persentase,
+                      reverseColor: true,
+                    }
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            isLoading={isLoading}
+            icon={{
+              icon: PackageX,
+              bgColor: "bg-amber-100",
+              iconColor: "text-amber-400",
+            }}
+            label={windowSize === "sm" ? "Rusak" : "Total Barang Rusak"}
+            value={
+              windowSize === "sm"
+                ? formatNumberK(statistik?.data?.totalBarangRusak.total ?? 0)
+                : formatNumber(statistik?.data?.totalBarangRusak.total ?? 0)
+            }
+            caption={windowSize !== "sm" ? "Total barang rusak" : undefined}
+            detail={
+              statistik?.data?.totalBarangRusak?.persentase
+                ? statistik?.data?.totalBarangRusak?.persentase > 0
+                  ? {
+                      up: statistik?.data?.totalBarangRusak?.persentase,
+                      reverseColor: true,
+                    }
+                  : {
+                      down: statistik?.data?.totalBarangRusak?.persentase,
+                      reverseColor: true,
+                    }
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            isLoading={isLoading}
+            icon={{
+              icon: PackageMinus,
+              bgColor: "bg-amber-100",
+              iconColor: "text-amber-400",
+            }}
+            label={windowSize === "sm" ? "Hilang" : "Total Barang Hilang"}
+            value={
+              windowSize === "sm"
+                ? formatNumberK(statistik?.data?.totalBarangHilang.total ?? 0)
+                : formatNumber(statistik?.data?.totalBarangHilang.total ?? 0)
+            }
+            caption={windowSize !== "sm" ? "Total barang hilang" : undefined}
+            detail={
+              statistik?.data?.totalBarangHilang?.persentase
+                ? statistik?.data?.totalBarangHilang?.persentase > 0
+                  ? {
+                      up: statistik?.data?.totalBarangHilang?.persentase,
+                      reverseColor: true,
+                    }
+                  : {
+                      down: statistik?.data?.totalBarangHilang?.persentase,
+                      reverseColor: true,
+                    }
                 : undefined
             }
           />
@@ -288,198 +410,9 @@ const StatistikTransaksi = () => {
         <GrafikPieMetodePembayaran />
 
         <div className="md:flex-1 w-full flex flex-col md:flex-row justify-between items-start gap-4 md:h-90 h-auto">
-          <div className="md:flex-1 md:h-full flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 px-4 md:p-2.5 overflow-y-auto h-90">
-            {/* header */}
-            <div className="w-full flex flex-col justify-start items-start mb-2">
-              <h3 className="text-sm font-semibold text-base-content capitalize">
-                Top 5 Produk Terlaris
-              </h3>
-            </div>
-
-            {/* content */}
-            <div className="w-full flex flex-col justify-start items-start">
-              <CardTopProduk
-                nama="Gypsum A"
-                kode="JVW 0002"
-                total={2000}
-                totalBelanja={100000000}
-                value={90}
-              />
-              <CardTopProduk
-                nama="Gypsum B"
-                kode="JVW 0002 - E"
-                total={1900}
-                totalBelanja={11200000}
-                value={60}
-              />
-              <CardTopProduk
-                nama="Gypsum B"
-                kode="JVW 0002 - E"
-                total={1900}
-                totalBelanja={11200000}
-                value={40}
-              />
-              <CardTopProduk
-                nama="Gypsum B"
-                kode="JVW 0002 - E"
-                total={1900}
-                totalBelanja={11200000}
-                value={30}
-              />
-              <CardTopProduk
-                nama="Gypsum B"
-                kode="JVW 0002 - E"
-                total={1900}
-                totalBelanja={11200000}
-                value={30}
-              />
-
-              <div className="w-full flex flex-row justify-center items-center pt-3">
-                <button
-                  type="button"
-                  className="text-xs font-medium text-base-content/50 hover:text-base-content transition-colors duration-150 ease-in-out py-0.5 flex flex-row justify-start items-start gap-2"
-                >
-                  <span>Lihat Semua Produk</span>
-
-                  {/* icon */}
-                  <ArrowRight className="size-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="md:flex-1 md:h-full flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 px-4 md:p-2.5 overflow-y-auto h-90">
-            {/* header */}
-            <div className="w-full flex flex-col justify-start items-start mb-2">
-              <h3 className="text-sm font-semibold text-base-content capitalize">
-                Top 5 Pelanggan
-              </h3>
-            </div>
-
-            {/* content */}
-            <div className="w-full flex flex-col justify-start items-start">
-              <CardTopPelanggan
-                nama="Ilham Hidayat"
-                totalTransaksi={2000}
-                totalBelanja={100000000}
-              />
-              <CardTopPelanggan
-                nama="Agus Surya"
-                totalTransaksi={2000}
-                totalBelanja={10000000}
-              />
-              <CardTopPelanggan
-                nama="Andi Sandi"
-                totalTransaksi={2000}
-                totalBelanja={10000000}
-              />
-              <CardTopPelanggan
-                nama="Urba Putra"
-                totalTransaksi={2000}
-                totalBelanja={10000000}
-              />
-              <CardTopPelanggan
-                nama="Sandi Irawan"
-                totalTransaksi={2000}
-                totalBelanja={10000000}
-              />
-            </div>
-
-            {/* button */}
-            <div className="w-full flex flex-row justify-center items-center pt-3">
-              <button
-                type="button"
-                className="text-xs font-medium text-base-content/50 hover:text-base-content transition-colors duration-150 ease-in-out py-0.5 flex flex-row justify-start items-start gap-2"
-              >
-                <span>Lihat Semua Pelanggan</span>
-
-                {/* icon */}
-                <ArrowRight className="size-4" />
-              </button>
-            </div>
-          </div>
+          <StatistikTopProduk />
+          <StatistikTopPelanggan />
         </div>
-      </div>
-    </div>
-  );
-};
-
-// card content
-type CardTopProdukProps = {
-  nama: string;
-  kode: string;
-  total: number;
-  totalBelanja: number;
-  value: number;
-};
-const CardTopProduk: FC<CardTopProdukProps> = ({
-  kode,
-  nama,
-  total,
-  totalBelanja,
-  value,
-}) => {
-  return (
-    <div className=" w-full flex flex-col justify-start items-start gap-1 border-b border-base-content/10 py-2">
-      {/* nama */}
-      <div className="flex flex-row justify-between items-center w-full">
-        <span className="text-xs font-medium text-base-content">{nama}</span>
-        <span className="text-[0.625rem] font-semibold uppercase text-base-content/60">
-          {kode}
-        </span>
-      </div>
-
-      <div className="w-full flex flex-row justify-between items-center gap-1">
-        <div className="flex-3 flex flex-row justify-start items-center gap-1">
-          {/* total */}
-          <span className="flex-1 text-[0.625rem] font-medium text-base-content/60">
-            {formatNumberK(total)} Pcs
-          </span>
-
-          <div className="flex-3 flex flex-row justify-start items-center">
-            <progress
-              className="progress border border-custom-secondary progress-custom-primary w-full h-2.5"
-              value={value}
-              max="100"
-            />
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-row justify-end items-center">
-          <span className="text-xs font-medium text-base-content">
-            {formatRupiahShort(totalBelanja)}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-type CardTopPelangganProps = {
-  nama: string;
-  totalTransaksi: number;
-  totalBelanja: number;
-};
-const CardTopPelanggan: FC<CardTopPelangganProps> = ({
-  nama,
-  totalBelanja,
-  totalTransaksi,
-}) => {
-  return (
-    <div className=" w-full flex flex-col justify-start items-start gap-1 border-b border-base-content/10 py-2">
-      {/* nama */}
-      <div className="flex flex-row justify-between items-center w-full">
-        <span className="text-xs font-medium text-base-content">{nama}</span>
-      </div>
-
-      <div className="w-full flex flex-row justify-between items-center gap-1">
-        {/* total */}
-        <span className="text-[0.625rem] font-medium text-base-content/60">
-          {formatNumber(totalTransaksi)} Transaksi
-        </span>
-
-        <span className="text-xs font-medium text-base-content">
-          {formatRupiah(totalBelanja)}
-        </span>
       </div>
     </div>
   );

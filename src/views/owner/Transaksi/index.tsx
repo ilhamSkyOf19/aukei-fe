@@ -11,19 +11,22 @@ import {
   History,
   Landmark,
   Package,
+  PackageMinus,
   PackageOpen,
+  PackageX,
   QrCode,
   Receipt,
   Sheet,
   ShoppingBag,
+  TrendingDown,
   TrendingUp,
-  type LucideIcon,
 } from "lucide-react";
 import InputSearch from "../../../components/inputs/InputSearch";
 import type { FC } from "react";
 import { cn } from "../../../utils/cn";
 import {
   formatNumber,
+  formatNumberK,
   formatNumberPhone,
   formatRupiah,
   formatRupiahShort,
@@ -273,26 +276,6 @@ const Transaksi = () => {
           <CardStatistik
             isLoading={isLoadingRingkasanStatistik}
             icon={{
-              icon: TrendingUp,
-              bgColor: "bg-green-100",
-              iconColor: "text-green-400",
-            }}
-            label={windowSize === "sm" ? "Laba" : "Total Laba"}
-            value={
-              windowSize === "sm"
-                ? formatRupiahShort(ringkasanStatistik?.data?.totalLaba ?? 0)
-                : formatRupiah(ringkasanStatistik?.data?.totalLaba ?? 0)
-            }
-            caption={
-              windowSize !== "sm"
-                ? "Total keuntungan dari transaksi penjualan"
-                : undefined
-            }
-          />
-
-          <CardStatistik
-            isLoading={isLoadingRingkasanStatistik}
-            icon={{
               icon: Clock3,
               bgColor: "bg-red-100",
               iconColor: "text-red-400",
@@ -346,6 +329,80 @@ const Transaksi = () => {
             caption={
               windowSize !== "sm" ? "Jumlah item yang terjual" : undefined
             }
+          />
+
+          <CardStatistik
+            isLoading={isLoadingRingkasanStatistik}
+            icon={{
+              icon: TrendingUp,
+              bgColor: "bg-green-100",
+              iconColor: "text-green-400",
+            }}
+            label={windowSize === "sm" ? "Laba" : "Total Laba"}
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(ringkasanStatistik?.data?.totalLaba ?? 0)
+                : formatRupiah(ringkasanStatistik?.data?.totalLaba ?? 0)
+            }
+            caption={
+              windowSize !== "sm"
+                ? "Total keuntungan dari transaksi penjualan"
+                : undefined
+            }
+            withAlert={`Data Laba sudah dikurangi kerugian`}
+          />
+
+          <CardStatistik
+            icon={{
+              icon: TrendingDown,
+              bgColor: "bg-rose-100",
+              iconColor: "text-rose-400",
+            }}
+            label={windowSize === "sm" ? "Kerugian" : "Total Kerugian"}
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(
+                    ringkasanStatistik?.data?.totalKerugian ?? 0,
+                  )
+                : formatRupiah(ringkasanStatistik?.data?.totalKerugian ?? 0)
+            }
+            caption={
+              windowSize !== "sm"
+                ? "Total kerugian dari barang keluar"
+                : undefined
+            }
+          />
+
+          <CardStatistik
+            icon={{
+              icon: PackageX,
+              bgColor: "bg-amber-100",
+              iconColor: "text-amber-400",
+            }}
+            label={windowSize === "sm" ? "Rusak" : "Total Barang Rusak"}
+            value={
+              windowSize === "sm"
+                ? formatNumberK(ringkasanStatistik?.data?.totalBarangRusak ?? 0)
+                : formatNumber(ringkasanStatistik?.data?.totalBarangRusak ?? 0)
+            }
+            caption={windowSize !== "sm" ? "Total barang rusak" : undefined}
+          />
+
+          <CardStatistik
+            icon={{
+              icon: PackageMinus,
+              bgColor: "bg-amber-100",
+              iconColor: "text-amber-400",
+            }}
+            label={windowSize === "sm" ? "Hilang" : "Total Barang Hilang"}
+            value={
+              windowSize === "sm"
+                ? formatNumberK(
+                    ringkasanStatistik?.data?.totalBarangHilang ?? 0,
+                  )
+                : formatNumber(ringkasanStatistik?.data?.totalBarangHilang ?? 0)
+            }
+            caption={windowSize !== "sm" ? "Total barang hilang" : undefined}
           />
         </div>
       </div>

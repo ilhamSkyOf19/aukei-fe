@@ -1,14 +1,3 @@
-import {
-  addDays,
-  differenceInCalendarDays,
-  endOfDay,
-  format,
-  parseISO,
-  startOfDay,
-} from "date-fns";
-import { id } from "date-fns/locale";
-import type { ChartBucketType } from "../models/transaction.model";
-
 export const highlightName = (name: string) => {
   const words = name.split(" ");
 
@@ -248,94 +237,20 @@ export const formatRupiahShort = (value: number): string => {
 };
 
 export const formatRupiahChartValue = (value: number) => {
-  if (value >= 1000000) {
-    return `${(value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1)} jt`;
+  const absValue = Math.abs(value);
+  const prefix = value < 0 ? "-" : "";
+
+  if (absValue >= 1_000_000) {
+    return `${prefix}${(absValue / 1_000_000).toFixed(
+      absValue % 1_000_000 === 0 ? 0 : 1,
+    )} jt`;
   }
 
-  if (value >= 1000) {
-    return `${(value / 1000).toFixed(value % 1000 === 0 ? 0 : 1)} rb`;
+  if (absValue >= 1_000) {
+    return `${prefix}${(absValue / 1_000).toFixed(
+      absValue % 1_000 === 0 ? 0 : 1,
+    )} rb`;
   }
 
-  return value.toString();
-};
-
-export const getDateTicks = (startDate: string, endDate: string): string[] => {
-  const start = parseISO(startDate);
-  const end = parseISO(endDate);
-
-  const totalDays = differenceInCalendarDays(end, start) + 1;
-
-  // Jika <= 7 hari, tampilkan semua
-  if (totalDays <= 7) {
-    return Array.from({ length: totalDays }, (_, i) =>
-      format(addDays(start, i), "d MMM", {
-        locale: id,
-      }),
-    );
-  }
-
-  // Jika > 7 hari, ambil 7 titik
-  const result: string[] = [];
-  const step = (totalDays - 1) / 6;
-
-  for (let i = 0; i < 7; i++) {
-    const dayIndex = Math.round(i * step);
-
-    result.push(
-      format(addDays(start, dayIndex), "d MMM yyyy", {
-        locale: id,
-      }),
-    );
-  }
-
-  return result;
-};
-
-export const createChartBuckets = (
-  startDate: Date,
-  endDate: Date,
-): ChartBucketType[] => {
-  const start = startOfDay(startDate);
-  const end = endOfDay(endDate);
-
-  const totalDays = differenceInCalendarDays(end, start) + 1;
-
-  const buckets: ChartBucketType[] = [];
-
-  // tampilkan semua hari jika <=7
-  if (totalDays <= 7) {
-    for (let i = 0; i < totalDays; i++) {
-      const date = addDays(start, i);
-
-      buckets.push({
-        label: format(date, "d MMM", {
-          locale: id,
-        }),
-        startDate: startOfDay(date),
-        endDate: endOfDay(date),
-      });
-    }
-
-    return buckets;
-  }
-
-  // bagi menjadi 7 bagian
-  const step = totalDays / 7;
-
-  for (let i = 0; i < 7; i++) {
-    const bucketStart = startOfDay(addDays(start, Math.floor(i * step)));
-
-    const bucketEnd =
-      i === 6 ? end : endOfDay(addDays(start, Math.floor((i + 1) * step) - 1));
-
-    buckets.push({
-      label: format(bucketStart, "d MMM yyyy", {
-        locale: id,
-      }),
-      startDate: bucketStart,
-      endDate: bucketEnd,
-    });
-  }
-
-  return buckets;
+  return `${prefix}${absValue}`;
 };

@@ -11,6 +11,7 @@ type Props = {
   fontWeight?: string;
   noBorder?: boolean;
   defaultValue?: string;
+  value?: string;
 };
 const DropDown: FC<Props> = ({
   handleChange,
@@ -22,6 +23,7 @@ const DropDown: FC<Props> = ({
   listBtn,
   noBorder,
   defaultValue,
+  value,
 }) => {
   return (
     <div
@@ -33,39 +35,44 @@ const DropDown: FC<Props> = ({
       )}
     >
       {/* filter status */}
-      <select
-        defaultValue={defaultValue}
-        className={cn(
-          "text-base-content select w-full border-none outline-none rounded-md select-sm",
-          fontWeight,
-        )}
-        onChange={handleChange}
-      >
-        <option disabled={true}>{placeholder}</option>
-        {isLoading ? (
-          <option disabled>Loading...</option>
-        ) : listChoose?.length > 0 ? (
-          <>
-            {listChoose.map((item, index) => (
-              <option key={index} value={item.value} className="py-2.5">
-                {item.label}
-              </option>
-            ))}
-            {listBtn?.map((item, index) => (
-              <option
-                key={index}
-                value={item.value}
-                onClick={item.handleClick}
-                className="py-2.5"
-              >
-                {item.label}
-              </option>
-            ))}
-          </>
-        ) : (
-          <option disabled>Tidak ada data</option>
-        )}
-      </select>
+      {isLoading ? (
+        <div className="w-full h-full skeleton flex justify-center items-center">
+          <span className="skeleton skeleton-text text-xs">Loading ...</span>
+        </div>
+      ) : (
+        <select
+          defaultValue={defaultValue}
+          value={value}
+          className={cn(
+            "text-base-content select w-full border-none outline-none rounded-md select-sm",
+            fontWeight,
+          )}
+          onChange={handleChange}
+        >
+          <option disabled={true}>{placeholder}</option>
+          {listChoose?.length > 0 ? (
+            <>
+              {listChoose.map((item, index) => (
+                <option key={index} value={item.value} className="py-2.5">
+                  {item.label}
+                </option>
+              ))}
+              {listBtn?.map((item, index) => (
+                <option
+                  key={index}
+                  value={item.value}
+                  onClick={item.handleClick}
+                  className="py-2.5"
+                >
+                  {item.label}
+                </option>
+              ))}
+            </>
+          ) : (
+            <option disabled>Tidak ada data</option>
+          )}
+        </select>
+      )}
     </div>
   );
 };

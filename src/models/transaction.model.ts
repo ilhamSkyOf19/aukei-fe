@@ -90,18 +90,6 @@ export interface ResponseTransactionWithMetaType {
   data: ResponseTransactionType[];
 }
 
-export interface ResponseRingkasanStatistikType {
-  totalTransaksi: number;
-  totalOmzet: number;
-  totalRataRataTransaksi: number;
-  totalModal: number;
-  totalLaba: number;
-  totalPiutang: number;
-  totalProdukTerjual: number;
-  totalItemTerjual: number;
-  totalKerugian: number;
-}
-
 export interface ResponseRiwayatTransactionType {
   data: (Pick<
     ITransactionType,
@@ -117,54 +105,4 @@ export interface ResponseRiwayatTransactionType {
     status?: TransactionStatusType;
   })[];
   meta: MetaType;
-}
-
-export interface ResponseStatistikWithPersentaseType {
-  totalTransaksi: {
-    total: number;
-    persentase: number;
-  };
-  totalOmzet: {
-    total: number;
-    persentase: number;
-  };
-  totalRataRataTransaksi: {
-    total: number;
-    persentase: number;
-  };
-  totalModal: {
-    total: number;
-    persentase: number;
-  };
-  totalLaba: {
-    total: number;
-    persentase: number;
-  };
-  totalPiutang: {
-    total: number;
-    persentase: number;
-  };
-  totalProdukTerjual: {
-    total: number;
-    persentase: number;
-  };
-  totalItemTerjual: {
-    total: number;
-    persentase: number;
-  };
-  totalKerugian: {
-    total: number;
-    persentase: number;
-  };
-}
-
-export interface ChartBucketType {
-  label: string;
-  startDate: Date;
-  endDate: Date;
-}
-
-export interface ResponseChartType {
-  date: string;
-  value: number;
 }

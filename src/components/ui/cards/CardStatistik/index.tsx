@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, type LucideIcon } from "lucide-react";
+import { ArrowDown, ArrowUp, CircleAlert, type LucideIcon } from "lucide-react";
 import { cn } from "../../../../utils/cn";
 import type { FC } from "react";
 
@@ -6,6 +6,7 @@ import type { FC } from "react";
 type Props = {
   label: string;
   value: string;
+  minus?: boolean;
   icon: {
     icon: LucideIcon;
     iconColor: string;
@@ -13,10 +14,12 @@ type Props = {
   };
   caption?: string;
   detail?: {
+    reverseColor?: boolean;
     up?: number;
     down?: number;
   };
   isLoading?: boolean;
+  withAlert?: string;
 };
 const CardStatistik: FC<Props> = ({
   icon,
@@ -25,6 +28,8 @@ const CardStatistik: FC<Props> = ({
   caption,
   detail,
   isLoading,
+  withAlert,
+  minus,
 }) => {
   return (
     <div className="grid-cols-1 flex gap-2 flex-col justify-start items-start border border-base-content/10 rounded-lg p-2">
@@ -43,9 +48,19 @@ const CardStatistik: FC<Props> = ({
 
         {/* label */}
         <div className="flex-7 flex flex-col justify-start items-start gap-0.5">
-          <span className="text-xs font-medium text-base-content/50">
-            {label}
-          </span>
+          <div className="flex flex-row justify-start items-center gap-0.5">
+            <span className="text-xs font-semibold text-base-content/50">
+              {label}
+            </span>
+
+            {withAlert && (
+              <div className="tooltip z-30 tooltip-custom" data-tip={withAlert}>
+                <button type="button">
+                  <CircleAlert className="size-3 text-base-content/50" />
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* caption */}
           {caption && (
@@ -58,7 +73,12 @@ const CardStatistik: FC<Props> = ({
             <div className="w-20 h-3 md:w-30 md:h-4 skeleton"></div>
           ) : (
             <>
-              <span className="text-xs md:text-sm font-semibold text-base-content md:mt-1">
+              <span
+                className={cn(
+                  "text-xs md:text-sm font-semibold md:mt-1",
+                  minus ? "text-error" : "text-base-content",
+                )}
+              >
                 {value}
               </span>
 
@@ -66,15 +86,37 @@ const CardStatistik: FC<Props> = ({
                 <div className="hidden md:flex flex-row gap-1 justify-start items-center">
                   {/* icon */}
                   {detail.down && (
-                    <ArrowDown className="size-3 text-rose-400" />
+                    <ArrowDown
+                      className={cn(
+                        "size-3",
+                        detail.reverseColor
+                          ? "text-emerald-400"
+                          : "text-rose-400",
+                      )}
+                    />
                   )}
-                  {detail.up && <ArrowUp className="size-3 text-emerald-400" />}
+                  {detail.up && (
+                    <ArrowUp
+                      className={cn(
+                        "size-3",
+                        detail.reverseColor
+                          ? "text-rose-400"
+                          : "text-emerald-400",
+                      )}
+                    />
+                  )}
 
                   {/* value */}
                   <span
                     className={cn(
                       "md:text-[0.7rem] font-semibold",
-                      detail.down ? "text-rose-400" : "text-emerald-400",
+                      detail.down
+                        ? detail.reverseColor
+                          ? "text-emerald-400"
+                          : "text-rose-400"
+                        : detail.reverseColor
+                          ? "text-rose-400"
+                          : "text-emerald-400",
                     )}
                   >
                     {detail.up || detail.down}%

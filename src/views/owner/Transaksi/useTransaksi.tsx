@@ -2,9 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useFilter } from "../../../hooks/useFilter";
 import useSizeWindows from "../../../hooks/useSizeWindows";
 import { TransactionServices } from "../../../services/transaction.service";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
+import { StatistikServices } from "../../../services/statistik.service";
 
 const useTransaksi = () => {
   // window size
@@ -59,15 +60,16 @@ const useTransaksi = () => {
       {
         queryKey: ["ringkasan-statistik", startDate, endDate, metodePembayaran],
         queryFn: () =>
-          TransactionServices.ringkasanStatistik({
-            startDate,
-            endDate,
+          StatistikServices.ringkasanStatistik({
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
             ...(metodePembayaran && {
               metodePembayaran: metodePembayaran.toLowerCase(),
             }),
           }),
         retry: false,
         refetchOnWindowFocus: false,
+        enabled: !!startDate && !!endDate,
       },
       {
         queryKey: [
@@ -83,8 +85,8 @@ const useTransaksi = () => {
         ],
         queryFn: () =>
           TransactionServices.findRiwayatTransaksi({
-            startDate,
-            endDate,
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
             ...(metodePembayaran && {
               metodePembayaran: metodePembayaran.toLowerCase(),
             }),
@@ -96,6 +98,7 @@ const useTransaksi = () => {
           }),
         retry: false,
         refetchOnWindowFocus: false,
+        enabled: !!startDate && !!endDate,
       },
     ],
   });

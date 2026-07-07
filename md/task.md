@@ -95,6 +95,7 @@
 - [✅] Integrasi data ringkasan transaksi
 
 - [ ] Integrasi Chart
+  - [ ] Integrasi Chart Line
 
 - [ ] Membuat ui tombol tombol pada preview after transaksi
 

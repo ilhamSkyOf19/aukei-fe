@@ -13,21 +13,20 @@ import type { PaymentMethodType } from "../../../types/constant.type";
 import type { FC } from "react";
 import { cn } from "../../../utils/cn";
 import useSizeWindows from "../../../hooks/useSizeWindows";
+import useGrafikPieMetodePembayaran from "./useGrafikPieMetodePembayaran";
+import {
+  formatTanggalLengkap,
+  formatTanggalPanjang,
+} from "../../../helpers/formatDate";
 
 // #region Sample data
-const COLORS = [
-  "oklch(70.7% 0.165 254.624)",
-  "oklch(76.5% 0.177 163.223)",
-  "oklch(82.8% 0.189 84.429)",
-  "oklch(71.4% 0.203 305.504)",
-];
 
-const data = [
-  { name: "Group A", value: 400, fill: COLORS[0] },
-  { name: "Group B", value: 300, fill: COLORS[1] },
-  { name: "Group C", value: 300, fill: COLORS[2] },
-  { name: "Group D", value: 200, fill: COLORS[3] },
-];
+// const data = [
+//   { name: "Group A", value: 400, fill: COLORS[0] },
+//   { name: "Group B", value: 300, fill: COLORS[1] },
+//   { name: "Group C", value: 300, fill: COLORS[2] },
+//   { name: "Group D", value: 200, fill: COLORS[3] },
+// ];
 
 // #endregion
 const RADIAN = Math.PI / 180;
@@ -79,7 +78,7 @@ const MyCustomPie = (props: PieSectorShapeProps) => {
   return (
     <Sector
       {...props}
-      fill={props.payload?.fill}
+      fill={props.fill}
       fillOpacity={fillOpacity}
       style={{ transition: "fill-opacity 0.3s ease" }}
     />
@@ -91,45 +90,76 @@ type Props = {
 };
 
 const GrafikPieMetodePembayaran: FC<Props> = ({ isAnimationActive = true }) => {
+  const { dataChart, startDate, endDate, isLoading, isEmptyData } =
+    useGrafikPieMetodePembayaran();
+
   return (
     <div className="md:flex-1 flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 px-2.5 md:p-0 h-60 md:h-90">
       {/* header */}
-      <div className="w-full flex flex-col justify-start items-start px-4 pt-2">
+      <div className="flex flex-col justify-start items-start pt-2 px-4">
         <h3 className="text-sm font-semibold text-base-content capitalize">
           Metode Pembayaran
         </h3>
 
-        <span className="text-xs font-medium text-base-content/50">
-          Jumlah metode pembayaran yang digunakan
+        <span className="text-xs font-medium text-base-content/80">
+          Data Metode Pembayaran yang digunkan selama periode{" "}
+          {formatTanggalPanjang(startDate)} - {formatTanggalPanjang(endDate)}
         </span>
       </div>
-      <div className="w-full flex flex-row justify-start items-center gap-2 md:gap-4">
-        <div className="flex-1 flex flex-col justify-center items-center">
-          <PieChart
-            style={{
-              width: "100%",
-              height: "100%",
-              marginLeft: -20,
-            }}
-            responsive
-          >
-            <Pie
-              data={data}
-              labelLine={false}
-              label={renderCustomizedLabel}
-              dataKey="value"
-              isAnimationActive={isAnimationActive}
-              shape={MyCustomPie}
-            />
-            <RechartsDevtools />
-          </PieChart>
+      <div className="w-full h-full flex flex-row justify-start items-center gap-2 md:gap-4">
+        <div className="flex-1 h-full flex flex-col justify-center items-center">
+          {isLoading ? (
+            <div className="w-50 h-50 rounded-full skeleton flex justify-center items-center">
+              <span className="text-sm skeleton-text skeleton">
+                Menampilkan Grafik ...
+              </span>
+            </div>
+          ) : !isEmptyData ? (
+            <PieChart
+              style={{
+                width: "100%",
+                height: "100%",
+                marginLeft: -20,
+              }}
+              responsive
+            >
+              <Pie
+                data={dataChart ?? []}
+                labelLine={false}
+                label={renderCustomizedLabel}
+                dataKey="value"
+                isAnimationActive={isAnimationActive}
+                shape={MyCustomPie}
+              />
+              <RechartsDevtools />
+            </PieChart>
+          ) : (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="text-sm font-medium text-base-content/50">
+                Tidak Ada Data Grafik
+              </span>
+            </div>
+          )}
         </div>
 
-        <div className="flex-1 h-full flex flex-col justify-center items-center gap-4">
-          <ComponentData metodePembayaran="CASH" />
-          <ComponentData metodePembayaran="TRANSFER" />
-          <ComponentData metodePembayaran="QRIS" />
-          <ComponentData metodePembayaran="TEMPO" />
+        <div className="flex-1 h-full flex px-4 flex-col justify-center items-center gap-1 md:gap-4">
+          {isLoading ? (
+            <>
+              <div className="w-full h-4 skeleton" />
+              <div className="w-full h-4 skeleton" />
+              <div className="w-full h-4 skeleton" />
+              <div className="w-full h-4 skeleton" />
+            </>
+          ) : (
+            dataChart?.map((item, index) => (
+              <ComponentData
+                key={index}
+                metodePembayaran={item.label}
+                persentase={item.persentase}
+                value={item.value}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -139,8 +169,14 @@ const GrafikPieMetodePembayaran: FC<Props> = ({ isAnimationActive = true }) => {
 // card
 type ComponentDataProps = {
   metodePembayaran: PaymentMethodType;
+  value: number;
+  persentase: number;
 };
-const ComponentData: FC<ComponentDataProps> = ({ metodePembayaran }) => {
+const ComponentData: FC<ComponentDataProps> = ({
+  metodePembayaran,
+  persentase,
+  value,
+}) => {
   return (
     <div className="grid grid-cols-7 md:grid-cols-9 md:gap-2 w-full">
       {/* status */}
@@ -169,9 +205,9 @@ const ComponentData: FC<ComponentDataProps> = ({ metodePembayaran }) => {
       </div>
       <div className="col-span-4 md:col-span-4">
         <span className="text-[0.625rem] md:text-sm font-medium text-base-content">
-          {formatNumber(2000)}{" "}
+          {value === 0 ? "0" : formatNumber(value)}{" "}
           <span className="text-base-content/50 text-[0.625rem] md:text-xs">
-            (20%)
+            ({persentase}%)
           </span>
         </span>
       </div>

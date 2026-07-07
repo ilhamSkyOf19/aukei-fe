@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import useSizeWindows from "../../../hooks/useSizeWindows";
 import { useQuery } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
-import { TransactionServices } from "../../../services/transaction.service";
+import { StatistikServices } from "../../../services/statistik.service";
 
 const useStatistikTransaksi = () => {
   // window size
@@ -18,23 +18,20 @@ const useStatistikTransaksi = () => {
   const { data: statistik, isLoading: isLoading } = useQuery({
     queryKey: ["statistik", startDate, endDate],
     queryFn: () =>
-      TransactionServices.findStatistikWithPersentase({
-        startDate,
-        endDate,
+      StatistikServices.findStatistikWithPersentase({
+        ...(startDate && { startDate }),
+        ...(endDate && { endDate }),
       }),
     retry: false,
     refetchOnWindowFocus: false,
+    enabled: !!startDate && !!endDate,
   });
-
-  // is existing data
-  const isExistingData: boolean = !!statistik?.data;
 
   return {
     windowSize,
     navigate,
     statistik,
     isLoading,
-    isExistingData,
   };
 };
 
