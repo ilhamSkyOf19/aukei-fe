@@ -10,7 +10,7 @@ const Inventori = () => {
   return (
     <div className="w-full mb-30 flex flex-col justify-start items-start">
       {/* button cluster */}
-      <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-14 p-2 gap-2 dark:border dark:border-base-content/10 sticky top-0 z-10 overflow-x-auto">
+      <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-14 p-2 gap-2 dark:border dark:border-base-content/10 sticky top-0 z-20 overflow-x-auto">
         {/* barang masuk */}
         <ButtonCluster
           isActive={isActiveCluster === "barangMasuk"}

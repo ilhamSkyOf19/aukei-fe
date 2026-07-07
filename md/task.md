@@ -94,8 +94,9 @@
 
 - [✅] Integrasi data ringkasan transaksi
 
-- [ ] Integrasi Chart
-  - [ ] Integrasi Chart Line
+- [✅] Integrasi Chart
+
+- [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
 
 - [ ] Membuat ui tombol tombol pada preview after transaksi
 

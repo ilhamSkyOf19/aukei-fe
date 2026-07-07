@@ -17,6 +17,7 @@ type Props = {
     reverseColor?: boolean;
     up?: number;
     down?: number;
+    same?: number;
   };
   isLoading?: boolean;
   withAlert?: string;
@@ -79,13 +80,13 @@ const CardStatistik: FC<Props> = ({
                   minus ? "text-error" : "text-base-content",
                 )}
               >
-                {value}
+                {value ?? 0}
               </span>
 
               {detail && (
                 <div className="hidden md:flex flex-row gap-1 justify-start items-center">
                   {/* icon */}
-                  {detail.down && (
+                  {detail.down !== undefined && (
                     <ArrowDown
                       className={cn(
                         "size-3",
@@ -95,7 +96,18 @@ const CardStatistik: FC<Props> = ({
                       )}
                     />
                   )}
-                  {detail.up && (
+                  {detail.up !== undefined && (
+                    <ArrowUp
+                      className={cn(
+                        "size-3",
+                        detail.reverseColor
+                          ? "text-rose-400"
+                          : "text-emerald-400",
+                      )}
+                    />
+                  )}
+
+                  {detail.same !== undefined && (
                     <ArrowUp
                       className={cn(
                         "size-3",
@@ -119,7 +131,7 @@ const CardStatistik: FC<Props> = ({
                           : "text-emerald-400",
                     )}
                   >
-                    {detail.up || detail.down}%
+                    {detail.up || detail.down || detail.same}%
                   </span>
 
                   {/* label */}
@@ -140,21 +152,46 @@ const CardStatistik: FC<Props> = ({
           ) : (
             <>
               {/* icon */}
-              {detail.down && (
-                <ArrowDown className="size-3.5 md:size-4 text-rose-400" />
+              {detail.down !== undefined && (
+                <ArrowDown
+                  className={cn(
+                    "size-3.5",
+                    detail.reverseColor ? "text-emerald-400" : "text-rose-400",
+                  )}
+                />
               )}
-              {detail.up && (
-                <ArrowUp className="size-3.5 md:size-4 text-emerald-400" />
+              {detail.up !== undefined && (
+                <ArrowUp
+                  className={cn(
+                    "size-3.5",
+                    detail.reverseColor ? "text-rose-400" : "text-emerald-400",
+                  )}
+                />
+              )}
+
+              {detail.same !== undefined && (
+                <ArrowUp
+                  className={cn(
+                    "size-3.5",
+                    detail.reverseColor ? "text-rose-400" : "text-emerald-400",
+                  )}
+                />
               )}
 
               {/* value */}
               <span
                 className={cn(
                   "text-[0.625rem] md:text-xs font-semibold",
-                  detail.down ? "text-rose-400" : "text-emerald-400",
+                  detail.down
+                    ? detail.reverseColor
+                      ? "text-emerald-400"
+                      : "text-rose-400"
+                    : detail.reverseColor
+                      ? "text-rose-400"
+                      : "text-emerald-400",
                 )}
               >
-                {detail.up || detail.down}%
+                {detail.up || detail.down || detail.same}%
               </span>
 
               {/* label */}

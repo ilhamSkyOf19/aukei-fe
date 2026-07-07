@@ -33,6 +33,7 @@ export interface QueryRiwayatTransactionType extends PaginationType {
   startDate?: string;
   endDate?: string;
   metodePembayaran?: string;
+  statusTempo?: string;
 }
 
 export interface DetailsForCreate extends Pick<

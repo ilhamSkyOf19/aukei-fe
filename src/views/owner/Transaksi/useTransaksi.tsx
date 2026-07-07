@@ -18,14 +18,14 @@ const useTransaksi = () => {
   const { filter: metodePembayaran, setFilter: handleSetMetodePembayaran } =
     useFilter({
       paramName: "metode-pembayaran",
-      allowQuery: ["semua", "CASH", "TRANSFER", "QRIS", "TEMPO"],
+      allowQuery: ["semua", "cash", "transfer", "qris", "tempo"],
       defaultValueCustom: "semua",
     });
 
   // filter status tempo
-  const { filter: tempo, setFilter: setTempo } = useFilter({
+  const { filter: statusTempo, setFilter: setStatusTempo } = useFilter({
     paramName: "status-tempo",
-    allowQuery: ["semua", "UNPAID", "PAID", "OVERDUE"],
+    allowQuery: ["semua", "unpaid", "paid", "overdue"],
     defaultValueCustom: "semua",
   });
 
@@ -58,7 +58,13 @@ const useTransaksi = () => {
   const data = useQueries({
     queries: [
       {
-        queryKey: ["ringkasan-statistik", startDate, endDate, metodePembayaran],
+        queryKey: [
+          "ringkasan-statistik",
+          startDate,
+          endDate,
+          metodePembayaran,
+          statusTempo,
+        ],
         queryFn: () =>
           StatistikServices.ringkasanStatistik({
             ...(startDate && { startDate }),
@@ -66,6 +72,7 @@ const useTransaksi = () => {
             ...(metodePembayaran && {
               metodePembayaran: metodePembayaran.toLowerCase(),
             }),
+            ...(statusTempo && { statusTempo: statusTempo.toLowerCase() }),
           }),
         retry: false,
         refetchOnWindowFocus: false,
@@ -73,11 +80,11 @@ const useTransaksi = () => {
       },
       {
         queryKey: [
-          "ringkasan-statistik",
+          "riwayat-transaksi",
           startDate,
           endDate,
           metodePembayaran,
-          tempo,
+          statusTempo,
           page,
           limit,
           search,
@@ -90,7 +97,7 @@ const useTransaksi = () => {
             ...(metodePembayaran && {
               metodePembayaran: metodePembayaran.toLowerCase(),
             }),
-            ...(tempo && { statusTempo: tempo.toLowerCase() }),
+            ...(statusTempo && { statusTempo: statusTempo.toLowerCase() }),
             ...(page && { page }),
             ...(limit && { limit }),
             ...(search && { search }),
@@ -124,7 +131,8 @@ const useTransaksi = () => {
   return {
     metodePembayaran,
     handleSetMetodePembayaran,
-    setTempo,
+    statusTempo,
+    setStatusTempo,
     windowSize,
     handleRedirectDetail,
     ringkasanStatistik,

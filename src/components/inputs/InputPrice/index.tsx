@@ -38,7 +38,7 @@ export default function InputPrice<T extends FieldValues = any>({
   }, [field.value]);
 
   return (
-    <div className="w-full">
+    <div className={cn("w-full", fieldState.error && "mb-3")}>
       {label && (
         <label className="text-xs text-base-content">
           {label}

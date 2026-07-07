@@ -36,7 +36,6 @@ import FilterSort from "../../../components/filters/Sort";
 import MetodePembayaran from "../../../components/filters/MetodePembayaran";
 import StatusTempo from "../../../components/filters/StatusTempo";
 import useTransaksi from "./useTransaksi";
-import { format } from "date-fns";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
 import {
   PAYMENT_METHOD_TYPE,
@@ -58,8 +57,9 @@ const Transaksi = () => {
   const {
     metodePembayaran,
     handleSetMetodePembayaran,
-    setTempo,
     windowSize,
+    setStatusTempo,
+    statusTempo,
     handleRedirectDetail,
     isLoadingRingkasanStatistik,
     ringkasanStatistik,
@@ -86,33 +86,11 @@ const Transaksi = () => {
         </div>
 
         <div className="col-span-2 md:hidden">
-          <RangeDateLarge
-            defaultStartDate={format(
-              new Date(
-                new Date().getFullYear(),
-                new Date().getMonth() - 1,
-                new Date().getDate(),
-              ),
-              "yyyy-MM-dd",
-            )}
-            defaultEndDate={format(new Date(), "yyyy-MM-dd")}
-          />
+          <RangeDateLarge />
         </div>
 
         <div className="col-span-1 hidden md:flex">
-          <RangeDate
-            defaultStartDate={format(
-              new Date(
-                new Date().getFullYear(),
-                new Date().getMonth() - 1,
-                new Date().getDate(),
-              ),
-              "yyyy-MM-dd",
-            )}
-            defaultEndDate={format(new Date(), "yyyy-MM-dd")}
-            listDate={listDateRangeLong}
-            customWidth="w-full"
-          />
+          <RangeDate listDate={listDateRangeLong} customWidth="w-full" />
         </div>
 
         <div className="col-span-1">
@@ -123,16 +101,20 @@ const Transaksi = () => {
           <MetodePembayaran
             setMetode={handleSetMetodePembayaran}
             customWidth="w-full"
+            value={metodePembayaran}
           />
           {metodePembayaran === "tempo" && (
             <div className="hidden md:flex">
-              <StatusTempo setStatusTempo={setTempo} />
+              <StatusTempo
+                setStatusTempo={setStatusTempo}
+                value={statusTempo}
+              />
             </div>
           )}
         </div>
         {metodePembayaran === "tempo" && (
           <div className="col-span-1 md:hidden">
-            <StatusTempo setStatusTempo={setTempo} />
+            <StatusTempo setStatusTempo={setStatusTempo} value={statusTempo} />
           </div>
         )}
       </div>
@@ -273,25 +255,29 @@ const Transaksi = () => {
             }
           />
 
-          <CardStatistik
-            isLoading={isLoadingRingkasanStatistik}
-            icon={{
-              icon: Clock3,
-              bgColor: "bg-red-100",
-              iconColor: "text-red-400",
-            }}
-            label={windowSize === "sm" ? "Piutang" : "Total Piutang"}
-            value={
-              windowSize === "sm"
-                ? formatRupiahShort(ringkasanStatistik?.data?.totalPiutang ?? 0)
-                : formatRupiah(ringkasanStatistik?.data?.totalPiutang ?? 0)
-            }
-            caption={
-              windowSize !== "sm"
-                ? "Total nilai piutang yang belum dibayar"
-                : undefined
-            }
-          />
+          {ringkasanStatistik?.data?.totalPiutang !== undefined && (
+            <CardStatistik
+              isLoading={isLoadingRingkasanStatistik}
+              icon={{
+                icon: Clock3,
+                bgColor: "bg-red-100",
+                iconColor: "text-red-400",
+              }}
+              label={windowSize === "sm" ? "Piutang" : "Total Piutang"}
+              value={
+                windowSize === "sm"
+                  ? formatRupiahShort(
+                      ringkasanStatistik?.data?.totalPiutang ?? 0,
+                    )
+                  : formatRupiah(ringkasanStatistik?.data?.totalPiutang ?? 0)
+              }
+              caption={
+                windowSize !== "sm"
+                  ? "Total nilai piutang yang belum dibayar"
+                  : undefined
+              }
+            />
+          )}
 
           <CardStatistik
             isLoading={isLoadingRingkasanStatistik}
@@ -349,60 +335,7 @@ const Transaksi = () => {
                 ? "Total keuntungan dari transaksi penjualan"
                 : undefined
             }
-            withAlert={`Data Laba sudah dikurangi kerugian`}
-          />
-
-          <CardStatistik
-            icon={{
-              icon: TrendingDown,
-              bgColor: "bg-rose-100",
-              iconColor: "text-rose-400",
-            }}
-            label={windowSize === "sm" ? "Kerugian" : "Total Kerugian"}
-            value={
-              windowSize === "sm"
-                ? formatRupiahShort(
-                    ringkasanStatistik?.data?.totalKerugian ?? 0,
-                  )
-                : formatRupiah(ringkasanStatistik?.data?.totalKerugian ?? 0)
-            }
-            caption={
-              windowSize !== "sm"
-                ? "Total kerugian dari barang keluar"
-                : undefined
-            }
-          />
-
-          <CardStatistik
-            icon={{
-              icon: PackageX,
-              bgColor: "bg-amber-100",
-              iconColor: "text-amber-400",
-            }}
-            label={windowSize === "sm" ? "Rusak" : "Total Barang Rusak"}
-            value={
-              windowSize === "sm"
-                ? formatNumberK(ringkasanStatistik?.data?.totalBarangRusak ?? 0)
-                : formatNumber(ringkasanStatistik?.data?.totalBarangRusak ?? 0)
-            }
-            caption={windowSize !== "sm" ? "Total barang rusak" : undefined}
-          />
-
-          <CardStatistik
-            icon={{
-              icon: PackageMinus,
-              bgColor: "bg-amber-100",
-              iconColor: "text-amber-400",
-            }}
-            label={windowSize === "sm" ? "Hilang" : "Total Barang Hilang"}
-            value={
-              windowSize === "sm"
-                ? formatNumberK(
-                    ringkasanStatistik?.data?.totalBarangHilang ?? 0,
-                  )
-                : formatNumber(ringkasanStatistik?.data?.totalBarangHilang ?? 0)
-            }
-            caption={windowSize !== "sm" ? "Total barang hilang" : undefined}
+            withAlert={`Data Laba belum dikurangi dengan total kerugian`}
           />
         </div>
       </div>

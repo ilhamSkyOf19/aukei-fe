@@ -21,6 +21,11 @@ export class BarangMasukDetailValidation {
         .positive()
         .min(1, "Mohon isi jumlah box")
         .max(2147483647),
+      hargaBeli: z
+        .number("Harga Beli tidak valid")
+        .int()
+        .max(2147483647, "Harga Beli terlalu besar")
+        .optional(),
     })
     .strict() satisfies z.ZodType<CreateBarangMasukDetailType>;
 
@@ -28,6 +33,11 @@ export class BarangMasukDetailValidation {
   static readonly UPDATE = z
     .object({
       produkId: z.number().int().positive().max(2147483647).optional(),
+      hargaBeli: z
+        .number("Harga Beli tidak valid")
+        .int()
+        .max(2147483647, "Harga Beli terlalu besar")
+        .optional(),
       jumlahBox: z.number().int().max(2147483647).optional(),
     })
     .strict() satisfies z.ZodType<UpdateBarangMasukDetailType>;

@@ -62,6 +62,12 @@ const useModalFormulirTambahBarangMasuk = (params: {
     name: "jumlahBox",
   });
 
+  // harga beli controller
+  const hargaBeliController = useController({
+    control,
+    name: "hargaBeli",
+  });
+
   useEffect(() => {
     setValue("barangMasukId", validatedId!);
   }, [validatedId, setValue]);
@@ -202,6 +208,8 @@ const useModalFormulirTambahBarangMasuk = (params: {
     produkChoose,
 
     jumlahBoxController,
+
+    hargaBeliController,
 
     isPendingBarangMasukDetail,
 

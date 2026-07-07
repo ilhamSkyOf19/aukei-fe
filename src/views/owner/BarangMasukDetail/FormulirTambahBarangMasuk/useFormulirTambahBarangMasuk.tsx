@@ -82,6 +82,12 @@ const useFormulirTambahBarangMasuk = (params: {
     name: "jumlahBox",
   });
 
+  // controller harga beli
+  const hargaBeliController = useController({
+    control,
+    name: "hargaBeli",
+  });
+
   useEffect(() => {
     setValue("barangMasukId", validatedId!);
   }, [validatedId, setValue]);
@@ -124,7 +130,11 @@ const useFormulirTambahBarangMasuk = (params: {
   });
 
   const onSubmit = async (data: CreateBarangMasukDetailType) => {
-    await mutateBarangMasukDetail(data);
+    try {
+      await mutateBarangMasukDetail(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleShowActiveComponentChooseProduk = () => {
@@ -189,6 +199,7 @@ const useFormulirTambahBarangMasuk = (params: {
     modalFormulirTambahBarangRef,
     handleShowModalFormulirTambahBarang,
     handleCloseModalFormulirTambahBarang,
+    hargaBeliController,
   };
 };
 export default useFormulirTambahBarangMasuk;

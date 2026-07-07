@@ -7,12 +7,9 @@ export interface ResponseRingkasanStatistikType {
   totalRataRataTransaksi: number;
   totalModal: number;
   totalLaba: number;
-  totalPiutang: number;
+  totalPiutang?: number;
   totalProdukTerjual: number;
   totalItemTerjual: number;
-  totalKerugian: number;
-  totalBarangRusak: number;
-  totalBarangHilang: number;
 }
 
 // response statistik with persentase
@@ -20,46 +17,57 @@ export interface ResponseStatistikWithPersentaseType {
   totalTransaksi: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalOmzet: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalRataRataTransaksi: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalModal: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalLaba: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalPiutang: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalProdukTerjual: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalItemTerjual: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalKerugian: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalBarangRusak: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
   totalBarangHilang: {
     total: number;
     persentase: number;
+    trend: "up" | "down" | "same";
   };
 }
 

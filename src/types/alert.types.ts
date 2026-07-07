@@ -31,6 +31,9 @@ export const ALERT_CONFIG_BARANG_MASUK_DETAIL: Record<
   empty_barang_masuk: {
     message: "Data Barang Masuk masih kosong, silahkan tambahkan barang masuk.",
   },
+  expired: {
+    message: "Mohon maaf, barang masuk sudah tidak dapat dibatalkan.",
+  },
 };
 
 export const ALERT_CONFIG_TRANSACTION: Record<

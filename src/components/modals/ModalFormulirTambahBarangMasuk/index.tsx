@@ -11,6 +11,7 @@ import { formatRupiah } from "../../../helpers/helpers";
 import useModalFormulirTambahBarangMasuk from "./useModalFormulirTambahBarangMasuk";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
+import InputPrice from "../../inputs/InputPrice";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
@@ -38,6 +39,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
     jumlahBoxController,
     isPendingBarangMasukDetail,
     alert,
+    hargaBeliController,
   } = useModalFormulirTambahBarangMasuk({
     handleCloseModal,
   });
@@ -222,13 +224,19 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
             </div>
 
             {/* input jumlah perbox */}
-            <div className="w-full flex flex-row justify-start items-center">
+            <div className="w-full mt-2 flex flex-col justify-start items-center">
+              <InputPrice<CreateBarangMasukDetailType>
+                controller={hargaBeliController}
+                label="Harga Beli Custom"
+                placeholder="Harga Beli Custom"
+                caption="Berlaku untuk produk yang dipilih"
+              />
+
               <InputNumber<CreateBarangMasukDetailType>
                 controller={jumlahBoxController}
                 label="Jumlah Box"
                 placeholder="Jumlah Box"
                 required
-                max={9999999999}
               />
             </div>
 

@@ -9,6 +9,11 @@ export const highlightName = (name: string) => {
   }
 };
 
+export const subtractMinutes = (date: Date, minutes: number): Date => {
+  const safeDate = new Date(date);
+  return new Date(safeDate.getTime() + minutes * 60 * 1000);
+};
+
 // format rp
 export const formatRupiah = (value: number | string): string => {
   return new Intl.NumberFormat("id-ID", {

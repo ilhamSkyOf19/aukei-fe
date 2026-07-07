@@ -3,7 +3,7 @@ import { cn } from "../../../utils/cn";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmitWithIcon from "../../ui/button/ButtonSubmitWithIcon";
-import { Trash2 } from "lucide-react";
+import { Save, Trash2 } from "lucide-react";
 import InputSearch from "../../inputs/InputSearch";
 import { formatRupiah } from "../../../helpers/helpers";
 import useModalUbahProdukMasuk from "./useModalUbahProdukMasuk";
@@ -12,13 +12,20 @@ import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
 import InputNumber from "../../inputs/InputNumber";
 import type { UpdateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
+import InputPrice from "../../inputs/InputPrice";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
   idBarangMasuk?: number;
   dataUpdate: {
-    jumlahBox?: number;
-    produkId?: number;
+    produk: {
+      id: number;
+      nama: string;
+      kode: string;
+      img: string;
+    };
+    jumlahBox: number;
+    hargaBeli: number;
   };
   status?: StatusInventoriType;
 };
@@ -28,7 +35,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
   handleCloseModal,
   idBarangMasuk,
   status,
-  dataUpdate: { jumlahBox, produkId },
+  dataUpdate,
 }) => {
   const {
     handleSubmit,
@@ -58,11 +65,12 @@ const ModalUbahProdukMasuk: FC<Props> = ({
 
     alert,
     jumlahBoxController,
+    hargaBeliController,
   } = useModalUbahProdukMasuk({
     idBarangMasuk,
     status,
     handleCloseModal,
-    dataUpdate: { jumlahBox, produkId },
+    dataUpdate,
   });
 
   return (
@@ -99,10 +107,8 @@ const ModalUbahProdukMasuk: FC<Props> = ({
                 {/* label */}
                 <div className="relative">
                   <label className="capitalize text-xs lg:text-sm text-base-content">
-                    Cari Produk
+                    Ganti Produk
                   </label>
-
-                  <span className="absolute -top-1 ml-1 text-error">{"*"}</span>
                 </div>
 
                 <InputSearch
@@ -242,6 +248,13 @@ const ModalUbahProdukMasuk: FC<Props> = ({
 
             {/* jumlah box  */}
             <div className="w-full lg:hidden">
+              <InputPrice<UpdateBarangMasukDetailType>
+                controller={hargaBeliController}
+                label="Harga Beli"
+                placeholder="Harga beli"
+                max={1000000}
+                required
+              />
               <InputNumber<UpdateBarangMasukDetailType>
                 controller={jumlahBoxController}
                 label="Jumlah Box"
@@ -256,7 +269,8 @@ const ModalUbahProdukMasuk: FC<Props> = ({
               <ButtonCloseText handleClose={handleCloseModal} label="Batal" />
 
               <ButtonSubmitWithIcon
-                label="Ganti Produk Masuk"
+                icon={Save}
+                label="Simpan"
                 isLoading={isPendingBarangMasukDetail}
               />
             </div>

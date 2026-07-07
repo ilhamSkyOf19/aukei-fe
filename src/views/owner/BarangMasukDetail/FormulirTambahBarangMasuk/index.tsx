@@ -13,6 +13,7 @@ import InputNumber from "../../../../components/inputs/InputNumber";
 import type { CreateBarangMasukDetailType } from "../../../../models/barangMasukDetail.model";
 import ButtonSubmitWithIcon from "../../../../components/ui/button/ButtonSubmitWithIcon";
 import ModalFormulirTambahBarangMasuk from "../../../../components/modals/ModalFormulirTambahBarangMasuk";
+import InputPrice from "../../../../components/inputs/InputPrice";
 
 type Props = {
   status?: StatusInventoriType;
@@ -46,6 +47,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
     handleCloseModalFormulirTambahBarang,
     handleShowModalFormulirTambahBarang,
     modalFormulirTambahBarangRef,
+    hargaBeliController,
   } = useFormulirTambahBarangMasuk({
     handleSetToast,
     handleSetAlert,
@@ -247,7 +249,14 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
               </div>
 
               {/* input jumlah perbox */}
-              <div className="flex-2 flex flex-row justify-start items-center">
+              <div className="flex-2 gap-4 flex flex-row justify-start items-start">
+                <InputPrice<CreateBarangMasukDetailType>
+                  controller={hargaBeliController}
+                  label="Harga Beli Custom"
+                  placeholder="Harga Beli Custom"
+                  max={1000000}
+                  caption="Berlaku untuk produk yang dipilih"
+                />
                 <InputNumber<CreateBarangMasukDetailType>
                   controller={jumlahBoxController}
                   label="Jumlah Box"

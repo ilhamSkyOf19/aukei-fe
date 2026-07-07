@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useResetParams } from "../../../hooks/useResetParams";
 import { useSearchParams } from "react-router-dom";
+import { format } from "date-fns";
 
 const useInventori = () => {
   //   is active Cluster inventori
@@ -23,8 +24,21 @@ const useInventori = () => {
       | "pengajuanBarangKeluar"
       | "",
   ) => {
-    //
-    useResetParams(setSearchParams);
+    const defaultStartDate = format(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth() - 1,
+        new Date().getDate(),
+      ),
+      "yyyy-MM-dd",
+    );
+
+    const defaultEndDate = format(new Date(), "yyyy-MM-dd");
+
+    setSearchParams({
+      "start-date": defaultStartDate,
+      "end-date": defaultEndDate,
+    });
 
     // set state
     setIsActiveCluster(Cluster);

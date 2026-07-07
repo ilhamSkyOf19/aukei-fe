@@ -5,8 +5,9 @@ import { cn } from "../../../utils/cn";
 type Props = {
   setStatusTempo: (value: string) => void;
   customWidth?: string;
+  value?: string;
 };
-const StatusTempo: FC<Props> = ({ setStatusTempo, customWidth }) => {
+const StatusTempo: FC<Props> = ({ setStatusTempo, customWidth, value }) => {
   return (
     <div
       className={cn(
@@ -20,13 +21,13 @@ const StatusTempo: FC<Props> = ({ setStatusTempo, customWidth }) => {
       <DropDown
         handleChange={(e) => setStatusTempo(e.target.value)}
         listChoose={[
-          { value: "UNPAID", label: "Belum Lunas" },
-          { value: "PAID", label: "Lunas" },
-          { value: "OVERDUE", label: "Terlambat" },
+          { value: "unpaid", label: "Belum Lunas" },
+          { value: "paid", label: "Lunas" },
+          { value: "overdue", label: "Terlambat" },
           { value: "semua", label: "Semua" },
         ]}
         placeholder="Status Tempo"
-        defaultValue="semua"
+        value={value || "semua"}
       />
     </div>
   );

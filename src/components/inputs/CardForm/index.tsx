@@ -56,7 +56,7 @@ const CardForm = <T extends FieldValues>({
         className={cn(
           "flex h-full justify-start gap-2.5 lg:gap-2",
           btnAksiPosition === "top"
-            ? "items-start mb-2 lg:mt-2"
+            ? "items-start mb-2 lg:mt-4"
             : "items-end mb-2",
         )}
       >
@@ -78,7 +78,7 @@ const CardForm = <T extends FieldValues>({
             "text-primary-white btn-sm btn btn-success",
             isPending && "disabled:bg-success",
           )}
-          disabled={isPending || disabled || (isDirty ? !isDirty : false)}
+          disabled={isPending || disabled || isDirty === false}
         >
           {isPending ? (
             <div className="loading loading-xs" />

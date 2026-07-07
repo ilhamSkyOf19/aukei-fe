@@ -12,7 +12,18 @@ const useRangeDate = (params: {
   defaultStartDate?: string;
   defaultEndDate?: string;
 }) => {
-  const { listDate, defaultEndDate, defaultStartDate } = params;
+  const {
+    listDate,
+    defaultEndDate = format(new Date(), "yyyy-MM-dd"),
+    defaultStartDate = format(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth() - 1,
+        new Date().getDate(),
+      ),
+      "yyyy-MM-dd",
+    ),
+  } = params;
 
   const [searchParams, setSearchParams] = useSearchParams();
 

@@ -18,7 +18,9 @@ export class StatistikServices {
     // call api
     const result = await instanceAxios.get<
       ResponseStructure<ResponseRingkasanStatistikType | null>
-    >("/statistik/ringkasan", { params: query });
+    >("/statistik/ringkasan", {
+      params: query,
+    });
 
     return result.data;
   }

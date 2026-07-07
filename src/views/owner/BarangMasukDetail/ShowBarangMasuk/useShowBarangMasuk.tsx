@@ -43,7 +43,16 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     handleShowModal: handleShowModalUbahProduk,
     idModal: idBarangMasuk,
     dataModal: dataUpdateBarangMasuk,
-  } = useModal<{ produkId: number; jumlahBox: number }>();
+  } = useModal<{
+    produk: {
+      id: number;
+      nama: string;
+      kode: string;
+      img: string;
+    };
+    jumlahBox: number;
+    hargaBeli: number;
+  }>();
 
   //   use mutation
   const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(
@@ -89,6 +98,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
   const [dataUpdate, setDataUpdate] = useState<
     | (UpdateBarangMasukDetailType & {
         id: number;
+        isActive: "hargaBeli" | "jumlahBox";
       })
     | null
   >(null);
@@ -111,6 +121,12 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     name: "jumlahBox",
   });
 
+  // harga beli controller
+  const hargaBeliController = useController({
+    control,
+    name: "hargaBeli",
+  });
+
   // handle set is data update
   const handleSetDataUpdate = (params: {
     data: (UpdateBarangMasukDetailType & { id: number }) | null;
@@ -119,16 +135,34 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
 
     // set state
     if (data) {
-      // set state
-      setDataUpdate({
-        id: data.id,
-        produkId: data.produkId,
-        jumlahBox: data.jumlahBox,
-      });
+      if (data.hargaBeli) {
+        // set state
+        setDataUpdate({
+          id: data.id,
+          produkId: data.produkId,
+          hargaBeli: data.hargaBeli,
+          jumlahBox: undefined,
+          isActive: "hargaBeli",
+        });
+
+        setValue("hargaBeli", data.hargaBeli);
+        setValue("jumlahBox", undefined);
+      } else {
+        // set state
+        setDataUpdate({
+          id: data.id,
+          produkId: data.produkId,
+          jumlahBox: data.jumlahBox,
+          hargaBeli: undefined,
+          isActive: "jumlahBox",
+        });
+
+        setValue("jumlahBox", data.jumlahBox);
+        setValue("hargaBeli", undefined);
+      }
 
       // set value
       setValue("produkId", data.produkId);
-      setValue("jumlahBox", data.jumlahBox);
     }
   };
 
@@ -152,6 +186,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
           req: {
             produkId: data.produkId,
             jumlahBox: data.jumlahBox,
+            hargaBeli: data.hargaBeli,
           },
           status: data.status,
         }),
@@ -195,6 +230,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
 
       await mutateUpdate({
         jumlahBox: data.jumlahBox,
+        hargaBeli: data.hargaBeli,
         id: dataUpdate.id,
         status,
       });
@@ -237,6 +273,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     handleShowModalUbahProduk,
     idBarangMasuk,
     dataUpdateBarangMasuk,
+    hargaBeliController,
   };
 };
 

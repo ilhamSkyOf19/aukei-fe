@@ -30,7 +30,6 @@ const RangeDateLarge: FC<Props> = ({
     searchParams,
     modalDateRef,
     selected,
-    setRangeDate,
     selectedOption,
     setSelected,
   } = useRangeDate({

@@ -29,7 +29,10 @@ export class BarangMasukDetailServices {
     // call api
     const result = await instanceAxios.patch<
       ResponseStructure<ResponseBarangMasukDetailType | null>
-    >(`/barang-masuk-detail/${params.id}/status/${params.status}`, params.req);
+    >(
+      `/barang-masuk-detail/${params.id}/status/${params.status.toLowerCase()}`,
+      params.req,
+    );
 
     return result.data;
   }
@@ -41,7 +44,7 @@ export class BarangMasukDetailServices {
   }): Promise<ResponseStructure<null>> {
     // call api
     const result = await instanceAxios.delete<ResponseStructure<null>>(
-      `/barang-masuk-detail/${params.id}/status/${params.status}`,
+      `/barang-masuk-detail/${params.id}/status/${params.status.toLowerCase()}`,
     );
 
     return result.data;

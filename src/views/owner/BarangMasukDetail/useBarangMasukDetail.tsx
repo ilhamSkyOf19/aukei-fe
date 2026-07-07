@@ -135,17 +135,20 @@ const useBarangMasukDetail = () => {
   // is expired
   const isExpired =
     dataBarangMasukDetail?.data &&
-    Date.now() - new Date(dataBarangMasukDetail?.data?.createdAt).getTime() >
-      24 * 60 * 60 * 1000;
+    Date.now() - new Date(dataBarangMasukDetail?.data?.updatedAt).getTime() >
+      2 * 60 * 1000; // 2 minutes
 
   // handle posting
   const handleCancelPosting = async (id: number) => {
     try {
-      if (
-        dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
-        isExpired
-      )
+      if (dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT)
         return;
+
+      // check expired
+      if (isExpired) {
+        handleSetAlert("expired");
+        return;
+      }
 
       // confirm
       const isConfirm = await confirm();

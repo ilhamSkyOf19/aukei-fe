@@ -14,6 +14,7 @@ import ModalUbahProdukMasuk from "../../../../components/modals/ModalUbahProdukM
 import CardForm from "../../../../components/inputs/CardForm";
 import ButtonInline from "../../../../components/ui/button/ButtonInline";
 import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
+import InputPrice from "../../../../components/inputs/InputPrice";
 
 type Props = {
   isLoadingBarangMasukDetail?: boolean;
@@ -47,6 +48,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
     idBarangMasuk,
     modalUbahProdukRef,
     dataUpdateBarangMasuk,
+    hargaBeliController,
   } = useShowBarangMasuk({
     status: dataBarangMasukDetail?.data?.status,
   });
@@ -125,14 +127,28 @@ const ShowDataBarangMasuk: FC<Props> = ({
                               tabIndex={-1}
                               className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
                             >
-                              <li>
+                              {/* <li>
                                 <LabelButtonDropDownWithIcon
-                                  label="Ubah Produk"
+                                  label="Ganti Produk"
                                   icon={PencilLine}
                                   handleClick={() =>
                                     handleShowModalUbahProduk(item.id, {
                                       jumlahBox: item.jumlahBox,
                                       produkId: item.produk.id,
+                                      hargaBeli: item.hargaBeli,
+                                    })
+                                  }
+                                />
+                              </li> */}
+                              <li>
+                                <LabelButtonDropDownWithIcon
+                                  label="Ubah Data"
+                                  icon={PencilLine}
+                                  handleClick={() =>
+                                    handleShowModalUbahProduk(item.id, {
+                                      jumlahBox: item.jumlahBox,
+                                      produk: item.produk,
+                                      hargaBeli: item.produk.hargaBeli,
                                     })
                                   }
                                 />
@@ -285,13 +301,9 @@ const ShowDataBarangMasuk: FC<Props> = ({
                         {item.produk.kategori.nama}
                       </td>
                       {/* harga beli */}
-                      <td className="text-base-content">
-                        {formatRupiah(item.produk.hargaBeli)}
-                      </td>
-
-                      {/* jumlah perbox */}
                       <td className="font-medium text-base-content">
-                        {dataUpdate?.id === item.id ? (
+                        {dataUpdate?.id === item.id &&
+                        dataUpdate.isActive === "hargaBeli" ? (
                           <CardForm<UpdateBarangMasukDetailType>
                             handleResetForm={handleClearDataUpdate}
                             handleSubmit={handleSubmit}
@@ -301,7 +313,59 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             isDirty={isDirty}
                           >
                             {/* input text */}
-                            <div className="w-50">
+                            <div className="w-40">
+                              <InputPrice<UpdateBarangMasukDetailType>
+                                controller={hargaBeliController}
+                                placeholder="Harga beli"
+                                required
+                                xs
+                              />
+                            </div>
+                          </CardForm>
+                        ) : (
+                          <div className="flex flex-row justify-start items-start gap-2">
+                            <span>{formatRupiah(item.produk.hargaBeli)}</span>
+
+                            {/* button update */}
+                            {dataBarangMasukDetail?.data?.status ===
+                              STATUS_INVENTORI_TYPE.DRAFT && (
+                              <ButtonInline
+                                handleKeyUpdate={() =>
+                                  handleSetDataUpdate({
+                                    data: {
+                                      id: item.id,
+                                      produkId: item.produk.id,
+                                      hargaBeli: item.produk.hargaBeli,
+                                    },
+                                  })
+                                }
+                              />
+                            )}
+                          </div>
+                        )}
+                      </td>
+
+                      {/* jumlah perbox */}
+                      <td
+                        className={cn(
+                          "font-medium text-base-content",
+                          dataUpdate?.id === item.id &&
+                            dataUpdate.isActive === "jumlahBox" &&
+                            "w-50",
+                        )}
+                      >
+                        {dataUpdate?.id === item.id &&
+                        dataUpdate.isActive === "jumlahBox" ? (
+                          <CardForm<UpdateBarangMasukDetailType>
+                            handleResetForm={handleClearDataUpdate}
+                            handleSubmit={handleSubmit}
+                            onSubmit={onSubmit}
+                            isPending={isPendingUpdate}
+                            btnAksiPosition="top"
+                            isDirty={isDirty}
+                          >
+                            {/* input text */}
+                            <div className="w-20">
                               <InputNumber<UpdateBarangMasukDetailType>
                                 controller={jumlahBoxController}
                                 placeholder="Masukkan Jumlah Box"
@@ -377,8 +441,9 @@ const ShowDataBarangMasuk: FC<Props> = ({
                                   icon={PencilLine}
                                   handleClick={() =>
                                     handleShowModalUbahProduk(item.id, {
-                                      produkId: item.produk.id,
+                                      produk: item.produk,
                                       jumlahBox: item.jumlahBox,
+                                      hargaBeli: item.produk.hargaBeli,
                                     })
                                   }
                                 />
@@ -455,8 +520,14 @@ const ShowDataBarangMasuk: FC<Props> = ({
         idBarangMasuk={idBarangMasuk}
         status={dataBarangMasukDetail?.data?.status}
         dataUpdate={{
-          jumlahBox: dataUpdateBarangMasuk?.jumlahBox,
-          produkId: dataUpdateBarangMasuk?.produkId,
+          jumlahBox: dataUpdateBarangMasuk?.jumlahBox ?? 0,
+          produk: dataUpdateBarangMasuk?.produk ?? {
+            id: 0,
+            nama: "",
+            kode: "",
+            img: "",
+          },
+          hargaBeli: dataUpdateBarangMasuk?.hargaBeli ?? 0,
         }}
       />
     </>

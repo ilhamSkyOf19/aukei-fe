@@ -100,13 +100,17 @@ const StatistikTransaksi = () => {
                 ? "Jumlah transaksi berdasarkan tanggal"
                 : undefined
             }
-            detail={
-              statistik?.data?.totalTransaksi?.persentase
-                ? statistik?.data?.totalTransaksi?.persentase > 0
-                  ? { up: statistik?.data?.totalTransaksi?.persentase }
-                  : { down: statistik?.data?.totalTransaksi?.persentase }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalTransaksi?.trend === "down" && {
+                down: statistik?.data?.totalTransaksi?.persentase,
+              }),
+              ...(statistik?.data?.totalTransaksi?.trend === "up" && {
+                up: statistik?.data?.totalTransaksi?.persentase,
+              }),
+              ...(statistik?.data?.totalTransaksi?.trend === "same" && {
+                same: statistik?.data?.totalTransaksi?.persentase,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -127,13 +131,17 @@ const StatistikTransaksi = () => {
                 ? "Total omzet dari transaksi penjualan"
                 : undefined
             }
-            detail={
-              statistik?.data?.totalOmzet?.persentase
-                ? statistik?.data?.totalOmzet?.persentase > 0
-                  ? { up: statistik?.data?.totalOmzet?.persentase }
-                  : { down: statistik?.data?.totalOmzet?.persentase }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalOmzet?.trend === "down" && {
+                down: statistik?.data?.totalOmzet?.persentase,
+              }),
+              ...(statistik?.data?.totalOmzet?.trend === "up" && {
+                up: statistik?.data?.totalOmzet?.persentase,
+              }),
+              ...(statistik?.data?.totalOmzet?.trend === "same" && {
+                same: statistik?.data?.totalOmzet?.persentase,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -160,15 +168,17 @@ const StatistikTransaksi = () => {
                 ? "Total omzet dari transaksi penjualan"
                 : undefined
             }
-            detail={
-              statistik?.data?.totalRataRataTransaksi?.persentase
-                ? statistik?.data?.totalRataRataTransaksi?.persentase > 0
-                  ? { up: statistik?.data?.totalRataRataTransaksi?.persentase }
-                  : {
-                      down: statistik?.data?.totalRataRataTransaksi?.persentase,
-                    }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalRataRataTransaksi?.trend === "down" && {
+                down: statistik?.data?.totalRataRataTransaksi?.persentase,
+              }),
+              ...(statistik?.data?.totalRataRataTransaksi?.trend === "up" && {
+                up: statistik?.data?.totalRataRataTransaksi?.persentase,
+              }),
+              ...(statistik?.data?.totalRataRataTransaksi?.trend === "same" && {
+                same: statistik?.data?.totalRataRataTransaksi?.persentase,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -189,13 +199,17 @@ const StatistikTransaksi = () => {
                 ? "Total biaya modal untuk transaksi penjualan"
                 : undefined
             }
-            detail={
-              statistik?.data?.totalModal?.persentase
-                ? statistik?.data?.totalModal?.persentase > 0
-                  ? { up: statistik?.data?.totalModal?.persentase }
-                  : { down: statistik?.data?.totalModal?.persentase }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalModal?.trend === "down" && {
+                down: statistik?.data?.totalModal?.persentase,
+              }),
+              ...(statistik?.data?.totalModal?.trend === "up" && {
+                up: statistik?.data?.totalModal?.persentase,
+              }),
+              ...(statistik?.data?.totalModal?.trend === "same" && {
+                same: statistik?.data?.totalModal?.persentase,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -216,13 +230,17 @@ const StatistikTransaksi = () => {
                 ? "Total nilai piutang yang belum dibayar"
                 : undefined
             }
-            detail={
-              statistik?.data?.totalPiutang?.persentase
-                ? statistik?.data?.totalPiutang?.persentase > 0
-                  ? { up: statistik?.data?.totalPiutang?.persentase }
-                  : { down: statistik?.data?.totalPiutang?.persentase }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalPiutang?.trend === "down" && {
+                down: statistik?.data?.totalPiutang?.persentase,
+              }),
+              ...(statistik?.data?.totalPiutang?.trend === "up" && {
+                up: statistik?.data?.totalPiutang?.persentase,
+              }),
+              ...(statistik?.data?.totalPiutang?.trend === "same" && {
+                same: statistik?.data?.totalPiutang?.persentase,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -241,13 +259,17 @@ const StatistikTransaksi = () => {
             caption={
               windowSize !== "sm" ? "Jumlah produk yang terjual" : undefined
             }
-            detail={
-              statistik?.data?.totalProdukTerjual?.persentase
-                ? statistik?.data?.totalProdukTerjual?.persentase > 0
-                  ? { up: statistik?.data?.totalProdukTerjual?.persentase }
-                  : { down: statistik?.data?.totalProdukTerjual?.persentase }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalProdukTerjual?.trend === "down" && {
+                down: statistik?.data?.totalProdukTerjual?.persentase,
+              }),
+              ...(statistik?.data?.totalProdukTerjual?.trend === "up" && {
+                up: statistik?.data?.totalProdukTerjual?.persentase,
+              }),
+              ...(statistik?.data?.totalProdukTerjual?.trend === "same" && {
+                same: statistik?.data?.totalProdukTerjual?.persentase,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -266,13 +288,17 @@ const StatistikTransaksi = () => {
             caption={
               windowSize !== "sm" ? "Jumlah item yang terjual" : undefined
             }
-            detail={
-              statistik?.data?.totalItemTerjual?.persentase
-                ? statistik?.data?.totalItemTerjual?.persentase > 0
-                  ? { up: statistik?.data?.totalItemTerjual?.persentase }
-                  : { down: statistik?.data?.totalItemTerjual?.persentase }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalItemTerjual?.trend === "down" && {
+                down: statistik?.data?.totalItemTerjual?.persentase,
+              }),
+              ...(statistik?.data?.totalItemTerjual?.trend === "up" && {
+                up: statistik?.data?.totalItemTerjual?.persentase,
+              }),
+              ...(statistik?.data?.totalItemTerjual?.trend === "same" && {
+                same: statistik?.data?.totalItemTerjual?.persentase,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -295,13 +321,17 @@ const StatistikTransaksi = () => {
                 : undefined
             }
             withAlert={`Data Laba sudah dikurangi kerugian`}
-            detail={
-              statistik?.data?.totalLaba?.persentase
-                ? statistik?.data?.totalLaba?.persentase > 0
-                  ? { up: statistik?.data?.totalLaba?.persentase }
-                  : { down: statistik?.data?.totalLaba?.persentase }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalLaba?.trend === "down" && {
+                down: statistik?.data?.totalLaba?.persentase,
+              }),
+              ...(statistik?.data?.totalLaba?.trend === "up" && {
+                up: statistik?.data?.totalLaba?.persentase,
+              }),
+              ...(statistik?.data?.totalLaba?.trend === "same" && {
+                same: statistik?.data?.totalLaba?.persentase,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -322,19 +352,20 @@ const StatistikTransaksi = () => {
                 ? "Total kerugian dari barang keluar"
                 : undefined
             }
-            detail={
-              statistik?.data?.totalKerugian?.persentase
-                ? statistik?.data?.totalKerugian?.persentase > 0
-                  ? {
-                      up: statistik?.data?.totalKerugian?.persentase,
-                      reverseColor: true,
-                    }
-                  : {
-                      down: statistik?.data?.totalKerugian?.persentase,
-                      reverseColor: true,
-                    }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalKerugian?.trend === "down" && {
+                down: statistik?.data?.totalKerugian?.persentase,
+                reverseColor: true,
+              }),
+              ...(statistik?.data?.totalKerugian?.trend === "up" && {
+                up: statistik?.data?.totalKerugian?.persentase,
+                reverseColor: true,
+              }),
+              ...(statistik?.data?.totalKerugian?.trend === "same" && {
+                same: statistik?.data?.totalKerugian?.persentase,
+                reverseColor: true,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -351,19 +382,20 @@ const StatistikTransaksi = () => {
                 : formatNumber(statistik?.data?.totalBarangRusak.total ?? 0)
             }
             caption={windowSize !== "sm" ? "Total barang rusak" : undefined}
-            detail={
-              statistik?.data?.totalBarangRusak?.persentase
-                ? statistik?.data?.totalBarangRusak?.persentase > 0
-                  ? {
-                      up: statistik?.data?.totalBarangRusak?.persentase,
-                      reverseColor: true,
-                    }
-                  : {
-                      down: statistik?.data?.totalBarangRusak?.persentase,
-                      reverseColor: true,
-                    }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalBarangRusak?.trend === "down" && {
+                down: statistik?.data?.totalBarangRusak?.persentase,
+                reverseColor: true,
+              }),
+              ...(statistik?.data?.totalBarangRusak?.trend === "up" && {
+                up: statistik?.data?.totalBarangRusak?.persentase,
+                reverseColor: true,
+              }),
+              ...(statistik?.data?.totalBarangRusak?.trend === "same" && {
+                same: statistik?.data?.totalBarangRusak?.persentase,
+                reverseColor: true,
+              }),
+            }}
           />
 
           <CardStatistik
@@ -380,19 +412,20 @@ const StatistikTransaksi = () => {
                 : formatNumber(statistik?.data?.totalBarangHilang.total ?? 0)
             }
             caption={windowSize !== "sm" ? "Total barang hilang" : undefined}
-            detail={
-              statistik?.data?.totalBarangHilang?.persentase
-                ? statistik?.data?.totalBarangHilang?.persentase > 0
-                  ? {
-                      up: statistik?.data?.totalBarangHilang?.persentase,
-                      reverseColor: true,
-                    }
-                  : {
-                      down: statistik?.data?.totalBarangHilang?.persentase,
-                      reverseColor: true,
-                    }
-                : undefined
-            }
+            detail={{
+              ...(statistik?.data?.totalBarangHilang?.trend === "down" && {
+                down: statistik?.data?.totalBarangHilang?.persentase,
+                reverseColor: true,
+              }),
+              ...(statistik?.data?.totalBarangHilang?.trend === "up" && {
+                up: statistik?.data?.totalBarangHilang?.persentase,
+                reverseColor: true,
+              }),
+              ...(statistik?.data?.totalBarangHilang?.trend === "same" && {
+                same: statistik?.data?.totalBarangHilang?.persentase,
+                reverseColor: true,
+              }),
+            }}
           />
         </div>
       </div>

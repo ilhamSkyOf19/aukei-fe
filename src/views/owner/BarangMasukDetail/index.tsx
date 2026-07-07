@@ -5,7 +5,7 @@ import StatusInventori from "../../../components/ui/StatusInventori";
 import { STATUS_INVENTORI_TYPE } from "../../../types/constant.type";
 import useBarangMasukDetail from "./useBarangMasukDetail";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import { expireDateOneDay } from "../../../helpers/helpers";
+import { expireDateOneDay, subtractMinutes } from "../../../helpers/helpers";
 import ShowDataBarangMasuk from "./ShowBarangMasuk";
 import Alert from "../../../components/messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
@@ -15,6 +15,7 @@ import ModalAlert from "../../../components/modals/ModalAlert";
 import ModalDelete from "../../../components/modals/ModalDelete";
 import InformasiBarangMasuk from "./InformasiBarangMasuk";
 import FormulirTambahBarangMasuk from "./FormulirTambahBarangMasuk";
+import CountDown from "../../../components/ui/CountDown";
 
 const BarangMasukDetail = () => {
   // call use barang masuk detail
@@ -119,13 +120,16 @@ const BarangMasukDetail = () => {
                     <span className="text-xs text-base-content">
                       {isExpired
                         ? "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
-                        : `Anda dapat membatalkan postingan sebelum ${formatTanggalLengkap(
-                            expireDateOneDay(
-                              dataBarangMasukDetail?.data?.createdAt ??
-                                new Date(),
-                            ),
-                          )} WIB`}
+                        : `Anda dapat membatalkan postingan sebelum waktu habis : `}
                     </span>
+                    {!isExpired && (
+                      <CountDown
+                        expiredAt={subtractMinutes(
+                          dataBarangMasukDetail?.data?.updatedAt ?? new Date(),
+                          2,
+                        )}
+                      />
+                    )}
                   </div>
                 )}
               </div>

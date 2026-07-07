@@ -5,8 +5,9 @@ import { cn } from "../../../utils/cn";
 type Props = {
   setMetode: (value: string) => void;
   customWidth?: string;
+  value?: string;
 };
-const MetodePembayaran: FC<Props> = ({ setMetode, customWidth }) => {
+const MetodePembayaran: FC<Props> = ({ setMetode, customWidth, value }) => {
   return (
     <div
       className={cn(
@@ -18,14 +19,14 @@ const MetodePembayaran: FC<Props> = ({ setMetode, customWidth }) => {
       <DropDown
         handleChange={(e) => setMetode(e.target.value)}
         listChoose={[
-          { value: "CASH", label: "Tunai" },
-          { value: "TRANSFER", label: "Transfer" },
-          { value: "QRIS", label: "QRIS" },
-          { value: "TEMPO", label: "Tempo" },
+          { value: "cash", label: "Tunai" },
+          { value: "transfer", label: "Transfer" },
+          { value: "qris", label: "QRIS" },
+          { value: "tempo", label: "Tempo" },
           { value: "semua", label: "Semua" },
         ]}
         placeholder="Metode"
-        defaultValue={"semua"}
+        value={value || "semua"}
       />
     </div>
   );

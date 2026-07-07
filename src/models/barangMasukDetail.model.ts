@@ -24,6 +24,7 @@ export interface CreateBarangMasukDetailType extends Pick<
   IBarangMasukDetailType,
   "barangMasukId" | "jumlahBox"
 > {
+  hargaBeli?: number;
   produkId: number[];
 }
 
@@ -31,6 +32,7 @@ export interface CreateBarangMasukDetailType extends Pick<
 export interface UpdateBarangMasukDetailType extends Partial<
   Omit<CreateBarangMasukDetailType, "barangMasukId" | "produkId">
 > {
+  hargaBeli?: number;
   produkId?: number;
 }
 
