@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from "react";
+import { type FC } from "react";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { cn } from "../../../utils/cn";
 import ErrorMessage from "../../messages/ErrorMessage";
@@ -11,7 +11,6 @@ type Props = {
   errorMessage?: string;
   register: UseFormRegisterReturn;
   max?: number;
-  defaultValue?: string;
   disabled?: boolean;
   xs?: boolean;
   withCaption?: string;
@@ -26,22 +25,11 @@ const InputTextNonIcon: FC<Props> = ({
   errorMessage,
   register,
   max,
-  defaultValue,
   disabled,
   xs,
   withCaption,
   captionSize,
 }) => {
-  // simpan sebagai number | null
-  const [isValue, setIsValue] = useState<string>("");
-
-  // set default value
-  useEffect(() => {
-    if (defaultValue) {
-      setIsValue(defaultValue);
-    }
-  }, [defaultValue]);
-
   return (
     <div
       className={cn(
@@ -56,7 +44,7 @@ const InputTextNonIcon: FC<Props> = ({
             <div className="flex-2 relative">
               <label
                 htmlFor={name}
-                className={cn("capitalize", xs ? "text-xs" : "lg:text-sm")}
+                className={cn("capitalize", xs ? "text-xs" : "text-xs")}
               >
                 {label}
               </label>
@@ -65,13 +53,6 @@ const InputTextNonIcon: FC<Props> = ({
                 {required && "*"}
               </span>
             </div>
-
-            {/* MAX BERDASARKAN NILAI ANGKA */}
-            {max && (
-              <span className="text-[0.625rem] lg:text-xs">
-                {isValue.length} / {max}
-              </span>
-            )}
           </>
         )}
       </div>
@@ -92,16 +73,12 @@ const InputTextNonIcon: FC<Props> = ({
           className={cn(
             "w-full font-medium text-base-content h-full border-none outline-none placeholder:text-base-content/50 placeholder:font-light",
             xs
-              ? "text-[0.625rem] lg:text-xs placeholder:text-[0.625rem]  lg:placeholder:text-xs"
-              : "text-xs lg:text-sm  placeholder:text-xs lg:placeholder:text-sm",
+              ? "text-[0.625rem] lg:text-xs placeholder:text-[0.625rem] lg:placeholder:text-xs"
+              : "text-xs lg:text-xs placeholder:text-xs lg:placeholder:text-xs",
           )}
           {...(disabled && { disabled: true })}
           maxLength={max}
           onChange={(e) => {
-            let value = e.target.value;
-            // set value
-            setIsValue(value);
-
             // set value
             register.onChange(e);
           }}

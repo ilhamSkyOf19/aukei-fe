@@ -6,33 +6,45 @@ import type {
 
 export class KategoriProdukValidations {
   // only char schema
-  private static onlyCharSchema(min: number = 1, max: number = 100) {
+  private static onlyCharSchema(
+    name: string,
+    min: number = 1,
+    max: number = 100,
+  ) {
     return z
-      .string()
+      .string(`${name} harap diisi`)
       .trim()
-      .min(min)
-      .max(max)
-      .regex(/^[A-Za-z0-9\s.,&()-]+$/);
+      .min(min, `${name} harap diisi`)
+      .max(max, `${name} maksimal ${max} karakter`)
+      .regex(/^[A-Za-z0-9\s.,&()-]+$/, `${name} tidak valid`);
   }
 
   // string schema
-  private static stringSchema(min: number = 1, max: number = 100) {
-    return z.string().trim().min(min).max(max);
+  private static stringSchema(
+    name: string,
+    min: number = 1,
+    max: number = 100,
+  ) {
+    return z
+      .string(`${name} harap diisi`)
+      .trim()
+      .min(min, `${name} harap diisi`)
+      .max(max, `${name} maksimal ${max} karakter`);
   }
 
   // create
   static readonly CREATE = z
     .object({
-      nama: this.onlyCharSchema(3, 100),
-      keterangan: z.string().max(100).optional(),
+      nama: this.onlyCharSchema("nama kategori", 3, 100),
+      keterangan: this.stringSchema("keterangan", 0, 100).optional(),
     })
     .strict() satisfies z.ZodType<CreateKategoriProdukType>;
 
   // update
   static readonly UPDATE = z
     .object({
-      nama: this.onlyCharSchema(3, 100).optional(),
-      keterangan: this.stringSchema(0, 100).optional(),
+      nama: this.onlyCharSchema("nama kategori", 3, 100).optional(),
+      keterangan: this.stringSchema("keterangan", 0, 100).optional(),
     })
     .strict() satisfies z.ZodType<UpdateKategoriProdukType>;
 }

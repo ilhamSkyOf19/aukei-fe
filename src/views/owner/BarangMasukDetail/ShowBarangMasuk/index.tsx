@@ -63,7 +63,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
   return (
     <>
       {/* for sm */}
-      <div className="w-full card dark:border dark:border-base-content/10 flex flex-col justify-start items-center mt-2 gap-3 lg:hidden">
+      <div className="w-full card dark:border dark:border-base-content/10 flex flex-col justify-start items-center gap-3 lg:hidden">
         {/* data empty */}
         {isLoadingBarangMasukDetail ? (
           Array.from({ length: 3 }).map((_, index) => (
@@ -229,7 +229,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
       </div>
 
       {/* for lg */}
-      <div className="w-full hidden lg:flex card bg-base-100 dark:border dark:border-base-content/10 mt-3 flex-col justify-start items-start p-4">
+      <div className="w-full hidden lg:flex card bg-base-100 dark:border dark:border-base-content/10 flex-col justify-start items-start p-4">
         {/* header */}
 
         <div className="w-full flex flex-row justify-between items-center">

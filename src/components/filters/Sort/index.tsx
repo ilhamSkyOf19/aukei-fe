@@ -5,8 +5,9 @@ import { cn } from "../../../utils/cn";
 type Props = {
   setSort: (value: string) => void;
   customWidth?: string;
+  value?: string;
 };
-const FilterSort: FC<Props> = ({ setSort, customWidth }) => {
+const FilterSort: FC<Props> = ({ setSort, customWidth, value }) => {
   return (
     <div
       className={cn(
@@ -22,6 +23,7 @@ const FilterSort: FC<Props> = ({ setSort, customWidth }) => {
           { value: "desc", label: "Terlama" },
         ]}
         placeholder="Urutkan"
+        value={value || "asc"}
       />
     </div>
   );

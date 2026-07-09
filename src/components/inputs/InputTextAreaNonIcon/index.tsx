@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from "react";
+import { type FC } from "react";
 import clsx from "clsx";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { cn } from "../../../utils/cn";
@@ -12,7 +12,6 @@ type Props = {
   errorMessage?: string;
   register: UseFormRegisterReturn;
   max?: number;
-  defaultValue?: string;
   rows: number;
   xs?: boolean;
 };
@@ -25,20 +24,9 @@ const InputTextAreaNonIcon: FC<Props> = ({
   errorMessage,
   register,
   max,
-  defaultValue,
   rows,
   xs,
 }) => {
-  // simpan sebagai number | null
-  const [isValue, setIsValue] = useState<string>("");
-
-  // set default value
-  useEffect(() => {
-    if (defaultValue) {
-      setIsValue(defaultValue);
-    }
-  }, [defaultValue]);
-
   return (
     <div
       className={cn(
@@ -62,13 +50,6 @@ const InputTextAreaNonIcon: FC<Props> = ({
             </span>
           </div>
         )}
-
-        {/* MAX BERDASARKAN NILAI ANGKA */}
-        {max && (
-          <span className="text-[0.625rem] lg:text-xs">
-            {isValue.length} / {max}
-          </span>
-        )}
       </div>
 
       <div
@@ -88,10 +69,6 @@ const InputTextAreaNonIcon: FC<Props> = ({
           )}
           maxLength={max}
           onChange={(e) => {
-            let value = e.target.value;
-            // set value
-            setIsValue(value);
-
             // set value
             register.onChange(e);
           }}

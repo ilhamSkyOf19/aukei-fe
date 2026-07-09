@@ -1,8 +1,10 @@
 import {
   EllipsisVertical,
+  Package,
   PackagePlus,
   Trash,
   Trash2,
+  Truck,
   View,
 } from "lucide-react";
 import FilterSort from "../../../../components/filters/Sort";
@@ -17,10 +19,15 @@ import DataEmpty from "../../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import StatusInventori from "../../../../components/ui/StatusInventori";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
+import {
+  STATUS_INVENTORI_TYPE,
+  type StatusInventoriType,
+} from "../../../../types/constant.type";
 import ModalDelete from "../../../../components/modals/ModalDelete";
 import FormulirBarangMasuk from "../../../../components/forms/FormulirBarangMasuk";
 import RangeDate from "../../../../components/filters/RangeDate";
+import type { FC } from "react";
+import { formatNumber } from "../../../../helpers/helpers";
 
 const BarangMasuk = () => {
   // call use barang masuk
@@ -54,6 +61,7 @@ const BarangMasuk = () => {
     handleShowModalDeleteMany,
     isPendingDeleteMany,
     modalDeleteManyRef,
+    windowSize,
   } = useBarangMasuk();
 
   return (
@@ -90,9 +98,12 @@ const BarangMasuk = () => {
 
           <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
             {/* input range date */}
-            <RangeDate customWidth="w-full md:w-60" />
+            <RangeDate customWidth="flex-2 md:flex-none md:w-50 lg:w-60" />
             {/* filter sort */}
-            <FilterSort setSort={handleSort} customWidth="w-full md:w-40" />
+            <FilterSort
+              setSort={handleSort}
+              customWidth="flex-1 md:flex-none md:w-30 lg:w-40"
+            />
 
             {/* button add barang masuk */}
             <div className="flex-col justify-start items-start gap-1.5 hidden md:flex">
@@ -105,13 +116,45 @@ const BarangMasuk = () => {
                 label="Tambah Barang Masuk"
                 handleBtn={() => handleShowModalFormulirBarangMasuk()}
                 customClass="hidden md:flex"
+                noLabel={windowSize === "md" && true}
+                {...(windowSize === "md" && { customSize: "lg" })}
               />
             </div>
           </div>
         </div>
 
-        {/* table */}
-        <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm mt-4">
+        {/* SHOW DATA FOR SM */}
+        <div className="flex w-full flex-col justify-start items-center gap-2 mt-2 md:hidden">
+          {isLoadingBarangMasuk ? (
+            <div></div>
+          ) : isExistDataBarangMasuk ? (
+            dataBarangMasuk?.data?.data?.map((item, _) => (
+              <CardBarangMasuk
+                key={item.id}
+                barang={{
+                  id: item.id,
+                  kode: item.kodeReferensi,
+                  jumlah: item.countDetailBarangMasuk,
+                  status: item.status,
+                  tanggalMasuk: item.tanggalMasuk,
+                }}
+                handleRedirectDetail={handleRedirectDetail}
+                handleShowModalDelete={() =>
+                  handleShowModalDelete(item.id, {
+                    kodeReferensi: item.kodeReferensi,
+                  })
+                }
+                chooseBarangMasuk={chooseBarangMasuk}
+                handleSetChooseBarangMasuk={handleSetChooseBarangMasuk}
+              />
+            ))
+          ) : (
+            <div></div>
+          )}
+        </div>
+
+        {/* SHOW DATA FOR MD, LG, XL */}
+        <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm mt-4 hidden md:flex">
           <table className="w-full table table-xs lg:table-sm mb-2">
             {/* head */}
             <thead>
@@ -336,6 +379,156 @@ const BarangMasuk = () => {
         isLoadingDelete={isPendingDeleteMany}
       />
     </div>
+  );
+};
+
+type CardBarangMasuk = {
+  barang: {
+    id: number;
+    kode: string;
+    tanggalMasuk: Date;
+    status: StatusInventoriType;
+    jumlah: number;
+  };
+  handleRedirectDetail: (value: number) => void;
+  handleShowModalDelete: () => void;
+  chooseBarangMasuk: {
+    id: number;
+    kodeReferensi: string;
+  }[];
+  handleSetChooseBarangMasuk: (data: {
+    id: number;
+    kodeReferensi: string;
+  }) => void;
+};
+
+// card produk
+const CardBarangMasuk: FC<CardBarangMasuk> = ({
+  handleRedirectDetail,
+  barang,
+  handleShowModalDelete,
+  chooseBarangMasuk,
+  handleSetChooseBarangMasuk,
+}) => {
+  return (
+    <div className="w-full bg-base-100 rounded-lg flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
+      <div className="w-full flex flex-row justify-between items-start pb-3 border-b border-base-content/10">
+        {/* content 1 */}
+        <div className="flex-2 flex flex-row justify-start items-start gap-4">
+          <div className="flex flex-row justify-start items-start gap-3">
+            {/* checkbox */}
+            <input
+              type="checkbox"
+              className="checkbox"
+              disabled={barang.status === STATUS_INVENTORI_TYPE.POSTED}
+              checked={chooseBarangMasuk.some((item) => item.id === barang.id)}
+              onChange={() => {
+                handleSetChooseBarangMasuk({
+                  id: barang.id,
+                  kodeReferensi: barang.kode,
+                });
+              }}
+            />
+
+            {/* foto */}
+            <div className="w-12 h-12 flex justify-center items-center overflow-hidden bg-blue-100 rounded-lg">
+              <Truck className="size-6 text-blue-400" />
+            </div>
+          </div>
+
+          {/* deskripsi */}
+          <div className="flex flex-col justify-start items-start gap-1">
+            {/* kode */}
+            <span className="text-xs text-info font-medium">{barang.kode}</span>
+
+            {/* tanggal masuk */}
+            <span className="text-[0.7rem] font-medium text-custom-secondary dark:text-base-content">
+              {formatTanggalLengkap(new Date())} WIB
+            </span>
+          </div>
+        </div>
+
+        {/* aksi */}
+        <div className="flex-1 flex flex-row justify-end items-start">
+          <div className={cn("dropdown dropdown-left dropdown-end")}>
+            <button
+              type="button"
+              role="button"
+              tabIndex={0}
+              className="px-1 py-1.5 border border-base-content/10 rounded-lg"
+            >
+              <EllipsisVertical className="size-4 text-base-content" />
+            </button>
+
+            <DropDown
+              handleRedirectDetail={() => handleRedirectDetail(barang.id)}
+              handleShowModalDelete={handleShowModalDelete}
+              status={barang.status}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* content 2 */}
+      <div className="w-full flex flex-row justify-evenly items-start gap-4 pt-0.5">
+        <div className="flex-1 flex flex-col justify-start items-start gap-1">
+          {/* label */}
+          <div className="flex flex-row justify-start items-center gap-1">
+            {/* icon */}
+            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-emerald-100">
+              <Package className="text-emerald-400 size-3" />
+            </div>
+
+            {/* label */}
+            <p className="text-xs text-base-content">
+              Jumlah : <span>{formatNumber(barang.jumlah)}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* status */}
+        <div className="flex-1 flex flex-row justify-end items-center">
+          <StatusInventori status={barang.status} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// dropdown
+type DropDownProps = {
+  handleRedirectDetail: () => void;
+  status: StatusInventoriType;
+  handleShowModalDelete: () => void;
+};
+const DropDown: FC<DropDownProps> = ({
+  handleRedirectDetail,
+  handleShowModalDelete,
+  status,
+}) => {
+  return (
+    <ul
+      tabIndex={-1}
+      className="z-50 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-40 lg:w-50 p-2 shadow-sm space-y-2 absolute"
+    >
+      <li>
+        <LabelButtonDropDownWithIcon
+          label="Detail"
+          icon={View}
+          handleClick={() => handleRedirectDetail()}
+        />
+      </li>
+      {status === STATUS_INVENTORI_TYPE.DRAFT && (
+        <li>
+          <LabelButtonDropDownWithIcon
+            color="text-error"
+            label="Hapus"
+            icon={Trash}
+            handleClick={() => handleShowModalDelete()}
+          />
+        </li>
+      )}
+    </ul>
   );
 };
 

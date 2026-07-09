@@ -31,10 +31,15 @@ const InputPasswordWithIcon: FC<Props> = ({
         errorMessage && "mb-3",
       )}
     >
-      <div className="h-11 px-3 flex flex-row justify-start items-center gap-2 border border-primary-black/40 rounded-md w-full focus-within:ring-1 focus-within:ring-primary-purple focus-within:border-primary-purple transition-all duration-300 ease-in-out ">
+      <div
+        className={cn(
+          "h-10.5 px-3 flex flex-row justify-start items-center gap-2 border border-base-content/40 rounded-md w-full focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out",
+          errorMessage && "border-error",
+        )}
+      >
         {/* icon */}
         <label htmlFor={name}>
-          <KeyRound className="w-4 h-4" />
+          <KeyRound className="size-4 text-base-content" />
         </label>
 
         {/* input */}
@@ -43,7 +48,7 @@ const InputPasswordWithIcon: FC<Props> = ({
           type={showPassword ? "text" : "password"}
           id={name}
           placeholder={placeholder}
-          className="w-full font-medium h-full bg-transparent outline-none text-sm placeholder:text-sm placeholder:text-gray-400  placeholder:font-light lg:text-sm lg:placeholder:text-sm"
+          className="w-full font-medium h-full bg-transparent outline-none text-sm placeholder:text-sm placeholder:text-gray-400 placeholder:font-light lg:text-sm lg:placeholder:text-sm text-base-content"
           autoComplete="off"
           minLength={minLength || 6}
           maxLength={maxLength || 100}
@@ -56,14 +61,14 @@ const InputPasswordWithIcon: FC<Props> = ({
               type="button"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <Eye className="w-5 h-5 pointer-events-none" />
+              <Eye className="w-5 h-5 pointer-events-none text-base-content" />
             </button>
           ) : (
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <EyeOff className="w-5 h-5 pointer-events-none" />
+              <EyeOff className="w-5 h-5 pointer-events-none text-base-content" />
             </button>
           )}
         </div>

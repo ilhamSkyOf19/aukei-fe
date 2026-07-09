@@ -7,6 +7,7 @@ import InputTextNonIcon from "../../inputs/InputTextNonIcon";
 import InputTextAreaNonIcon from "../../inputs/InputTextAreaNonIcon";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmit from "../../ui/button/ButtonSubmit";
+import { Tag } from "lucide-react";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
@@ -31,13 +32,16 @@ const ModalFormulirKategoriProduk: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box w-11/12 md:w-2/3 lg:w-2/5 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
             <TitleModalFormulir
               title="Formulir Kategori"
               keterangan={`Formulir untuk menambah Kategori Produk`}
+              withIcon={{
+                icon: Tag,
+              }}
             />
           </div>
 
@@ -57,7 +61,6 @@ const ModalFormulirKategoriProduk: FC<Props> = ({
               required={true}
               placeholder={`Masukan nama kategori`}
               errorMessage={errors.nama?.message}
-              defaultValue={dataUpdate?.nama}
             />
 
             {/* keterangan */}
@@ -68,7 +71,6 @@ const ModalFormulirKategoriProduk: FC<Props> = ({
               name="keterangan"
               placeholder={`Masukan keterangan kategori`}
               errorMessage={errors.keterangan?.message}
-              defaultValue={dataUpdate?.keterangan}
               rows={4}
             />
             {/* action */}

@@ -204,7 +204,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
       </div>
 
       {/* for lg */}
-      <div className="w-full hidden lg:flex card bg-base-100 dark:border dark:border-base-content/10 mt-3 flex-col justify-start items-start p-4">
+      <div className="w-full hidden lg:flex card bg-base-100 dark:border dark:border-base-content/10 flex-col justify-start items-start p-4">
         {/* header */}
 
         <div className="w-full flex flex-row justify-between items-center">

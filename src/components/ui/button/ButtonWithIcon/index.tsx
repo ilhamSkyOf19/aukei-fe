@@ -16,6 +16,7 @@ type Props = {
   customClass?: string;
   customSize?: "lg";
   reverse?: boolean;
+  noLabel?: boolean;
 };
 const ButtonWithIcon: FC<Props> = ({
   bgColor,
@@ -30,6 +31,7 @@ const ButtonWithIcon: FC<Props> = ({
   customClass,
   reverse,
   customSize,
+  noLabel,
 }) => {
   // navigation
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ const ButtonWithIcon: FC<Props> = ({
           {Icon ? (
             <Icon
               className={cn(
-                customSize ? "size-6" : "size-4.5 lg:size-3.5 xl:size-4",
+                customSize ? "size-6" : "size-4.5 md:size-3.5 xl:size-4",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-2",
               )}
@@ -77,23 +79,27 @@ const ButtonWithIcon: FC<Props> = ({
           ) : (
             <Plus
               className={cn(
-                customSize ? "size-6" : "size-4.5 lg:size-4.5 xl:size-5",
+                customSize ? "size-6" : "size-4.5 md:size-4.5 xl:size-5",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-2",
               )}
             />
           )}
 
-          <span
-            className={cn(
-              "font-medium",
-              customSize ? "text-sm" : "text-sm lg:text-[0.625rem] xl:text-xs",
-              textColor ? textColor : "text-custom-secondary",
-              reverse && "order-1",
-            )}
-          >
-            {label ? label : "Tambah"}
-          </span>
+          {!noLabel && (
+            <span
+              className={cn(
+                "font-medium",
+                customSize
+                  ? "text-sm"
+                  : "text-xs md:text-xs lg:text-[0.625rem] xl:text-xs",
+                textColor ? textColor : "text-custom-secondary",
+                reverse && "order-1",
+              )}
+            >
+              {label ? label : "Tambah"}
+            </span>
+          )}
         </>
       )}
     </button>

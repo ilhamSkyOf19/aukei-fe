@@ -2,6 +2,7 @@ import {
   Bell,
   ChevronDown,
   LogOut,
+  LucideBellOff,
   PanelRightClose,
   RefreshCw,
 } from "lucide-react";
@@ -13,6 +14,7 @@ import ButtonTheme from "../button/ButtonTheme";
 import { highlightName } from "../../../helpers/helpers";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import JenisNotifikasiProduk from "../JenisNotifikasiProduk";
+import DataEmpty from "../../messages/DataEmpty";
 type Props = {
   handleSidebar: () => void;
   isClose: boolean;
@@ -109,12 +111,12 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
 
               {/* choose */}
               <li className="mb-4 w-full ">
-                <div className="w-full flex scrollbar-thin flex-row py-2.5 gap-2.5 justify-start overflow-x-auto items-start hover:bg-transparent active:bg-transparent cursor-default">
+                <div className="w-full flex scrollbar-thin scrollbar-thumb-custom-secondary flex-row py-2.5 gap-2.5 justify-start overflow-x-auto items-start hover:bg-transparent active:bg-transparent cursor-default">
                   {Array.from({ length: 8 }, (_, index) => (
                     <button
                       key={index}
                       type="button"
-                      className="px-2 py-1 bg-gray-200 rounded-lg text-base-content text-[0.7rem] hover:bg-gray-600 hover:text-primary-white transition-all duration-150 ease-in-out"
+                      className="px-2 py-1 bg-base-300 rounded-lg text-base-content text-[0.7rem] hover:bg-gray-600 hover:text-primary-white transition-all duration-150 ease-in-out"
                     >
                       Produk
                     </button>
@@ -171,10 +173,13 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
                     </div>
                   ))
                 ) : (
-                  <div className="pointer-events-none">
-                    <div className="w-full flex flex-col justify-center items-center h-20">
-                      <span>Tidak ada notifikasi</span>
-                    </div>
+                  <div className="pointer-events-none w-full h-full flex flex-col justify-center items-center">
+                    <DataEmpty
+                      iconData={LucideBellOff}
+                      title="Tidak Ada Notifikasi"
+                      description="Belum ada data notifikasi yang dapat ditampilkan saat ini"
+                      xs
+                    />
                   </div>
                 )}
               </li>

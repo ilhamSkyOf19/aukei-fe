@@ -51,7 +51,7 @@ export default function InputPrice<T extends FieldValues = any>({
         className={cn(
           "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full",
           "focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100",
-          xs ? "h-8 px-2" : "h-10 px-3",
+          xs ? "h-7 lg:h-8 px-2.5" : "h-9 lg:h-10 px-3",
           fieldState.error && "border-error",
           label && "mt-2",
         )}

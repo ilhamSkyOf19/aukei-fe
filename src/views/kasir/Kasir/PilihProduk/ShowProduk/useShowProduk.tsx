@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useFilterSearch } from "../../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../../hooks/useFilter";
 import { ProdukServices } from "../../../../../services/produk.service";
-import { useSearchParams } from "react-router-dom";
 import type { DetailsLocalStorageType } from "../../../../../models/transaction.model";
 import type { ResponseProdukForKasirType } from "../../../../../models/produk.model";
 import { useEffect } from "react";
@@ -29,9 +28,6 @@ const useShowProduk = (params: {
 
   // get is mode kasir from store
   const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
-
-  //   get current page form search params
-  const [searchParams] = useSearchParams();
 
   // search filter
   const { search, setSearch } = useFilterSearch("search", "page");

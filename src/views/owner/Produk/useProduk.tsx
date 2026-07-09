@@ -3,7 +3,7 @@ import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useFilter } from "../../../hooks/useFilter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ProdukServices } from "../../../services/produk.service";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useToastAnimation } from "../../../hooks/useToast";
 import useModal from "../../../hooks/useModal";
 import useDeleteProduk from "../../../hooks/useDeleteProduk";
@@ -12,6 +12,9 @@ import useHighlight from "../../../hooks/useHighlight";
 const useProduk = () => {
   // current pathname
   const currentPathname = useLocation().pathname;
+
+  // search params
+  const [_searchParams, setSearchParams] = useSearchParams();
 
   // query client
   const queryClient = useQueryClient();
@@ -57,6 +60,9 @@ const useProduk = () => {
   ) => {
     // set state
     setIsActiveCluster(Cluster);
+
+    // clear params
+    setSearchParams({});
 
     //  set localstorage
     localStorage.setItem("active-cluster", Cluster);
@@ -159,6 +165,8 @@ const useProduk = () => {
     wrapperRef,
     isActiveAksi,
     handleSetIsActiveAksi,
+    kategori,
+    sort,
   };
 };
 

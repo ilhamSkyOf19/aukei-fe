@@ -13,6 +13,7 @@ interface PaginationAndLimitProps {
   customWindowSize?: 3 | 5 | 7;
   customPositionPagination?: "end" | "start";
   limit?: number;
+  isLoading?: boolean;
 }
 
 export default function PaginationAndLimit({
@@ -24,6 +25,7 @@ export default function PaginationAndLimit({
   customPositionPagination,
   customWindowSize,
   limit,
+  isLoading,
 }: PaginationAndLimitProps) {
   const windowSize = customWindowSize
     ? customWindowSize
@@ -40,7 +42,7 @@ export default function PaginationAndLimit({
   return (
     <div
       className={cn(
-        "w-full flex flex-col gap-2 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm md:gap-0 md:flex-row items-center mt-2 relative p-4 rounded-lg",
+        "w-full flex flex-col gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm md:gap-0 md:flex-row items-center mt-2 relative p-2 md:p-4 rounded-lg shrink-0",
         totalPage! < 2 && setLimit && "h-15",
         customPositionPagination === "end" ? "justify-end" : "justify-center",
         emptyData && "hidden",
@@ -52,6 +54,7 @@ export default function PaginationAndLimit({
           <span className="text-xs text-base-content/50">Tampilkan</span>
 
           <DropDown
+            isLoading={isLoading}
             listChoose={[
               {
                 label: "8",
@@ -69,6 +72,7 @@ export default function PaginationAndLimit({
             placeholder="-"
             handleChange={(e) => setLimit(e.target.value)}
             customWidth="w-15"
+            value={limit?.toString() || "*"}
           />
 
           <span className="text-xs text-base-content/50">Halaman</span>

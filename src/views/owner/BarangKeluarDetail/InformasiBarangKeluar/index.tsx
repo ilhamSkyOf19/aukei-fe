@@ -71,8 +71,8 @@ const InformasiBarangKeluar: FC<Props> = ({
   });
 
   return (
-    <div className="w-full flex flex-col justify-start items-center lg:items-start lg:flex-row gap-4">
-      <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-55">
+    <div className="w-full flex flex-col justify-start items-center lg:items-start lg:flex-row gap-2">
+      <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-75">
         {/* title */}
         <div className="w-full flex flex-row justify-start items-center">
           <h2 className="text-base-content text-sm font-semibold">
@@ -286,7 +286,7 @@ const InformasiBarangKeluar: FC<Props> = ({
       </div>
 
       {/* informasi ringkasan */}
-      <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-55">
+      <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-75">
         {/* title */}
         <div className="w-full flex flex-row justify-start items-center">
           <h2 className="text-base-content text-sm font-semibold">Ringkasan</h2>

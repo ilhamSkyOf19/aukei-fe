@@ -6,8 +6,9 @@ import { cn } from "../../../utils/cn";
 type Props = {
   setKategori: (value: string) => void;
   customWidth?: string;
+  value?: string;
 };
-const FilterKategori: FC<Props> = ({ setKategori, customWidth }) => {
+const FilterKategori: FC<Props> = ({ setKategori, customWidth, value }) => {
   //   query kategori
   const { dataKategori, isLoadingKategori } = useKategoriForChoose();
 
@@ -34,7 +35,7 @@ const FilterKategori: FC<Props> = ({ setKategori, customWidth }) => {
         placeholder="Kategori"
         isLoading={isLoadingKategori}
         fontWeight="lg:font-medium"
-        defaultValue="semua"
+        value={value || "semua"}
       />
     </div>
   );

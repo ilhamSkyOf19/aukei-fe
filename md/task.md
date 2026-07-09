@@ -96,6 +96,10 @@
 
 - [✅] Integrasi Chart
 
+- [ ] Memperbaiki dropdown agar menggunakan value dari props (contoh dropdown metode pembayaran)
+
+- [ ] Memisahkan Halaman Statistik dan Riwayat Transaksi
+
 - [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
 
 - [ ] Membuat ui tombol tombol pada preview after transaksi

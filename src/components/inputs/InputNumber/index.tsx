@@ -59,20 +59,12 @@ const InputNumber = <T extends FieldValues = any>({
             {required && <span className="absolute ml-px text-error">*</span>}
           </div>
         )}
-
-        {/* Max */}
-        {max && (
-          <span className="text-[0.625rem] text-base-content">
-            {formatNumber(String(field.value ?? 0))} /{" "}
-            {formatNumber(String(max))}
-          </span>
-        )}
       </div>
 
       <div
         className={clsx(
           "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 px-3",
-          xs ? "lg:h-8" : "h-9 lg:h-10",
+          xs ? "h-7 lg:h-8 px-2.5" : "h-9 lg:h-10 px-3",
           fieldState.error && "border-error",
           label && "mt-2",
         )}

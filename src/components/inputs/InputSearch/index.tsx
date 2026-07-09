@@ -68,14 +68,14 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
         )}
       >
         {withLabel && (
-          <span className="text-xs text-base-content/80 font-medium hidden lg:block">
+          <span className="text-xs text-base-content/80 font-medium hidden md:block">
             Cari
           </span>
         )}
         <div
           className={cn(
             "w-full flex flex-row justify-start items-center",
-            customHeight ? customHeight : "h-9",
+            customHeight ? customHeight : "h-10.5 lg:h-9",
           )}
         >
           <div

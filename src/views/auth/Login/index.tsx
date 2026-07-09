@@ -4,6 +4,7 @@ import { cn } from "../../../utils/cn";
 import useLogin from "./useLogin";
 import InputTextWithIcon from "../../../components/inputs/InputTextWithIcon";
 import InputPasswordWithIcon from "../../../components/inputs/InputPasswordWithIcon";
+import ButtonTheme from "../../../components/ui/button/ButtonTheme";
 
 const Login: FC = () => {
   // call use
@@ -12,10 +13,15 @@ const Login: FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center gap-4 lg:flex-row">
+      {/* button dark mode */}
+      <div className="absolute top-2 hover:scale-105 transition-all duration-300 ease-in-out right-2 w-12 h-12 bg-base-100 rounded-full flex justify-center items-center shadow-sm border border-transparent dark:border-base-content/10">
+        <ButtonTheme />
+      </div>
+
       {/* header */}
       <div className="w-full py-4 flex flex-row justify-center items-center gap-4 lg:flex-col">
         {/* title */}
-        <div className=" w-40 h-40 lg:w-60 lg:h-60 rounded-full bg-custom-secondary flex justify-center items-center">
+        <div className=" w-40 h-40 lg:w-60 lg:h-60 rounded-full bg-custom-secondary flex justify-center items-center hover:scale-101 transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-custom-primary/50">
           {/* big title */}
           <h1 className="text-3xl lg:text-5xl font-bold">
             <span className="text-primary-white">AU</span>
@@ -26,14 +32,14 @@ const Login: FC = () => {
 
       {/* from */}
       <div className="w-full flex flex-col justify-center items-center">
-        <div className="w-full flex flex-col justify-start items-center lg:w-md lg:card lg:shadow-sm lg:py-14 lg:px-8">
+        <div className="w-full flex flex-col justify-start items-center lg:border lg:border-base-content/10 lg:w-md lg:card lg:shadow-xl lg:py-14 lg:px-8">
           {/* header */}
           <div className="w-full flex flex-col justify-start items-start">
-            <h2 className="text-lg font-semibold lg:text-2xl">
+            <h2 className="text-lg font-semibold text-base-content lg:text-2xl">
               Selamat Datang,
             </h2>
 
-            <h2 className="text-xs lg:text-sm">
+            <h2 className="text-xs lg:text-sm text-base-content">
               Masuk ke akun Anda untuk melanjutkan
             </h2>
           </div>
@@ -41,7 +47,7 @@ const Login: FC = () => {
           {/* input field */}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full flex flex-col justify-start items-start mt-5 gap-4 lg:mt-6"
+            className="w-full flex flex-col justify-start items-start mt-5 lg:mt-6"
           >
             <div
               className={cn(

@@ -28,7 +28,7 @@ const DropDown: FC<Props> = ({
   return (
     <div
       className={cn(
-        "h-8.5 overflow-hidden transition-all duration-200 ease-in-out",
+        "h-10.5 lg:h-8.5 overflow-hidden transition-all duration-200 ease-in-out",
         customWidth ? customWidth : "w-full",
         !noBorder &&
           "border border-base-content rounded-md focus-within:ring-1 focus-within:ring-base-content",
@@ -36,15 +36,15 @@ const DropDown: FC<Props> = ({
     >
       {/* filter status */}
       {isLoading ? (
-        <div className="w-full h-full skeleton flex justify-center items-center">
-          <span className="skeleton skeleton-text text-xs">Loading ...</span>
+        <div className="w-full h-full opacity-50 flex justify-center items-center">
+          <span className="loading-xs loading" />
         </div>
       ) : (
         <select
           defaultValue={defaultValue}
           value={value}
           className={cn(
-            "text-base-content select w-full border-none outline-none rounded-md select-sm",
+            "text-base-content select w-full border-none outline-none rounded-md select-md text-xs lg:select-sm",
             fontWeight,
           )}
           onChange={handleChange}

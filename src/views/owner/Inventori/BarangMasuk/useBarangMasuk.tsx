@@ -9,8 +9,11 @@ import useHighlight from "../../../../hooks/useHighlight";
 import useDeleteBarangMasuk from "../../../../hooks/useDeleteBarangMasuk";
 import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
+import useSizeWindows from "../../../../hooks/useSizeWindows";
 
 const useBarangMasuk = () => {
+  // get window size
+  const windowSize = useSizeWindows();
   // navigate
   const navigate = useNavigate();
   // current pathname
@@ -212,6 +215,7 @@ const useBarangMasuk = () => {
     handleDeleteMany,
     dataDeleteMany,
     isPendingDeleteMany,
+    windowSize,
   };
 };
 

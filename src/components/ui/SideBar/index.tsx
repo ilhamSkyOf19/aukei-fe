@@ -49,7 +49,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
             {/* title is closed */}
             <div className="w-full h-14 flex flex-row justify-center items-center">
               <div className="is-drawer-open:hidden rounded-full bg-custom-primary w-11 h-11 flex flex-row justify-center items-center">
-                <p className="text-base-content font-semibold text-base lg:text-xl ">
+                <p className="font-semibold text-custom-secondary lg:text-xl ">
                   A
                 </p>
               </div>
@@ -87,25 +87,25 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                   >
                     <item.icon
                       className={cn(
-                        "my-1.5 inline-block size-6 text-base-content group-hover:text-base-content transition-all duration-150 ease-in-out",
+                        "my-1.5 inline-block size-6 text-base-content group-hover:text-custom-secondary transition-all duration-150 ease-in-out",
                         item.link === "/dashboard"
                           ? pathname === "/dashboard"
-                            ? "text-base-content"
+                            ? "text-custom-secondary"
                             : "text-primary-white"
                           : pathname.startsWith(item.link)
-                            ? "text-base-content"
+                            ? "text-custom-secondary"
                             : "text-primary-white",
                       )}
                     />
                     <span
                       className={cn(
-                        "is-drawer-close:hidden group-hover:text-base-content text-base-content capitalize transition-all duration-150 ease-in-out",
+                        "is-drawer-close:hidden group-hover:text-custom-secondary text-base-content capitalize transition-all duration-150 ease-in-out",
                         item.link === "/dashboard"
                           ? pathname === "/dashboard"
-                            ? "text-base-content"
+                            ? "text-custom-secondary"
                             : "text-primary-white"
                           : pathname.startsWith(item.link)
-                            ? "text-base-content"
+                            ? "text-custom-secondary"
                             : "text-primary-white",
                       )}
                     >

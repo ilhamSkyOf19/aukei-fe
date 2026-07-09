@@ -39,7 +39,7 @@ const ShowData = () => {
   } = useShowData();
 
   return (
-    <div className="card flex-2 bg-base-100 flex flex-col justify-start items-start p-4 dark:border dark:border-base-content/10">
+    <div className="lg:card flex-2 lg:bg-base-100 flex flex-col justify-start items-start lg:p-4 dark:border dark:border-base-content/10 lg:h-[80vh]">
       {/* alert */}
       {alert && (
         <Alert
@@ -60,7 +60,7 @@ const ShowData = () => {
       )}
 
       {/* filter */}
-      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start mb-4 lg:mb-0">
+      <div className="rounded-lg bg-base-100 p-4 lg:p-0 w-full flex flex-col md:flex-row justify-start items-start mb-4 lg:mb-0">
         {/* button add  */}
         <div className="md:hidden block w-full mb-3">
           <ButtonWithIcon
@@ -70,18 +70,19 @@ const ShowData = () => {
             customWidth="w-full"
           />
         </div>
-        <div className="w-full md:flex-1 lg:flex-3  flex flex-row justify-start items-center">
+        <div className="w-full flex-1 flex flex-row justify-start items-center">
           {/* input search */}
           <InputSearch
             handleSearch={handleSearch}
-            placeholder="Cari kategori"
+            placeholder="Cari kategori berdasarkan nama ..."
+            withLabel
           />
         </div>
-        <div className="w-full md:flex-1 flex flex-row justify-end items-start md:gap-3 lg:gap-0 mt-3 md:mt-0">
+        <div className="w-full md:flex-2 lg:flex-1 flex flex-row justify-end items-start md:items-end md:gap-3 lg:gap-0 mt-3 md:mt-0">
           {/* filter sort */}
           <FilterSort setSort={handleSort} customWidth="w-full md:w-40" />
 
-          <div className="hidden lg:hidden md:block w-40 mb-3">
+          <div className="hidden lg:hidden md:block md:mb-0 mb-3">
             <ButtonWithIcon
               icon={Tag}
               label="Tambah Kategori"
@@ -93,7 +94,7 @@ const ShowData = () => {
       </div>
 
       {/* content */}
-      <div className="w-full flex flex-col justify-start items-center gap-4 mt-4">
+      <div className="w-full flex flex-col justify-start items-center gap-2 lg:mt-4 lg:overflow-y-auto lg:py-4 lg:scrollbar-thumb-custom-secondary">
         {isLoadingKategoriProduk ? (
           Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className="w-full h-18 skeleton" />
@@ -126,6 +127,7 @@ const ShowData = () => {
         customPositionPagination="end"
         customWindowSize={3}
         emptyData={!isExistDataKategoriProduk}
+        limit={dataKategoriProduk?.data?.meta?.limit}
       />
 
       {/* modal  */}
@@ -163,10 +165,10 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
   handleUpdate,
 }) => {
   return (
-    <div className="w-full flex flex-row justify-start items-center min-h-18 rounded-md border border-base-content/20 px-4 py-2">
+    <div className="w-full flex flex-row justify-start items-center min-h-18 rounded-md border border-base-content/20 px-4 py-2 bg-base-100">
       <div className="flex-2 flex flex-row justify-start items-center h-full gap-3">
         <Tag className="size-5 text-base-content" />
-        <span className="text-base-content font-semibold text-[0.625rem] lg:text-sm">
+        <span className="text-base-content font-semibold text-xs md:text-sm">
           {data.nama}
         </span>
       </div>
@@ -201,13 +203,14 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
 
         {/* dropdowm */}
         <div className="md:hidden h-9 flex dropdown dropdown-left dropdown-end">
-          <div
+          <button
+            type="button"
             tabIndex={0}
             role="button"
-            className="h-full flex flex-row justify-center items-center px-1"
+            className="h-full flex flex-row justify-center items-center px-1 border border-base-content/20 rounded-md"
           >
             <EllipsisVertical className="size-3" />
-          </div>
+          </button>
           <ul
             tabIndex={-1}
             className="dropdown-content menu bg-base-100 rounded-box z-1 w-30 p-2 shadow-sm gap-2"
@@ -215,7 +218,7 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
             <li>
               <button
                 type="button"
-                className="text-info font-semibold"
+                className="text-info font-semibold text-xs"
                 onClick={() => handleUpdate(data.id)}
               >
                 Ubah
@@ -224,7 +227,7 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
             <li>
               <button
                 type="button"
-                className="text-error font-semibold"
+                className="text-error font-semibold text-xs"
                 onClick={handleDelete}
               >
                 Hapus
