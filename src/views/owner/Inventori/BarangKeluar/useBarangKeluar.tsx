@@ -222,6 +222,7 @@ const useBarangKeluar = () => {
     isPendingDeleteMany,
     chooseBarangKeluar,
     handleSetChooseBarangKeluar,
+    sort,
   };
 };
 

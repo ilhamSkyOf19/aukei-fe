@@ -11,14 +11,11 @@ import {
   History,
   Landmark,
   Package,
-  PackageMinus,
   PackageOpen,
-  PackageX,
   QrCode,
   Receipt,
   Sheet,
   ShoppingBag,
-  TrendingDown,
   TrendingUp,
 } from "lucide-react";
 import InputSearch from "../../../components/inputs/InputSearch";
@@ -26,7 +23,6 @@ import type { FC } from "react";
 import { cn } from "../../../utils/cn";
 import {
   formatNumber,
-  formatNumberK,
   formatNumberPhone,
   formatRupiah,
   formatRupiahShort,
@@ -70,41 +66,52 @@ const Transaksi = () => {
     setLimit,
     setPage,
     setSort,
+    sort,
   } = useTransaksi();
 
   return (
-    <div className="w-full mb-30 flex flex-col justify-start items-start p-2 gap-2">
-      {/* search */}
-      <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg md:hidden">
-        <InputSearch handleSearch={handleSearch} />
-      </div>
-
-      {/* filter */}
-      <div className="w-full grid grid-cols-2 md:grid-cols-4 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-2 md:gap-12">
-        <div className="col-span-1 hidden md:flex">
-          <InputSearch handleSearch={handleSearch} withLabel />
+    <div className="w-full h-screen overflow-y-auto">
+      <div className="w-full mb-30 md:mb-10 lg:mb-20 flex flex-col justify-start items-start gap-2 p-2">
+        {/* search */}
+        <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg md:hidden">
+          <InputSearch handleSearch={handleSearch} />
         </div>
 
-        <div className="col-span-2 md:hidden">
-          <RangeDateLarge />
-        </div>
+        {/* filter */}
+        <div className="w-full grid grid-cols-2 md:grid-cols-4 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-2 lg:gap-12">
+          <div className="col-span-1 hidden md:flex">
+            <InputSearch handleSearch={handleSearch} withLabel />
+          </div>
 
-        <div className="col-span-1 hidden md:flex">
-          <RangeDate listDate={listDateRangeLong} customWidth="w-full" />
-        </div>
+          <div className="col-span-2 md:hidden">
+            <RangeDateLarge />
+          </div>
 
-        <div className="col-span-1">
-          <FilterSort setSort={setSort} customWidth="w-full" />
-        </div>
+          <div className="col-span-1 hidden md:flex">
+            <RangeDate listDate={listDateRangeLong} customWidth="w-full" />
+          </div>
 
-        <div className="col-span-1 flex flex-row justify-start items-start gap-2">
-          <MetodePembayaran
-            setMetode={handleSetMetodePembayaran}
-            customWidth="w-full"
-            value={metodePembayaran}
-          />
+          <div className="col-span-1">
+            <FilterSort setSort={setSort} customWidth="w-full" value={sort} />
+          </div>
+
+          <div className="col-span-1 flex flex-row justify-start items-start gap-2">
+            <MetodePembayaran
+              setMetode={handleSetMetodePembayaran}
+              customWidth="w-full"
+              value={metodePembayaran}
+            />
+            {metodePembayaran === "tempo" && (
+              <div className="hidden md:flex">
+                <StatusTempo
+                  setStatusTempo={setStatusTempo}
+                  value={statusTempo}
+                />
+              </div>
+            )}
+          </div>
           {metodePembayaran === "tempo" && (
-            <div className="hidden md:flex">
+            <div className="col-span-1 md:hidden">
               <StatusTempo
                 setStatusTempo={setStatusTempo}
                 value={statusTempo}
@@ -112,400 +119,401 @@ const Transaksi = () => {
             </div>
           )}
         </div>
-        {metodePembayaran === "tempo" && (
-          <div className="col-span-1 md:hidden">
-            <StatusTempo setStatusTempo={setStatusTempo} value={statusTempo} />
-          </div>
-        )}
-      </div>
 
-      <div className="flex my-2 flex-row justify-end w-full items-center gap-2 md:hidden">
-        <ButtonWithIcon
-          icon={FileText}
-          label="Export PDF"
-          bgColor="bg-error"
-          textColor="text-primary-white"
-          customHeight="h-9"
-        />
-        <ButtonWithIcon
-          icon={Sheet}
-          label="Export Excel"
-          bgColor="bg-success"
-          textColor="text-primary-white"
-          customHeight="h-9"
-        />
-      </div>
+        <div className="flex my-2 flex-row justify-end w-full items-center gap-2 md:hidden">
+          <ButtonWithIcon
+            icon={FileText}
+            label="Export PDF"
+            bgColor="bg-error"
+            textColor="text-primary-white"
+            customHeight="h-9"
+          />
+          <ButtonWithIcon
+            icon={Sheet}
+            label="Export Excel"
+            bgColor="bg-success"
+            textColor="text-primary-white"
+            customHeight="h-9"
+          />
+        </div>
 
-      {/* data */}
-      <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
-        <div className="w-full flex flex-row justify-between items-start">
-          {/* title */}
-          <h3 className="text-sm font-semibold text-base-content">
-            Ringkasan Statistik
-          </h3>
+        {/* data */}
+        <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
+          <div className="w-full flex flex-row justify-between items-start">
+            {/* title */}
+            <h3 className="text-sm font-semibold text-base-content">
+              Ringkasan Statistik
+            </h3>
 
-          {/* aksi */}
-          <div className="flex flex-row justify-end items-center gap-2">
-            {/* button detail */}
-            <ButtonWithIcon
-              icon={Eye}
-              label="Lihat Detail"
-              customHeight="h-9 md:h-9"
-              handleBtn={() => handleRedirectDetail()}
-            />
-            {/* button export */}
-            <div className="md:flex flex-row justify-start items-center gap-2 hidden">
+            {/* aksi */}
+            <div className="flex flex-row justify-end items-center gap-2">
+              {/* button detail */}
               <ButtonWithIcon
-                icon={FileText}
-                label="Export PDF"
-                bgColor="bg-error"
-                textColor="text-primary-white"
+                icon={Eye}
+                label="Lihat Detail"
+                customHeight="h-9 md:h-9"
+                handleBtn={() => handleRedirectDetail()}
               />
-              <ButtonWithIcon
-                icon={Sheet}
-                label="Export Excel"
-                bgColor="bg-success"
-                textColor="text-primary-white"
-              />
+              {/* button export */}
+              <div className="md:flex flex-row justify-start items-center gap-2 hidden">
+                <ButtonWithIcon
+                  icon={FileText}
+                  label="Export PDF"
+                  bgColor="bg-error"
+                  textColor="text-primary-white"
+                />
+                <ButtonWithIcon
+                  icon={Sheet}
+                  label="Export Excel"
+                  bgColor="bg-success"
+                  textColor="text-primary-white"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2">
-          <CardStatistik
-            isLoading={isLoadingRingkasanStatistik}
-            icon={{
-              icon: Receipt,
-              bgColor: "bg-blue-100",
-              iconColor: "text-blue-400",
-            }}
-            label={windowSize === "sm" ? "Transaksi" : "Total Transaksi"}
-            value={
-              formatNumber(ringkasanStatistik?.data?.totalTransaksi ?? 0) || "0"
-            }
-            caption={
-              windowSize !== "sm"
-                ? "Jumlah transaksi berdasarkan tanggal"
-                : undefined
-            }
-          />
-
-          <CardStatistik
-            isLoading={isLoadingRingkasanStatistik}
-            icon={{
-              icon: BanknoteArrowDown,
-              bgColor: "bg-emerald-100",
-              iconColor: "text-emerald-400",
-            }}
-            label={windowSize === "sm" ? "Omzet" : "Total Omzet"}
-            value={
-              windowSize === "sm"
-                ? formatRupiahShort(ringkasanStatistik?.data?.totalOmzet ?? 0)
-                : formatRupiah(ringkasanStatistik?.data?.totalOmzet ?? 0)
-            }
-            caption={
-              windowSize !== "sm"
-                ? "Total omzet dari transaksi penjualan"
-                : undefined
-            }
-          />
-
-          <CardStatistik
-            isLoading={isLoadingRingkasanStatistik}
-            icon={{
-              icon: ChartColumn,
-              bgColor: "bg-emerald-100",
-              iconColor: "text-emerald-400",
-            }}
-            label={
-              windowSize === "sm" ? "Rata-rata" : "Total Rata-rata transaksi"
-            }
-            value={
-              windowSize === "sm"
-                ? formatRupiahShort(
-                    ringkasanStatistik?.data?.totalRataRataTransaksi ?? 0,
-                  )
-                : formatRupiah(
-                    ringkasanStatistik?.data?.totalRataRataTransaksi ?? 0,
-                  )
-            }
-            caption={
-              windowSize !== "sm"
-                ? "Total omzet dari transaksi penjualan"
-                : undefined
-            }
-          />
-
-          <CardStatistik
-            isLoading={isLoadingRingkasanStatistik}
-            icon={{
-              icon: Package,
-              bgColor: "bg-amber-100",
-              iconColor: "text-amber-400",
-            }}
-            label={windowSize === "sm" ? "Modal" : "Total Modal"}
-            value={
-              windowSize === "sm"
-                ? formatRupiahShort(ringkasanStatistik?.data?.totalModal ?? 0)
-                : formatRupiah(ringkasanStatistik?.data?.totalModal ?? 0)
-            }
-            caption={
-              windowSize !== "sm"
-                ? "Total biaya modal untuk transaksi penjualan"
-                : undefined
-            }
-          />
-
-          {ringkasanStatistik?.data?.totalPiutang !== undefined && (
+          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2">
             <CardStatistik
               isLoading={isLoadingRingkasanStatistik}
               icon={{
-                icon: Clock3,
-                bgColor: "bg-red-100",
-                iconColor: "text-red-400",
+                icon: Receipt,
+                bgColor: "bg-blue-100",
+                iconColor: "text-blue-400",
               }}
-              label={windowSize === "sm" ? "Piutang" : "Total Piutang"}
+              label={windowSize === "sm" ? "Transaksi" : "Total Transaksi"}
               value={
-                windowSize === "sm"
-                  ? formatRupiahShort(
-                      ringkasanStatistik?.data?.totalPiutang ?? 0,
-                    )
-                  : formatRupiah(ringkasanStatistik?.data?.totalPiutang ?? 0)
+                formatNumber(ringkasanStatistik?.data?.totalTransaksi ?? 0) ||
+                "0"
               }
               caption={
                 windowSize !== "sm"
-                  ? "Total nilai piutang yang belum dibayar"
+                  ? "Jumlah transaksi berdasarkan tanggal"
                   : undefined
               }
             />
-          )}
 
-          <CardStatistik
-            isLoading={isLoadingRingkasanStatistik}
-            icon={{
-              icon: ShoppingBag,
-              bgColor: "bg-purple-100",
-              iconColor: "text-purple-400",
-            }}
-            label={windowSize === "sm" ? "Produk" : "Total Produk Terjual"}
-            value={
-              ringkasanStatistik?.data?.totalProdukTerjual
-                ? formatNumber(
-                    ringkasanStatistik?.data?.totalProdukTerjual ?? 0,
-                  )
-                : "0"
-            }
-            caption={
-              windowSize !== "sm" ? "Jumlah produk yang terjual" : undefined
-            }
-          />
-
-          <CardStatistik
-            isLoading={isLoadingRingkasanStatistik}
-            icon={{
-              icon: Package,
-              bgColor: "bg-indigo-100",
-              iconColor: "text-indigo-400",
-            }}
-            label={windowSize === "sm" ? "Item" : "Total Item Terjual"}
-            value={
-              ringkasanStatistik?.data?.totalItemTerjual
-                ? formatNumber(ringkasanStatistik?.data?.totalItemTerjual ?? 0)
-                : "0"
-            }
-            caption={
-              windowSize !== "sm" ? "Jumlah item yang terjual" : undefined
-            }
-          />
-
-          <CardStatistik
-            isLoading={isLoadingRingkasanStatistik}
-            icon={{
-              icon: TrendingUp,
-              bgColor: "bg-green-100",
-              iconColor: "text-green-400",
-            }}
-            label={windowSize === "sm" ? "Laba" : "Total Laba"}
-            value={
-              windowSize === "sm"
-                ? formatRupiahShort(ringkasanStatistik?.data?.totalLaba ?? 0)
-                : formatRupiah(ringkasanStatistik?.data?.totalLaba ?? 0)
-            }
-            caption={
-              windowSize !== "sm"
-                ? "Total keuntungan dari transaksi penjualan"
-                : undefined
-            }
-            withAlert={`Data Laba belum dikurangi dengan total kerugian`}
-          />
-        </div>
-      </div>
-
-      {/* data untuk mobile */}
-      <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-lg border border-transparent dark:border-base-content/10 p-2 gap-2 order-3 md:hidden">
-        {isLoadingRiwayatTransaksi ? (
-          Array.from({ length: 4 }, (_, i) => (
-            <div key={i} className="w-full h-14 skeleton" />
-          ))
-        ) : isExistDataRiwayatTransaksi && dataRiwayatTransaksi ? (
-          dataRiwayatTransaksi?.data?.data.map((item) => (
-            <CardData
-              key={item.id}
-              nomorReferensi={item.nomorTransaksi || ""}
-              tanggal={item?.completedAt || new Date()}
-              metodePembayaran={item.metodePembayaran || "CASH"}
-              statusTempo={item.statusTempo}
-              totalItem={item.totalItem}
-              totalTransaksi={item.totalBayar}
-              status={item.status}
+            <CardStatistik
+              isLoading={isLoadingRingkasanStatistik}
+              icon={{
+                icon: BanknoteArrowDown,
+                bgColor: "bg-emerald-100",
+                iconColor: "text-emerald-400",
+              }}
+              label={windowSize === "sm" ? "Omzet" : "Total Omzet"}
+              value={
+                windowSize === "sm"
+                  ? formatRupiahShort(ringkasanStatistik?.data?.totalOmzet ?? 0)
+                  : formatRupiah(ringkasanStatistik?.data?.totalOmzet ?? 0)
+              }
+              caption={
+                windowSize !== "sm"
+                  ? "Total omzet dari transaksi penjualan"
+                  : undefined
+              }
             />
-          ))
-        ) : (
-          <div className="w-full flex flex-col justify-center items-center">
-            <DataEmpty
-              iconData={History}
-              title="Riwayat Tidak Tersedia"
-              description="Belum ada data riwayat yang dapat ditampilkan saat ini"
+
+            <CardStatistik
+              isLoading={isLoadingRingkasanStatistik}
+              icon={{
+                icon: ChartColumn,
+                bgColor: "bg-emerald-100",
+                iconColor: "text-emerald-400",
+              }}
+              label={
+                windowSize === "sm" ? "Rata-rata" : "Total Rata-rata transaksi"
+              }
+              value={
+                windowSize === "sm"
+                  ? formatRupiahShort(
+                      ringkasanStatistik?.data?.totalRataRataTransaksi ?? 0,
+                    )
+                  : formatRupiah(
+                      ringkasanStatistik?.data?.totalRataRataTransaksi ?? 0,
+                    )
+              }
+              caption={
+                windowSize !== "sm"
+                  ? "Total omzet dari transaksi penjualan"
+                  : undefined
+              }
+            />
+
+            <CardStatistik
+              isLoading={isLoadingRingkasanStatistik}
+              icon={{
+                icon: Package,
+                bgColor: "bg-amber-100",
+                iconColor: "text-amber-400",
+              }}
+              label={windowSize === "sm" ? "Modal" : "Total Modal"}
+              value={
+                windowSize === "sm"
+                  ? formatRupiahShort(ringkasanStatistik?.data?.totalModal ?? 0)
+                  : formatRupiah(ringkasanStatistik?.data?.totalModal ?? 0)
+              }
+              caption={
+                windowSize !== "sm"
+                  ? "Total biaya modal untuk transaksi penjualan"
+                  : undefined
+              }
+            />
+
+            {ringkasanStatistik?.data?.totalPiutang !== undefined && (
+              <CardStatistik
+                isLoading={isLoadingRingkasanStatistik}
+                icon={{
+                  icon: Clock3,
+                  bgColor: "bg-red-100",
+                  iconColor: "text-red-400",
+                }}
+                label={windowSize === "sm" ? "Piutang" : "Total Piutang"}
+                value={
+                  windowSize === "sm"
+                    ? formatRupiahShort(
+                        ringkasanStatistik?.data?.totalPiutang ?? 0,
+                      )
+                    : formatRupiah(ringkasanStatistik?.data?.totalPiutang ?? 0)
+                }
+                caption={
+                  windowSize !== "sm"
+                    ? "Total nilai piutang yang belum dibayar"
+                    : undefined
+                }
+              />
+            )}
+
+            <CardStatistik
+              isLoading={isLoadingRingkasanStatistik}
+              icon={{
+                icon: ShoppingBag,
+                bgColor: "bg-purple-100",
+                iconColor: "text-purple-400",
+              }}
+              label={windowSize === "sm" ? "Produk" : "Total Produk Terjual"}
+              value={
+                ringkasanStatistik?.data?.totalProdukTerjual
+                  ? formatNumber(
+                      ringkasanStatistik?.data?.totalProdukTerjual ?? 0,
+                    )
+                  : "0"
+              }
+              caption={
+                windowSize !== "sm" ? "Jumlah produk yang terjual" : undefined
+              }
+            />
+
+            <CardStatistik
+              isLoading={isLoadingRingkasanStatistik}
+              icon={{
+                icon: Package,
+                bgColor: "bg-indigo-100",
+                iconColor: "text-indigo-400",
+              }}
+              label={windowSize === "sm" ? "Item" : "Total Item Terjual"}
+              value={
+                ringkasanStatistik?.data?.totalItemTerjual
+                  ? formatNumber(
+                      ringkasanStatistik?.data?.totalItemTerjual ?? 0,
+                    )
+                  : "0"
+              }
+              caption={
+                windowSize !== "sm" ? "Jumlah item yang terjual" : undefined
+              }
+            />
+
+            <CardStatistik
+              isLoading={isLoadingRingkasanStatistik}
+              icon={{
+                icon: TrendingUp,
+                bgColor: "bg-green-100",
+                iconColor: "text-green-400",
+              }}
+              label={windowSize === "sm" ? "Laba" : "Total Laba"}
+              value={
+                windowSize === "sm"
+                  ? formatRupiahShort(ringkasanStatistik?.data?.totalLaba ?? 0)
+                  : formatRupiah(ringkasanStatistik?.data?.totalLaba ?? 0)
+              }
+              caption={
+                windowSize !== "sm"
+                  ? "Total keuntungan dari transaksi penjualan"
+                  : undefined
+              }
+              withAlert={`Data Laba belum dikurangi dengan total kerugian`}
             />
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* data untuk > mobile */}
-      <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex order-3">
-        <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
-          {/* head */}
-          <thead>
-            <tr className="h-12 bg-base-200 text-xs">
-              <th>No. Transaksi</th>
-              <th>Tanggal</th>
-              <th>Pelanggan</th>
-              <th>Total Item</th>
-              <th>Total Pembayaran</th>
-              <th>Metode Pembayaran</th>
-              <th>Status</th>
-              <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {false ? (
-              Array.from({ length: 4 }).map((_, index) => (
-                <tr key={index}>
-                  <td colSpan={8}>
-                    <div className="skeleton h-12 w-full py-1" />
-                  </td>
-                </tr>
-              ))
-            ) : isExistDataRiwayatTransaksi ? (
-              dataRiwayatTransaksi?.data?.data.map((item, _) => (
-                <tr
-                  key={item.id}
-                  className={cn(
-                    "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
-                    // false === true && "bg-base-200",
-                  )}
-                >
-                  <td>
-                    <span className="font-medium text-info">
-                      {item.nomorTransaksi}
-                    </span>
-                  </td>
-                  <td>
-                    {formatTanggalLengkap(item.completedAt ?? new Date())}
-                  </td>
-                  {/* pelanggan */}
-                  <td>
-                    <div className="w-full flex flex-row justify-start items-center gap-2">
-                      {/* avatar */}
-                      <Avatar
-                        nama={item.pelanggan.nama}
-                        index={item.pelanggan.id}
-                        xs
-                      />
-                      <div className="flex flex-col justify-start items-start">
-                        {/* nama */}
-                        <span className="font-semibold text-[0.625rem]">
-                          {item.pelanggan.nama}
-                        </span>
-                        {/* no wa */}
-                        <span className="font-semibold text-[0.625rem] text-base-content/50">
-                          {formatNumberPhone(item.pelanggan.noWa)}
-                        </span>
+        {/* data untuk mobile */}
+        <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-lg border border-transparent dark:border-base-content/10 p-2 gap-2 order-3 lg:hidden">
+          {isLoadingRiwayatTransaksi ? (
+            Array.from({ length: 4 }, (_, i) => (
+              <div key={i} className="w-full h-14 skeleton" />
+            ))
+          ) : isExistDataRiwayatTransaksi && dataRiwayatTransaksi ? (
+            dataRiwayatTransaksi?.data?.data.map((item) => (
+              <CardData
+                key={item.id}
+                nomorReferensi={item.nomorTransaksi || ""}
+                tanggal={item?.completedAt || new Date()}
+                metodePembayaran={item.metodePembayaran || "CASH"}
+                statusTempo={item.statusTempo}
+                totalItem={item.totalItem}
+                totalTransaksi={item.totalBayar}
+                status={item.status}
+              />
+            ))
+          ) : (
+            <div className="w-full flex flex-col justify-center items-center">
+              <DataEmpty
+                iconData={History}
+                title="Riwayat Tidak Tersedia"
+                description="Belum ada data riwayat yang dapat ditampilkan saat ini"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* data untuk > mobile */}
+        <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex order-3">
+          <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
+            {/* head */}
+            <thead>
+              <tr className="h-12 bg-base-100 text-xs">
+                <th>No. Transaksi</th>
+                <th>Tanggal</th>
+                <th>Pelanggan</th>
+                <th>Total Item</th>
+                <th>Total Pembayaran</th>
+                <th>Metode Pembayaran</th>
+                <th>Status</th>
+                <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {false ? (
+                Array.from({ length: 4 }).map((_, index) => (
+                  <tr key={index}>
+                    <td colSpan={8}>
+                      <div className="skeleton h-12 w-full py-1" />
+                    </td>
+                  </tr>
+                ))
+              ) : isExistDataRiwayatTransaksi ? (
+                dataRiwayatTransaksi?.data?.data.map((item, _) => (
+                  <tr
+                    key={item.id}
+                    className={cn(
+                      "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
+                      // false === true && "bg-base-200",
+                    )}
+                  >
+                    <td>
+                      <span className="font-medium text-info">
+                        {item.nomorTransaksi}
+                      </span>
+                    </td>
+                    <td>
+                      {formatTanggalLengkap(item.completedAt ?? new Date())}
+                    </td>
+                    {/* pelanggan */}
+                    <td>
+                      <div className="w-full flex flex-row justify-start items-center gap-2">
+                        {/* avatar */}
+                        <Avatar
+                          nama={item.pelanggan.nama}
+                          index={item.pelanggan.id}
+                          xs
+                        />
+                        <div className="flex flex-col justify-start items-start">
+                          {/* nama */}
+                          <span className="font-semibold text-[0.625rem]">
+                            {item.pelanggan.nama}
+                          </span>
+                          {/* no wa */}
+                          <span className="font-semibold text-[0.625rem] text-base-content/50">
+                            {formatNumberPhone(item.pelanggan.noWa)}
+                          </span>
+                        </div>
                       </div>
+                    </td>
+                    <td>{formatNumber(item.totalItem)} item</td>
+                    <td>{formatRupiah(item.totalBayar)}</td>
+                    <td>
+                      <MetodePembayaranComponent
+                        metodePembayaran={item.metodePembayaran || "CASH"}
+                      />
+                    </td>
+                    <td>
+                      <StatusComponent
+                        status={item.status}
+                        statusTempo={item.statusTempo}
+                      />
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="text-info hover:underline"
+                      >
+                        detail
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10}>
+                    <div className="w-full h-full flex flex-col justify-center items-center">
+                      <DataEmpty
+                        title="Data Riwayat Transaksi Tidak Tersedia"
+                        description="Belum ada data riwayat transaksi yang dapat ditampilkan saat ini."
+                      />
                     </div>
                   </td>
-                  <td>{formatNumber(item.totalItem)} item</td>
-                  <td>{formatRupiah(item.totalBayar)}</td>
-                  <td>
-                    <MetodePembayaranComponent
-                      metodePembayaran={item.metodePembayaran || "CASH"}
-                    />
-                  </td>
-                  <td>
-                    <StatusComponent
-                      status={item.status}
-                      statusTempo={item.statusTempo}
-                    />
-                  </td>
-                  <td>
-                    <button type="button" className="text-info hover:underline">
-                      detail
-                    </button>
-                  </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={10}>
-                  <div className="w-full h-full flex flex-col justify-center items-center">
-                    <DataEmpty
-                      title="Data Riwayat Transaksi Tidak Tersedia"
-                      description="Belum ada data riwayat transaksi yang dapat ditampilkan saat ini."
-                    />
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-          {/* foot */}
-          <tfoot>
-            <tr>
-              {!true && true && [1].length! > 8 ? (
-                <>
-                  <th>No. Transaksi</th>
-                  <th>Tanggal</th>
-                  <th>Pelanggan</th>
-                  <th>Total Item</th>
-                  <th>Total Pembayaran</th>
-                  <th>Metode Pembayaran</th>
-                  <th>Status</th>
-                  <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
-                </>
-              ) : (
-                <>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                </>
               )}
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+            </tbody>
+            {/* foot */}
+            <tfoot>
+              <tr>
+                {!true && true && [1].length! > 8 ? (
+                  <>
+                    <th>No. Transaksi</th>
+                    <th>Tanggal</th>
+                    <th>Pelanggan</th>
+                    <th>Total Item</th>
+                    <th>Total Pembayaran</th>
+                    <th>Metode Pembayaran</th>
+                    <th>Status</th>
+                    <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
+                  </>
+                ) : (
+                  <>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </>
+                )}
+              </tr>
+            </tfoot>
+          </table>
+        </div>
 
-      {/* pagination */}
-      <div className="w-full order-4 -mt-2">
-        <PaginationAndLimit
-          currentPage={dataRiwayatTransaksi?.data?.meta?.currentPage || 1}
-          setPage={setPage}
-          totalPage={dataRiwayatTransaksi?.data?.meta?.totalPage || 1}
-          limit={dataRiwayatTransaksi?.data?.meta?.limit || 8}
-          setLimit={setLimit}
-        />
+        {/* pagination */}
+        <div className="w-full order-4 -mt-2">
+          <PaginationAndLimit
+            currentPage={dataRiwayatTransaksi?.data?.meta?.currentPage || 1}
+            setPage={setPage}
+            totalPage={dataRiwayatTransaksi?.data?.meta?.totalPage || 1}
+            limit={dataRiwayatTransaksi?.data?.meta?.limit || 8}
+            setLimit={setLimit}
+          />
+        </div>
       </div>
     </div>
   );

@@ -216,6 +216,7 @@ const useBarangMasuk = () => {
     dataDeleteMany,
     isPendingDeleteMany,
     windowSize,
+    sort,
   };
 };
 

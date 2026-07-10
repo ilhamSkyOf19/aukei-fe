@@ -156,7 +156,7 @@ const Produk = () => {
                       <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
                       <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
                     </>
-                  ) : !isExistDataProduk ? (
+                  ) : isExistDataProduk ? (
                     dataProduk?.data?.data?.map((produk, _) => (
                       <CardProduk
                         key={produk.id}
@@ -185,6 +185,7 @@ const Produk = () => {
                       <DataEmpty
                         title="Data Produk Tidak Tersedia"
                         description="Belum ada data produk yang dapat ditampilkan saat ini"
+                        xs
                       />
                     </div>
                   )}
@@ -553,9 +554,11 @@ const CardProduk: FC<CardProdukProps> = ({
               generateColorForStok(produk.stok ?? 0, produk.stok ?? 0),
             )}
           >
-            {(produk.stok ?? 0) >= 1000
-              ? formatNumberK(produk.stok ?? 0)
-              : formatNumber(produk.stok ?? 0)}
+            {produk.stok === 0
+              ? 0
+              : (produk.stok ?? 0) >= 1000
+                ? formatNumberK(produk.stok ?? 0)
+                : formatNumber(produk.stok ?? 0)}
           </span>
         </div>
         <div className="flex-1 flex flex-col justify-start items-start gap-1">

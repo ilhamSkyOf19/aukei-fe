@@ -30,7 +30,7 @@ const Pagination: FC<Props> = ({
         aria-label="Previous page"
         className={[
           "flex items-center justify-center rounded-lg border transition-all duration-150",
-          xs ? "w-6.5 h-6.5 lg:w-7.5 lg:h-7.5" : "w-8 h-8 lg:w-9 lg:h-9",
+          xs ? "w-6.5 h-6.5 lg:w-7.5 lg:h-7.5" : "w-8 h-8",
           isPrev
             ? "hover:text-custom-primary hover:bg-custom-secondary active:scale-95"
             : " cursor-not-allowed border-base-content/10 text-base-content/10",
@@ -49,7 +49,7 @@ const Pagination: FC<Props> = ({
                 "flex items-center justify-center  text-base-content tracking-widest",
                 xs
                   ? "w-6.5 h-6.5 lg:w-7.5 lg:h-7.5 text-xs"
-                  : "w-8 h-8 lg:w-9 lg:h-9 text-sm",
+                  : "w-8 h-8 text-sm",
               )}
             >
               ···
@@ -61,10 +61,8 @@ const Pagination: FC<Props> = ({
               aria-label={`Page ${page}`}
               aria-current={currentPage === page ? "page" : undefined}
               className={[
-                "flex items-center justify-center rounded-lg font-medium transition-all duration-150 active:scale-95",
-                xs
-                  ? "w-6.5 h-6.5 lg:w-7.5 lg:h-7.5 text-xs"
-                  : "w-8 h-8 lg:w-9 lg:h-9 text-sm",
+                "flex items-center justify-center text-xs rounded-lg font-medium transition-all duration-150 active:scale-95",
+                xs ? "w-6.5 h-6.5 lg:w-7.5 lg:h-7.5" : "w-8 h-8",
                 currentPage === page
                   ? "bg-custom-secondary text-custom-primary shadow-sm shadow-slate-900/20"
                   : "text-base-content/60 hover:bg-primary-purple/20 hover:text-base-content",
@@ -83,7 +81,7 @@ const Pagination: FC<Props> = ({
         aria-label="Next page"
         className={[
           "flex border-primary-purple text-primary-purple  items-center justify-center rounded-lg border transition-all duration-150",
-          xs ? "w-6.5 h-6.5 lg:w-7.5 lg:h-7.5" : "w-8 h-8 lg:w-9 lg:h-9",
+          xs ? "w-6.5 h-6.5 lg:w-7.5 lg:h-7.5" : "w-8 h-8",
           isNext
             ? " hover:text-custom-primary hover:bg-custom-secondary active:scale-95"
             : "  cursor-not-allowed border-base-content/10 text-base-content/10",

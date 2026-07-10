@@ -1,8 +1,11 @@
 import {
   EllipsisVertical,
+  Package,
   PackagePlus,
+  PackageX,
   Trash,
   Trash2,
+  Truck,
   View,
 } from "lucide-react";
 import FilterSort from "../../../../components/filters/Sort";
@@ -16,12 +19,18 @@ import DataEmpty from "../../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import StatusInventori from "../../../../components/ui/StatusInventori";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
+import {
+  STATUS_INVENTORI_TYPE,
+  type StatusInventoriType,
+} from "../../../../types/constant.type";
 import ModalDelete from "../../../../components/modals/ModalDelete";
 import useBarangKeluar from "./useBarangKeluar";
 import JenisKeluar from "../../../../components/ui/JenisKeluar";
 import FormulirBarangKeluar from "../../../../components/forms/FormulirBarangKeluar";
 import RangeDate from "../../../../components/filters/RangeDate";
+import type { FC } from "react";
+import DropDownInventori from "../../../../components/ui/DropDownInventori";
+import { formatNumber } from "../../../../helpers/helpers";
 
 const BarangKeluar = () => {
   // call use barang masuk
@@ -55,6 +64,7 @@ const BarangKeluar = () => {
     handleShowModalDeleteMany,
     isPendingDeleteMany,
     modalDeleteManyRef,
+    sort,
   } = useBarangKeluar();
 
   return (
@@ -82,7 +92,7 @@ const BarangKeluar = () => {
             {/* input search */}
             <InputSearch
               handleSearch={handleSearch}
-              placeholder="Cari kode"
+              placeholder="Cari berdasarkan kode"
               withLabel
             />
           </div>
@@ -91,7 +101,11 @@ const BarangKeluar = () => {
             <RangeDate customWidth="w-full md:w-60" />
 
             {/* filter sort */}
-            <FilterSort setSort={handleSort} customWidth="w-full md:w-40" />
+            <FilterSort
+              setSort={handleSort}
+              customWidth="w-full md:w-40"
+              value={sort}
+            />
 
             {/* button add barang masuk */}
             <div className="flex-col justify-start items-start gap-1.5 hidden md:flex">
@@ -108,8 +122,49 @@ const BarangKeluar = () => {
           </div>
         </div>
 
-        {/* table */}
-        <div className="overflow-x-auto w-full bg-base-100 rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-4">
+        {/* SHOW DATA FOR SM */}
+        <div className="flex w-full flex-col justify-start items-center gap-2 mt-2 md:hidden">
+          {isLoadingBarangKeluar ? (
+            <>
+              <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
+              <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
+              <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
+            </>
+          ) : !isExistDataBarangKeluar ? (
+            dataBarangKeluar?.data?.data?.map((item, _) => (
+              <CardBarangKeluar
+                key={item.id}
+                barang={{
+                  id: item.id,
+                  kode: item.kodeReferensi,
+                  jumlah: item.countDetailBarangKeluar,
+                  status: item.status,
+                  tanggalKeluar: item.tanggalKeluar,
+                  jenisKeluar: item.jenisKeluar.nama,
+                }}
+                handleRedirectDetail={handleRedirectDetail}
+                handleShowModalDelete={() =>
+                  handleShowModalDelete(item.id, {
+                    kodeReferensi: item.kodeReferensi,
+                  })
+                }
+                chooseBarangMasuk={chooseBarangKeluar}
+                handleSetChooseBarangMasuk={handleSetChooseBarangKeluar}
+              />
+            ))
+          ) : (
+            <div className="w-full h-full flex flex-col justify-center items-center">
+              <DataEmpty
+                title="Data Barang Keluar Tidak Tersedia"
+                description="Belum ada data barang keluar yang dapat ditampilkan saat ini"
+                xs
+              />
+            </div>
+          )}
+        </div>
+
+        {/* SHOW DATA FOR MD, LG, XL */}
+        <div className="overflow-x-auto w-full bg-base-100 rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-4 hidden md:flex">
           <table className="w-full table table-xs lg:table-sm mb-2">
             {/* head */}
             <thead>
@@ -340,6 +395,133 @@ const BarangKeluar = () => {
         highlightDatas={dataDeleteMany?.data?.map((item) => item.kodeReferensi)}
         isLoadingDelete={isPendingDeleteMany}
       />
+    </div>
+  );
+};
+
+type CardBarangKeluar = {
+  barang: {
+    id: number;
+    kode: string;
+    tanggalKeluar: Date;
+    status: StatusInventoriType;
+    jenisKeluar: string;
+    jumlah: number;
+  };
+  handleRedirectDetail: (value: number) => void;
+  handleShowModalDelete: () => void;
+  chooseBarangMasuk: {
+    id: number;
+    kodeReferensi: string;
+  }[];
+  handleSetChooseBarangMasuk: (data: {
+    id: number;
+    kodeReferensi: string;
+  }) => void;
+};
+
+// card produk
+const CardBarangKeluar: FC<CardBarangKeluar> = ({
+  handleRedirectDetail,
+  barang,
+  handleShowModalDelete,
+  chooseBarangMasuk,
+  handleSetChooseBarangMasuk,
+}) => {
+  return (
+    <div className="w-full bg-base-100 rounded-lg flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
+      <div className="w-full flex flex-row justify-between items-start pb-3 border-b border-base-content/10">
+        {/* content 1 */}
+        <div className="flex-2 flex flex-row justify-start items-start gap-4">
+          <div className="flex flex-row justify-start items-start gap-3">
+            {/* checkbox */}
+            <input
+              type="checkbox"
+              className="checkbox"
+              disabled={barang.status === STATUS_INVENTORI_TYPE.POSTED}
+              checked={chooseBarangMasuk.some((item) => item.id === barang.id)}
+              onChange={() => {
+                handleSetChooseBarangMasuk({
+                  id: barang.id,
+                  kodeReferensi: barang.kode,
+                });
+              }}
+            />
+
+            {/* foto */}
+            <div className="w-12 h-12 flex justify-center items-center overflow-hidden bg-rose-100 rounded-lg">
+              <Truck className="size-6 text-rose-400" />
+            </div>
+          </div>
+
+          {/* deskripsi */}
+          <div className="flex flex-col justify-start items-start gap-1">
+            {/* kode */}
+            <span className="text-xs text-info font-medium">{barang.kode}</span>
+
+            {/* tanggal masuk */}
+            <span className="text-[0.7rem] font-medium text-custom-secondary dark:text-base-content">
+              {formatTanggalLengkap(new Date())} WIB
+            </span>
+          </div>
+        </div>
+
+        {/* aksi */}
+        <div className="flex-1 flex flex-row justify-end items-start">
+          <div className={cn("dropdown dropdown-left dropdown-end")}>
+            <button
+              type="button"
+              role="button"
+              tabIndex={0}
+              className="px-1 py-1.5 border border-base-content/10 rounded-lg"
+            >
+              <EllipsisVertical className="size-4 text-base-content" />
+            </button>
+
+            <DropDownInventori
+              handleRedirectDetail={() => handleRedirectDetail(barang.id)}
+              handleShowModalDelete={handleShowModalDelete}
+              status={barang.status}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* content 2 */}
+      <div className="w-full flex flex-row justify-evenly items-start gap-4 pt-0.5">
+        <div className="flex-2 flex flex-row justify-start items-start gap-1">
+          {/* label */}
+          <div className="flex-1 flex flex-row justify-start items-center gap-1">
+            {/* icon */}
+            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-rose-100">
+              <Package className="text-rose-400 size-3" />
+            </div>
+
+            {/* label */}
+            <p className="text-xs text-base-content">
+              Jumlah : <span>{formatNumber(barang.jumlah)}</span>
+            </p>
+          </div>
+
+          {/* jenis keluar */}
+          <div className="flex-1 flex flex-row justify-start items-center gap-1">
+            {/* icon */}
+            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-rose-100">
+              <PackageX className="text-rose-400 size-3" />
+            </div>
+
+            {/* label */}
+            <p className="text-xs text-base-content capitalize">
+              Jenis : <span>{barang.jenisKeluar.toLowerCase()}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* status */}
+        <div className="flex-1 flex flex-row justify-end items-center">
+          <StatusInventori status={barang.status} />
+        </div>
+      </div>
     </div>
   );
 };

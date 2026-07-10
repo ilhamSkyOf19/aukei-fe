@@ -61,7 +61,7 @@ const RangeDate: FC<Props> = ({
     >
       {/* icon */}
       {noLabel && (
-        <CalendarDays className="size-7 md:size-8 text-base-content" />
+        <CalendarDays className="size-9 md:size-8 text-base-content" />
       )}
 
       <div className="flex w-full flex-col justify-start items-start gap-1.5">

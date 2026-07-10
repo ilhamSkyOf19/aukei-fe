@@ -2,7 +2,6 @@ import { useEffect, type FC } from "react";
 import HeaderPage from "../../layouts/HeaderPage";
 import { useOutletContext } from "react-router-dom";
 import type { OutletContextType } from "../../types/constant.type";
-import Transaksi from "../../views/owner/Transaksi";
 import StatistikTransaksi from "../../views/owner/StatistikTransaksi";
 
 const StatistikTransaksiPage: FC = () => {

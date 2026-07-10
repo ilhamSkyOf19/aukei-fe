@@ -39,7 +39,7 @@ const ModalFormulirPegawai: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl bg-base-100 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
@@ -65,7 +65,6 @@ const ModalFormulirPegawai: FC<Props> = ({
               required={true}
               placeholder={`Masukan nama pegawai`}
               errorMessage={errors.nama?.message}
-              defaultValue={data?.nama}
             />
 
             {/* username */}
@@ -77,7 +76,6 @@ const ModalFormulirPegawai: FC<Props> = ({
               required={true}
               placeholder={`Masukan username`}
               errorMessage={errors.username?.message}
-              defaultValue={data?.username}
             />
 
             {/* role */}

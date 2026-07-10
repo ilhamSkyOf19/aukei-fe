@@ -125,7 +125,7 @@ const useTransaksi = () => {
 
   // handle detail
   const handleRedirectDetail = () => {
-    navigate(`/dashboard/transaksi/statistik`);
+    navigate(`/dashboard/statistik`);
   };
 
   return {
@@ -144,6 +144,7 @@ const useTransaksi = () => {
     setPage,
     setLimit,
     setSort,
+    sort,
   };
 };
 

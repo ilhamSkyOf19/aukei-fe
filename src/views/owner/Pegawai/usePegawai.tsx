@@ -198,6 +198,7 @@ const usePegawai = () => {
     handleCloseModalDeleteMany,
     handleSetChoosePegawai,
     choosePegawai,
+    sort,
   };
 };
 

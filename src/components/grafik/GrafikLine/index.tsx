@@ -30,7 +30,7 @@ const GrafikLine: FC<GrafikLineProps> = ({ windowSize }) => {
   return (
     <div
       className={cn(
-        "md:flex-1 flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg gap-4 h-80 md:h-90",
+        "lg:flex-1 flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg gap-4 h-80 md:h-100 lg:h-90",
       )}
     >
       {/* header */}

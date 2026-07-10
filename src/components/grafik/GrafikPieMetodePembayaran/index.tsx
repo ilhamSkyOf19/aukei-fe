@@ -14,19 +14,7 @@ import type { FC } from "react";
 import { cn } from "../../../utils/cn";
 import useSizeWindows from "../../../hooks/useSizeWindows";
 import useGrafikPieMetodePembayaran from "./useGrafikPieMetodePembayaran";
-import {
-  formatTanggalLengkap,
-  formatTanggalPanjang,
-} from "../../../helpers/formatDate";
-
-// #region Sample data
-
-// const data = [
-//   { name: "Group A", value: 400, fill: COLORS[0] },
-//   { name: "Group B", value: 300, fill: COLORS[1] },
-//   { name: "Group C", value: 300, fill: COLORS[2] },
-//   { name: "Group D", value: 200, fill: COLORS[3] },
-// ];
+import { formatTanggalPanjang } from "../../../helpers/formatDate";
 
 // #endregion
 const RADIAN = Math.PI / 180;
@@ -94,7 +82,7 @@ const GrafikPieMetodePembayaran: FC<Props> = ({ isAnimationActive = true }) => {
     useGrafikPieMetodePembayaran();
 
   return (
-    <div className="md:flex-1 flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 px-2.5 md:p-0 h-60 md:h-90">
+    <div className="lg:flex-1 flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 px-2.5 lg:p-0 h-60 md:h-80 lg:h-90">
       {/* header */}
       <div className="flex flex-col justify-start items-start pt-2 px-4">
         <h3 className="text-sm font-semibold text-base-content capitalize">

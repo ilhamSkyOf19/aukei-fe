@@ -1,6 +1,7 @@
 import type { ElementType } from "react";
 import {
   Boxes,
+  ChartLine,
   CheckCircle2,
   LayoutDashboard,
   Package,
@@ -39,6 +40,11 @@ export const NAVIGATION_LIST_OWNER: {
     label: "Transaksi",
     icon: ShoppingCart,
     link: "/dashboard/transaksi",
+  },
+  {
+    label: "Statistik",
+    icon: ChartLine,
+    link: "/dashboard/statistik",
   },
 ];
 

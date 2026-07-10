@@ -218,15 +218,15 @@ const route = createBrowserRouter([
               </RoleGuard>
             ),
           },
-          {
-            path: "statistik",
-            element: (
-              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
-                <StatistikTransaksiPage />
-              </RoleGuard>
-            ),
-          },
         ],
+      },
+      {
+        path: "statistik",
+        element: (
+          <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+            <StatistikTransaksiPage />
+          </RoleGuard>
+        ),
       },
 
       // kasir

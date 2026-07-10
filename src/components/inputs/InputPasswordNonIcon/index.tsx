@@ -58,10 +58,7 @@ const InputPasswordNonIcon: FC<Props> = ({
             <div className="flex-2 relative">
               <label
                 htmlFor={name}
-                className={cn(
-                  "capitalize",
-                  xs ? "text-xs" : "text-xs lg:text-sm",
-                )}
+                className={cn("capitalize", xs ? "text-xs" : "text-xs")}
               >
                 {label}
               </label>
@@ -94,7 +91,7 @@ const InputPasswordNonIcon: FC<Props> = ({
           type={showPassword ? "text" : "password"}
           id={name}
           placeholder={placeholder}
-          className="w-full font-medium h-full bg-transparent outline-none text-sm placeholder:text-sm placeholder:text-gray-400  placeholder:font-light lg:text-sm lg:placeholder:text-sm"
+          className="w-full font-medium h-full bg-transparent outline-none text-xs placeholder:text-gray-400  placeholder:font-light"
           autoComplete="off"
           minLength={6}
           maxLength={max || 100}

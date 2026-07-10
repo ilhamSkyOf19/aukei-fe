@@ -96,6 +96,8 @@
 
 - [✅] Integrasi Chart
 
+- [ ] Perbaiki UI Barang Keluar
+
 - [ ] Memperbaiki dropdown agar menggunakan value dari props (contoh dropdown metode pembayaran)
 
 - [ ] Memisahkan Halaman Statistik dan Riwayat Transaksi

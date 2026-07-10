@@ -28,6 +28,7 @@ import FormulirBarangMasuk from "../../../../components/forms/FormulirBarangMasu
 import RangeDate from "../../../../components/filters/RangeDate";
 import type { FC } from "react";
 import { formatNumber } from "../../../../helpers/helpers";
+import DropDownInventori from "../../../../components/ui/DropDownInventori";
 
 const BarangMasuk = () => {
   // call use barang masuk
@@ -62,6 +63,7 @@ const BarangMasuk = () => {
     isPendingDeleteMany,
     modalDeleteManyRef,
     windowSize,
+    sort,
   } = useBarangMasuk();
 
   return (
@@ -103,6 +105,7 @@ const BarangMasuk = () => {
             <FilterSort
               setSort={handleSort}
               customWidth="flex-1 md:flex-none md:w-30 lg:w-40"
+              value={sort}
             />
 
             {/* button add barang masuk */}
@@ -126,7 +129,11 @@ const BarangMasuk = () => {
         {/* SHOW DATA FOR SM */}
         <div className="flex w-full flex-col justify-start items-center gap-2 mt-2 md:hidden">
           {isLoadingBarangMasuk ? (
-            <div></div>
+            <>
+              <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
+              <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
+              <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
+            </>
           ) : isExistDataBarangMasuk ? (
             dataBarangMasuk?.data?.data?.map((item, _) => (
               <CardBarangMasuk
@@ -149,7 +156,12 @@ const BarangMasuk = () => {
               />
             ))
           ) : (
-            <div></div>
+            <div className="w-full h-full flex flex-col justify-center items-center">
+              <DataEmpty
+                title="Data Barang Masuk Tidak Tersedia"
+                description="Belum ada data barang masuk yang dapat ditampilkan saat ini"
+              />
+            </div>
           )}
         </div>
 
@@ -460,7 +472,7 @@ const CardBarangMasuk: FC<CardBarangMasuk> = ({
               <EllipsisVertical className="size-4 text-base-content" />
             </button>
 
-            <DropDown
+            <DropDownInventori
               handleRedirectDetail={() => handleRedirectDetail(barang.id)}
               handleShowModalDelete={handleShowModalDelete}
               status={barang.status}
@@ -492,43 +504,6 @@ const CardBarangMasuk: FC<CardBarangMasuk> = ({
         </div>
       </div>
     </div>
-  );
-};
-
-// dropdown
-type DropDownProps = {
-  handleRedirectDetail: () => void;
-  status: StatusInventoriType;
-  handleShowModalDelete: () => void;
-};
-const DropDown: FC<DropDownProps> = ({
-  handleRedirectDetail,
-  handleShowModalDelete,
-  status,
-}) => {
-  return (
-    <ul
-      tabIndex={-1}
-      className="z-50 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-40 lg:w-50 p-2 shadow-sm space-y-2 absolute"
-    >
-      <li>
-        <LabelButtonDropDownWithIcon
-          label="Detail"
-          icon={View}
-          handleClick={() => handleRedirectDetail()}
-        />
-      </li>
-      {status === STATUS_INVENTORI_TYPE.DRAFT && (
-        <li>
-          <LabelButtonDropDownWithIcon
-            color="text-error"
-            label="Hapus"
-            icon={Trash}
-            handleClick={() => handleShowModalDelete()}
-          />
-        </li>
-      )}
-    </ul>
   );
 };
 
