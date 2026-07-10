@@ -187,7 +187,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           </div>
 
           {/* profile */}
-          <div className="dropdown dropdown-end hidden md:block">
+          <div className="dropdown dropdown-end hidden md:flex">
             <button
               type="button"
               tabIndex={0}

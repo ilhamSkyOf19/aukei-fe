@@ -19,7 +19,7 @@ const HeaderKasir: FC<Props> = ({ step }) => {
   return (
     <div
       className={cn(
-        "w-full flex flex-row justify-between items-center py-1 border border-transparent dark:border-base-content/10 shadow-sm transition-all duration-500 ease-in-out",
+        "w-full flex flex-row justify-between items-center py-1 border border-transparent dark:border-base-content/10 shadow-sm ",
         isModeKasir
           ? "bg-custom-secondary sticky top-0 z-30"
           : "bg-base-100 rounded-lg",
@@ -169,7 +169,7 @@ const HeaderKasir: FC<Props> = ({ step }) => {
               "flex flex-row justify-center items-center gap-2 py-2 px-4 border rounded-md shadow-sm  hover:border-custom-primary hover:shadow-sm hover:shadow-custom-primary transition-all duration-300 ease-in-out hover:scale-102 origin-center",
               isModeKasir
                 ? "border-primary-white text-primary-white"
-                : "border-base-content tetx-base-content",
+                : "border-base-content text-base-content",
             )}
           >
             <Store className="size-4" />

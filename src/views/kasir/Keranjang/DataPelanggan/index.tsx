@@ -23,7 +23,7 @@ const DataPelanggan = () => {
   } = useDataPelanggan();
 
   return (
-    <div className="w-full rounded-lg lg:h-120 xl:h-155 bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
+    <div className="w-full rounded-lg lg:h-120 xl:h-150 bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
       {/* header */}
       <div className="w-full flex flex-col justify-start items-start gap-2">
         {/* title */}

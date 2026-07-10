@@ -30,7 +30,7 @@ const Keranjang = () => {
 
       {isModeKasir && <HeaderKasir />}
 
-      <div className="w-full flex flex-row justify-between items-start gap-4 p-2">
+      <div className="w-full flex flex-row justify-between items-start gap-2">
         {/* left */}
         <div className="flex-3 flex flex-col justify-start items-start">
           {/* daftar pelanggan */}

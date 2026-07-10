@@ -44,7 +44,7 @@ const DaftarKeranjang = () => {
       ) : isExistDataProduk ? (
         <>
           {/* data pelanggan yang di pilih */}
-          <div className="flex flex-row justify-start items-center w-full rounded-lg bg-base-100 gap-4 shadow-sm p-4">
+          <div className="flex flex-row justify-start items-center w-full rounded-lg bg-base-100 border border-transparent dark:border-base-content/10 gap-4 shadow-sm p-4">
             {/* avatar */}
             <Avatar nama={dataKeranjang?.data?.pelanggan?.nama ?? ""} xs />
 
@@ -64,7 +64,7 @@ const DaftarKeranjang = () => {
           </div>
 
           {/* details */}
-          <div className="w-full flex flex-col justify-start items-start gap-4 bg-base-100 rounded-lg shadow-sm p-4">
+          <div className="w-full flex flex-col justify-start items-start gap-4 bg-base-100 border border-transparent dark:border-base-content/10 rounded-lg shadow-sm p-4">
             {/* header */}
             <h3 className="text-base-content text-sm font-semibold">
               Daftar Produk
@@ -89,7 +89,7 @@ const DaftarKeranjang = () => {
                   {dataKeranjang?.data?.details &&
                   dataKeranjang?.data?.details.length > 0 ? (
                     dataKeranjang?.data?.details.map((item, index) => (
-                      <tr key={index} className="h-15">
+                      <tr key={index} className="h-15 text-base-content">
                         <th>{index + 1}</th>
                         <td>
                           <div className="avatar">
@@ -157,7 +157,7 @@ const DaftarKeranjang = () => {
           </div>
 
           <div className="w-full flex flex-col justify-start items-end gap-4">
-            <div className="w-100 flex flex-col justify-start items-start gap-4 bg-base-100 rounded-lg shadow-sm p-4">
+            <div className="w-100 flex flex-col justify-start items-start gap-4 bg-base-100 border border-transparent dark:border-base-content/10 rounded-lg shadow-sm p-4">
               {/* sub total & total diskon */}
               <div className="w-full flex flex-col justify-start items-start gap-3 pb-4 border-b border-base-content/10">
                 {/* total item */}

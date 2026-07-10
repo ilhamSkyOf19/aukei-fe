@@ -96,11 +96,13 @@
 
 - [✅] Integrasi Chart
 
-- [ ] Perbaiki UI Barang Keluar
+- [✅] Perbaiki UI Barang Keluar
 
-- [ ] Memperbaiki dropdown agar menggunakan value dari props (contoh dropdown metode pembayaran)
+- [✅] Memperbaiki dropdown agar menggunakan value dari props (contoh dropdown metode pembayaran)
 
-- [ ] Memisahkan Halaman Statistik dan Riwayat Transaksi
+- [✅] Memisahkan Halaman Statistik dan Riwayat Transaksi
+
+- [ ] Memberikan modal pesan error agar menggunakna booking , jika stok tidak cukup
 
 - [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
 

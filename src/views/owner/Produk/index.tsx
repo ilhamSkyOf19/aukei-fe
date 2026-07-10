@@ -62,7 +62,7 @@ const Produk = () => {
 
   return (
     <div className="w-full h-screen overflow-y-auto ">
-      <div className="w-full mb-30 md:mb-10 lg:mb-20 flex flex-col justify-start items-start ">
+      <div className="w-full mb-30 md:mb-10 lg:mb-20 flex flex-col justify-start items-start">
         {/* button cluster */}
         <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-14 p-2 gap-2 dark:border dark:border-base-content/10 sticky top-0 left-0 right-0 z-30 shrink-0">
           {/* produk */}

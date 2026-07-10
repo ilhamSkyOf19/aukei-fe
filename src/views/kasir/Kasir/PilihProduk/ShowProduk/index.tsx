@@ -50,16 +50,19 @@ const ShowProduk: FC<Props> = ({
     isNext,
     isPrev,
     pages,
-    isModeKasir,
   } = useShowProduk({ pelangganId, step, onAppendMany });
 
   return (
-    <div className="lg:flex-2 xl:flex-1 flex flex-col justify-start items-center gap-3">
+    <div className="lg:flex-2 xl:flex-1 flex flex-col justify-start items-center">
       {/* header */}
       <div className="w-full flex flex-row justify-between items-start border border-transparent dark:border-base-content/10 p-3 bg-base-100 shadow-sm rounded-lg">
         {/* search */}
         <div className="flex-1">
-          <InputSearch handleSearch={setSearch} />
+          <InputSearch
+            handleSearch={setSearch}
+            withLabel
+            placeholder="Cari produk"
+          />
         </div>
 
         <div className="flex-1 flex flex-row justify-end items-start flex-wrap">
@@ -71,8 +74,7 @@ const ShowProduk: FC<Props> = ({
       {/* daftar produk */}
       <div
         className={cn(
-          "grid grid-cols-5 gap-2 overflow-y-auto scrollbar-thumb-custom-secondary",
-          isModeKasir ? "lg:h-100 xl:h-120" : "xl:h-101",
+          "grid grid-cols-5 h-100 gap-2 overflow-y-auto scrollbar-thumb-custom-secondary py-3",
         )}
       >
         {/* card */}
@@ -102,7 +104,7 @@ const ShowProduk: FC<Props> = ({
                 })
               }
             >
-              <div className="w-full h-full flex flex-col justify-start items-start border border-transparent rounded-lg shadow-sm overflow-hidden gap-2 group-hover:border-custom-secondary group-hover:shadow-sm transition-all duration-300 ease-in-out bg-base-100 p-1">
+              <div className="w-full h-full flex flex-col justify-start items-start border border-transparent dark:border-base-content/10 rounded-lg shadow-sm overflow-hidden gap-2 group-hover:border-custom-secondary group-hover:shadow-sm transition-all duration-300 ease-in-out bg-base-100 p-1">
                 <div className="w-full h-90 shadow-md shadow-base-content/20 rounded-lg flex flex-row justify-center items-center overflow-hidden">
                   <img
                     src={item.img}

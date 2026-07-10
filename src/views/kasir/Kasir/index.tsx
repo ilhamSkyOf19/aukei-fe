@@ -28,7 +28,7 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
 
       <div
         className={cn(
-          "min-h-[85vh] w-full flex flex-col justify-start items-start transition-all duration-500 ease-in-out",
+          "min-h-[85vh] w-full flex flex-col justify-start items-start",
           isModeKasir && "fixed z-40 top-0 left-0 right-0 bottom-0 bg-base-300",
         )}
       >
@@ -46,7 +46,7 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
 
           <div
             className={cn(
-              "w-full flex flex-col justify-start items-cente transition-all duration-500 ease-in-out",
+              "w-full flex flex-col justify-start items-center",
               isModeKasir && "p-2",
             )}
           >
