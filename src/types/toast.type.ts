@@ -202,6 +202,32 @@ export const TOAST_CONFIG_PEGAWAI: Record<
   },
 };
 
+// toast pelanggan
+export const TOAST_CONFIG_PELANGGAN: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  updated_pelanggan: {
+    color: "info",
+    message: "Pelanggan berhasil diperbarui",
+  },
+  created_pelanggan: {
+    color: "success",
+    message: "Pelanggan berhasil dibuat",
+  },
+  deleted_pelanggan: {
+    color: "error",
+    message: "Pelanggan berhasil dihapus",
+  },
+  updated_status: {
+    color: "info",
+    message: "Status berhasil diperbarui",
+  },
+};
+
 // toast transaction
 export const TOAST_CONFIG_TRANSACTION: Record<
   string,

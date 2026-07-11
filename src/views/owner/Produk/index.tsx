@@ -152,9 +152,9 @@ const Produk = () => {
                   {/* card */}
                   {isLoadingProduk ? (
                     <>
-                      <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
-                      <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
-                      <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
+                      <div className="w-full h-20 skeleton border border-base-content/10" />
+                      <div className="w-full h-20 skeleton border border-base-content/10" />
+                      <div className="w-full h-20 skeleton border border-base-content/10" />
                     </>
                   ) : isExistDataProduk ? (
                     dataProduk?.data?.data?.map((produk, _) => (

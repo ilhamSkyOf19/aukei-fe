@@ -46,6 +46,11 @@ export const NAVIGATION_LIST_OWNER: {
     icon: ChartLine,
     link: "/dashboard/statistik",
   },
+  {
+    label: "Pelanggan",
+    icon: UsersRound,
+    link: "/dashboard/pelanggan",
+  },
 ];
 
 export const NAVIGATION_LIST_KASIR: {

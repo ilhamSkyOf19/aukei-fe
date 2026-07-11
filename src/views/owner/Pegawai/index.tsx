@@ -269,8 +269,8 @@ const Pegawai = () => {
                       {/* role */}
                       <td className="text-base-content ">
                         <div className="flex flex-row justify-center w-18 items-center bg-custom-primary/50 dark:bg-custom-primary rounded-full">
-                          <p className="text-xs py-1 px-3 font-semibold text-custom-secondary">
-                            Kasir
+                          <p className="text-xs py-1 px-3 uppercase font-semibold text-custom-secondary">
+                            {pegawai.role.toLowerCase()}
                           </p>
                         </div>
                       </td>
@@ -360,7 +360,7 @@ const Pegawai = () => {
                   isExistDataPegawai &&
                   dataPegawai?.data?.data?.length! > 8 ? (
                     <>
-                      <th>Nama</th>
+                      <th>Nama Pegawai</th>
                       <th>Role</th>
                       <th>Username</th>
                       <th className="sticky right-0 bg-base-100 z-10">Aksi</th>

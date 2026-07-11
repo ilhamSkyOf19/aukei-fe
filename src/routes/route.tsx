@@ -17,6 +17,7 @@ import KasirPage from "../pages/KasirPage";
 import KeranjangPage from "../pages/KeranjangPage";
 import TransaksiPage from "../pages/TransaksiPage";
 import StatistikTransaksiPage from "../pages/StatistikTransaksiPage";
+import PelangganPage from "../pages/PelangganPages";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -227,6 +228,19 @@ const route = createBrowserRouter([
             <StatistikTransaksiPage />
           </RoleGuard>
         ),
+      },
+      {
+        path: "pelanggan",
+        children: [
+          {
+            index: true,
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <PelangganPage />
+              </RoleGuard>
+            ),
+          },
+        ],
       },
 
       // kasir

@@ -39,7 +39,7 @@ export default function InputPhoneNumber<T extends FieldValues = any>({
   return (
     <div className="w-full">
       {label && (
-        <label className="text-xs lg:text-sm text-base-content">
+        <label className="text-xs text-base-content">
           {label}
 
           {required && <span className="ml-1 text-error">*</span>}
@@ -63,7 +63,7 @@ export default function InputPhoneNumber<T extends FieldValues = any>({
           autoComplete="off"
           className={cn(
             "h-full w-full border-none bg-transparent outline-none font-medium text-base-content placeholder:font-normal",
-            xs ? "text-[0.7rem] lg:text-xs" : "text-xs lg:text-sm",
+            xs ? "text-[0.7rem] lg:text-xs" : "text-xs",
           )}
           onChange={(e) => {
             const raw = unformatPhoneNumber(e.target.value);

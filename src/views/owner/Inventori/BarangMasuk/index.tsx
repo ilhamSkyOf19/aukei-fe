@@ -67,7 +67,7 @@ const BarangMasuk = () => {
   } = useBarangMasuk();
 
   return (
-    <div className="w-full">
+    <div className="w-full  mb-30 md:mb-10 lg:mb-20 ">
       {/* toast create */}
       {toast && (
         <Toast
@@ -130,9 +130,9 @@ const BarangMasuk = () => {
         <div className="flex w-full flex-col justify-start items-center gap-2 mt-2 md:hidden">
           {isLoadingBarangMasuk ? (
             <>
-              <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
-              <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
-              <div className="w-full h-20 skeleton border border-base-content/10 shadow-sm" />
+              <div className="w-full h-20 skeleton border border-base-content/10" />
+              <div className="w-full h-20 skeleton border border-base-content/10" />
+              <div className="w-full h-20 skeleton border border-base-content/10" />
             </>
           ) : isExistDataBarangMasuk ? (
             dataBarangMasuk?.data?.data?.map((item, _) => (

@@ -71,7 +71,7 @@ const Transaksi = () => {
 
   return (
     <div className="w-full h-screen overflow-y-auto">
-      <div className="w-full mb-30 md:mb-10 lg:mb-20 flex flex-col justify-start items-start gap-2 p-2">
+      <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2 p-2">
         {/* search */}
         <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg md:hidden">
           <InputSearch handleSearch={handleSearch} />

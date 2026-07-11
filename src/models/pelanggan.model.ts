@@ -4,6 +4,7 @@ export interface IPelangganType {
   id: number;
   nama: string;
   noWa: string;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,11 +20,6 @@ export interface UpdatePelangganType extends Partial<CreatePelangganType> {}
 
 // response
 export interface ResponsePelangganType extends IPelangganType {}
-
-// to response
-export const toResponsePelanggan = (
-  pelanggan: IPelangganType,
-): ResponsePelangganType => pelanggan;
 
 // response with meta
 export interface ResponsePelangganWithMetaType {
@@ -46,9 +42,15 @@ export interface ResponsePelangganForKeranjangWithMetaType {
   meta: MetaType;
 }
 
-// to response for keranjang
-export const toResponsePelangganForKeranjang = (
-  pelanggan: ResponsePelangganForKeranjangType,
-): ResponsePelangganForKeranjangType => ({
-  ...pelanggan,
-});
+// response pelanggan with riwayat
+export interface ResponsePelangganWithRiwayatAndMetaType {
+  data: (IPelangganType & {
+    totalTransaction?: number;
+    kredit?: {
+      berjalan: number;
+      selesai: number;
+      terlambat: number;
+    };
+  })[];
+  meta: MetaType;
+}

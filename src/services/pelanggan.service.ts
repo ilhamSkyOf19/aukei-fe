@@ -5,6 +5,7 @@ import type {
   ResponsePelangganForKeranjangWithMetaType,
   ResponsePelangganType,
   ResponsePelangganWithMetaType,
+  ResponsePelangganWithRiwayatAndMetaType,
   UpdatePelangganType,
 } from "../models/pelanggan.model";
 import type { ResponseStructure } from "../types/response.type";
@@ -18,6 +19,22 @@ export class PelangganServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponsePelangganWithMetaType | null>
     >(`/pelanggan`, {
+      params: query,
+    });
+
+    return result.data;
+  }
+
+  // find all with riwayat
+  static async findAllWithRiwayat(
+    query: PaginationType,
+  ): Promise<
+    ResponseStructure<ResponsePelangganWithRiwayatAndMetaType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponsePelangganWithRiwayatAndMetaType | null>
+    >(`/pelanggan/with-riwayat`, {
       params: query,
     });
 
@@ -58,9 +75,47 @@ export class PelangganServices {
     req: UpdatePelangganType;
   }): Promise<ResponseStructure<ResponsePelangganType | null>> {
     // call api
-    const result = await instanceAxios.post<
+    const result = await instanceAxios.patch<
       ResponseStructure<ResponsePelangganType | null>
     >(`/pelanggan/${params.id}`, params.req);
+
+    return result.data;
+  }
+
+  // update
+  static async updateisActive(params: {
+    id: number;
+    req: { status: boolean };
+  }): Promise<ResponseStructure<ResponsePelangganType | null>> {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponsePelangganType | null>
+    >(`/pelanggan/${params.id}/active`, params.req);
+
+    return result.data;
+  }
+
+  // delete
+  static async delete(params: {
+    id: number;
+  }): Promise<ResponseStructure<null>> {
+    // call api
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/pelanggan/${params.id}`,
+    );
+
+    return result.data;
+  }
+
+  // delete many
+  static async deleteMany(params: {
+    ids: number[];
+  }): Promise<ResponseStructure<null>> {
+    // call api
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/pelanggan/many`,
+      { data: { ids: params.ids } },
+    );
 
     return result.data;
   }
