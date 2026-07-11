@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   BanknoteArrowDown,
   ChartColumn,
   Clock3,
@@ -14,7 +13,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-import useStatistikTransaksi from "./useStatistikTransaksi";
 import {
   formatNumber,
   formatNumberK,
@@ -30,10 +28,10 @@ import listDateRangeLong from "../../../utils/listDateRangeLong";
 import StatistikTopPelanggan from "../../../components/grafik/StatistikTopPelanggan";
 import StatistikTopProduk from "../../../components/grafik/StatistikTopProduk";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
+import useStatistikDetail from "./useStatistikDetail";
 
-const StatistikTransaksi = () => {
-  const { windowSize, navigate, isLoading, statistik } =
-    useStatistikTransaksi();
+const StatistikDetail = () => {
+  const { windowSize, isLoading, statistik } = useStatistikDetail();
 
   return (
     <div className="w-full h-screen overflow-y-auto">
@@ -42,29 +40,15 @@ const StatistikTransaksi = () => {
           <div className="w-full flex flex-row justify-between items-start">
             {/* title */}
             <div className="flex flex-col justify-start items-start gap-0.5">
-              <h3 className="text-lg font-semibold text-base-content">
+              <h3 className="text-xl font-semibold text-base-content">
                 Statistik
               </h3>
-
-              {/* back */}
-              <button
-                type="button"
-                className="text-xs text-base-content/50 hover:text-base-content transition-colors duration-150 ease-in-out font-medium flex flex-row justify-start items-start gap-2 py-0.5"
-                onClick={() => navigate(-1)}
-              >
-                <ArrowLeft className="size-4" />
-                <span>Kembali</span>
-              </button>
             </div>
 
             {/* aksi */}
             <div className="flex flex-row justify-end items-start gap-2">
               {/* button filter */}
-              <RangeDate
-                noLabel
-                customWidth="w-50"
-                listDate={listDateRangeLong}
-              />
+              <RangeDate customWidth="w-50" listDate={listDateRangeLong} />
               {/* button export */}
               <div className="md:flex flex-row justify-start items-center gap-2 hidden">
                 <ButtonWithIcon
@@ -93,8 +77,10 @@ const StatistikTransaksi = () => {
               label={windowSize === "sm" ? "Transaksi" : "Total Transaksi"}
               value={
                 windowSize === "sm"
-                  ? formatNumberK(statistik?.data?.totalTransaksi.total ?? 0)
-                  : formatNumber(statistik?.data?.totalTransaksi.total ?? 0)
+                  ? formatNumberK(statistik?.data?.totalTransaksi.total ?? 0) ||
+                    "0"
+                  : formatNumber(statistik?.data?.totalTransaksi.total ?? 0) ||
+                    "0"
               }
               caption={
                 windowSize !== "sm"
@@ -457,4 +443,4 @@ const StatistikTransaksi = () => {
   );
 };
 
-export default StatistikTransaksi;
+export default StatistikDetail;

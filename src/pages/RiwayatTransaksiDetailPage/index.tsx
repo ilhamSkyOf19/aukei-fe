@@ -2,25 +2,25 @@ import { useEffect, type FC } from "react";
 import HeaderPage from "../../layouts/HeaderPage";
 import { useOutletContext } from "react-router-dom";
 import type { OutletContextType } from "../../types/constant.type";
-import StatistikTransaksi from "../../views/owner/StatistikTransaksi";
+import RiwayatTransaksiDetail from "../../views/owner/RiwayatTransaksiDetail";
 
-const StatistikTransaksiPage: FC = () => {
+const RiwayatTransaksiDetailPage: FC = () => {
   // get context
   const { handleTitle } = useOutletContext<OutletContextType>();
 
   useEffect(() => {
-    handleTitle("Statistik Transaksi");
+    handleTitle("Riwayat Transaksi Detail");
   }, [handleTitle]);
 
   return (
     <>
       {/* header page */}
-      <HeaderPage title="Statistik Transaksi | AUKEI" />
+      <HeaderPage title="Riwayat Transaksi Detail | AUKEI" />
 
       {/* view login */}
-      <StatistikTransaksi />
+      <RiwayatTransaksiDetail />
     </>
   );
 };
 
-export default StatistikTransaksiPage;
+export default RiwayatTransaksiDetailPage;

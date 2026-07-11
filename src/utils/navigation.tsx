@@ -3,6 +3,7 @@ import {
   Boxes,
   ChartLine,
   CheckCircle2,
+  History,
   LayoutDashboard,
   Package,
   RefreshCcw,
@@ -37,11 +38,6 @@ export const NAVIGATION_LIST_OWNER: {
     link: "/dashboard/pegawai",
   },
   {
-    label: "Transaksi",
-    icon: ShoppingCart,
-    link: "/dashboard/transaksi",
-  },
-  {
     label: "Statistik",
     icon: ChartLine,
     link: "/dashboard/statistik",
@@ -50,6 +46,11 @@ export const NAVIGATION_LIST_OWNER: {
     label: "Pelanggan",
     icon: UsersRound,
     link: "/dashboard/pelanggan",
+  },
+  {
+    label: "Riwayat Transaksi",
+    icon: History,
+    link: "/dashboard/riwayat-transaksi",
   },
 ];
 

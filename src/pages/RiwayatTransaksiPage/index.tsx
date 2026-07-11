@@ -2,9 +2,9 @@ import { useEffect, type FC } from "react";
 import HeaderPage from "../../layouts/HeaderPage";
 import { useOutletContext } from "react-router-dom";
 import type { OutletContextType } from "../../types/constant.type";
-import Transaksi from "../../views/owner/Transaksi";
+import RiwayatTransaksi from "../../views/owner/RiwayatTransaksi";
 
-const TransaksiPage: FC = () => {
+const RiwayatTransaksiPage: FC = () => {
   // get context
   const { handleTitle } = useOutletContext<OutletContextType>();
 
@@ -15,12 +15,12 @@ const TransaksiPage: FC = () => {
   return (
     <>
       {/* header page */}
-      <HeaderPage title="Transaksi | AUKEI" />
+      <HeaderPage title="Riwayat Transaksi | AUKEI" />
 
       {/* view login */}
-      <Transaksi />
+      <RiwayatTransaksi />
     </>
   );
 };
 
-export default TransaksiPage;
+export default RiwayatTransaksiPage;

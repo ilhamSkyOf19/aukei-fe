@@ -66,7 +66,6 @@ const ModalFormulirPelanggan: FC<Props> = ({
               required={true}
               placeholder={`Masukan nama pelanggan`}
               errorMessage={errors.nama?.message}
-              defaultValue={data?.nama}
             />
 
             {/* phone number */}

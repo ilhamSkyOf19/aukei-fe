@@ -41,20 +41,20 @@ const RangeDateLarge: FC<Props> = ({
   return (
     <div
       className={cn(
-        "flex flex-row items-center gap-1.5 border border-base-content/10 rounded-lg p-2",
+        "flex flex-row items-center border border-base-content/10 rounded-lg p-2 gap-4",
         customWidth,
       )}
     >
       <CalendarDays className="size-8 shrink-0 text-base-content" />
 
       <div className="flex flex-col w-full">
-        <span className="text-xs text-base-content/80 font-medium ml-2.5">
+        <span className="text-xs text-base-content/80 font-medium">
           Tanggal
         </span>
 
         <select
           value={selectedOption}
-          className="select select-sm w-full h-7 border-none shadow-none text-base-content outline-none"
+          className="select select-sm mt-1 w-full h-7 shadow-none text-base-content outline-none"
           onChange={(e) => handleOnChangeDropDown(e.target.value)}
         >
           <option value="" disabled>
@@ -76,7 +76,7 @@ const RangeDateLarge: FC<Props> = ({
         </select>
 
         {searchParams.get("start-date") && searchParams.get("end-date") && (
-          <div className="ml-2.5">
+          <div className="">
             <span className="text-xs font-medium text-base-content">
               {formatTanggalPanjang(searchParams.get("start-date")!)}
               {" - "}

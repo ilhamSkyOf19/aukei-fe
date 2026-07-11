@@ -7,7 +7,7 @@ import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { StatistikServices } from "../../../services/statistik.service";
 
-const useTransaksi = () => {
+const useRiwayatTransaksi = () => {
   // window size
   const windowSize = useSizeWindows();
 
@@ -124,8 +124,8 @@ const useTransaksi = () => {
       : false;
 
   // handle detail
-  const handleRedirectDetail = () => {
-    navigate(`/dashboard/statistik`);
+  const handleRedirectDetail = (id: number) => {
+    navigate(`/dashboard/riwayat-transaksi/detail/${id}`);
   };
 
   return {
@@ -148,4 +148,4 @@ const useTransaksi = () => {
   };
 };
 
-export default useTransaksi;
+export default useRiwayatTransaksi;

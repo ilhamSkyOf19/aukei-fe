@@ -9,8 +9,12 @@ import type { ResponsePelangganType } from "../../../models/pelanggan.model";
 import useDeletePelanggan from "../../../hooks/useDeletePelanggan";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
+import { useNavigate } from "react-router-dom";
 
 const usePelanggan = () => {
+  // navigate
+  const navigate = useNavigate();
+
   // query client
   const queryClient = useQueryClient();
 
@@ -217,6 +221,11 @@ const usePelanggan = () => {
     }
   };
 
+  // handle redirect riwayat transaksi
+  const handleRedirectRiwayatTransaksiDetail = (id: number) => {
+    navigate(`/dashboard/riwayat-transaksi/detail/${id}`);
+  };
+
   // use delete pelanggan
   const {
     dataDelete,
@@ -267,6 +276,7 @@ const usePelanggan = () => {
     handelUpdateIsActive,
     isPendingUpdateIsActive,
     variablesUpdateIsActive,
+    handleRedirectRiwayatTransaksiDetail,
   };
 };
 

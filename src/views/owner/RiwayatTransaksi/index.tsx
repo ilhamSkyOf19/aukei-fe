@@ -3,22 +3,17 @@ import {
   BanknoteArrowDown,
   CalendarClock,
   ChartColumn,
-  ChevronRight,
   Clock3,
-  Dot,
-  Eye,
   FileText,
   History,
   Landmark,
   Package,
-  PackageOpen,
   QrCode,
   Receipt,
   Sheet,
   ShoppingBag,
   TrendingUp,
 } from "lucide-react";
-import InputSearch from "../../../components/inputs/InputSearch";
 import type { FC } from "react";
 import { cn } from "../../../utils/cn";
 import {
@@ -27,29 +22,19 @@ import {
   formatRupiah,
   formatRupiahShort,
 } from "../../../helpers/helpers";
-import RangeDateLarge from "../../../components/filters/RangeDateLarge";
-import FilterSort from "../../../components/filters/Sort";
-import MetodePembayaran from "../../../components/filters/MetodePembayaran";
-import StatusTempo from "../../../components/filters/StatusTempo";
-import useTransaksi from "./useTransaksi";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import {
-  PAYMENT_METHOD_TYPE,
-  TEMPO_STATUS_TYPE,
-  TRANSACTION_STATUS_TYPE,
-  type PaymentMethodType,
-  type TempoStatusType,
-  type TransactionStatusType,
-} from "../../../types/constant.type";
+import { type PaymentMethodType } from "../../../types/constant.type";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
-import RangeDate from "../../../components/filters/RangeDate";
-import listDateRangeLong from "../../../utils/listDateRangeLong";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import Avatar from "../../../components/ui/Avatar";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
+import FilterStatistik from "../../../components/filters/FilterStatistik";
+import CardData from "../../../components/ui/cards/CardData";
+import StatusTransaction from "../../../components/ui/StatusTransaction";
+import useRiwayatTransaksi from "./useRiwayatTransaksi";
 
-const Transaksi = () => {
+const RiwayatTransaksi = () => {
   const {
     metodePembayaran,
     handleSetMetodePembayaran,
@@ -67,75 +52,26 @@ const Transaksi = () => {
     setPage,
     setSort,
     sort,
-  } = useTransaksi();
+  } = useRiwayatTransaksi();
 
   return (
     <div className="w-full h-screen overflow-y-auto">
       <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2 p-2">
-        {/* search */}
-        <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg md:hidden">
-          <InputSearch handleSearch={handleSearch} />
-        </div>
-
-        {/* filter */}
-        <div className="w-full grid grid-cols-2 md:grid-cols-4 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-2 lg:gap-12">
-          <div className="col-span-1 hidden md:flex">
-            <InputSearch handleSearch={handleSearch} withLabel />
-          </div>
-
-          <div className="col-span-2 md:hidden">
-            <RangeDateLarge />
-          </div>
-
-          <div className="col-span-1 hidden md:flex">
-            <RangeDate listDate={listDateRangeLong} customWidth="w-full" />
-          </div>
-
-          <div className="col-span-1">
-            <FilterSort setSort={setSort} customWidth="w-full" value={sort} />
-          </div>
-
-          <div className="col-span-1 flex flex-row justify-start items-start gap-2">
-            <MetodePembayaran
-              setMetode={handleSetMetodePembayaran}
-              customWidth="w-full"
-              value={metodePembayaran}
-            />
-            {metodePembayaran === "tempo" && (
-              <div className="hidden md:flex">
-                <StatusTempo
-                  setStatusTempo={setStatusTempo}
-                  value={statusTempo}
-                />
-              </div>
-            )}
-          </div>
-          {metodePembayaran === "tempo" && (
-            <div className="col-span-1 md:hidden">
-              <StatusTempo
-                setStatusTempo={setStatusTempo}
-                value={statusTempo}
-              />
-            </div>
-          )}
-        </div>
-
-        <div className="flex my-2 flex-row justify-end w-full items-center gap-2 md:hidden">
-          <ButtonWithIcon
-            icon={FileText}
-            label="Export PDF"
-            bgColor="bg-error"
-            textColor="text-primary-white"
-            customHeight="h-9"
-          />
-          <ButtonWithIcon
-            icon={Sheet}
-            label="Export Excel"
-            bgColor="bg-success"
-            textColor="text-primary-white"
-            customHeight="h-9"
-          />
-        </div>
+        <FilterStatistik
+          handleSearch={handleSearch}
+          filterSort={{
+            handleSort: setSort,
+            value: sort,
+          }}
+          filterMetodePembayaran={{
+            handleMetodePembayaran: handleSetMetodePembayaran,
+            value: metodePembayaran,
+          }}
+          filterTempo={{
+            handleTempo: setStatusTempo,
+            value: statusTempo,
+          }}
+        />
 
         {/* data */}
         <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
@@ -147,13 +83,6 @@ const Transaksi = () => {
 
             {/* aksi */}
             <div className="flex flex-row justify-end items-center gap-2">
-              {/* button detail */}
-              <ButtonWithIcon
-                icon={Eye}
-                label="Lihat Detail"
-                customHeight="h-9 md:h-9"
-                handleBtn={() => handleRedirectDetail()}
-              />
               {/* button export */}
               <div className="md:flex flex-row justify-start items-center gap-2 hidden">
                 <ButtonWithIcon
@@ -353,6 +282,9 @@ const Transaksi = () => {
           ) : isExistDataRiwayatTransaksi && dataRiwayatTransaksi ? (
             dataRiwayatTransaksi?.data?.data.map((item) => (
               <CardData
+                handleRedirectDetail={() =>
+                  handleRedirectDetail(item.pelanggan.id)
+                }
                 key={item.id}
                 nomorReferensi={item.nomorTransaksi || ""}
                 tanggal={item?.completedAt || new Date()}
@@ -431,7 +363,7 @@ const Transaksi = () => {
                             {item.pelanggan.nama}
                           </span>
                           {/* no wa */}
-                          <span className="font-semibold text-[0.625rem] text-base-content/50">
+                          <span className="text-[0.625rem] text-base-content/50">
                             {formatNumberPhone(item.pelanggan.noWa)}
                           </span>
                         </div>
@@ -445,7 +377,7 @@ const Transaksi = () => {
                       />
                     </td>
                     <td>
-                      <StatusComponent
+                      <StatusTransaction
                         status={item.status}
                         statusTempo={item.statusTempo}
                       />
@@ -454,6 +386,7 @@ const Transaksi = () => {
                       <button
                         type="button"
                         className="text-info hover:underline"
+                        onClick={() => handleRedirectDetail(item.pelanggan.id)}
                       >
                         detail
                       </button>
@@ -519,141 +452,6 @@ const Transaksi = () => {
   );
 };
 
-// card data
-type CardDataType = {
-  nomorReferensi: string;
-  tanggal: Date;
-  totalItem: number;
-  metodePembayaran: PaymentMethodType;
-  totalTransaksi: number;
-  status?: TransactionStatusType;
-  statusTempo?: TempoStatusType;
-};
-const CardData: FC<CardDataType> = ({
-  nomorReferensi,
-  metodePembayaran,
-  status,
-  tanggal,
-  totalItem,
-  totalTransaksi,
-  statusTempo,
-}) => {
-  return (
-    <button
-      type="button"
-      className="w-full flex flex-row justify-between items-center p-2 rounded-lg border border-base-content/10 hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out"
-    >
-      <div className="flex flex-row justify-start items-center gap-2.5">
-        {/* icon */}
-        <div
-          className={cn(
-            "w-10 h-10 rounded-full flex flex-row justify-center items-center",
-            metodePembayaran === PAYMENT_METHOD_TYPE.TRANSFER && "bg-blue-100",
-            metodePembayaran === PAYMENT_METHOD_TYPE.CASH && "bg-emerald-100",
-            metodePembayaran === PAYMENT_METHOD_TYPE.QRIS && "bg-purple-100",
-            metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && "bg-amber-100",
-          )}
-        >
-          {metodePembayaran === PAYMENT_METHOD_TYPE.TRANSFER && (
-            <Landmark className={cn("size-5", "text-blue-600")} />
-          )}
-          {metodePembayaran === PAYMENT_METHOD_TYPE.CASH && (
-            <Banknote className={cn("size-5", "text-emerald-600")} />
-          )}
-          {metodePembayaran === PAYMENT_METHOD_TYPE.QRIS && (
-            <QrCode className={cn("size-5", "text-purple-600")} />
-          )}
-          {metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && (
-            <CalendarClock className={cn("size-5", "text-amber-600")} />
-          )}
-        </div>
-
-        {/* data */}
-        <div className="flex flex-col justify-start items-start gap-0.5">
-          {/* kode referensi */}
-          <span className="text-[0.625rem] font-semibold text-base-content">
-            {nomorReferensi}
-          </span>
-
-          {/* date */}
-          <span className="text-[0.625rem] text-base-content/80">
-            {formatTanggalLengkap(tanggal)}
-          </span>
-
-          {/* total item and metode pembayaran */}
-          <div className="flex flex-row justify-start items-center">
-            {/* total item */}
-            <div className="w-full flex fex-row justify-start items-center gap-1">
-              {/* icon */}
-              <PackageOpen className="size-2.5 text-base-content/80" />
-
-              {/* value */}
-              <span className="text-[0.625rem] text-base-content/80">
-                {formatNumber(totalItem.toString())} Item
-              </span>
-            </div>
-
-            {/* dot */}
-            <Dot className="text-base-content/80 -ml-2" />
-
-            <span className="text-[0.625rem] capitalize text-base-content/80">
-              {metodePembayaran.toLowerCase()}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* total */}
-      <div className="flex flex-row justify-end items-center gap-2">
-        <div className="flex flex-col justify-start items-end gap-2">
-          {/* total */}
-          <span className="text-xs text-base-content font-semibold">
-            {formatRupiah(totalTransaksi)}
-          </span>
-
-          {/* status */}
-          <StatusComponent status={status} statusTempo={statusTempo} />
-        </div>
-
-        {/* icon */}
-        <ChevronRight className="size-4 text-base-content" />
-      </div>
-    </button>
-  );
-};
-
-// status component
-type StatusComponentProps = {
-  status?: TransactionStatusType;
-  statusTempo?: TempoStatusType;
-};
-const StatusComponent: FC<StatusComponentProps> = ({ status, statusTempo }) => {
-  return (
-    <>
-      <span
-        className={cn(
-          "px-2 py-0.5 rounded-md text-[0.625rem]",
-          status === TRANSACTION_STATUS_TYPE.COMPLETED &&
-            "bg-green-100 text-green-600",
-          statusTempo === TEMPO_STATUS_TYPE.UNPAID &&
-            "bg-amber-100 text-amber-600",
-          statusTempo === TEMPO_STATUS_TYPE.PAID &&
-            "bg-green-100 text-green-600",
-          statusTempo === TEMPO_STATUS_TYPE.OVERDUE &&
-            "bg-red-100 text-red-600",
-        )}
-      >
-        {status === TRANSACTION_STATUS_TYPE.COMPLETED &&
-          !statusTempo &&
-          "Lunas"}
-        {statusTempo === TEMPO_STATUS_TYPE.UNPAID && "Belum Lunas"}
-        {statusTempo === TEMPO_STATUS_TYPE.PAID && "Lunas"}
-        {statusTempo === TEMPO_STATUS_TYPE.OVERDUE && "Terlambat"}
-      </span>
-    </>
-  );
-};
-
 // metode pembayaran
 type MetodePembayaranProps = {
   metodePembayaran: PaymentMethodType;
@@ -691,4 +489,4 @@ const MetodePembayaranComponent: FC<MetodePembayaranProps> = ({
   );
 };
 
-export default Transaksi;
+export default RiwayatTransaksi;

@@ -102,6 +102,10 @@
 
 - [✅] Memisahkan Halaman Statistik dan Riwayat Transaksi
 
+- [✅] Membuat halaman pelanggan
+
+- [ ] Membuat halaman riwayat transaksi untuk pelanggan
+
 - [ ] Memberikan modal pesan error agar menggunakna booking , jika stok tidak cukup
 
 - [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan

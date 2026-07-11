@@ -15,9 +15,10 @@ import RoleGuard from "../Guards/RoleGuard";
 import { ROLE_INTERNAL_TYPE } from "../types/constant.type";
 import KasirPage from "../pages/KasirPage";
 import KeranjangPage from "../pages/KeranjangPage";
-import TransaksiPage from "../pages/TransaksiPage";
-import StatistikTransaksiPage from "../pages/StatistikTransaksiPage";
 import PelangganPage from "../pages/PelangganPages";
+import StatistikDetailPage from "../pages/StatistikDetailPage";
+import RiwayatTransaksiDetailPage from "../pages/RiwayatTransaksiDetailPage";
+import RiwayatTransaksiPage from "../pages/RiwayatTransaksiPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -209,26 +210,40 @@ const route = createBrowserRouter([
         ],
       },
       {
-        path: "transaksi",
+        path: "statistik",
         children: [
           {
             index: true,
             element: (
               <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
-                <TransaksiPage />
+                <StatistikDetailPage />
               </RoleGuard>
             ),
           },
         ],
       },
       {
-        path: "statistik",
-        element: (
-          <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
-            <StatistikTransaksiPage />
-          </RoleGuard>
-        ),
+        path: "riwayat-transaksi",
+        children: [
+          {
+            index: true,
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <RiwayatTransaksiPage />
+              </RoleGuard>
+            ),
+          },
+          {
+            path: "detail/:id",
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <RiwayatTransaksiDetailPage />
+              </RoleGuard>
+            ),
+          },
+        ],
       },
+
       {
         path: "pelanggan",
         children: [

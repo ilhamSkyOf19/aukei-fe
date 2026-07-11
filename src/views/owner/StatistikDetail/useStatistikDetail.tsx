@@ -1,15 +1,11 @@
-import { useNavigate } from "react-router-dom";
 import useSizeWindows from "../../../hooks/useSizeWindows";
 import { useQuery } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { StatistikServices } from "../../../services/statistik.service";
 
-const useStatistikTransaksi = () => {
+const useStatistikDetail = () => {
   // window size
   const windowSize = useSizeWindows();
-
-  // naviagte
-  const navigate = useNavigate();
 
   // filter date
   const { startDate, endDate } = useFilterRangeDate();
@@ -29,10 +25,9 @@ const useStatistikTransaksi = () => {
 
   return {
     windowSize,
-    navigate,
     statistik,
     isLoading,
   };
 };
 
-export default useStatistikTransaksi;
+export default useStatistikDetail;

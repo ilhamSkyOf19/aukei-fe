@@ -64,6 +64,7 @@ const Pelanggan = () => {
     handelUpdateIsActive,
     isPendingUpdateIsActive,
     variablesUpdateIsActive,
+    handleRedirectRiwayatTransaksiDetail,
   } = usePelanggan();
 
   return (
@@ -156,64 +157,23 @@ const Pelanggan = () => {
                     </div>
 
                     <div className="hidden md:flex flex-1 flex-row justify-end items-center gap-12">
-                      {/* aksi active */}
-                      <div className=" flex flex-row justify-start items-center gap-4">
-                        {/* label */}
-                        <span className="text-xs font-medium text-base-content">
-                          Aktif
-                        </span>
-
-                        {/* input */}
-                        {isPendingUpdateIsActive &&
-                        variablesUpdateIsActive?.id == pelanggan.id ? (
-                          <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
-                            <div className="loading loading-xs" />
-                          </div>
-                        ) : (
-                          <input
-                            type="checkbox"
-                            checked={pelanggan.isActive}
-                            className="toggle toggle-success"
-                            onChange={() =>
-                              handelUpdateIsActive({
-                                id: pelanggan.id,
-                                status: !pelanggan.isActive,
-                              })
-                            }
-                          />
-                        )}
-                      </div>
-
-                      {/* aksi */}
-                      <div className="flex  flex-row justify-end items-center gap-2">
-                        {/* button update */}
-                        <button
-                          type="button"
-                          className="w-8 h-8 flex justify-center items-center rounded-lg hover-overlay bg-blue-100"
-                        >
-                          <Pencil className="text-blue-400 size-4" />
-                        </button>
-                        {/* button delete */}
-                        <button
-                          type="button"
-                          disabled={isPendingDelete}
-                          className="w-8 h-8 disabled:opacity-50 hover-overlay flex justify-center items-center rounded-lg bg-rose-100"
-                          onClick={() => {
-                            if (pelanggan.totalTransaction !== undefined)
-                              return;
-
-                            handleShowModalDelete(pelanggan.id, {
-                              nama: pelanggan.nama,
-                            });
-                          }}
-                        >
-                          {isPendingDelete ? (
-                            <div className="loading loading-xs" />
-                          ) : (
-                            <Trash2 className="text-rose-400 size-4" />
-                          )}
-                        </button>
-                      </div>
+                      <Aksi
+                        handleRedirectRiwayatTransaksiDetail={
+                          handleRedirectRiwayatTransaksiDetail
+                        }
+                        handelUpdateIsActive={handelUpdateIsActive}
+                        handleShowModalDelete={handleShowModalDelete}
+                        handleShowModalFormulirPelanggan={
+                          handleShowModalFormulirPelanggan
+                        }
+                        pelanggan={pelanggan}
+                        isLoadingAktif={
+                          isPendingDelete &&
+                          variablesUpdateIsActive?.id === pelanggan.id
+                        }
+                        isPendingDelete={isPendingDelete}
+                        totalTransaction={pelanggan?.totalTransaction}
+                      />
                     </div>
                   </div>
 
@@ -268,60 +228,23 @@ const Pelanggan = () => {
                   <div className="w-full pt-2 md:hidden flex flex-row justify-between items-center">
                     {/* aksi active */}
                     <div className="flex-1 flex flex-row justify-start items-center gap-4">
-                      {/* label */}
-                      <span className="text-xs font-medium text-base-content">
-                        Aktif
-                      </span>
-
-                      {/* input */}
-                      {isPendingUpdateIsActive &&
-                      variablesUpdateIsActive?.id == pelanggan.id ? (
-                        <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
-                          <div className="loading loading-xs" />
-                        </div>
-                      ) : (
-                        <input
-                          type="checkbox"
-                          checked={pelanggan.isActive}
-                          className="toggle toggle-success"
-                          onChange={() =>
-                            handelUpdateIsActive({
-                              id: pelanggan.id,
-                              status: !pelanggan.isActive,
-                            })
-                          }
-                        />
-                      )}
-                    </div>
-
-                    {/* aksi */}
-                    <div className="flex flex-1 flex-row justify-end items-center gap-2">
-                      {/* button update */}
-                      <button
-                        type="button"
-                        className="w-8 h-8 flex justify-center items-center rounded-lg hover-overlay bg-blue-100"
-                      >
-                        <Pencil className="text-blue-400 size-4" />
-                      </button>
-                      {/* button delete */}
-                      <button
-                        type="button"
-                        disabled={isPendingDelete}
-                        className="w-8 h-8 disabled:opacity-50 hover-overlay flex justify-center items-center rounded-lg bg-rose-100"
-                        onClick={() => {
-                          if (pelanggan.totalTransaction !== undefined) return;
-
-                          handleShowModalDelete(pelanggan.id, {
-                            nama: pelanggan.nama,
-                          });
-                        }}
-                      >
-                        {isPendingDelete ? (
-                          <div className="loading loading-xs" />
-                        ) : (
-                          <Trash2 className="text-rose-400 size-4" />
-                        )}
-                      </button>
+                      <Aksi
+                        handleRedirectRiwayatTransaksiDetail={
+                          handleRedirectRiwayatTransaksiDetail
+                        }
+                        handelUpdateIsActive={handelUpdateIsActive}
+                        handleShowModalDelete={handleShowModalDelete}
+                        handleShowModalFormulirPelanggan={
+                          handleShowModalFormulirPelanggan
+                        }
+                        pelanggan={pelanggan}
+                        isLoadingAktif={
+                          isPendingDelete &&
+                          variablesUpdateIsActive?.id === pelanggan.id
+                        }
+                        isPendingDelete={isPendingDelete}
+                        totalTransaction={pelanggan?.totalTransaction}
+                      />
                     </div>
                   </div>
                 </div>
@@ -493,7 +416,11 @@ const Pelanggan = () => {
                             <button
                               type="button"
                               className="w-7 h-7 bg-custom-primary rounded-md flex flex-row justify-center items-center hover-overlay"
-                              onClick={() => {}}
+                              onClick={() =>
+                                handleRedirectRiwayatTransaksiDetail(
+                                  pelanggan.id,
+                                )
+                              }
                             >
                               <Eye className="size-3.5 text-custom-secondary" />
                             </button>
@@ -524,7 +451,10 @@ const Pelanggan = () => {
                             {/* update */}
                             <button
                               type="button"
-                              disabled={(pelanggan?.totalTransaction ?? 0) > 0}
+                              disabled={
+                                (pelanggan?.totalTransaction ?? 0) > 0 ||
+                                isPendingDelete
+                              }
                               className="w-7 h-7 bg-error rounded-md flex flex-row justify-center items-center not-disabled:hover-overlay disabled:opacity-20"
                               style={{
                                 cursor:
@@ -723,6 +653,108 @@ const LabelCardPelanggan: FC<LabelCardPelangganProps> = ({
         </span>
       </div>
     </div>
+  );
+};
+
+type Props = {
+  isLoadingAktif?: boolean;
+  pelanggan: {
+    id: number;
+    nama: string;
+    noWa: string;
+    isActive: boolean;
+  };
+  isPendingDelete?: boolean;
+  totalTransaction?: number;
+  handelUpdateIsActive: (params: { id: number; status: boolean }) => void;
+  handleShowModalFormulirPelanggan: (id: number) => void;
+  handleShowModalDelete: (
+    id?: number,
+    data?: {
+      nama: string;
+    },
+  ) => void;
+  handleRedirectRiwayatTransaksiDetail: (id: number) => void;
+};
+// aksi
+const Aksi: FC<Props> = ({
+  isLoadingAktif,
+  totalTransaction,
+  isPendingDelete,
+  pelanggan,
+  handelUpdateIsActive,
+  handleShowModalFormulirPelanggan,
+  handleShowModalDelete,
+  handleRedirectRiwayatTransaksiDetail,
+}) => {
+  return (
+    <>
+      {/* label */}
+      <div className=" flex flex-row justify-start items-center gap-4">
+        <span className="text-xs font-medium text-base-content">Aktif</span>
+
+        {/* input */}
+        {isLoadingAktif ? (
+          <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
+            <div className="loading loading-xs" />
+          </div>
+        ) : (
+          <input
+            type="checkbox"
+            checked={pelanggan.isActive}
+            className="toggle toggle-success"
+            onChange={() =>
+              handelUpdateIsActive({
+                id: pelanggan.id,
+                status: !pelanggan.isActive,
+              })
+            }
+          />
+        )}
+      </div>
+
+      {/* aksi */}
+      <div className="flex flex-1 flex-row justify-end items-center gap-2">
+        {/* button redirect */}
+        <button
+          type="button"
+          className="w-8 h-8 flex justify-center items-center rounded-lg hover-overlay bg-custom-primary/50"
+          onClick={() => handleRedirectRiwayatTransaksiDetail(pelanggan.id)}
+        >
+          <Eye className="text-custom-secondary size-4" />
+        </button>
+        {/* button update */}
+        <button
+          type="button"
+          className="w-8 h-8 flex justify-center items-center rounded-lg hover-overlay bg-blue-100"
+          onClick={() => handleShowModalFormulirPelanggan(pelanggan.id)}
+        >
+          <Pencil className="text-blue-400 size-4" />
+        </button>
+        {/* button delete */}
+        <button
+          type="button"
+          disabled={(totalTransaction ?? 0) > 0 || isPendingDelete}
+          className="w-8 h-8 disabled:opacity-50 not-disabled:hover-overlay flex justify-center items-center rounded-lg bg-rose-100"
+          style={{
+            cursor: (totalTransaction ?? 0) > 0 ? "not-allowed" : "pointer",
+          }}
+          onClick={() => {
+            if ((totalTransaction ?? 0) > 0) return;
+
+            handleShowModalDelete(pelanggan.id, {
+              nama: pelanggan.nama,
+            });
+          }}
+        >
+          {isPendingDelete ? (
+            <div className="loading loading-xs" />
+          ) : (
+            <Trash2 className="text-rose-400 size-4" />
+          )}
+        </button>
+      </div>
+    </>
   );
 };
 export default Pelanggan;

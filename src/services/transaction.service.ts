@@ -3,6 +3,7 @@ import type { PaginationType } from "../models/pagination.model";
 import type {
   CreateTransactionForRequestType,
   ResponseRiwayatTransactionType,
+  ResponseRiwayatTransaksiPelangganType,
   ResponseTransactionType,
 } from "../models/transaction.model";
 import type { ResponseStructure } from "../types/response.type";
@@ -44,6 +45,25 @@ export class TransactionServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseRiwayatTransactionType | null>
     >("/transaction", { params: query });
+
+    return result.data;
+  }
+
+  // find riwayat transaksi by pelanggan
+  static async findRiwayatTransaksiByPelanggan(params: {
+    id: number;
+    query: PaginationType & {
+      startDate?: string;
+      endDate?: string;
+      metodePembayaran?: string;
+      status?: string;
+      statusTempo?: string;
+    };
+  }): Promise<ResponseStructure<ResponseRiwayatTransaksiPelangganType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseRiwayatTransaksiPelangganType | null>
+    >(`/transaction/pelanggan/${params.id}`, { params: params.query });
 
     return result.data;
   }

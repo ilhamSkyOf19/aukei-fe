@@ -7,6 +7,7 @@ import type {
 import type { PaginationType } from "./pagination.model";
 import type { IPelangganType } from "./pelanggan.model";
 import type { IPenggunaInternalType } from "./penggunaInternal.model";
+import type { ResponseRingkasanStatistikType } from "./statistik.model";
 import type { DataTempoType, ITempo } from "./tempo.model";
 import type { ITempoInstallmentType } from "./tempoInstallment.model";
 import type { ITransactionDetailType } from "./transactionDetail.model";
@@ -105,5 +106,39 @@ export interface ResponseRiwayatTransactionType {
     statusTempo?: TempoStatusType;
     status?: TransactionStatusType;
   })[];
+  meta: MetaType;
+}
+
+export interface ResponseRiwayatTransaksiPelangganType {
+  data: {
+    pelanggan: {
+      id: number;
+      nama: string;
+      noWa: string;
+      isActive: boolean;
+    };
+    statistik?: Pick<
+      ResponseRingkasanStatistikType,
+      | "totalTransaksi"
+      | "totalOmzet"
+      | "totalRataRataTransaksi"
+      | "totalPiutang"
+      | "totalProdukTerjual"
+      | "totalItemTerjual"
+    >;
+    transaksi?: (Pick<
+      ITransactionType,
+      | "id"
+      | "nomorTransaksi"
+      | "completedAt"
+      | "totalItem"
+      | "totalBayar"
+      | "metodePembayaran"
+    > & {
+      pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
+      statusTempo?: TempoStatusType;
+      status?: TransactionStatusType;
+    })[];
+  };
   meta: MetaType;
 }
