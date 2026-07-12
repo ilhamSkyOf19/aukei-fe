@@ -453,7 +453,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                   <Receipt className="size-4 text-custom-secondary" />
                 )}
                 <span className="text-custom-secondary xl:text-xs font-semibold">
-                  {isUpdateTransaction ? "Simpan" : "Buat Transaksi"}
+                  {isUpdateTransaction ? "Simpan" : "Pembayaran"}
                 </span>
               </button>
             </div>

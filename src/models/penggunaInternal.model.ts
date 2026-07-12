@@ -6,6 +6,7 @@ export interface IPenggunaInternalType {
   nama: string;
   username: string;
   password: string;
+  isActive: boolean;
   role: RoleInternalType;
   createdAt: Date;
   updatedAt: Date;
@@ -14,7 +15,7 @@ export interface IPenggunaInternalType {
 // create pengguna
 export interface CreatePenggunaInternalType extends Omit<
   IPenggunaInternalType,
-  "id" | "createdAt" | "updatedAt" | "role"
+  "id" | "createdAt" | "updatedAt" | "role" | "isActive"
 > {
   role: RoleInternalType;
 }
@@ -30,15 +31,3 @@ export interface ResponsePenggunaInternalType extends Omit<
   IPenggunaInternalType,
   "password" | "createdAt" | "updatedAt"
 > {}
-
-// to response payload
-export const toResponsePenggunaInternal = (
-  pengguna: ResponsePenggunaInternalType,
-): ResponsePenggunaInternalType => {
-  return {
-    id: pengguna.id,
-    nama: pengguna.nama,
-    username: pengguna.username,
-    role: pengguna.role,
-  };
-};

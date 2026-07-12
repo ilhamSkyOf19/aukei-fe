@@ -30,6 +30,7 @@ import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_PRODUK } from "../../../types/toast.type";
 import ModalDelete from "../../../components/modals/ModalDelete";
 import type { FC } from "react";
+import ModalAlert from "../../../components/modals/ModalAlert";
 
 const Produk = () => {
   // call use
@@ -58,6 +59,12 @@ const Produk = () => {
     wrapperRef,
     kategori,
     sort,
+    handelUpdateIsActive,
+    isPendingUpdateIsActive,
+    variablesUpdateIsActive,
+    dataModalFailedDelete,
+    handleCloseModalFailedDelete,
+    modalFailedDeleteRef,
   } = useProduk();
 
   return (
@@ -210,6 +217,7 @@ const Produk = () => {
                         <th>Harga Jual</th>
                         <th>Stok</th>
                         <th>Isi PerBox</th>
+                        <th>Aktif</th>
                         <th className="sticky right-0 bg-base-200 z-10">
                           Aksi
                         </th>
@@ -280,6 +288,28 @@ const Produk = () => {
                             <td className="font-medium">
                               {formatNumber(produk.isiPerBox.toString())}
                             </td>
+
+                            {/* aktif */}
+                            <td>
+                              {isPendingUpdateIsActive &&
+                              variablesUpdateIsActive?.id == produk.id ? (
+                                <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
+                                  <div className="loading loading-xs" />
+                                </div>
+                              ) : (
+                                <input
+                                  type="checkbox"
+                                  checked={produk.isActive}
+                                  className="toggle toggle-success toggle-sm"
+                                  onChange={() =>
+                                    handelUpdateIsActive({
+                                      id: produk.id,
+                                      status: !produk.isActive,
+                                    })
+                                  }
+                                />
+                              )}
+                            </td>
                             {/* detail */}
                             <td className="sticky right-0 bg-base-100 z-10">
                               <div
@@ -342,6 +372,7 @@ const Produk = () => {
                             <th>Harga Jual Satuan</th>
                             <th>Stok</th>
                             <th>Isi PerBox</th>
+                            <th>Aktif</th>
                             <th className="sticky right-0 bg-base-100 z-10">
                               Aksi
                             </th>
@@ -374,6 +405,14 @@ const Produk = () => {
           handleDelete={handleDeleteProduk}
           bigTitle={`Apakah anda yakin ingin menghapus data "${dataDeleteProduk?.nama}" ini?`}
           isLoadingDelete={isPendingDeleteProduk}
+        />
+
+        {/* modal alert */}
+        <ModalAlert
+          modalRef={modalFailedDeleteRef}
+          handleCloseModal={handleCloseModalFailedDelete}
+          bigTitle={dataModalFailedDelete?.titleMessage ?? ""}
+          smallTitle={dataModalFailedDelete?.description ?? ""}
         />
       </div>
     </div>

@@ -314,6 +314,7 @@ const RiwayatTransaksi = () => {
               <tr className="h-12 bg-base-100 text-xs">
                 <th>No. Transaksi</th>
                 <th>Tanggal</th>
+                <th>Kasir</th>
                 <th>Pelanggan</th>
                 <th>Total Item</th>
                 <th>Total Pembayaran</th>
@@ -347,6 +348,33 @@ const RiwayatTransaksi = () => {
                     </td>
                     <td>
                       {formatTanggalLengkap(item.completedAt ?? new Date())}
+                    </td>
+                    {/* kasir */}
+                    <td>
+                      {item.kasir ? (
+                        <div className="w-full flex flex-row justify-start items-center gap-2">
+                          {/* avatar */}
+                          <Avatar
+                            nama={item.kasir.nama}
+                            index={item.kasir.id}
+                            xs
+                          />
+                          <div className="flex flex-col justify-start items-start">
+                            {/* nama */}
+                            <span className="font-semibold text-[0.625rem]">
+                              {item.kasir.nama}
+                            </span>
+                            {/* no wa */}
+                            <span className="text-[0.625rem] text-base-content/50">
+                              {item.kasir.username}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-xs font-medium italic text-base-content/50">
+                          Kasir tidak tersedia
+                        </span>
+                      )}
                     </td>
                     {/* pelanggan */}
                     <td>
@@ -413,6 +441,7 @@ const RiwayatTransaksi = () => {
                   <>
                     <th>No. Transaksi</th>
                     <th>Tanggal</th>
+                    <th>Kasir</th>
                     <th>Pelanggan</th>
                     <th>Total Item</th>
                     <th>Total Pembayaran</th>
@@ -422,6 +451,7 @@ const RiwayatTransaksi = () => {
                   </>
                 ) : (
                   <>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>

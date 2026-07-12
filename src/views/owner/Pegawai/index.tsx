@@ -48,6 +48,9 @@ const Pegawai = () => {
     modalDeleteManyRef,
     choosePegawai,
     sort,
+    handelUpdateIsActive,
+    isPendingUpdateIsActive,
+    variablesUpdateIsActive,
   } = usePegawai();
 
   return (
@@ -227,6 +230,7 @@ const Pegawai = () => {
                   <th>Nama Pegawai</th>
                   <th>Role</th>
                   <th>Username</th>
+                  <th>Aktif</th>
                   <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
                 </tr>
               </thead>
@@ -282,6 +286,28 @@ const Pegawai = () => {
                             {pegawai.username}
                           </p>
                         </div>
+                      </td>
+
+                      {/* update is active */}
+                      <td>
+                        {isPendingUpdateIsActive &&
+                        variablesUpdateIsActive?.id == pegawai.id ? (
+                          <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
+                            <div className="loading loading-xs" />
+                          </div>
+                        ) : (
+                          <input
+                            type="checkbox"
+                            checked={pegawai.isActive}
+                            className="toggle toggle-success toggle-sm"
+                            onChange={() =>
+                              handelUpdateIsActive({
+                                id: pegawai.id,
+                                status: !pegawai.isActive,
+                              })
+                            }
+                          />
+                        )}
                       </td>
                       <td>
                         <div className="flex flex-row justify-start items-center gap-1.5">
@@ -363,10 +389,12 @@ const Pegawai = () => {
                       <th>Nama Pegawai</th>
                       <th>Role</th>
                       <th>Username</th>
+                      <th>Aktif</th>
                       <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
                     </>
                   ) : (
                     <>
+                      <th></th>
                       <th></th>
                       <th></th>
                       <th></th>

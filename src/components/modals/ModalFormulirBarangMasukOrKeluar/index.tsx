@@ -36,7 +36,6 @@ type Props<T extends FieldValues> = {
 
 const ModalFormulirBarangMasukOrKeluar = <T extends FieldValues>({
   modalRef,
-  dataUpdate,
   handleCloseModalWithReset,
   handleSubmit,
   onSubmit,
@@ -52,7 +51,7 @@ const ModalFormulirBarangMasukOrKeluar = <T extends FieldValues>({
 }: Props<T>) => {
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
+      <div className="modal-box w-11/12 lg:w-1/2 max-w-5xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
@@ -63,43 +62,49 @@ const ModalFormulirBarangMasukOrKeluar = <T extends FieldValues>({
           <form
             onSubmit={handleSubmit(onSubmit)}
             className={cn(
-              "w-full flex flex-col justify-start items-center mt-4 gap-4",
+              "w-full flex flex-col justify-start items-start mt-4 gap-4",
             )}
           >
-            {/* nama */}
-            <InputDate<T>
-              controller={useTanggalController}
-              label="Tanggal Masuk"
-            />
+            <div className="w-full flex flex-row justify-start items-start gap-4">
+              {/* tanggal masuk */}
+              <div className="flex-1 border-r border-base-content/10">
+                <InputDate<T>
+                  controller={useTanggalController}
+                  label="Tanggal Masuk"
+                />
+              </div>
 
-            {/* input choose jenis keluar */}
-            {useJenisKeluarController && (
-              <InputChoose<T>
-                chooseList={
-                  dataJenisKeluar?.map((item) => ({
-                    label: item.nama,
-                    value: item.id,
-                  })) ?? []
-                }
-                controller={useJenisKeluarController}
-                label="Jenis Keluar"
-                placeholder="Pilih Jenis Keluar"
-                required
-                isLoading={isLoadingDataJenisKeluar}
-              />
-            )}
+              <div className="flex-1 flex flex-col justify-end items-start">
+                {/* input choose jenis keluar */}
+                {useJenisKeluarController && (
+                  <InputChoose<T>
+                    chooseList={
+                      dataJenisKeluar?.map((item) => ({
+                        label: item.nama,
+                        value: item.id,
+                      })) ?? []
+                    }
+                    controller={useJenisKeluarController}
+                    label="Jenis Keluar"
+                    placeholder="Pilih Jenis Keluar"
+                    required
+                    isLoading={isLoadingDataJenisKeluar}
+                  />
+                )}
 
-            {/* keterangan */}
-            <InputTextAreaNonIcon
-              register={register}
-              label={`Keterangan Kategori (Opsional)`}
-              max={300}
-              name="keterangan"
-              placeholder={`Masukan keterangan kategori`}
-              errorMessage={errorKeteranganMessage}
-              defaultValue={dataUpdate?.keterangan}
-              rows={4}
-            />
+                {/* keterangan */}
+                <InputTextAreaNonIcon
+                  register={register}
+                  label={`Keterangan Kategori (Opsional)`}
+                  max={300}
+                  name="keterangan"
+                  placeholder={`Masukan keterangan kategori`}
+                  errorMessage={errorKeteranganMessage}
+                  rows={8}
+                />
+              </div>
+            </div>
+
             {/* action */}
             <div className="w-full mt-6 flex flex-row justify-end items-center gap-4">
               {/* button close */}

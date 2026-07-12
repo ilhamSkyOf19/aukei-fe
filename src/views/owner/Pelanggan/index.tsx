@@ -395,7 +395,7 @@ const Pelanggan = () => {
                           <input
                             type="checkbox"
                             checked={pelanggan.isActive}
-                            className="toggle toggle-success"
+                            className="toggle toggle-success toggle-sm"
                             onChange={() =>
                               handelUpdateIsActive({
                                 id: pelanggan.id,
@@ -448,7 +448,7 @@ const Pelanggan = () => {
                                 : ""
                             }
                           >
-                            {/* update */}
+                            {/* delete */}
                             <button
                               type="button"
                               disabled={
@@ -702,7 +702,7 @@ const Aksi: FC<Props> = ({
           <input
             type="checkbox"
             checked={pelanggan.isActive}
-            className="toggle toggle-success"
+            className="toggle toggle-success toggle-sm"
             onChange={() =>
               handelUpdateIsActive({
                 id: pelanggan.id,

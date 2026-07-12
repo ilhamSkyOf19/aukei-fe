@@ -14,15 +14,10 @@ export interface UpdatePegawaiForRequestType extends Partial<CreatePegawaiForReq
 // response pegawai
 export interface ResponsePegawaiType extends Pick<
   IPenggunaInternalType,
-  "id" | "nama" | "username"
+  "id" | "nama" | "username" | "isActive"
 > {
   role: Exclude<RoleInternalType, "OWNER">;
 }
-
-// to response
-export const toResponsePegawaiType = (
-  pegawai: ResponsePegawaiType,
-): ResponsePegawaiType => pegawai;
 
 // response pegawai
 export interface ResponsePegawaiWithPaginationType {

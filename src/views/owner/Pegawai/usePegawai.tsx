@@ -170,6 +170,40 @@ const usePegawai = () => {
     handleToast: handleSetToast,
   });
 
+  // update is active
+  const {
+    mutateAsync: mutateUpdateIsActive,
+    isPending: isPendingUpdateIsActive,
+    variables: variablesUpdateIsActive,
+  } = useMutation({
+    mutationFn: (data: { id: number; status: boolean }) =>
+      PegawaiServices.updateIsActive({
+        id: data.id,
+        req: { status: data.status },
+      }),
+    onSuccess: () => {
+      handleSetToast("updated_status");
+
+      // invalidate
+      queryClient.invalidateQueries({ queryKey: ["pegawai"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // handle update is active
+  const handelUpdateIsActive = async (data: {
+    id: number;
+    status: boolean;
+  }) => {
+    try {
+      await mutateUpdateIsActive(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     toast,
     dataPegawai,
@@ -199,6 +233,9 @@ const usePegawai = () => {
     handleSetChoosePegawai,
     choosePegawai,
     sort,
+    handelUpdateIsActive,
+    variablesUpdateIsActive,
+    isPendingUpdateIsActive,
   };
 };
 

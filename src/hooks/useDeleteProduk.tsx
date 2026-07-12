@@ -1,12 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { ProdukServices } from "../services/produk.service";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import type { ErrorResponse } from "../types/response.type";
 
 const useDeleteProduk = (params: {
   validatedIdParams: number | null;
   handleCloseModal: () => void;
   redirectPathname: string;
   handleInvalidate?: () => void;
+  handleShowModalFailedDelete: () => void;
 }) => {
   // params
   const {
@@ -14,6 +17,7 @@ const useDeleteProduk = (params: {
     validatedIdParams,
     redirectPathname,
     handleInvalidate,
+    handleShowModalFailedDelete,
   } = params;
 
   // navigate
@@ -43,7 +47,16 @@ const useDeleteProduk = (params: {
         handleInvalidate?.();
       },
       onError: (err) => {
-        console.log(err);
+        if (axios.isAxiosError<ErrorResponse>(err)) {
+          if (
+            err.response?.data.meta.customField?.includes("existing_relation")
+          ) {
+            handleShowModalFailedDelete();
+
+            // handle close modal delete
+            handleCloseModal();
+          }
+        }
       },
     });
 

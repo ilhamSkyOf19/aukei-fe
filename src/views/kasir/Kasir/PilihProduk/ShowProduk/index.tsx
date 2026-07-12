@@ -74,7 +74,7 @@ const ShowProduk: FC<Props> = ({
       {/* daftar produk */}
       <div
         className={cn(
-          "grid grid-cols-5 h-100 gap-2 overflow-y-auto scrollbar-thumb-custom-secondary py-3",
+          "grid w-full grid-cols-5 h-100 gap-2 overflow-y-auto scrollbar-thumb-custom-secondary py-3",
         )}
       >
         {/* card */}
@@ -104,8 +104,8 @@ const ShowProduk: FC<Props> = ({
                 })
               }
             >
-              <div className="w-full h-full flex flex-col justify-start items-start border border-transparent dark:border-base-content/10 rounded-lg shadow-sm overflow-hidden gap-2 group-hover:border-custom-secondary group-hover:shadow-sm transition-all duration-300 ease-in-out bg-base-100 p-1">
-                <div className="w-full h-90 shadow-md shadow-base-content/20 rounded-lg flex flex-row justify-center items-center overflow-hidden">
+              <div className="w-full h-full flex flex-col justify-start items-start border border-transparent dark:border-base-content/10 rounded-lg shadow-sm overflow-hidden gap-2 group-hover:border-custom-secondary group-hover:shadow-sm transition-all duration-300 ease-in-out bg-base-100 p-1.5">
+                <div className="w-full h-90 shadow-md rounded-lg flex flex-row justify-center items-center overflow-hidden">
                   <img
                     src={item.img}
                     alt="wall panel"
@@ -114,7 +114,7 @@ const ShowProduk: FC<Props> = ({
                   />
                 </div>
 
-                <div className="w-full h-80 flex flex-col justify-start items-start px-2 gap-2">
+                <div className="w-full h-80 flex flex-col justify-start items-start gap-2">
                   {/* name */}
                   <div className="w-full flex flex-col justify-start items-start gap-0.5">
                     <p className="text-xs text-start font-medium text-base-content">
@@ -143,12 +143,14 @@ const ShowProduk: FC<Props> = ({
             </button>
           ))
         ) : (
-          <div className="col-span-5 h-100  flex flex-row justify-center items-center">
-            <DataEmpty
-              title="Data Produk Tidak Tersedia"
-              description="Belum ada data produk yang dapat ditampilkan saat ini"
-              xs
-            />
+          <div className="col-span-5 h-90">
+            <div className="w-full flex flex-row justify-center items-center">
+              <DataEmpty
+                title="Data Produk Tidak Tersedia"
+                description="Belum ada data produk yang dapat ditampilkan saat ini"
+                xs
+              />
+            </div>
           </div>
         )}
       </div>

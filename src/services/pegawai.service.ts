@@ -48,6 +48,19 @@ export class PegawaiServices {
     return result.data;
   }
 
+  // update is active
+  static async updateIsActive(params: {
+    id: number;
+    req: { status: boolean };
+  }): Promise<ResponseStructure<ResponsePegawaiType | null>> {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponsePegawaiType | null>
+    >(`/pegawai/${params.id}/active`, params.req);
+
+    return result.data;
+  }
+
   // delete
   static async delete(id: number): Promise<ResponseStructure<null>> {
     // call api

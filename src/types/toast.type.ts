@@ -45,6 +45,10 @@ export const TOAST_CONFIG_PRODUK: Record<
     color: "error",
     message: "Produk berhasil dihapus",
   },
+  updated_status: {
+    color: "info",
+    message: "Status berhasil diperbarui",
+  },
 };
 
 // toast produk detail
@@ -199,6 +203,10 @@ export const TOAST_CONFIG_PEGAWAI: Record<
   deleted_pegawai: {
     color: "error",
     message: "Pegawai berhasil dihapus",
+  },
+  updated_status: {
+    color: "info",
+    message: "Status berhasil diperbarui",
   },
 };
 

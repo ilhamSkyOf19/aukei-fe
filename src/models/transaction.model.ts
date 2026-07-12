@@ -103,6 +103,7 @@ export interface ResponseRiwayatTransactionType {
     | "metodePembayaran"
   > & {
     pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
+    kasir: Pick<IPenggunaInternalType, "id" | "nama" | "username"> | null;
     statusTempo?: TempoStatusType;
     status?: TransactionStatusType;
   })[];

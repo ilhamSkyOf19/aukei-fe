@@ -1,4 +1,4 @@
-import { ShoppingCart, SquareUserRound, Store } from "lucide-react";
+import { ShoppingCart, SquareUserRound, Store, UserRound } from "lucide-react";
 import { type FC } from "react";
 import { cn } from "../../../utils/cn";
 import useHeaderKasir from "./useHeaderKasir";
@@ -131,24 +131,40 @@ const HeaderKasir: FC<Props> = ({ step }) => {
         {/* kasir */}
         <div
           className={cn(
-            "h-14 rounded-lg flex flex-row justify-start items-center gap-12 px-4",
+            "h-14 rounded-lg flex flex-row justify-start items-center gap-4 px-4",
           )}
         >
-          <div className="flex flex-row justify-start items-center gap-2">
-            <SquareUserRound
+          <div
+            className={cn(
+              "flex flex-row justify-start items-center gap-2 h-10 w-30 px-2 rounded-md shadow-md border  hover:border-custom-primary transition-all duration-300 ease-in-out origin-center dark:border-base-content/10",
+              isModeKasir
+                ? "border-primary-white text-primary-white"
+                : "border-transparent text-base-content",
+            )}
+          >
+            <div
               className={cn(
-                "size-7",
-                isModeKasir ? "text-primary-white" : "text-base-content",
+                "w-7 h-7 dark:border-base-content/10 rounded-lg flex justify-center items-center",
+                isModeKasir
+                  ? "border border-primary-white"
+                  : "bg-base-300 border border-transparent ",
               )}
-            />
-            <div className="flex flex-col justify-start items-start gap-px">
+            >
+              <UserRound
+                className={cn(
+                  "size-4",
+                  isModeKasir ? "text-primary-white" : "text-base-content",
+                )}
+              />
+            </div>
+            <div className="flex flex-col justify-start items-start">
               <span
                 className={cn(
                   "text-[0.625rem] font-medium",
                   isModeKasir ? "text-primary-white" : "text-base-content/50",
                 )}
               >
-                Kasir:
+                Kasir
               </span>
               <span
                 className={cn(
@@ -166,10 +182,10 @@ const HeaderKasir: FC<Props> = ({ step }) => {
             type="button"
             onClick={() => setIsModeKasir(!isModeKasir)}
             className={cn(
-              "flex flex-row justify-center items-center gap-2 py-2 px-4 border rounded-md shadow-sm  hover:border-custom-primary hover:shadow-sm hover:shadow-custom-primary transition-all duration-300 ease-in-out hover:scale-102 origin-center",
+              "flex flex-row justify-center items-center gap-2 h-10 px-4 rounded-md shadow-md border  hover:border-custom-primary transition-all duration-300 ease-in-out origin-center dark:border-base-content/10",
               isModeKasir
                 ? "border-primary-white text-primary-white"
-                : "border-base-content text-base-content",
+                : "border-transparent text-base-content",
             )}
           >
             <Store className="size-4" />

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useFilter } from "../../../hooks/useFilter";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ProdukServices } from "../../../services/produk.service";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useToastAnimation } from "../../../hooks/useToast";
@@ -25,7 +25,8 @@ const useProduk = () => {
     isHighlight: isActiveAksi,
     wrapperRef,
   } = useHighlight();
-  // use modal
+
+  // use modal delete
   const {
     modalRef: modalDeleteRef,
     handleShowModal: handleShowModalDelete,
@@ -34,8 +35,26 @@ const useProduk = () => {
     dataModal: dataDeleteProduk,
   } = useModal<{ nama: string }>();
 
+  // use modal failed delete
+  const {
+    modalRef: modalFailedDeleteRef,
+    handleShowModal: showModalFailedDelete,
+    handleCloseModal: handleCloseModalFailedDelete,
+    dataModal: dataModalFailedDelete,
+  } = useModal<{ titleMessage: string; description: string }>();
+
+  // handle modal failed delete
+  const handleShowModalFailedDelete = () => {
+    showModalFailedDelete(undefined, {
+      titleMessage: `Produk "${dataDeleteProduk?.nama}" tidak dapat dihapus`,
+      description:
+        "Produk masih digunakan oleh data lain. Nonaktifkan produk jika tidak lagi digunakan.",
+    });
+  };
+
   // use delete
   const { handleDeleteProduk, isPendingDeleteProduk } = useDeleteProduk({
+    handleShowModalFailedDelete,
     validatedIdParams: idModalDelete || null,
     handleCloseModal: handleCloseModalDelete,
     redirectPathname: currentPathname,
@@ -47,7 +66,7 @@ const useProduk = () => {
   const navigate = useNavigate();
 
   // toast
-  const { toast } = useToastAnimation();
+  const { toast, handleSetToast } = useToastAnimation();
 
   //   is active Cluster inventori
   const [isActiveCluster, setIsActiveCluster] = useState<
@@ -142,6 +161,40 @@ const useProduk = () => {
     navigate(`${currentPathname}/tambah`);
   };
 
+  // update is active
+  const {
+    mutateAsync: mutateUpdateIsActive,
+    isPending: isPendingUpdateIsActive,
+    variables: variablesUpdateIsActive,
+  } = useMutation({
+    mutationFn: (data: { id: number; status: boolean }) =>
+      ProdukServices.updateStatus({
+        id: data.id,
+        status: data.status,
+      }),
+    onSuccess: () => {
+      handleSetToast("updated_status");
+
+      // invalidate
+      queryClient.invalidateQueries({ queryKey: ["produk"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // handle update is active
+  const handelUpdateIsActive = async (data: {
+    id: number;
+    status: boolean;
+  }) => {
+    try {
+      await mutateUpdateIsActive(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     handleRedirectDetail,
     handleRedirectTambah,
@@ -167,6 +220,12 @@ const useProduk = () => {
     handleSetIsActiveAksi,
     kategori,
     sort,
+    handelUpdateIsActive,
+    variablesUpdateIsActive,
+    isPendingUpdateIsActive,
+    modalFailedDeleteRef,
+    handleCloseModalFailedDelete,
+    dataModalFailedDelete,
   };
 };
 
