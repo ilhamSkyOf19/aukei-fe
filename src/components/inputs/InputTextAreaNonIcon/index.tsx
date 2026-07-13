@@ -54,8 +54,10 @@ const InputTextAreaNonIcon: FC<Props> = ({
 
       <div
         className={clsx(
-          "mt-2 flex flex-row justify-start items-center gap-2 border border-base-content/40 rounded-md w-full focus-within:ring-1 focus-within:ring-primary-purple focus-within:border-primary-purple transition-all duration-300 ease-in-out bg-base-100",
-          errorMessage && "border-error",
+          "mt-2 flex flex-row justify-start items-center gap-2 border rounded-md w-full transition-all duration-300 ease-in-out bg-base-100 focus-within:ring-1",
+          errorMessage
+            ? "border-error focus-within:ring-error"
+            : "border-base-content/40 focus-within:ring-base-content",
         )}
       >
         <textarea

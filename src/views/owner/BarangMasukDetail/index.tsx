@@ -20,6 +20,7 @@ import InformasiBarangMasuk from "./InformasiBarangMasuk";
 import FormulirTambahBarangMasuk from "./FormulirTambahBarangMasuk";
 import CountDown from "../../../components/ui/CountDown";
 import type { FC } from "react";
+import ModalFormulirVerifikasiRejected from "../../../components/modals/ModalFormulirVerifikasiRejected";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -60,6 +61,10 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     dataConfirm,
     handleCancelVerifikasi,
     isPendingCancelVerifikasi,
+    dataModalFormulirVerifikasiRejected,
+    handleCloseModalFormulirVerifikasiRejected,
+    handleShowModalFormulirVerifikasiRejected,
+    modalFormulirVerifikasiRejectedRef,
   } = useBarangMasukDetail({ fromPengajuanBarang });
 
   return (
@@ -175,6 +180,14 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                           label="Tolak"
                           icon={X}
                           bgColor="bg-error"
+                          handleBtn={() =>
+                            handleShowModalFormulirVerifikasiRejected(
+                              undefined,
+                              {
+                                barangMasukId: dataBarangMasukDetail?.data?.id,
+                              },
+                            )
+                          }
                         />
 
                         {/* setuju */}
@@ -317,6 +330,16 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           icon={AlertTriangle}
           iconColor="text-warning"
         />
+
+        {/* modal delete */}
+        {fromPengajuanBarang && (
+          <ModalFormulirVerifikasiRejected
+            modalRef={modalFormulirVerifikasiRejectedRef}
+            handleCloseModal={handleCloseModalFormulirVerifikasiRejected}
+            barangMasukId={dataModalFormulirVerifikasiRejected?.barangMasukId}
+            kodeReferensi={dataBarangMasukDetail?.data?.kodeReferensi ?? ""}
+          />
+        )}
 
         {/* modal delete */}
         {!fromPengajuanBarang && (

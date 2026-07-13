@@ -15,6 +15,7 @@ import {
 import useDeleteBarangMasuk from "../../../hooks/useDeleteBarangMasuk";
 import { useAuthStore } from "../../../stores/authStore";
 import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangMasuk.service";
+import useModal from "../../../hooks/useModal";
 
 const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { fromPengajuanBarang } = params;
@@ -35,7 +36,13 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     data: dataConfirm,
   } = useConfirm<{ bigTitle: string; smallTitle: string }>();
 
-  // handle
+  // handle show modal verifikasi rejected
+  const {
+    modalRef: modalFormulirVerifikasiRejectedRef,
+    handleShowModal: handleShowModalFormulirVerifikasiRejected,
+    handleCloseModal: handleCloseModalFormulirVerifikasiRejected,
+    dataModal: dataModalFormulirVerifikasiRejected,
+  } = useModal<{ barangMasukId?: number }>();
 
   // use alert
   const { alert, handleSetAlert } = useAlertAnimation();
@@ -364,6 +371,11 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
     handleCancelVerifikasi,
     isPendingCancelVerifikasi,
+
+    modalFormulirVerifikasiRejectedRef,
+    handleShowModalFormulirVerifikasiRejected,
+    handleCloseModalFormulirVerifikasiRejected,
+    dataModalFormulirVerifikasiRejected,
   };
 };
 

@@ -149,6 +149,10 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
     color: "error",
     message: "Verifikasi berhasil dibatalkan",
   },
+  rejected_verifikasi: {
+    color: "error",
+    message: "Verifikasi berhasil ditolak",
+  },
 };
 
 export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<
