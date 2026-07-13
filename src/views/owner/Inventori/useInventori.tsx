@@ -53,7 +53,10 @@ const useInventori = () => {
     // check
     if (datalocalStorage) {
       setIsActiveCluster(
-        datalocalStorage as "barangMasuk" | "barangKeluar" | "",
+        datalocalStorage as
+          | "barangMasuk"
+          | "barangKeluar"
+          | "pengajuanBarangMasuk",
       );
     } else {
       setIsActiveCluster("barangMasuk");

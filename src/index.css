@@ -230,3 +230,21 @@ input:-webkit-autofill:active {
     }
   }
 }
+
+.avatar-non-active {
+  @layer daisyui.l1.l2 {
+    &:before {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      display: block;
+      border-radius: calc(infinity * 1px);
+      background-color: var(--color-error);
+      outline: 2px solid var(--color-base-100) /* var(--color-base-100) */;
+      width: 15%;
+      height: 15%;
+      top: 7%;
+      right: 7%;
+    }
+  }
+}

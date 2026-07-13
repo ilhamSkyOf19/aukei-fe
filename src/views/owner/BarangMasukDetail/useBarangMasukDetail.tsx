@@ -7,11 +7,19 @@ import { useToastAnimation } from "../../../hooks/useToast";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import useConfirm from "../../../hooks/useConfirm";
-import { STATUS_INVENTORI_TYPE } from "../../../types/constant.type";
+import {
+  STATUS_INVENTORI_TYPE,
+  type StatusInventoriType,
+} from "../../../types/constant.type";
 
 import useDeleteBarangMasuk from "../../../hooks/useDeleteBarangMasuk";
+import { useAuthStore } from "../../../stores/authStore";
+import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangMasuk.service";
 
-const useBarangMasukDetail = () => {
+const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
+  const { fromPengajuanBarang } = params;
+
+  const pengguna = useAuthStore((state) => state.pengguna);
   // query client
   const queryClient = useQueryClient();
 
@@ -24,7 +32,8 @@ const useBarangMasukDetail = () => {
     confirm,
     handleConfirm: handleConfirmPosting,
     handleCancel: handleCancelConfirmPosting,
-  } = useConfirm();
+    data: dataConfirm,
+  } = useConfirm<{ bigTitle: string; smallTitle: string }>();
 
   // handle
 
@@ -82,9 +91,12 @@ const useBarangMasukDetail = () => {
     });
 
   // handle posting
-  const handlePosting = async (id: number) => {
+  const handlePosting = async (id?: number) => {
     try {
-      if (dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED)
+      if (
+        dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED ||
+        !id
+      )
         return;
 
       if (dataBarangMasukDetail?.data?.detailBarangMasuks.length === 0) {
@@ -93,7 +105,11 @@ const useBarangMasukDetail = () => {
       }
 
       // confirm
-      const isConfirm = await confirm();
+      const isConfirm = await confirm({
+        bigTitle: "Apakah Anda yakin ingin memposting data barang masuk?",
+        smallTitle:
+          "Pastikan seluruh data barang masuk telah sesuai. Setelah diposting, stok barang akan diperbarui dan transaksi akan tercatat dalam sistem.",
+      });
 
       if (!isConfirm) {
         return;
@@ -116,7 +132,35 @@ const useBarangMasukDetail = () => {
       // handle toast
       handleSetToast("cancel_posted");
 
-      // revalidated
+      // invalidated
+      queryClient.invalidateQueries({
+        queryKey: ["barang-masuk-detail", validatedId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-global"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-produk"],
+      });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // cancel verifikasi
+  const {
+    mutateAsync: mutateCancelVerifikasi,
+    isPending: isPendingCancelVerifikasi,
+  } = useMutation({
+    mutationFn: (id: number) =>
+      PengajuanBarangMasukServices.cancelVerifikasi({ barangMasukId: id }),
+
+    onSuccess: () => {
+      // handle toast
+      handleSetToast("canceled_verifikasi");
+
+      // invalidated
       queryClient.invalidateQueries({
         queryKey: ["barang-masuk-detail", validatedId],
       });
@@ -135,13 +179,17 @@ const useBarangMasukDetail = () => {
   // is expired
   const isExpired =
     dataBarangMasukDetail?.data &&
-    Date.now() - new Date(dataBarangMasukDetail?.data?.updatedAt).getTime() >
+    dataBarangMasukDetail?.data?.postedAt &&
+    Date.now() - new Date(dataBarangMasukDetail.data.postedAt).getTime() >
       2 * 60 * 1000; // 2 minutes
 
   // handle posting
-  const handleCancelPosting = async (id: number) => {
+  const handleCancelPosting = async (id?: number) => {
     try {
-      if (dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT)
+      if (
+        dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
+        !id
+      )
         return;
 
       // check expired
@@ -151,7 +199,12 @@ const useBarangMasukDetail = () => {
       }
 
       // confirm
-      const isConfirm = await confirm();
+      const isConfirm = await confirm({
+        bigTitle:
+          "Apakah Anda yakin ingin membatalkan posting data barang masuk?",
+        smallTitle:
+          "Stok akan dikembalikan ke kondisi sebelum posting. Setelah pembatalan, transaksi dapat diedit dan diposting kembali.",
+      });
 
       if (!isConfirm) {
         return;
@@ -163,10 +216,43 @@ const useBarangMasukDetail = () => {
     }
   };
 
-  const isStatusPosted =
-    dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED;
-  const isStatusDraft =
-    dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT;
+  // handle verifikasi
+  const handleCancelVerifikasi = async (id?: number) => {
+    try {
+      if (
+        dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
+        !id
+      )
+        return;
+
+      // check expired
+      if (isExpired) {
+        handleSetAlert("expired");
+        return;
+      }
+
+      // confirm
+      const isConfirm = await confirm({
+        bigTitle:
+          "Apakah Anda yakin ingin membatalkan verifikasi pengajuan barang masuk?",
+        smallTitle:
+          "Stok akan dikembalikan ke kondisi sebelum diverifikasi. Setelah pembatalan, pengajuan dapat lakukan verifikasi kembali.",
+      });
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await mutateCancelVerifikasi(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const isStatusPosted =
+  //   dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED;
+  // const isStatusDraft =
+  //   dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT;
 
   // use delete barang masuk
   const {
@@ -185,6 +271,61 @@ const useBarangMasukDetail = () => {
       });
     },
   });
+
+  // mutation
+  const {
+    mutateAsync: mutateVerifikasiPengajuanBarang,
+    isPending: isPendingVerifikasiPengajuanBarang,
+  } = useMutation({
+    mutationFn: (data: {
+      barangMasukId: number;
+      keterangan?: string;
+      status: Exclude<StatusInventoriType, "DRAFT" | "PENDING">;
+    }) => PengajuanBarangMasukServices.verifikasi(data),
+    onSuccess: () => {
+      // revalidated
+      queryClient.invalidateQueries({
+        queryKey: ["barang-masuk-detail", validatedId],
+      });
+
+      // set toast
+      handleSetToast("approved_pengajuan");
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // handle setuju
+  const handleSetuju = async () => {
+    try {
+      // check validated id
+      if (!validatedId || !fromPengajuanBarang) return;
+
+      // confirm
+      const isConfirm = await confirm({
+        bigTitle: "Apakah Anda yakin ingin menyetujui pengajuan barang masuk?",
+        smallTitle:
+          "Pastikan seluruh data barang masuk telah sesuai. Setelah disetujui, data akan diposting dan stok barang akan diperbarui",
+      });
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await mutateVerifikasiPengajuanBarang({
+        barangMasukId: validatedId,
+        status: STATUS_INVENTORI_TYPE.POSTED,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const isStatusPosted =
+    dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED;
+  const isStatusDraft =
+    dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT;
 
   return {
     dataBarangMasukDetail,
@@ -213,6 +354,16 @@ const useBarangMasukDetail = () => {
     modalDeleteRef,
     handleSetToast,
     handleSetAlert,
+
+    pengguna,
+
+    handleSetuju,
+    isPendingVerifikasiPengajuanBarang,
+
+    dataConfirm,
+
+    handleCancelVerifikasi,
+    isPendingCancelVerifikasi,
   };
 };
 

@@ -48,6 +48,7 @@ const ButtonWithIcon: FC<Props> = ({
         customHeight ? customHeight : "h-10.5 lg:h-9 xl:h-9",
         isLoading ? "opacity-50" : "hover-overlay",
       )}
+      style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
       onClick={() => {
         if (handleBtn) {
           handleBtn();

@@ -1,8 +1,11 @@
-import { AlertTriangle, Check, Printer, Trash2 } from "lucide-react";
+import { AlertTriangle, Check, Printer, Trash2, X } from "lucide-react";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import StatusInventori from "../../../components/ui/StatusInventori";
-import { STATUS_INVENTORI_TYPE } from "../../../types/constant.type";
+import {
+  ROLE_INTERNAL_TYPE,
+  STATUS_INVENTORI_TYPE,
+} from "../../../types/constant.type";
 import useBarangMasukDetail from "./useBarangMasukDetail";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
 import { expireDateOneDay, subtractMinutes } from "../../../helpers/helpers";
@@ -16,8 +19,13 @@ import ModalDelete from "../../../components/modals/ModalDelete";
 import InformasiBarangMasuk from "./InformasiBarangMasuk";
 import FormulirTambahBarangMasuk from "./FormulirTambahBarangMasuk";
 import CountDown from "../../../components/ui/CountDown";
+import type { FC } from "react";
 
-const BarangMasukDetail = () => {
+type Props = {
+  fromPengajuanBarang?: boolean;
+};
+
+const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
   // call use barang masuk detail
   const {
     dataBarangMasukDetail,
@@ -46,7 +54,13 @@ const BarangMasukDetail = () => {
     modalDeleteRef,
     handleSetToast,
     handleSetAlert,
-  } = useBarangMasukDetail();
+    pengguna,
+    handleSetuju,
+    isPendingVerifikasiPengajuanBarang,
+    dataConfirm,
+    handleCancelVerifikasi,
+    isPendingCancelVerifikasi,
+  } = useBarangMasukDetail({ fromPengajuanBarang });
 
   return (
     <div className="w-full h-screen overflow-y-auto ">
@@ -126,8 +140,7 @@ const BarangMasukDetail = () => {
                       {!isExpired && (
                         <CountDown
                           expiredAt={subtractMinutes(
-                            dataBarangMasukDetail?.data?.updatedAt ??
-                              new Date(),
+                            dataBarangMasukDetail?.data?.postedAt ?? new Date(),
                             2,
                           )}
                         />
@@ -140,28 +153,61 @@ const BarangMasukDetail = () => {
               <div className="w-full lg:flex-1 flex flex-col lg:flex-row justify-start items-start lg:items-center lg:justify-end gap-3 px-2 lg:px-0 pb-2 lg:pb-0">
                 {/* button */}
                 <div className="w-full lg:w-auto flex flex-row justify-start items-start gap-2  mt-6 lg:mt-0">
-                  <ButtonWithIcon
-                    textColor="text-primary-white"
-                    label="Cetak"
-                    icon={Printer}
-                    bgColor="bg-info"
-                  />
-
                   {dataBarangMasukDetail?.data?.status ===
-                    STATUS_INVENTORI_TYPE.DRAFT && (
+                    STATUS_INVENTORI_TYPE.POSTED && (
                     <ButtonWithIcon
                       textColor="text-primary-white"
-                      label="Hapus"
-                      icon={Trash2}
-                      bgColor="bg-error"
-                      handleBtn={() =>
-                        handleShowModalDelete(dataBarangMasukDetail?.data?.id, {
-                          kodeReferensi:
-                            dataBarangMasukDetail?.data?.kodeReferensi,
-                        })
-                      }
+                      label="Cetak"
+                      icon={Printer}
+                      bgColor="bg-info"
                     />
                   )}
+
+                  {/* button verifikasi */}
+                  {fromPengajuanBarang &&
+                    pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
+                    dataBarangMasukDetail?.data?.status ===
+                      STATUS_INVENTORI_TYPE.PENDING && (
+                      <>
+                        {/* tolak */}
+                        <ButtonWithIcon
+                          textColor="text-primary-white"
+                          label="Tolak"
+                          icon={X}
+                          bgColor="bg-error"
+                        />
+
+                        {/* setuju */}
+                        <ButtonWithIcon
+                          textColor="text-primary-white"
+                          label="Setuju"
+                          icon={Check}
+                          bgColor="bg-success"
+                          isLoading={isPendingVerifikasiPengajuanBarang}
+                          handleBtn={() => handleSetuju()}
+                        />
+                      </>
+                    )}
+                  {/* button trash */}
+                  {dataBarangMasukDetail?.data?.status ===
+                    STATUS_INVENTORI_TYPE.DRAFT &&
+                    !fromPengajuanBarang && (
+                      <ButtonWithIcon
+                        textColor="text-primary-white"
+                        label="Hapus"
+                        icon={Trash2}
+                        bgColor="bg-error"
+                        handleBtn={() =>
+                          handleShowModalDelete(
+                            dataBarangMasukDetail?.data?.id,
+                            {
+                              kodeReferensi:
+                                dataBarangMasukDetail?.data?.kodeReferensi,
+                            },
+                          )
+                        }
+                      />
+                    )}
                 </div>
 
                 {/* button posting */}
@@ -170,11 +216,17 @@ const BarangMasukDetail = () => {
                     <ButtonWithIcon
                       handleBtn={() => {
                         if (isStatusDraft) {
-                          handlePosting(dataBarangMasukDetail?.data?.id ?? 0);
+                          handlePosting(dataBarangMasukDetail?.data?.id);
                         } else if (isStatusPosted) {
-                          handleCancelPosting(
-                            dataBarangMasukDetail?.data?.id ?? 0,
-                          );
+                          if (fromPengajuanBarang) {
+                            handleCancelVerifikasi(
+                              dataBarangMasukDetail?.data?.id,
+                            );
+                          } else {
+                            handleCancelPosting(
+                              dataBarangMasukDetail?.data?.id,
+                            );
+                          }
                         }
                       }}
                       icon={Check}
@@ -192,6 +244,11 @@ const BarangMasukDetail = () => {
                             : ""
                       }
                       customWidth="w-full lg:w-auto"
+                      isLoading={
+                        isPendingCancelPosting ||
+                        isPendingPosting ||
+                        isPendingCancelVerifikasi
+                      }
                     />
 
                     {/* caption */}
@@ -199,8 +256,7 @@ const BarangMasukDetail = () => {
                       <span className="text-[0.635rem] lg:hidden text-base-content/50">
                         {`Anda dapat membatalkan postingan sebelum ${formatTanggalLengkap(
                           expireDateOneDay(
-                            dataBarangMasukDetail?.data?.createdAt ??
-                              new Date(),
+                            dataBarangMasukDetail?.data?.postedAt ?? new Date(),
                           ),
                         )}`}
                       </span>
@@ -224,22 +280,30 @@ const BarangMasukDetail = () => {
           idBarangMasukDetail={dataBarangMasukDetail?.data?.id}
           handleSetToast={handleSetToast}
           status={dataBarangMasukDetail?.data?.status}
+          author={dataBarangMasukDetail?.data?.author}
+          tanggalDiAjukan={
+            dataBarangMasukDetail?.data?.tanggalDiajukan ?? undefined
+          }
         />
 
         {/* daftar produk masuk */}
-        <FormulirTambahBarangMasuk
-          status={dataBarangMasukDetail?.data?.status}
-          totalBarang={
-            dataBarangMasukDetail?.data?.detailBarangMasuks?.length ?? 0
-          }
-          handleSetToast={handleSetToast}
-          handleSetAlert={handleSetAlert}
-        />
+        {!fromPengajuanBarang && (
+          <FormulirTambahBarangMasuk
+            status={dataBarangMasukDetail?.data?.status}
+            totalBarang={
+              dataBarangMasukDetail?.data?.detailBarangMasuks?.length ?? 0
+            }
+            handleSetToast={handleSetToast}
+            handleSetAlert={handleSetAlert}
+          />
+        )}
 
         {/* show data */}
         <ShowDataBarangMasuk
           dataBarangMasukDetail={dataBarangMasukDetail}
           isLoadingBarangMasukDetail={isLoadingBarangMasukDetail}
+          fromPengajuanBarang={fromPengajuanBarang}
+          penggunaRole={pengguna?.role}
         />
 
         {/* modal konfirmasi */}
@@ -247,34 +311,24 @@ const BarangMasukDetail = () => {
           modalRef={modalKonfirmasiPostingRef}
           handleCloseModal={handleCancelConfirmPosting}
           handleConfirm={handleConfirmPosting}
-          bigTitle={
-            isStatusDraft
-              ? "Apakah Anda yakin ingin memposting data barang masuk?"
-              : isStatusPosted
-                ? "Apakah Anda yakin ingin membatalkan posting data barang masuk?"
-                : ""
-          }
-          smallTitle={
-            isStatusDraft
-              ? "Pastikan seluruh data barang masuk telah sesuai. Setelah diposting, stok barang akan diperbarui dan transaksi akan tercatat dalam sistem."
-              : isStatusPosted
-                ? "Stok akan dikembalikan ke kondisi sebelum posting. Setelah pembatalan, transaksi dapat diedit dan diposting kembali."
-                : ""
-          }
+          bigTitle={dataConfirm?.bigTitle ?? ""}
+          smallTitle={dataConfirm?.smallTitle ?? ""}
           isLoading={isPendingPosting || isPendingCancelPosting}
           icon={AlertTriangle}
           iconColor="text-warning"
         />
 
         {/* modal delete */}
-        <ModalDelete
-          modalRef={modalDeleteRef}
-          handleCloseModal={handleCloseModalDelete}
-          handleDelete={handleDelete}
-          bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
-          highlightData={dataDelete?.kodeReferensi}
-          isLoadingDelete={isPendingDelete}
-        />
+        {!fromPengajuanBarang && (
+          <ModalDelete
+            modalRef={modalDeleteRef}
+            handleCloseModal={handleCloseModalDelete}
+            handleDelete={handleDelete}
+            bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
+            highlightData={dataDelete?.kodeReferensi}
+            isLoadingDelete={isPendingDelete}
+          />
+        )}
       </div>
     </div>
   );

@@ -104,7 +104,13 @@
 
 - [✅] Membuat halaman pelanggan
 
-- [ ] Membuat halaman riwayat transaksi untuk pelanggan
+- [✅] Membuat halaman riwayat transaksi untuk pelanggan
+
+- [ ] Membuat halaman pengajuan barang masuk dan integrasi backend
+
+- [ ] Membuat halaman pengajuan barang keluar dan integrasi backend
+
+- [ ] Memperbaiki tampilan kasir
 
 - [ ] Memberikan modal pesan error agar menggunakna booking , jika stok tidak cukup
 

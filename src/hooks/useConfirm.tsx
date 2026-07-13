@@ -1,16 +1,17 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useModal from "./useModal";
 
-const useConfirm = () => {
-  // use modal
+const useConfirm = <T = undefined,>() => {
   const { modalRef, handleShowModal, handleCloseModal } = useModal();
 
-  // ref resolver
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [data, setData] = useState<T | undefined>(undefined);
+
   const resolverRef = useRef<((value: boolean) => void) | null>(null);
 
-  // show confirm
-  const confirm = () => {
-    // show modal
+  const confirm = (data?: T) => {
+    setData(data);
     handleShowModal();
 
     return new Promise<boolean>((resolve) => {
@@ -18,23 +19,47 @@ const useConfirm = () => {
     });
   };
 
-  // handle confirm true
   const handleConfirm = () => {
     resolverRef.current?.(true);
+    resolverRef.current = null;
 
-    // close modal
     handleCloseModal();
+    setData(undefined);
   };
 
-  // handle confirm false
+  const clearData = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setData(undefined);
+    }, 300);
+  };
+
   const handleCancel = () => {
     resolverRef.current?.(false);
+    resolverRef.current = null;
 
-    // close modal
     handleCloseModal();
+    clearData();
   };
 
-  return { modalRef, confirm, handleConfirm, handleCancel };
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  return {
+    modalRef,
+    data,
+    confirm,
+    handleConfirm,
+    handleCancel,
+  };
 };
 
 export default useConfirm;

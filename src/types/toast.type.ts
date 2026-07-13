@@ -141,6 +141,14 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
     color: "info",
     message: "Keterangan barang berhasil diperbarui",
   },
+  approved_pengajuan: {
+    color: "success",
+    message: "Barang masuk berhasil disetujui",
+  },
+  canceled_verifikasi: {
+    color: "error",
+    message: "Verifikasi berhasil dibatalkan",
+  },
 };
 
 export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<

@@ -1,5 +1,6 @@
 import type { MetaType, StatusInventoriType } from "../types/constant.type";
 import type { IBarangMasukDetailType } from "./barangMasukDetail.model";
+import type { IPenggunaInternalType } from "./penggunaInternal.model";
 
 export interface IBarangMasukType {
   id: number;
@@ -9,6 +10,8 @@ export interface IBarangMasukType {
   status: StatusInventoriType;
   totalNilai: string;
   detailBarangMasuks: Omit<IBarangMasukDetailType, "barangMasukId">[];
+  author: Pick<IPenggunaInternalType, "id" | "nama" | "username" | "isActive">;
+  postedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,6 +42,7 @@ export interface ResponseBarangMasukWithMetaType {
 // find by id
 export interface ResponseBarangMasukWithDetailType extends ResponseBarangMasukType {
   detailBarangMasuks: Omit<IBarangMasukDetailType, "barangMasukId">[];
+  tanggalDiajukan?: Date | null;
 }
 
 // posted for service

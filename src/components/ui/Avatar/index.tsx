@@ -7,6 +7,7 @@ type Props = {
   index?: number;
   sm?: boolean;
   xs?: boolean;
+  isActive?: boolean;
 };
 
 const avatarColors = [
@@ -25,14 +26,21 @@ const defaultColor = {
   text: "text-custom-secondary",
 };
 
-const Avatar: FC<Props> = ({ index, nama, xs, sm }) => {
+const Avatar: FC<Props> = ({ index, nama, xs, sm, isActive }) => {
   const color =
     index === undefined || index === null
       ? defaultColor
       : avatarColors[Math.abs(index) % avatarColors.length];
 
   return (
-    <div className="avatar avatar-placeholder">
+    <div
+      className={cn(
+        "avatar avatar-placeholder",
+        isActive === true
+          ? "avatar-online"
+          : isActive === false && "avatar-non-active",
+      )}
+    >
       <div
         className={cn(
           "rounded-full",

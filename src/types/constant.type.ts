@@ -11,6 +11,9 @@ export type RoleInternalType =
 // status barang masuk
 export const STATUS_INVENTORI_TYPE = {
   DRAFT: "DRAFT",
+  PENDING: "PENDING",
+  REJECTED: "REJECTED",
+  CANCELLED: "CANCELLED",
   POSTED: "POSTED",
 } as const;
 
