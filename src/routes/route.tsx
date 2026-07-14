@@ -20,6 +20,7 @@ import StatistikDetailPage from "../pages/StatistikDetailPage";
 import RiwayatTransaksiDetailPage from "../pages/RiwayatTransaksiDetailPage";
 import RiwayatTransaksiPage from "../pages/RiwayatTransaksiPage";
 import PengajuanBarangMasukDetailPage from "../pages/PengajuanBarangMasukDetailPage";
+import PengajuanBarangKeluarDetailPage from "../pages/PengajuanBarangKeluarDetailPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -200,6 +201,14 @@ const route = createBrowserRouter([
             element: (
               <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
                 <BarangKeluarDetailPage />
+              </RoleGuard>
+            ),
+          },
+          {
+            path: "pengajuan-barang-keluar/:id",
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <PengajuanBarangKeluarDetailPage />
               </RoleGuard>
             ),
           },

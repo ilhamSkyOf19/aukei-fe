@@ -106,8 +106,8 @@
 
 - [✅] Membuat halaman riwayat transaksi untuk pelanggan
 
-- [90%] Membuat halaman pengajuan barang masuk dan integrasi backend
-  - [ ] Membuat fitur tolak
+- [✅] Membuat halaman pengajuan barang masuk dan integrasi backend
+  - [✅] Membuat fitur tolak
 
 - [ ] Membuat halaman pengajuan barang keluar dan integrasi backend
 

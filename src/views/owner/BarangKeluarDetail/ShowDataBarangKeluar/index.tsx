@@ -1,4 +1,4 @@
-import { Ellipsis, EllipsisVertical, PencilLine, Trash } from "lucide-react";
+import { EllipsisVertical, PencilLine, Trash } from "lucide-react";
 import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import type { ResponseStructure } from "../../../../types/response.type";
@@ -14,16 +14,24 @@ import useShowBarangKeluar from "./useShowBarangKeluar";
 import type { UpdateBarangKeluarDetailType } from "../../../../models/barangKeluarDetail.model";
 import InputPrice from "../../../../components/inputs/InputPrice";
 import ModalUbahProdukKeluar from "../../../../components/modals/ModalUbahProdukKeluar";
-import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
+import {
+  ROLE_INTERNAL_TYPE,
+  STATUS_INVENTORI_TYPE,
+  type RoleInternalType,
+} from "../../../../types/constant.type";
 import InputNumber from "../../../../components/inputs/InputNumber";
 
 type Props = {
   isLoadingBarangKeluarDetail?: boolean;
   dataBarangKeluarDetail?: ResponseStructure<ResponseBarangKeluarWithDetailType | null>;
+  fromPengajuanBarang?: boolean;
+  penggunaRole?: RoleInternalType;
 };
 const ShowDataBarangKeluar: FC<Props> = ({
   dataBarangKeluarDetail,
   isLoadingBarangKeluarDetail,
+  fromPengajuanBarang,
+  penggunaRole,
 }) => {
   const {
     handleSetIsActiveAksi,
@@ -106,57 +114,59 @@ const ShowDataBarangKeluar: FC<Props> = ({
 
                     {/* button aksi */}
                     <div className="flex flex-row justify-end items-start">
-                      {!isStatusPosted && (
-                        <div className="sticky right-0 bg-base-100 z-10">
-                          <div
-                            ref={wrapperRef}
-                            className={cn(
-                              "dropdown dropdown-left dropdown-end",
-                            )}
-                          >
-                            <button
-                              type="button"
-                              role="button"
-                              tabIndex={0}
-                              className="m-1"
-                              onFocus={() => handleSetIsActiveAksi(item.id)}
-                              onBlur={() => handleSetIsActiveAksi(0)}
+                      {penggunaRole === ROLE_INTERNAL_TYPE.KASIR &&
+                        !fromPengajuanBarang &&
+                        !isStatusPosted && (
+                          <div className="sticky right-0 bg-base-100 z-10">
+                            <div
+                              ref={wrapperRef}
+                              className={cn(
+                                "dropdown dropdown-left dropdown-end",
+                              )}
                             >
-                              <Ellipsis className="size-4" />
-                            </button>
-                            <ul
-                              tabIndex={-1}
-                              className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
-                            >
-                              <li>
-                                <LabelButtonDropDownWithIcon
-                                  label="Ubah Produk"
-                                  icon={PencilLine}
-                                  handleClick={() =>
-                                    handleShowModalUbahProduk(item.id, {
-                                      produkId: item.produk.id,
-                                      hargaModalSatuan: item.hargaModalSatuan,
-                                      jumlahStok: item.jumlahStok,
-                                    })
-                                  }
-                                />
-                              </li>
-                              <li>
-                                <LabelButtonDropDownWithIcon
-                                  color="text-error"
-                                  label="Hapus"
-                                  icon={Trash}
-                                  handleClick={() =>
-                                    handleShowModalDelete(item.id, {
-                                      nama: item.produk.nama,
-                                    })
-                                  }
-                                />
-                              </li>
-                            </ul>
+                              <button
+                                type="button"
+                                role="button"
+                                tabIndex={0}
+                                className="m-1"
+                                onFocus={() => handleSetIsActiveAksi(item.id)}
+                                onBlur={() => handleSetIsActiveAksi(0)}
+                              >
+                                <EllipsisVertical className="size-4" />
+                              </button>
+                              <ul
+                                tabIndex={-1}
+                                className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
+                              >
+                                <li>
+                                  <LabelButtonDropDownWithIcon
+                                    label="Ubah Produk"
+                                    icon={PencilLine}
+                                    handleClick={() =>
+                                      handleShowModalUbahProduk(item.id, {
+                                        produkId: item.produk.id,
+                                        hargaModalSatuan: item.hargaModalSatuan,
+                                        jumlahStok: item.jumlahStok,
+                                      })
+                                    }
+                                  />
+                                </li>
+                                <li>
+                                  <LabelButtonDropDownWithIcon
+                                    color="text-error"
+                                    label="Hapus"
+                                    icon={Trash}
+                                    handleClick={() =>
+                                      handleShowModalDelete(item.id, {
+                                        nama: item.produk.nama,
+                                      })
+                                    }
+                                  />
+                                </li>
+                              </ul>
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
                     </div>
                   </div>
                 </div>
@@ -229,9 +239,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                 <th>Harga Modal Satuan</th>
                 <th>Jumlah Stok</th>
                 <th>Total</th>
-                {!isStatusPosted && (
-                  <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
-                )}
+                {!fromPengajuanBarang && !isStatusPosted && <th>Aksi</th>}
               </tr>
             </thead>
             <tbody>
@@ -375,8 +383,8 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       </td>
 
                       {/* detail */}
-                      {!isStatusPosted && (
-                        <td className="sticky right-0 bg-base-100 z-10">
+                      {!fromPengajuanBarang && !isStatusPosted && (
+                        <td>
                           <div
                             ref={wrapperRef}
                             className={cn(
@@ -456,9 +464,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                     <th>Kategori</th>
                     <th>Harga Modal Satuan</th>
                     <th>Jumlah Stok</th>
-                    {!isStatusPosted && (
-                      <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
-                    )}
+                    {!fromPengajuanBarang && !isStatusPosted && <th>Aksi</th>}
                   </tr>
                 </tfoot>
               )}

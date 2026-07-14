@@ -116,7 +116,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                       {penggunaRole === ROLE_INTERNAL_TYPE.KASIR &&
                         !fromPengajuanBarang &&
                         !isStatusPosted && (
-                          <div className="sticky right-0 bg-base-100 z-10">
+                          <div>
                             <div
                               ref={wrapperRef}
                               className={cn(
@@ -265,9 +265,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                 <th>Jumlah Box</th>
                 <th>Isi PerBox</th>
                 <th>Total</th>
-                {!fromPengajuanBarang && !isStatusPosted && (
-                  <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
-                )}
+                {!fromPengajuanBarang && !isStatusPosted && <th>Aksi</th>}
               </tr>
             </thead>
             <tbody>
@@ -424,7 +422,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
 
                       {/* detail */}
                       {!fromPengajuanBarang && !isStatusPosted && (
-                        <td className="sticky right-0 bg-base-100 z-10">
+                        <td>
                           <div
                             ref={wrapperRef}
                             className={cn(
@@ -504,9 +502,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                     <th>Harga Beli Satuan</th>
                     <th>Jumlah Box</th>
                     <th>Isi PerBox</th>
-                    {!fromPengajuanBarang && !isStatusPosted && (
-                      <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
-                    )}
+                    {!fromPengajuanBarang && !isStatusPosted && <th>Aksi</th>}
                   </tr>
                 </tfoot>
               )}

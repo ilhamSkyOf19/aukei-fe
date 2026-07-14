@@ -4,11 +4,6 @@ import type {
   ResponseBarangKeluarDetailType,
   UpdateBarangKeluarDetailType,
 } from "../models/barangKeluarDetail.model";
-import type {
-  CreateBarangMasukDetailType,
-  ResponseBarangMasukDetailType,
-  UpdateBarangMasukDetailType,
-} from "../models/barangMasukDetail.model";
 import type { StatusInventoriType } from "../types/constant.type";
 import type { ResponseStructure } from "../types/response.type";
 

@@ -130,7 +130,7 @@ const BarangKeluar = () => {
               <div className="w-full h-20 skeleton border border-base-content/10" />
               <div className="w-full h-20 skeleton border border-base-content/10" />
             </>
-          ) : !isExistDataBarangKeluar ? (
+          ) : isExistDataBarangKeluar ? (
             dataBarangKeluar?.data?.data?.map((item, _) => (
               <CardBarangKeluar
                 key={item.id}

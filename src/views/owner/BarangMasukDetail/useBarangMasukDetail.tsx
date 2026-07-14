@@ -256,11 +256,6 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     }
   };
 
-  // const isStatusPosted =
-  //   dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED;
-  // const isStatusDraft =
-  //   dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT;
-
   // use delete barang masuk
   const {
     dataDelete,

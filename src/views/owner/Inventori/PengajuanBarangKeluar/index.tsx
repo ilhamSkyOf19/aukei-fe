@@ -3,52 +3,51 @@ import {
   EllipsisVertical,
   Package,
   PackagePlus,
-  Trash,
   Truck,
   View,
 } from "lucide-react";
 import FilterSort from "../../../../components/filters/Sort";
 import InputSearch from "../../../../components/inputs/InputSearch";
 import Toast from "../../../../components/messages/Toast";
-import { TOAST_CONFIG_BARANG_MASUK } from "../../../../types/toast.type";
+import { TOAST_CONFIG_BARANG_KELUAR } from "../../../../types/toast.type";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
 import { cn } from "../../../../utils/cn";
 import LabelButtonDropDownWithIcon from "../../../../components/ui/button/LabelButtonDropDownWithIcon";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import StatusInventori from "../../../../components/ui/StatusInventori";
-import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import {
   ROLE_INTERNAL_TYPE,
-  STATUS_INVENTORI_TYPE,
   type StatusInventoriType,
 } from "../../../../types/constant.type";
+import JenisKeluar from "../../../../components/ui/JenisKeluar";
 import RangeDate from "../../../../components/filters/RangeDate";
 import type { FC } from "react";
-import { formatNumber } from "../../../../helpers/helpers";
 import DropDownInventori from "../../../../components/ui/DropDownInventori";
-import usePengajuanBarangMasuk from "./usePengajuanBarangMasuk";
+import { formatNumber } from "../../../../helpers/helpers";
+import usePengajuanBarangKeluar from "./usePengajuanBarangKeluar";
 import Avatar from "../../../../components/ui/Avatar";
+import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 
-const PengajuanBarangMasuk = () => {
+const PengajuanBarangKeluar = () => {
   // call use barang masuk
   const {
-    dataPengajuanBarangMasuk,
     handleLimit,
     handlePage,
     handleSearch,
     handleSort,
-    isLoadingPengajuanBarangMasuk,
     toast,
-    isExistDataPengajuanBarangMasuk,
     handleSetIsActiveAksi,
     isActiveAksi,
     wrapperRef,
     handleRedirectDetail,
-    windowSize,
     sort,
+    dataPengajuanBarangKeluar,
+    isExistDataPengajuanBarangKeluar,
+    isLoadingPengajuanBarangKeluar,
     pengguna,
-  } = usePengajuanBarangMasuk();
+    windowSize,
+  } = usePengajuanBarangKeluar();
 
   return (
     <div className="w-full  mb-30 md:mb-10 lg:mb-20 ">
@@ -57,15 +56,14 @@ const PengajuanBarangMasuk = () => {
         <Toast
           toast={toast?.id !== null}
           isAnimationOut={toast?.isAnimationOut || false}
-          label={TOAST_CONFIG_BARANG_MASUK[toast.type].message}
-          color={TOAST_CONFIG_BARANG_MASUK[toast.type].color}
+          label={TOAST_CONFIG_BARANG_KELUAR[toast.type].message}
+          color={TOAST_CONFIG_BARANG_KELUAR[toast.type].color}
         />
       )}
 
       <div className="card flex flex-col justify-start items-start">
         {/* filter */}
-        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start border border-transparent dark:border-base-content/10 bg-base-100 py-2 px-4 rounded-lg shadow-sm">
-          {/* button add barang masuk */}
+        <div className="w-full bg-base-100 py-2 px-4 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-lg shadow-sm">
           {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
             <ButtonWithIcon
               icon={PackagePlus}
@@ -79,18 +77,18 @@ const PengajuanBarangMasuk = () => {
             {/* input search */}
             <InputSearch
               handleSearch={handleSearch}
-              placeholder="Cari kode"
+              placeholder="Cari berdasarkan kode"
               withLabel
             />
           </div>
-
-          <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
+          <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
             {/* input range date */}
-            <RangeDate customWidth="flex-2 md:flex-none md:w-50 lg:w-60" />
+            <RangeDate customWidth="w-full md:w-60" />
+
             {/* filter sort */}
             <FilterSort
               setSort={handleSort}
-              customWidth="flex-1 md:flex-none md:w-30 lg:w-40"
+              customWidth="w-full md:w-40"
               value={sort}
             />
 
@@ -116,23 +114,24 @@ const PengajuanBarangMasuk = () => {
 
         {/* SHOW DATA FOR SM */}
         <div className="flex w-full flex-col justify-start items-center gap-2 mt-2 md:hidden">
-          {isLoadingPengajuanBarangMasuk ? (
+          {isLoadingPengajuanBarangKeluar ? (
             <>
               <div className="w-full h-20 skeleton border border-base-content/10" />
               <div className="w-full h-20 skeleton border border-base-content/10" />
               <div className="w-full h-20 skeleton border border-base-content/10" />
             </>
-          ) : isExistDataPengajuanBarangMasuk ? (
-            dataPengajuanBarangMasuk?.data?.data?.map((item, _) => (
-              <CardPengajuanBarangMasuk
+          ) : isExistDataPengajuanBarangKeluar ? (
+            dataPengajuanBarangKeluar?.data?.data?.map((item, _) => (
+              <CardBarangKeluar
                 key={item.id}
                 author={item.author}
                 tanggalDiajukan={item.tanggalDiajukan}
                 barang={{
                   id: item.id,
                   kode: item.kodeReferensi,
-                  jumlah: item.countDetailBarangMasuk,
+                  jumlah: item.countDetailBarangKeluar,
                   status: item.status,
+                  jenisKeluar: item.jenisKeluar.nama,
                 }}
                 handleRedirectDetail={handleRedirectDetail}
               />
@@ -140,15 +139,16 @@ const PengajuanBarangMasuk = () => {
           ) : (
             <div className="w-full h-full flex flex-col justify-center items-center">
               <DataEmpty
-                title="Data Barang Masuk Tidak Tersedia"
-                description="Belum ada data barang masuk yang dapat ditampilkan saat ini"
+                title="Data Barang Keluar Tidak Tersedia"
+                description="Belum ada data barang keluar yang dapat ditampilkan saat ini"
+                xs
               />
             </div>
           )}
         </div>
 
         {/* SHOW DATA FOR MD, LG, XL */}
-        <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm mt-4 hidden md:flex">
+        <div className="overflow-x-auto w-full bg-base-100 rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-4 hidden md:flex">
           <table className="w-full table table-xs lg:table-sm mb-2">
             {/* head */}
             <thead>
@@ -156,15 +156,16 @@ const PengajuanBarangMasuk = () => {
                 <th>Diajukan Oleh</th>
                 <th>Tanggal Diajukan</th>
                 <th>Kode Referensi</th>
-                <th>Tanggal Masuk</th>
+                <th>Tanggal Keluar</th>
                 <th>Keterangan</th>
                 <th>Jumlah</th>
+                <th>Jenis Keluar</th>
                 <th>Status</th>
                 <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
               </tr>
             </thead>
             <tbody>
-              {isLoadingPengajuanBarangMasuk ? (
+              {isLoadingPengajuanBarangKeluar ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
                     <td colSpan={10}>
@@ -172,8 +173,8 @@ const PengajuanBarangMasuk = () => {
                     </td>
                   </tr>
                 ))
-              ) : isExistDataPengajuanBarangMasuk ? (
-                dataPengajuanBarangMasuk?.data?.data.map((barang, _) => (
+              ) : isExistDataPengajuanBarangKeluar ? (
+                dataPengajuanBarangKeluar?.data?.data.map((barang, _) => (
                   <tr
                     key={barang.id}
                     className={cn(
@@ -218,8 +219,7 @@ const PengajuanBarangMasuk = () => {
                       {barang.kodeReferensi}
                     </td>
                     {/* tanggal */}
-                    <td>{formatTanggalLengkap(barang.tanggalMasuk)} WIB</td>
-
+                    <td>{formatTanggalLengkap(barang.tanggalKeluar)} WIB</td>
                     {/* keterangan */}
                     <td>
                       {barang.keterangan ? (
@@ -231,7 +231,11 @@ const PengajuanBarangMasuk = () => {
                       )}
                     </td>
                     {/* jumlah */}
-                    <td>{barang.countDetailBarangMasuk}</td>
+                    <td>{barang.countDetailBarangKeluar}</td>
+                    {/* jumlah barang masuk */}
+                    <td>
+                      <JenisKeluar jenisKeluar={barang.jenisKeluar.nama} />
+                    </td>
                     {/* status */}
                     <td>
                       <StatusInventori status={barang.status} />
@@ -266,16 +270,6 @@ const PengajuanBarangMasuk = () => {
                               }
                             />
                           </li>
-                          {barang.status === STATUS_INVENTORI_TYPE.DRAFT && (
-                            <li>
-                              <LabelButtonDropDownWithIcon
-                                color="text-error"
-                                label="Hapus"
-                                icon={Trash}
-                                handleClick={() => {}}
-                              />
-                            </li>
-                          )}
                         </ul>
                       </div>
                     </td>
@@ -286,8 +280,8 @@ const PengajuanBarangMasuk = () => {
                   <td colSpan={10}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
-                        title="Data Barang Masuk Tidak Tersedia"
-                        description="Belum ada data barang masuk yang dapat ditampilkan saat ini."
+                        title="Data Barang Keluar Tidak Tersedia"
+                        description="Belum ada data barang keluar yang dapat ditampilkan saat ini."
                       />
                     </div>
                   </td>
@@ -297,20 +291,23 @@ const PengajuanBarangMasuk = () => {
             {/* foot */}
             <tfoot>
               <tr>
-                {!isLoadingPengajuanBarangMasuk &&
-                isExistDataPengajuanBarangMasuk &&
-                dataPengajuanBarangMasuk?.data?.data?.length! > 8 ? (
+                {!isLoadingPengajuanBarangKeluar &&
+                isExistDataPengajuanBarangKeluar &&
+                dataPengajuanBarangKeluar?.data?.data?.length! > 8 ? (
                   <>
                     <th>Diajukan Oleh</th>
+                    <th>Tanggal Diajukan</th>
                     <th>Kode Referensi</th>
-                    <th>Tanggal Masuk</th>
+                    <th>Tanggal Keluar</th>
                     <th>Keterangan</th>
                     <th>Jumlah</th>
+                    <th>Jenis Keluar</th>
                     <th>Status</th>
-                    <th className="sticky right-0 bg-base-300 z-10">Aksi</th>
+                    <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
                   </>
                 ) : (
                   <>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -328,40 +325,43 @@ const PengajuanBarangMasuk = () => {
 
         {/* pagination and limits */}
         <PaginationAndLimit
-          currentPage={dataPengajuanBarangMasuk?.data?.meta.currentPage || null}
-          totalPage={dataPengajuanBarangMasuk?.data?.meta.totalPage || null}
+          currentPage={
+            dataPengajuanBarangKeluar?.data?.meta.currentPage || null
+          }
+          totalPage={dataPengajuanBarangKeluar?.data?.meta.totalPage || null}
           setPage={handlePage}
           setLimit={handleLimit}
-          emptyData={!isExistDataPengajuanBarangMasuk}
+          emptyData={!isExistDataPengajuanBarangKeluar}
         />
       </div>
     </div>
   );
 };
 
-type CardPengajuanBarangMasuk = {
+type CardBarangKeluar = {
   tanggalDiajukan?: Date | null;
-  barang: {
-    id: number;
-    kode: string;
-    status: StatusInventoriType;
-    jumlah: number;
-  };
   author?: {
     id: number;
     nama: string;
     username: string;
     isActive: boolean;
   } | null;
+  barang: {
+    id: number;
+    kode: string;
+    status: StatusInventoriType;
+    jenisKeluar: string;
+    jumlah: number;
+  };
   handleRedirectDetail: (value: number) => void;
 };
 
 // card produk
-const CardPengajuanBarangMasuk: FC<CardPengajuanBarangMasuk> = ({
+const CardBarangKeluar: FC<CardBarangKeluar> = ({
   handleRedirectDetail,
   barang,
-  author,
   tanggalDiajukan,
+  author,
 }) => {
   return (
     <div className="w-full bg-base-100 rounded-lg flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
@@ -370,8 +370,8 @@ const CardPengajuanBarangMasuk: FC<CardPengajuanBarangMasuk> = ({
         <div className="flex-8 flex flex-row justify-start items-start gap-4">
           <div className="flex flex-row justify-start items-start gap-3">
             {/* foto */}
-            <div className="w-12 h-12 flex justify-center items-center overflow-hidden bg-blue-100 rounded-lg">
-              <Truck className="size-6 text-blue-400" />
+            <div className="w-12 h-12 flex justify-center items-center overflow-hidden bg-rose-100 rounded-lg">
+              <Truck className="size-6 text-rose-400" />
             </div>
           </div>
 
@@ -380,7 +380,6 @@ const CardPengajuanBarangMasuk: FC<CardPengajuanBarangMasuk> = ({
             {/* kode */}
             <span className="text-xs text-info font-medium">{barang.kode}</span>
 
-            {/* tanggal diajukan */}
             <div className="flex flex-row justify-start items-center gap-2">
               <span className="text-[0.7rem] font-medium text-custom-secondary dark:text-base-content">
                 {tanggalDiajukan
@@ -440,19 +439,16 @@ const CardPengajuanBarangMasuk: FC<CardPengajuanBarangMasuk> = ({
         )}
 
         {/* jumlah */}
-        <div className="flex-1 flex flex-col justify-start items-start gap-1">
-          {/* label */}
-          <div className="flex flex-row justify-start items-center gap-1">
-            {/* icon */}
-            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-emerald-100">
-              <Package className="text-emerald-400 size-3" />
-            </div>
-
-            {/* label */}
-            <p className="text-xs text-base-content">
-              Jumlah : <span>{formatNumber(barang.jumlah)}</span>
-            </p>
+        <div className="flex-1 flex flex-row justify-start items-center gap-1">
+          {/* icon */}
+          <div className="w-5 h-5 rounded-full flex justify-center items-center bg-rose-100">
+            <Package className="text-rose-400 size-3" />
           </div>
+
+          {/* label */}
+          <p className="text-xs text-base-content">
+            Jumlah : <span>{formatNumber(barang.jumlah)}</span>
+          </p>
         </div>
 
         {/* status */}
@@ -464,4 +460,4 @@ const CardPengajuanBarangMasuk: FC<CardPengajuanBarangMasuk> = ({
   );
 };
 
-export default PengajuanBarangMasuk;
+export default PengajuanBarangKeluar;

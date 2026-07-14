@@ -6,10 +6,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useHighlight from "../../../../hooks/useHighlight";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
 import useSizeWindows from "../../../../hooks/useSizeWindows";
-import { PengajuanBarangMasukServices } from "../../../../services/pengajuanBarangMasuk.service";
 import { useAuthStore } from "../../../../stores/authStore";
+import { PengajuanBarangKeluarServices } from "../../../../services/pengajuanBarangkeluar.service";
 
-const usePengajuanBarangMasuk = () => {
+const usePengajuanBarangKeluar = () => {
   // get pengguna
   const pengguna = useAuthStore((state) => state.pengguna);
   // get window size
@@ -55,11 +55,11 @@ const usePengajuanBarangMasuk = () => {
 
   // query
   const {
-    data: dataPengajuanBarangMasuk,
-    isLoading: isLoadingPengajuanBarangMasuk,
+    data: dataPengajuanBarangKeluar,
+    isLoading: isLoadingPengajuanBarangKeluar,
   } = useQuery({
     queryKey: [
-      "pengajuan-barang-masuk",
+      "pengajuan-barang-keluar",
       search,
       sort,
       limit,
@@ -68,7 +68,7 @@ const usePengajuanBarangMasuk = () => {
       endDate,
     ],
     queryFn: () =>
-      PengajuanBarangMasukServices.allWithAuthor({
+      PengajuanBarangKeluarServices.allWithAuthor({
         ...(search && { search }),
         ...(sort && { sort }),
         ...(limit && { limit }),
@@ -81,9 +81,9 @@ const usePengajuanBarangMasuk = () => {
   });
 
   //   is exist data
-  const isExistDataPengajuanBarangMasuk: boolean =
-    !isLoadingPengajuanBarangMasuk && dataPengajuanBarangMasuk?.data?.data
-      ? dataPengajuanBarangMasuk?.data?.data?.length > 0
+  const isExistDataPengajuanBarangKeluar: boolean =
+    !isLoadingPengajuanBarangKeluar && dataPengajuanBarangKeluar?.data?.data
+      ? dataPengajuanBarangKeluar?.data?.data?.length > 0
         ? true
         : false
       : false;
@@ -94,14 +94,14 @@ const usePengajuanBarangMasuk = () => {
   };
 
   return {
-    dataPengajuanBarangMasuk,
-    isLoadingPengajuanBarangMasuk,
+    dataPengajuanBarangKeluar,
+    isLoadingPengajuanBarangKeluar,
     handleSearch,
     handleSort,
     handleLimit,
     handlePage,
     toast,
-    isExistDataPengajuanBarangMasuk,
+    isExistDataPengajuanBarangKeluar,
     isActiveAksi,
     handleSetIsActiveAksi,
     wrapperRef,
@@ -112,4 +112,4 @@ const usePengajuanBarangMasuk = () => {
   };
 };
 
-export default usePengajuanBarangMasuk;
+export default usePengajuanBarangKeluar;

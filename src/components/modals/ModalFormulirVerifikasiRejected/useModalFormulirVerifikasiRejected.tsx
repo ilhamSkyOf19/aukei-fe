@@ -8,6 +8,7 @@ import {
   type StatusInventoriType,
 } from "../../../types/constant.type";
 import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangMasuk.service";
+import { PengajuanBarangKeluarServices } from "../../../services/pengajuanBarangkeluar.service";
 
 const useModalFormulirVerifikasiRejected = (params: {
   barangMasukId?: number;
@@ -55,8 +56,8 @@ const useModalFormulirVerifikasiRejected = (params: {
           keterangan: data.keterangan,
         });
       } else {
-        return PengajuanBarangMasukServices.verifikasi({
-          barangMasukId: data.id,
+        return PengajuanBarangKeluarServices.verifikasi({
+          barangKeluarId: data.id,
           status: data.status,
           keterangan: data.keterangan,
         });

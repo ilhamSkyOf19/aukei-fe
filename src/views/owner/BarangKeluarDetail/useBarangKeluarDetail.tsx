@@ -6,11 +6,21 @@ import { useToastAnimation } from "../../../hooks/useToast";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import useConfirm from "../../../hooks/useConfirm";
-import { STATUS_INVENTORI_TYPE } from "../../../types/constant.type";
+import {
+  STATUS_INVENTORI_TYPE,
+  type StatusInventoriType,
+} from "../../../types/constant.type";
 import { BarangKeluarServices } from "../../../services/barangKeluar.service";
 import useDeleteBarangKeluar from "../../../hooks/useDeleteBarangKeluar";
+import { useAuthStore } from "../../../stores/authStore";
+import useModal from "../../../hooks/useModal";
+import { PengajuanBarangKeluarServices } from "../../../services/pengajuanBarangkeluar.service";
 
-const useBarangKeluarDetail = () => {
+const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
+  const { fromPengajuanBarang } = params;
+
+  const pengguna = useAuthStore((state) => state.pengguna);
+
   // query client
   const queryClient = useQueryClient();
 
@@ -23,9 +33,16 @@ const useBarangKeluarDetail = () => {
     confirm,
     handleConfirm: handleConfirmPosting,
     handleCancel: handleCancelConfirmPosting,
-  } = useConfirm();
+    data: dataConfirm,
+  } = useConfirm<{ bigTitle: string; smallTitle: string }>();
 
-  // handle
+  // handle show modal verifikasi rejected
+  const {
+    modalRef: modalFormulirVerifikasiRejectedRef,
+    handleShowModal: handleShowModalFormulirVerifikasiRejected,
+    handleCloseModal: handleCloseModalFormulirVerifikasiRejected,
+    dataModal: dataModalFormulirVerifikasiRejected,
+  } = useModal<{ barangKeluarId?: number }>();
 
   // use alert
   const { alert, handleSetAlert } = useAlertAnimation();
@@ -89,7 +106,10 @@ const useBarangKeluarDetail = () => {
   // handle posting
   const handlePosting = async (id: number) => {
     try {
-      if (dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED)
+      if (
+        dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED ||
+        !id
+      )
         return;
 
       if (dataBarangKeluarDetail?.data?.detailBarangKeluars.length === 0) {
@@ -98,7 +118,11 @@ const useBarangKeluarDetail = () => {
       }
 
       // confirm
-      const isConfirm = await confirm();
+      const isConfirm = await confirm({
+        bigTitle: "Apakah Anda yakin ingin memposting data barang keluar?",
+        smallTitle:
+          "Pastikan seluruh data barang keluar telah sesuai. Setelah diposting, stok barang akan diperbarui dan transaksi akan tercatat dalam sistem.",
+      });
 
       if (!isConfirm) {
         return;
@@ -141,10 +165,39 @@ const useBarangKeluarDetail = () => {
     },
   });
 
+  // cancel verifikasi
+  const {
+    mutateAsync: mutateCancelVerifikasi,
+    isPending: isPendingCancelVerifikasi,
+  } = useMutation({
+    mutationFn: (id: number) =>
+      PengajuanBarangKeluarServices.cancelVerifikasi({ barangKeluarId: id }),
+
+    onSuccess: () => {
+      // handle toast
+      handleSetToast("canceled_verifikasi");
+
+      // invalidated
+      queryClient.invalidateQueries({
+        queryKey: ["barang-keluar-detail", validatedId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-global"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-produk"],
+      });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   // is expired
   const isExpired =
     dataBarangKeluarDetail?.data &&
-    Date.now() - new Date(dataBarangKeluarDetail?.data?.createdAt).getTime() >
+    dataBarangKeluarDetail?.data?.postedAt &&
+    Date.now() - new Date(dataBarangKeluarDetail?.data?.postedAt).getTime() >
       24 * 60 * 60 * 1000;
 
   // handle posting
@@ -152,18 +205,63 @@ const useBarangKeluarDetail = () => {
     try {
       if (
         dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
-        isExpired
+        isExpired ||
+        !id
       )
         return;
 
+      // check expired
+      if (isExpired) {
+        handleSetAlert("expired");
+        return;
+      }
+
       // confirm
-      const isConfirm = await confirm();
+      const isConfirm = await confirm({
+        bigTitle:
+          "Apakah Anda yakin ingin membatalkan posting data barang keluar?",
+        smallTitle:
+          "Stok akan dikembalikan ke kondisi sebelum posting. Setelah pembatalan, transaksi dapat diedit dan diposting kembali.",
+      });
 
       if (!isConfirm) {
         return;
       }
 
       await mutateCancelPosting(id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // handle verifikasi
+  const handleCancelVerifikasi = async (id?: number) => {
+    try {
+      if (
+        dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
+        !id
+      )
+        return;
+
+      // check expired
+      if (isExpired) {
+        handleSetAlert("expired");
+        return;
+      }
+
+      // confirm
+      const isConfirm = await confirm({
+        bigTitle:
+          "Apakah Anda yakin ingin membatalkan verifikasi pengajuan barang keluar?",
+        smallTitle:
+          "Stok akan dikembalikan ke kondisi sebelum diverifikasi. Setelah pembatalan, pengajuan dapat lakukan verifikasi kembali.",
+      });
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await mutateCancelVerifikasi(id);
     } catch (error) {
       console.log(error);
     }
@@ -192,6 +290,56 @@ const useBarangKeluarDetail = () => {
     },
   });
 
+  // mutation
+  const {
+    mutateAsync: mutateVerifikasiPengajuanBarang,
+    isPending: isPendingVerifikasiPengajuanBarang,
+  } = useMutation({
+    mutationFn: (data: {
+      barangKeluarId: number;
+      keterangan?: string;
+      status: Exclude<StatusInventoriType, "DRAFT" | "PENDING">;
+    }) => PengajuanBarangKeluarServices.verifikasi(data),
+    onSuccess: () => {
+      // revalidated
+      queryClient.invalidateQueries({
+        queryKey: ["barang-keluar-detail", validatedId],
+      });
+
+      // set toast
+      handleSetToast("approved_pengajuan");
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // handle setuju
+  const handleSetuju = async () => {
+    try {
+      // check validated id
+      if (!validatedId || !fromPengajuanBarang) return;
+
+      // confirm
+      const isConfirm = await confirm({
+        bigTitle: "Apakah Anda yakin ingin menyetujui pengajuan barang keluar?",
+        smallTitle:
+          "Pastikan seluruh data barang keluar telah sesuai. Setelah disetujui, data akan diposting dan stok barang akan diperbarui",
+      });
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await mutateVerifikasiPengajuanBarang({
+        barangKeluarId: validatedId,
+        status: STATUS_INVENTORI_TYPE.POSTED,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     dataBarangKeluarDetail,
     isLoadingBarangKeluarDetail,
@@ -215,6 +363,21 @@ const useBarangKeluarDetail = () => {
     isPendingDelete,
     handleSetToast,
     handleSetAlert,
+
+    pengguna,
+
+    handleSetuju,
+    isPendingVerifikasiPengajuanBarang,
+
+    dataConfirm,
+
+    handleCancelVerifikasi,
+    isPendingCancelVerifikasi,
+
+    modalFormulirVerifikasiRejectedRef,
+    handleShowModalFormulirVerifikasiRejected,
+    handleCloseModalFormulirVerifikasiRejected,
+    dataModalFormulirVerifikasiRejected,
   };
 };
 

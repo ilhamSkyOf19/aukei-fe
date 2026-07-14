@@ -1,6 +1,7 @@
 import ButtonCluster from "../../../components/ui/button/ButtonCluster";
 import BarangKeluar from "./BarangKeluar";
 import BarangMasuk from "./BarangMasuk";
+import PengajuanBarangKeluar from "./PengajuanBarangKeluar";
 import PengajuanBarangMasuk from "./PengajuanBarangMasuk";
 import useInventori from "./useInventori";
 
@@ -53,6 +54,11 @@ const Inventori = () => {
           )}
           {/* show data barang keluar */}
           {isActiveCluster === "barangKeluar" && <BarangKeluar />}
+
+          {/* show data pengajuan barang masuk  */}
+          {isActiveCluster === "pengajuanBarangKeluar" && (
+            <PengajuanBarangKeluar />
+          )}
         </div>
       </div>
     </div>

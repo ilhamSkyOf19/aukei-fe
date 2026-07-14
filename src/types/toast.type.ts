@@ -194,6 +194,18 @@ export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<
     color: "info",
     message: "Keterangan barang berhasil diperbarui",
   },
+  approved_pengajuan: {
+    color: "success",
+    message: "Barang keluar berhasil disetujui",
+  },
+  canceled_verifikasi: {
+    color: "error",
+    message: "Verifikasi berhasil dibatalkan",
+  },
+  rejected_verifikasi: {
+    color: "error",
+    message: "Verifikasi berhasil ditolak",
+  },
 };
 
 // toast pegawai

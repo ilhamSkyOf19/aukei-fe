@@ -22,6 +22,8 @@ import {
   STATUS_INVENTORI_TYPE,
   type StatusInventoriType,
 } from "../../../../types/constant.type";
+import type { IPenggunaInternalType } from "../../../../models/penggunaInternal.model";
+import InformasiPengajuan from "../../../../components/ui/InformasiPengajuan";
 
 type Props = {
   isLoadingBarangKeluarDetail?: boolean;
@@ -33,6 +35,11 @@ type Props = {
   handleSetToast: (data: string) => void;
   jenisKeluar?: Pick<IJenisKeluarType, "id" | "nama">;
   status?: StatusInventoriType;
+  author?: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "isActive" | "username"
+  > | null;
+  tanggalDiajukan?: Date;
 };
 const InformasiBarangKeluar: FC<Props> = ({
   isLoadingBarangKeluarDetail,
@@ -44,6 +51,8 @@ const InformasiBarangKeluar: FC<Props> = ({
   idBarangKeluarDetail,
   tanggalKeluar,
   status,
+  author,
+  tanggalDiajukan,
 }) => {
   // call use
   const {
@@ -72,6 +81,15 @@ const InformasiBarangKeluar: FC<Props> = ({
 
   return (
     <div className="w-full flex flex-col justify-start items-center lg:items-start lg:flex-row gap-2">
+      {author && (
+        <InformasiPengajuan
+          author={author}
+          customHeight="lg:min-h-75"
+          isLoading={isLoadingBarangKeluarDetail}
+          tanggalDiajukan={tanggalDiajukan}
+        />
+      )}
+
       <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-75">
         {/* title */}
         <div className="w-full flex flex-row justify-start items-center">

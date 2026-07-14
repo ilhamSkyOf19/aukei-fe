@@ -10,7 +10,10 @@ export interface IBarangMasukType {
   status: StatusInventoriType;
   totalNilai: string;
   detailBarangMasuks: Omit<IBarangMasukDetailType, "barangMasukId">[];
-  author: Pick<IPenggunaInternalType, "id" | "nama" | "username" | "isActive">;
+  author?: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "username" | "isActive"
+  > | null;
   postedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -35,6 +38,7 @@ export interface ResponseBarangMasukType extends Omit<
 export interface ResponseBarangMasukWithMetaType {
   data: (ResponseBarangMasukType & {
     countDetailBarangMasuk: number;
+    tanggalDiajukan: Date | null;
   })[];
   meta: MetaType;
 }

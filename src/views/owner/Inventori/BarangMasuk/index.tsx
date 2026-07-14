@@ -426,7 +426,7 @@ const CardBarangMasuk: FC<CardBarangMasuk> = ({
     <div className="w-full bg-base-100 rounded-lg flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
       <div className="w-full flex flex-row justify-between items-start pb-3 border-b border-base-content/10">
         {/* content 1 */}
-        <div className="flex-2 flex flex-row justify-start items-start gap-4">
+        <div className="flex-8 flex flex-row justify-start items-start gap-4">
           <div className="flex flex-row justify-start items-start gap-3">
             {/* checkbox */}
             <input
@@ -455,7 +455,7 @@ const CardBarangMasuk: FC<CardBarangMasuk> = ({
 
             {/* tanggal masuk */}
             <span className="text-[0.7rem] font-medium text-custom-secondary dark:text-base-content">
-              {formatTanggalLengkap(new Date())} WIB
+              {formatTanggalLengkap(barang.tanggalMasuk)} WIB
             </span>
           </div>
         </div>

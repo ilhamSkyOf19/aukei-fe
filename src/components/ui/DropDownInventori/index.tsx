@@ -9,7 +9,7 @@ import { Trash, View } from "lucide-react";
 type DropDownProps = {
   handleRedirectDetail: () => void;
   status: StatusInventoriType;
-  handleShowModalDelete: () => void;
+  handleShowModalDelete?: () => void;
 };
 const DropDownInventori: FC<DropDownProps> = ({
   handleRedirectDetail,
@@ -28,7 +28,7 @@ const DropDownInventori: FC<DropDownProps> = ({
           handleClick={() => handleRedirectDetail()}
         />
       </li>
-      {status === STATUS_INVENTORI_TYPE.DRAFT && (
+      {status === STATUS_INVENTORI_TYPE.DRAFT && handleShowModalDelete && (
         <li>
           <LabelButtonDropDownWithIcon
             color="text-error"

@@ -265,6 +265,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                     />
 
                     {/* caption */}
+                    {/* buat count down */}
                     {isStatusPosted && (
                       <span className="text-[0.635rem] lg:hidden text-base-content/50">
                         {`Anda dapat membatalkan postingan sebelum ${formatTanggalLengkap(
@@ -294,12 +295,12 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           handleSetToast={handleSetToast}
           status={dataBarangMasukDetail?.data?.status}
           author={dataBarangMasukDetail?.data?.author}
-          tanggalDiAjukan={
+          tanggalDiajukan={
             dataBarangMasukDetail?.data?.tanggalDiajukan ?? undefined
           }
         />
 
-        {/* daftar produk masuk */}
+        {/* formulir */}
         {!fromPengajuanBarang && (
           <FormulirTambahBarangMasuk
             status={dataBarangMasukDetail?.data?.status}

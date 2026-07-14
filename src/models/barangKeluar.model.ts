@@ -1,6 +1,7 @@
 import type { MetaType, StatusInventoriType } from "../types/constant.type";
 import type { IBarangKeluarDetailType } from "./barangKeluarDetail.model";
 import type { IJenisKeluarType } from "./jenisKeluar.model";
+import type { IPenggunaInternalType } from "./penggunaInternal.model";
 
 export interface IBarangKeluarType {
   id: number;
@@ -11,6 +12,11 @@ export interface IBarangKeluarType {
   jenisKeluar: Pick<IJenisKeluarType, "id" | "nama">;
   status: StatusInventoriType;
   totalNilai: string;
+  author?: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "username" | "isActive"
+  > | null;
+  postedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,13 +34,14 @@ export interface UpdateBarangKeluarForRequestType extends Partial<CreateBarangKe
 // response
 export interface ResponseBarangKeluarType extends Omit<
   IBarangKeluarType,
-  "detailBarangKeluars" | "string"
+  "detailBarangKeluars"
 > {}
 
 // response with meta
 export interface ResponseBarangKeluarWithMetaType {
   data: (ResponseBarangKeluarType & {
     countDetailBarangKeluar: number;
+    tanggalDiajukan?: Date | null;
   })[];
   meta: MetaType;
 }
@@ -42,6 +49,7 @@ export interface ResponseBarangKeluarWithMetaType {
 // find by id
 export interface ResponseBarangKeluarWithDetailType extends ResponseBarangKeluarType {
   detailBarangKeluars: Omit<IBarangKeluarDetailType, "barangKeluarId">[];
+  tanggalDiajukan?: Date | null;
 }
 
 // posted
