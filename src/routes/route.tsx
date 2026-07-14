@@ -15,7 +15,7 @@ import RoleGuard from "../Guards/RoleGuard";
 import { ROLE_INTERNAL_TYPE } from "../types/constant.type";
 import KasirPage from "../pages/KasirPage";
 import KeranjangPage from "../pages/KeranjangPage";
-import PelangganPage from "../pages/PelangganPages";
+import PelangganPage from "../pages/PelangganPage";
 import StatistikDetailPage from "../pages/StatistikDetailPage";
 import RiwayatTransaksiDetailPage from "../pages/RiwayatTransaksiDetailPage";
 import RiwayatTransaksiPage from "../pages/RiwayatTransaksiPage";

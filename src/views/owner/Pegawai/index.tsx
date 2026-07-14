@@ -1,10 +1,4 @@
-import {
-  PackagePlus,
-  Pencil,
-  ShieldCheck,
-  Trash2,
-  UserRound,
-} from "lucide-react";
+import { IdCardLanyard, PackagePlus, Pencil, Trash2 } from "lucide-react";
 import Toast from "../../../components/messages/Toast";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import { TOAST_CONFIG_PEGAWAI } from "../../../types/toast.type";
@@ -16,6 +10,10 @@ import DataEmpty from "../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import ModalFormulirPegawai from "../../../components/modals/ModalFormulirPegawai";
 import ModalDelete from "../../../components/modals/ModalDelete";
+import Avatar from "../../../components/ui/Avatar";
+import type { FC } from "react";
+import ButtonDeleteTable from "../../../components/ui/button/ButtonDeleteTable";
+import ButtonUpdateTable from "../../../components/ui/button/ButtonUpdateTable";
 
 const Pegawai = () => {
   // call use
@@ -80,6 +78,7 @@ const Pegawai = () => {
               <InputSearch
                 handleSearch={handleSearch}
                 placeholder="Cari pegawai berdasarkan nama"
+                withLabel
               />
             </div>
 
@@ -116,96 +115,45 @@ const Pegawai = () => {
               dataPegawai.data.data.map((pegawai, _) => (
                 <div
                   key={pegawai.id}
-                  className="card w-full shadow-sm flex flex-col rounded-xl justify-start items-start p-3 dark:border dark:border-base-content/10 bg-base-100"
+                  className="w-full flex flex-col justify-start items-start bg-base-100 rounded-lg shadow-sm border border-transparent dark:border-base-content/10 p-4"
                 >
-                  <div className="w-full flex flex-row justify-start items-center gap-4 pb-4 border-b border-base-content/10">
-                    {/* avatar */}
-                    <div className="avatar avatar-placeholder">
-                      <div className="bg-custom-primary text-neutral-content w-12 rounded-full">
-                        <UserRound className="size-6 text-custom-secondary" />
+                  {/* content 1 */}
+                  <div className="w-full flex flex-row justify-between items-center pb-4 borde border-b border-base-content/10">
+                    <div className="flex flex-1 justify-start items-start gap-4">
+                      <Avatar nama={pegawai?.nama} index={pegawai.id} />
+                      <div className="flex flex-col justify-start items-start gap-1">
+                        {/* name */}
+                        <span className="text-base-content font-semibold text-sm">
+                          {pegawai?.nama}
+                        </span>
+                        {/* no telp */}
+                        <div className="w-full flex flex-row justify-start items-center gap-2">
+                          <IdCardLanyard className="size-3 text-base-content/80" />
+                          <span className="text-base-content/80 text-xs">
+                            {pegawai.username}
+                          </span>
+                        </div>
                       </div>
                     </div>
-
-                    {/* nama */}
-                    <p className="text-sm font-semibold text-base-content">
-                      {pegawai.nama}
-                    </p>
                   </div>
 
-                  {/* data */}
-                  <div className="flex flex-col justify-start items-start w-full">
-                    {/* Username */}
-                    <div className="w-full flex flex-row justify-start items-center h-16 border-b border-base-content/10">
-                      {/* label with icon */}
-                      <div className="flex-1 flex flex-row justify-start items-center gap-4">
-                        {/* icon */}
-                        <UserRound className="size-6 text-base-content" />
-
-                        <p className="text-xs font-semibold text-base-content/50">
-                          Username
-                        </p>
-                      </div>
-
-                      {/* value */}
-                      <div className="flex-1 flex flex-row justify-end items-center gap-6">
-                        {/* icon */}
-                        <p className="text-xs font-semibold text-base-content">
-                          {pegawai.username}
-                        </p>
-                      </div>
-                    </div>
-                    {/* role */}
-                    <div className="w-full flex flex-row justify-start items-center h-16 border-b border-base-content/10">
-                      {/* label with icon */}
-                      <div className="flex-1 flex flex-row justify-start items-center gap-4">
-                        {/* icon */}
-                        <ShieldCheck className="size-6 text-base-content" />
-
-                        <span className="text-xs font-semibold text-base-content/50">
-                          Role
-                        </span>
-                      </div>
-
-                      {/* value */}
-                      <div className="flex-1 flex flex-row justify-end items-center gap-6">
-                        {/* icon */}
-                        <p className="text-xs py-2 px-3 bg-custom-primary/50 dark:bg-custom-primary font-semibold text-custom-secondary rounded-md">
-                          {pegawai.role}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* aksi */}
-                    <div className="w-full flex flex-row justify-start items-center h-16 gap-4">
-                      {/* update */}
-                      <div className="flex-1 flex flex-row justify-start items-center gap-4">
-                        <ButtonWithIcon
-                          customWidth="w-full"
-                          bgColor="bg-blue-100"
-                          handleBtn={() =>
-                            handleShowModalFormulirPegawai(pegawai.id)
-                          }
-                          icon={Pencil}
-                          label="Ubah"
-                          textColor="text-blue-400"
-                        />
-                      </div>
-
-                      {/* delete */}
-                      <div className="flex-1 flex flex-row justify-end items-center gap-6">
-                        <ButtonWithIcon
-                          customWidth="w-full"
-                          bgColor="bg-rose-100"
-                          handleBtn={() =>
-                            handleShowModalDelete(pegawai.id, {
-                              nama: pegawai.nama,
-                            })
-                          }
-                          icon={Trash2}
-                          label="Hapus"
-                          textColor="text-rose-400"
-                        />
-                      </div>
+                  {/* content 3 */}
+                  <div className="w-full pt-2 md:hidden flex flex-row justify-between items-center">
+                    {/* aksi active */}
+                    <div className="flex-1 flex flex-row justify-start items-center gap-4">
+                      <Aksi
+                        handelUpdateIsActive={handelUpdateIsActive}
+                        handleShowModalDelete={handleShowModalDelete}
+                        handleShowModalFormulirPegawai={
+                          handleShowModalFormulirPegawai
+                        }
+                        pegawai={pegawai}
+                        isLoadingAktif={
+                          isPendingDelete &&
+                          variablesUpdateIsActive?.id === pegawai.id
+                        }
+                        isPendingDelete={isPendingDelete}
+                      />
                     </div>
                   </div>
                 </div>
@@ -311,34 +259,21 @@ const Pegawai = () => {
                       </td>
                       <td>
                         <div className="flex flex-row justify-start items-center gap-1.5">
-                          <div className="tooltip z-10" data-tip="ubah">
-                            {/* update */}
-                            <button
-                              type="button"
-                              className="w-7 h-7 bg-info rounded-md flex flex-row justify-center items-center hover-overlay"
-                              onClick={() =>
-                                handleShowModalFormulirPegawai(pegawai.id)
-                              }
-                            >
-                              <Pencil className="size-3.5 text-primary-white" />
-                            </button>
-                          </div>
+                          {/* update */}
+                          <ButtonUpdateTable
+                            handleShowModalFormulir={() =>
+                              handleShowModalFormulirPegawai(pegawai.id)
+                            }
+                          />
 
                           {/* hapus */}
-                          <div className="tooltip z-10" data-tip="hapus">
-                            {/* update */}
-                            <button
-                              type="button"
-                              className="w-7 h-7 bg-error rounded-md flex flex-row justify-center items-center hover-overlay"
-                              onClick={() =>
-                                handleShowModalDelete(pegawai.id, {
-                                  nama: pegawai.nama,
-                                })
-                              }
-                            >
-                              <Trash2 className="size-3.5 text-primary-white" />
-                            </button>
-                          </div>
+                          <ButtonDeleteTable
+                            handleShowModalDelete={() =>
+                              handleShowModalDelete(pegawai.id, {
+                                nama: pegawai.nama,
+                              })
+                            }
+                          />
                         </div>
                       </td>
                     </tr>
@@ -445,6 +380,91 @@ const Pegawai = () => {
         />
       </div>
     </div>
+  );
+};
+
+type AksiProps = {
+  isLoadingAktif?: boolean;
+  pegawai: {
+    id: number;
+    nama: string;
+    username: string;
+    isActive: boolean;
+  };
+  isPendingDelete?: boolean;
+  handelUpdateIsActive: (params: { id: number; status: boolean }) => void;
+  handleShowModalFormulirPegawai: (id: number) => void;
+  handleShowModalDelete: (
+    id?: number,
+    data?: {
+      nama: string;
+    },
+  ) => void;
+};
+// aksi
+const Aksi: FC<AksiProps> = ({
+  isLoadingAktif,
+  isPendingDelete,
+  handelUpdateIsActive,
+  handleShowModalDelete,
+  handleShowModalFormulirPegawai,
+  pegawai,
+}) => {
+  return (
+    <>
+      {/* label */}
+      <div className=" flex flex-row justify-start items-center gap-4">
+        <span className="text-xs font-medium text-base-content">Aktif</span>
+
+        {/* input */}
+        {isLoadingAktif ? (
+          <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
+            <div className="loading loading-xs" />
+          </div>
+        ) : (
+          <input
+            type="checkbox"
+            checked={pegawai.isActive}
+            className="toggle toggle-success toggle-sm"
+            onChange={() =>
+              handelUpdateIsActive({
+                id: pegawai.id,
+                status: !pegawai.isActive,
+              })
+            }
+          />
+        )}
+      </div>
+
+      {/* aksi */}
+      <div className="flex flex-1 flex-row justify-end items-center gap-2">
+        {/* button update */}
+        <button
+          type="button"
+          className="w-8 h-8 flex justify-center items-center rounded-lg hover-overlay bg-blue-100"
+          onClick={() => handleShowModalFormulirPegawai(pegawai.id)}
+        >
+          <Pencil className="text-blue-400 size-4" />
+        </button>
+        {/* button delete */}
+        <button
+          type="button"
+          disabled={isPendingDelete}
+          className="w-8 h-8 disabled:opacity-50 not-disabled:hover-overlay flex justify-center items-center rounded-lg bg-rose-100"
+          onClick={() => {
+            handleShowModalDelete(pegawai.id, {
+              nama: pegawai.nama,
+            });
+          }}
+        >
+          {isPendingDelete ? (
+            <div className="loading loading-xs" />
+          ) : (
+            <Trash2 className="text-rose-400 size-4" />
+          )}
+        </button>
+      </div>
+    </>
   );
 };
 

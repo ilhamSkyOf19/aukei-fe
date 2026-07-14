@@ -125,7 +125,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
               type="button"
               tabIndex={0}
               role="button"
-              className="m-1 flex flex-row justify-between items-center w-full hover:bg-primary-white px-2 py-2 rounded-md"
+              className="m-1 flex flex-row justify-between items-center w-full border border-transparent hover:border-custom-primary transition-all duration-150 ease-in-out px-2 py-2 rounded-md"
             >
               <div className="flex flex-row justify-start items-center gap-3">
                 {/* avatar */}

@@ -5,7 +5,6 @@ import { useFilter } from "../../../../hooks/useFilter";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import useModal from "../../../../hooks/useModal";
 import { useLocation, useNavigate } from "react-router-dom";
-import useHighlight from "../../../../hooks/useHighlight";
 import useDeleteBarangKeluar from "../../../../hooks/useDeleteBarangKeluar";
 import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
@@ -40,13 +39,6 @@ const useBarangKeluar = () => {
       setChooseBarangKeluar((prev) => [...prev, data]);
     }
   };
-
-  // highlight
-  const {
-    handleSetIsHighlight: handleSetIsActiveAksi,
-    isHighlight: isActiveAksi,
-    wrapperRef,
-  } = useHighlight();
 
   // use modal formulir barang keluar
   const {
@@ -204,9 +196,6 @@ const useBarangKeluar = () => {
     modalFormulirBarangKeluarRef,
     handleCloseModalFormulirBarangKeluar,
     handleShowModalFormulirBarangKeluar,
-    isActiveAksi,
-    handleSetIsActiveAksi,
-    wrapperRef,
     handleRedirectDetail,
     modalDeleteRef,
     handleCloseModalDelete,

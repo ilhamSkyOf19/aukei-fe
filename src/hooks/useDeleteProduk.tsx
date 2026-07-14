@@ -9,7 +9,7 @@ const useDeleteProduk = (params: {
   handleCloseModal: () => void;
   redirectPathname: string;
   handleInvalidate?: () => void;
-  handleShowModalFailedDelete: () => void;
+  handleShowModalFailedDelete?: () => void;
 }) => {
   // params
   const {
@@ -51,7 +51,7 @@ const useDeleteProduk = (params: {
           if (
             err.response?.data.meta.customField?.includes("existing_relation")
           ) {
-            handleShowModalFailedDelete();
+            handleShowModalFailedDelete?.();
 
             // handle close modal delete
             handleCloseModal();

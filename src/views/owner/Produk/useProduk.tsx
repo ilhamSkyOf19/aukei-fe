@@ -7,7 +7,6 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useToastAnimation } from "../../../hooks/useToast";
 import useModal from "../../../hooks/useModal";
 import useDeleteProduk from "../../../hooks/useDeleteProduk";
-import useHighlight from "../../../hooks/useHighlight";
 
 const useProduk = () => {
   // current pathname
@@ -18,13 +17,6 @@ const useProduk = () => {
 
   // query client
   const queryClient = useQueryClient();
-
-  // highlight
-  const {
-    handleSetIsHighlight: handleSetIsActiveAksi,
-    isHighlight: isActiveAksi,
-    wrapperRef,
-  } = useHighlight();
 
   // use modal delete
   const {
@@ -215,9 +207,6 @@ const useProduk = () => {
     handleDeleteProduk,
     dataDeleteProduk,
     handleCloseModalDelete,
-    wrapperRef,
-    isActiveAksi,
-    handleSetIsActiveAksi,
     kategori,
     sort,
     handelUpdateIsActive,

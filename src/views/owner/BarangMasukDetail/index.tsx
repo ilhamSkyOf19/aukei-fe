@@ -317,7 +317,6 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           dataBarangMasukDetail={dataBarangMasukDetail}
           isLoadingBarangMasukDetail={isLoadingBarangMasukDetail}
           fromPengajuanBarang={fromPengajuanBarang}
-          penggunaRole={pengguna?.role}
         />
 
         {/* modal konfirmasi */}

@@ -2,10 +2,8 @@ import {
   EllipsisVertical,
   Package,
   PackagePlus,
-  Trash,
   Trash2,
   Truck,
-  View,
 } from "lucide-react";
 import FilterSort from "../../../../components/filters/Sort";
 import InputSearch from "../../../../components/inputs/InputSearch";
@@ -14,7 +12,6 @@ import { TOAST_CONFIG_BARANG_MASUK } from "../../../../types/toast.type";
 import useBarangMasuk from "./useBarangMasuk";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
 import { cn } from "../../../../utils/cn";
-import LabelButtonDropDownWithIcon from "../../../../components/ui/button/LabelButtonDropDownWithIcon";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import StatusInventori from "../../../../components/ui/StatusInventori";
@@ -29,6 +26,8 @@ import RangeDate from "../../../../components/filters/RangeDate";
 import type { FC } from "react";
 import { formatNumber } from "../../../../helpers/helpers";
 import DropDownInventori from "../../../../components/ui/DropDownInventori";
+import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
+import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 
 const BarangMasuk = () => {
   // call use barang masuk
@@ -44,9 +43,6 @@ const BarangMasuk = () => {
     handleCloseModalFormulirBarangMasuk,
     handleShowModalFormulirBarangMasuk,
     modalFormulirBarangMasukRef,
-    handleSetIsActiveAksi,
-    isActiveAksi,
-    wrapperRef,
     handleRedirectDetail,
     dataDelete,
     handleCloseModalDelete,
@@ -167,7 +163,7 @@ const BarangMasuk = () => {
 
         {/* SHOW DATA FOR MD, LG, XL */}
         <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm mt-4 hidden md:flex">
-          <table className="w-full table table-xs lg:table-sm mb-2">
+          <table className="w-full table table-xs lg:table-sm mb-2 table-zebra">
             {/* head */}
             <thead>
               <tr className="h-12 bg-base-200 text-xs">
@@ -177,7 +173,7 @@ const BarangMasuk = () => {
                 <th>Keterangan</th>
                 <th>Jumlah</th>
                 <th>Status</th>
-                <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -195,7 +191,6 @@ const BarangMasuk = () => {
                     key={barang.id}
                     className={cn(
                       "transition-all duration-75 ease-in-out h-18 text-xs text-base-content",
-                      isActiveAksi === barang.id && "bg-base-200",
                     )}
                   >
                     <th>
@@ -242,49 +237,26 @@ const BarangMasuk = () => {
                     </td>
 
                     {/* detail */}
-                    <td className="sticky right-0 bg-base-100 z-10">
-                      <div
-                        ref={wrapperRef}
-                        className={cn("dropdown dropdown-left dropdown-end")}
-                      >
-                        <button
-                          type="button"
-                          className="btn btn-sm m-1"
-                          tabIndex={0}
-                          onClick={() => handleSetIsActiveAksi(barang.id)}
-                          onFocus={() => handleSetIsActiveAksi(barang.id)}
-                          onBlur={() => handleSetIsActiveAksi(0)}
-                        >
-                          <EllipsisVertical className="size-4" />
-                        </button>
-                        <ul
-                          tabIndex={-1}
-                          className="z-50 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-40 lg:w-50 p-2 shadow-sm space-y-2 absolute"
-                        >
-                          <li>
-                            <LabelButtonDropDownWithIcon
-                              label="Detail"
-                              icon={View}
-                              handleClick={() =>
-                                handleRedirectDetail(barang.id)
+                    <td>
+                      <div className="flex flex-row justify-start items-center gap-2">
+                        <div className="flex flex-row justify-start items-center gap-2">
+                          <ButtonDetailTable
+                            handleRedirect={() =>
+                              handleRedirectDetail(barang.id)
+                            }
+                          />
+
+                          {/* button delete */}
+                          {barang.status === STATUS_INVENTORI_TYPE.DRAFT && (
+                            <ButtonDeleteTable
+                              handleShowModalDelete={() =>
+                                handleShowModalDelete(barang.id, {
+                                  kodeReferensi: barang.kodeReferensi,
+                                })
                               }
                             />
-                          </li>
-                          {barang.status === STATUS_INVENTORI_TYPE.DRAFT && (
-                            <li>
-                              <LabelButtonDropDownWithIcon
-                                color="text-error"
-                                label="Hapus"
-                                icon={Trash}
-                                handleClick={() =>
-                                  handleShowModalDelete(barang.id, {
-                                    kodeReferensi: barang.kodeReferensi,
-                                  })
-                                }
-                              />
-                            </li>
                           )}
-                        </ul>
+                        </div>
                       </div>
                     </td>
                   </tr>

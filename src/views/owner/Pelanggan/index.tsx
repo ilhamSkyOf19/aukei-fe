@@ -26,6 +26,9 @@ import ModalAlert from "../../../components/modals/ModalAlert";
 import AlertLabel from "../../../components/messages/AlertLabel";
 import Avatar from "../../../components/ui/Avatar";
 import type { FC } from "react";
+import ButtonUpdateTable from "../../../components/ui/button/ButtonUpdateTable";
+import ButtonDeleteTable from "../../../components/ui/button/ButtonDeleteTable";
+import ButtonDetailTable from "../../../components/ui/button/ButtonDetailTable";
 
 const Pelanggan = () => {
   // call use
@@ -408,69 +411,37 @@ const Pelanggan = () => {
 
                       <td>
                         <div className="flex flex-row justify-start items-center gap-1.5">
-                          <div
-                            className="tooltip z-10"
-                            data-tip="lihat transaksi"
-                          >
-                            {/* detail transaksi */}
-                            <button
-                              type="button"
-                              className="w-7 h-7 bg-custom-primary rounded-md flex flex-row justify-center items-center hover-overlay"
-                              onClick={() =>
-                                handleRedirectRiwayatTransaksiDetail(
-                                  pelanggan.id,
-                                )
-                              }
-                            >
-                              <Eye className="size-3.5 text-custom-secondary" />
-                            </button>
-                          </div>
+                          <ButtonDetailTable
+                            handleRedirect={() =>
+                              handleRedirectRiwayatTransaksiDetail(pelanggan.id)
+                            }
+                            customDataTip="lihat transaksi"
+                          />
 
                           {/* update */}
-                          <div className="tooltip z-10" data-tip="ubah">
-                            <button
-                              type="button"
-                              className="w-7 h-7 bg-info rounded-md flex flex-row justify-center items-center hover-overlay"
-                              onClick={() =>
-                                handleShowModalFormulirPelanggan(pelanggan.id)
-                              }
-                            >
-                              <Pencil className="size-3.5 text-primary-white" />
-                            </button>
-                          </div>
+                          <ButtonUpdateTable
+                            handleShowModalFormulir={() =>
+                              handleShowModalFormulirPelanggan(pelanggan.id)
+                            }
+                          />
 
                           {/* hapus */}
-                          <div
-                            className="tooltip z-10"
-                            data-tip={
+                          <ButtonDeleteTable
+                            handleShowModalDelete={() =>
+                              handleShowModalDelete(pelanggan.id, {
+                                nama: pelanggan.nama,
+                              })
+                            }
+                            customDataTip={
                               (pelanggan?.totalTransaction ?? 0) <= 0
                                 ? "hapus"
                                 : ""
                             }
-                          >
-                            {/* delete */}
-                            <button
-                              type="button"
-                              disabled={
-                                (pelanggan?.totalTransaction ?? 0) > 0 ||
-                                isPendingDelete
-                              }
-                              className="w-7 h-7 bg-error rounded-md flex flex-row justify-center items-center not-disabled:hover-overlay disabled:opacity-20"
-                              style={{
-                                cursor:
-                                  (pelanggan?.totalTransaction ?? 0) > 0
-                                    ? "not-allowed"
-                                    : "pointer",
-                              }}
-                              onClick={() =>
-                                handleShowModalDelete(pelanggan.id, {
-                                  nama: pelanggan.nama,
-                                })
-                              }
-                            >
-                              <Trash2 className="size-3.5 text-primary-white" />
-                            </button>
-                          </div>
+                            disabled={
+                              (pelanggan?.totalTransaction ?? 0) > 0 ||
+                              isPendingDelete
+                            }
+                          />
                         </div>
                       </td>
                     </tr>

@@ -31,6 +31,8 @@ import { TOAST_CONFIG_PRODUK } from "../../../types/toast.type";
 import ModalDelete from "../../../components/modals/ModalDelete";
 import type { FC } from "react";
 import ModalAlert from "../../../components/modals/ModalAlert";
+import ButtonDetailTable from "../../../components/ui/button/ButtonDetailTable";
+import ButtonDeleteTable from "../../../components/ui/button/ButtonDeleteTable";
 
 const Produk = () => {
   // call use
@@ -54,9 +56,6 @@ const Produk = () => {
     dataDeleteProduk,
     modalDeleteRef,
     handleCloseModalDelete,
-    handleSetIsActiveAksi,
-    isActiveAksi,
-    wrapperRef,
     kategori,
     sort,
     handelUpdateIsActive,
@@ -178,7 +177,6 @@ const Produk = () => {
                           kode: produk.kode,
                           stok: produk.stok,
                         }}
-                        handleSetIsActiveAksi={handleSetIsActiveAksi}
                         handleRedirectDetail={handleRedirectDetail}
                         handleShowModalDelete={() =>
                           handleShowModalDelete(produk.id, {
@@ -200,7 +198,7 @@ const Produk = () => {
 
                 {/* SHOW DATA FOR MD, LG, XL*/}
                 <div className="overflow-x-auto w-full bg-base-100 rounded-xl mt-2 border border-transparent dark:border-base-content/10 shadow-sm hidden md:flex">
-                  <table className="table table-xs lg:table-sm">
+                  <table className="table table-xs lg:table-sm table-zebra">
                     {/* head */}
                     <thead>
                       <tr className="h-12 bg-base-200 text-xs">
@@ -218,9 +216,7 @@ const Produk = () => {
                         <th>Stok</th>
                         <th>Isi PerBox</th>
                         <th>Aktif</th>
-                        <th className="sticky right-0 bg-base-200 z-10">
-                          Aksi
-                        </th>
+                        <th>Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -238,7 +234,6 @@ const Produk = () => {
                             key={produk.id}
                             className={cn(
                               "transition-all duration-75 ease-in-out h-18 text-xs text-base-content",
-                              isActiveAksi === produk.id && "bg-base-200",
                             )}
                           >
                             <th>
@@ -311,29 +306,17 @@ const Produk = () => {
                               )}
                             </td>
                             {/* detail */}
-                            <td className="sticky right-0 bg-base-100 z-10">
-                              <div
-                                ref={wrapperRef}
-                                className={cn(
-                                  "dropdown dropdown-left dropdown-end",
-                                )}
-                              >
-                                <button
-                                  type="button"
-                                  role="button"
-                                  tabIndex={0}
-                                  className="btn btn-sm m-1"
-                                  onFocus={() =>
-                                    handleSetIsActiveAksi(produk.id)
-                                  }
-                                  onBlur={() => handleSetIsActiveAksi(0)}
-                                >
-                                  <EllipsisVertical className="size-4" />
-                                </button>
-                                <DropDown
-                                  handleRedirectDetail={() =>
+                            <td>
+                              <div className="flex flex-row justify-start items-center gap-2">
+                                {/* button  */}
+                                <ButtonDetailTable
+                                  handleRedirect={() =>
                                     handleRedirectDetail(produk.id)
                                   }
+                                />
+
+                                {/* button delete */}
+                                <ButtonDeleteTable
                                   handleShowModalDelete={() =>
                                     handleShowModalDelete(produk.id, {
                                       nama: produk.nama,
@@ -466,7 +449,6 @@ type CardProdukProps = {
   };
   handleRedirectDetail: (value: number) => void;
   handleShowModalDelete: () => void;
-  handleSetIsActiveAksi: (value: number) => void;
 };
 
 // card produk

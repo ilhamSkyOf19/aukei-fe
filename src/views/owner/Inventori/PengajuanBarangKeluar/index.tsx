@@ -4,7 +4,6 @@ import {
   Package,
   PackagePlus,
   Truck,
-  View,
 } from "lucide-react";
 import FilterSort from "../../../../components/filters/Sort";
 import InputSearch from "../../../../components/inputs/InputSearch";
@@ -12,7 +11,6 @@ import Toast from "../../../../components/messages/Toast";
 import { TOAST_CONFIG_BARANG_KELUAR } from "../../../../types/toast.type";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
 import { cn } from "../../../../utils/cn";
-import LabelButtonDropDownWithIcon from "../../../../components/ui/button/LabelButtonDropDownWithIcon";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import StatusInventori from "../../../../components/ui/StatusInventori";
@@ -28,6 +26,7 @@ import { formatNumber } from "../../../../helpers/helpers";
 import usePengajuanBarangKeluar from "./usePengajuanBarangKeluar";
 import Avatar from "../../../../components/ui/Avatar";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
+import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 
 const PengajuanBarangKeluar = () => {
   // call use barang masuk
@@ -37,9 +36,6 @@ const PengajuanBarangKeluar = () => {
     handleSearch,
     handleSort,
     toast,
-    handleSetIsActiveAksi,
-    isActiveAksi,
-    wrapperRef,
     handleRedirectDetail,
     sort,
     dataPengajuanBarangKeluar,
@@ -161,7 +157,7 @@ const PengajuanBarangKeluar = () => {
                 <th>Jumlah</th>
                 <th>Jenis Keluar</th>
                 <th>Status</th>
-                <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -179,7 +175,6 @@ const PengajuanBarangKeluar = () => {
                     key={barang.id}
                     className={cn(
                       "transition-all duration-75 ease-in-out h-18 text-xs text-base-content",
-                      isActiveAksi === barang.id && "bg-base-200",
                     )}
                   >
                     {/* author */}
@@ -243,35 +238,9 @@ const PengajuanBarangKeluar = () => {
 
                     {/* detail */}
                     <td>
-                      <div
-                        ref={wrapperRef}
-                        className={cn("dropdown dropdown-left dropdown-end")}
-                      >
-                        <button
-                          type="button"
-                          className="btn btn-sm m-1"
-                          tabIndex={0}
-                          onClick={() => handleSetIsActiveAksi(barang.id)}
-                          onFocus={() => handleSetIsActiveAksi(barang.id)}
-                          onBlur={() => handleSetIsActiveAksi(0)}
-                        >
-                          <EllipsisVertical className="size-4" />
-                        </button>
-                        <ul
-                          tabIndex={-1}
-                          className="z-50 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-40 lg:w-50 p-2 shadow-sm space-y-2 absolute"
-                        >
-                          <li>
-                            <LabelButtonDropDownWithIcon
-                              label="Detail"
-                              icon={View}
-                              handleClick={() =>
-                                handleRedirectDetail(barang.id)
-                              }
-                            />
-                          </li>
-                        </ul>
-                      </div>
+                      <ButtonDetailTable
+                        handleRedirect={() => handleRedirectDetail(barang.id)}
+                      />
                     </td>
                   </tr>
                 ))
@@ -303,7 +272,7 @@ const PengajuanBarangKeluar = () => {
                     <th>Jumlah</th>
                     <th>Jenis Keluar</th>
                     <th>Status</th>
-                    <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+                    <th>Aksi</th>
                   </>
                 ) : (
                   <>

@@ -1,5 +1,10 @@
 import { EllipsisVertical, PencilLine, Trash } from "lucide-react";
-import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
+import {
+  formatNumber,
+  formatNumberK,
+  formatRupiah,
+  formatRupiahShort,
+} from "../../../../helpers/helpers";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import type { ResponseStructure } from "../../../../types/response.type";
 import type { FC } from "react";
@@ -20,18 +25,18 @@ import {
   type RoleInternalType,
 } from "../../../../types/constant.type";
 import InputNumber from "../../../../components/inputs/InputNumber";
+import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
+import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 
 type Props = {
   isLoadingBarangKeluarDetail?: boolean;
   dataBarangKeluarDetail?: ResponseStructure<ResponseBarangKeluarWithDetailType | null>;
   fromPengajuanBarang?: boolean;
-  penggunaRole?: RoleInternalType;
 };
 const ShowDataBarangKeluar: FC<Props> = ({
   dataBarangKeluarDetail,
   isLoadingBarangKeluarDetail,
   fromPengajuanBarang,
-  penggunaRole,
 }) => {
   const {
     handleSetIsActiveAksi,
@@ -85,10 +90,10 @@ const ShowDataBarangKeluar: FC<Props> = ({
           dataBarangKeluarDetail?.data?.detailBarangKeluars?.map((item) => (
             <div
               key={item.id}
-              className="flex flex-col p-3 justify-start items-start w-full card bg-base-100 shadow-xs min-h-20 gap-2"
+              className="flex flex-col p-3 justify-start items-start w-full card bg-base-100 shadow-xs min-h-20 gap-1"
             >
               {/* content one */}
-              <div className="w-full h-full flex flex-row justify-start items-start gap-3">
+              <div className="w-full h-full flex flex-row justify-start items-start gap-3 border-b border-base-content/10 pb-2">
                 {/* img */}
                 <div className="flex-1 flex flex-row justify-start items-center">
                   <div className="w-12.5 h-12 overflow-hidden bg-black rounded-md">
@@ -114,91 +119,93 @@ const ShowDataBarangKeluar: FC<Props> = ({
 
                     {/* button aksi */}
                     <div className="flex flex-row justify-end items-start">
-                      {penggunaRole === ROLE_INTERNAL_TYPE.KASIR &&
-                        !fromPengajuanBarang &&
-                        !isStatusPosted && (
-                          <div className="sticky right-0 bg-base-100 z-10">
-                            <div
-                              ref={wrapperRef}
-                              className={cn(
-                                "dropdown dropdown-left dropdown-end",
-                              )}
+                      {!fromPengajuanBarang && !isStatusPosted && (
+                        <div className="sticky right-0 bg-base-100 z-10">
+                          <div
+                            ref={wrapperRef}
+                            className={cn(
+                              "dropdown dropdown-left dropdown-end",
+                            )}
+                          >
+                            <button
+                              type="button"
+                              role="button"
+                              tabIndex={0}
+                              className="m-1"
+                              onFocus={() => handleSetIsActiveAksi(item.id)}
+                              onBlur={() => handleSetIsActiveAksi(0)}
                             >
-                              <button
-                                type="button"
-                                role="button"
-                                tabIndex={0}
-                                className="m-1"
-                                onFocus={() => handleSetIsActiveAksi(item.id)}
-                                onBlur={() => handleSetIsActiveAksi(0)}
-                              >
-                                <EllipsisVertical className="size-4" />
-                              </button>
-                              <ul
-                                tabIndex={-1}
-                                className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
-                              >
-                                <li>
-                                  <LabelButtonDropDownWithIcon
-                                    label="Ubah Produk"
-                                    icon={PencilLine}
-                                    handleClick={() =>
-                                      handleShowModalUbahProduk(item.id, {
-                                        produkId: item.produk.id,
-                                        hargaModalSatuan: item.hargaModalSatuan,
-                                        jumlahStok: item.jumlahStok,
-                                      })
-                                    }
-                                  />
-                                </li>
-                                <li>
-                                  <LabelButtonDropDownWithIcon
-                                    color="text-error"
-                                    label="Hapus"
-                                    icon={Trash}
-                                    handleClick={() =>
-                                      handleShowModalDelete(item.id, {
-                                        nama: item.produk.nama,
-                                      })
-                                    }
-                                  />
-                                </li>
-                              </ul>
-                            </div>
+                              <EllipsisVertical className="size-4" />
+                            </button>
+                            <ul
+                              tabIndex={-1}
+                              className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
+                            >
+                              <li>
+                                <LabelButtonDropDownWithIcon
+                                  label="Ubah Produk"
+                                  icon={PencilLine}
+                                  handleClick={() =>
+                                    handleShowModalUbahProduk(item.id, {
+                                      produkId: item.produk.id,
+                                      hargaModalSatuan: item.hargaModalSatuan,
+                                      jumlahStok: item.jumlahStok,
+                                    })
+                                  }
+                                />
+                              </li>
+                              <li>
+                                <LabelButtonDropDownWithIcon
+                                  color="text-error"
+                                  label="Hapus"
+                                  icon={Trash}
+                                  handleClick={() =>
+                                    handleShowModalDelete(item.id, {
+                                      nama: item.produk.nama,
+                                    })
+                                  }
+                                />
+                              </li>
+                            </ul>
                           </div>
-                        )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
+
+              {/* content two */}
               <div className="w-full flex flex-row justify-start items-start gap-2">
                 {/* data */}
-                <div className="w-full flex flex-row justify-start items-end mt-2 flex-wrap gap-2">
+                <div className="w-full flex flex-row justify-start items-end mt-2 flex-wrap gap-4">
                   {/* harga beli */}
-                  <div className="flex-2 flex flex-col justify-start items-start gap-0.5">
+                  <div className="flex-1 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
                     <span className="text-[0.625rem] text-base-content/50">
-                      Harga Modal Satuan
+                      Harga Modal
                     </span>
                     <span className="text-xs font-semibold text-base-content">
-                      {formatRupiah(item.hargaModalSatuan)}
+                      {formatRupiahShort(item.hargaModalSatuan)}
                     </span>
                   </div>
-                  {/* box */}
-                  <div className="flex-1 flex flex-col justify-start items-start gap-0.5">
+                  {/* jumlah stok */}
+                  <div className="flex-1 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
                     <span className="text-[0.625rem] font-medium text-base-content/50">
                       Jumlah Stok
                     </span>
                     <span className="text-xs font-semibold text-base-content">
-                      {item.jumlahStok}
+                      {formatNumberK(item.jumlahStok)}
                     </span>
                   </div>
-                  {/* total */}
-                  <div className="flex-2 flex flex-col justify-start items-start gap-0.5">
+                  {/* total nilai */}
+                  <div className="flex-1 border-r border-base-content/10 flex flex-col justify-start items-start gap-0.5">
                     <span className="text-[0.625rem] font-medium text-base-content/50">
-                      Total
+                      Total Nilai
                     </span>
                     <span className="text-xs font-semibold text-base-content">
-                      {formatRupiah(item.jumlahStok * item.hargaModalSatuan)}
+                      {formatRupiahShort(
+                        item.jumlahStok * item.hargaModalSatuan,
+                      )}
                     </span>
                   </div>
                 </div>
@@ -385,52 +392,24 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       {/* detail */}
                       {!fromPengajuanBarang && !isStatusPosted && (
                         <td>
-                          <div
-                            ref={wrapperRef}
-                            className={cn(
-                              "dropdown dropdown-left dropdown-end",
-                            )}
-                          >
-                            <button
-                              type="button"
-                              role="button"
-                              tabIndex={0}
-                              className="btn btn-sm m-1"
-                              onFocus={() => handleSetIsActiveAksi(item.id)}
-                              onBlur={() => handleSetIsActiveAksi(0)}
-                            >
-                              <EllipsisVertical className="size-4" />
-                            </button>
-                            <ul
-                              tabIndex={-1}
-                              className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
-                            >
-                              <li>
-                                <LabelButtonDropDownWithIcon
-                                  label="Ubah Produk"
-                                  icon={PencilLine}
-                                  handleClick={() =>
-                                    handleShowModalUbahProduk(item.id, {
-                                      produkId: item.produk.id,
-                                      hargaModalSatuan: item.hargaModalSatuan,
-                                      jumlahStok: item.jumlahStok,
-                                    })
-                                  }
-                                />
-                              </li>
-                              <li>
-                                <LabelButtonDropDownWithIcon
-                                  color="text-error"
-                                  label="Hapus"
-                                  icon={Trash}
-                                  handleClick={() =>
-                                    handleShowModalDelete(item.id, {
-                                      nama: item.produk.nama,
-                                    })
-                                  }
-                                />
-                              </li>
-                            </ul>
+                          <div className="flex flex-row justify-start items-center gap-2">
+                            <ButtonUpdateTable
+                              handleShowModalFormulir={() =>
+                                handleShowModalUbahProduk(item.id, {
+                                  produkId: item.produk.id,
+                                  hargaModalSatuan: item.hargaModalSatuan,
+                                  jumlahStok: item.jumlahStok,
+                                })
+                              }
+                              customDataTip="ganti produk"
+                            />
+                            <ButtonDeleteTable
+                              handleShowModalDelete={() =>
+                                handleShowModalDelete(item.id, {
+                                  nama: item.produk.nama,
+                                })
+                              }
+                            />
                           </div>
                         </td>
                       )}

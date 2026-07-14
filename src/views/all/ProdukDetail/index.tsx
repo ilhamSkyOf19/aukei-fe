@@ -66,7 +66,7 @@ const ProdukDetail = () => {
 
   return (
     <div className="w-full md:h-screen overflow-y-auto">
-      <div className="w-full mb-30 lg:mb-20 h-full flex flex-col justify-start items-start px-2 lg:px-4">
+      <div className="w-full mb-30 md:mb-30 h-full flex flex-col justify-start items-start px-2 lg:px-4">
         {/* toast */}
         {toast && (
           <Toast

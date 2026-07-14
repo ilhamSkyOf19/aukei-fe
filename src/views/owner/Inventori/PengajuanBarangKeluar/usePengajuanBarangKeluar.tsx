@@ -3,7 +3,6 @@ import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../hooks/useFilter";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import { useLocation, useNavigate } from "react-router-dom";
-import useHighlight from "../../../../hooks/useHighlight";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
 import useSizeWindows from "../../../../hooks/useSizeWindows";
 import { useAuthStore } from "../../../../stores/authStore";
@@ -21,13 +20,6 @@ const usePengajuanBarangKeluar = () => {
 
   // filter search
   const { search, setSearch: handleSearch } = useFilterSearch("search");
-
-  // highlight
-  const {
-    handleSetIsHighlight: handleSetIsActiveAksi,
-    isHighlight: isActiveAksi,
-    wrapperRef,
-  } = useHighlight();
 
   // filter sort
   const { filter: sort, setFilter: handleSort } = useFilter({
@@ -102,9 +94,6 @@ const usePengajuanBarangKeluar = () => {
     handlePage,
     toast,
     isExistDataPengajuanBarangKeluar,
-    isActiveAksi,
-    handleSetIsActiveAksi,
-    wrapperRef,
     handleRedirectDetail,
     windowSize,
     sort,

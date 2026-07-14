@@ -106,10 +106,13 @@
 
 - [✅] Membuat halaman riwayat transaksi untuk pelanggan
 
-- [✅] Membuat halaman pengajuan barang masuk dan integrasi backend
-  - [✅] Membuat fitur tolak
+- [✅] Membuat halaman daftar pengajuan barang masuk dan integrasi backend
 
-- [ ] Membuat halaman pengajuan barang keluar dan integrasi backend
+- [✅] Membuat halaman daftar pengajuan barang keluar dan integrasi backend
+
+- [ ] Membuat halaman ajukan barang masuk oleh kasir dan integrasi backend
+
+- [ ] Membuat halaman ajukan barang keluar oleh kasir dan integrasi backend
 
 - [ ] Memperbaiki tampilan kasir
 

@@ -5,7 +5,6 @@ import { useFilter } from "../../../../hooks/useFilter";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import useModal from "../../../../hooks/useModal";
 import { useLocation, useNavigate } from "react-router-dom";
-import useHighlight from "../../../../hooks/useHighlight";
 import useDeleteBarangMasuk from "../../../../hooks/useDeleteBarangMasuk";
 import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
@@ -43,13 +42,6 @@ const useBarangMasuk = () => {
 
   // filter search
   const { search, setSearch: handleSearch } = useFilterSearch("search");
-
-  // highlight
-  const {
-    handleSetIsHighlight: handleSetIsActiveAksi,
-    isHighlight: isActiveAksi,
-    wrapperRef,
-  } = useHighlight();
 
   // use modal formulir barang masuk
   const {
@@ -197,9 +189,6 @@ const useBarangMasuk = () => {
     modalFormulirBarangMasukRef,
     handleCloseModalFormulirBarangMasuk,
     handleShowModalFormulirBarangMasuk,
-    isActiveAksi,
-    handleSetIsActiveAksi,
-    wrapperRef,
     handleRedirectDetail,
     modalDeleteRef,
     handleCloseModalDelete,

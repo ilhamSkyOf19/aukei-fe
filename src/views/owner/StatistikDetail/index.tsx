@@ -48,7 +48,11 @@ const StatistikDetail = () => {
             {/* aksi */}
             <div className="flex flex-row justify-end items-start gap-2">
               {/* button filter */}
-              <RangeDate customWidth="w-50" listDate={listDateRangeLong} />
+              <RangeDate
+                customWidth="w-50"
+                listDate={listDateRangeLong}
+                noLabel
+              />
               {/* button export */}
               <div className="md:flex flex-row justify-start items-center gap-2 hidden">
                 <ButtonWithIcon
