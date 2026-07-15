@@ -1,5 +1,6 @@
 import { Trash2 } from "lucide-react";
 import type { FC } from "react";
+import { cn } from "../../../../utils/cn";
 
 type Props = {
   handleShowModalDelete: () => void;
@@ -17,7 +18,10 @@ const ButtonDeleteTable: FC<Props> = ({
       <button
         type="button"
         disabled={disabled}
-        className="w-7 h-7 bg-error rounded-md flex flex-row justify-center items-center hover-overlay"
+        className={cn(
+          "w-7 h-7 bg-error rounded-md flex flex-row justify-center items-center disabled:opacity-50",
+          !disabled && "hover-overlay",
+        )}
         style={{
           cursor: disabled ? "not-allowed" : "pointer",
         }}

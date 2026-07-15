@@ -32,11 +32,13 @@ type Props = {
   isLoadingBarangKeluarDetail?: boolean;
   dataBarangKeluarDetail?: ResponseStructure<ResponseBarangKeluarWithDetailType | null>;
   fromPengajuanBarang?: boolean;
+  role?: RoleInternalType;
 };
 const ShowDataBarangKeluar: FC<Props> = ({
   dataBarangKeluarDetail,
   isLoadingBarangKeluarDetail,
   fromPengajuanBarang,
+  role,
 }) => {
   const {
     handleSetIsActiveAksi,
@@ -73,6 +75,16 @@ const ShowDataBarangKeluar: FC<Props> = ({
     dataBarangKeluarDetail?.data?.detailBarangKeluars?.length > 0
       ? true
       : false;
+
+  // is rejected kasir
+  const isRejectedKasir =
+    dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.REJECTED &&
+    role === ROLE_INTERNAL_TYPE.KASIR;
+
+  // const is draft owner
+  const isDrafOwner =
+    dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT &&
+    role === ROLE_INTERNAL_TYPE.OWNER;
 
   return (
     <>
@@ -246,7 +258,10 @@ const ShowDataBarangKeluar: FC<Props> = ({
                 <th>Harga Modal Satuan</th>
                 <th>Jumlah Stok</th>
                 <th>Total</th>
-                {!fromPengajuanBarang && !isStatusPosted && <th>Aksi</th>}
+                {(isRejectedKasir ||
+                  isDrafOwner ||
+                  dataBarangKeluarDetail?.data?.status ===
+                    STATUS_INVENTORI_TYPE.DRAFT) && <th>Aksi</th>}
               </tr>
             </thead>
             <tbody>
@@ -319,8 +334,10 @@ const ShowDataBarangKeluar: FC<Props> = ({
                             </span>
 
                             {/* button update */}
-                            {dataBarangKeluarDetail?.data?.status ===
-                              STATUS_INVENTORI_TYPE.DRAFT && (
+                            {(isRejectedKasir ||
+                              isDrafOwner ||
+                              dataBarangKeluarDetail?.data?.status ===
+                                STATUS_INVENTORI_TYPE.DRAFT) && (
                               <ButtonInline
                                 handleKeyUpdate={() =>
                                   handleSetDataUpdate({
@@ -366,8 +383,10 @@ const ShowDataBarangKeluar: FC<Props> = ({
                             </span>
 
                             {/* button update */}
-                            {dataBarangKeluarDetail?.data?.status ===
-                              STATUS_INVENTORI_TYPE.DRAFT && (
+                            {(isRejectedKasir ||
+                              isDrafOwner ||
+                              dataBarangKeluarDetail?.data?.status ===
+                                STATUS_INVENTORI_TYPE.DRAFT) && (
                               <ButtonInline
                                 handleKeyUpdate={() =>
                                   handleSetDataUpdate({
@@ -390,7 +409,10 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       </td>
 
                       {/* detail */}
-                      {!fromPengajuanBarang && !isStatusPosted && (
+                      {(isRejectedKasir ||
+                        isDrafOwner ||
+                        dataBarangKeluarDetail?.data?.status ===
+                          STATUS_INVENTORI_TYPE.DRAFT) && (
                         <td>
                           <div className="flex flex-row justify-start items-center gap-2">
                             <ButtonUpdateTable

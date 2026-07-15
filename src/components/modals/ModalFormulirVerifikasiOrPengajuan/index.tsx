@@ -34,7 +34,7 @@ const ModalFormulirVerifikasiOrPengajuan: FC<Props> = ({
     handleSubmit,
     onSubmit,
     register,
-    isPendingVerifikasiRejected,
+    isPendingVerifikasiOrPengajuan,
   } = useModalFormulirVerifikasiOrPengajuan({
     handleCloseModal,
     barangKeluarId,
@@ -156,8 +156,8 @@ const ModalFormulirVerifikasiOrPengajuan: FC<Props> = ({
               />
               {/* button submit */}
               <ButtonSubmit
-                label={`Verifikasi`}
-                isLoading={isPendingVerifikasiRejected}
+                label={type === "tolak" ? `Verifikasi` : "Ajukan"}
+                isLoading={isPendingVerifikasiOrPengajuan}
               />
             </div>
           </form>

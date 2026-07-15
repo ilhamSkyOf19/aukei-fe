@@ -22,6 +22,7 @@ import RiwayatTransaksiPage from "../pages/RiwayatTransaksiPage";
 import PengajuanBarangMasukDetailPage from "../pages/PengajuanBarangMasukDetailPage";
 import PengajuanBarangKeluarDetailPage from "../pages/PengajuanBarangKeluarDetailPage";
 import PengajuanBarangMasukPage from "../pages/PengajuanBarangMasukPage";
+import PengajuanBarangKeluarPage from "../pages/PengajuanBarangKeluarPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -316,6 +317,27 @@ const route = createBrowserRouter([
             element: (
               <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.KASIR]}>
                 <PengajuanBarangMasukDetailPage />
+              </RoleGuard>
+            ),
+          },
+        ],
+      },
+      {
+        path: "pengajuan-barang-keluar",
+        children: [
+          {
+            index: true,
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.KASIR]}>
+                <PengajuanBarangKeluarPage />
+              </RoleGuard>
+            ),
+          },
+          {
+            path: ":id",
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.KASIR]}>
+                <PengajuanBarangKeluarDetailPage />
               </RoleGuard>
             ),
           },

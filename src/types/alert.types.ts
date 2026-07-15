@@ -36,6 +36,27 @@ export const ALERT_CONFIG_BARANG_MASUK_DETAIL: Record<
   },
 };
 
+export const ALERT_CONFIG_BARANG_KELUAR_DETAIL: Record<
+  string,
+  {
+    message: string;
+  }
+> = {
+  produk_choose_exist: {
+    message: "Produk sudah dipilih, silahkan pilih produk lain.",
+  },
+  produk_choose_exist_in_data: {
+    message: "Produk sudah ada dalam data, silahkan pilih produk lain.",
+  },
+  empty_barang_keluar: {
+    message:
+      "Data Barang Keluar masih kosong, silahkan tambahkan barang keluar.",
+  },
+  expired: {
+    message: "Mohon maaf, barang keluar sudah tidak dapat dibatalkan.",
+  },
+};
+
 export const ALERT_CONFIG_TRANSACTION: Record<
   string,
   {

@@ -57,9 +57,9 @@ const PengajuanBarangKeluar = () => {
         />
       )}
 
-      <div className="card flex flex-col justify-start items-start">
+      <div className="card flex flex-col justify-start items-start px-2.5 pt-2.5">
         {/* filter */}
-        <div className="w-full bg-base-100 py-2 px-4 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-lg shadow-sm">
+        <div className="w-full bg-base-100 p-4 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-lg shadow-sm">
           {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
             <ButtonWithIcon
               icon={PackagePlus}
@@ -379,7 +379,6 @@ const CardBarangKeluar: FC<CardBarangKeluar> = ({
 
             <DropDownInventori
               handleRedirectDetail={() => handleRedirectDetail(barang.id)}
-              status={barang.status}
             />
           </div>
         </div>

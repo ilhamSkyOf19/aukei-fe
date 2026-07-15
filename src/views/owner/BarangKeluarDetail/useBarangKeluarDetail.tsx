@@ -7,6 +7,7 @@ import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import useConfirm from "../../../hooks/useConfirm";
 import {
+  ROLE_INTERNAL_TYPE,
   STATUS_INVENTORI_TYPE,
   type StatusInventoriType,
 } from "../../../types/constant.type";
@@ -38,11 +39,29 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
   // handle show modal verifikasi rejected
   const {
-    modalRef: modalFormulirVerifikasiRejectedRef,
-    handleShowModal: handleShowModalFormulirVerifikasiRejected,
-    handleCloseModal: handleCloseModalFormulirVerifikasiRejected,
-    dataModal: dataModalFormulirVerifikasiRejected,
-  } = useModal<{ barangKeluarId?: number }>();
+    modalRef: modalFormulirVerifikasiOrPengajuan,
+    handleShowModal: showModalFormulirVerifikasiOrPengajuan,
+    handleCloseModal: handleCloseModalFormulirVerifikasiOrPengajuan,
+    idModal: idModalFormulirVerifikasiOrPengajuan,
+    dataModal: dataModalFormulirVerifikasiOrPengajuan,
+  } = useModal<{ type: "pengajuan" | "tolak" }>();
+
+  // handle show modal formulir verifikasi or pengajuan
+  const handleShowModalFormulirVerifikasiOrPengajuan = (
+    id?: number | undefined,
+    data?:
+      | {
+          type: "pengajuan" | "tolak";
+        }
+      | undefined,
+  ) => {
+    if (dataBarangKeluarDetail?.data?.detailBarangKeluars.length === 0) {
+      handleSetAlert("empty_barang_keluar");
+      return;
+    }
+
+    showModalFormulirVerifikasiOrPengajuan(id, data);
+  };
 
   // use alert
   const { alert, handleSetAlert } = useAlertAnimation();
@@ -104,7 +123,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     });
 
   // handle posting
-  const handlePosting = async (id: number) => {
+  const handlePosting = async (id?: number) => {
     try {
       if (
         dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED ||
@@ -272,7 +291,14 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const isStatusDraft =
     dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT;
 
-  // use delete barang masuk
+  const isStatusRejected =
+    dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.REJECTED;
+
+  const canShowFormTambahBarang =
+    (!fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) ||
+    (fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
+
+  // use delete barang keluar
   const {
     dataDelete,
     handleCloseModalDelete,
@@ -374,10 +400,14 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     handleCancelVerifikasi,
     isPendingCancelVerifikasi,
 
-    modalFormulirVerifikasiRejectedRef,
-    handleShowModalFormulirVerifikasiRejected,
-    handleCloseModalFormulirVerifikasiRejected,
-    dataModalFormulirVerifikasiRejected,
+    modalFormulirVerifikasiOrPengajuan,
+    handleShowModalFormulirVerifikasiOrPengajuan,
+    handleCloseModalFormulirVerifikasiOrPengajuan,
+    idModalFormulirVerifikasiOrPengajuan,
+    dataModalFormulirVerifikasiOrPengajuan,
+
+    isStatusRejected,
+    canShowFormTambahBarang,
   };
 };
 

@@ -276,7 +276,7 @@ const Pelanggan = () => {
                   <th>Kredit Berjalan</th>
                   <th>Kredit Terlambat</th>
                   <th>Aktif</th>
-                  <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
+                  <th>Aksi</th>
                 </tr>
               </thead>
               <tbody>

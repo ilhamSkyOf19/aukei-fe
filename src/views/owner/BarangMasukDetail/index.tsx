@@ -72,6 +72,10 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
 
   // perbaiki tombol ajukan jika status nya rejected
 
+  const isCanUpdate =
+    isStatusDraft ||
+    (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
+
   return (
     <div className="w-full h-screen overflow-y-auto ">
       <div className="w-full flex mb-30 md:mb-10 lg:pb-20 flex-col justify-start items-start pt-2 px-2.5 gap-2">
@@ -231,12 +235,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                 </div>
 
                 {/* button posting */}
-                {(isStatusDraft ||
-                  (isStatusRejected &&
-                    pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) ||
-                  (isStatusPosted &&
-                    !isExpired &&
-                    pengguna?.role === ROLE_INTERNAL_TYPE.OWNER)) && (
+                {isCanUpdate && (
                   <div className="flex flex-col justify-start items-start w-full lg:w-auto gap-2 lg:gap-0">
                     <ButtonWithIcon
                       handleBtn={() => {
@@ -327,6 +326,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           tanggalDiajukan={
             dataBarangMasukDetail?.data?.tanggalDiajukan ?? undefined
           }
+          isUpdate={isCanUpdate}
         />
 
         {/* formulir */}
@@ -366,7 +366,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           iconColor="text-warning"
         />
 
-        {/* modal delete */}
+        {/* modal pengajuan */}
         {fromPengajuanBarang && (
           <ModalFormulirVerifikasiOrPengajuan
             modalRef={modalFormulirVerifikasiOrPengajuan}

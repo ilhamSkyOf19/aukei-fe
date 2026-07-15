@@ -31,7 +31,10 @@ import { formatNumber } from "../../../../helpers/helpers";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 
-const BarangKeluar = () => {
+type Props = {
+  fromPengajuanBarang?: boolean;
+};
+const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
   // call use barang masuk
   const {
     dataBarangKeluar,
@@ -61,7 +64,7 @@ const BarangKeluar = () => {
     isPendingDeleteMany,
     modalDeleteManyRef,
     sort,
-  } = useBarangKeluar();
+  } = useBarangKeluar({ fromPengajuanBarang });
 
   return (
     <div className="w-full  mb-30 md:mb-10 lg:mb-20 ">
@@ -75,9 +78,9 @@ const BarangKeluar = () => {
         />
       )}
 
-      <div className="card flex flex-col justify-start items-start">
+      <div className="card flex flex-col justify-start items-start px-2.5 pt-2.5">
         {/* filter */}
-        <div className="w-full bg-base-100 py-2 px-4 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-lg shadow-sm">
+        <div className="w-full bg-base-100 p-4 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-lg shadow-sm">
           <ButtonWithIcon
             icon={PackagePlus}
             label="Tambah Barang Keluar"
@@ -92,7 +95,7 @@ const BarangKeluar = () => {
               withLabel
             />
           </div>
-          <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
+          <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
             {/* input range date */}
             <RangeDate customWidth="w-full md:w-60" />
 
@@ -127,22 +130,27 @@ const BarangKeluar = () => {
               <div className="w-full h-20 skeleton border border-base-content/10" />
             </>
           ) : isExistDataBarangKeluar ? (
-            dataBarangKeluar?.data?.data?.map((item, _) => (
+            dataBarangKeluar?.data?.data?.map((barang, _) => (
               <CardBarangKeluar
-                key={item.id}
+                key={barang.id}
                 barang={{
-                  id: item.id,
-                  kode: item.kodeReferensi,
-                  jumlah: item.countDetailBarangKeluar,
-                  status: item.status,
-                  tanggalKeluar: item.tanggalKeluar,
-                  jenisKeluar: item.jenisKeluar.nama,
+                  id: barang.id,
+                  kode: barang.kodeReferensi,
+                  jumlah: barang.countDetailBarangKeluar,
+                  status: barang.status,
+                  tanggalKeluar: barang.tanggalKeluar,
+                  jenisKeluar: barang.jenisKeluar.nama,
                 }}
                 handleRedirectDetail={handleRedirectDetail}
-                handleShowModalDelete={() =>
-                  handleShowModalDelete(item.id, {
-                    kodeReferensi: item.kodeReferensi,
-                  })
+                handleShowModalDelete={
+                  barang.status === STATUS_INVENTORI_TYPE.DRAFT ||
+                  (barang.status !== STATUS_INVENTORI_TYPE.PENDING &&
+                    barang.status !== STATUS_INVENTORI_TYPE.POSTED)
+                    ? () =>
+                        handleShowModalDelete(barang.id, {
+                          kodeReferensi: barang.kodeReferensi,
+                        })
+                    : undefined
                 }
                 chooseBarangMasuk={chooseBarangKeluar}
                 handleSetChooseBarangMasuk={handleSetChooseBarangKeluar}
@@ -156,6 +164,22 @@ const BarangKeluar = () => {
                 xs
               />
             </div>
+          )}
+
+          {!isLoadingBarangKeluar && (
+            <ButtonWithIcon
+              icon={Trash2}
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              label="Hapus data yang dipilih"
+              customWidth="w-full"
+              disabled={chooseBarangKeluar.length === 0}
+              handleBtn={() =>
+                handleShowModalDeleteMany(undefined, {
+                  data: chooseBarangKeluar,
+                })
+              }
+            />
           )}
         </div>
 
@@ -198,7 +222,8 @@ const BarangKeluar = () => {
                           type="checkbox"
                           className="checkbox"
                           disabled={
-                            barang.status === STATUS_INVENTORI_TYPE.POSTED
+                            barang.status === STATUS_INVENTORI_TYPE.POSTED ||
+                            barang.status === STATUS_INVENTORI_TYPE.PENDING
                           }
                           checked={chooseBarangKeluar.some(
                             (item) => item.id === barang.id,
@@ -247,15 +272,28 @@ const BarangKeluar = () => {
                         />
 
                         {/* button delete */}
-                        {barang.status === STATUS_INVENTORI_TYPE.DRAFT && (
-                          <ButtonDeleteTable
-                            handleShowModalDelete={() =>
-                              handleShowModalDelete(barang.id, {
-                                kodeReferensi: barang.kodeReferensi,
-                              })
-                            }
-                          />
-                        )}
+                        <ButtonDeleteTable
+                          handleShowModalDelete={() =>
+                            handleShowModalDelete(barang.id, {
+                              kodeReferensi: barang.kodeReferensi,
+                            })
+                          }
+                          customDataTip={
+                            barang.status === STATUS_INVENTORI_TYPE.DRAFT ||
+                            (barang.status !== STATUS_INVENTORI_TYPE.PENDING &&
+                              barang.status !== STATUS_INVENTORI_TYPE.POSTED)
+                              ? "hapus"
+                              : ""
+                          }
+                          disabled={
+                            !(
+                              barang.status === STATUS_INVENTORI_TYPE.DRAFT ||
+                              (barang.status !==
+                                STATUS_INVENTORI_TYPE.PENDING &&
+                                barang.status !== STATUS_INVENTORI_TYPE.POSTED)
+                            )
+                          }
+                        />
                       </div>
                     </td>
                   </tr>
@@ -377,7 +415,7 @@ type CardBarangKeluar = {
     jumlah: number;
   };
   handleRedirectDetail: (value: number) => void;
-  handleShowModalDelete: () => void;
+  handleShowModalDelete?: () => void;
   chooseBarangMasuk: {
     id: number;
     kodeReferensi: string;
@@ -400,13 +438,13 @@ const CardBarangKeluar: FC<CardBarangKeluar> = ({
     <div className="w-full bg-base-100 rounded-lg flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
       <div className="w-full flex flex-row justify-between items-start pb-3 border-b border-base-content/10">
         {/* content 1 */}
-        <div className="flex-2 flex flex-row justify-start items-start gap-4">
+        <div className="flex-8 flex flex-row justify-start items-start gap-4">
           <div className="flex flex-row justify-start items-start gap-3">
             {/* checkbox */}
             <input
               type="checkbox"
               className="checkbox"
-              disabled={barang.status === STATUS_INVENTORI_TYPE.POSTED}
+              disabled={!handleShowModalDelete}
               checked={chooseBarangMasuk.some((item) => item.id === barang.id)}
               onChange={() => {
                 handleSetChooseBarangMasuk({
@@ -449,7 +487,6 @@ const CardBarangKeluar: FC<CardBarangKeluar> = ({
             <DropDownInventori
               handleRedirectDetail={() => handleRedirectDetail(barang.id)}
               handleShowModalDelete={handleShowModalDelete}
-              status={barang.status}
             />
           </div>
         </div>

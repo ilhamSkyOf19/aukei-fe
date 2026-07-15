@@ -1,4 +1,4 @@
-import { AlertTriangle, Check, Printer, Trash2, X } from "lucide-react";
+import { AlertTriangle, Check, Printer, Send, Trash2, X } from "lucide-react";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import StatusInventori from "../../../components/ui/StatusInventori";
@@ -8,7 +8,6 @@ import {
 } from "../../../types/constant.type";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
 import Alert from "../../../components/messages/Alert";
-import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_BARANG_KELUAR_DETAIL } from "../../../types/toast.type";
 import ModalAlert from "../../../components/modals/ModalAlert";
@@ -21,6 +20,7 @@ import { expireDateOneDay, subtractMinutes } from "../../../helpers/helpers";
 import type { FC } from "react";
 import CountDown from "../../../components/ui/CountDown";
 import ModalFormulirVerifikasiOrPengajuan from "../../../components/modals/ModalFormulirVerifikasiOrPengajuan";
+import { ALERT_CONFIG_BARANG_KELUAR_DETAIL } from "../../../types/alert.types";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -54,16 +54,25 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     handleSetToast,
     handleSetAlert,
     dataConfirm,
-    dataModalFormulirVerifikasiRejected,
     handleCancelVerifikasi,
-    handleCloseModalFormulirVerifikasiRejected,
     handleSetuju,
-    handleShowModalFormulirVerifikasiRejected,
     isPendingCancelVerifikasi,
     isPendingVerifikasiPengajuanBarang,
-    modalFormulirVerifikasiRejectedRef,
     pengguna,
+    canShowFormTambahBarang,
+    isStatusRejected,
+    modalFormulirVerifikasiOrPengajuan,
+    handleShowModalFormulirVerifikasiOrPengajuan,
+    handleCloseModalFormulirVerifikasiOrPengajuan,
+    idModalFormulirVerifikasiOrPengajuan,
+    dataModalFormulirVerifikasiOrPengajuan,
   } = useBarangKeluarDetail({ fromPengajuanBarang });
+
+  const isCanUpdate =
+    isStatusDraft ||
+    (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
+
+  console.log("is update keluar", isCanUpdate);
 
   return (
     <div className="w-full h-screen overflow-y-auto ">
@@ -73,7 +82,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           <Alert
             alert={alert?.id !== null}
             isAnimationOut={alert?.isAnimationOut || false}
-            label={ALERT_CONFIG_BARANG_MASUK_DETAIL[alert.type].message}
+            label={ALERT_CONFIG_BARANG_KELUAR_DETAIL[alert.type].message}
           />
         )}
 
@@ -180,11 +189,10 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                           icon={X}
                           bgColor="bg-error"
                           handleBtn={() =>
-                            handleShowModalFormulirVerifikasiRejected(
-                              undefined,
+                            handleShowModalFormulirVerifikasiOrPengajuan(
+                              dataBarangKeluarDetail?.data?.id,
                               {
-                                barangKeluarId:
-                                  dataBarangKeluarDetail?.data?.id,
+                                type: "tolak",
                               },
                             )
                           }
@@ -203,8 +211,14 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                     )}
 
                   {/* button trash */}
-                  {dataBarangKeluarDetail?.data?.status ===
-                    STATUS_INVENTORI_TYPE.DRAFT && (
+                  {(dataBarangKeluarDetail?.data?.status ===
+                    STATUS_INVENTORI_TYPE.DRAFT ||
+                    (fromPengajuanBarang &&
+                      dataBarangKeluarDetail?.data?.status !==
+                        STATUS_INVENTORI_TYPE.POSTED &&
+                      dataBarangKeluarDetail?.data?.status !==
+                        STATUS_INVENTORI_TYPE.PENDING &&
+                      pengguna?.role === ROLE_INTERNAL_TYPE.KASIR)) && (
                     <ButtonWithIcon
                       textColor="text-primary-white"
                       label="Hapus"
@@ -224,12 +238,19 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                 </div>
 
                 {/* button posting */}
-                {(isStatusDraft || (isStatusPosted && !isExpired)) && (
+                {isCanUpdate && (
                   <div className="flex flex-col justify-start items-start w-full lg:w-auto gap-2 lg:gap-0">
                     <ButtonWithIcon
                       handleBtn={() => {
-                        if (isStatusDraft) {
-                          handlePosting(dataBarangKeluarDetail?.data?.id ?? 0);
+                        if (isStatusDraft || isStatusRejected) {
+                          if (pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) {
+                            handlePosting(dataBarangKeluarDetail?.data?.id);
+                          } else {
+                            handleShowModalFormulirVerifikasiOrPengajuan(
+                              dataBarangKeluarDetail?.data?.id,
+                              { type: "pengajuan" },
+                            );
+                          }
                         } else if (isStatusPosted) {
                           if (fromPengajuanBarang) {
                             handleCancelVerifikasi(
@@ -241,18 +262,28 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                             );
                         }
                       }}
-                      icon={Check}
-                      bgColor={isStatusDraft ? "bg-custom-primary" : "bg-error"}
+                      icon={
+                        pengguna?.role === ROLE_INTERNAL_TYPE.KASIR
+                          ? Send
+                          : Check
+                      }
+                      bgColor={
+                        isStatusDraft || isStatusRejected
+                          ? "bg-custom-primary"
+                          : "bg-error"
+                      }
                       textColor={
-                        isStatusDraft
+                        isStatusDraft || isStatusRejected
                           ? "text-custom-secondary"
                           : "text-primary-white"
                       }
                       label={
                         isStatusPosted
                           ? "Batalkan Posting"
-                          : isStatusDraft
-                            ? "Posting Sekarang"
+                          : isStatusDraft || isStatusRejected
+                            ? pengguna?.role === ROLE_INTERNAL_TYPE.KASIR
+                              ? "Ajukan Sekarang"
+                              : "Posting Sekarang"
                             : ""
                       }
                       customWidth="w-full lg:w-auto"
@@ -299,10 +330,11 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           tanggalDiajukan={
             dataBarangKeluarDetail?.data?.tanggalDiajukan ?? undefined
           }
+          isUpdate={isCanUpdate}
         />
 
         {/* formulir */}
-        {!fromPengajuanBarang && (
+        {canShowFormTambahBarang && (
           <FormulirTambahBarangKeluar
             status={dataBarangKeluarDetail?.data?.status}
             totalBarang={
@@ -318,6 +350,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           isLoadingBarangKeluarDetail={isLoadingBarangKeluarDetail}
           dataBarangKeluarDetail={dataBarangKeluarDetail}
           fromPengajuanBarang={fromPengajuanBarang}
+          role={pengguna?.role}
         />
 
         {/* modal konfirmasi */}
@@ -332,18 +365,20 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           iconColor="text-warning"
         />
 
-        {/* modal delete */}
+        {/* modal pengajuan */}
         {fromPengajuanBarang && (
           <ModalFormulirVerifikasiOrPengajuan
-            modalRef={modalFormulirVerifikasiRejectedRef}
-            handleCloseModal={handleCloseModalFormulirVerifikasiRejected}
-            barangKeluarId={dataModalFormulirVerifikasiRejected?.barangKeluarId}
+            modalRef={modalFormulirVerifikasiOrPengajuan}
+            handleCloseModal={handleCloseModalFormulirVerifikasiOrPengajuan}
+            barangKeluarId={idModalFormulirVerifikasiOrPengajuan}
             kodeReferensi={dataBarangKeluarDetail?.data?.kodeReferensi ?? ""}
+            type={dataModalFormulirVerifikasiOrPengajuan?.type}
+            role={pengguna?.role}
           />
         )}
 
         {/* modal delete */}
-        {!fromPengajuanBarang && (
+        {fromPengajuanBarang && (
           <ModalDelete
             modalRef={modalDeleteRef}
             handleCloseModal={handleCloseModalDelete}

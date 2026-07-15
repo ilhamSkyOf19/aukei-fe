@@ -8,8 +8,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useDeleteBarangKeluar from "../../../../hooks/useDeleteBarangKeluar";
 import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
+import { PengajuanBarangKeluarServices } from "../../../../services/pengajuanBarangkeluar.service";
 
-const useBarangKeluar = () => {
+const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
+  const { fromPengajuanBarang } = params;
+
   // navigate
   const navigate = useNavigate();
   // current pathname
@@ -88,7 +91,7 @@ const useBarangKeluar = () => {
   const { data: dataBarangKeluar, isLoading: isLoadingBarangKeluar } = useQuery(
     {
       queryKey: [
-        "barang-keluar",
+        fromPengajuanBarang ? "barang-keluar-by-author" : "barang-keluar",
         search,
         sort,
         limit,
@@ -96,15 +99,27 @@ const useBarangKeluar = () => {
         startDate,
         endDate,
       ],
-      queryFn: () =>
-        BarangKeluarServices.all({
-          ...(search && { search }),
-          ...(sort && { sort }),
-          ...(limit && { limit }),
-          ...(page && { page }),
-          ...(startDate && { startDate }),
-          ...(endDate && { endDate }),
-        }),
+      queryFn: () => {
+        if (fromPengajuanBarang) {
+          return PengajuanBarangKeluarServices.allByAuthor({
+            ...(search && { search }),
+            ...(sort && { sort }),
+            ...(limit && { limit }),
+            ...(page && { page }),
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+          });
+        } else {
+          return BarangKeluarServices.all({
+            ...(search && { search }),
+            ...(sort && { sort }),
+            ...(limit && { limit }),
+            ...(page && { page }),
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+          });
+        }
+      },
       retry: false,
       refetchOnWindowFocus: false,
     },
@@ -120,7 +135,11 @@ const useBarangKeluar = () => {
 
   // handle redirect detail
   const handleRedirectDetail = (id: number) => {
-    navigate(`${currentPathname}/barang-keluar/${id}`);
+    if (fromPengajuanBarang) {
+      navigate(`${currentPathname}/${id}`);
+    } else {
+      navigate(`${currentPathname}/barang-keluar/${id}`);
+    }
   };
 
   // use mutation delete many
@@ -128,7 +147,11 @@ const useBarangKeluar = () => {
     useMutation({
       mutationFn: (ids: number[]) => BarangKeluarServices.deleteMany(ids),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["barang-keluar"] });
+        queryClient.invalidateQueries({
+          queryKey: [
+            fromPengajuanBarang ? "barang-keluar-by-author" : "barang-keluar",
+          ],
+        });
 
         // handle toast
         handleSetToast("deleted_barang_keluar");
@@ -180,7 +203,11 @@ const useBarangKeluar = () => {
     modalDeleteRef,
   } = useDeleteBarangKeluar({
     handleInvalidate: () =>
-      queryClient.refetchQueries({ queryKey: ["barang-keluar"] }),
+      queryClient.refetchQueries({
+        queryKey: [
+          fromPengajuanBarang ? "barang-keluar-by-author" : "barang-keluar",
+        ],
+      }),
     handleToast: handleSetToast,
   });
 

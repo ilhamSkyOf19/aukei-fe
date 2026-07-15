@@ -1,20 +1,14 @@
 import type { FC } from "react";
-import {
-  STATUS_INVENTORI_TYPE,
-  type StatusInventoriType,
-} from "../../../types/constant.type";
 import LabelButtonDropDownWithIcon from "../button/LabelButtonDropDownWithIcon";
 import { Trash, View } from "lucide-react";
 
 type DropDownProps = {
   handleRedirectDetail: () => void;
-  status: StatusInventoriType;
   handleShowModalDelete?: () => void;
 };
 const DropDownInventori: FC<DropDownProps> = ({
   handleRedirectDetail,
   handleShowModalDelete,
-  status,
 }) => {
   return (
     <ul
@@ -28,7 +22,7 @@ const DropDownInventori: FC<DropDownProps> = ({
           handleClick={() => handleRedirectDetail()}
         />
       </li>
-      {status === STATUS_INVENTORI_TYPE.DRAFT && handleShowModalDelete && (
+      {handleShowModalDelete && (
         <li>
           <LabelButtonDropDownWithIcon
             color="text-error"

@@ -47,8 +47,8 @@ const useModalFormulirVerifikasiOrPengajuan = (params: {
 
   //   mutation
   const {
-    mutateAsync: mutateVerifikasiRejected,
-    isPending: isPendingVerifikasiRejected,
+    mutateAsync: mutateVerifikasiOrPengajuan,
+    isPending: isPendingVerifikasiOrPengajuan,
   } = useMutation({
     mutationFn: (data: {
       id: number;
@@ -58,27 +58,34 @@ const useModalFormulirVerifikasiOrPengajuan = (params: {
       >;
       keterangan?: string;
     }) => {
-      if (barangMasukId) {
-        if (role === ROLE_INTERNAL_TYPE.OWNER) {
-          // verifikasi
+      if (role === ROLE_INTERNAL_TYPE.OWNER) {
+        // verifikasi
+        if (barangMasukId) {
           return PengajuanBarangMasukServices.verifikasi({
             barangMasukId: data.id,
             status: data.status,
             keterangan: data.keterangan,
           });
         } else {
-          // pengajuan
-          return PengajuanBarangMasukServices.pengajuan({
-            barangMasukId: data.id,
+          return PengajuanBarangKeluarServices.verifikasi({
+            barangKeluarId: data.id,
+            status: data.status,
             keterangan: data.keterangan,
           });
         }
       } else {
-        return PengajuanBarangKeluarServices.verifikasi({
-          barangKeluarId: data.id,
-          status: data.status,
-          keterangan: data.keterangan,
-        });
+        // pengajuan
+        if (barangMasukId) {
+          return PengajuanBarangMasukServices.pengajuan({
+            barangMasukId: data.id,
+            keterangan: data.keterangan,
+          });
+        } else {
+          return PengajuanBarangKeluarServices.pengajuan({
+            barangKeluarId: data.id,
+            keterangan: data.keterangan,
+          });
+        }
       }
     },
     onSuccess: () => {
@@ -113,7 +120,7 @@ const useModalFormulirVerifikasiOrPengajuan = (params: {
     try {
       if (!barangMasukId && !barangKeluarId) return;
 
-      await mutateVerifikasiRejected({
+      await mutateVerifikasiOrPengajuan({
         id: barangMasukId ?? barangKeluarId ?? 0,
         status: STATUS_INVENTORI_TYPE.REJECTED,
         keterangan: data.keterangan,
@@ -128,7 +135,7 @@ const useModalFormulirVerifikasiOrPengajuan = (params: {
     handleSubmit,
     errors,
     onSubmit,
-    isPendingVerifikasiRejected,
+    isPendingVerifikasiOrPengajuan,
   };
 };
 

@@ -26,6 +26,22 @@ export class PengajuanBarangKeluarServices {
     return result.data;
   }
 
+  static async allByAuthor(
+    query: PaginationType & {
+      startDate?: string;
+      endDate?: string;
+    },
+  ): Promise<ResponseStructure<ResponseBarangKeluarWithMetaType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseBarangKeluarWithMetaType | null>
+    >(`/barang-keluar/by-author`, {
+      params: query,
+    });
+
+    return result.data;
+  }
+
   //   riwayat pengajuan
   static async riwayatPengajuan(
     query: PaginationType & {
@@ -38,6 +54,19 @@ export class PengajuanBarangKeluarServices {
     >(`/pengajuan-barang`, {
       params: query,
     });
+
+    return result.data;
+  }
+
+  // pengajuan
+  static async pengajuan(params: {
+    barangKeluarId?: number;
+    keterangan?: string;
+  }): Promise<ResponseStructure<ResponsePengajuanBarangType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponsePengajuanBarangType | null>
+    >("/pengajuan-barang", params);
 
     return result.data;
   }

@@ -280,7 +280,10 @@ const ShowDataBarangMasuk: FC<Props> = ({
                 <th>Jumlah Box</th>
                 <th>Isi PerBox</th>
                 <th>Total</th>
-                {!fromPengajuanBarang && !isStatusPosted && <th>Aksi</th>}
+                {(isRejectedKasir ||
+                  isDrafOwner ||
+                  dataBarangMasukDetail?.data?.status ===
+                    STATUS_INVENTORI_TYPE.DRAFT) && <th>Aksi</th>}
               </tr>
             </thead>
             <tbody>
@@ -436,7 +439,10 @@ const ShowDataBarangMasuk: FC<Props> = ({
                         )}
                       </td>
                       {/* detail */}
-                      {!fromPengajuanBarang && !isStatusPosted && (
+                      {(isRejectedKasir ||
+                        isDrafOwner ||
+                        dataBarangMasukDetail?.data?.status ===
+                          STATUS_INVENTORI_TYPE.DRAFT) && (
                         <td>
                           <div className="flex flex-row justify-start items-center gap-2">
                             <ButtonUpdateTable

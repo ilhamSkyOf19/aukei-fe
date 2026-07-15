@@ -202,15 +202,12 @@ const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
     isPendingDelete,
     modalDeleteRef,
   } = useDeleteBarangMasuk({
-    handleInvalidate: () => {
-      if (fromPengajuanBarang) {
-        return queryClient.refetchQueries({
-          queryKey: ["barang-masuk-by-author"],
-        });
-      } else {
-        return queryClient.refetchQueries({ queryKey: ["barang-masuk"] });
-      }
-    },
+    handleInvalidate: () =>
+      queryClient.refetchQueries({
+        queryKey: [
+          fromPengajuanBarang ? "barang-masuk-by-author" : "barang-masuk",
+        ],
+      }),
     handleToast: handleSetToast,
   });
 

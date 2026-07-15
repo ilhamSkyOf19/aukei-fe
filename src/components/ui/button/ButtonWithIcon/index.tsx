@@ -17,6 +17,7 @@ type Props = {
   customSize?: "lg";
   reverse?: boolean;
   noLabel?: boolean;
+  disabled?: boolean;
 };
 const ButtonWithIcon: FC<Props> = ({
   bgColor,
@@ -32,6 +33,7 @@ const ButtonWithIcon: FC<Props> = ({
   reverse,
   customSize,
   noLabel,
+  disabled,
 }) => {
   // navigation
   const navigate = useNavigate();
@@ -39,16 +41,16 @@ const ButtonWithIcon: FC<Props> = ({
   return (
     <button
       type="button"
-      disabled={isLoading}
+      disabled={disabled ?? isLoading}
       className={cn(
         "flex justify-center items-center rounded-md px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
         customWidth ? customWidth : "w-auto",
         customClass,
         customHeight ? customHeight : "h-10.5 lg:h-9 xl:h-9",
-        isLoading ? "opacity-50" : "hover-overlay",
+        (disabled ?? isLoading) ? "opacity-50" : "hover-overlay",
       )}
-      style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
+      style={{ cursor: (disabled ?? isLoading) ? "not-allowed" : "pointer" }}
       onClick={() => {
         if (handleBtn) {
           handleBtn();

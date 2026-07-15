@@ -62,7 +62,6 @@ export class PengajuanBarangMasukServices {
   // pengajuan
   static async pengajuan(params: {
     barangMasukId?: number;
-    barangKeluarId?: number;
     keterangan?: string;
   }): Promise<ResponseStructure<ResponsePengajuanBarangType | null>> {
     // call api

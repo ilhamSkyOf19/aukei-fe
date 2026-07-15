@@ -45,7 +45,7 @@ const Inventori = () => {
         </div>
 
         {/* content */}
-        <div className="w-full flex justify-center items-start px-2 lg:px-4 mt-2 overflow-y-auto h-full">
+        <div className="w-full flex justify-center items-start overflow-y-auto h-full">
           {/* show data barang masuk */}
           {isActiveCluster === "barangMasuk" && <BarangMasuk />}
           {/* show data pengajuan barang masuk  */}

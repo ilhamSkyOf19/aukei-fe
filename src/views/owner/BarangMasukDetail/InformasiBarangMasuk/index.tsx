@@ -14,10 +14,7 @@ import CardForm from "../../../../components/inputs/CardForm";
 import ModalInputDate from "../../../../components/modals/ModalInputDate";
 import type { UpdateBarangMasukForRequestType } from "../../../../models/barangMasuk.model";
 import InputTextAreaNonIcon from "../../../../components/inputs/InputTextAreaNonIcon";
-import {
-  STATUS_INVENTORI_TYPE,
-  type StatusInventoriType,
-} from "../../../../types/constant.type";
+import { type StatusInventoriType } from "../../../../types/constant.type";
 import type { IPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import InformasiPengajuan from "../../../../components/ui/InformasiPengajuan";
 
@@ -35,6 +32,7 @@ type Props = {
     "id" | "nama" | "isActive" | "username"
   > | null;
   tanggalDiajukan?: Date;
+  isUpdate?: boolean;
 };
 const InformasiBarangMasuk: FC<Props> = ({
   isLoadingBarangMasukDetail,
@@ -47,6 +45,7 @@ const InformasiBarangMasuk: FC<Props> = ({
   status,
   author,
   tanggalDiajukan,
+  isUpdate,
 }) => {
   // call use
   const {
@@ -125,7 +124,7 @@ const InformasiBarangMasuk: FC<Props> = ({
                   </span>
 
                   {/* button pencil */}
-                  {status === STATUS_INVENTORI_TYPE.DRAFT && (
+                  {isUpdate && (
                     <div className="border-l border-base-content/30 pl-3 ml-3">
                       <ButtonInline
                         customHidden="block"
@@ -175,7 +174,7 @@ const InformasiBarangMasuk: FC<Props> = ({
                       </div>
 
                       {/* button pencil */}
-                      {status === STATUS_INVENTORI_TYPE.DRAFT && (
+                      {isUpdate && (
                         <div className="border-l border-base-content/30 pl-3 ml-3">
                           <ButtonInline
                             customHidden="block"

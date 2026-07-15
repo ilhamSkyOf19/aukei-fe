@@ -40,7 +40,7 @@ instanceAxios.interceptors.response.use(
       (error.response?.status === 401 || error.response.status === 403) &&
       !error.config.url?.includes("/auth/me")
     ) {
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
 
     if (!error.response) {

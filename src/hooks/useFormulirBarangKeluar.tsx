@@ -11,6 +11,8 @@ import { BarangKeluarValidation } from "../validations/barangKeluar.validation";
 import { BarangKeluarServices } from "../services/barangKeluar.service";
 import { useLocation, useNavigate } from "react-router-dom";
 import { JenisKeluarServices } from "../services/jenisKeluar.service";
+import { useAuthStore } from "../stores/authStore";
+import { ROLE_INTERNAL_TYPE } from "../types/constant.type";
 
 const useFormulirBarangKeluar = (params: {
   handleCloseModal?: () => void;
@@ -23,6 +25,9 @@ const useFormulirBarangKeluar = (params: {
 }) => {
   // destructure props
   const { handleCloseModal, dataUpdate } = params;
+
+  // pengguna
+  const pengguna = useAuthStore((state) => state.pengguna);
 
   // navigate
   const navigate = useNavigate();
@@ -114,11 +119,19 @@ const useFormulirBarangKeluar = (params: {
             },
           });
         } else {
-          navigate(`${currentPathname}/barang-keluar/${data?.data?.id}`, {
-            state: {
-              toast: "created_barang_keluar",
-            },
-          });
+          if (pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) {
+            navigate(`${currentPathname}/${data?.data?.id}`, {
+              state: {
+                toast: "created_barang_keluar",
+              },
+            });
+          } else {
+            navigate(`${currentPathname}/barang-keluar/${data?.data?.id}`, {
+              state: {
+                toast: "created_barang_keluar",
+              },
+            });
+          }
         }
       },
       onError: (err) => {

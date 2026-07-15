@@ -18,10 +18,7 @@ import useInformasiBarangKeluar from "./useInformasiBarangKeluar";
 import type { UpdateBarangKeluarForRequestType } from "../../../../models/barangKeluar.model";
 import JenisKeluar from "../../../../components/ui/JenisKeluar";
 import InputChoose from "../../../../components/inputs/InputChoose";
-import {
-  STATUS_INVENTORI_TYPE,
-  type StatusInventoriType,
-} from "../../../../types/constant.type";
+import { type StatusInventoriType } from "../../../../types/constant.type";
 import type { IPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import InformasiPengajuan from "../../../../components/ui/InformasiPengajuan";
 
@@ -40,6 +37,7 @@ type Props = {
     "id" | "nama" | "isActive" | "username"
   > | null;
   tanggalDiajukan?: Date;
+  isUpdate?: boolean;
 };
 const InformasiBarangKeluar: FC<Props> = ({
   isLoadingBarangKeluarDetail,
@@ -53,6 +51,7 @@ const InformasiBarangKeluar: FC<Props> = ({
   status,
   author,
   tanggalDiajukan,
+  isUpdate,
 }) => {
   // call use
   const {
@@ -130,7 +129,7 @@ const InformasiBarangKeluar: FC<Props> = ({
                   </span>
 
                   {/* button pencil */}
-                  {status === STATUS_INVENTORI_TYPE.DRAFT && (
+                  {isUpdate && (
                     <div className="border-l border-base-content/30 pl-3 ml-3">
                       <ButtonInline
                         customHidden="block"
@@ -178,7 +177,7 @@ const InformasiBarangKeluar: FC<Props> = ({
                       )}
 
                       {/* button pencil */}
-                      {status === STATUS_INVENTORI_TYPE.DRAFT && (
+                      {isUpdate && (
                         <div className="border-l border-base-content/30 pl-3 ml-3">
                           <ButtonInline
                             customHidden="block"
@@ -260,7 +259,7 @@ const InformasiBarangKeluar: FC<Props> = ({
                       </div>
 
                       {/* button pencil */}
-                      {status === STATUS_INVENTORI_TYPE.DRAFT && (
+                      {isUpdate && (
                         <div className="border-l border-base-content/30 pl-3 ml-3">
                           <ButtonInline
                             customHidden="block"
