@@ -115,12 +115,12 @@ const InformasiBarangMasuk: FC<Props> = ({
               >
                 {/* label */}
                 <span className="text-xs lg:text-sm text-base-content/90 font-medium">
-                  Tanggal Barang Masuk
+                  Tanggal Masuk
                 </span>
 
                 {/* value */}
                 <div className="flex flex-row justify-end items-center">
-                  <span className={"text-[0.625rem] lg:text-sm font-medium"}>
+                  <span className={" text-xs font-medium"}>
                     {formatTanggalLengkap(tanggalMasuk ?? new Date())} WIB
                   </span>
 

@@ -18,7 +18,7 @@ type Props = {
   handleCloseModal: () => void;
   idBarangMasuk?: number;
   dataUpdate: {
-    produk: {
+    produk?: {
       id: number;
       nama: string;
       kode: string;

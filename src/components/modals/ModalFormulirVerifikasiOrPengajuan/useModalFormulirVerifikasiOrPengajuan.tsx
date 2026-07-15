@@ -4,19 +4,22 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PengajuanBarangValidations } from "../../../validations/pengajuanBarang.validation";
 import {
+  ROLE_INTERNAL_TYPE,
   STATUS_INVENTORI_TYPE,
+  type RoleInternalType,
   type StatusInventoriType,
 } from "../../../types/constant.type";
 import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangMasuk.service";
 import { PengajuanBarangKeluarServices } from "../../../services/pengajuanBarangkeluar.service";
 
-const useModalFormulirVerifikasiRejected = (params: {
+const useModalFormulirVerifikasiOrPengajuan = (params: {
   barangMasukId?: number;
   barangKeluarId?: number;
   handleCloseModal: () => void;
+  role?: RoleInternalType;
 }) => {
   // get params
-  const { barangKeluarId, barangMasukId, handleCloseModal } = params;
+  const { barangKeluarId, barangMasukId, handleCloseModal, role } = params;
 
   // query client
   const queryClient = useQueryClient();
@@ -32,8 +35,14 @@ const useModalFormulirVerifikasiRejected = (params: {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ keterangan: string }>({
-    resolver: zodResolver(PengajuanBarangValidations.KETERANGAN),
+  } = useForm<{
+    keterangan?: string;
+  }>({
+    resolver: zodResolver(
+      role === ROLE_INTERNAL_TYPE.OWNER
+        ? PengajuanBarangValidations.KETERANGAN
+        : PengajuanBarangValidations.KETERANGAN_PENGAJUAN,
+    ),
   });
 
   //   mutation
@@ -47,14 +56,23 @@ const useModalFormulirVerifikasiRejected = (params: {
         StatusInventoriType,
         "DRAFT" | "PENDING" | "CANCELLED" | "POSTED"
       >;
-      keterangan: string;
+      keterangan?: string;
     }) => {
       if (barangMasukId) {
-        return PengajuanBarangMasukServices.verifikasi({
-          barangMasukId: data.id,
-          status: data.status,
-          keterangan: data.keterangan,
-        });
+        if (role === ROLE_INTERNAL_TYPE.OWNER) {
+          // verifikasi
+          return PengajuanBarangMasukServices.verifikasi({
+            barangMasukId: data.id,
+            status: data.status,
+            keterangan: data.keterangan,
+          });
+        } else {
+          // pengajuan
+          return PengajuanBarangMasukServices.pengajuan({
+            barangMasukId: data.id,
+            keterangan: data.keterangan,
+          });
+        }
       } else {
         return PengajuanBarangKeluarServices.verifikasi({
           barangKeluarId: data.id,
@@ -78,7 +96,10 @@ const useModalFormulirVerifikasiRejected = (params: {
       // set toast
       navigate(currentPathname, {
         state: {
-          toast: "rejected_verifikasi",
+          toast:
+            role === ROLE_INTERNAL_TYPE.OWNER
+              ? "rejected_verifikasi"
+              : "send_pengajuan",
         },
       });
     },
@@ -88,7 +109,7 @@ const useModalFormulirVerifikasiRejected = (params: {
   });
 
   //   on submit
-  const onSubmit = async (data: { keterangan: string }) => {
+  const onSubmit = async (data: { keterangan?: string }) => {
     try {
       if (!barangMasukId && !barangKeluarId) return;
 
@@ -111,4 +132,4 @@ const useModalFormulirVerifikasiRejected = (params: {
   };
 };
 
-export default useModalFormulirVerifikasiRejected;
+export default useModalFormulirVerifikasiOrPengajuan;

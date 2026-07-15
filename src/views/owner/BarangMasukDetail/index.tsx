@@ -1,4 +1,4 @@
-import { AlertTriangle, Check, Printer, Trash2, X } from "lucide-react";
+import { AlertTriangle, Check, Printer, Send, Trash2, X } from "lucide-react";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import StatusInventori from "../../../components/ui/StatusInventori";
@@ -20,7 +20,7 @@ import InformasiBarangMasuk from "./InformasiBarangMasuk";
 import FormulirTambahBarangMasuk from "./FormulirTambahBarangMasuk";
 import CountDown from "../../../components/ui/CountDown";
 import type { FC } from "react";
-import ModalFormulirVerifikasiRejected from "../../../components/modals/ModalFormulirVerifikasiRejected";
+import ModalFormulirVerifikasiOrPengajuan from "../../../components/modals/ModalFormulirVerifikasiOrPengajuan";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -45,6 +45,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     isPendingCancelPosting,
     isStatusDraft,
     isStatusPosted,
+    isStatusRejected,
     isExpired,
 
     dataDelete,
@@ -61,11 +62,15 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     dataConfirm,
     handleCancelVerifikasi,
     isPendingCancelVerifikasi,
-    dataModalFormulirVerifikasiRejected,
-    handleCloseModalFormulirVerifikasiRejected,
-    handleShowModalFormulirVerifikasiRejected,
-    modalFormulirVerifikasiRejectedRef,
+    dataModalFormulirVerifikasiOrPengajuan,
+    handleCloseModalFormulirVerifikasiOrPengajuan,
+    handleShowModalFormulirVerifikasiOrPengajuan,
+    modalFormulirVerifikasiOrPengajuan,
+    canShowFormTambahBarang,
+    idModalFormulirVerifikasiOrPengajuan,
   } = useBarangMasukDetail({ fromPengajuanBarang });
+
+  // perbaiki tombol ajukan jika status nya rejected
 
   return (
     <div className="w-full h-screen overflow-y-auto ">
@@ -181,10 +186,10 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                           icon={X}
                           bgColor="bg-error"
                           handleBtn={() =>
-                            handleShowModalFormulirVerifikasiRejected(
-                              undefined,
+                            handleShowModalFormulirVerifikasiOrPengajuan(
+                              dataBarangMasukDetail?.data?.id,
                               {
-                                barangMasukId: dataBarangMasukDetail?.data?.id,
+                                type: "tolak",
                               },
                             )
                           }
@@ -202,34 +207,48 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                       </>
                     )}
                   {/* button trash */}
-                  {dataBarangMasukDetail?.data?.status ===
-                    STATUS_INVENTORI_TYPE.DRAFT &&
-                    !fromPengajuanBarang && (
-                      <ButtonWithIcon
-                        textColor="text-primary-white"
-                        label="Hapus"
-                        icon={Trash2}
-                        bgColor="bg-error"
-                        handleBtn={() =>
-                          handleShowModalDelete(
-                            dataBarangMasukDetail?.data?.id,
-                            {
-                              kodeReferensi:
-                                dataBarangMasukDetail?.data?.kodeReferensi,
-                            },
-                          )
-                        }
-                      />
-                    )}
+                  {(dataBarangMasukDetail?.data?.status ===
+                    STATUS_INVENTORI_TYPE.DRAFT ||
+                    (fromPengajuanBarang &&
+                      dataBarangMasukDetail?.data?.status !==
+                        STATUS_INVENTORI_TYPE.POSTED &&
+                      dataBarangMasukDetail?.data?.status !==
+                        STATUS_INVENTORI_TYPE.PENDING &&
+                      pengguna?.role === ROLE_INTERNAL_TYPE.KASIR)) && (
+                    <ButtonWithIcon
+                      textColor="text-primary-white"
+                      label="Hapus"
+                      icon={Trash2}
+                      bgColor="bg-error"
+                      handleBtn={() =>
+                        handleShowModalDelete(dataBarangMasukDetail?.data?.id, {
+                          kodeReferensi:
+                            dataBarangMasukDetail?.data?.kodeReferensi,
+                        })
+                      }
+                    />
+                  )}
                 </div>
 
                 {/* button posting */}
-                {(isStatusDraft || (isStatusPosted && !isExpired)) && (
+                {(isStatusDraft ||
+                  (isStatusRejected &&
+                    pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) ||
+                  (isStatusPosted &&
+                    !isExpired &&
+                    pengguna?.role === ROLE_INTERNAL_TYPE.OWNER)) && (
                   <div className="flex flex-col justify-start items-start w-full lg:w-auto gap-2 lg:gap-0">
                     <ButtonWithIcon
                       handleBtn={() => {
-                        if (isStatusDraft) {
-                          handlePosting(dataBarangMasukDetail?.data?.id);
+                        if (isStatusDraft || isStatusRejected) {
+                          if (pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) {
+                            handlePosting(dataBarangMasukDetail?.data?.id);
+                          } else {
+                            handleShowModalFormulirVerifikasiOrPengajuan(
+                              dataBarangMasukDetail?.data?.id,
+                              { type: "pengajuan" },
+                            );
+                          }
                         } else if (isStatusPosted) {
                           if (fromPengajuanBarang) {
                             handleCancelVerifikasi(
@@ -242,18 +261,28 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                           }
                         }
                       }}
-                      icon={Check}
-                      bgColor={isStatusDraft ? "bg-custom-primary" : "bg-error"}
+                      icon={
+                        pengguna?.role === ROLE_INTERNAL_TYPE.KASIR
+                          ? Send
+                          : Check
+                      }
+                      bgColor={
+                        isStatusDraft || isStatusRejected
+                          ? "bg-custom-primary"
+                          : "bg-error"
+                      }
                       textColor={
-                        isStatusDraft
+                        isStatusDraft || isStatusRejected
                           ? "text-custom-secondary"
                           : "text-primary-white"
                       }
                       label={
                         isStatusPosted
                           ? "Batalkan Posting"
-                          : isStatusDraft
-                            ? "Posting Sekarang"
+                          : isStatusDraft || isStatusRejected
+                            ? pengguna?.role === ROLE_INTERNAL_TYPE.KASIR
+                              ? "Ajukan Sekarang"
+                              : "Posting Sekarang"
                             : ""
                       }
                       customWidth="w-full lg:w-auto"
@@ -301,9 +330,14 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
         />
 
         {/* formulir */}
-        {!fromPengajuanBarang && (
+        {canShowFormTambahBarang && (
           <FormulirTambahBarangMasuk
-            status={dataBarangMasukDetail?.data?.status}
+            hidden={
+              dataBarangMasukDetail?.data?.status ===
+                STATUS_INVENTORI_TYPE.POSTED ||
+              dataBarangMasukDetail?.data?.status ===
+                STATUS_INVENTORI_TYPE.PENDING
+            }
             totalBarang={
               dataBarangMasukDetail?.data?.detailBarangMasuks?.length ?? 0
             }
@@ -317,6 +351,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           dataBarangMasukDetail={dataBarangMasukDetail}
           isLoadingBarangMasukDetail={isLoadingBarangMasukDetail}
           fromPengajuanBarang={fromPengajuanBarang}
+          role={pengguna?.role}
         />
 
         {/* modal konfirmasi */}
@@ -333,16 +368,18 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
 
         {/* modal delete */}
         {fromPengajuanBarang && (
-          <ModalFormulirVerifikasiRejected
-            modalRef={modalFormulirVerifikasiRejectedRef}
-            handleCloseModal={handleCloseModalFormulirVerifikasiRejected}
-            barangMasukId={dataModalFormulirVerifikasiRejected?.barangMasukId}
+          <ModalFormulirVerifikasiOrPengajuan
+            modalRef={modalFormulirVerifikasiOrPengajuan}
+            handleCloseModal={handleCloseModalFormulirVerifikasiOrPengajuan}
+            barangMasukId={idModalFormulirVerifikasiOrPengajuan}
             kodeReferensi={dataBarangMasukDetail?.data?.kodeReferensi ?? ""}
+            type={dataModalFormulirVerifikasiOrPengajuan?.type}
+            role={pengguna?.role}
           />
         )}
 
         {/* modal delete */}
-        {!fromPengajuanBarang && (
+        {fromPengajuanBarang && (
           <ModalDelete
             modalRef={modalDeleteRef}
             handleCloseModal={handleCloseModalDelete}

@@ -61,7 +61,11 @@ const InformasiPengajuan: FC<Props> = ({
                 <div className="w-full flex flex-row justify-end items-center gap-4">
                   {/* nama */}
                   <div className="px-4 flex flex-col justify-center items-start border-r border-base-content/10">
-                    <span className={"text-[0.625rem] lg:text-sm font-medium"}>
+                    <span
+                      className={
+                        "text-[0.625rem] lg:text-sm font-medium text-base-content"
+                      }
+                    >
                       {author.nama}
                     </span>
                   </div>
@@ -110,9 +114,15 @@ const InformasiPengajuan: FC<Props> = ({
 
               {/* value */}
               <div className="flex flex-row justify-end items-center">
-                <span className={"text-[0.625rem] lg:text-sm font-medium"}>
-                  {formatTanggalLengkap(tanggalDiajukan ?? new Date())} WIB
-                </span>
+                {tanggalDiajukan ? (
+                  <span className={"text-xs font-medium text-base-content"}>
+                    {formatTanggalLengkap(tanggalDiajukan)} WIB
+                  </span>
+                ) : (
+                  <span className={"text-xs italic text-base-content/50"}>
+                    Belum Diajukan
+                  </span>
+                )}
               </div>
             </div>
           </div>

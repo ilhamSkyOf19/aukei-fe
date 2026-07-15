@@ -8,6 +8,7 @@ import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import useConfirm from "../../../hooks/useConfirm";
 import {
+  ROLE_INTERNAL_TYPE,
   STATUS_INVENTORI_TYPE,
   type StatusInventoriType,
 } from "../../../types/constant.type";
@@ -36,13 +37,31 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     data: dataConfirm,
   } = useConfirm<{ bigTitle: string; smallTitle: string }>();
 
-  // handle show modal verifikasi rejected
+  // handle show modal ajukan
   const {
-    modalRef: modalFormulirVerifikasiRejectedRef,
-    handleShowModal: handleShowModalFormulirVerifikasiRejected,
-    handleCloseModal: handleCloseModalFormulirVerifikasiRejected,
-    dataModal: dataModalFormulirVerifikasiRejected,
-  } = useModal<{ barangMasukId?: number }>();
+    modalRef: modalFormulirVerifikasiOrPengajuan,
+    handleShowModal: showModalFormulirVerifikasiOrPengajuan,
+    handleCloseModal: handleCloseModalFormulirVerifikasiOrPengajuan,
+    idModal: idModalFormulirVerifikasiOrPengajuan,
+    dataModal: dataModalFormulirVerifikasiOrPengajuan,
+  } = useModal<{ type: "pengajuan" | "tolak" }>();
+
+  // handle show modal formulir verifikasi or pengajuan
+  const handleShowModalFormulirVerifikasiOrPengajuan = (
+    id?: number | undefined,
+    data?:
+      | {
+          type: "pengajuan" | "tolak";
+        }
+      | undefined,
+  ) => {
+    if (dataBarangMasukDetail?.data?.detailBarangMasuks.length === 0) {
+      handleSetAlert("empty_barang_masuk");
+      return;
+    }
+
+    showModalFormulirVerifikasiOrPengajuan(id, data);
+  };
 
   // use alert
   const { alert, handleSetAlert } = useAlertAnimation();
@@ -266,11 +285,16 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     modalDeleteRef,
   } = useDeleteBarangMasuk({
     redirect: () => {
-      navigate("/dashboard/inventori", {
-        state: {
-          toast: "deleted_barang_masuk",
+      navigate(
+        fromPengajuanBarang
+          ? "/dashboard/pengajuan-barang-masuk"
+          : "/dashboard/inventori",
+        {
+          state: {
+            toast: "deleted_barang_masuk",
+          },
         },
-      });
+      );
     },
   });
 
@@ -328,6 +352,12 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED;
   const isStatusDraft =
     dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT;
+  const isStatusRejected =
+    dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.REJECTED;
+
+  const canShowFormTambahBarang =
+    (!fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) ||
+    (fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
 
   return {
     dataBarangMasukDetail,
@@ -346,6 +376,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isPendingCancelPosting,
     isStatusDraft,
     isStatusPosted,
+    isStatusRejected,
     isExpired,
 
     dataDelete,
@@ -367,10 +398,13 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     handleCancelVerifikasi,
     isPendingCancelVerifikasi,
 
-    modalFormulirVerifikasiRejectedRef,
-    handleShowModalFormulirVerifikasiRejected,
-    handleCloseModalFormulirVerifikasiRejected,
-    dataModalFormulirVerifikasiRejected,
+    modalFormulirVerifikasiOrPengajuan,
+    handleShowModalFormulirVerifikasiOrPengajuan,
+    handleCloseModalFormulirVerifikasiOrPengajuan,
+    dataModalFormulirVerifikasiOrPengajuan,
+    idModalFormulirVerifikasiOrPengajuan,
+
+    canShowFormTambahBarang,
   };
 };
 

@@ -1,9 +1,5 @@
 import { type FC } from "react";
 import useFormulirTambahBarangMasuk from "./useFormulirTambahBarangMasuk";
-import {
-  STATUS_INVENTORI_TYPE,
-  type StatusInventoriType,
-} from "../../../../types/constant.type";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import InputSearch from "../../../../components/inputs/InputSearch";
 import { cn } from "../../../../utils/cn";
@@ -16,13 +12,13 @@ import ModalFormulirTambahBarangMasuk from "../../../../components/modals/ModalF
 import InputPrice from "../../../../components/inputs/InputPrice";
 
 type Props = {
-  status?: StatusInventoriType;
+  hidden?: boolean;
   totalBarang: number;
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
 };
 const FormulirTambahBarangMasuk: FC<Props> = ({
-  status,
+  hidden,
   totalBarang,
   handleSetToast,
   handleSetAlert,
@@ -57,7 +53,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
     <div
       className={cn(
         "w-full flex flex-col justify-start items-center gap-2",
-        status !== STATUS_INVENTORI_TYPE.DRAFT && "hidden",
+        hidden && "hidden",
       )}
     >
       <div className="w-full lg:hidden flex flex-row justify-between items-center">

@@ -20,7 +20,7 @@ const useModalUbahProdukMasuk = (params: {
   idBarangMasuk?: number;
   status?: StatusInventoriType;
   dataUpdate: {
-    produk: {
+    produk?: {
       id: number;
       nama: string;
       kode: string;
@@ -81,7 +81,7 @@ const useModalUbahProdukMasuk = (params: {
   // reset
   useEffect(() => {
     reset({
-      produkId: produk.id,
+      produkId: produk?.id,
       jumlahBox,
       hargaBeli,
     });
@@ -187,7 +187,7 @@ const useModalUbahProdukMasuk = (params: {
       if (!idBarangMasuk || !status) return;
 
       const isProdukChanged =
-        produkChoose === null ? false : data.produkId !== produk.id;
+        produkChoose === null ? false : data.produkId !== produk?.id;
 
       const isJumlahChanged = data.jumlahBox !== jumlahBox;
       const isHargaBeliChanged = data.hargaBeli !== hargaBeli;

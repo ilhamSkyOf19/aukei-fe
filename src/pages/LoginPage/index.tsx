@@ -4,12 +4,14 @@ import Login from "../../views/auth/Login";
 
 const LoginPage: FC = () => {
   return (
-    <main className="container mx-auto min-h-screen flex justify-center items-center px-4 bg-base-100">
-      {/* header page */}
-      <HeaderPage title="Login | Sistem Manajemen Borang Akreditasi" />
+    <main className="bg-base-100 w-screen h-screen">
+      <div className="container mx-auto min-h-screen flex justify-center items-center px-4">
+        {/* header page */}
+        <HeaderPage title="Login | Sistem Manajemen Borang Akreditasi" />
 
-      {/* view login */}
-      <Login />
+        {/* view login */}
+        <Login />
+      </div>
     </main>
   );
 };

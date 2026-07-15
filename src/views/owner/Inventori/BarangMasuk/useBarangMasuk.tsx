@@ -9,8 +9,10 @@ import useDeleteBarangMasuk from "../../../../hooks/useDeleteBarangMasuk";
 import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
 import useSizeWindows from "../../../../hooks/useSizeWindows";
+import { PengajuanBarangMasukServices } from "../../../../services/pengajuanBarangMasuk.service";
 
-const useBarangMasuk = () => {
+const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
+  const { fromPengajuanBarang } = params;
   // get window size
   const windowSize = useSizeWindows();
   // navigate
@@ -89,16 +91,36 @@ const useBarangMasuk = () => {
 
   // query
   const { data: dataBarangMasuk, isLoading: isLoadingBarangMasuk } = useQuery({
-    queryKey: ["barang-masuk", search, sort, limit, page, startDate, endDate],
-    queryFn: () =>
-      BarangMasukServices.all({
-        ...(search && { search }),
-        ...(sort && { sort }),
-        ...(limit && { limit }),
-        ...(page && { page }),
-        ...(startDate && { startDate }),
-        ...(endDate && { endDate }),
-      }),
+    queryKey: [
+      fromPengajuanBarang ? "barang-masuk-by-author" : "barang-masuk",
+      search,
+      sort,
+      limit,
+      page,
+      startDate,
+      endDate,
+    ],
+    queryFn: () => {
+      if (fromPengajuanBarang) {
+        return PengajuanBarangMasukServices.allByAuthor({
+          ...(search && { search }),
+          ...(sort && { sort }),
+          ...(limit && { limit }),
+          ...(page && { page }),
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+        });
+      } else {
+        return BarangMasukServices.all({
+          ...(search && { search }),
+          ...(sort && { sort }),
+          ...(limit && { limit }),
+          ...(page && { page }),
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+        });
+      }
+    },
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -113,7 +135,11 @@ const useBarangMasuk = () => {
 
   // handle redirect detail
   const handleRedirectDetail = (id: number) => {
-    navigate(`${currentPathname}/barang-masuk/${id}`);
+    if (fromPengajuanBarang) {
+      navigate(`${currentPathname}/${id}`);
+    } else {
+      navigate(`${currentPathname}/barang-masuk/${id}`);
+    }
   };
 
   // use mutation delete many
@@ -121,7 +147,11 @@ const useBarangMasuk = () => {
     useMutation({
       mutationFn: (ids: number[]) => BarangMasukServices.deleteMany(ids),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["barang-masuk"] });
+        queryClient.invalidateQueries({
+          queryKey: [
+            fromPengajuanBarang ? "barang-masuk-by-author" : "barang-masuk",
+          ],
+        });
 
         // handle toast
         handleSetToast("deleted_barang_masuk");
@@ -172,8 +202,15 @@ const useBarangMasuk = () => {
     isPendingDelete,
     modalDeleteRef,
   } = useDeleteBarangMasuk({
-    handleInvalidate: () =>
-      queryClient.refetchQueries({ queryKey: ["barang-masuk"] }),
+    handleInvalidate: () => {
+      if (fromPengajuanBarang) {
+        return queryClient.refetchQueries({
+          queryKey: ["barang-masuk-by-author"],
+        });
+      } else {
+        return queryClient.refetchQueries({ queryKey: ["barang-masuk"] });
+      }
+    },
     handleToast: handleSetToast,
   });
 

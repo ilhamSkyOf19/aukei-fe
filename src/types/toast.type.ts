@@ -153,6 +153,10 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
     color: "error",
     message: "Verifikasi berhasil ditolak",
   },
+  send_pengajuan: {
+    color: "success",
+    message: "Pengajuan berhasil dikirim, silahkan menunggu verifikasi",
+  },
 };
 
 export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<
@@ -205,6 +209,10 @@ export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<
   rejected_verifikasi: {
     color: "error",
     message: "Verifikasi berhasil ditolak",
+  },
+  send_pengajuan: {
+    color: "success",
+    message: "Pengajuan berhasil dikirim, silahkan menunggu verifikasi",
   },
 };
 

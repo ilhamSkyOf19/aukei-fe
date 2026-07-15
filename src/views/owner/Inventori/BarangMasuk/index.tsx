@@ -28,8 +28,10 @@ import { formatNumber } from "../../../../helpers/helpers";
 import DropDownInventori from "../../../../components/ui/DropDownInventori";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
-
-const BarangMasuk = () => {
+type Props = {
+  fromPengajuanBarang?: boolean;
+};
+const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
   // call use barang masuk
   const {
     dataBarangMasuk,
@@ -60,7 +62,7 @@ const BarangMasuk = () => {
     modalDeleteManyRef,
     windowSize,
     sort,
-  } = useBarangMasuk();
+  } = useBarangMasuk({ fromPengajuanBarang });
 
   return (
     <div className="w-full  mb-30 md:mb-10 lg:mb-20 ">
@@ -76,7 +78,7 @@ const BarangMasuk = () => {
 
       <div className="card flex flex-col justify-start items-start">
         {/* filter */}
-        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start border border-transparent dark:border-base-content/10 bg-base-100 py-2 px-4 rounded-lg shadow-sm">
+        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start border border-transparent dark:border-base-content/10 bg-base-100 py-2 px-4 shadow-sm">
           {/* button add barang masuk */}
           <ButtonWithIcon
             icon={PackagePlus}
@@ -199,7 +201,8 @@ const BarangMasuk = () => {
                           type="checkbox"
                           className="checkbox"
                           disabled={
-                            barang.status === STATUS_INVENTORI_TYPE.POSTED
+                            barang.status === STATUS_INVENTORI_TYPE.POSTED ||
+                            barang.status === STATUS_INVENTORI_TYPE.PENDING
                           }
                           checked={chooseBarangMasuk.some(
                             (item) => item.id === barang.id,
@@ -247,7 +250,10 @@ const BarangMasuk = () => {
                           />
 
                           {/* button delete */}
-                          {barang.status === STATUS_INVENTORI_TYPE.DRAFT && (
+                          {(barang.status === STATUS_INVENTORI_TYPE.DRAFT ||
+                            (barang.status !== STATUS_INVENTORI_TYPE.PENDING &&
+                              barang.status !==
+                                STATUS_INVENTORI_TYPE.POSTED)) && (
                             <ButtonDeleteTable
                               handleShowModalDelete={() =>
                                 handleShowModalDelete(barang.id, {

@@ -20,7 +20,7 @@ import FormulirTambahBarangKeluar from "./FormulirTambahBarangKeluar";
 import { expireDateOneDay, subtractMinutes } from "../../../helpers/helpers";
 import type { FC } from "react";
 import CountDown from "../../../components/ui/CountDown";
-import ModalFormulirVerifikasiRejected from "../../../components/modals/ModalFormulirVerifikasiRejected";
+import ModalFormulirVerifikasiOrPengajuan from "../../../components/modals/ModalFormulirVerifikasiOrPengajuan";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -334,7 +334,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
 
         {/* modal delete */}
         {fromPengajuanBarang && (
-          <ModalFormulirVerifikasiRejected
+          <ModalFormulirVerifikasiOrPengajuan
             modalRef={modalFormulirVerifikasiRejectedRef}
             handleCloseModal={handleCloseModalFormulirVerifikasiRejected}
             barangKeluarId={dataModalFormulirVerifikasiRejected?.barangKeluarId}

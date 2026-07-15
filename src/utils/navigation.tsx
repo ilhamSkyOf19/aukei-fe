@@ -5,6 +5,8 @@ import {
   CheckCircle2,
   History,
   LayoutDashboard,
+  LucideArrowLeftSquare,
+  LucideArrowRightSquare,
   Package,
   RefreshCcw,
   ShoppingCart,
@@ -73,6 +75,16 @@ export const NAVIGATION_LIST_KASIR: {
     label: "Keranjang",
     icon: ShoppingCart,
     link: "/dashboard/keranjang",
+  },
+  {
+    label: "Pengajuan Barang Masuk",
+    icon: LucideArrowRightSquare,
+    link: "/dashboard/pengajuan-barang-masuk",
+  },
+  {
+    label: "Pengajuan Barang Keluar",
+    icon: LucideArrowLeftSquare,
+    link: "/dashboard/pengajuan-barang-keluar",
   },
 ];
 

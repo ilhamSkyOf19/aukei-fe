@@ -111,6 +111,7 @@
 - [✅] Membuat halaman daftar pengajuan barang keluar dan integrasi backend
 
 - [ ] Membuat halaman ajukan barang masuk oleh kasir dan integrasi backend
+  - [ ] Lanjutkan pekerjaan terakhir sampai daftar pengajuan barang by author
 
 - [ ] Membuat halaman ajukan barang keluar oleh kasir dan integrasi backend
 

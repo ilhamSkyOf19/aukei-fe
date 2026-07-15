@@ -18,7 +18,11 @@ import InputNumber from "../../../../components/inputs/InputNumber";
 import ModalUbahProdukMasuk from "../../../../components/modals/ModalUbahProdukMasuk";
 import CardForm from "../../../../components/inputs/CardForm";
 import ButtonInline from "../../../../components/ui/button/ButtonInline";
-import { STATUS_INVENTORI_TYPE } from "../../../../types/constant.type";
+import {
+  ROLE_INTERNAL_TYPE,
+  STATUS_INVENTORI_TYPE,
+  type RoleInternalType,
+} from "../../../../types/constant.type";
 import InputPrice from "../../../../components/inputs/InputPrice";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
@@ -27,11 +31,13 @@ type Props = {
   isLoadingBarangMasukDetail?: boolean;
   dataBarangMasukDetail?: ResponseStructure<ResponseBarangMasukWithDetailType | null>;
   fromPengajuanBarang?: boolean;
+  role?: RoleInternalType;
 };
 const ShowDataBarangMasuk: FC<Props> = ({
   dataBarangMasukDetail,
   isLoadingBarangMasukDetail,
   fromPengajuanBarang,
+  role,
 }) => {
   const {
     handleSetIsActiveAksi,
@@ -68,6 +74,16 @@ const ShowDataBarangMasuk: FC<Props> = ({
     dataBarangMasukDetail?.data?.detailBarangMasuks?.length > 0
       ? true
       : false;
+
+  // is rejected kasir
+  const isRejectedKasir =
+    dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.REJECTED &&
+    role === ROLE_INTERNAL_TYPE.KASIR;
+
+  // const is draft owner
+  const isDrafOwner =
+    dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT &&
+    role === ROLE_INTERNAL_TYPE.OWNER;
 
   return (
     <>
@@ -334,8 +350,10 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             <span>{formatRupiah(item.produk.hargaBeli)}</span>
 
                             {/* button update */}
-                            {dataBarangMasukDetail?.data?.status ===
-                              STATUS_INVENTORI_TYPE.DRAFT && (
+                            {(isRejectedKasir ||
+                              isDrafOwner ||
+                              dataBarangMasukDetail?.data?.status ===
+                                STATUS_INVENTORI_TYPE.DRAFT) && (
                               <ButtonInline
                                 handleKeyUpdate={() =>
                                   handleSetDataUpdate({
@@ -387,8 +405,10 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             </span>
 
                             {/* button update */}
-                            {dataBarangMasukDetail?.data?.status ===
-                              STATUS_INVENTORI_TYPE.DRAFT && (
+                            {(isRejectedKasir ||
+                              isDrafOwner ||
+                              dataBarangMasukDetail?.data?.status ===
+                                STATUS_INVENTORI_TYPE.DRAFT) && (
                               <ButtonInline
                                 handleKeyUpdate={() =>
                                   handleSetDataUpdate({
@@ -494,12 +514,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
         status={dataBarangMasukDetail?.data?.status}
         dataUpdate={{
           jumlahBox: dataUpdateBarangMasuk?.jumlahBox ?? 0,
-          produk: dataUpdateBarangMasuk?.produk ?? {
-            id: 0,
-            nama: "",
-            kode: "",
-            img: "",
-          },
+          produk: dataUpdateBarangMasuk?.produk,
           hargaBeli: dataUpdateBarangMasuk?.hargaBeli ?? 0,
         }}
       />

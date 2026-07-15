@@ -3,10 +3,11 @@ import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import { cn } from "../../../utils/cn";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmit from "../../ui/button/ButtonSubmit";
-import useModalFormulirVerifikasiRejected from "./useModalFormulirVerifikasiRejected";
-import { CircleX, Hash } from "lucide-react";
+import useModalFormulirVerifikasiOrPengajuan from "./useModalFormulirVerifikasiOrPengajuan";
+import { CircleX, Hash, Send } from "lucide-react";
 import InputTextAreaNonIcon from "../../inputs/InputTextAreaNonIcon";
 import AlertLabel from "../../messages/AlertLabel";
+import type { RoleInternalType } from "../../../types/constant.type";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -14,14 +15,18 @@ type Props = {
   barangMasukId?: number;
   barangKeluarId?: number;
   kodeReferensi: string;
+  role?: RoleInternalType;
+  type?: "tolak" | "pengajuan";
 };
 
-const ModalFormulirVerifikasiRejected: FC<Props> = ({
+const ModalFormulirVerifikasiOrPengajuan: FC<Props> = ({
   modalRef,
   handleCloseModal,
   barangKeluarId,
   barangMasukId,
   kodeReferensi,
+  role,
+  type,
 }) => {
   // call use
   const {
@@ -30,10 +35,11 @@ const ModalFormulirVerifikasiRejected: FC<Props> = ({
     onSubmit,
     register,
     isPendingVerifikasiRejected,
-  } = useModalFormulirVerifikasiRejected({
+  } = useModalFormulirVerifikasiOrPengajuan({
     handleCloseModal,
     barangKeluarId,
     barangMasukId,
+    role,
   });
 
   return (
@@ -43,10 +49,14 @@ const ModalFormulirVerifikasiRejected: FC<Props> = ({
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
             <TitleModalFormulir
-              title="Formulir Tolak Pengajuan"
-              keterangan={`Formulir untuk menolak pengajuan ${barangMasukId ? "barang masuk" : "barang keluar"} `}
+              title={
+                type === "tolak"
+                  ? "Formulir Tolak Pengajuan"
+                  : "Formulir Pengajuan"
+              }
+              keterangan={`Formulir untuk ${type === "tolak" ? "menolak" : ""} pengajuan ${barangMasukId ? "barang masuk" : "barang keluar"}`}
               withIcon={{
-                icon: CircleX,
+                icon: type === "tolak" ? CircleX : Send,
               }}
             />
           </div>
@@ -81,8 +91,17 @@ const ModalFormulirVerifikasiRejected: FC<Props> = ({
               {/* status */}
               <div className="w-full flex flex-row justify-start items-center gap-4">
                 {/* icon */}
-                <div className="w-10 h-10 flex justify-center items-center rounded-lg bg-error/10">
-                  <CircleX className="text-error size-5" />
+                <div
+                  className={cn(
+                    "w-10 h-10 flex justify-center items-center rounded-lg",
+                    type === "tolak" ? "bg-error/10" : "bg-emerald-100",
+                  )}
+                >
+                  {type === "tolak" ? (
+                    <CircleX className="text-error size-5" />
+                  ) : (
+                    <Send className="text-emerald-600 size-5" />
+                  )}
                 </div>
 
                 {/* label */}
@@ -91,8 +110,13 @@ const ModalFormulirVerifikasiRejected: FC<Props> = ({
                     Status
                   </span>
 
-                  <span className="text-error font-semibold text-sm">
-                    Ditolak
+                  <span
+                    className={cn(
+                      " font-semibold text-sm",
+                      type === "tolak" ? "text-error" : "text-emerald-600",
+                    )}
+                  >
+                    {type === "tolak" ? "Ditolak" : "Diajukan"}
                   </span>
                 </div>
               </div>
@@ -100,18 +124,27 @@ const ModalFormulirVerifikasiRejected: FC<Props> = ({
 
             {/* keterangan */}
             <InputTextAreaNonIcon
-              register={register(`keterangan`)}
-              label={`Keterangan`}
+              register={register(`keterangan`, {
+                setValueAs: (value) =>
+                  value.trim() === "" ? undefined : value,
+              })}
+              label={`Keterangan ${type === "tolak" ? "" : "(Opsional)"}`}
               max={300}
               name="keterangan"
-              required={true}
+              required={type === "tolak"}
               placeholder={`Masukan keterangan`}
               rows={8}
               errorMessage={errors.keterangan?.message}
             />
 
             {/* alert */}
-            <AlertLabel message="Pastikan data sudah benar. Setelah diverifikasi, keputusan tidak dapat diubah. Perubahan hanya dapat dilakukan setelah pegawai mengajukan ulang." />
+            <AlertLabel
+              message={cn(
+                type === "tolak"
+                  ? "Pastikan data sudah benar. Setelah diverifikasi, keputusan tidak dapat diubah. Perubahan hanya dapat dilakukan setelah pegawai mengajukan ulang."
+                  : "Setelah diajukan, data tidak dapat diubah. Perubahan hanya dapat dilakukan jika pengajuan ditolak oleh Owner.",
+              )}
+            />
 
             {/* action */}
             <div className="w-full mt-6 flex flex-row justify-end items-center gap-4">
@@ -134,4 +167,4 @@ const ModalFormulirVerifikasiRejected: FC<Props> = ({
   );
 };
 
-export default ModalFormulirVerifikasiRejected;
+export default ModalFormulirVerifikasiOrPengajuan;

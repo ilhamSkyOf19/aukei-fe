@@ -9,6 +9,23 @@ import type { StatusInventoriType } from "../types/constant.type";
 import type { ResponseStructure } from "../types/response.type";
 
 export class PengajuanBarangMasukServices {
+  // find all by author
+  static async allByAuthor(
+    query: PaginationType & {
+      startDate?: string;
+      endDate?: string;
+    },
+  ): Promise<ResponseStructure<ResponseBarangMasukWithMetaType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseBarangMasukWithMetaType | null>
+    >(`/barang-masuk/by-author`, {
+      params: query,
+    });
+
+    return result.data;
+  }
+
   // find all with author
   static async allWithAuthor(
     query: PaginationType & {
@@ -38,6 +55,20 @@ export class PengajuanBarangMasukServices {
     >(`/pengajuan-barang`, {
       params: query,
     });
+
+    return result.data;
+  }
+
+  // pengajuan
+  static async pengajuan(params: {
+    barangMasukId?: number;
+    barangKeluarId?: number;
+    keterangan?: string;
+  }): Promise<ResponseStructure<ResponsePengajuanBarangType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponsePengajuanBarangType | null>
+    >("/pengajuan-barang", params);
 
     return result.data;
   }

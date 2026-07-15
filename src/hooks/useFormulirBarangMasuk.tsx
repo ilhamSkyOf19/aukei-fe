@@ -10,6 +10,8 @@ import { useMutation } from "@tanstack/react-query";
 import { BarangMasukServices } from "../services/barangMasuk.service";
 import { useEffect } from "react";
 import { getCurrentDateTimeLocal } from "../helpers/helpers";
+import { ROLE_INTERNAL_TYPE } from "../types/constant.type";
+import { useAuthStore } from "../stores/authStore";
 
 const useFormulirBarangMasuk = (params: {
   handleCloseModal?: () => void;
@@ -21,6 +23,9 @@ const useFormulirBarangMasuk = (params: {
 }) => {
   // destructure props
   const { handleCloseModal, dataUpdate } = params;
+
+  // pengguna
+  const pengguna = useAuthStore((state) => state.pengguna);
 
   // navigate
   const navigate = useNavigate();
@@ -92,11 +97,19 @@ const useFormulirBarangMasuk = (params: {
             },
           });
         } else {
-          navigate(`${currentPathname}/barang-masuk/${data?.data?.id}`, {
-            state: {
-              toast: "created_barang_masuk",
-            },
-          });
+          if (pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) {
+            navigate(`${currentPathname}/${data?.data?.id}`, {
+              state: {
+                toast: "created_barang_masuk",
+              },
+            });
+          } else {
+            navigate(`${currentPathname}/barang-masuk/${data?.data?.id}`, {
+              state: {
+                toast: "created_barang_masuk",
+              },
+            });
+          }
         }
       },
       onError: (err) => {

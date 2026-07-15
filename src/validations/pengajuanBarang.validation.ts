@@ -10,4 +10,14 @@ export class PengajuanBarangValidations {
         .max(300, "keterangan maksimal 300 karakter"),
     })
     .strict() satisfies z.ZodType<{ keterangan: string }>;
+
+  static readonly KETERANGAN_PENGAJUAN = z
+    .object({
+      keterangan: z
+        .string("keterangan harap diisi")
+        .min(1, "keterangan harap diisi")
+        .max(300, "keterangan maksimal 300 karakter")
+        .optional(),
+    })
+    .strict() satisfies z.ZodType<{ keterangan?: string }>;
 }
