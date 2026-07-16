@@ -14,7 +14,7 @@ const ButtonBackText: FC<Props> = ({ label, link }) => {
   return (
     <button
       type="button"
-      className="py-1 px-2.5 text-base-content rounded-sm flex flex-row justify-start items-center gap-2 border border-base-content/0 hover:border-custom-primary transition-all duration-300 ease-in-out"
+      className="py-1 text-base-content/50 hover:text-base-content rounded-sm flex flex-row justify-start items-center gap-2 transition-color duration-300 ease-in-out"
       onClick={() => {
         if (link) {
           navigate(link);

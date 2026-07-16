@@ -365,7 +365,9 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
       console.log(error);
     }
   };
-
+  const isCanUpdate =
+    isStatusDraft ||
+    (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
   return {
     dataBarangKeluarDetail,
     isLoadingBarangKeluarDetail,
@@ -408,6 +410,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
     isStatusRejected,
     canShowFormTambahBarang,
+    isCanUpdate,
   };
 };
 

@@ -10,7 +10,7 @@ const ButtonCloseText: FC<Props> = ({ handleClose, disabled, label }) => {
     <button
       type="button"
       disabled={disabled}
-      className="btn btn-sm lg:btn-md font-medium"
+      className="h-9.5 md:h-10 rounded-xl hover-overlay border border-base-content/10 bg-base-100 shadow-xs px-4 text-xs font-medium text-base-content"
       onClick={() => handleClose()}
     >
       {label || "Tutup"}

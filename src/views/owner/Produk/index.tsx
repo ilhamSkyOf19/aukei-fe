@@ -70,29 +70,31 @@ const Produk = () => {
     <div className="w-full h-screen overflow-y-auto ">
       <div className="w-full mb-30 md:mb-10 lg:mb-20 flex flex-col justify-start items-start">
         {/* button cluster */}
-        <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-14 p-2 gap-2 dark:border dark:border-base-content/10 sticky top-0 left-0 right-0 z-30 shrink-0">
-          {/* produk */}
-          <ButtonCluster
-            isActive={isActiveCluster === "produk"}
-            label="Produk"
-            handleActive={() => handleActiveCluster("produk")}
-          />
-          {/* kategori */}
-          <ButtonCluster
-            isActive={isActiveCluster === "kategori"}
-            label="Kategori"
-            handleActive={() => handleActiveCluster("kategori")}
-          />
-          {/* spesifikasi */}
-          <ButtonCluster
-            isActive={isActiveCluster === "spesifikasi"}
-            label="Spesifikasi"
-            handleActive={() => handleActiveCluster("spesifikasi")}
-          />
+        <div className="w-full flex flex-row justify-center fixed md:sticky p-2.5 top-16 md:top-0 z-20 backdrop-blur-2xl shrink-0">
+          <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-16 md:h-14 p-2 gap-2 dark:border dark:border-base-content/10 rounded-2xl md:rounded-xl overflow-x-auto">
+            {/* produk */}
+            <ButtonCluster
+              isActive={isActiveCluster === "produk"}
+              label="Produk"
+              handleActive={() => handleActiveCluster("produk")}
+            />
+            {/* kategori */}
+            <ButtonCluster
+              isActive={isActiveCluster === "kategori"}
+              label="Kategori"
+              handleActive={() => handleActiveCluster("kategori")}
+            />
+            {/* spesifikasi */}
+            <ButtonCluster
+              isActive={isActiveCluster === "spesifikasi"}
+              label="Spesifikasi"
+              handleActive={() => handleActiveCluster("spesifikasi")}
+            />
+          </div>
         </div>
 
         {/* content */}
-        <div className="w-full flex justify-center items-start px-2 lg:px-4 mt-2">
+        <div className="w-full flex justify-center items-start px-2.5 mt-2 pt-20 md:pt-0">
           {isActiveCluster === "produk" && (
             <>
               {/* toast create */}
@@ -107,7 +109,7 @@ const Produk = () => {
 
               <div className=" w-full flex flex-col justify-start items-start ">
                 {/* filter */}
-                <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-4 rounded-lg shadow-sm border border-transparent dark:border-base-content/10">
+                <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
                   <ButtonAdd
                     icon={PackagePlus}
                     label="Tambah Produk"
@@ -154,7 +156,7 @@ const Produk = () => {
                 </div>
 
                 {/* SHOW DAYA FOR SM */}
-                <div className="flex w-full flex-col justify-start items-center gap-2 mt-2 md:hidden">
+                <div className="flex w-full flex-col justify-start items-center gap-2 mt-2 lg:hidden">
                   {/* card */}
                   {isLoadingProduk ? (
                     <>
@@ -197,7 +199,7 @@ const Produk = () => {
                 </div>
 
                 {/* SHOW DATA FOR MD, LG, XL*/}
-                <div className="overflow-x-auto w-full bg-base-100 rounded-xl mt-2 border border-transparent dark:border-base-content/10 shadow-sm hidden md:flex">
+                <div className="overflow-x-auto w-full bg-base-100 rounded-xl mt-2.5 md:mt-4 border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex">
                   <table className="table table-xs lg:table-sm table-zebra">
                     {/* head */}
                     <thead>
@@ -458,10 +460,10 @@ const CardProduk: FC<CardProdukProps> = ({
   produk,
 }) => {
   return (
-    <div className="w-full bg-base-100 rounded-lg flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
+    <div className="w-full bg-base-100 rounded-2xl flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
       <div className="w-full flex flex-row justify-between items-start pb-3 border-b border-base-content/10">
         {/* content 1 */}
-        <div className="flex-2 flex flex-row justify-start items-start gap-4">
+        <div className="flex-8 flex flex-row justify-start items-start gap-4">
           <div className="flex flex-row justify-start items-start gap-3">
             {/* checkbox */}
             <input type="checkbox" className="checkbox" />

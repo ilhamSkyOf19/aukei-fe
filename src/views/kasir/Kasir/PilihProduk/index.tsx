@@ -3,7 +3,6 @@ import ShowProduk from "./ShowProduk";
 import {
   Minus,
   PackagePlus,
-  Pencil,
   Phone,
   Receipt,
   Save,
@@ -22,6 +21,8 @@ import { cn } from "../../../../utils/cn";
 import Avatar from "../../../../components/ui/Avatar";
 import ModalFormulirTransaksi from "../../../../components/modals/ModalFormulirTransaksi";
 import DataEmpty from "../../../../components/messages/DataEmpty";
+import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
+import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 
 type Props = {
   step: number;
@@ -80,7 +81,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
         {!isUpdateKeranjang && (
           <div
             className={cn(
-              "w-full flex flex-row justify-between items-center shadow-sm border rounded-lg py-2.5 px-3 bg-base-100",
+              "w-full flex flex-row justify-between items-center shadow-sm border rounded-xl py-2.5 px-3 bg-base-100",
               isErrorsFormState.includes("pelanggan")
                 ? "border-error"
                 : "border-transparent dark:border-base-content/10",
@@ -124,13 +125,13 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
           </div>
         )}
 
-        {/* preview produk */}
+        {/* PREVIEW PRODUK TRANSAKSI */}
         <div
           className={cn(
-            "w-full flex flex-col justify-start items-start rounded-lg bg-base-100 shadow-sm border",
+            "w-full flex flex-col justify-start items-start rounded-xl bg-base-100 shadow-sm border border-transparent",
             isErrorsFormState.includes("details")
               ? "border-error"
-              : "border-base-content/10",
+              : "dark:border-base-content/10",
           )}
         >
           {/* header */}
@@ -142,7 +143,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
             {produkDetails.length > 0 && (
               <button
                 type="button"
-                className="py-1.5 px-2 flex flex-row justify-start items-center gap-2 border border-transparent hover:border-error rounded-md transition-all duration-150 ease-in-out"
+                className="py-1.5 px-2 flex flex-row justify-start items-center gap-2 border border-transparent hover:border-error rounded-xl transition-all duration-150 ease-in-out"
                 onClick={handleRemoveAllDetails}
               >
                 <Trash2 className="lg:size-3.5 xl:size-4 text-error" />
@@ -153,7 +154,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
             )}
           </div>
 
-          {/* data */}
+          {/* DATA */}
           <div className="w-full flex flex-col justify-start items-start pb-6">
             <div
               className={cn(
@@ -171,7 +172,6 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                   <tr className="text-[0.625rem] bg-base-content/5 h-8">
                     <th>Gambar</th>
                     <th>Nama Produk</th>
-                    <th>Harga Terakhir</th>
                     <th>Harga (Rp)</th>
                     <th>Diskon (Rp)</th>
                     <th>Jumlah</th>
@@ -203,13 +203,6 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                         </td>
                         <td>
                           <span className="xl:text-[0.7rem] text-base-content">
-                            {item.hargaJualTerakhirTransaksi
-                              ? formatRupiah(item.hargaJualTerakhirTransaksi)
-                              : "-"}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="xl:text-[0.7rem] text-base-content">
                             {/* harga jual */}
                             {formatRupiah(item.hargaJual)}
                           </span>
@@ -232,24 +225,18 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                         </td>
                         <td>
                           <div className="flex flex-row justify-start items-start gap-1">
-                            <button
-                              type="button"
-                              className="rounded-md transition-opacity duration-200 ease-in-out group xl:w-7 xl:h-7 lg:w-6 lg:h-6 flex flex-row justify-center items-center bg-info"
-                              onClick={() =>
+                            <ButtonUpdateTable
+                              handleShowModalFormulir={() =>
                                 handleShowModalFormulirTransaksiForUpdate(
                                   item.id,
                                 )
                               }
-                            >
-                              <Pencil className="size-3 text-primary-white" />
-                            </button>
-                            <button
-                              type="button"
-                              className="rounded-md transition-opacity duration-200 ease-in-out group xl:w-7 xl:h-7 lg:w-6 lg:h-6 flex flex-row justify-center items-center bg-error"
-                              onClick={() => removeDetails(item.id)}
-                            >
-                              <Trash2 className="size-3 text-primary-white" />
-                            </button>
+                            />
+                            <ButtonDeleteTable
+                              handleShowModalDelete={() =>
+                                removeDetails(item.id)
+                              }
+                            />
                           </div>
                         </td>
                       </tr>
@@ -275,7 +262,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
         </div>
 
         {/* total */}
-        <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10 px-3 py-4 bg-base-100 shadow-sm">
+        <div className="w-full flex flex-col justify-start items-start rounded-xl border border-transparent dark:border-base-content/10 px-3 py-4 bg-base-100 shadow-sm">
           {/* sub total & total diskon */}
           <div className="w-full flex flex-col justify-start items-start gap-2.5 pb-4 border-b border-base-content/10">
             {/* sub total */}
@@ -326,11 +313,11 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
 
         {/* button chart and transaksi */}
         {isUpdateKeranjang ? (
-          <div className="w-full flex flex-row justify-between items-center gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg  xl:p-1 h-12">
+          <div className="w-full flex flex-row justify-between items-center gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-xl  xl:p-1 h-12">
             {/* button batalkan */}
             <button
               type="button"
-              className="flex flex-row justify-center items-center gap-4 h-full flex-1 rounded-lg border border-custom-primary hover-overlay"
+              className="flex flex-row justify-center items-center gap-4 h-full flex-1 rounded-xl border border-custom-primary hover-overlay"
               onClick={() => handleBatalkanSimpanKeranjang()}
             >
               <X className="xl:size-5 lg:size-4 text-base-content" />
@@ -344,7 +331,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
               disabled={produkDetails.length === 0}
               type="button"
               className={cn(
-                "flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-lg bg-custom-primary disabled:opacity-50",
+                "flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-xl bg-custom-primary disabled:opacity-50",
                 produkDetails.length !== 0 && "hover-overlay",
               )}
               style={{
@@ -368,7 +355,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
         ) : (
           <div
             className={cn(
-              "w-full flex flex-row justify-between items-center bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-lg xl:p-1 h-12 tooltip",
+              "w-full flex flex-row justify-between items-center bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-xl xl:p-1 h-12 tooltip",
               isUpdateTransaction ? "gap-2" : "gap-4",
             )}
             data-tip={
@@ -382,7 +369,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
               type="button"
               disabled={produkDetails.length === 0 || !pelanggan}
               className={cn(
-                "flex-1 flex flex-row justify-center items-center gap-4 xl:h-full rounded-lg border border-custom-primary disabled:opacity-50",
+                "flex-1 flex flex-row justify-center items-center gap-4 xl:h-full rounded-xl border border-custom-primary disabled:opacity-50",
                 (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
               )}
               style={{
@@ -416,7 +403,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
               {isUpdateTransaction && (
                 <button
                   type="button"
-                  className="flex flex-row justify-center items-center gap-4 h-full flex-1 rounded-lg bg-error hover-overlay "
+                  className="flex flex-row justify-center items-center gap-4 h-full flex-1 rounded-xl bg-error hover-overlay "
                   onClick={() => {
                     handleBatalkanUpdateTransaction();
                   }}
@@ -435,7 +422,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                 type="button"
                 disabled={produkDetails?.length === 0 || !pelanggan}
                 className={cn(
-                  "flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-lg bg-custom-primary disabled:opacity-50",
+                  "flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-xl bg-custom-primary disabled:opacity-50",
                   (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
                 )}
                 style={{

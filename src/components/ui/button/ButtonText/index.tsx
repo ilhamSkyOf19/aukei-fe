@@ -26,10 +26,10 @@ const ButtonText: FC<Props> = ({
     <button
       type="button"
       className={cn(
-        "btn btn-sm lg:btn-md px-4 text-xs lg:text-sm font-semibold hover-overlay disabled:opacity-50",
+        "rounded-2xl md:rounded-xl px-4 text-xs lg:text-sm font-semibold hover-overlay disabled:opacity-50 shadow-xs",
         bgColor,
         textColor,
-        customHeight,
+        customHeight ? customHeight : "h-10.5 md:h-10",
         customHeight,
         customWidth,
       )}
@@ -39,7 +39,9 @@ const ButtonText: FC<Props> = ({
       {isLoading ? (
         <div className="loading loading-xs" />
       ) : (
-        <span>{label || "Simpan"}</span>
+        <span className="text-xs md:text-xs lg:text-[0.625rem] xl:text-xs">
+          {label || "Simpan"}
+        </span>
       )}
     </button>
   );

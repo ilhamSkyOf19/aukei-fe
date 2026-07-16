@@ -18,7 +18,7 @@ const RowJadwaTempo: FC<Props> = ({ aksi, dataTempo, maxHeight }) => {
         Jadwal Cicilan Tempo
       </h3>
 
-      <div className="w-full flex flex-col justify-start items-start border overflow-hidden border-base-content/10 rounded-lg">
+      <div className="w-full flex flex-col justify-start items-start border overflow-hidden border-base-content/10 rounded-xl">
         {/* header */}
         <div className="w-full grid grid-cols-10 gap-2 px-4 py-3 bg-gray-200 sticky top-0 z-10">
           {/* number */}
@@ -35,7 +35,12 @@ const RowJadwaTempo: FC<Props> = ({ aksi, dataTempo, maxHeight }) => {
           </div>
 
           {/* nominal */}
-          <div className="col-span-3 flex flex-row justify-start items-center">
+          <div
+            className={cn(
+              "flex flex-row  items-center gap-2",
+              aksi ? "col-span-3 justify-start" : "col-span-5 justify-end",
+            )}
+          >
             <span className="text-xs font-semibold text-base-content/80">
               Nominal
             </span>
@@ -123,7 +128,12 @@ const Rows: FC<RowsType> = ({
       </div>
 
       {/* nominal */}
-      <div className="col-span-3 flex flex-row justify-start items-center gap-2">
+      <div
+        className={cn(
+          "flex flex-row  items-center gap-2",
+          aksi ? "col-span-3 justify-start" : "col-span-5 justify-end",
+        )}
+      >
         {/* icon */}
         <CircleDollarSign className="size-4 text-success" />
         <span className="text-xs font-semibold text-base-content">

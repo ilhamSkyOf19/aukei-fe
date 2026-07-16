@@ -58,8 +58,10 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
     >
       <div className="w-full lg:hidden flex flex-row justify-between items-center">
         <div className="flex flex-col justify-start items-start gap-1.5">
-          <p className="text-md font-semibold">Daftar Barang Masuk</p>
-          <p className="text-xs px-3 py-1 rounded-full bg-gray-300">
+          <p className="text-md font-semibold text-base-content">
+            Daftar Barang Masuk
+          </p>
+          <p className="text-xs px-3 py-1 rounded-2xl md:rounded-xl  bg-gray-300">
             {totalBarang} barang
           </p>
         </div>
@@ -71,7 +73,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
       </div>
 
       {/* form for lg */}
-      <div className="hidden lg:flex flex-col justify-start items-start min-h-30 w-full card shadow-xs dark:border dark:border-base-content/10 bg-base-100 p-6">
+      <div className="hidden lg:flex flex-col justify-start items-start min-h-30 w-full rounded-2xl md:rounded-xl shadow-xs dark:border dark:border-base-content/10 bg-base-100 p-6">
         {/* title */}
         <div className="w-full flex flex-row justify-start items-center">
           <h2 className="text-base-content text-sm font-semibold">
@@ -134,12 +136,12 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
                         <button
                           type="button"
                           key={item.id}
-                          className="w-full flex flex-row justify-between items-start gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border-b border-base-content/10"
+                          className="w-full flex flex-row justify-between items-start gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border-b border-base-content/10 rounded-xl"
                           onClick={() => handleSetValueProdukId(item.id)}
                         >
                           <div className="flex-3 flex flex-row col row justify-start items-start gap-4">
                             {/* img */}
-                            <div className="w-11 h-11 rounded-md overflow-hidden">
+                            <div className="w-11 h-11 rounded-xl overflow-hidden">
                               <img
                                 src={item.img}
                                 alt="foto produk"
@@ -149,7 +151,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
 
                             {/* nama */}
                             <div className="flex flex-col justify-start items-start gap-1">
-                              <p className="text-sm font-semibold">
+                              <p className="text-sm font-semibold text-base-content">
                                 {item.nama}
                               </p>
                               <p className="text-xs text-base-content/50 font-semibold">
@@ -185,16 +187,18 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
             {/* card produk choose */}
             {produkChoose.length > 0 && (
               <div className="w-full flex flex-col justify-start items-start gap-2 mt-4">
-                <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
+                <p className="text-xs font-medium text-base-content">
+                  Daftar Pilihan Barang:
+                </p>
                 {produkChoose.map((item) => (
                   <div
                     key={item.id}
-                    className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out"
+                    className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-xl transition-all duration-100 ease-in-out"
                   >
                     <div className="w-full flex flex-row justify-start items-start gap-2">
                       <div className="flex-2 w-full flex flex-row justify-start items-start gap-4">
                         {/* img */}
-                        <div className="w-11 h-11 rounded-md overflow-hidden">
+                        <div className="w-11 h-11 rounded-xl overflow-hidden">
                           <img
                             src={item.img}
                             alt="foto produk"
@@ -204,7 +208,9 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
 
                         {/* nama */}
                         <div className="flex flex-col justify-start items-start gap-1">
-                          <p className="text-sm font-semibold">{item.nama}</p>
+                          <p className="text-sm font-semibold text-base-content">
+                            {item.nama}
+                          </p>
                           <p className="text-xs text-base-content/50 font-medium">
                             {item.kode}
                           </p>

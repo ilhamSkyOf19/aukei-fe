@@ -65,7 +65,7 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
   } = useBarangMasuk({ fromPengajuanBarang });
 
   return (
-    <div className="w-full  mb-30 md:mb-10 lg:mb-20 ">
+    <div className="w-full mb-30 md:mb-10 lg:mb-20 ">
       {/* toast create */}
       {toast && (
         <Toast
@@ -78,7 +78,7 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
 
       <div className="card flex flex-col justify-start items-start px-2.5 pt-2.5">
         {/* filter */}
-        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start border border-transparent dark:border-base-content/10 bg-base-100 p-4 shadow-sm rounded-lg">
+        <div className="w-full bg-base-100 p-2.5 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-2xl md:rounded-xl shadow-sm">
           {/* button add barang masuk */}
           <ButtonWithIcon
             icon={PackagePlus}
@@ -91,14 +91,14 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
             {/* input search */}
             <InputSearch
               handleSearch={handleSearch}
-              placeholder="Cari kode"
+              placeholder="Cari berdasarkan kode"
               withLabel
             />
           </div>
 
           <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
             {/* input range date */}
-            <RangeDate customWidth="flex-2 md:flex-none md:w-50 lg:w-60" />
+            <RangeDate customWidth="flex-2 md:flex-none md:w-50 lg:w-70" />
             {/* filter sort */}
             <FilterSort
               setSort={handleSort}
@@ -167,7 +167,7 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
             </div>
           )}
 
-          {!isLoadingBarangMasuk && (
+          {!isLoadingBarangMasuk && isExistDataBarangMasuk && (
             <ButtonWithIcon
               icon={Trash2}
               bgColor="bg-error"
@@ -433,7 +433,7 @@ const CardBarangMasuk: FC<CardBarangMasuk> = ({
   handleSetChooseBarangMasuk,
 }) => {
   return (
-    <div className="w-full bg-base-100 rounded-lg flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
+    <div className="w-full bg-base-100 rounded-2xl md:rounded-lg flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
       <div className="w-full flex flex-row justify-between items-start pb-3 border-b border-base-content/10">
         {/* content 1 */}
         <div className="flex-8 flex flex-row justify-start items-start gap-4">
@@ -453,8 +453,8 @@ const CardBarangMasuk: FC<CardBarangMasuk> = ({
             />
 
             {/* foto */}
-            <div className="w-12 h-12 flex justify-center items-center overflow-hidden bg-blue-100 rounded-lg">
-              <Truck className="size-6 text-blue-400" />
+            <div className="w-12 h-12 flex justify-center items-center overflow-hidden bg-blue-100 rounded-2xl md:rounded-xl">
+              <Truck className="size-5 text-blue-400" />
             </div>
           </div>
 

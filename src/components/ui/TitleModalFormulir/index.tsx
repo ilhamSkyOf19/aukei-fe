@@ -20,7 +20,7 @@ const TitleModalFormulir: FC<Props> = ({
     <div className="w-full flex flex-row justify-start items-center gap-4">
       {/* icon */}
       {withIcon && (
-        <div className="w-14 h-12 bg-custom-primary/50 flex rounded-lg flex-row justify-center items-center">
+        <div className="w-12 md:w-14 h-12 bg-custom-primary/50 flex rounded-lg flex-row justify-center items-center shrink-0">
           <withIcon.icon className="text-custom-secondary size-5 lg:size-6" />
         </div>
       )}

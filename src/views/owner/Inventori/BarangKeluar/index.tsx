@@ -64,6 +64,7 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
     isPendingDeleteMany,
     modalDeleteManyRef,
     sort,
+    windowSize,
   } = useBarangKeluar({ fromPengajuanBarang });
 
   return (
@@ -80,7 +81,7 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
 
       <div className="card flex flex-col justify-start items-start px-2.5 pt-2.5">
         {/* filter */}
-        <div className="w-full bg-base-100 p-4 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-lg shadow-sm">
+        <div className="w-full bg-base-100 p-2.5 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-2xl md:rounded-xl shadow-sm">
           <ButtonWithIcon
             icon={PackagePlus}
             label="Tambah Barang Keluar"
@@ -97,12 +98,12 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
           </div>
           <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
             {/* input range date */}
-            <RangeDate customWidth="w-full md:w-60" />
+            <RangeDate customWidth="flex-2 md:flex-none md:w-50 lg:w-70" />
 
             {/* filter sort */}
             <FilterSort
               setSort={handleSort}
-              customWidth="w-full md:w-40"
+              customWidth="flex-1 md:flex-none md:w-30 lg:w-40"
               value={sort}
             />
 
@@ -116,6 +117,8 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
                 label="Tambah Barang Keluar"
                 handleBtn={() => handleShowModalFormulirBarangKeluar()}
                 customClass="hidden md:flex"
+                noLabel={windowSize === "md" && true}
+                {...(windowSize === "md" && { customSize: "lg" })}
               />
             </div>
           </div>
@@ -166,7 +169,7 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
             </div>
           )}
 
-          {!isLoadingBarangKeluar && (
+          {!isLoadingBarangKeluar && isExistDataBarangKeluar && (
             <ButtonWithIcon
               icon={Trash2}
               bgColor="bg-error"
@@ -435,7 +438,7 @@ const CardBarangKeluar: FC<CardBarangKeluar> = ({
   handleSetChooseBarangMasuk,
 }) => {
   return (
-    <div className="w-full bg-base-100 rounded-lg flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
+    <div className="w-full bg-base-100 rounded-2xl  flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
       <div className="w-full flex flex-row justify-between items-start pb-3 border-b border-base-content/10">
         {/* content 1 */}
         <div className="flex-8 flex flex-row justify-start items-start gap-4">
@@ -456,7 +459,7 @@ const CardBarangKeluar: FC<CardBarangKeluar> = ({
 
             {/* foto */}
             <div className="w-12 h-12 flex justify-center items-center overflow-hidden bg-rose-100 rounded-lg">
-              <Truck className="size-6 text-rose-400" />
+              <Truck className="size-5 text-rose-400" />
             </div>
           </div>
 
@@ -467,7 +470,7 @@ const CardBarangKeluar: FC<CardBarangKeluar> = ({
 
             {/* tanggal masuk */}
             <span className="text-[0.7rem] font-medium text-custom-secondary dark:text-base-content">
-              {formatTanggalLengkap(new Date())} WIB
+              {formatTanggalLengkap(barang.tanggalKeluar)} WIB
             </span>
           </div>
         </div>

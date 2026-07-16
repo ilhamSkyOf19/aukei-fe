@@ -42,7 +42,7 @@ const CardData: FC<Props> = ({
   return (
     <button
       type="button"
-      className="w-full flex flex-row justify-between items-center p-2 rounded-lg border border-base-content/10 hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out"
+      className="w-full flex flex-row justify-between items-center p-2 rounded-2xl border border-base-content/10 hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out"
       onClick={handleRedirectDetail}
     >
       <div className="flex flex-row justify-start items-center gap-2.5">

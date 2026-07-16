@@ -2,6 +2,7 @@ import { AlertCircle, type LucideIcon } from "lucide-react";
 import { type FC, type RefObject } from "react";
 import { cn } from "../../../utils/cn";
 import ButtonText from "../../ui/button/ButtonText";
+import ButtonCloseText from "../../ui/button/ButtonCloseText";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal?: () => void;
@@ -26,7 +27,7 @@ const ModalAlert: FC<Props> = ({
 }) => {
   return (
     <dialog ref={modalRef} id="my_modal_1" className="modal">
-      <div className="modal-box w-11/12 lg:w-120 bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box w-11/12 lg:w-120 rounded-2xl md:rounded-xl bg-base-200 dark:border dark:border-base-content/10">
         {/* icon alert */}
         <div className="w-full flex justify-center mb-4">
           {Icon && <Icon className={cn("size-20", iconColor)} />}
@@ -44,7 +45,7 @@ const ModalAlert: FC<Props> = ({
         <div className="w-full flex flex-row justify-end items-end gap-2 mt-8">
           {/* button close */}
           {handleCloseModal && (
-            <ButtonText label={"Batal"} handleClick={handleCloseModal} />
+            <ButtonCloseText label={"Batal"} handleClose={handleCloseModal} />
           )}
 
           {handleConfirm && (

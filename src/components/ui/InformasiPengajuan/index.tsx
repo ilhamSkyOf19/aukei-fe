@@ -1,9 +1,9 @@
 import type { FC } from "react";
 import type { IPenggunaInternalType } from "../../../models/penggunaInternal.model";
-import { CalendarDays, Eye, History, UserRound } from "lucide-react";
+import { CalendarDays, History, UserRound } from "lucide-react";
 import { cn } from "../../../utils/cn";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import ButtonWithIcon from "../button/ButtonWithIcon";
+import SideBarRiwayatPengajuan from "../../SideBarRiwayatPengajuan";
 
 type Props = {
   isLoading?: boolean;
@@ -20,7 +20,7 @@ const InformasiPengajuan: FC<Props> = ({
   return (
     <div
       className={cn(
-        "card bg-base-100 shadow-xs border border-transparent dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6",
+        "rounded-2xl md:rounded-xl bg-base-100 shadow-xs border border-transparent dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6",
         customHeight ? customHeight : "lg:min-h-70",
       )}
     >
@@ -147,7 +147,7 @@ const InformasiPengajuan: FC<Props> = ({
 
               {/* value */}
               <div className="flex flex-row justify-end items-center">
-                <ButtonWithIcon label="Lihat" icon={Eye} handleBtn={() => {}} />
+                <SideBarRiwayatPengajuan />
               </div>
             </div>
           </div>

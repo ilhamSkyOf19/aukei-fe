@@ -80,7 +80,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
         <div className="w-full flex flex-col justify-start items-start gap-2">
           <div
             className={cn(
-              "w-full flex flex-row justify-between items-center border rounded-lg py-3 px-4 border-transparent bg-base-100 shadow-sm dark:border-base-content/10 h-15",
+              "w-full flex flex-row justify-between items-center border rounded-xl py-3 px-4 border-transparent bg-base-100 shadow-sm dark:border-base-content/10 h-15",
             )}
           >
             <div className="flex-1 flex flex-row justify-start items-center">
@@ -121,7 +121,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
         </div>
 
         {/* metode pembayaran */}
-        <div className="w-full flex flex-col justify-start items-start rounded-lg bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm p-4">
+        <div className="w-full flex flex-col justify-start items-start rounded-xl bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm p-4">
           {/* title */}
           <TitleModalFormulir
             title="Pilih Metode Pembayaran"
@@ -230,7 +230,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
                 ref={buttonAturTempoRef}
                 type="button"
                 className={cn(
-                  "w-full h-10 bg-emerald-600 rounded-lg flex flex-row hover-overlay justify-center items-center mt-4",
+                  "w-full h-10 bg-emerald-600 rounded-xl flex flex-row hover-overlay justify-center items-center mt-4",
                   metodePembayaran === "TEMPO"
                     ? isErrors.includes("DATA_TEMPO_KOSONG")
                       ? "animate-pop-in-active"
@@ -259,7 +259,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
       {/* daftar produk */}
       <div className="flex-4 flex h-full flex-col justify-start items-start gap-2">
         {/* header */}
-        <div className="w-full h-15 flex flex-row justify-between items-center bg-base-100 p-4 rounded-lg border border-transparent dark:border-base-content/10 shadow-sm">
+        <div className="w-full h-15 flex flex-row justify-between items-center bg-base-100 p-4 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm">
           {/* title */}
           <h3 className="text-sm font-medium text-base-content">
             Ringkasan Transaksi
@@ -288,7 +288,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
         <div className="w-full flex flex-col justify-start items-start">
           <div
             className={cn(
-              "overflow-y-auto w-full rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6",
+              "overflow-y-auto w-full rounded-xl border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6",
               isModeKasir ? "xl:h-85" : "xl:h-74.5",
             )}
           >
@@ -365,7 +365,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
 
         <div className="w-full h-45 flex flex-row justify-between items-center gap-4 ">
           {/* sub total */}
-          <div className="w-full h-full flex flex-col justify-start items-start rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4">
+          <div className="w-full h-full flex flex-col justify-start items-start rounded-xl border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4">
             {dataDetails && (
               <>
                 {/* sub total & total diskon */}
@@ -495,7 +495,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast }) => {
 
           {/* atur preview tempo */}
           {metodePembayaran === "TEMPO" && (
-            <div className="w-full h-full flex flex-col justify-start items-start rounded-lg border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4">
+            <div className="w-full h-full flex flex-col justify-start items-start rounded-xl border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4">
               {/* header */}
               <div className="w-full flex flex-col justify-start items-start">
                 <span className="text-xs font-medium">
@@ -623,7 +623,7 @@ const CardMetodePembayaran: FC<CardMetodePembayaranProps> = ({
     <button
       type="button"
       className={cn(
-        "w-full flex flex-row justify-between items-center rounded-lg shadow-sm p-3 border  transition-all duration-150 ease-in-out",
+        "w-full flex flex-row justify-between items-center rounded-xl shadow-sm p-3 border  transition-all duration-150 ease-in-out",
         isActive
           ? "border-emerald-600 bg-emerald-600/10"
           : isError

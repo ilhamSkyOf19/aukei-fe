@@ -1,4 +1,4 @@
-import { ShoppingCart, SquareUserRound, Store, UserRound } from "lucide-react";
+import { ShoppingCart, Store, UserRound } from "lucide-react";
 import { type FC } from "react";
 import { cn } from "../../../utils/cn";
 import useHeaderKasir from "./useHeaderKasir";
@@ -22,7 +22,7 @@ const HeaderKasir: FC<Props> = ({ step }) => {
         "w-full flex flex-row justify-between items-center py-1 border border-transparent dark:border-base-content/10 shadow-sm ",
         isModeKasir
           ? "bg-custom-secondary sticky top-0 z-30"
-          : "bg-base-100 rounded-lg",
+          : "bg-base-100 rounded-xl",
       )}
     >
       {/* title */}
@@ -136,7 +136,7 @@ const HeaderKasir: FC<Props> = ({ step }) => {
         >
           <div
             className={cn(
-              "flex flex-row justify-start items-center gap-2 h-10 w-30 px-2 rounded-md shadow-md border  hover:border-custom-primary transition-all duration-300 ease-in-out origin-center dark:border-base-content/10",
+              "flex flex-row justify-start items-center gap-2 h-11 w-30 px-2 rounded-xl shadow-md border  hover:border-custom-primary transition-all duration-300 ease-in-out origin-center dark:border-base-content/10",
               isModeKasir
                 ? "border-primary-white text-primary-white"
                 : "border-transparent text-base-content",
@@ -182,7 +182,7 @@ const HeaderKasir: FC<Props> = ({ step }) => {
             type="button"
             onClick={() => setIsModeKasir(!isModeKasir)}
             className={cn(
-              "flex flex-row justify-center items-center gap-2 h-10 px-4 rounded-md shadow-md border  hover:border-custom-primary transition-all duration-300 ease-in-out origin-center dark:border-base-content/10",
+              "flex flex-row justify-center items-center gap-2 h-11 px-4 rounded-xl shadow-md border  hover:border-custom-primary transition-all duration-300 ease-in-out origin-center dark:border-base-content/10",
               isModeKasir
                 ? "border-primary-white text-primary-white"
                 : "border-transparent text-base-content",

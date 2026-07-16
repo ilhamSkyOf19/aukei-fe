@@ -13,9 +13,6 @@ export interface ResponsePengajuanBarangType {
 }
 
 export interface ResponsePengajuanBarangWithMetaType {
-  data: Omit<
-    ResponsePengajuanBarangType,
-    "author" | "barangMasukId" | "barangKeluarId"
-  >[];
+  data: Omit<ResponsePengajuanBarangType, "barangMasukId" | "barangKeluarId">[];
   meta: MetaType;
 }

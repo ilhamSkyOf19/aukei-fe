@@ -81,7 +81,7 @@ const InformasiBarangMasuk: FC<Props> = ({
       {/* informasi barang masuk */}
       <div
         className={cn(
-          "card bg-base-100 shadow-xs border border-transparent dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6",
+          " rounded-2xl md:rounded-xl bg-base-100 shadow-xs border border-transparent dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6",
           author ? "lg:min-h-70" : "lg:min-h-55",
         )}
       >
@@ -119,7 +119,7 @@ const InformasiBarangMasuk: FC<Props> = ({
 
                 {/* value */}
                 <div className="flex flex-row justify-end items-center">
-                  <span className={" text-xs font-medium"}>
+                  <span className={" text-xs font-medium text-base-content"}>
                     {formatTanggalLengkap(tanggalMasuk ?? new Date())} WIB
                   </span>
 
@@ -220,7 +220,7 @@ const InformasiBarangMasuk: FC<Props> = ({
       {/* informasi ringkasan */}
       <div
         className={cn(
-          "card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6",
+          "rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6",
           author ? "lg:min-h-70" : "lg:min-h-55",
         )}
       >

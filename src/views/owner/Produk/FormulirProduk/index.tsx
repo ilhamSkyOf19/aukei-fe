@@ -27,18 +27,17 @@ const FormulirProduk = () => {
     isPendingMutateProduk,
     onSubmit,
     isLoadingProdukDetail,
-    validatedIdParams,
     dataProdukDetail,
     isiPerBoxController,
-    stokController,
     stokMinimumController,
+    validatedIdParams,
   } = useFormulirProduk();
 
   return (
-    <div className="w-full md:h-screen overflow-y-auto">
-      <div className="w-full mb-30 md:mb-0 lg:mb-10 h-full flex flex-col justify-start items-start px-2 lg:px-4">
+    <div className="w-full md:h-full lg:h-auto overflow-y-auto">
+      <div className="w-full mb-30 md:mb-20 lg:mb-20 h-full flex flex-col justify-start items-start px-2.5">
         {/* content */}
-        <div className="w-full card shadow-xs dark:border dark:border-base-content/10 flex mt-4 flex-col justify-start items-start bg-base-100 px-4 lg:px-6 py-4">
+        <div className="w-full rounded-2xl md:rounded-xl shadow-xs dark:border dark:border-base-content/10 flex mt-4 flex-col justify-start items-start bg-base-100 px-4 lg:px-6 py-4">
           {/* header formulir */}
           <div className="w-full flex flex-row lg:flex-col lg:justify-start lg:items-start lg:gap-4 relative justify-center items-center">
             {/* button kembali */}
@@ -50,7 +49,7 @@ const FormulirProduk = () => {
             <div className="w-full flex flex-col justify-start lg:items-start items-center">
               {/* title */}
               <h2 className="text-sm lg:text-xl font-semibold text-base-content">
-                Formulir Produk
+                Formulir {validatedIdParams ? "Ubah" : "Tambah"} Produk
               </h2>
 
               {/* keterangan */}
@@ -63,11 +62,11 @@ const FormulirProduk = () => {
           {/* form */}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full flex flex-col justify-start items-start mt-8"
+            className="w-full flex flex-col justify-start items-start mt-4"
           >
-            <div className="w-full flex flex-col justify-start items-start md:flex-row md:gap-6">
+            <div className="w-full flex flex-col justify-start items-start lg:flex-row md:gap-6">
               {/* input img */}
-              <div className="w-full h-60 md:h-80 lg:w-200 lg:h-105 mb-16 lg:mb-12">
+              <div className="w-full h-60 md:h-80 lg:w-200 lg:h-80 mb-12 lg:mb-6">
                 {isLoadingProdukDetail ? (
                   <div className="skeleton w-full h-full" />
                 ) : (
@@ -102,42 +101,44 @@ const FormulirProduk = () => {
                   />
                 )}
 
-                {/* kode produk */}
-                {isLoadingProdukDetail ? (
-                  <div className="w-full h-10 skeleton my-3" />
-                ) : (
-                  <InputTextNonIcon
-                    register={register("kode")}
-                    name="kode"
-                    placeholder="Kode Produk"
-                    label="Kode Produk"
-                    required
-                    max={50}
-                    errorMessage={errors?.kode?.message}
-                  />
-                )}
+                <div className="w-full flex flex-col lg:flex-row justify-start items-start gap-2 lg:gap-6">
+                  {/* kode produk */}
+                  {isLoadingProdukDetail ? (
+                    <div className="w-full h-10 skeleton my-3" />
+                  ) : (
+                    <InputTextNonIcon
+                      register={register("kode")}
+                      name="kode"
+                      placeholder="Kode Produk"
+                      label="Kode Produk"
+                      required
+                      max={50}
+                      errorMessage={errors?.kode?.message}
+                    />
+                  )}
 
-                {/* kategori */}
+                  {/* kategori */}
 
-                {isLoadingProdukDetail ? (
-                  <div className="w-full h-10 skeleton my-3" />
-                ) : (
-                  <InputChoose<CreateProdukType | UpdateProdukType>
-                    controller={kategoriController}
-                    label="Kategori Produk"
-                    chooseList={
-                      dataKategori?.data
-                        ? dataKategori.data.map((item) => ({
-                            value: item.id,
-                            label: item.nama,
-                          }))
-                        : []
-                    }
-                    required
-                    isLoading={isLoadingKategori}
-                    placeholder="Pilih kategori"
-                  />
-                )}
+                  {isLoadingProdukDetail ? (
+                    <div className="w-full h-10 skeleton my-3" />
+                  ) : (
+                    <InputChoose<CreateProdukType | UpdateProdukType>
+                      controller={kategoriController}
+                      label="Kategori Produk"
+                      chooseList={
+                        dataKategori?.data
+                          ? dataKategori.data.map((item) => ({
+                              value: item.id,
+                              label: item.nama,
+                            }))
+                          : []
+                      }
+                      required
+                      isLoading={isLoadingKategori}
+                      placeholder="Pilih kategori"
+                    />
+                  )}
+                </div>
 
                 <div className="w-full flex flex-row justify-center items-center gap-2 lg:gap-6">
                   {isLoadingProdukDetail ? (
@@ -167,19 +168,6 @@ const FormulirProduk = () => {
                 </div>
 
                 <div className="w-full flex flex-col justify-start items-start lg:flex-row lg:gap-6">
-                  {!validatedIdParams && (
-                    <>
-                      {/* stok */}
-                      <InputNumber<CreateProdukType | UpdateProdukType>
-                        controller={stokController}
-                        label="Stok"
-                        placeholder="Masukkan stok"
-                        required
-                        max={9999999999}
-                      />
-                    </>
-                  )}
-
                   {/* isi per box */}
                   {isLoadingProdukDetail ? (
                     <div className="w-full h-10 skeleton my-3" />

@@ -42,7 +42,7 @@ const ModalTempoPayment: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box lg:w-3/6 max-w-5xl max-h-[95vh] bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box lg:w-3/6 rounded-xl max-w-5xl max-h-[95vh] bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
@@ -60,7 +60,7 @@ const ModalTempoPayment: FC<Props> = ({
             {/* content 1 */}
             <div className="w-full mb-1 flex flex-row justify-between items-start gap-4 mt-4">
               {/* total tagihan */}
-              <div className="w-full flex flex-row justify-start items-center gap-4 p-2 rounded-lg border border-base-content/10 hover:bg-custom-primary/5 hover:border-custom-primary transition-all duration-150 ease-in-out">
+              <div className="w-full flex flex-row justify-start items-center gap-4 p-2 rounded-xl border border-base-content/10 hover:bg-custom-primary/5 hover:border-custom-primary transition-all duration-150 ease-in-out">
                 {/* icon */}
                 <div className="w-10 h-10 bg-custom-primary/50 rounded-lg flex flex-row justify-center items-center">
                   <Receipt className="size-4 text-custom-secondary" />
@@ -79,7 +79,7 @@ const ModalTempoPayment: FC<Props> = ({
               </div>
 
               {/* sisa belum terjadwal */}
-              <div className="w-full flex flex-row justify-start items-center gap-4 p-2 rounded-lg border border-base-content/10 hover:bg-custom-primary/5 hover:border-custom-primary transition-all duration-150 ease-in-out">
+              <div className="w-full flex flex-row justify-start items-center gap-4 p-2 rounded-xl border border-base-content/10 hover:bg-custom-primary/5 hover:border-custom-primary transition-all duration-150 ease-in-out">
                 {/* icon */}
                 <div className="w-10 h-10 bg-custom-primary/50 rounded-lg flex flex-row justify-center items-center">
                   <CircleDollarSign className="size-4 text-custom-secondary" />
@@ -137,7 +137,7 @@ const ModalTempoPayment: FC<Props> = ({
           </div>
 
           {/* jadwal tempo */}
-          <RowJadwaTempo aksi={true} dataTempo={dataTempo} />
+          <RowJadwaTempo dataTempo={dataTempo} />
         </div>
 
         {/* button batal dan simpan */}

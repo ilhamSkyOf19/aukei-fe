@@ -210,7 +210,7 @@ input:-webkit-autofill:active {
 
 .tooltip-custom {
   @layer daisyui.l1.l2 {
-    --tt-bg: var(--color-base-content);
+    --tt-bg: var(--color-neutral);
 
     > .tooltip-content,
     &[data-tip]::before {

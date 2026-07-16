@@ -59,6 +59,11 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           </h1>
         </div>
         <div className="flex-1 flex flex-row justify-end items-center gap-2 lg:gap-6 pr-2">
+          {/* beta */}
+          <div className="w-14 h-8 flex justify-center items-center border border-amber-600 bg-amber-100 rounded-xl">
+            <span className="text-amber-600 font-medium text-xs">Beta</span>
+          </div>
+
           {/* notifikasi */}
           <div className="dropdown dropdown-end">
             <button
@@ -208,7 +213,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             </button>
             <ul
               tabIndex={-1}
-              className="dropdown-content menu bg-base-100 rounded-box z-50 w-60 p-2 shadow-sm gap-2 mt-1.5"
+              className="dropdown-content menu bg-base-100 rounded-2xl md:rounded-xl z-50 w-60 p-2 shadow-sm gap-2 mt-1.5"
             >
               <li className="pointer-events-none">
                 <div className="w-full flex flex-row justify-start items-center gap-3 pb-4 border-b border-base-content/10">

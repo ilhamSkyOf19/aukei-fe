@@ -13,6 +13,7 @@ import type {
 } from "react-hook-form";
 import type { IJenisKeluarType } from "../../../models/jenisKeluar.model";
 import InputChoose from "../../inputs/InputChoose";
+import { Truck } from "lucide-react";
 type Props<T extends FieldValues> = {
   modalRef: RefObject<HTMLDialogElement | null>;
   errorKeteranganMessage?: string;
@@ -51,11 +52,17 @@ const ModalFormulirBarangMasukOrKeluar = <T extends FieldValues>({
 }: Props<T>) => {
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box w-11/12 lg:w-1/2 max-w-5xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
+      <div className="modal-box w-11/12 lg:w-1/2 max-w-5xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin rounded-2xl md:rounded-xl">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
-            <TitleModalFormulir title={bigTitle} keterangan={smallTitle} />
+            <TitleModalFormulir
+              title={bigTitle}
+              keterangan={smallTitle}
+              withIcon={{
+                icon: Truck,
+              }}
+            />
           </div>
 
           {/* form */}
@@ -65,16 +72,16 @@ const ModalFormulirBarangMasukOrKeluar = <T extends FieldValues>({
               "w-full flex flex-col justify-start items-start mt-4 gap-4",
             )}
           >
-            <div className="w-full flex flex-row justify-start items-start gap-4">
+            <div className="w-full flex md:flex-row flex-col justify-start items-start gap-4">
               {/* tanggal masuk */}
-              <div className="flex-1 border-r border-base-content/10">
+              <div className="flex-1 md:border-r md:border-base-content/10">
                 <InputDate<T>
                   controller={useTanggalController}
                   label="Tanggal Masuk"
                 />
               </div>
 
-              <div className="flex-1 flex flex-col justify-end items-start">
+              <div className="md:flex-1 w-full flex flex-col justify-end items-start">
                 {/* input choose jenis keluar */}
                 {useJenisKeluarController && (
                   <InputChoose<T>

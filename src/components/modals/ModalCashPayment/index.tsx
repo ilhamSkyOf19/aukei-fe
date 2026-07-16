@@ -31,17 +31,16 @@ const ModalCashPayment: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_3" className="modal">
-      <div className="modal-box max-w-3xl max-h-[95vh] p-0 overflow-hidden">
+      <div className="modal-box max-w-3xl rounded-xl max-h-[95vh] p-0 overflow-hidden">
         {/* HEADER */}
         <div className="border-b  border-base-content/10 px-6 py-3">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-14 rounded-xl bg-custom-primary flex items-center justify-center">
-              <Calculator className="size-6 text-custom-secondary" />
-            </div>
-
             <TitleModalFormulir
               title="Kalkulator Pembayaran Tunai"
               keterangan="Hitung pembayaran dan kembalian otomatis"
+              withIcon={{
+                icon: Calculator,
+              }}
             />
           </div>
         </div>
@@ -104,7 +103,7 @@ const ModalCashPayment: FC<Props> = ({
                 </span>
               </label>
 
-              <div className="flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 mt-1 h-14 overflow-hidden">
+              <div className="flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 mt-1 h-14 overflow-hidden">
                 <input
                   readOnly
                   value={`${formatRupiah(amount)}`}

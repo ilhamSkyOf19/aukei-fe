@@ -78,7 +78,7 @@ export const InputDate = <T extends FieldValues>({
   };
 
   return (
-    <div className="gap-3 flex flex-col justify-start items-start w-full">
+    <div className="gap-3 flex flex-col justify-start items-start w-full text-base-content">
       {label && (
         <>
           <div className="flex-2 relative">
@@ -100,7 +100,7 @@ export const InputDate = <T extends FieldValues>({
 
       <div
         className={cn(
-          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-md w-40 focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 ",
+          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-40 focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 ",
           xs ? "h-7 lg:h-8 px-2.5" : "h-9 lg:h-10 px-3",
           error && "border-error",
           label && "mt-2",
@@ -113,9 +113,7 @@ export const InputDate = <T extends FieldValues>({
           disabled={disabled}
           className={cn(
             "w-full font-medium text-base-content h-full border-none outline-none placeholder:text-base-content/50 placeholder:font-light",
-            xs
-              ? "text-[0.625rem] lg:text-xs placeholder:text-[0.625rem]  lg:placeholder:text-xs"
-              : "text-xs lg:text-sm  placeholder:text-xs lg:placeholder:text-sm",
+            xs ? "text-[0.625rem]" : "text-xs",
           )}
         />
       </div>
@@ -130,12 +128,12 @@ export const InputDate = <T extends FieldValues>({
       </div>
 
       {selected && (
-        <p className="text-xs lg:text-sm text-base-content font-medium -mt-8 py-2 px-3 border rounded-md border-base-content/50">
+        <p className="text-xs text-base-content font-medium -mt-8 py-3 px-3 border rounded-xl border-base-content/50">
           Tanggal Pilih: {selected.toLocaleString()}
         </p>
       )}
 
-      {error?.message && <p className="text-sm text-error">{error.message}</p>}
+      {error?.message && <p className="text-xs text-error">{error.message}</p>}
     </div>
   );
 };

@@ -32,7 +32,7 @@ const ModalFormulirKategoriProduk: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box w-11/12 md:w-2/3 lg:w-2/5 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box w-11/12 md:w-2/3 lg:w-2/5 max-w-5xl bg-base-200  rounded-2xl dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
@@ -49,7 +49,7 @@ const ModalFormulirKategoriProduk: FC<Props> = ({
           <form
             onSubmit={handleSubmit(onSubmit)}
             className={cn(
-              "w-full flex flex-col justify-start items-center mt-4 gap-2",
+              "w-full flex flex-col justify-start items-center mt-4",
             )}
           >
             {/* nama */}

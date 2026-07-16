@@ -38,7 +38,7 @@ const FilterStatistik: FC<Props> = ({
   return (
     <>
       {/* search */}
-      <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg md:hidden flex flex-col justify-start items-start gap-4">
+      <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl md:hidden flex flex-col justify-start items-start gap-4">
         {withBack && (
           <button
             type="button"
@@ -57,7 +57,7 @@ const FilterStatistik: FC<Props> = ({
       </div>
 
       {/* filter */}
-      <div className="w-full grid grid-cols-2 md:grid-cols-4 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-2 lg:gap-12">
+      <div className="w-full grid grid-cols-2 md:grid-cols-4 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-2 lg:gap-12">
         <div className="col-span-1 hidden md:flex flex-col justify-start items-start gap-2">
           <InputSearch handleSearch={handleSearch} withLabel />
 

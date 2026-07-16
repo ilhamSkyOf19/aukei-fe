@@ -60,7 +60,6 @@ const useFormulirProduk = () => {
         kode: dataProdukDetail.data.kode,
         hargaJual: dataProdukDetail.data.hargaJual,
         hargaBeli: dataProdukDetail.data.hargaBeli,
-        stok: undefined,
         isiPerBox: dataProdukDetail.data.isiPerBox,
         stokMinimum: dataProdukDetail.data.stokMinimum,
         img: undefined,
@@ -89,12 +88,6 @@ const useFormulirProduk = () => {
   // harga jual controller
   const hargaJualController = useController({
     name: "hargaJual",
-    control,
-  });
-
-  // stok controller
-  const stokController = useController({
-    name: "stok",
     control,
   });
 
@@ -179,11 +172,6 @@ const useFormulirProduk = () => {
         formData.append("hargaJual", data.hargaJual.toString());
       }
 
-      // check stok
-      if (!validatedIdParams && data.stok !== undefined) {
-        formData.append("stok", data.stok.toString());
-      }
-
       // check isi perbox
       if (data.isiPerBox !== undefined) {
         formData.append("isiPerBox", data.isiPerBox.toString());
@@ -216,7 +204,6 @@ const useFormulirProduk = () => {
     isPendingMutateProduk,
     isLoadingProdukDetail,
     dataProdukDetail,
-    stokController,
 
     stokMinimumController,
     isiPerBoxController,

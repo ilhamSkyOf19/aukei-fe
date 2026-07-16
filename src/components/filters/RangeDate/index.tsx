@@ -20,6 +20,8 @@ type Props = {
   defaultEndDate?: string;
   listDate?: { label: string; value: string }[];
   noLabel?: boolean;
+  labelDown?: boolean;
+  noLabelAll?: boolean;
 };
 
 const RangeDate: FC<Props> = ({
@@ -35,6 +37,8 @@ const RangeDate: FC<Props> = ({
   defaultEndDate = format(new Date(), "yyyy-MM-dd"),
   noLabel,
   listDate,
+  labelDown,
+  noLabelAll,
 }) => {
   // use hook
   const {
@@ -60,16 +64,34 @@ const RangeDate: FC<Props> = ({
       )}
     >
       {/* icon */}
-      {noLabel && (
+      {noLabel && !noLabelAll && (
         <CalendarDays className="size-9 md:size-8 text-base-content" />
       )}
 
       <div className="flex w-full flex-col justify-start items-start gap-1.5">
-        {!noLabel && (
-          <span className="text-xs text-base-content/80 font-medium">
-            Urutkan
-          </span>
+        {!noLabelAll && (
+          <div className="flex flex-row justify-start items-center gap-1">
+            {!noLabel && (
+              <span className="text-xs text-base-content/80 font-medium">
+                Tanggal :
+              </span>
+            )}
+
+            {searchParams.get("start-date") && searchParams.get("end-date") && (
+              <span
+                className={cn(
+                  "text-xs font-medium text-base-content",
+                  labelDown ? "hidden" : "hidden lg:block",
+                )}
+              >
+                {formatTanggalPanjang(searchParams.get("start-date")!)}
+                {" - "}
+                {formatTanggalPanjang(searchParams.get("end-date")!)}
+              </span>
+            )}
+          </div>
         )}
+
         <div className={cn("flex w-full flex-row justify-start items-center")}>
           <DropDown
             customWidth="w-full"
@@ -89,8 +111,14 @@ const RangeDate: FC<Props> = ({
           />
         </div>
 
+        {/* for sm */}
         {searchParams.get("start-date") && searchParams.get("end-date") && (
-          <span className="text-xs font-medium text-base-content">
+          <span
+            className={cn(
+              "text-xs font-medium text-base-content",
+              labelDown ? "block" : "lg:hidden",
+            )}
+          >
             {formatTanggalPanjang(searchParams.get("start-date")!)}
             {" - "}
             {formatTanggalPanjang(searchParams.get("end-date")!)}

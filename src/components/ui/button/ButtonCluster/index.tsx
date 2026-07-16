@@ -17,7 +17,7 @@ const ButtonCluster: FC<Props> = ({
     <button
       type="button"
       className={cn(
-        "shrink-0 md:flex-1 flex flex-row border transition-all duration-200 ease-in-out border-transparent justify-center items-center h-full relative rounded-md",
+        "shrink-0 md:flex-1 flex flex-row border transition-all duration-200 ease-in-out border-transparent justify-center items-center h-full relative rounded-2xl md:rounded-xl",
         customWidth ? customWidth : "w-30",
         isActive
           ? "bg-custom-secondary text-primary-white"
@@ -25,7 +25,7 @@ const ButtonCluster: FC<Props> = ({
       )}
       onClick={() => handleActive(label)}
     >
-      <span className=" font-semibold text-xs lg:text-sm  group-hover:text-custom-secondary">
+      <span className=" font-semibold text-xs  group-hover:text-custom-secondary">
         {label}
       </span>
     </button>

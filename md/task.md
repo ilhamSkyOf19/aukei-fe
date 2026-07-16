@@ -114,9 +114,16 @@
 
 - [✅] Membuat halaman ajukan barang keluar oleh kasir dan integrasi backend
 
-- [ ] Memperbaiki tampilan kasir
+- [✅] Lanjutkan memperbaiki tampilan ui rounded
+  - [✅] Lanjutkan halaman detail barang keluar
 
-- [ ] Memberikan modal pesan error agar menggunakna booking , jika stok tidak cukup
+- [✅] Testing skenario pengajuan barang masuk dan barang keluar oleh kasir
+
+- [✅] Memperbaiki tampilan kasir
+
+- [ ] Memberikan modal pesan error agar menggunakan booking , jika stok tidak cukup
+
+- [ ] Membuat fitur booking
 
 - [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
 

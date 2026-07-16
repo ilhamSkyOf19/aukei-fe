@@ -41,7 +41,7 @@ const RangeDateLarge: FC<Props> = ({
   return (
     <div
       className={cn(
-        "flex flex-row items-center border border-base-content/10 rounded-lg p-2 gap-4",
+        "flex flex-row items-center border border-base-content/10 rounded-2xl md:rounded-xl p-2 gap-4",
         customWidth,
       )}
     >
@@ -54,7 +54,7 @@ const RangeDateLarge: FC<Props> = ({
 
         <select
           value={selectedOption}
-          className="select select-sm mt-1 w-full h-7 shadow-none text-base-content outline-none"
+          className="select select-sm mt-1 w-full h-10 shadow-none text-base-content rounded-xl outline-none"
           onChange={(e) => handleOnChangeDropDown(e.target.value)}
         >
           <option value="" disabled>

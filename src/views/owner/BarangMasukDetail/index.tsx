@@ -68,13 +68,8 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     modalFormulirVerifikasiOrPengajuan,
     canShowFormTambahBarang,
     idModalFormulirVerifikasiOrPengajuan,
+    isCanUpdate,
   } = useBarangMasukDetail({ fromPengajuanBarang });
-
-  // perbaiki tombol ajukan jika status nya rejected
-
-  const isCanUpdate =
-    isStatusDraft ||
-    (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
 
   return (
     <div className="w-full h-screen overflow-y-auto ">
@@ -99,10 +94,10 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
         )}
 
         {/* header */}
-        <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-2 lg:p-4">
+        <div className="bg-base-100 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 w-full flex flex-col justify-start p-2 lg:p-4">
           {/* button back */}
           <div className="w-30">
-            <ButtonBackText label="Kembali" />
+            <ButtonBackText label="Kembali" link="/dashboard/inventori" />
           </div>
 
           {isLoadingBarangMasukDetail ? (

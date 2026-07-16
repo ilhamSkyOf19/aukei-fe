@@ -5,6 +5,7 @@ import { TOAST_CONFIG_KERANJANG } from "../../../types/toast.type";
 import DaftarKeranjang from "./DaftarKeranjang";
 import { cn } from "../../../utils/cn";
 import HeaderKasir from "../../../components/ui/HeaderKasir";
+import NotCompatible from "../../../components/messages/NotCompatible";
 
 const Keranjang = () => {
   // use call
@@ -30,7 +31,7 @@ const Keranjang = () => {
 
       {isModeKasir && <HeaderKasir />}
 
-      <div className="w-full flex flex-row justify-between items-start gap-2">
+      <div className="w-full flex-row justify-between items-start gap-2 lg:flex hidden">
         {/* left */}
         <div className="flex-3 flex flex-col justify-start items-start">
           {/* daftar pelanggan */}
@@ -39,6 +40,9 @@ const Keranjang = () => {
 
         <DaftarKeranjang />
       </div>
+
+      {/* message */}
+      <NotCompatible />
     </div>
   );
 };

@@ -2,13 +2,11 @@ import type { ElementType } from "react";
 import {
   Boxes,
   ChartLine,
-  CheckCircle2,
   History,
   LayoutDashboard,
   LucideArrowLeftSquare,
   LucideArrowRightSquare,
   Package,
-  RefreshCcw,
   ShoppingCart,
   Store,
   UsersRound,
@@ -87,24 +85,3 @@ export const NAVIGATION_LIST_KASIR: {
     link: "/dashboard/pengajuan-barang-keluar",
   },
 ];
-
-export const statusStyle = {
-  REVISION: {
-    badge: "bg-rose-100 text-rose-600",
-    dot: "bg-rose-500",
-    borderDot: "border-rose-500",
-    icon: <RefreshCcw size={16} />,
-  },
-  APPROVED: {
-    badge: "bg-emerald-100 text-emerald-600",
-    dot: "bg-emerald-500",
-    borderDot: "border-emerald-500",
-    icon: <CheckCircle2 size={16} />,
-  },
-  PENDING: {
-    badge: "bg-amber-100 text-amber-600",
-    dot: "bg-amber-500 ",
-    borderDot: "border-amber-500",
-    icon: <RefreshCcw size={16} />,
-  },
-} as const;

@@ -89,7 +89,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
   return (
     <>
       {/* for sm */}
-      <div className="w-full card dark:border dark:border-base-content/10 flex flex-col justify-start items-center mt-2 gap-3 lg:hidden">
+      <div className="w-full flex flex-col justify-start items-center mt-2 gap-3 lg:hidden">
         {/* data empty */}
         {isLoadingBarangKeluarDetail ? (
           Array.from({ length: 3 }).map((_, index) => (
@@ -102,13 +102,13 @@ const ShowDataBarangKeluar: FC<Props> = ({
           dataBarangKeluarDetail?.data?.detailBarangKeluars?.map((item) => (
             <div
               key={item.id}
-              className="flex flex-col p-3 justify-start items-start w-full card bg-base-100 shadow-xs min-h-20 gap-1"
+              className="flex flex-col p-3 justify-start items-start w-full rounded-2xl md:rounded-xl bg-base-100 shadow-xs min-h-20 gap-1"
             >
               {/* content one */}
               <div className="w-full h-full flex flex-row justify-start items-start gap-3 border-b border-base-content/10 pb-2">
                 {/* img */}
                 <div className="flex-1 flex flex-row justify-start items-center">
-                  <div className="w-12.5 h-12 overflow-hidden bg-black rounded-md">
+                  <div className="w-12.5 h-12 overflow-hidden bg-black rounded-2xl">
                     <img
                       src={item.produk.img}
                       alt="foto produk"
@@ -124,9 +124,14 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       <p className="text-base-content text-sm font-semibold">
                         {item.produk.nama}
                       </p>
-                      <p className="text-base-content/50 text-[0.7rem] font-medium">
-                        {item.produk.kode}
-                      </p>
+                      <div className="flex flex-row justify-start items-center gap-2">
+                        <p className="text-base-content/50 text-[0.7rem] font-medium border-r border-base-content/10 pr-2.5">
+                          {item.produk.kode}
+                        </p>
+                        <p className="text-base-content/50 text-[0.7rem] font-medium">
+                          {item.produk.kategori.nama}
+                        </p>
+                      </div>
                     </div>
 
                     {/* button aksi */}
@@ -147,7 +152,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                               onFocus={() => handleSetIsActiveAksi(item.id)}
                               onBlur={() => handleSetIsActiveAksi(0)}
                             >
-                              <EllipsisVertical className="size-4" />
+                              <EllipsisVertical className="size-4 text-base-content" />
                             </button>
                             <ul
                               tabIndex={-1}
@@ -210,7 +215,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                     </span>
                   </div>
                   {/* total nilai */}
-                  <div className="flex-1 border-r border-base-content/10 flex flex-col justify-start items-start gap-0.5">
+                  <div className="flex-1 flex flex-col justify-start items-start gap-0.5">
                     <span className="text-[0.625rem] font-medium text-base-content/50">
                       Total Nilai
                     </span>
@@ -225,19 +230,23 @@ const ShowDataBarangKeluar: FC<Props> = ({
             </div>
           ))
         ) : (
-          <DataEmpty
-            title="Data Barang Masuk Tidak Tersedia"
-            description="Belum ada data barang masuk yang dapat ditampilkan saat ini"
-          />
+          <div className="w-full flex flex-row justify-center items-center py-4 border rounded-2xl md:rounded-xl border-base-content/10">
+            <DataEmpty
+              title="Data Barang Masuk Tidak Tersedia"
+              description="Belum ada data barang masuk yang dapat ditampilkan saat ini"
+            />
+          </div>
         )}
       </div>
 
       {/* for lg */}
-      <div className="w-full hidden lg:flex card bg-base-100 dark:border dark:border-base-content/10 flex-col justify-start items-start p-4">
+      <div className="w-full hidden lg:flex rounded-xl bg-base-100 dark:border dark:border-base-content/10 flex-col justify-start items-start p-4">
         {/* header */}
 
         <div className="w-full flex flex-row justify-between items-center">
-          <p className="text-base font-semibold">Daftar Barang Keluar</p>
+          <p className="text-base font-semibold text-base-content">
+            Daftar Barang Keluar
+          </p>
 
           {/* count */}
           <p className="text-xs px-3 py-1 rounded-full font-medium bg-gray-300">
@@ -279,7 +288,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                     <tr
                       key={item.id}
                       className={cn(
-                        "transition-all duration-75 ease-in-out",
+                        "transition-all duration-75 ease-in-out text-base-content",
                         isActiveAksi === item.id && "bg-base-200",
                       )}
                     >
@@ -299,14 +308,12 @@ const ShowDataBarangKeluar: FC<Props> = ({
                         {item.produk.kode}
                       </td>
                       {/* nama */}
-                      <td className="text-base-content">{item.produk.nama}</td>
+                      <td>{item.produk.nama}</td>
                       {/* kategori */}
-                      <td className="text-base-content">
-                        {item.produk.kategori.nama}
-                      </td>
+                      <td>{item.produk.kategori.nama}</td>
 
                       {/* jumlah perbox */}
-                      <td className="font-medium text-base-content">
+                      <td className="font-medium ">
                         {dataUpdate?.type === "hargaModalSatuan" &&
                         dataUpdate?.id === item.id ? (
                           <CardForm<UpdateBarangMasukDetailType>
@@ -355,7 +362,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       </td>
 
                       {/* jumlah stok */}
-                      <td className="font-medium text-base-content">
+                      <td className="font-medium">
                         {dataUpdate?.type === "jumlahStok" &&
                         dataUpdate?.id === item.id ? (
                           <CardForm<UpdateBarangMasukDetailType>
@@ -404,7 +411,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       </td>
 
                       {/* total */}
-                      <td className="font-medium text-base-content">
+                      <td className="font-medium">
                         {formatRupiah(item.hargaModalSatuan * item.jumlahStok)}
                       </td>
 

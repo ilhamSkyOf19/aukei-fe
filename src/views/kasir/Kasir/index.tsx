@@ -7,6 +7,7 @@ import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_TRANSACTION } from "../../../types/toast.type";
 import type { FC } from "react";
 import HeaderKasir from "../../../components/ui/HeaderKasir";
+import NotCompatible from "../../../components/messages/NotCompatible";
 
 type Props = {
   isUpdateKeranjang?: boolean;
@@ -16,7 +17,7 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
   const { step, handleSteps, isModeKasir, handleSetToast, toast } = useKasir();
 
   return (
-    <div className="w-full p-3 h-[91vh] overflow-y-auto">
+    <div className="w-full p-3 lg:h-[91vh] overflow-y-auto">
       {toast && (
         <Toast
           toast={toast?.id !== null}
@@ -28,7 +29,7 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
 
       <div
         className={cn(
-          "min-h-[85vh] w-full flex flex-col justify-start items-start",
+          "min-h-[85vh] w-full lg:flex flex-col justify-start items-start hidden",
           isModeKasir && "fixed z-40 top-0 left-0 right-0 bottom-0 bg-base-300",
         )}
       >
@@ -71,6 +72,9 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
           </div>
         </div>
       </div>
+
+      {/* message  */}
+      <NotCompatible />
     </div>
   );
 };

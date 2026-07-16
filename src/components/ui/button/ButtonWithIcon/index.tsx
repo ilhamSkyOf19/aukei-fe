@@ -43,11 +43,11 @@ const ButtonWithIcon: FC<Props> = ({
       type="button"
       disabled={disabled ?? isLoading}
       className={cn(
-        "flex justify-center items-center rounded-md px-3 gap-2",
+        "flex justify-center items-center rounded-xl px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
         customWidth ? customWidth : "w-auto",
         customClass,
-        customHeight ? customHeight : "h-10.5 lg:h-9 xl:h-9",
+        customHeight ? customHeight : "h-10.5 lg:h-10",
         (disabled ?? isLoading) ? "opacity-50" : "hover-overlay",
       )}
       style={{ cursor: (disabled ?? isLoading) ? "not-allowed" : "pointer" }}

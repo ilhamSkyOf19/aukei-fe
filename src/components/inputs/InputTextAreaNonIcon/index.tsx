@@ -40,7 +40,7 @@ const InputTextAreaNonIcon: FC<Props> = ({
           <div className="flex-2 relative">
             <label
               htmlFor={name}
-              className="capitalize text-xs lg:text-sm text-base-content"
+              className="capitalize text-xs text-base-content"
             >
               {label}
             </label>
@@ -54,7 +54,7 @@ const InputTextAreaNonIcon: FC<Props> = ({
 
       <div
         className={clsx(
-          "mt-2 flex flex-row justify-start items-center gap-2 border rounded-md w-full transition-all duration-300 ease-in-out bg-base-100 focus-within:ring-1",
+          "mt-2 flex flex-row justify-start items-center gap-2 border rounded-xl w-full transition-all duration-300 ease-in-out bg-base-100 focus-within:ring-1",
           errorMessage
             ? "border-error focus-within:ring-error"
             : "border-base-content/40 focus-within:ring-base-content",
@@ -66,8 +66,8 @@ const InputTextAreaNonIcon: FC<Props> = ({
           id={name}
           placeholder={placeholder}
           className={cn(
-            "w-full font-medium h-full text-base-content border-none outline-none  px-3 py-2 placeholder:text-base-content/50",
-            xs ? "text-[0.625rem] lg:text-xs " : "text-xs lg:text-sm ",
+            "w-full font-medium h-full text-base-content border-none outline-none placeholder:font-light px-3 py-2 placeholder:text-base-content/50",
+            xs ? "text-[0.625rem] lg:text-xs " : "text-xs",
           )}
           maxLength={max}
           onChange={(e) => {

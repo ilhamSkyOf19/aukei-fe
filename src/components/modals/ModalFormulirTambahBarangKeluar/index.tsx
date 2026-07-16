@@ -4,7 +4,7 @@ import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmitWithIcon from "../../ui/button/ButtonSubmitWithIcon";
 import InputNumber from "../../inputs/InputNumber";
-import { Trash2 } from "lucide-react";
+import { PackageMinus, Trash2 } from "lucide-react";
 import InputSearch from "../../inputs/InputSearch";
 import { formatRupiah } from "../../../helpers/helpers";
 import Alert from "../../messages/Alert";
@@ -55,10 +55,13 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
       <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl  h-[80vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
-          <div className="w-full flex flex-row justify-start items-center">
+          <div className="w-full flex flex-col rounded-2xl md:rounded-xl justify-start items-start">
             <TitleModalFormulir
               title="Formulir Barang Keluar"
               keterangan={`Formulir untuk menambah Barang Keluar`}
+              withIcon={{
+                icon: PackageMinus,
+              }}
             />
           </div>
 
@@ -103,7 +106,7 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                   <div className="overflow-y-scroll scrollbar-thin">
                     <div
                       className={cn(
-                        "w-full flex flex-col h-40 rounded-lg p-4 gap-2",
+                        "w-full flex flex-col h-40 rounded-lg px-2.5 py-4 gap-2",
                       )}
                     >
                       {isLoadingProdukForChoose ? (
@@ -116,12 +119,12 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                           <button
                             type="button"
                             key={item.id}
-                            className="w-full flex flex-row justify-between items-start gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border-b border-base-content/10"
+                            className="w-full flex flex-row justify-between rounded-2xl md:rounded-xl items-start gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border-b border-base-content/10"
                             onClick={() => handleSetValueProdukId(item.id)}
                           >
                             <div className="flex-2 lg:flex-3 flex flex-row justify-start items-start gap-4">
                               {/* img */}
-                              <div className="w-11 shrink-0 h-11 rounded-md overflow-hidden">
+                              <div className="w-11 shrink-0 h-11 rounded-2xl md:rounded-xl overflow-hidden">
                                 <img
                                   src={item.img}
                                   alt="foto produk"
@@ -131,7 +134,7 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
 
                               {/* nama */}
                               <div className="flex flex-col justify-start items-start gap-1">
-                                <p className="text-xs text-left font-medium lg:text-sm lg:font-semibold">
+                                <p className="text-xs text-left font-medium lg:text-sm text-base-content lg:font-semibold">
                                   {item.nama}
                                 </p>
                                 <p className="text-[0.625rem] font-medium lg:text-xs text-base-content/50 lg:font-semibold">
@@ -167,15 +170,17 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
               {/* card produk choose */}
               {produkChoose !== null && (
                 <div className="w-full flex flex-col justify-start items-start gap-2 mt-4">
-                  <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
+                  <p className="text-xs font-medium text-base-content">
+                    Daftar Pilihan Barang:
+                  </p>
                   <div
                     key={produkChoose.id}
-                    className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-md transition-all duration-100 ease-in-out"
+                    className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-2xl md:rounded-xl transition-all duration-100 ease-in-out"
                   >
                     <div className="w-full flex flex-row justify-start items-start gap-2">
                       <div className="flex-2 flex flex-row justify-start items-start gap-4">
                         {/* img */}
-                        <div className="w-11 shrink-0 h-11 rounded-md overflow-hidden">
+                        <div className="w-11 shrink-0 h-11 rounded-2xl md:rounded-xl overflow-hidden">
                           <img
                             src={produkChoose.img}
                             alt="foto produk"
@@ -185,7 +190,7 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
 
                         {/* nama */}
                         <div className="flex flex-col justify-start items-start gap-1">
-                          <p className="text-xs lg:text-sm font-semibold">
+                          <p className="text-xs lg:text-sm text-base-content font-semibold">
                             {produkChoose.nama}
                           </p>
                           <p className="text-[0.625rem] lg:text-xs text-base-content/50 font-medium">

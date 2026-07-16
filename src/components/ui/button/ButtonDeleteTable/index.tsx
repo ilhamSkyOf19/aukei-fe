@@ -6,11 +6,13 @@ type Props = {
   handleShowModalDelete: () => void;
   customDataTip?: string;
   disabled?: boolean;
+  xs?: boolean;
 };
 const ButtonDeleteTable: FC<Props> = ({
   handleShowModalDelete,
   customDataTip,
   disabled,
+  xs,
 }) => {
   return (
     <div className="tooltip z-10" data-tip={customDataTip ?? "hapus"}>
@@ -19,8 +21,9 @@ const ButtonDeleteTable: FC<Props> = ({
         type="button"
         disabled={disabled}
         className={cn(
-          "w-7 h-7 bg-error rounded-md flex flex-row justify-center items-center disabled:opacity-50",
+          " bg-error rounded-md flex flex-row justify-center items-center disabled:opacity-50",
           !disabled && "hover-overlay",
+          xs ? "w-6 h-6" : "w-7 h-7",
         )}
         style={{
           cursor: disabled ? "not-allowed" : "pointer",

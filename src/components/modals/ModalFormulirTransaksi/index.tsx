@@ -10,6 +10,7 @@ import InputQty from "../../inputs/InputQty";
 import InputPrice from "../../inputs/InputPrice";
 import { formatRupiah } from "../../../helpers/helpers";
 import AlertLabel from "../../messages/AlertLabel";
+import { ShoppingBasket } from "lucide-react";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -52,19 +53,22 @@ const ModalFormulirTransaksi: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box lg:w-3/4 max-w-5xl max-h-[85vh] bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box lg:w-3/4 max-w-4xl rounded-xl max-h-[85vh] bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
             <TitleModalFormulir
               title="Formulir Transaksi"
               keterangan={`Formulir untuk ${index ? "mengubah" : "menambah"} Data Transaksi`}
+              withIcon={{
+                icon: ShoppingBasket,
+              }}
             />
           </div>
 
           {/* data  */}
-          <div className="w-full flex flex-row justify-start items-start gap-8">
-            <div className="flex-1 flex flex-col justify-start items-start gap-4 mt-4">
+          <div className="w-full flex flex-row justify-start items-start gap-4">
+            <div className="flex-3 flex flex-col justify-start items-start gap-4 mt-4">
               {/* img */}
               {data?.img && (
                 <div className="w-full flex justify-center items-center group">
@@ -81,7 +85,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
               <div className="w-full flex flex-col justify-start items-start gap-4">
                 <div className="w-full flex flex-row justify-around items-start gap-4 pb-4 border-b border-base-content/10">
                   {/* nama produk */}
-                  <Label label={`Nama Produk`} value={data?.nama || ""} bold />
+                  <Label label={`Nama Produk`} value={data?.nama || ""} />
 
                   {/* kode produk */}
                   <Label label={`Kode Produk`} value={data?.kode || ""} small />
@@ -116,7 +120,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
             <form
               onSubmit={handleSubmit(onSubmit)}
               className={cn(
-                "flex-1 flex flex-col justify-start items-center mt-4",
+                "flex-2 flex flex-col justify-start items-center mt-4",
               )}
             >
               {/* harga jual */}

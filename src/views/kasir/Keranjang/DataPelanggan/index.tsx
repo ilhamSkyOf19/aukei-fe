@@ -6,6 +6,7 @@ import useDataPelanggan from "./useDataPelanggan";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
 import Pagination from "../../../../components/ui/Pagination";
 import DataEmpty from "../../../../components/messages/DataEmpty";
+import { UserRoundX } from "lucide-react";
 
 const DataPelanggan = () => {
   // use call
@@ -23,7 +24,7 @@ const DataPelanggan = () => {
   } = useDataPelanggan();
 
   return (
-    <div className="w-full rounded-lg lg:h-120 xl:h-150 bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
+    <div className="w-full rounded-xl lg:h-120 xl:h-150 bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
       {/* header */}
       <div className="w-full flex flex-col justify-start items-start gap-2">
         {/* title */}
@@ -62,12 +63,13 @@ const DataPelanggan = () => {
               title="Data Pelanggan Tidak Tersedia"
               description="Belum ada data pelanggan yang dapat ditampilkan untuk saat ini"
               xs
+              iconData={UserRoundX}
             />
           </div>
         )}
       </div>
 
-      <div className="w-full flex flex-row justify-center items-center mt-4">
+      <div className="w-full flex flex-row justify-center items-center">
         {/* buat pagination pelanggan */}
         <Pagination
           currentPage={dataPelanggan?.data?.meta?.currentPage || 1}
@@ -109,7 +111,7 @@ const CardPelanggan: FC<CardPelangganProps> = ({
       <button
         type="button"
         className={cn(
-          "w-full flex flex-row justify-between items-center border border-transparent rounded-lg py-2.5 px-2  transition-all duration-150 ease-in-out",
+          "w-full flex flex-row justify-between items-center border border-transparent rounded-xl py-2.5 px-2  transition-all duration-150 ease-in-out",
           isChoose
             ? "border-emerald-600 bg-emerald-600/5"
             : "hover:border-emerald-600 hover:bg-emerald-600/5",

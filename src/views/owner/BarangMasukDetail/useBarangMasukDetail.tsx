@@ -359,6 +359,9 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     (!fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) ||
     (fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
 
+  const isCanUpdate =
+    isStatusDraft ||
+    (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
   return {
     dataBarangMasukDetail,
     isLoadingBarangMasukDetail,
@@ -405,6 +408,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     idModalFormulirVerifikasiOrPengajuan,
 
     canShowFormTambahBarang,
+    isCanUpdate,
   };
 };
 

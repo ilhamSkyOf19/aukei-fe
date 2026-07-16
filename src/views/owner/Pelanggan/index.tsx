@@ -85,7 +85,7 @@ const Pelanggan = () => {
 
         <div className="card flex flex-col justify-start items-start">
           {/* filter */}
-          <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 py-2 px-4 rounded-lg shadow-sm border border-transparent dark:border-base-content/10">
+          <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
             <ButtonWithIcon
               icon={PackagePlus}
               label="Tambah Pelanggan"
@@ -138,7 +138,7 @@ const Pelanggan = () => {
               dataPelanggan?.data?.data.map((pelanggan) => (
                 <div
                   key={pelanggan.id}
-                  className="w-full flex flex-col justify-start items-start bg-base-100 rounded-lg shadow-sm border border-transparent dark:border-base-content/10 p-4"
+                  className="w-full flex flex-col justify-start items-start bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 p-4"
                 >
                   {/* content 1 */}
                   <div className="w-full flex flex-row justify-between items-center pb-4 borde border-b border-base-content/10">
@@ -263,7 +263,7 @@ const Pelanggan = () => {
           </div>
 
           {/* content lg */}
-          <div className="w-full hidden lg:block bg-base-100 rounded-xl mt-2 shadow-sm border border-transparent dark:border-base-content/10">
+          <div className="w-full hidden lg:block bg-base-100 overflow-hidden rounded-xl mt-4 shadow-sm border border-transparent dark:border-base-content/10">
             <table className="w-full table table-xs lg:table-sm mb-2">
               {/* head */}
               <thead>
@@ -508,7 +508,7 @@ const Pelanggan = () => {
 
           {/* alert */}
           {isExistDataPelanggan && (
-            <div className="w-full my-2">
+            <div className="w-full mt-2">
               <AlertLabel message="Pelanggan yang memiliki riwayat transaksi hanya bisa di nonaktifkan" />
             </div>
           )}

@@ -64,9 +64,9 @@ const Pegawai = () => {
           />
         )}
 
-        <div className="card flex flex-col justify-start items-start">
+        <div className=" flex flex-col justify-start items-start">
           {/* filter */}
-          <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 py-2 px-4 rounded-lg shadow-sm border border-transparent dark:border-base-content/10">
+          <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl lg:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
             <ButtonWithIcon
               icon={PackagePlus}
               label="Tambah Pegawai"
@@ -106,7 +106,7 @@ const Pegawai = () => {
             </div>
           </div>
 
-          {/* content sm */}
+          {/* CONTENT SM */}
           <div className="w-full flex flex-col justify-start items-center gap-4 mt-2 md:hidden">
             {/* card */}
             {isExistDataPegawai &&
@@ -115,10 +115,22 @@ const Pegawai = () => {
               dataPegawai.data.data.map((pegawai, _) => (
                 <div
                   key={pegawai.id}
-                  className="w-full flex flex-col justify-start items-start bg-base-100 rounded-lg shadow-sm border border-transparent dark:border-base-content/10 p-4"
+                  className="w-full flex flex-col justify-start items-start bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 p-4"
                 >
                   {/* content 1 */}
-                  <div className="w-full flex flex-row justify-between items-center pb-4 borde border-b border-base-content/10">
+                  <div className="w-full flex flex-row justify-between items-center pb-4 borde border-b border-base-content/10 gap-4">
+                    {/* checkbox */}
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      onChange={() => {
+                        handleSetChoosePegawai({
+                          id: pegawai.id,
+                          nama: pegawai.nama,
+                        });
+                      }}
+                    />
+
                     <div className="flex flex-1 justify-start items-start gap-4">
                       <Avatar nama={pegawai?.nama} index={pegawai.id} />
                       <div className="flex flex-col justify-start items-start gap-1">
@@ -166,10 +178,26 @@ const Pegawai = () => {
                 />
               </div>
             )}
+
+            {!isLoadingPegawai && isExistDataPegawai && (
+              <ButtonWithIcon
+                icon={Trash2}
+                bgColor="bg-error"
+                textColor="text-primary-white"
+                label="Hapus data yang dipilih"
+                customWidth="w-full"
+                disabled={choosePegawai.length === 0}
+                handleBtn={() =>
+                  handleShowModalDeleteMany(undefined, {
+                    data: choosePegawai,
+                  })
+                }
+              />
+            )}
           </div>
 
           {/* content lg */}
-          <div className="overflow-x-auto w-full hidden md:block bg-base-100 rounded-xl mt-2 shadow-sm border border-transparent dark:border-base-content/10">
+          <div className="overflow-x-auto w-full hidden md:block bg-base-100 rounded-xl mt-2 md:mt-4 shadow-sm border border-transparent dark:border-base-content/10">
             <table className="w-full table table-xs lg:table-sm mb-2">
               {/* head */}
               <thead>
@@ -202,9 +230,9 @@ const Pegawai = () => {
                           <input
                             type="checkbox"
                             className="checkbox"
-                            checked={choosePegawai.some(
-                              (item) => item.id === pegawai.id,
-                            )}
+                            // checked={choosePegawai.some(
+                            //   (item) => item.id === pegawai.id,
+                            // )}
                             onChange={() => {
                               handleSetChoosePegawai({
                                 id: pegawai.id,
@@ -450,7 +478,7 @@ const Aksi: FC<AksiProps> = ({
         <button
           type="button"
           disabled={isPendingDelete}
-          className="w-8 h-8 disabled:opacity-50 not-disabled:hover-overlay flex justify-center items-center rounded-lg bg-rose-100"
+          className="w-8 h-8 disabled:opacity-50 not-disabled:hover-overlay flex justify-center items-center rounded-lg hover-overlay bg-rose-100"
           onClick={() => {
             handleShowModalDelete(pegawai.id, {
               nama: pegawai.nama,

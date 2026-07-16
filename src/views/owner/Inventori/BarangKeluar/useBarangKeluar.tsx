@@ -9,12 +9,18 @@ import useDeleteBarangKeluar from "../../../../hooks/useDeleteBarangKeluar";
 import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
 import { PengajuanBarangKeluarServices } from "../../../../services/pengajuanBarangkeluar.service";
+import useSizeWindows from "../../../../hooks/useSizeWindows";
 
 const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
+  // params
   const { fromPengajuanBarang } = params;
+
+  // window size
+  const windowSize = useSizeWindows();
 
   // navigate
   const navigate = useNavigate();
+
   // current pathname
   const currentPathname = useLocation().pathname;
 
@@ -239,6 +245,7 @@ const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
     chooseBarangKeluar,
     handleSetChooseBarangKeluar,
     sort,
+    windowSize,
   };
 };
 

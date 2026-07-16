@@ -56,9 +56,9 @@ const PengajuanBarangMasuk = () => {
         />
       )}
 
-      <div className="card flex flex-col justify-start items-start px-2.5 pt-2.5">
+      <div className="card flex flex-col justify-start items-start p-2.5">
         {/* filter */}
-        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start border border-transparent dark:border-base-content/10 bg-base-100 p-4 rounded-lg shadow-sm">
+        <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start border border-transparent dark:border-base-content/10 bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm">
           {/* button add barang masuk */}
           {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
             <ButtonWithIcon
@@ -73,7 +73,7 @@ const PengajuanBarangMasuk = () => {
             {/* input search */}
             <InputSearch
               handleSearch={handleSearch}
-              placeholder="Cari kode"
+              placeholder="Cari berdasarkan kode"
               withLabel
             />
           </div>

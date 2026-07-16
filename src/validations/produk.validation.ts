@@ -55,8 +55,6 @@ export class ProdukValidation {
 
       hargaJual: this.numberSchema("harga jual"),
 
-      stok: this.numberSchema("stok"),
-
       isiPerBox: this.positiveNumberSchema("isi per box"),
 
       stokMinimum: this.numberSchema("stok minimum"),
@@ -72,8 +70,6 @@ export class ProdukValidation {
       nama: this.stringSchema("nama produk", 150).optional(),
 
       kode: this.stringSchema("kode produk", 50).optional(),
-
-      stok: z.number().max(0).optional(),
 
       hargaBeli: z
         .number("Mohon isi harga beli")

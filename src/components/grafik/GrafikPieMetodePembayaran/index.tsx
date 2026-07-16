@@ -82,9 +82,9 @@ const GrafikPieMetodePembayaran: FC<Props> = ({ isAnimationActive = true }) => {
     useGrafikPieMetodePembayaran();
 
   return (
-    <div className="lg:flex-1 flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 px-2.5 lg:p-0 h-60 md:h-80 lg:h-90">
+    <div className="lg:flex-1 flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 lg:p-0 h-60 md:h-80 lg:h-90">
       {/* header */}
-      <div className="flex flex-col justify-start items-start pt-2 px-4">
+      <div className="flex flex-col justify-start items-start md:p-2.5">
         <h3 className="text-sm font-semibold text-base-content capitalize">
           Metode Pembayaran
         </h3>
@@ -123,7 +123,7 @@ const GrafikPieMetodePembayaran: FC<Props> = ({ isAnimationActive = true }) => {
             </PieChart>
           ) : (
             <div className="w-full h-full flex justify-center items-center">
-              <span className="text-sm font-medium text-base-content/50">
+              <span className="text-xs md:text-sm font-medium text-base-content/50">
                 Tidak Ada Data Grafik
               </span>
             </div>

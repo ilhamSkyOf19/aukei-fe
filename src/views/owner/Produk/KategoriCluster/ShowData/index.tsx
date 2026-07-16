@@ -3,7 +3,7 @@ import PaginationAndLimit from "../../../../../components/filters/PaginationAndL
 import useShowData from "./useShowData";
 import InputSearch from "../../../../../components/inputs/InputSearch";
 import FilterSort from "../../../../../components/filters/Sort";
-import { EllipsisVertical, Tag } from "lucide-react";
+import { EllipsisVertical, Pencil, Tag, Trash2 } from "lucide-react";
 import type { ResponseKategoriProdukType } from "../../../../../models/kategoriProduk.model";
 import DataEmpty from "../../../../../components/messages/DataEmpty";
 import ModalFormulirKategoriProduk from "../../../../../components/modals/ModalFormulirKategoriProduk";
@@ -13,6 +13,7 @@ import Alert from "../../../../../components/messages/Alert";
 import { ALERT_CONFIG_KATEGORI_PRODUK } from "../../../../../types/alert.types";
 import ModalDelete from "../../../../../components/modals/ModalDelete";
 import ButtonWithIcon from "../../../../../components/ui/button/ButtonWithIcon";
+import LabelButtonDropDownWithIcon from "../../../../../components/ui/button/LabelButtonDropDownWithIcon";
 
 const ShowData = () => {
   // call use
@@ -39,7 +40,7 @@ const ShowData = () => {
   } = useShowData();
 
   return (
-    <div className="lg:card flex-2 lg:bg-base-100 flex flex-col justify-start items-start lg:p-4 dark:border dark:border-base-content/10 lg:h-[80vh]">
+    <div className="lg:rounded-xl flex-2 lg:bg-base-100 flex flex-col justify-start items-start lg:p-4 lg:h-[75vh] border border-transparent dark:border-base-content/10">
       {/* alert */}
       {alert && (
         <Alert
@@ -60,7 +61,7 @@ const ShowData = () => {
       )}
 
       {/* filter */}
-      <div className="rounded-lg bg-base-100 p-4 lg:p-0 w-full flex flex-col md:flex-row justify-start items-start mb-4 lg:mb-0">
+      <div className="rounded-2xl bg-base-100 p-2.5 lg:p-0 w-full flex flex-col md:flex-row justify-start items-start mb-4 lg:mb-0">
         {/* button add  */}
         <div className="md:hidden block w-full mb-3">
           <ButtonWithIcon
@@ -165,7 +166,7 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
   handleUpdate,
 }) => {
   return (
-    <div className="w-full flex flex-row justify-start items-center min-h-18 rounded-md border border-base-content/20 px-4 py-2 bg-base-100">
+    <div className="w-full flex flex-row justify-start items-center min-h-18 rounded-2xl border border-base-content/20 px-4 py-2 bg-base-100">
       <div className="flex-2 flex flex-row justify-start items-center h-full gap-3">
         <Tag className="size-5 text-base-content" />
         <span className="text-base-content font-semibold text-xs md:text-sm">
@@ -209,29 +210,27 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
             role="button"
             className="h-full flex flex-row justify-center items-center px-1 border border-base-content/20 rounded-md"
           >
-            <EllipsisVertical className="size-3" />
+            <EllipsisVertical className="size-3 text-base-content" />
           </button>
           <ul
             tabIndex={-1}
-            className="dropdown-content menu bg-base-100 rounded-box z-1 w-30 p-2 shadow-sm gap-2"
+            className="dropdown-content menu bg-base-100 rounded-box z-1 w-30 p-2 shadow-sm gap-2 border border-transparent dark:border-base-content/10"
           >
             <li>
-              <button
-                type="button"
-                className="text-info font-semibold text-xs"
-                onClick={() => handleUpdate(data.id)}
-              >
-                Ubah
-              </button>
+              <LabelButtonDropDownWithIcon
+                icon={Pencil}
+                handleClick={() => handleUpdate(data.id)}
+                label="Ubah"
+                color="text-info"
+              />
             </li>
             <li>
-              <button
-                type="button"
-                className="text-error font-semibold text-xs"
-                onClick={handleDelete}
-              >
-                Hapus
-              </button>
+              <LabelButtonDropDownWithIcon
+                icon={Trash2}
+                handleClick={() => handleDelete()}
+                label="Hapus"
+                color="text-error"
+              />
             </li>
           </ul>
         </div>

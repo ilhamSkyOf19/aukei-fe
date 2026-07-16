@@ -89,7 +89,9 @@ const InformasiBarangKeluar: FC<Props> = ({
         />
       )}
 
-      <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-75">
+      {/* informasi barang keluar */}
+
+      <div className="rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-75">
         {/* title */}
         <div className="w-full flex flex-row justify-start items-center">
           <h2 className="text-base-content text-sm font-semibold">
@@ -124,7 +126,7 @@ const InformasiBarangKeluar: FC<Props> = ({
 
                 {/* value */}
                 <div className="flex flex-row justify-end items-center">
-                  <span className={"text-[0.625rem] lg:text-sm font-medium"}>
+                  <span className={" text-xs font-medium text-base-content"}>
                     {formatTanggalLengkap(tanggalKeluar ?? new Date())} WIB
                   </span>
 
@@ -303,7 +305,7 @@ const InformasiBarangKeluar: FC<Props> = ({
       </div>
 
       {/* informasi ringkasan */}
-      <div className="card bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-75">
+      <div className="rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-75">
         {/* title */}
         <div className="w-full flex flex-row justify-start items-center">
           <h2 className="text-base-content text-sm font-semibold">Ringkasan</h2>

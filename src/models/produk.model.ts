@@ -20,13 +20,7 @@ export interface IProduk {
 // create
 export interface CreateProdukType extends Pick<
   IProduk,
-  | "nama"
-  | "kode"
-  | "hargaBeli"
-  | "hargaJual"
-  | "stok"
-  | "isiPerBox"
-  | "stokMinimum"
+  "nama" | "kode" | "hargaBeli" | "hargaJual" | "isiPerBox" | "stokMinimum"
 > {
   kategoriId: number;
   img: File;

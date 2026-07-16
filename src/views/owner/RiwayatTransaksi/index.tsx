@@ -56,7 +56,7 @@ const RiwayatTransaksi = () => {
 
   return (
     <div className="w-full h-screen overflow-y-auto">
-      <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2 p-2">
+      <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2.5 md:gap-4 p-2">
         <FilterStatistik
           handleSearch={handleSearch}
           filterSort={{
@@ -74,7 +74,7 @@ const RiwayatTransaksi = () => {
         />
 
         {/* data */}
-        <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
+        <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
           <div className="w-full flex flex-row justify-between items-start">
             {/* title */}
             <h3 className="text-sm font-semibold text-base-content">
@@ -274,7 +274,7 @@ const RiwayatTransaksi = () => {
         </div>
 
         {/* data untuk mobile */}
-        <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-lg border border-transparent dark:border-base-content/10 p-2 gap-2 order-3 lg:hidden">
+        <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-2xl border border-transparent dark:border-base-content/10 p-2 gap-2.5 order-3 lg:hidden">
           {isLoadingRiwayatTransaksi ? (
             Array.from({ length: 4 }, (_, i) => (
               <div key={i} className="w-full h-14 skeleton" />

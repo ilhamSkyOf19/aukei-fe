@@ -30,7 +30,7 @@ const GrafikLine: FC<GrafikLineProps> = ({ windowSize }) => {
   return (
     <div
       className={cn(
-        "lg:flex-1 flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg gap-4 h-80 md:h-100 lg:h-90",
+        "lg:flex-1 flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl lg:rounded-xl gap-4 h-80 md:h-100 lg:h-90",
       )}
     >
       {/* header */}
@@ -138,7 +138,7 @@ const GrafikLine: FC<GrafikLineProps> = ({ windowSize }) => {
               const data = payload[0].payload;
 
               return (
-                <div className="rounded-2xl border bg-base-100 p-4 shadow-xl w-50 flex flex-col justify-start items-start gap-2">
+                <div className="rounded-2xl border bg-base-100 p-4 shadow-xl w-50 flex flex-col justify-start items-start gap-2 border-base-content">
                   <p className="text-xs font-medium text-base-content/80">
                     {data.date}
                   </p>

@@ -11,7 +11,8 @@ import type {
   UpdatePelangganType,
 } from "../../../models/pelanggan.model";
 import InputPhoneNumber from "../../inputs/InputPhoneNumber";
-import { AlertCircle } from "lucide-react";
+import { UserRound } from "lucide-react";
+import AlertLabel from "../../messages/AlertLabel";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -40,13 +41,16 @@ const ModalFormulirPelanggan: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box lg:w-2/5 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box lg:w-2/5 max-w-5xl rounded-xl bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
             <TitleModalFormulir
-              title="Formulir Pelanggan"
+              title={`Formulir ${id ? "Ubah" : "Tambah"} Pelanggan`}
               keterangan={`Formulir untuk ${id ? "mengubah" : "menambah"} Pelanggan`}
+              withIcon={{
+                icon: UserRound,
+              }}
             />
           </div>
 
@@ -54,7 +58,7 @@ const ModalFormulirPelanggan: FC<Props> = ({
           <form
             onSubmit={handleSubmit(onSubmit)}
             className={cn(
-              "w-full flex flex-col justify-start items-center mt-4",
+              "w-full flex flex-col justify-start items-center mt-2.5",
             )}
           >
             {/* nama */}
@@ -78,12 +82,7 @@ const ModalFormulirPelanggan: FC<Props> = ({
             />
 
             {/* alert */}
-            <div className="w-full gap-2.5 flex flex-row justify-start items-center px-4 py-3 mt-4 rounded-lg bg-blue-600/5 border border-blue-600">
-              <AlertCircle className="size-4 text-blue-600" />
-              <span className="text-xs">
-                Pastikan nomor whatsapp yang dimasukkan adalah nomor aktif
-              </span>
-            </div>
+            <AlertLabel message="    Pastikan nomor whatsapp yang dimasukkan adalah nomor aktif" />
 
             {/* action */}
             <div className="w-full mt-6 flex flex-row justify-end items-center gap-4">

@@ -56,9 +56,9 @@ export default function InputChoose<T extends FieldValues = any>({
 
       <div
         className={clsx(
-          "flex flex-row justify-start items-start gap-2 border border-base-content/40 rounded-md w-full focus-within:ring-1 focus-within:ring-base-content transition-all duration-300 ease-in-out overflow-hidden bg-base-100",
+          "flex flex-row justify-start items-start gap-2 border border-base-content/40 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content transition-all duration-300 ease-in-out overflow-hidden bg-base-100",
           label && "mt-2 ",
-          xs ? "h-7 lg:h-8" : "h-9 lg:h-10",
+          xs ? "h-7 lg:h-8" : "h-10.5 lg:h-10",
           fieldState.error && "border-error",
           disabled && "cursor-not-allowed border-primary-black/10",
           typeValueIsBoolean &&
@@ -71,8 +71,8 @@ export default function InputChoose<T extends FieldValues = any>({
       >
         <select
           className={cn(
-            "select w-full outline-none border-none rounded-md",
-            xs ? "text-[0.7rem]  h-7 lg:h-8" : "h-9 lg:h-10 text-xs",
+            "select w-full outline-none border-none rounded-xl",
+            xs ? "text-[0.7rem] h-7 lg:h-8" : "h-10.5 lg:h-10 text-xs",
           )}
           value={
             typeValueIsBoolean && field.value !== undefined

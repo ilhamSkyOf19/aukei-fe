@@ -58,7 +58,7 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
     startDate,
   } = useGrafikBatang();
   return (
-    <div className="lg:flex-1 flex flex-col justify-between items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg gap-4 h-80 md:h-100 lg:h-90">
+    <div className="lg:flex-1 flex flex-col justify-between items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl gap-4 h-80 md:h-100 lg:h-90">
       {/* header */}
       <div className="w-full flex flex-row justify-between items-start px-2 md:px-4 pt-2 gap-4">
         {/* header */}
@@ -139,7 +139,7 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
               const data = payload[0].payload;
 
               return (
-                <div className="rounded-2xl border bg-base-100 p-4 shadow-xl w-30">
+                <div className="rounded-2xl border bg-base-100 p-4 shadow-xl w-30 border-base-content">
                   <p className="text-xs font-medium text-base-content/80">
                     {data.date}
                   </p>

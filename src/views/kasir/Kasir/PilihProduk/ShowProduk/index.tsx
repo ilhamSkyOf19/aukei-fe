@@ -55,19 +55,20 @@ const ShowProduk: FC<Props> = ({
   return (
     <div className="lg:flex-2 xl:flex-1 flex flex-col justify-start items-center">
       {/* header */}
-      <div className="w-full flex flex-row justify-between items-start border border-transparent dark:border-base-content/10 p-3 bg-base-100 shadow-sm rounded-lg">
+      <div className="w-full flex flex-row justify-between items-start border border-transparent dark:border-base-content/10 p-3 bg-base-100 shadow-sm rounded-xl">
         {/* search */}
         <div className="flex-1">
-          <InputSearch
-            handleSearch={setSearch}
-            withLabel
-            placeholder="Cari produk"
-          />
+          <InputSearch handleSearch={setSearch} placeholder="Cari produk" />
         </div>
 
         <div className="flex-1 flex flex-row justify-end items-start flex-wrap">
           {/* filter kategori */}
-          <FilterKategori setKategori={handleKategori} customWidth="w-40" />
+          <FilterKategori
+            setKategori={handleKategori}
+            customWidth="w-40"
+            noLabel
+            withIcon
+          />
         </div>
       </div>
 
@@ -104,8 +105,8 @@ const ShowProduk: FC<Props> = ({
                 })
               }
             >
-              <div className="w-full h-full flex flex-col justify-start items-start border border-transparent dark:border-base-content/10 rounded-lg shadow-sm overflow-hidden gap-2 group-hover:border-custom-secondary group-hover:shadow-sm transition-all duration-300 ease-in-out bg-base-100 p-1.5">
-                <div className="w-full h-90 shadow-md rounded-lg flex flex-row justify-center items-center overflow-hidden">
+              <div className="w-full h-full flex flex-col justify-start items-start border border-transparent dark:border-base-content/10 rounded-xl shadow-sm overflow-hidden gap-2 group-hover:border-custom-secondary group-hover:shadow-sm transition-all duration-300 ease-in-out bg-base-100 p-1.5">
+                <div className="w-full h-90 shadow-md rounded-xl flex flex-row justify-center items-center overflow-hidden">
                   <img
                     src={item.img}
                     alt="wall panel"
@@ -114,7 +115,7 @@ const ShowProduk: FC<Props> = ({
                   />
                 </div>
 
-                <div className="w-full h-80 flex flex-col justify-start items-start gap-2">
+                <div className="w-full h-80 flex flex-col justify-start items-start gap-3">
                   {/* name */}
                   <div className="w-full flex flex-col justify-start items-start gap-0.5">
                     <p className="text-xs text-start font-medium text-base-content">
@@ -127,9 +128,9 @@ const ShowProduk: FC<Props> = ({
                       {item.kode}
                     </p>
                   </div>
-                  <div className="w-full flex flex-col justify-between items-start gap-1">
+                  <div className="w-full flex flex-col justify-between items-start gap-0.5">
                     {/* harga */}
-                    <p className="text-[0.7rem] font-semibold text-base-content">
+                    <p className="text-[0.625rem] font-semibold text-base-content">
                       {formatRupiah(item.hargaJual)}
                     </p>
 
@@ -156,13 +157,13 @@ const ShowProduk: FC<Props> = ({
       </div>
 
       {/* prev and next */}
-      <div className="w-full flex flex-row justify-between items-center h-10.5 border border-transparent dark:border-base-content/10 bg-base-100 rounded-lg px-4">
+      <div className="w-full flex flex-row justify-between items-center h-12 p-1.5 border border-transparent dark:border-base-content/10 bg-base-100 rounded-xl">
         {/* button prev */}
         <button
           type="button"
           disabled={dataProduk?.data?.meta?.currentPage === 1}
           className={cn(
-            "flex flex-row justify-start items-center gap-2 border border-base-content rounded-md py-1.5 px-3",
+            "flex flex-row justify-start items-center gap-2 border border-base-content rounded-xl h-full px-3",
             dataProduk?.data?.meta?.currentPage === 1
               ? "opacity-50"
               : " hover:shadow-sm hover:shadow-custom-primary hover:border-custom-primary hover:scale-102 transition-all duration-150 ease-in-out origin-center",
@@ -193,7 +194,7 @@ const ShowProduk: FC<Props> = ({
             dataProduk?.data?.meta?.totalPage
           }
           className={cn(
-            "flex flex-row justify-start items-center gap-2 border border-base-content rounded-md py-1.5 px-3",
+            "flex flex-row justify-start items-center gap-2 border border-base-content rounded-xl h-full px-3",
             dataProduk?.data?.meta?.currentPage ===
               dataProduk?.data?.meta?.totalPage
               ? "opacity-50"

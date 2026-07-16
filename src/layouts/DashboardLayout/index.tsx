@@ -20,7 +20,7 @@ const DashboardLayout: FC = () => {
   const handleTitle = (title: string) => setTitle(title);
 
   return (
-    <div className="drawer lg:drawer-open relative">
+    <div className="drawer lg:drawer-open relative min-h-screen">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
       {/* content */}

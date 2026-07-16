@@ -33,13 +33,13 @@ const CardStatistik: FC<Props> = ({
   minus,
 }) => {
   return (
-    <div className="grid-cols-1 flex gap-2 flex-col justify-start items-start border border-base-content/10 rounded-lg p-2">
+    <div className="grid-cols-1 flex gap-2 flex-col justify-start items-start border border-base-content/10 rounded-2xl md:rounded-xl p-2">
       <div className=" flex flex-row justify-start items-start gap-2.5">
         {/* icon */}
         <div className="flex-1 flex flex-row justify-start items-center">
           <div
             className={cn(
-              "w-10 h-10 rounded-lg flex flex-row justify-center items-center",
+              "w-10 h-10 rounded-xl flex flex-row justify-center items-center",
               icon.bgColor,
             )}
           >

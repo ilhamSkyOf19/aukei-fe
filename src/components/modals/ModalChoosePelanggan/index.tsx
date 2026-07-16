@@ -2,7 +2,7 @@ import { type FC, type RefObject } from "react";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import InputSearch from "../../inputs/InputSearch";
 import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
-import { ChevronRight, UserPlus, UserX } from "lucide-react";
+import { ChevronRight, UserPlus, UsersRound, UserX } from "lucide-react";
 import { formatNumberPhone } from "../../../helpers/helpers";
 import useModalChoosePelanggan from "./useModalChoosePelanggan";
 import Pagination from "../../ui/Pagination";
@@ -44,13 +44,16 @@ const ModalChoosePelanggan: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_3" className="modal">
-      <div className="modal-box max-h-[90vh] lg:w-2/5 max-w-5xl bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box max-h-[90vh] lg:w-2/5 max-w-5xl rounded-xl bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-between items-start">
             <TitleModalFormulir
               title="Pilih Pelanggan"
               keterangan={`Pilih pelanggan yang terdaftar`}
+              withIcon={{
+                icon: UsersRound,
+              }}
             />
 
             <button
@@ -87,7 +90,7 @@ const ModalChoosePelanggan: FC<Props> = ({
           </div>
 
           {/* daftar pelanggan */}
-          <div className="w-full flex flex-col justify-start items-start rounded-lg border border-base-content/10 overflow-y-auto scrollbar-thin h-100 mt-4">
+          <div className="w-full flex flex-col justify-start items-start rounded-xl border border-base-content/10 overflow-y-auto scrollbar-thin h-100 mt-4 scrollbar-thumb-custom-secondary">
             {/* card pelanggan */}
             {isLoadingPelanggan ? (
               <div className="w-full flex flex-col justify-start items-start gap-1 p-2">

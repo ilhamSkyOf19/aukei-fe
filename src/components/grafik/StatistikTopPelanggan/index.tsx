@@ -25,7 +25,7 @@ const StatistikTopPelanggan = () => {
       </div>
 
       {/* content */}
-      <div className="w-full flex flex-col justify-start items-start overflow-y-auto">
+      <div className="w-full flex flex-col justify-start items-start overflow-y-auto px-2">
         {isLoading ? (
           <div className="w-full flex flex-col justify-start items-center gap-2">
             <div className="w-full h-12 skeleton" />
@@ -45,7 +45,7 @@ const StatistikTopPelanggan = () => {
           ))
         ) : (
           <div className="w-full h-70 gap-4 flex flex-col justify-center items-center">
-            <UserRoundX className="size-12" />
+            <UserRoundX className="size-12 text-base-content" />
             <span className="text-xs font-medium text-base-content/50">
               Tidak ada Top Pelanggan
             </span>

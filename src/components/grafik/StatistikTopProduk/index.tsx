@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import { formatNumberK, formatRupiahShort } from "../../../helpers/helpers";
-import { ArrowRight, CircleAlert } from "lucide-react";
+import { ArrowRight, CircleAlert, PackageX } from "lucide-react";
 import useStatistikTopProduk from "./useStatistikTopProduk";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 
@@ -25,9 +25,15 @@ const StatistikTopProduk = () => {
       </div>
 
       {/* content */}
-      <div className="w-full flex flex-col justify-start items-start overflow-y-auto">
+      <div className="w-full flex flex-col justify-start items-start overflow-y-auto px-2">
         {isLoading ? (
-          <div></div>
+          <div className="w-full flex flex-col justify-start items-center gap-2">
+            <div className="w-full h-12 skeleton" />
+            <div className="w-full h-12 skeleton" />
+            <div className="w-full h-12 skeleton" />
+            <div className="w-full h-12 skeleton" />
+            <div className="w-full h-12 skeleton" />
+          </div>
         ) : dataTopProduk && dataTopProduk.length > 0 ? (
           <>
             {dataTopProduk.map((item) => (
@@ -54,7 +60,12 @@ const StatistikTopProduk = () => {
             </div>
           </>
         ) : (
-          <div></div>
+          <div className="w-full h-70 gap-4 flex flex-col justify-center items-center">
+            <PackageX className="size-12 text-base-content" />
+            <span className="text-xs font-medium text-base-content/50">
+              Tidak ada Top Produk
+            </span>
+          </div>
         )}
       </div>
     </div>

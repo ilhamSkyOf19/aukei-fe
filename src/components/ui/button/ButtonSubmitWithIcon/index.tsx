@@ -31,9 +31,9 @@ const ButtonSubmitWithIcon: FC<Props> = ({
       type="submit"
       disabled={isLoading}
       className={cn(
-        "flex justify-center items-center hover-overlay w-auto rounded-md px-3 gap-2",
+        "flex justify-center items-center hover-overlay w-auto rounded-xl px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
-        size === "xs" ? "h-9" : "h-8 lg:h-10",
+        size === "xs" ? "h-9" : "h-10.5 lg:h-10",
       )}
       onClick={() => {
         if (handleBtn) {

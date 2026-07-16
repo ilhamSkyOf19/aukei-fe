@@ -18,7 +18,7 @@ const ButtonSubmit: FC<Props> = ({
   return (
     <button
       type={typeButton ? "button" : "submit"}
-      className="btn text-xs lg:text-sm btn-sm lg:btn-md px-4 bg-custom-primary font-semibold text-custom-secondary hover-overlay disabled:opacity-50"
+      className="h-9.5 md:h-10 text-xs px-4 bg-custom-primary font-semibold text-custom-secondary hover-overlay disabled:opacity-50 rounded-xl shadow-sm"
       disabled={disable || isLoading}
       onClick={() => handleClick?.()}
     >

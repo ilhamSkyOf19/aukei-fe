@@ -75,12 +75,12 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
         <div
           className={cn(
             "w-full flex flex-row justify-start items-center",
-            customHeight ? customHeight : "h-10.5 lg:h-9",
+            customHeight ? customHeight : "h-10.5 lg:h-10",
           )}
         >
           <div
             className={cn(
-              "h-full px-3 flex flex-row justify-start items-center gap-2 border border-base-content rounded-md w-full focus-within:ring-1 focus-within:ring-base-content transition-all duration-300 ease-in-out",
+              "h-full px-3 flex flex-row justify-start items-center gap-2 border border-base-content rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content transition-all duration-300 ease-in-out",
               errorMessage && "border-error",
             )}
           >

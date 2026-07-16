@@ -51,7 +51,7 @@ export default function InputImg<T extends FieldValues = any>({
   };
 
   return (
-    <div className={"space-y-2 w-full h-full"}>
+    <div className={cn("space-y-2 w-full h-full", fieldState.error && "mb-3")}>
       {/* Label */}
       {label && (
         <div className="relative">
@@ -79,7 +79,7 @@ export default function InputImg<T extends FieldValues = any>({
           disabled
             ? "cursor-not-allowed border-slate-200 bg-slate-100"
             : "border-slate-300 bg-base-100 hover:border-custom-primary hover:bg-base-200",
-          fieldState.error ? "border-error" : "",
+          fieldState.error && "border-error",
         )}
       >
         {preview ? (

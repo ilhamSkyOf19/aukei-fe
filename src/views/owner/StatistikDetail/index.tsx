@@ -35,8 +35,8 @@ const StatistikDetail = () => {
 
   return (
     <div className="w-full h-screen overflow-y-auto">
-      <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2 p-2">
-        <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
+      <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2.5 md:gap-4 p-2">
+        <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
           <div className="w-full flex flex-row justify-between items-start">
             {/* title */}
             <div className="flex flex-col justify-start items-start gap-0.5">
@@ -44,14 +44,15 @@ const StatistikDetail = () => {
                 Statistik
               </h3>
             </div>
-
             {/* aksi */}
             <div className="flex flex-row justify-end items-start gap-2">
               {/* button filter */}
               <RangeDate
-                customWidth="w-50"
+                customWidth="w-50 lg:w-70"
                 listDate={listDateRangeLong}
+                labelDown
                 noLabel
+                noLabelAll
               />
               {/* button export */}
               <div className="md:flex flex-row justify-start items-center gap-2 hidden">
@@ -426,7 +427,7 @@ const StatistikDetail = () => {
         </div>
 
         {/* grafik */}
-        <div className="w-full gap-4 flex flex-col lg:flex-row justify-between items-start">
+        <div className="w-full gap-2.5 flex flex-col lg:flex-row justify-between items-start md:gap-4">
           <GrafikLine windowSize={windowSize} />
 
           {/* graifk  */}
@@ -434,10 +435,10 @@ const StatistikDetail = () => {
         </div>
 
         {/* grafik pie */}
-        <div className="w-full gap-4 flex flex-col lg:flex-row justify-between items-start">
+        <div className="w-full gap-2.5 flex flex-col lg:flex-row justify-between items-start md:gap-4">
           <GrafikPieMetodePembayaran />
 
-          <div className="lg:flex-1 w-full flex flex-col md:flex-row justify-between items-start gap-4 md:h-90 h-auto">
+          <div className="lg:flex-1 w-full flex flex-col md:flex-row justify-between items-start gap-2.5 md:gap-4 md:h-90 h-auto">
             <StatistikTopProduk />
             <StatistikTopPelanggan />
           </div>
