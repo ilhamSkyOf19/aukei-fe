@@ -76,7 +76,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                     })}
                     data-tooltip-place="right"
                     className={cn(
-                      "hover:bg-custom-primary group",
+                      "hover:bg-custom-primary group rounded-2xl md:rounded-xl",
                       item.link === "/dashboard"
                         ? pathname === "/dashboard" && "bg-custom-primary"
                         : pathname.startsWith(item.link) && "bg-custom-primary",
@@ -117,6 +117,18 @@ const Sidebar: FC<Props> = ({ isClose }) => {
             </ul>
           </ul>
         </div>
+
+        {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+          <div className="w-full flex flex-row justify-center items-center pb-6">
+            <button
+              type="button"
+              className="border border-transparent p-2.5 hover:border-error rounded-xl transition-all duration-150 ease-in-out"
+              onClick={() => handleLogout()}
+            >
+              <LogOut className="text-error size-6" />
+            </button>
+          </div>
+        )}
 
         <div className="w-full px-2 py-4 md:hidden">
           {/* profile */}
@@ -210,6 +222,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
           padding: "3px 12px",
           fontSize: "14px",
         }}
+        opacity={1}
       />
 
       <ModalAlert

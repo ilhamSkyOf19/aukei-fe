@@ -362,6 +362,10 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const isCanUpdate =
     isStatusDraft ||
     (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
+
+  const isCanBatalkanPosting =
+    isStatusPosted && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && !isExpired;
+
   return {
     dataBarangMasukDetail,
     isLoadingBarangMasukDetail,
@@ -409,6 +413,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
     canShowFormTambahBarang,
     isCanUpdate,
+    isCanBatalkanPosting,
   };
 };
 

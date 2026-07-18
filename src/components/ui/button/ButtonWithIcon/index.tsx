@@ -93,9 +93,7 @@ const ButtonWithIcon: FC<Props> = ({
             <span
               className={cn(
                 "font-medium",
-                customSize
-                  ? "text-sm"
-                  : "text-xs md:text-xs lg:text-[0.625rem] xl:text-xs",
+                customSize ? "text-sm" : "text-xs md:text-xs xl:text-xs",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-1",
               )}

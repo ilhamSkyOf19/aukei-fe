@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useLogOut from "../../../hooks/useLogOut";
 import { NotifikasiGlobalServices } from "../../../services/notifikasiGlobal.service";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const useNavbar = () => {
   const { handleLogout } = useLogOut({ redirectUrl: true });
@@ -13,6 +13,9 @@ const useNavbar = () => {
 
   // navigate
   const navigate = useNavigate();
+
+  // current pathname
+  const currentPathname = useLocation().pathname;
 
   // query notifikasi global
   const {
@@ -38,6 +41,7 @@ const useNavbar = () => {
     isShowCountNotifikasi,
     setIsShowCountNotifikasi,
     navigate,
+    currentPathname,
   };
 };
 

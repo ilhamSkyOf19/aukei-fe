@@ -119,11 +119,12 @@
 
 - [✅] Testing skenario pengajuan barang masuk dan barang keluar oleh kasir
 
-- [✅] Memperbaiki tampilan kasir
+- [80%] Memperbaiki tampilan kasir
+  - [ ] Memperbaiki tampilan struk
 
-- [ ] Memberikan modal pesan error agar menggunakan booking , jika stok tidak cukup
+- [✅] Memberikan modal pesan error agar menggunakan booking , jika stok tidak cukup
 
-- [ ] Membuat fitur booking
+- [40%] Membuat fitur booking
 
 - [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
 

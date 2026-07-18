@@ -100,7 +100,7 @@ const useProduk = () => {
   const { filter: sort, setFilter: handleSort } = useFilter({
     paramName: "sort",
     allowQuery: ["asc", "desc"],
-    defaultValueCustom: "asc",
+    defaultValueCustom: "desc",
   });
 
   // kategori filter

@@ -9,6 +9,7 @@ import {
 import { formatRupiah } from "../../../helpers/helpers";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import useModalCashPayment from "./useModalCashPayment";
+import ButtonCloseText from "../../ui/button/ButtonCloseText";
 
 type Props = {
   total: number;
@@ -94,7 +95,7 @@ const ModalCashPayment: FC<Props> = ({
           </div>
 
           {/* RIGHT */}
-          <div className="p-6">
+          <div className="p-4 pt-2">
             {/* INPUT */}
             <div className="mb-5">
               <label className="label">
@@ -107,7 +108,7 @@ const ModalCashPayment: FC<Props> = ({
                 <input
                   readOnly
                   value={`${formatRupiah(amount)}`}
-                  className="input w-full h-full text-xl font-semibold mt-1 text-base-content border-none outline-none"
+                  className="input w-full h-full text-xl font-semibold text-base-content border-none outline-none"
                 />
               </div>
             </div>
@@ -117,7 +118,7 @@ const ModalCashPayment: FC<Props> = ({
               {[7, 8, 9].map((n) => (
                 <button
                   key={n}
-                  className="btn h-16 text-xl"
+                  className="btn h-14 text-xl"
                   onClick={() => append(String(n))}
                 >
                   {n}
@@ -125,7 +126,7 @@ const ModalCashPayment: FC<Props> = ({
               ))}
 
               <button
-                className="btn btn-error btn-outline h-16"
+                className="btn btn-error btn-outline h-14"
                 onClick={backspace}
               >
                 <Delete />
@@ -134,7 +135,7 @@ const ModalCashPayment: FC<Props> = ({
               {[4, 5, 6].map((n) => (
                 <button
                   key={n}
-                  className="btn h-16 text-xl"
+                  className="btn h-14 text-xl"
                   onClick={() => append(String(n))}
                 >
                   {n}
@@ -142,7 +143,7 @@ const ModalCashPayment: FC<Props> = ({
               ))}
 
               <button
-                className="btn btn-warning btn-outline h-16"
+                className="btn btn-warning btn-outline h-14"
                 onClick={clear}
               >
                 CE
@@ -151,7 +152,7 @@ const ModalCashPayment: FC<Props> = ({
               {[1, 2, 3].map((n) => (
                 <button
                   key={n}
-                  className="btn h-16 text-xl"
+                  className="btn h-14 text-xl"
                   onClick={() => append(String(n))}
                 >
                   {n}
@@ -183,7 +184,7 @@ const ModalCashPayment: FC<Props> = ({
               </button>
             </div>
 
-            <div className="mt-5 text-xs opacity-60">
+            <div className="mt-2.5 text-xs opacity-60">
               Gunakan keyboard angka 0-9, Backspace untuk hapus, Enter untuk
               konfirmasi.
             </div>
@@ -192,9 +193,7 @@ const ModalCashPayment: FC<Props> = ({
 
         {/* FOOTER */}
         <div className="modal-action m-0 px-6 py-4 border-t border-base-content/10">
-          <button className="btn" onClick={handleCloseModal}>
-            Tutup
-          </button>
+          <ButtonCloseText handleClose={handleCloseModal} />
         </div>
       </div>
     </dialog>

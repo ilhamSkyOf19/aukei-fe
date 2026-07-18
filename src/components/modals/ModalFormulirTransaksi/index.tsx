@@ -75,7 +75,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
                   <img
                     src={data.img}
                     alt="wall panel"
-                    className="w-full h-80 object-contain group-hover:scale-102 transition-all duration-300 origin-center"
+                    className="w-full h-70 object-contain group-hover:scale-102 transition-all duration-300 origin-center"
                     loading="lazy"
                   />
                 </div>
@@ -119,9 +119,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
             {/* form */}
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className={cn(
-                "flex-2 flex flex-col justify-start items-center mt-4",
-              )}
+              className={cn("flex-2 flex flex-col justify-start items-center")}
             >
               {/* harga jual */}
               <InputPrice<DetailsForCreate>

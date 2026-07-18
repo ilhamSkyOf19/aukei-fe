@@ -44,7 +44,7 @@ const ModalChoosePelanggan: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_3" className="modal">
-      <div className="modal-box max-h-[90vh] lg:w-2/5 max-w-5xl rounded-xl bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box max-h-[95vh] lg:w-2/5 max-w-5xl rounded-xl bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-between items-start">

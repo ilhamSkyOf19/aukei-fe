@@ -6,14 +6,19 @@ type Props = {
   handleShowModalFormulir: () => void;
   customDataTip?: string;
   xs?: boolean;
+  noTip?: boolean;
 };
 const ButtonUpdateTable: FC<Props> = ({
   handleShowModalFormulir,
   customDataTip,
   xs,
+  noTip,
 }) => {
   return (
-    <div className="tooltip z-10" data-tip={customDataTip ?? "ubah"}>
+    <div
+      className="tooltip z-10"
+      data-tip={!noTip ? (customDataTip ?? "ubah") : ""}
+    >
       <button
         type="button"
         className={cn(

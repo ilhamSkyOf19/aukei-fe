@@ -296,6 +296,14 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     color: "success",
     message: "Tempo berhasil diatur",
   },
+  update_stok_dikirim: {
+    color: "info",
+    message: "stok dikirim berhasil diperbarui",
+  },
+  cancelled: {
+    color: "error",
+    message: "transaksi berhasil dibatalkan",
+  },
 };
 
 // toast keranjang

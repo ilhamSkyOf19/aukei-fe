@@ -19,8 +19,8 @@ const FilterSort: FC<Props> = ({ setSort, customWidth, value }) => {
       <DropDown
         handleChange={(e) => setSort(e.target.value)}
         listChoose={[
-          { value: "asc", label: "Terbaru" },
-          { value: "desc", label: "Terlama" },
+          { value: "asc", label: "Terlama" },
+          { value: "desc", label: "Terbaru" },
         ]}
         placeholder="Urutkan"
         value={value || "asc"}

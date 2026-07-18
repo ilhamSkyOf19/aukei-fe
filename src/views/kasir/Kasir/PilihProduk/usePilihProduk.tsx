@@ -2,7 +2,7 @@ import type {
   DetailsForCreate,
   DetailsLocalStorageType,
 } from "../../../../models/transaction.model";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { ResponseProdukForKasirType } from "../../../../models/produk.model";
 import type { IPelangganType } from "../../../../models/pelanggan.model";
 import { useAlertAnimation } from "../../../../hooks/useAlert";
@@ -18,6 +18,8 @@ import type {
 import { KeranjangServices } from "../../../../services/keranjang.service";
 import { parseId } from "../../../../helpers/helpers";
 import useIsModeKasirStore from "../../../../stores/iseModaKasirStore";
+import { useAuthStore } from "../../../../stores/authStore";
+import useConfirm from "../../../../hooks/useConfirm";
 
 type IsErrorsType = "pelanggan" | "details";
 
@@ -26,6 +28,8 @@ const usePilihProduk = (props: {
   handleToast: (value: string) => void;
 }) => {
   const { handleSteps, handleToast } = props;
+
+  const pengguna = useAuthStore((state) => state.pengguna);
 
   // get is mode kasir
   const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
@@ -47,6 +51,12 @@ const usePilihProduk = (props: {
     [],
   );
 
+  const fromBooking = useMemo<boolean>(() => {
+    const data = localStorage.getItem("from-booking");
+
+    return data ? JSON.parse(data) : null;
+  }, []);
+
   // use modal add transaksi
   const {
     modalRef: modalFormulirTransaksiRef,
@@ -60,6 +70,15 @@ const usePilihProduk = (props: {
         diskon?: number;
       }
   >();
+
+  // use confirm
+  const {
+    confirm,
+    handleConfirm,
+    handleCancel: handleCancelConfirm,
+    data: dataConfirm,
+    modalRef: modalConfirmRef,
+  } = useConfirm<{ title: string; deskripsi: string }>();
 
   //   state img details
   const [produkDetails, setProdukDetails] = useState<
@@ -290,6 +309,7 @@ const usePilihProduk = (props: {
         hargaJual: item.hargaJual,
         produkId: item.id,
         quantity: item.quantity,
+        stokTersedia: item.stok,
       })) ?? null;
 
     // set details
@@ -305,10 +325,32 @@ const usePilihProduk = (props: {
   };
 
   // handle steps next
-  const handleStepsNext = () => {
+  const handleStepsNext = async () => {
     const canNext = handleLocalStorage();
 
     if (!canNext) return;
+
+    // cek stok produk yang di pilih
+    const insufficientStock = produkDetails.some((produk) => produk.stok === 0);
+
+    if (insufficientStock && !fromBooking) {
+      // handle confirm
+      const isConfirm = await confirm({
+        title: "Stok Tidak Mencukupi",
+        deskripsi:
+          "Stok produk tidak mencukupi. Apakah Anda ingin mengubah transaksi ini menjadi Booking?",
+      });
+
+      if (!isConfirm) {
+        return;
+      }
+
+      // clear metode pembayaran
+      localStorage.removeItem("metode-pembayaran");
+
+      // handle redirect
+      return handleSteps(4);
+    }
 
     if (isUpdateTransaction)
       navigate(currentPathname, {
@@ -317,7 +359,12 @@ const usePilihProduk = (props: {
         },
       });
 
-    handleSteps(2);
+    if (fromBooking) {
+      localStorage.removeItem("from-booking");
+      handleSteps(4);
+    } else {
+      handleSteps(2);
+    }
   };
 
   // handle batalkan update transaction
@@ -325,7 +372,12 @@ const usePilihProduk = (props: {
     // remove is update transaction
     localStorage.removeItem("is-update-transaction");
 
-    handleSteps(2);
+    if (fromBooking) {
+      localStorage.removeItem("from-booking");
+      handleSteps(4);
+    } else {
+      handleSteps(2);
+    }
   };
 
   // handle remove all
@@ -371,6 +423,7 @@ const usePilihProduk = (props: {
           localStorage.removeItem("is-update-transaction");
           localStorage.removeItem("metode-pembayaran");
           localStorage.removeItem("pelanggan");
+          localStorage.removeItem("from-booking");
 
           setIsUpdateTransaction(false);
         }
@@ -520,6 +573,12 @@ const usePilihProduk = (props: {
     removeDetails,
     handleShowModalFormulirTransaksiForUpdate,
     isModeKasir,
+    pengguna,
+
+    modalConfirmRef,
+    handleCancelConfirm,
+    dataConfirm,
+    handleConfirm,
   };
 };
 

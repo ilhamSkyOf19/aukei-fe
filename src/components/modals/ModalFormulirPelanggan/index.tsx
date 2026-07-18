@@ -82,7 +82,9 @@ const ModalFormulirPelanggan: FC<Props> = ({
             />
 
             {/* alert */}
-            <AlertLabel message="    Pastikan nomor whatsapp yang dimasukkan adalah nomor aktif" />
+            <div className="w-full mt-2.5">
+              <AlertLabel message="Pastikan nomor whatsapp yang dimasukkan adalah nomor aktif" />
+            </div>
 
             {/* action */}
             <div className="w-full mt-6 flex flex-row justify-end items-center gap-4">

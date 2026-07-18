@@ -34,10 +34,19 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
     isShowCountNotifikasi,
     setIsShowCountNotifikasi,
     navigate,
+    currentPathname,
   } = useNavbar();
 
   return (
-    <nav className="navbar w-full bg-base-100 shadow-sm flex flex-row justify-between items-center relative border-b border-base-content/10">
+    <nav
+      className={cn(
+        "navbar w-full bg-base-100 shadow-sm flex flex-row justify-between items-center relative border-b border-base-content/10",
+        pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
+          (currentPathname.includes("kasir") ||
+            currentPathname.includes("keranjang")) &&
+          "hidden",
+      )}
+    >
       <div className="w-full flex flex-row justify-between items-center">
         <div className="flex-2 flex flex-row justify-start items-center">
           <label

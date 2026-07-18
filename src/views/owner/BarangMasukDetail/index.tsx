@@ -69,6 +69,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     canShowFormTambahBarang,
     idModalFormulirVerifikasiOrPengajuan,
     isCanUpdate,
+    isCanBatalkanPosting,
   } = useBarangMasukDetail({ fromPengajuanBarang });
 
   return (
@@ -230,7 +231,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                 </div>
 
                 {/* button posting */}
-                {isCanUpdate && (
+                {(isCanUpdate || isCanBatalkanPosting) && (
                   <div className="flex flex-col justify-start items-start w-full lg:w-auto gap-2 lg:gap-0">
                     <ButtonWithIcon
                       handleBtn={() => {

@@ -67,6 +67,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     idModalFormulirVerifikasiOrPengajuan,
     dataModalFormulirVerifikasiOrPengajuan,
     isCanUpdate,
+    isCanBatalkanPosting,
   } = useBarangKeluarDetail({ fromPengajuanBarang });
 
   return (
@@ -141,8 +142,11 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
 
                       <span className="text-xs text-base-content">
                         {isExpired
-                          ? "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
-                          : `Anda dapat membatalkan postingan sebelum waktu habis : `}
+                          ? pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
+                            "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
+                          : pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+                            ? `Anda dapat membatalkan postingan sebelum waktu habis : `
+                            : "Status masih dapat berubah sebelum waktu habis :"}
                       </span>
                       {!isExpired && (
                         <CountDown
@@ -233,7 +237,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                 </div>
 
                 {/* button posting */}
-                {isCanUpdate && (
+                {(isCanUpdate || isCanBatalkanPosting) && (
                   <div className="flex flex-col justify-start items-start w-full lg:w-auto gap-2 lg:gap-0">
                     <ButtonWithIcon
                       handleBtn={() => {

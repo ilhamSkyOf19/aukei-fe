@@ -7,15 +7,20 @@ type Props = {
   customDataTip?: string;
   disabled?: boolean;
   xs?: boolean;
+  noTip?: boolean;
 };
 const ButtonDeleteTable: FC<Props> = ({
   handleShowModalDelete,
   customDataTip,
   disabled,
   xs,
+  noTip,
 }) => {
   return (
-    <div className="tooltip z-10" data-tip={customDataTip ?? "hapus"}>
+    <div
+      className="tooltip z-10"
+      data-tip={!noTip ? (customDataTip ?? "hapus") : ""}
+    >
       {/* update */}
       <button
         type="button"

@@ -147,6 +147,7 @@ const useShowProduk = (params: {
     isPrev,
     pages,
     isModeKasir,
+    kategori,
   };
 };
 

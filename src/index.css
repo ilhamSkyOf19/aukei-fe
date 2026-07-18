@@ -231,6 +231,29 @@ input:-webkit-autofill:active {
   }
 }
 
+.tooltip-from {
+  @layer daisyui.l1.l2 {
+    --tt-bg: var(--color-base-100);
+
+    > .tooltip-content,
+    &[data-tip]::before {
+      color: var(--color-base-content);
+      border: 1px solid
+        color-mix(in srgb, var(--color-base-content) 15%, transparent);
+
+      height: 3rem;
+      width: 14rem;
+      min-height: 32px;
+      padding-inline: 12px;
+      padding-block: 0;
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+      line-height: 1;
+    }
+  }
+}
+
 .avatar-non-active {
   @layer daisyui.l1.l2 {
     &:before {

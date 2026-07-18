@@ -7,6 +7,7 @@ import { formatTanggalLengkap } from "../../../../helpers/formatDate";
 import Pagination from "../../../../components/ui/Pagination";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import { UserRoundX } from "lucide-react";
+import { formatNumber } from "../../../../helpers/helpers";
 
 const DataPelanggan = () => {
   // use call
@@ -24,9 +25,9 @@ const DataPelanggan = () => {
   } = useDataPelanggan();
 
   return (
-    <div className="w-full rounded-xl lg:h-120 xl:h-150 bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
+    <div className="w-full h-full grid grid-rows-10 rounded-xl bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
       {/* header */}
-      <div className="w-full flex flex-col justify-start items-start gap-2">
+      <div className="w-full row-span-1 flex flex-col justify-start items-start gap-2">
         {/* title */}
         <h3 className="text-base-content text-sm font-semibold">
           Pilih Pelanggan
@@ -39,7 +40,7 @@ const DataPelanggan = () => {
       </div>
 
       {/* daftar pelanggan */}
-      <div className="w-full flex flex-col lg:h-75 xl:h-115 overflow-y-auto scrollbar-thin justify-start items-start mt-2">
+      <div className="w-full row-span-8 py-2 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary justify-start items-start mt-2">
         {/* card */}
         {isLoadingPelanggan ? (
           Array.from({ length: 8 }, (_, i) => i).map((item) => (
@@ -55,6 +56,7 @@ const DataPelanggan = () => {
               index={index}
               nama={item.nama}
               updatedAt={item.updatedAtCart}
+              totalItem={item.totalItem}
             />
           ))
         ) : (
@@ -69,7 +71,7 @@ const DataPelanggan = () => {
         )}
       </div>
 
-      <div className="w-full flex flex-row justify-center items-center">
+      <div className="w-full row-span-1 flex flex-row justify-center items-center">
         {/* buat pagination pelanggan */}
         <Pagination
           currentPage={dataPelanggan?.data?.meta?.currentPage || 1}
@@ -92,6 +94,7 @@ type CardPelangganProps = {
   index: number;
   isChoose: boolean;
   handleChoose: (value: number) => void;
+  totalItem: number;
 };
 const CardPelanggan: FC<CardPelangganProps> = ({
   nama,
@@ -100,6 +103,7 @@ const CardPelanggan: FC<CardPelangganProps> = ({
   handleChoose,
   id,
   isChoose,
+  totalItem,
 }) => {
   return (
     <div
@@ -135,7 +139,7 @@ const CardPelanggan: FC<CardPelangganProps> = ({
 
         <div className="flex-1 flex flex-row justify-end items-center">
           <span className="text-[0.625rem] font-medium py-1 px-2 rounded-full bg-emerald-50 text-emerald-600">
-            3 item
+            {formatNumber(totalItem)} item
           </span>
         </div>
       </button>

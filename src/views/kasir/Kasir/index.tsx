@@ -5,19 +5,16 @@ import Pembayaran from "./Pembayaran";
 import Struk from "./Struk";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_TRANSACTION } from "../../../types/toast.type";
-import type { FC } from "react";
-import HeaderKasir from "../../../components/ui/HeaderKasir";
 import NotCompatible from "../../../components/messages/NotCompatible";
+import Booking from "./Booking";
 
-type Props = {
-  isUpdateKeranjang?: boolean;
-};
-const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
+const Kasir = () => {
   // call use
-  const { step, handleSteps, isModeKasir, handleSetToast, toast } = useKasir();
+  const { step, handleSteps, isModeKasir, handleSetToast, toast, kasir } =
+    useKasir();
 
   return (
-    <div className="w-full p-3 lg:h-[91vh] overflow-y-auto">
+    <div className="w-full p-3 lg:h-screen overflow-y-auto">
       {toast && (
         <Toast
           toast={toast?.id !== null}
@@ -40,14 +37,9 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
             step === 3 && "overflow-y-auto",
           )}
         >
-          {/* header */}
-          {(!isUpdateKeranjang || isModeKasir) && (
-            <HeaderKasir {...(!isUpdateKeranjang && { step: step })} />
-          )}
-
           <div
             className={cn(
-              "w-full flex flex-col justify-start items-center",
+              "w-full h-full flex flex-col justify-start items-center",
               isModeKasir && "p-2",
             )}
           >
@@ -64,11 +56,21 @@ const Kasir: FC<Props> = ({ isUpdateKeranjang }) => {
               <Pembayaran
                 handleSteps={handleSteps}
                 handleToast={handleSetToast}
+                kasir={kasir}
               />
             )}
 
-            {/* pembayaran */}
+            {/* struk */}
             {step === 3 && <Struk handleSteps={handleSteps} />}
+
+            {/* booking */}
+            {step === 4 && (
+              <Booking
+                handleSteps={handleSteps}
+                handleToast={handleSetToast}
+                kasir={kasir}
+              />
+            )}
           </div>
         </div>
       </div>

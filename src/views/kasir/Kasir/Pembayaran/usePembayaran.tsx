@@ -1,31 +1,28 @@
-import { useEffect, useRef, useState } from "react";
-import type { PaymentMethodType } from "../../../../types/constant.type";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  type ErrorType,
+  type PaymentMethodType,
+} from "../../../../types/constant.type";
 import type { IPelangganType } from "../../../../models/pelanggan.model";
-import useModal from "../../../../hooks/useModal";
 import { useMutation } from "@tanstack/react-query";
-import type { CreateTransactionForRequestType } from "../../../../models/transaction.model";
+import type {
+  CreateTransactionForRequestType,
+  DetailsLocalStorageType,
+} from "../../../../models/transaction.model";
 import { TransactionServices } from "../../../../services/transaction.service";
-import { useAuthStore } from "../../../../stores/authStore";
 import useConfirm from "../../../../hooks/useConfirm";
 import triggerAnimation from "../../../../hooks/triggerAnimation";
-import useIsModeKasirStore from "../../../../stores/iseModaKasirStore";
 import type { DataTempoType } from "../../../../models/tempo.model";
-
-type ErrorType =
-  | "METODE_PEMBAYARAN_KOSONG"
-  | "DATA_DI_BAYAR_KOSONG"
-  | "DATA_TEMPO_KOSONG";
+import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
+import useModalCalculator from "../../../../hooks/useModalCalculator";
+import useModalTempo from "../../../../hooks/useModalTempo";
 
 const usePembayaran = (params: {
   handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
+  kasir?: PayloadPenggunaInternalType | null;
 }) => {
-  const { handleSteps, handleToast } = params;
-
-  // is mode kasir
-  const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
-
-  const kasir = useAuthStore((state) => state.pengguna);
+  const { handleSteps, handleToast, kasir } = params;
 
   const [isErrors, setIsErrors] = useState<ErrorType[]>([]);
 
@@ -48,26 +45,15 @@ const usePembayaran = (params: {
     });
 
   // state data details
-  const [dataDetails] = useState<
-    | {
-        produkId: number;
-        quantity: number;
-        hargaJual: number;
-        diskon: number;
-        img: string;
-        nama: string;
-        kode: string;
-      }[]
-    | null
-  >(() => {
-    const details = localStorage.getItem("details");
+  const dataDetails = useMemo<DetailsLocalStorageType[] | null>(() => {
+    try {
+      const details = localStorage.getItem("details");
 
-    if (details) {
-      return JSON.parse(details);
-    } else {
+      return details ? JSON.parse(details) : null;
+    } catch {
       return null;
     }
-  });
+  }, []);
 
   // state data tempo
   const [dataTempo, setDataTempo] = useState<DataTempoType | null>(() => {
@@ -81,31 +67,23 @@ const usePembayaran = (params: {
   });
 
   //   state data pelanggan
-  const [pelanggan, _setPelanggan] = useState<Pick<
+  const pelanggan = useMemo<Pick<
     IPelangganType,
     "id" | "nama" | "noWa"
   > | null>(() => {
-    const pelanggan = localStorage.getItem("pelanggan");
+    const data = localStorage.getItem("pelanggan");
 
-    if (pelanggan) {
-      return JSON.parse(pelanggan);
-    } else {
-      return null;
-    }
-  });
+    return data ? JSON.parse(data) : null;
+  }, []);
 
   // state data from keranjang
-  const [dataFromKeranjang, _setDataFromKeranjang] = useState<{
+  const dataFromKeranjang = useMemo<{
     transactionId: number;
   } | null>(() => {
-    const dataFromKeranjang = localStorage.getItem("data-from-keranjang");
+    const data = localStorage.getItem("data-from-keranjang");
 
-    if (dataFromKeranjang) {
-      return JSON.parse(dataFromKeranjang);
-    } else {
-      return null;
-    }
-  });
+    return data ? JSON.parse(data) : null;
+  }, []);
 
   // total diskon
   const totalDiskon = dataDetails?.reduce((a, b) => a + b.diskon, 0) ?? 0;
@@ -141,35 +119,15 @@ const usePembayaran = (params: {
     );
   };
 
-  //   use modal calculator
+  // modal calculator
   const {
-    modalRef: modalCalculatorRef,
-    handleShowModal: showModalCalculator,
-    handleCloseModal: handleCloseModalCalculator,
-  } = useModal();
-
-  // use modal tempo
-  const {
-    modalRef: modalTempoRef,
-    handleShowModal: showModalTempo,
-    handleCloseModal: handleCloseModalTempo,
-  } = useModal();
-
-  // handle show modal calculator
-  const handleShowModalCalculator = () => {
-    // clear error
-    setIsErrors((prev) =>
-      prev.filter((item) => item !== "DATA_DI_BAYAR_KOSONG"),
-    );
-    showModalCalculator();
-  };
-
-  // handle show modal tempo
-  const handleShowModalTempo = () => {
-    // clear error
-    setIsErrors((prev) => prev.filter((item) => item !== "DATA_TEMPO_KOSONG"));
-    showModalTempo();
-  };
+    handleCloseModalCalculator,
+    handleShowModalCalculator,
+    modalCalculatorRef,
+  } = useModalCalculator({ setIsErrors });
+  // modal tempo
+  const { handleCloseModalTempo, handleShowModalTempo, modalTempoRef } =
+    useModalTempo({ setIsErrors });
 
   // use confirm
   const {
@@ -278,6 +236,7 @@ const usePembayaran = (params: {
           quantity: item.quantity,
         })),
         diBayar: dataDiBayar,
+        kembalian: dataDiBayar - totalAfterDiskon,
         metodePembayaran: metodePembayaran,
         pelangganId: pelanggan.id,
         kasirId: kasir.id,
@@ -336,7 +295,6 @@ const usePembayaran = (params: {
     handleCancel,
     buttonBayarRef,
     handleBatalTransaction,
-    isModeKasir,
     dataTempo,
     buttonAturTempoRef,
     modalTempoRef,

@@ -298,6 +298,9 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     (!fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) ||
     (fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
 
+  const isCanBatalkanPosting =
+    isStatusPosted && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && !isExpired;
+
   // use delete barang keluar
   const {
     dataDelete,
@@ -411,6 +414,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isStatusRejected,
     canShowFormTambahBarang,
     isCanUpdate,
+    isCanBatalkanPosting,
   };
 };
 

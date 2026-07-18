@@ -4,7 +4,6 @@ import {
   MoveLeft,
   Package,
   Pencil,
-  Phone,
   ShoppingBasketIcon,
   ShoppingCart,
   Tag,
@@ -38,125 +37,127 @@ const DaftarKeranjang = () => {
   } = useDaftarKeranjang();
 
   return (
-    <div className="flex-6 flex flex-col justify-start items-start gap-2">
+    <div className="flex-6 h-full grid grid-rows-3 gap-2">
       {isLoadingKeranjang ? (
         <div></div>
       ) : isExistDataProduk ? (
         <>
-          {/* data pelanggan yang di pilih */}
-          <div className="flex flex-row justify-start items-center w-full rounded-lg bg-base-100 border border-transparent dark:border-base-content/10 gap-4 shadow-sm p-4">
-            {/* avatar */}
-            <Avatar nama={dataKeranjang?.data?.pelanggan?.nama ?? ""} xs />
+          <div className="row-span-2 grid grid-rows-7 gap-2.5">
+            {/* data pelanggan yang di pilih */}
+            <div className="flex flex-row row-span-1 justify-start items-center w-full rounded-lg bg-base-100 border border-transparent dark:border-base-content/10 gap-2.5 shadow-sm p-4">
+              {/* avatar */}
+              <Avatar nama={dataKeranjang?.data?.pelanggan?.nama ?? ""} xs />
 
-            <div className="flex flex-col justify-start items-start gap-2">
-              <span className="text-base-content text-sm font-medium">
-                {dataKeranjang?.data?.pelanggan?.nama ?? ""}
-              </span>
-              <div className="flex flex-row justify-start items-center gap-2">
-                <Phone className="size-3 text-base-content/50" />
-                <span className="text-base-content/50 text-xs font-semibold">
+              <div className="flex flex-col justify-start items-start gap-0.5">
+                <span className="text-base-content text-xs font-medium">
+                  {dataKeranjang?.data?.pelanggan?.nama ?? ""}
+                </span>
+                <span className="text-base-content/50 text-[0.625rem] font-medium">
                   {formatNumberPhone(
                     dataKeranjang?.data?.pelanggan?.noWa ?? "",
                   )}
                 </span>
               </div>
             </div>
-          </div>
 
-          {/* details */}
-          <div className="w-full flex flex-col justify-start items-start gap-4 bg-base-100 border border-transparent dark:border-base-content/10 rounded-lg shadow-sm p-4">
-            {/* header */}
-            <h3 className="text-base-content text-sm font-semibold">
-              Daftar Produk
-            </h3>
-            <div className="overflow-x-auto w-full pb-2">
-              <table className="table table-xs">
-                {/* head */}
-                <thead className="bg-base-content/5 h-10">
-                  <tr className="text-[0.625rem]">
-                    <th>No</th>
-                    <th>Gambar</th>
-                    <th>Nama Produk</th>
-                    <th>Harga (Rp)</th>
-                    <th>Diskon (Rp)</th>
-                    <th>Jumlah</th>
-                    <th>Subtotal</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* row 1 */}
-                  {dataKeranjang?.data?.details &&
-                  dataKeranjang?.data?.details.length > 0 ? (
-                    dataKeranjang?.data?.details.map((item, index) => (
-                      <tr key={index} className="h-15 text-base-content">
-                        <th>{index + 1}</th>
-                        <td>
-                          <div className="avatar">
-                            <div className="mask mask-squircle h-10 w-10">
-                              <img src={item.produk.img} alt="gambar produk" />
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="flex flex-col justify-start items-start gap-px">
-                            <p>{item.produk.nama}</p>
-                            <span className="font-medium text-base-content/50">
-                              {item.produk.kode}
-                            </span>
-                          </div>
-                        </td>
-                        <td>{formatRupiah(item.hargaJual)}</td>
-                        <td>{formatRupiah(item.diskon)}</td>
-                        <td>{item.quantity}</td>
-                        <td>
-                          <span className="font-medium text-base-content">
-                            {formatRupiah(
-                              item.hargaJual * item.quantity - item.diskon,
-                            )}
-                          </span>
-                        </td>
-                        <td>
-                          <button
-                            type="button"
-                            className="opacity-50 hover:opacity-100 transition-opacity duration-200 ease-in-out group p-px"
-                            onClick={() =>
-                              handleDeleteProdukInKeranjang({
-                                id: item.id,
-                              })
-                            }
-                          >
-                            {isPendingDeleteProdukInKeranjang ? (
-                              <div className="loading-xs" />
-                            ) : (
-                              <Trash2 className="size-4 group-hover:text-error transition-color duration-200 ease-in-out" />
-                            )}
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={8}></td>
+            {/* details */}
+            <div className="w-full flex row-span-6 flex-col justify-start items-start bg-base-100 border border-transparent dark:border-base-content/10 rounded-lg shadow-sm pt-2.5">
+              {/* header */}
+              <h3 className="text-base-content text-sm font-semibold px-2.5 mb-2.5">
+                Daftar Produk
+              </h3>
+              <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-custom-secondary w-full pb-2">
+                <table className="table table-xs">
+                  {/* head */}
+                  <thead className="bg-base-content/5 h-10">
+                    <tr className="text-[0.625rem]">
+                      <th>No</th>
+                      <th>Gambar</th>
+                      <th>Nama Produk</th>
+                      <th>Harga (Rp)</th>
+                      <th>Diskon (Rp)</th>
+                      <th>Jumlah</th>
+                      <th>Subtotal</th>
+                      <th>Aksi</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {/* row 1 */}
+                    {dataKeranjang?.data?.details &&
+                    dataKeranjang?.data?.details.length > 0 ? (
+                      dataKeranjang?.data?.details.map((item, index) => (
+                        <tr key={index} className="h-15 text-base-content">
+                          <th>{index + 1}</th>
+                          <td>
+                            <div className="avatar">
+                              <div className="mask mask-squircle h-10 w-10">
+                                <img
+                                  src={item.produk.img}
+                                  alt="gambar produk"
+                                />
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="flex flex-col justify-start items-start gap-px">
+                              <p>{item.produk.nama}</p>
+                              <span className="font-medium text-base-content/50">
+                                {item.produk.kode}
+                              </span>
+                            </div>
+                          </td>
+                          <td>{formatRupiah(item.hargaJual)}</td>
+                          <td>{formatRupiah(item.diskon)}</td>
+                          <td>{item.quantity}</td>
+                          <td>
+                            <span className="font-medium text-base-content">
+                              {formatRupiah(
+                                item.hargaJual * item.quantity - item.diskon,
+                              )}
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="opacity-50 hover:opacity-100 transition-opacity duration-200 ease-in-out group p-px"
+                              onClick={() =>
+                                handleDeleteProdukInKeranjang({
+                                  id: item.id,
+                                })
+                              }
+                            >
+                              {isPendingDeleteProdukInKeranjang ? (
+                                <div className="loading-xs" />
+                              ) : (
+                                <Trash2 className="size-4 group-hover:text-error transition-color duration-200 ease-in-out" />
+                              )}
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={8}></td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
-            {/* button ubah keranjang */}
-            <div className="w-full flex flex-row justify-end items-start border-t border-base-content/10 pt-4">
-              <ButtonWithIcon
-                icon={Pencil}
-                bgColor="bg-info"
-                textColor="text-primary-white"
-                label="Ubah Keranjang"
-                handleBtn={handleUbahKeranjang}
-              />
+              {/* button ubah keranjang */}
+              <div className="w-full flex flex-row justify-end items-start border-t border-base-content/10 p-2.5">
+                <ButtonWithIcon
+                  icon={Pencil}
+                  bgColor="bg-info"
+                  textColor="text-primary-white"
+                  label="Ubah Keranjang"
+                  handleBtn={handleUbahKeranjang}
+                />
+              </div>
             </div>
           </div>
 
-          <div className="w-full flex flex-col justify-start items-end gap-4">
+          <div className="w-full row-span-1 flex flex-col justify-start items-end gap-4">
             <div className="w-100 flex flex-col justify-start items-start gap-4 bg-base-100 border border-transparent dark:border-base-content/10 rounded-lg shadow-sm p-4">
               {/* sub total & total diskon */}
               <div className="w-full flex flex-col justify-start items-start gap-3 pb-4 border-b border-base-content/10">

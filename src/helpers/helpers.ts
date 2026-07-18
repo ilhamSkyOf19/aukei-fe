@@ -23,6 +23,10 @@ export const formatRupiah = (value: number | string): string => {
   }).format(Number(value));
 };
 
+export const unformatRupiah = (value: string) => {
+  return value.replace(/\D/g, "");
+};
+
 // generate page numbers
 export const generatePageNumbers = (
   current: number,

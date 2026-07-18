@@ -42,16 +42,7 @@ export interface DetailsForCreate extends Pick<
   "diskon" | "hargaJual" | "quantity"
 > {
   produkId: number;
-}
-
-export interface DetailsLocalStorageType {
-  produkId: number;
-  quantity: number;
-  hargaJual: number;
-  diskon: number;
-  img: string;
-  nama: string;
-  kode: string;
+  quantityDelivered?: number;
 }
 
 // // created transaction
@@ -59,8 +50,10 @@ export interface CreateTransactionForRequestType extends Pick<
   ITransactionType,
   "metodePembayaran" | "pelangganId"
 > {
+  status?: Exclude<TransactionStatusType, "COMPLETED" | "CANCELLED" | "CART">;
   id?: number;
   diBayar: number;
+  kembalian: number;
   kasirId: number;
   details: DetailsForCreate[];
   tempo?: DataTempoType;
@@ -142,4 +135,16 @@ export interface ResponseRiwayatTransaksiPelangganType {
     })[];
   };
   meta: MetaType;
+}
+
+export interface DetailsLocalStorageType {
+  produkId: number;
+  quantity: number;
+  hargaJual: number;
+  stokTersedia: number;
+  diskon: number;
+  img: string;
+  nama: string;
+  kode: string;
+  stokDikirim?: number;
 }

@@ -65,6 +65,7 @@ export type InstallmentStatusType =
 // status transaction
 export const TRANSACTION_STATUS_TYPE = {
   CART: "CART",
+  BOOKING: "BOOKING",
   COMPLETED: "COMPLETED",
 } as const;
 
@@ -87,3 +88,8 @@ export interface MetaType {
 
 // max file size 2 MB
 export const MAX_FILE_SIZE_IMG = 3 * 1024 * 1024;
+
+export type ErrorType =
+  | "METODE_PEMBAYARAN_KOSONG"
+  | "DATA_DI_BAYAR_KOSONG"
+  | "DATA_TEMPO_KOSONG";

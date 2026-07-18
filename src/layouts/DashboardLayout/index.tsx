@@ -43,7 +43,9 @@ const DashboardLayout: FC = () => {
               className={cn(
                 "toast toast-start transition-all duration-200 ease-in-out",
                 isClose ? "lg:ml-75" : "lg:ml-16",
-                isOnline ? " opacity-0" : "-translate-y-4 opacity-100",
+                isOnline
+                  ? "pointer-events-none opacity-0"
+                  : "-translate-y-4 opacity-100",
               )}
             >
               <div className="alert alert-warning">

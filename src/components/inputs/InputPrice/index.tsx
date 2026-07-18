@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import type { FieldValues, UseControllerReturn } from "react-hook-form";
 import { cn } from "../../../utils/cn";
 import ErrorMessage from "../../messages/ErrorMessage";
-import { maxValue } from "../../../helpers/helpers";
+import {
+  formatRupiah,
+  maxValue,
+  unformatRupiah,
+} from "../../../helpers/helpers";
 
 type Props<T extends FieldValues = any> = {
   label?: string;
@@ -92,14 +96,4 @@ export default function InputPrice<T extends FieldValues = any>({
       <ErrorMessage xs={xs} errorMessage={fieldState.error?.message} />
     </div>
   );
-}
-
-function formatRupiah(value: string) {
-  if (!value) return "";
-
-  return new Intl.NumberFormat("id-ID").format(Number(value));
-}
-
-function unformatRupiah(value: string) {
-  return value.replace(/\D/g, "");
 }
