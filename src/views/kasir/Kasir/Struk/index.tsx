@@ -2,23 +2,36 @@ import type { FC } from "react";
 import useStruk from "./useStruk";
 import { cn } from "../../../../utils/cn";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
-import type { PaymentMethodType } from "../../../../types/constant.type";
+import {
+  TRANSACTION_STATUS_TYPE,
+  type PaymentMethodType,
+} from "../../../../types/constant.type";
 import {
   Banknote,
+  Calendar,
   CalendarClock,
+  CalendarDays,
+  CircleAlert,
   FileDown,
   Landmark,
+  PhoneIcon,
   Printer,
   QrCode,
+  Receipt,
+  Truck,
   Undo,
+  UserRoundIcon,
+  type LucideIcon,
 } from "lucide-react";
 import {
+  formatNumber,
   formatNumberPhone,
   formatRupiah,
   getWeekFromPeriod,
 } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import RowJadwaTempo from "../../../../components/ui/RowJadwalTempo";
+import StatusTransaction from "../../../../components/ui/StatusTransaction";
 
 type Props = {
   handleSteps: (value: number) => void;
@@ -31,6 +44,9 @@ const Struk: FC<Props> = ({ handleSteps }) => {
     isLoadingTransaction,
     handleBackTransaksi,
     isModeKasir,
+    isNotFullBooking,
+    transactionSummary,
+    isStatusBooking,
   } = useStruk({ handleSteps });
 
   return (
@@ -48,7 +64,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
             Informasi Transaksi
           </h3>
 
-          <div className="w-full flex flex-row justify-evenly items-start pt-4 pb-4 border-b border-base-content/10">
+          <div className="w-full flex flex-row justify-evenly items-start pt-4 pb-4 border-b border-dashed border-base-content/30 gap-2.5">
             {isLoadingTransaction ? (
               Array.from({ length: 4 }, (_, i) => i).map((item) => (
                 <div
@@ -64,12 +80,22 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                   label="No. Transaksi"
                   value={String(dataTransaction?.data?.nomorTransaksi)}
                   textColor="text-info"
+                  icon={{
+                    icon: Receipt,
+                    bgColor: "bg-blue-50",
+                    textColor: "text-blue-400",
+                  }}
                 />
                 <CardInformasiTransaksi
                   label="Tanggal"
                   value={formatTanggalLengkap(
                     dataTransaction?.data?.createdAt || "-",
                   )}
+                  icon={{
+                    icon: CalendarDays,
+                    bgColor: "bg-blue-50",
+                    textColor: "text-blue-400",
+                  }}
                 />
 
                 <CardInformasiMetodePembayaran
@@ -79,6 +105,49 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                 />
               </>
             )}
+          </div>
+
+          {/* status transaksi */}
+          <div className="w-full flex flex-col justify-start items-start gap-1 py-4 border-b border-dashed border-base-content/30">
+            {/* label */}
+            <span className="text-[0.7rem] text-base-content/70 font-semibold">
+              Status Transaksi
+            </span>
+
+            <div className="flex flex-row justify-start items-center gap-2">
+              <div className="pr-4 border-r border-base-content/10">
+                <StatusTransaction
+                  status={
+                    (dataTransaction?.data?.status ===
+                      TRANSACTION_STATUS_TYPE.COMPLETED ||
+                      dataTransaction?.data?.status ===
+                        TRANSACTION_STATUS_TYPE.BOOKING) &&
+                    !dataTransaction?.data?.tempo
+                      ? dataTransaction?.data?.status
+                      : undefined
+                  }
+                  statusTempo={
+                    dataTransaction?.data?.status ===
+                      TRANSACTION_STATUS_TYPE.COMPLETED &&
+                    dataTransaction?.data?.tempo
+                      ? dataTransaction?.data?.tempo.status
+                      : undefined
+                  }
+                  uppercase
+                  customPy="py-1.5"
+                />
+              </div>
+              {/* keterangan */}
+              <span className="text-[0.7rem] text-base-content/60 font-medium">
+                {isStatusBooking &&
+                  "Pesanan akan dikirim setelah stok tersedia."}
+                {dataTransaction?.data?.status ===
+                  TRANSACTION_STATUS_TYPE.COMPLETED &&
+                !dataTransaction?.data?.tempo
+                  ? "Pesanan selesai."
+                  : "Pesanan berhasil dibuat"}
+              </span>
+            </div>
           </div>
 
           {/* pelanggan */}
@@ -97,17 +166,32 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                 <CardInformasiTransaksi
                   label="Kasir"
                   value={dataTransaction?.data?.kasir?.nama || "-"}
+                  icon={{
+                    icon: UserRoundIcon,
+                    bgColor: "bg-emerald-50",
+                    textColor: "text-emerald-400",
+                  }}
                 />
 
                 <CardInformasiTransaksi
                   label="Pelanggan"
                   value={dataTransaction?.data?.pelanggan?.nama || "-"}
+                  icon={{
+                    icon: UserRoundIcon,
+                    bgColor: "bg-purple-50",
+                    textColor: "text-purple-400",
+                  }}
                 />
                 <CardInformasiTransaksi
                   label="No. Whatsapp"
                   value={formatNumberPhone(
                     dataTransaction?.data?.pelanggan?.noWa || "-",
                   )}
+                  icon={{
+                    icon: PhoneIcon,
+                    bgColor: "bg-emerald-50",
+                    textColor: "text-emerald-400",
+                  }}
                 />
               </>
             )}
@@ -122,7 +206,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
           </h3>
           <div className="w-full h-auto flex flex-row justify-evenly items-start pt-6">
             <div className="flex-2 flex flex-col justify-start items-start">
-              <div className="w-full flex flex-col justify-start items-start gap-2 pb-2 border-b border-base-content/10">
+              <div className="w-full flex flex-col justify-start items-start gap-2 pb-2 border-b border-dashed border-base-content/30">
                 <div className="w-full flex flex-row justify-between items-center">
                   <span className="text-xs text-base-content/70 font-medium">
                     Subtotal
@@ -175,7 +259,9 @@ const Struk: FC<Props> = ({ handleSteps }) => {
               <div className="w-full flex flex-row justify-between items-center pb-2 border-b border-base-content/10">
                 <span className="text-xs text-base-content/70 font-medium">
                   {dataTransaction?.data?.metodePembayaran === "TEMPO"
-                    ? "Uang Muka"
+                    ? (isStatusBooking && !isNotFullBooking) || !isStatusBooking
+                      ? "Uang Muka"
+                      : "Dibayar"
                     : "Dibayar"}
                 </span>
                 {isLoadingTransaction ? (
@@ -220,7 +306,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
             </h3>
             <div className="w-full h-auto flex flex-col justify-evenly items-start pt-6">
               {/* header */}
-              <div className="w-full flex flex-row justify-evenly items-start pb-4 border-b border-base-content/10">
+              <div className="w-full flex flex-row justify-evenly items-start pb-4 border-b gap-2.5 border-base-content/10">
                 {isLoadingTransaction ? (
                   Array.from({ length: 4 }, (_, i) => i).map((item) => (
                     <div
@@ -235,16 +321,25 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                     <CardInformasiTransaksi
                       label="Periode"
                       value={`${dataTransaction?.data?.tempo?.periode ?? 0} Hari / ${getWeekFromPeriod(dataTransaction?.data?.tempo?.periode ?? 0)} Minggu`}
+                      border
                     />
 
                     <CardInformasiTransaksi
-                      label="Jumlah Tenor"
-                      value={`${dataTransaction?.data?.tempo?.tenor ?? 0} Kali`}
+                      label="Jumlah Cicilan"
+                      value={`${dataTransaction?.data?.tempo?.jumlahCicilan ?? 0} Kali`}
+                      border
                     />
 
                     <CardInformasiTransaksi
-                      label="Total Tagihan"
-                      value={`${formatRupiah((dataTransaction?.data?.tempo?.totalTagihan ?? 0) + (dataTransaction?.data?.tempo?.uangMuka ?? 0))}`}
+                      label="Tenor"
+                      value={`${(dataTransaction?.data?.tempo?.periode ?? 0) * (dataTransaction?.data?.tempo?.jumlahCicilan ?? 0)} Hari / ${getWeekFromPeriod((dataTransaction?.data?.tempo?.periode ?? 0) * (dataTransaction?.data?.tempo?.jumlahCicilan ?? 0))} Minggu`}
+                      border
+                    />
+
+                    <CardInformasiTransaksi
+                      label="Sisa Tagihan"
+                      value={`${formatRupiah(dataTransaction?.data?.tempo?.totalTagihan ?? 0)}`}
+                      fontWeight="font-semibold"
                     />
                   </>
                 )}
@@ -302,7 +397,13 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                     <th>Nama Produk</th>
                     <th>Harga (Rp)</th>
                     <th>Diskon (Rp)</th>
-                    <th>Jumlah</th>
+                    <th>Dipesan</th>
+                    {isStatusBooking && (
+                      <>
+                        <th>Dikirim</th>
+                        <th>Sisa</th>
+                      </>
+                    )}
                     <th>Subtotal</th>
                   </tr>
                 </thead>
@@ -360,8 +461,25 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                               {item.quantity} x
                             </span>
                           </td>
-                          <td className="h-full">
-                            <span className="-translate-y-1/2 font-medium h-full flex flex-row justify-start items-start xl:text-[0.7rem] text-base-content">
+                          {isStatusBooking && (
+                            <>
+                              <td>
+                                <span className="xl:text-[0.7rem] text-base-content">
+                                  {/* dikirim */}
+                                  {item.quantityDelivered ?? 0}
+                                </span>
+                              </td>
+                              <td>
+                                <span className="xl:text-[0.7rem] text-base-content">
+                                  {/* sisa */}
+                                  {item.quantity -
+                                    (item.quantityDelivered ?? 0)}
+                                </span>
+                              </td>
+                            </>
+                          )}
+                          <td>
+                            <span className="font-medium h-full flex flex-row justify-start items-start xl:text-[0.7rem] text-base-content">
                               {formatRupiah(
                                 item.hargaJual * item.quantity - item.diskon,
                               )}
@@ -371,7 +489,7 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                       ))}
 
                       <tr>
-                        <td colSpan={6} className="h-10">
+                        <td colSpan={isStatusBooking ? 8 : 6} className="h-10">
                           <span className="text-xs font-medium text-base-content/80">
                             Total {dataTransaction?.data?.details.length} Item
                           </span>
@@ -402,6 +520,125 @@ const Struk: FC<Props> = ({ handleSteps }) => {
           </div>
         </div>
 
+        {/* informasi booking */}
+        {isStatusBooking && (
+          <div
+            className={cn(
+              "w-full flex flex-col justify-start items-start rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm py-2.5 gap-2.5",
+            )}
+          >
+            {/* title */}
+            <div className="w-full flex flex-row justify-between items-center px-2.5">
+              <h3 className="text-xs font-medium text-base-content">
+                Informasi Booking
+              </h3>
+            </div>
+
+            <div className="w-full px-2.5">
+              <div className="w-full flex flex-row justify-between items-center gap-2.5 h-18">
+                <div className="flex flex-row justify-start items-start gap-2 bg-amber-50 border border-amber-400 flex-1 py-1.5 h-full rounded-xl px-2.5">
+                  {/* icon */}
+                  <CircleAlert className="size-4 text-amber-600" />
+
+                  <div className=" w-full flex flex-col justify-start items-start gap-1">
+                    {/* title */}
+                    <span className="text-amber-600 text-[0.625rem] font-semibold">
+                      Status
+                    </span>
+
+                    {/* total */}
+                    <div className="flex flex-row justify-start items-start gap-1">
+                      <span className="text-[0.625rem] font-medium">
+                        {isNotFullBooking
+                          ? "Sebagian Sudah Terkirim"
+                          : "Full Booking"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-row justify-start items-start gap-2 bg-emerald-50 border border-emerald-400 flex-1 py-1.5 rounded-xl h-full px-2.5">
+                  {/* icon */}
+                  <Truck className="size-4 text-emerald-600" />
+
+                  <div className=" w-full flex flex-col justify-start items-start gap-1">
+                    {/* title */}
+                    <span className="text-emerald-600 text-[0.625rem] font-semibold">
+                      Total Terkirim
+                    </span>
+
+                    {/* total */}
+                    <div className="flex flex-row justify-start items-start gap-1">
+                      <span className="text-emerald-600 font-semibold text-xs">
+                        {transactionSummary.totalJumlahBarangDikirim > 0
+                          ? formatRupiah(
+                              transactionSummary.totalJumlahBarangDikirim,
+                            )
+                          : 0}
+                      </span>
+
+                      <span className="text-[0.625rem] text-base-content font-medium">
+                        Pcs
+                      </span>
+                    </div>
+
+                    {/* sub total */}
+                    <div className="w-full flex flex-row justify-between items-center">
+                      <span className="text-[0.625rem] font-medium text-base-content">
+                        Subtotal
+                      </span>
+                      <span className="text-xs font-semibold text-base-content">
+                        {formatRupiah(
+                          transactionSummary.totalUangBarangDikirim,
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-row justify-start items-start gap-2 bg-blue-50 border border-blue-400 flex-1 py-1.5 rounded-xl px-2.5 h-full">
+                  {/* icon */}
+                  <Calendar className="size-4 text-blue-600" />
+
+                  <div className=" w-full flex flex-col justify-start items-start gap-1">
+                    {/* title */}
+                    <span className="text-blue-600 text-[0.625rem] font-semibold">
+                      Total Belum Terkirim
+                    </span>
+
+                    {/* total */}
+                    <div className="flex flex-row justify-start items-start gap-1">
+                      <span className="text-blue-600 font-semibold text-xs">
+                        {transactionSummary.totalJumlahBarangBooking > 0
+                          ? formatNumber(
+                              transactionSummary.totalJumlahBarangBooking,
+                            )
+                          : 0}
+                      </span>
+
+                      <span className="text-[0.625rem] text-base-content font-medium">
+                        Pcs
+                      </span>
+                    </div>
+
+                    {/* sub total */}
+                    <div className="w-full flex flex-row justify-between items-center">
+                      <span className="text-[0.625rem] font-medium text-base-content">
+                        Subtotal
+                      </span>
+                      <span className="text-xs font-semibold text-base-content">
+                        {formatRupiah(
+                          transactionSummary.totalUangBarangBooking,
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* button aksi */}
         <div className="w-full flex flex-row justify-between items-start gap-2">
           {/* cetak struk */}
@@ -428,28 +665,57 @@ const Struk: FC<Props> = ({ handleSteps }) => {
 // card infomrasi transaksi
 type CardInformasiTransaksiProps = {
   textColor?: string;
+  icon?: {
+    icon: LucideIcon;
+    bgColor: string;
+    textColor: string;
+  };
   label: string;
   value: string;
+  border?: boolean;
+  fontWeight?: string;
 };
 const CardInformasiTransaksi: FC<CardInformasiTransaksiProps> = ({
   textColor,
   label,
   value,
+  icon,
+  border,
+  fontWeight,
 }) => {
   return (
-    <div className="w-full flex flex-col justify-start items-start gap-1">
+    <div
+      className={cn(
+        "w-full flex flex-col justify-start items-start gap-1",
+        border && "border-r border-base-content/10",
+      )}
+    >
       {/* label */}
-      <span className="text-[0.7rem] text-base-content/70 font-semibold">
+      <span className="text-[0.7rem] text-base-content/70 font-medium">
         {label}
       </span>
-      <span
-        className={cn(
-          "text-xs font-semibold",
-          textColor ? textColor : "text-base-content",
+      <div className="flex flex-row justify-start items-center gap-2.5">
+        {/* icon */}
+        {icon && (
+          <div
+            className={cn(
+              "w-7 h-7 flex justify-center items-center rounded-md shrink-0",
+              icon.bgColor,
+            )}
+          >
+            <icon.icon className={cn("size-3.5", icon.textColor)} />
+          </div>
         )}
-      >
-        {value}
-      </span>
+        <span
+          className={cn(
+            "text-[0.7rem]",
+            textColor ? textColor : "text-base-content",
+            fontWeight ? fontWeight : "font-medium",
+          )}
+        >
+          {value}
+        </span>
+      </div>
     </div>
   );
 };
@@ -464,14 +730,14 @@ const CardInformasiMetodePembayaran: FC<CardInformasiMetodePembayaranProps> = ({
   return (
     <div className="w-full flex flex-col justify-start items-start gap-1">
       {/* label */}
-      <span className="text-[0.7rem] text-base-content/70 font-semibold">
+      <span className="text-[0.7rem] text-base-content/70 font-medium">
         Metode Pembayaran
       </span>
 
       <div className="flex flex-row justify-start items-center gap-2">
         <div
           className={cn(
-            "w-6 h-6 flex flex-col justify-center items-center rounded-full",
+            "w-7 h-7 flex justify-center items-center rounded-md shrink-0",
             metodePembayaran === "CASH" && "bg-emerald-50",
             metodePembayaran === "TRANSFER" && "bg-blue-50",
             metodePembayaran === "QRIS" && "bg-purple-50",
@@ -491,7 +757,7 @@ const CardInformasiMetodePembayaran: FC<CardInformasiMetodePembayaranProps> = ({
             <CalendarClock className="size-4 text-amber-500" />
           )}
         </div>
-        <span className={cn("text-xs font-semibold text-base-content")}>
+        <span className={cn("text-[0.7rem] font-semibold text-base-content")}>
           {metodePembayaran === "CASH" && "Tunai"}
           {metodePembayaran === "QRIS" && "QRIS"}
           {metodePembayaran === "TEMPO" && "Kredit"}

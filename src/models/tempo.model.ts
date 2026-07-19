@@ -1,4 +1,5 @@
-import type { TempoStatusType } from "../types/constant.type";
+import type { MetaType, TempoStatusType } from "../types/constant.type";
+import type { IPelangganType } from "./pelanggan.model";
 import type {
   CreateInstallmentType,
   ITempoInstallmentType,
@@ -10,7 +11,7 @@ export interface ITempo {
   transactionId: number;
   totalTagihan: number;
   uangMuka: number;
-  tenor: number;
+  jumlahCicilan: number;
   periode: number;
   status: TempoStatusType;
   installments: Omit<ITempoInstallmentType, "tempoId">[];
@@ -22,7 +23,7 @@ export interface ITempo {
 // create
 export interface CreateTempoType extends Pick<
   ITempo,
-  "uangMuka" | "tenor" | "periode"
+  "uangMuka" | "jumlahCicilan" | "periode"
 > {
   startDate?: string;
 }
@@ -30,4 +31,29 @@ export interface CreateTempoType extends Pick<
 // data tempo
 export interface DataTempoType extends CreateTempoType {
   installments: CreateInstallmentType[];
+}
+
+export interface DataTempoForResponseType {
+  id: number;
+  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
+  totalTransaksiTempo: number;
+  tagihanBelumLunas: number;
+  tagihanLunas: number;
+  jatuhTempoTerdekat: Date | undefined;
+  status: TempoStatusType;
+}
+
+// response tempo with pelanggan
+export interface ResponseTempoWithPelangganWithMetaType {
+  data: DataTempoForResponseType[];
+  meta: MetaType;
+}
+
+// response statistik
+export interface ResponseStatistikTempo {
+  totalPelanggan: number;
+  totalTagihanBelumSelesai: number;
+  totalTagihanSelesai: number;
+  totalTransaksiKredit: number;
+  totalTagihanJatuhTempo: number;
 }

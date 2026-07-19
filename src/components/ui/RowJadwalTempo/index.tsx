@@ -58,7 +58,7 @@ const RowJadwaTempo: FC<Props> = ({ aksi, dataTempo, maxHeight }) => {
         {/* rows data */}
         <div
           className={cn(
-            "w-full flex flex-col justify-start items-start overflow-y-auto scrollbar-thumb-custom-secondary",
+            "w-full flex flex-col justify-start items-start overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary",
             maxHeight ? maxHeight : "max-h-60 ",
           )}
         >

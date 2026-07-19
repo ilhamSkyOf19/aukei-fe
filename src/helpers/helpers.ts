@@ -1,3 +1,5 @@
+import { differenceInCalendarDays } from "date-fns";
+
 export const highlightName = (name: string) => {
   const words = name.split(" ");
 
@@ -268,4 +270,18 @@ export const getWeekFromPeriod = (days: number): number => {
   if (days <= 0) return 0;
 
   return Math.ceil(days / 7);
+};
+
+export const getJatuhTempoTextColor = (jatuhTempo: Date | string) => {
+  const sisaHari = differenceInCalendarDays(new Date(jatuhTempo), new Date());
+
+  if (sisaHari <= 3) {
+    return "text-rose-500";
+  }
+
+  if (sisaHari <= 7) {
+    return "text-amber-500";
+  }
+
+  return "text-emerald-500";
 };

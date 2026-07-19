@@ -24,6 +24,7 @@ const StatusTempo: FC<Props> = ({ setStatusTempo, customWidth, value }) => {
           { value: "unpaid", label: "Belum Lunas" },
           { value: "paid", label: "Lunas" },
           { value: "overdue", label: "Terlambat" },
+          { value: "partial", label: "Berjalan" },
           { value: "semua", label: "Semua" },
         ]}
         placeholder="Status Tempo"

@@ -3,7 +3,7 @@ import type { FieldValues, UseControllerReturn } from "react-hook-form";
 import { cn } from "../../../utils/cn";
 import ErrorMessage from "../../messages/ErrorMessage";
 import {
-  formatRupiah,
+  formatNumber,
   maxValue,
   unformatRupiah,
 } from "../../../helpers/helpers";
@@ -35,7 +35,7 @@ export default function InputPrice<T extends FieldValues = any>({
 
   useEffect(() => {
     if (field.value !== undefined && field.value !== null) {
-      setDisplayValue(formatRupiah(String(field.value)));
+      setDisplayValue(formatNumber(String(field.value)));
     } else {
       setDisplayValue("");
     }
@@ -77,7 +77,7 @@ export default function InputPrice<T extends FieldValues = any>({
 
             const value = maxValue(raw, max ?? 10000000);
 
-            setDisplayValue(formatRupiah(value));
+            setDisplayValue(formatNumber(value));
 
             field.onChange(value === "" ? null : Number(value));
           }}

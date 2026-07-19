@@ -31,7 +31,7 @@ export class TempoValidations {
     .object({
       periode: this.integerSchema("periode", 1, 60),
 
-      tenor: this.integerSchema("tenor", 1, 12),
+      jumlahCicilan: this.integerSchema("jumlahCicilan", 1, 12),
 
       startDate: z
         .string()

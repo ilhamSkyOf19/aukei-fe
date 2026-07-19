@@ -45,7 +45,7 @@ const ModalTempoPayment: FC<Props> = ({
   // call use
   const {
     dataTempo,
-    tenorController,
+    jumlahCicilanController,
     uangMukaController,
     finalTotal,
     periodeController,
@@ -65,7 +65,7 @@ const ModalTempoPayment: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box lg:w-3/6 rounded-xl max-w-5xl max-h-[95vh] bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box lg:w-3/6 rounded-xl max-w-5xl max-h-[95vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin scrollbar-thumb-custom-secondary">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
@@ -157,8 +157,8 @@ const ModalTempoPayment: FC<Props> = ({
               <div className="w-full flex flex-row justify-between gap-2 items-center">
                 {/* tenor */}
                 <InputNumber<CreateTempoType>
-                  controller={tenorController}
-                  label="Tenor"
+                  controller={jumlahCicilanController}
+                  label="Jumlah Cicilan"
                   placeholder="Contoh: 4"
                   required
                   max={12}

@@ -16,7 +16,7 @@ import TitleModalFormulir from "../../../../components/ui/TitleModalFormulir";
 import usePembayaran from "./usePembayaran";
 import type { FC } from "react";
 import { cn } from "../../../../utils/cn";
-import { formatRupiah } from "../../../../helpers/helpers";
+import { formatRupiah, getWeekFromPeriod } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
@@ -432,13 +432,13 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                             {metodePembayaran === "CASH" && "Tunai"}
                             {metodePembayaran === "QRIS" && "QRIS"}
                             {metodePembayaran === "TRANSFER" && "Transfer"}
-                            {metodePembayaran === "TEMPO" && "Kredit Selama"}
+                            {metodePembayaran === "TEMPO" && "Tenor"}
                           </span>
                         </div>
-                        <span className="text-xs font-medium text-base-content">
+                        <span className="text-[0.7rem] font-medium text-base-content">
                           {metodePembayaran === "TEMPO"
-                            ? dataTempo?.tenor
-                              ? `${dataTempo?.tenor} Minggu`
+                            ? dataTempo?.periode
+                              ? `${dataTempo?.periode * dataTempo.jumlahCicilan} Hari / ${getWeekFromPeriod(dataTempo?.periode * dataTempo.jumlahCicilan)} Minggu`
                               : "-"
                             : formatRupiah(dataDiBayar)}
                         </span>
@@ -501,7 +501,9 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                   <span className="text-xs font-medium">
                     Ringkasan Jadwal Cicilan{" "}
                     <span>
-                      {dataTempo?.tenor ? `(${dataTempo?.tenor}x)` : "-"}
+                      {dataTempo?.jumlahCicilan
+                        ? `(${dataTempo?.jumlahCicilan}x)`
+                        : "-"}
                     </span>
                   </span>
                 </div>
@@ -514,7 +516,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                           key={item.cicilanKe}
                           className={cn(
                             "w-full grid grid-cols-7 pb-1",
-                            item.cicilanKe !== dataTempo?.tenor &&
+                            item.cicilanKe !== dataTempo?.jumlahCicilan &&
                               "border-b border-base-content/10",
                           )}
                         >

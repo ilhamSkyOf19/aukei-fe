@@ -61,7 +61,7 @@ export interface CreateTransactionForRequestType extends Pick<
 
 export interface ResponseFieldTempo extends Pick<
   ITempo,
-  "id" | "periode" | "totalTagihan" | "uangMuka" | "tenor"
+  "id" | "periode" | "totalTagihan" | "uangMuka" | "jumlahCicilan" | "status"
 > {
   installments: Pick<
     ITempoInstallmentType,

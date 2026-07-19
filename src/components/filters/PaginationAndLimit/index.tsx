@@ -42,7 +42,7 @@ export default function PaginationAndLimit({
   return (
     <div
       className={cn(
-        "w-full flex flex-col gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm md:gap-0 md:flex-row items-center mt-2.5 md:mt-4 relative p-2 rounded-2xl md:rounded-xl shrink-0",
+        "w-full flex flex-col gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm md:gap-0 md:flex-row items-center mt-2.5 relative p-2 rounded-2xl md:rounded-xl shrink-0",
         totalPage! < 2 && setLimit && "h-15",
         customPositionPagination === "end" ? "justify-end" : "justify-center",
         emptyData && "hidden",

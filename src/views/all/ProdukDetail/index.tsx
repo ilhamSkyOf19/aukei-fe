@@ -11,7 +11,6 @@ import {
   X,
 } from "lucide-react";
 import ButtonActionWithIcon from "../../../components/ui/button/ButtonActionWithIcon";
-import useProdukDetail from "./useProdukDetail";
 import {
   formatNumber,
   formatRupiah,
@@ -32,6 +31,7 @@ import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_PRODUK_DETAIL } from "../../../types/toast.type";
 import ModalDelete from "../../../components/modals/ModalDelete";
 import ButtonInline from "../../../components/ui/button/ButtonInline";
+import useProdukDetail from "./useProdukDetail";
 
 const ProdukDetail = () => {
   // call use

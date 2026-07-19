@@ -23,6 +23,9 @@ import PengajuanBarangMasukDetailPage from "../pages/PengajuanBarangMasukDetailP
 import PengajuanBarangKeluarDetailPage from "../pages/PengajuanBarangKeluarDetailPage";
 import PengajuanBarangMasukPage from "../pages/PengajuanBarangMasukPage";
 import PengajuanBarangKeluarPage from "../pages/PengajuanBarangKeluarPage";
+import KreditPage from "../pages/KreditPage";
+import BookingPage from "../pages/BookingPage";
+import KreditDetailPage from "../pages/KreditDetailPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -298,6 +301,28 @@ const route = createBrowserRouter([
           {
             path: ":keranjangId",
             element: <KasirPage isUpdateKeranjang />,
+          },
+        ],
+      },
+      {
+        path: "kredit",
+        children: [
+          {
+            index: true,
+            element: <KreditPage />,
+          },
+          {
+            path: "detail/:id",
+            element: <KreditDetailPage />,
+          },
+        ],
+      },
+      {
+        path: "booking",
+        children: [
+          {
+            index: true,
+            element: <BookingPage />,
           },
         ],
       },

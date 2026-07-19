@@ -293,7 +293,7 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                 <div className="flex flex-row justify-start items-start gap-1">
                   <span className="text-emerald-600 font-semibold text-xs">
                     {transactionSummary.totalJumlahBarangDikirim > 0
-                      ? formatRupiah(
+                      ? formatNumber(
                           transactionSummary.totalJumlahBarangDikirim,
                         )
                       : 0}
@@ -332,7 +332,7 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                 <div className="flex flex-row justify-start items-start gap-1">
                   <span className="text-blue-600 font-semibold text-xs">
                     {transactionSummary.totalJumlahBarangBooking > 0
-                      ? formatRupiah(
+                      ? formatNumber(
                           transactionSummary.totalJumlahBarangBooking,
                         )
                       : 0}

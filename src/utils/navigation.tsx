@@ -1,7 +1,9 @@
 import type { ElementType } from "react";
 import {
   Boxes,
+  CalendarDays,
   ChartLine,
+  Clock,
   History,
   LayoutDashboard,
   LucideArrowLeftSquare,
@@ -73,6 +75,16 @@ export const NAVIGATION_LIST_KASIR: {
     label: "Keranjang",
     icon: ShoppingCart,
     link: "/dashboard/keranjang",
+  },
+  {
+    label: "Kredit",
+    icon: CalendarDays,
+    link: "/dashboard/kredit",
+  },
+  {
+    label: "Booking",
+    icon: Clock,
+    link: "/dashboard/booking",
   },
   {
     label: "Pengajuan Barang Masuk",

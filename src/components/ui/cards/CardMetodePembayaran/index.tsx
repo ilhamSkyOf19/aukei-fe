@@ -56,7 +56,7 @@ const CardMetodePembayaran: FC<CardMetodePembayaranProps> = ({
             {label}
           </span>
           {!noDeskripsi && (
-            <span className="text-[0.625rem] font-medium text-base-content/50">
+            <span className="text-[0.625rem] font-medium text-base-content/50 text-left">
               {description}
             </span>
           )}
