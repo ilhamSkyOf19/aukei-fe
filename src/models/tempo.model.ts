@@ -11,7 +11,7 @@ export interface ITempo {
   totalTagihan: number;
   uangMuka: number;
   tenor: number;
-  jumlahCicilan: number;
+  periode: number;
   status: TempoStatusType;
   installments: Omit<ITempoInstallmentType, "tempoId">[];
   payments: Omit<ITempoPaymentType, "tempoId">[];
@@ -22,8 +22,10 @@ export interface ITempo {
 // create
 export interface CreateTempoType extends Pick<
   ITempo,
-  "uangMuka" | "jumlahCicilan" | "tenor"
-> {}
+  "uangMuka" | "tenor" | "periode"
+> {
+  startDate?: string;
+}
 
 // data tempo
 export interface DataTempoType extends CreateTempoType {

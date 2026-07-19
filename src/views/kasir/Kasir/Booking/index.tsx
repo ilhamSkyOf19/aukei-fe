@@ -71,8 +71,6 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
 
     isPendingTransaction,
 
-    setDataDiBayar,
-
     dataDiBayar,
 
     setDataDp,
@@ -700,10 +698,15 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
 
       {/* modal formulir tempo */}
       <ModalTempoPayment
-        data={{ total: dataDp ?? transactionSummary.saranDp }}
+        data={{
+          total: transactionSummary.totalUangTransaksi,
+          dp: dataDp ?? transactionSummary.saranDp,
+        }}
         modalRef={modalTempoRef}
         handleCloseModal={handleCloseModalTempo}
+        handleShowModal={handleShowModalTempo}
         handleSetDataTempo={setDataTempo}
+        booking
       />
 
       {/* modal confirm */}

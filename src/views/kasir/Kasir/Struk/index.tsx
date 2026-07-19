@@ -12,7 +12,11 @@ import {
   QrCode,
   Undo,
 } from "lucide-react";
-import { formatNumberPhone, formatRupiah } from "../../../../helpers/helpers";
+import {
+  formatNumberPhone,
+  formatRupiah,
+  getWeekFromPeriod,
+} from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import RowJadwaTempo from "../../../../components/ui/RowJadwalTempo";
 
@@ -229,13 +233,13 @@ const Struk: FC<Props> = ({ handleSteps }) => {
                 ) : (
                   <>
                     <CardInformasiTransaksi
-                      label="Tenor"
-                      value={`${dataTransaction?.data?.tempo?.tenor ?? 0} Minggu`}
+                      label="Periode"
+                      value={`${dataTransaction?.data?.tempo?.periode ?? 0} Hari / ${getWeekFromPeriod(dataTransaction?.data?.tempo?.periode ?? 0)} Minggu`}
                     />
 
                     <CardInformasiTransaksi
-                      label="Jumlah Cicilan"
-                      value={`${dataTransaction?.data?.tempo?.jumlahCicilan ?? 0} Kali`}
+                      label="Jumlah Tenor"
+                      value={`${dataTransaction?.data?.tempo?.tenor ?? 0} Kali`}
                     />
 
                     <CardInformasiTransaksi

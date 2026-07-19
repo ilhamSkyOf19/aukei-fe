@@ -263,3 +263,9 @@ export const formatRupiahChartValue = (value: number) => {
 
   return `${prefix}${absValue}`;
 };
+
+export const getWeekFromPeriod = (days: number): number => {
+  if (days <= 0) return 0;
+
+  return Math.ceil(days / 7);
+};

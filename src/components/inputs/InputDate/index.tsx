@@ -1,7 +1,7 @@
 import "react-day-picker/style.css";
 
 import { DayPicker } from "react-day-picker";
-import { format, setHours, setMinutes } from "date-fns";
+import { endOfDay, format, setHours, setMinutes } from "date-fns";
 import { useEffect, useState } from "react";
 import type { FieldValues, UseControllerReturn } from "react-hook-form";
 import { cn } from "../../../utils/cn";
@@ -13,6 +13,9 @@ type Props<T extends FieldValues> = {
   disabled?: boolean;
   required?: boolean;
   xs?: boolean;
+  noTime?: {
+    endTime?: boolean;
+  };
 };
 
 export const InputDate = <T extends FieldValues>({
@@ -21,6 +24,7 @@ export const InputDate = <T extends FieldValues>({
   disabled,
   required,
   xs,
+  noTime,
 }: Props<T>) => {
   const {
     field,
@@ -98,25 +102,27 @@ export const InputDate = <T extends FieldValues>({
         </>
       )}
 
-      <div
-        className={cn(
-          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-40 focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 ",
-          xs ? "h-7 lg:h-8 px-2.5" : "h-9 lg:h-10 px-3",
-          error && "border-error",
-          label && "mt-2",
-        )}
-      >
-        <input
-          type="time"
-          value={timeValue}
-          onChange={handleTimeChange}
-          disabled={disabled}
+      {!noTime && (
+        <div
           className={cn(
-            "w-full font-medium text-base-content h-full border-none outline-none placeholder:text-base-content/50 placeholder:font-light",
-            xs ? "text-[0.625rem]" : "text-xs",
+            "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-40 focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 ",
+            xs ? "h-7 lg:h-8 px-2.5" : "h-9 lg:h-10 px-3",
+            error && "border-error",
+            label && "mt-2",
           )}
-        />
-      </div>
+        >
+          <input
+            type="time"
+            value={timeValue}
+            onChange={handleTimeChange}
+            disabled={disabled}
+            className={cn(
+              "w-full font-medium text-base-content h-full border-none outline-none placeholder:text-base-content/50 placeholder:font-light",
+              xs ? "text-[0.625rem]" : "text-xs",
+            )}
+          />
+        </div>
+      )}
 
       <div className="scale-85 origin-top-left">
         <DayPicker
@@ -129,7 +135,10 @@ export const InputDate = <T extends FieldValues>({
 
       {selected && (
         <p className="text-xs text-base-content font-medium -mt-8 py-3 px-3 border rounded-xl border-base-content/50">
-          Tanggal Pilih: {selected.toLocaleString()}
+          Tanggal Pilih:{" "}
+          {noTime?.endTime
+            ? endOfDay(selected).toLocaleString()
+            : selected.toLocaleString()}
         </p>
       )}
 

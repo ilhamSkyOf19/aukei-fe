@@ -124,7 +124,8 @@
 
 - [✅] Memberikan modal pesan error agar menggunakan booking , jika stok tidak cukup
 
-- [40%] Membuat fitur booking
+- [70%] Membuat fitur booking
+  - [ ] Metode pembayaran tempo
 
 - [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
 

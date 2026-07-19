@@ -29,9 +29,16 @@ export class TempoValidations {
 
   static readonly CREATE = z
     .object({
-      tenor: this.integerSchema("tenor", 1, 60),
+      periode: this.integerSchema("periode", 1, 60),
 
-      jumlahCicilan: this.integerSchema("jumlahCicilan", 1, 12),
+      tenor: this.integerSchema("tenor", 1, 12),
+
+      startDate: z
+        .string()
+        .refine((date) => !isNaN(new Date(date).getTime()), {
+          message: "tanggal mulai harus berupa tanggal valid",
+        })
+        .optional(),
 
       uangMuka: this.numberSchema("uang muka"),
     })

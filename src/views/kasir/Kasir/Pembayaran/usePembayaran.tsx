@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  PAYMENT_METHOD_TYPE,
   type ErrorType,
   type PaymentMethodType,
 } from "../../../../types/constant.type";
@@ -235,7 +236,10 @@ const usePembayaran = (params: {
           produkId: item.produkId,
           quantity: item.quantity,
         })),
-        diBayar: dataDiBayar,
+        diBayar:
+          metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO
+            ? (dataTempo?.uangMuka ?? 0)
+            : dataDiBayar,
         kembalian: dataDiBayar - totalAfterDiskon,
         metodePembayaran: metodePembayaran,
         pelangganId: pelanggan.id,
@@ -269,6 +273,7 @@ const usePembayaran = (params: {
     localStorage.removeItem("metode-pembayaran");
     localStorage.removeItem("pelanggan");
     localStorage.removeItem("data-from-keranjang");
+    localStorage.removeItem("tempo");
     handleSteps(1);
   };
 

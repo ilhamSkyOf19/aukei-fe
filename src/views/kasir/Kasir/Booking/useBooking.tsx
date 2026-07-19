@@ -414,8 +414,6 @@ const useBooking = (params: {
 
     isPendingTransaction,
 
-    setDataDiBayar,
-
     dataDiBayar,
 
     setDataDp,

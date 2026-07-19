@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useController, useForm, useWatch } from "react-hook-form";
 import type {
   CreateTempoType,
@@ -10,16 +10,19 @@ import { addDaysHandler } from "../../../helpers/helpers";
 import type { CreateInstallmentType } from "../../../models/tempoInstallment.model";
 import useDebounce from "../../../hooks/useDebounce";
 import { useLocation, useNavigate } from "react-router-dom";
+import useModal from "../../../hooks/useModal";
 
 const useModalTempoPayment = (params: {
-  data: { total: number };
+  data: { total: number; dp?: number };
   handleCloseModal: () => void;
   handleSetDataTempo: (data: DataTempoType) => void;
+  booking?: boolean;
 }) => {
   const {
-    data: { total },
+    data: { total, dp },
     handleCloseModal,
     handleSetDataTempo,
+    booking,
   } = params;
 
   // navigate
@@ -28,10 +31,26 @@ const useModalTempoPayment = (params: {
   // current pathname
   const currentPathname = useLocation().pathname;
 
+  // modal input tanggal
+  const {
+    modalRef: modalInputTanggalRef,
+    handleShowModal: handleShowModalInputTanggal,
+    handleCloseModal: handleCLoseModalInputTanggal,
+  } = useModal();
+
   // use form
-  const { control, setValue } = useForm<CreateTempoType>({
+  const { control, setValue, reset } = useForm<CreateTempoType>({
     resolver: zodResolver(TempoValidations.CREATE),
   });
+
+  // set uang muka
+  useEffect(() => {
+    if (!booking) return;
+
+    reset({
+      uangMuka: dp ?? 0,
+    });
+  }, [booking, total, reset]);
 
   // uang muka controller
   const uangMukaController = useController({
@@ -39,22 +58,34 @@ const useModalTempoPayment = (params: {
     name: "uangMuka",
   });
 
-  //   tenor controller
+  //   periode controller
+  const periodeController = useController({
+    control,
+    name: "periode",
+  });
+
+  // tenor cicilan
   const tenorController = useController({
     control,
     name: "tenor",
   });
 
-  // jumlah cicilan
-  const jumlahCicilanController = useController({
+  // start date
+  const startDateController = useController({
     control,
-    name: "jumlahCicilan",
+    name: "startDate",
   });
 
-  //   use watch tenor
-  const tenorWatch = useWatch({
+  //   use watch periode
+  const periodeWatch = useWatch({
     control,
-    name: "tenor",
+    name: "periode",
+  });
+
+  //   use watch start date
+  const startDateWatch = useWatch({
+    control,
+    name: "startDate",
   });
 
   //   use watch uang muka
@@ -63,16 +94,16 @@ const useModalTempoPayment = (params: {
     name: "uangMuka",
   });
 
-  // use watch jumlah cicilan
-  const jumlahCicilanWatch = useWatch({
+  // use watch tenor
+  const tenorWatch = useWatch({
     control,
-    name: "jumlahCicilan",
+    name: "tenor",
   });
 
   // debounce
   const debouncedUangMuka = useDebounce(uangMukaWatch, 300);
 
-  const debouncedJumlahCicilan = useDebounce(jumlahCicilanWatch, 300);
+  const debouncedTenor = useDebounce(tenorWatch, 300);
 
   // total final
   const finalTotal = useMemo(() => {
@@ -90,35 +121,35 @@ const useModalTempoPayment = (params: {
   const dataTempo: CreateInstallmentType[] = useMemo<
     CreateInstallmentType[]
   >(() => {
-    if (!tenorWatch || finalTotal.sisa <= 0 || !debouncedJumlahCicilan) {
+    if (!periodeWatch || finalTotal.sisa <= 0 || !debouncedTenor) {
       return [];
     }
 
-    const nominal = Math.floor(finalTotal.sisa / debouncedJumlahCicilan);
+    const nominal = Math.floor(finalTotal.sisa / debouncedTenor);
 
-    return Array.from({ length: debouncedJumlahCicilan }, (_, index) => ({
+    return Array.from({ length: debouncedTenor }, (_, index) => ({
       cicilanKe: index + 1,
       jatuhTempo: addDaysHandler({
-        days: (index + 1) * tenorWatch,
-        date: new Date(),
+        days: (index + 1) * periodeWatch,
+        date: new Date(startDateWatch ?? new Date()),
       }),
       nominal,
     }));
-  }, [finalTotal, tenorWatch, debouncedJumlahCicilan]);
+  }, [finalTotal, periodeWatch, debouncedTenor, startDateWatch]);
 
   // is empty
   const isEmpty: boolean = useMemo(() => {
-    if (!dataTempo || !tenorWatch || !debouncedJumlahCicilan) return true;
+    if (!dataTempo || !tenorWatch || !debouncedTenor) return true;
     else return false;
-  }, [dataTempo, tenorWatch, debouncedJumlahCicilan]);
+  }, [dataTempo, tenorWatch, debouncedTenor]);
 
   // handle local storage
   const handleSimpan = () => {
     if (isEmpty) return;
 
     const finalData: DataTempoType = {
-      jumlahCicilan: debouncedJumlahCicilan,
-      tenor: tenorWatch,
+      tenor: debouncedTenor,
+      periode: periodeWatch,
       uangMuka: debouncedUangMuka ?? 0,
       installments: dataTempo,
     };
@@ -145,10 +176,16 @@ const useModalTempoPayment = (params: {
     dataTempo,
     tenorController,
     uangMukaController,
-    jumlahCicilanController,
+    periodeController,
     finalTotal,
     handleSimpan,
     isEmpty,
+    startDateController,
+    setValue,
+
+    modalInputTanggalRef,
+    handleShowModalInputTanggal,
+    handleCLoseModalInputTanggal,
   };
 };
 

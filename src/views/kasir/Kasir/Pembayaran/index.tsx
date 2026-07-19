@@ -432,7 +432,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                             {metodePembayaran === "CASH" && "Tunai"}
                             {metodePembayaran === "QRIS" && "QRIS"}
                             {metodePembayaran === "TRANSFER" && "Transfer"}
-                            {metodePembayaran === "TEMPO" && "Kredit"}
+                            {metodePembayaran === "TEMPO" && "Kredit Selama"}
                           </span>
                         </div>
                         <span className="text-xs font-medium text-base-content">
@@ -501,9 +501,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                   <span className="text-xs font-medium">
                     Ringkasan Jadwal Cicilan{" "}
                     <span>
-                      {dataTempo?.jumlahCicilan
-                        ? `(${dataTempo?.jumlahCicilan}x)`
-                        : "-"}
+                      {dataTempo?.tenor ? `(${dataTempo?.tenor}x)` : "-"}
                     </span>
                   </span>
                 </div>
@@ -516,7 +514,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                           key={item.cicilanKe}
                           className={cn(
                             "w-full grid grid-cols-7 pb-1",
-                            item.cicilanKe !== dataTempo?.jumlahCicilan &&
+                            item.cicilanKe !== dataTempo?.tenor &&
                               "border-b border-base-content/10",
                           )}
                         >
@@ -592,6 +590,7 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
         data={{ total: totalAfterDiskon }}
         modalRef={modalTempoRef}
         handleCloseModal={handleCloseModalTempo}
+        handleShowModal={handleShowModalTempo}
         handleSetDataTempo={handleSetDataTempo}
       />
     </div>
