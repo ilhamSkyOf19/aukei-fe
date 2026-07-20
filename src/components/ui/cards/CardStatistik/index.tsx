@@ -1,6 +1,8 @@
 import { ArrowDown, ArrowUp, CircleAlert, type LucideIcon } from "lucide-react";
 import { cn } from "../../../../utils/cn";
 import type { FC } from "react";
+import type { TempoStatusType } from "../../../../types/constant.type";
+import StatusTransaction from "../../StatusTransaction";
 
 // card statistik
 type Props = {
@@ -21,6 +23,7 @@ type Props = {
   };
   isLoading?: boolean;
   withAlert?: string;
+  statusTempo?: TempoStatusType;
 };
 const CardStatistik: FC<Props> = ({
   icon,
@@ -31,9 +34,17 @@ const CardStatistik: FC<Props> = ({
   isLoading,
   withAlert,
   minus,
+  statusTempo,
 }) => {
   return (
-    <div className="grid-cols-1 flex gap-2 flex-col justify-start items-start border border-base-content/10 rounded-2xl md:rounded-xl p-2">
+    <div className="grid-cols-1 flex gap-2 flex-col justify-start items-start border border-base-content/10 rounded-2xl md:rounded-xl p-2 relative">
+      {/* status transaction */}
+      {statusTempo && (
+        <div className="absolute top-1 right-2">
+          <StatusTransaction statusTempo={statusTempo} />
+        </div>
+      )}
+
       <div className=" flex flex-row justify-start items-start gap-2.5">
         {/* icon */}
         <div className="flex-1 flex flex-row justify-start items-center">

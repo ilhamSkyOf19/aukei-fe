@@ -43,7 +43,8 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
         "navbar w-full bg-base-100 shadow-sm flex flex-row justify-between items-center relative border-b border-base-content/10",
         pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
           (currentPathname.includes("kasir") ||
-            currentPathname.includes("keranjang")) &&
+            currentPathname.includes("keranjang") ||
+            currentPathname.includes("kredit")) &&
           "hidden",
       )}
     >

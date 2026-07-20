@@ -4,6 +4,7 @@ import {
   Clock,
   Coins,
   Receipt,
+  ReceiptText,
   UsersRound,
 } from "lucide-react";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
@@ -50,14 +51,14 @@ const Kredit = () => {
     <div className="w-full h-screen overflow-y-auto">
       <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-center">
         {/* statistik */}
-        <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
           <CardStatistik
             icon={{
-              icon: Receipt,
+              icon: ReceiptText,
               bgColor: "bg-purple-50",
               iconColor: "text-purple-600",
             }}
-            label="Total Transaksi"
+            label="Total transaksi kredit"
             value={
               dataStatistikTempo?.data?.totalTransaksiKredit &&
               dataStatistikTempo?.data?.totalTransaksiKredit > 0
@@ -70,7 +71,7 @@ const Kredit = () => {
                     )
                 : "0"
             }
-            caption="Total transaksi kredit"
+            caption="Seluruh transaksi dengan metode kredit."
             isLoading={isLoadingStatistikTempo}
           />
 
@@ -80,7 +81,7 @@ const Kredit = () => {
               bgColor: "bg-emerald-50",
               iconColor: "text-emerald-600",
             }}
-            label="Total Pelanggan"
+            label="Total pelanggan kredit"
             value={
               dataStatistikTempo?.data?.totalPelanggan &&
               dataStatistikTempo?.data?.totalPelanggan > 0
@@ -89,7 +90,7 @@ const Kredit = () => {
                   : formatNumber(dataStatistikTempo?.data?.totalPelanggan ?? 0)
                 : "0"
             }
-            caption="Total pelanggan kredit"
+            caption="Pelanggan yang menggunakan kredit."
             isLoading={isLoadingStatistikTempo}
           />
 
@@ -99,7 +100,7 @@ const Kredit = () => {
               bgColor: "bg-blue-50",
               iconColor: "text-blue-400",
             }}
-            label="Total Tagihan"
+            label="Total Tagihan Keseluruhan"
             value={
               windowSize === "sm"
                 ? formatRupiahShort(
@@ -111,7 +112,7 @@ const Kredit = () => {
                       (dataStatistikTempo?.data?.totalTagihanSelesai ?? 0),
                   )
             }
-            caption="Keseluruhan"
+            caption="Akumulasi seluruh nilai tagihan kredit."
             isLoading={isLoadingStatistikTempo}
           />
 
@@ -121,7 +122,7 @@ const Kredit = () => {
               bgColor: "bg-amber-50",
               iconColor: "text-amber-400",
             }}
-            label="Total Tagihan"
+            label="Total Tagihan Belum lunas"
             value={
               windowSize === "sm"
                 ? formatRupiahShort(
@@ -131,7 +132,7 @@ const Kredit = () => {
                     dataStatistikTempo?.data?.totalTagihanBelumSelesai ?? 0,
                   )
             }
-            caption="Belum lunas"
+            caption="Sisa tagihan yang masih harus dibayar."
             isLoading={isLoadingStatistikTempo}
           />
           <CardStatistik
@@ -140,7 +141,8 @@ const Kredit = () => {
               bgColor: "bg-emerald-50",
               iconColor: "text-emerald-400",
             }}
-            label="Total Tagihan"
+            label="Total Tagihan Sudah lunas"
+            caption="Tagihan yang telah dilunasi sepenuhnya."
             value={
               windowSize === "sm"
                 ? formatRupiahShort(
@@ -150,7 +152,6 @@ const Kredit = () => {
                     dataStatistikTempo?.data?.totalTagihanSelesai ?? 0,
                   )
             }
-            caption="Sudah lunas"
           />
           <CardStatistik
             icon={{
@@ -158,7 +159,8 @@ const Kredit = () => {
               bgColor: "bg-rose-50",
               iconColor: "text-rose-400",
             }}
-            label="Total Tagihan"
+            label="Total Tagihan Jatuh Tempo"
+            caption="Tagihan yang telah melewati jatuh tempo."
             value={
               dataStatistikTempo?.data?.totalTagihanJatuhTempo &&
               dataStatistikTempo.data.totalTagihanJatuhTempo > 0
@@ -171,7 +173,6 @@ const Kredit = () => {
                     )
                 : "0"
             }
-            caption="Jatuh Tempo"
           />
         </div>
 
@@ -236,7 +237,7 @@ const Kredit = () => {
           <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
             {/* head */}
             <thead>
-              <tr className="h-12 bg-base-100 text-xs">
+              <tr className="h-12 bg-base-200 text-xs">
                 <th>Pelanggan</th>
                 <th>Total Transaksi</th>
                 <th>Belum Lunas</th>

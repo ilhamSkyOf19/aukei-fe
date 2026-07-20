@@ -2,6 +2,7 @@ import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
   ResponseStatistikTempo,
+  ResponseTempoWithInstallment,
   ResponseTempoWithPelangganDetailWithMetaType,
   ResponseTempoWithPelangganWithMetaType,
 } from "../models/tempo.model";
@@ -39,6 +40,18 @@ export class TempoService {
     >(`/tempo/pelanggan/${params.id}`, {
       params: params.query,
     });
+
+    return result.data;
+  }
+
+  // find with installmenst by tempo id
+  static async findWithInstallmenstByTempoId(params: {
+    id: number;
+  }): Promise<ResponseStructure<ResponseTempoWithInstallment | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseTempoWithInstallment | null>
+    >(`/tempo/${params.id}`, {});
 
     return result.data;
   }

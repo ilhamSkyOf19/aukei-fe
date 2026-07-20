@@ -35,7 +35,7 @@ const DashboardLayout: FC = () => {
           />
 
           {/* content */}
-          <main className="w-full h-screen md:h-auto overflow-y-auto">
+          <main className="w-full h-screen md:h-auto overflow-y-auto scrollbar-thumb-custom-secondary">
             <Outlet context={{ handleTitle }} />
 
             {/* toast offline */}

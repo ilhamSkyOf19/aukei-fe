@@ -68,6 +68,7 @@ const KreditDetail = () => {
     setSearch,
     setSort,
     sort,
+    handleRedirectDetail,
   } = useKreditDetail();
 
   return (
@@ -89,8 +90,10 @@ const KreditDetail = () => {
                 Kembali
               </span>
             </button>
+          </div>
 
-            <div className="col-span-2 flex flex-row justify-start items-center gap-4 border p-2 rounded-lg border-base-content/10">
+          <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <div className="col-span-1 flex flex-row justify-start items-center gap-4 border p-2 rounded-lg border-base-content/10">
               <Avatar
                 nama={dataStatistikTempo?.data?.pelanggan?.nama ?? ""}
                 index={dataStatistikTempo?.data?.pelanggan?.id}
@@ -123,9 +126,7 @@ const KreditDetail = () => {
                 </span>
               </div>
             </div>
-          </div>
 
-          <div className="w-full grid grid-cols-2 lg:grid-cols-5 gap-2.5">
             <CardStatistik
               icon={{
                 icon: Receipt,
@@ -287,6 +288,7 @@ const KreditDetail = () => {
                 status={item.status}
                 tanggal={item.tanggalTransaksi}
                 totalTagihan={item.totalTagihan}
+                handleRedirectDetail={() => handleRedirectDetail(item.id)}
               />
             ))
           ) : (
@@ -305,7 +307,7 @@ const KreditDetail = () => {
           <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
             {/* head */}
             <thead>
-              <tr className="h-12 bg-base-100 text-xs">
+              <tr className="h-12 bg-base-200 text-xs">
                 <th>No. Transaksi</th>
                 <th>Total Tagihan</th>
                 <th>Belum Lunas</th>
@@ -404,7 +406,7 @@ const KreditDetail = () => {
                       <button
                         type="button"
                         className="text-info hover:underline"
-                        onClick={() => {}}
+                        onClick={() => handleRedirectDetail(item.id)}
                       >
                         detail
                       </button>
@@ -479,6 +481,7 @@ type CardDataProps = {
   jumlahCicilan: number;
   status: TempoStatusType;
   periode: number;
+  handleRedirectDetail: () => void;
 };
 const CardData: FC<CardDataProps> = ({
   jumlahCicilan,
@@ -488,12 +491,13 @@ const CardData: FC<CardDataProps> = ({
   totalTagihan,
   status,
   periode,
+  handleRedirectDetail,
 }) => {
   return (
     <button
       type="button"
       className="w-full flex flex-row justify-between items-center p-2 rounded-2xl border border-base-content/10 hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out"
-      onClick={() => {}}
+      onClick={() => handleRedirectDetail()}
     >
       <div className="flex flex-row justify-start items-center gap-2.5">
         {/* icon */}

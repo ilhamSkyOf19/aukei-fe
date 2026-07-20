@@ -50,7 +50,7 @@ const ModalCashPayment: FC<Props> = ({
           {/* LEFT */}
           <div className="p-6 border-r border-base-content/10">
             {/* total tagihan */}
-            <div className="flex items-center gap-3 border-b border-base-content/10 pb-4">
+            <div className="flex items-center gap-3 border-b-2 border-base-content/30 border-dashed pb-4">
               <div className="flex-1 flex flex-row justify-start items-center gap-4">
                 <ReceiptText className="size-6 text-base-content" />
                 <p className="text-sm font-medium">TOTAL TAGIHAN</p>
@@ -63,7 +63,7 @@ const ModalCashPayment: FC<Props> = ({
               </div>
             </div>
 
-            <div className="w-full flex flex-col justify-start items-start mt-4">
+            <div className="w-full flex flex-col justify-start items-start mt-2.5">
               <div className="w-full flex flex-row  justify-between items-center py-2">
                 <div className=" flex flex-row justify-start items-center gap-4">
                   {/*icon  */}
@@ -73,7 +73,7 @@ const ModalCashPayment: FC<Props> = ({
                   </span>
                 </div>
 
-                <span className="text-base font-semibold text-info">
+                <span className="text-lg font-medium text-info">
                   {formatRupiah(amount)}
                 </span>
               </div>
@@ -87,7 +87,7 @@ const ModalCashPayment: FC<Props> = ({
                   </span>
                 </div>
 
-                <span className="text-base font-semibold text-success">
+                <span className="text-lg font-medium text-success">
                   {formatRupiah(change)}
                 </span>
               </div>

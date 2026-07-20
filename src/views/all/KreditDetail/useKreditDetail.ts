@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useQueries } from "@tanstack/react-query";
 import { TempoService } from "../../../services/tempo.service";
@@ -14,6 +14,9 @@ const useKreditDetail = () => {
   const windowSize = useSizeWindows();
 
   const navigate = useNavigate();
+
+  // current pathname
+  const currentPathname = useLocation().pathname;
 
   const validatedId = parseId(id);
 
@@ -97,6 +100,11 @@ const useKreditDetail = () => {
         : false
       : false;
 
+  // handle redirect
+  const handleRedirectDetail = (id: number) => {
+    return navigate(`${currentPathname}/tempo/${id}`);
+  };
+
   return {
     windowSize,
     dataStatistikTempo,
@@ -112,6 +120,7 @@ const useKreditDetail = () => {
     setSearch,
     setSort,
     sort,
+    handleRedirectDetail,
   };
 };
 

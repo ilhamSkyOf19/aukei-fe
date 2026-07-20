@@ -128,7 +128,9 @@
   - [✅] Metode pembayaran tempo
   - [ ] Testing Skenario
 
-  - [ ] Buat loading di contant table
+  - [ ] cek loading di contant table, sesuaikan cols nya dan juga cols data empty nya
+
+  - [ ] Perbaiki tampilan riwayat pengajuan
 
 - [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
 
@@ -139,3 +141,5 @@
 - [ ] Membuat formulir update pelanggan (Owner)
 
 - [ ] Membuat fitur struk pembayaran
+
+- [ ] berikan pesan alert ketika handlesubmit jika error, agar tidak return saja

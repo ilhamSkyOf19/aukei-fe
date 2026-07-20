@@ -3,7 +3,7 @@ import { useFilter } from "../../../hooks/useFilter";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import useSizeWindows from "../../../hooks/useSizeWindows";
 import { TempoService } from "../../../services/tempo.service";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const useKredit = () => {
   // window size
@@ -11,6 +11,9 @@ const useKredit = () => {
 
   // navigate
   const navigate = useNavigate();
+
+  // current pahtname
+  const currentPahtname = useLocation().pathname;
 
   // filter sort
   const { filter: sort, setFilter: setSort } = useFilter({
@@ -81,7 +84,7 @@ const useKredit = () => {
 
   // handle redirect
   const handelRedirectDetail = (id: number) => {
-    return navigate(`/dashboard/kredit/detail/${id}`);
+    return navigate(`${currentPahtname}/pelanggan/${id}`);
   };
 
   return {

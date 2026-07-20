@@ -26,6 +26,7 @@ import PengajuanBarangKeluarPage from "../pages/PengajuanBarangKeluarPage";
 import KreditPage from "../pages/KreditPage";
 import BookingPage from "../pages/BookingPage";
 import KreditDetailPage from "../pages/KreditDetailPage";
+import InstallmentsDetailPage from "../pages/InstallmentsDetailPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -312,8 +313,17 @@ const route = createBrowserRouter([
             element: <KreditPage />,
           },
           {
-            path: "detail/:id",
-            element: <KreditDetailPage />,
+            path: "pelanggan/:id",
+            children: [
+              {
+                index: true,
+                element: <KreditDetailPage />,
+              },
+              {
+                path: "tempo/:tempoId",
+                element: <InstallmentsDetailPage />,
+              },
+            ],
           },
         ],
       },

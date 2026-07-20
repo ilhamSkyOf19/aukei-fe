@@ -29,7 +29,8 @@ const StatusTransaction: FC<Props> = ({
           status === TRANSACTION_STATUS_TYPE.COMPLETED &&
             "bg-green-100 text-green-600",
           (statusTempo === TEMPO_STATUS_TYPE.UNPAID ||
-            status === TRANSACTION_STATUS_TYPE.BOOKING) &&
+            status === TRANSACTION_STATUS_TYPE.BOOKING ||
+            statusTempo === TEMPO_STATUS_TYPE.PARTIAL) &&
             "bg-amber-100 text-amber-600",
           statusTempo === TEMPO_STATUS_TYPE.PAID &&
             "bg-green-100 text-green-600",
@@ -43,7 +44,9 @@ const StatusTransaction: FC<Props> = ({
         {status === TRANSACTION_STATUS_TYPE.BOOKING &&
           !statusTempo &&
           "Booking"}
-        {statusTempo === TEMPO_STATUS_TYPE.UNPAID && "Belum Lunas"}
+        {(statusTempo === TEMPO_STATUS_TYPE.UNPAID ||
+          statusTempo === TEMPO_STATUS_TYPE.PARTIAL) &&
+          "Belum Lunas"}
         {statusTempo === TEMPO_STATUS_TYPE.PAID && "Lunas"}
         {statusTempo === TEMPO_STATUS_TYPE.OVERDUE && "Terlambat"}
       </span>

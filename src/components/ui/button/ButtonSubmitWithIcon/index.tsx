@@ -12,6 +12,7 @@ type Props = {
   isLoading?: boolean;
   icon?: LucideIcon;
   size?: "xs";
+  customWidth?: string;
 };
 const ButtonSubmitWithIcon: FC<Props> = ({
   bgColor,
@@ -22,6 +23,7 @@ const ButtonSubmitWithIcon: FC<Props> = ({
   isLoading,
   icon: Icon,
   size,
+  customWidth,
 }) => {
   // navigation
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ const ButtonSubmitWithIcon: FC<Props> = ({
         "flex justify-center items-center hover-overlay w-auto rounded-xl px-3 gap-2",
         bgColor ? bgColor : "bg-custom-primary",
         size === "xs" ? "h-9" : "h-10.5 lg:h-10",
+        customWidth,
       )}
       onClick={() => {
         if (handleBtn) {

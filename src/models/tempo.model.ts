@@ -8,7 +8,6 @@ import type {
   CreateInstallmentType,
   ITempoInstallmentType,
 } from "./tempoInstallment.model";
-import type { ITempoPaymentType } from "./tempoPayment.model";
 
 export interface ITempo {
   id: number;
@@ -19,7 +18,7 @@ export interface ITempo {
   periode: number;
   status: TempoStatusType;
   installments: Omit<ITempoInstallmentType, "tempoId">[];
-  payments: Omit<ITempoPaymentType, "tempoId">[];
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -82,4 +81,23 @@ export interface ResponseTempoWithPelangganDetailType {
 export interface ResponseTempoWithPelangganDetailWithMetaType {
   data: ResponseTempoWithPelangganDetailType[];
   meta: MetaType;
+}
+
+// response
+export interface ResponseTempoWithInstallment extends Pick<
+  ITempo,
+  "uangMuka" | "jumlahCicilan" | "periode"
+> {
+  nomorTransaksi?: string | null;
+  tanggalTransaksi: Date;
+  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
+  statusTempo: TempoStatusType;
+  sisaCicilanBelumSelesai: number;
+  totalTagihan: number;
+  sisaTagihan: number;
+  totalTagihanLunas: number;
+  installments: (Pick<
+    ITempoInstallmentType,
+    "id" | "jatuhTempo" | "nominal" | "tanggalLunas" | "cicilanKe" | "status"
+  > & { diBayar: number })[];
 }

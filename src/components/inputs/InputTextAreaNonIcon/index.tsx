@@ -13,7 +13,6 @@ type Props = {
   register: UseFormRegisterReturn;
   max?: number;
   rows: number;
-  xs?: boolean;
 };
 
 const InputTextAreaNonIcon: FC<Props> = ({
@@ -25,7 +24,6 @@ const InputTextAreaNonIcon: FC<Props> = ({
   register,
   max,
   rows,
-  xs,
 }) => {
   return (
     <div
@@ -66,8 +64,7 @@ const InputTextAreaNonIcon: FC<Props> = ({
           id={name}
           placeholder={placeholder}
           className={cn(
-            "w-full font-medium h-full text-base-content border-none outline-none placeholder:font-light px-3 py-2 placeholder:text-base-content/50",
-            xs ? "text-[0.625rem] lg:text-xs " : "text-xs",
+            "w-full font-medium h-full text-base-content border-none outline-none placeholder:font-light px-3 py-2 placeholder:text-base-content/50 text-xs",
           )}
           maxLength={max}
           onChange={(e) => {
