@@ -312,7 +312,7 @@ const RiwayatTransaksiDetail = () => {
                 <th>Tanggal</th>
                 <th>Total Item</th>
                 <th>Total Pembayaran</th>
-                <th>Metode Pembayaran</th>
+                <th>Pembayaran</th>
                 <th>Status</th>
                 <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
               </tr>
@@ -389,7 +389,7 @@ const RiwayatTransaksiDetail = () => {
                     <th>Tanggal</th>
                     <th>Total Item</th>
                     <th>Total Pembayaran</th>
-                    <th>Metode Pembayaran</th>
+                    <th>Pembayaran</th>
                     <th>Status</th>
                     <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
                   </>

@@ -310,6 +310,8 @@ const RiwayatTransaksi = () => {
         <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex order-3">
           <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
             {/* head */}
+
+            {/* buat loading */}
             <thead>
               <tr className="h-12 bg-base-100 text-xs">
                 <th>No. Transaksi</th>
@@ -318,7 +320,7 @@ const RiwayatTransaksi = () => {
                 <th>Pelanggan</th>
                 <th>Total Item</th>
                 <th>Total Pembayaran</th>
-                <th>Metode Pembayaran</th>
+                <th>Pembayaran</th>
                 <th>Status</th>
                 <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
               </tr>
@@ -445,7 +447,7 @@ const RiwayatTransaksi = () => {
                     <th>Pelanggan</th>
                     <th>Total Item</th>
                     <th>Total Pembayaran</th>
-                    <th>Metode Pembayaran</th>
+                    <th>Pembayaran</th>
                     <th>Status</th>
                     <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
                   </>

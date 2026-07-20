@@ -2,7 +2,8 @@ import {
   CircleAlert,
   CircleCheck,
   Clock,
-  History,
+  Coins,
+  Receipt,
   UsersRound,
 } from "lucide-react";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
@@ -49,7 +50,30 @@ const Kredit = () => {
     <div className="w-full h-screen overflow-y-auto">
       <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-center">
         {/* statistik */}
-        <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
+        <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
+          <CardStatistik
+            icon={{
+              icon: Receipt,
+              bgColor: "bg-purple-50",
+              iconColor: "text-purple-600",
+            }}
+            label="Total Transaksi"
+            value={
+              dataStatistikTempo?.data?.totalTransaksiKredit &&
+              dataStatistikTempo?.data?.totalTransaksiKredit > 0
+                ? windowSize === "sm"
+                  ? formatNumberK(
+                      dataStatistikTempo?.data?.totalTransaksiKredit ?? 0,
+                    )
+                  : formatNumber(
+                      dataStatistikTempo?.data?.totalTransaksiKredit ?? 0,
+                    )
+                : "0"
+            }
+            caption="Total transaksi kredit"
+            isLoading={isLoadingStatistikTempo}
+          />
+
           <CardStatistik
             icon={{
               icon: UsersRound,
@@ -68,6 +92,29 @@ const Kredit = () => {
             caption="Total pelanggan kredit"
             isLoading={isLoadingStatistikTempo}
           />
+
+          <CardStatistik
+            icon={{
+              icon: Coins,
+              bgColor: "bg-blue-50",
+              iconColor: "text-blue-400",
+            }}
+            label="Total Tagihan"
+            value={
+              windowSize === "sm"
+                ? formatRupiahShort(
+                    (dataStatistikTempo?.data?.totalTagihanBelumSelesai ?? 0) +
+                      (dataStatistikTempo?.data?.totalTagihanSelesai ?? 0),
+                  )
+                : formatRupiah(
+                    (dataStatistikTempo?.data?.totalTagihanBelumSelesai ?? 0) +
+                      (dataStatistikTempo?.data?.totalTagihanSelesai ?? 0),
+                  )
+            }
+            caption="Keseluruhan"
+            isLoading={isLoadingStatistikTempo}
+          />
+
           <CardStatistik
             icon={{
               icon: Clock,
@@ -177,9 +224,9 @@ const Kredit = () => {
           ) : (
             <div className="w-full flex flex-col justify-center items-center">
               <DataEmpty
-                iconData={History}
-                title="Riwayat Tidak Tersedia"
-                description="Belum ada data riwayat yang dapat ditampilkan saat ini"
+                iconData={Receipt}
+                title="Data Transaksi Tidak Tersedia"
+                description="Belum ada data transaksi yang dapat ditampilkan saat ini"
               />
             </div>
           )}
@@ -200,7 +247,7 @@ const Kredit = () => {
               </tr>
             </thead>
             <tbody>
-              {false ? (
+              {isLoadingDataTempo ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
                     <td colSpan={8}>
@@ -294,6 +341,7 @@ const Kredit = () => {
                   <td colSpan={10}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
+                        iconData={Receipt}
                         title="Data Transaksi Tempo Tidak Tersedia"
                         description="Belum ada data transaksi tempo yang dapat ditampilkan saat ini."
                       />

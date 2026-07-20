@@ -128,6 +128,8 @@
   - [✅] Metode pembayaran tempo
   - [ ] Testing Skenario
 
+  - [ ] Buat loading di contant table
+
 - [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
 
 - [ ] Membuat ui tombol tombol pada preview after transaksi

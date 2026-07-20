@@ -187,6 +187,7 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
         {/* SHOW DATA FOR MD, LG, XL */}
         <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm mt-4 hidden md:flex">
           <table className="w-full table table-xs lg:table-sm mb-2 table-zebra">
+            {/* buat loading */}
             {/* head */}
             <thead>
               <tr className="h-12 bg-base-200 text-xs">

@@ -1,4 +1,8 @@
-import type { MetaType, TempoStatusType } from "../types/constant.type";
+import type {
+  MetaType,
+  PaymentMethodType,
+  TempoStatusType,
+} from "../types/constant.type";
 import type { IPelangganType } from "./pelanggan.model";
 import type {
   CreateInstallmentType,
@@ -51,9 +55,31 @@ export interface ResponseTempoWithPelangganWithMetaType {
 
 // response statistik
 export interface ResponseStatistikTempo {
+  pelanggan?: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
   totalPelanggan: number;
   totalTagihanBelumSelesai: number;
   totalTagihanSelesai: number;
   totalTransaksiKredit: number;
   totalTagihanJatuhTempo: number;
+}
+
+export interface ResponseTempoWithPelangganDetailType {
+  id: number;
+  nomorTransaksi: string | null;
+  tanggalTransaksi: Date;
+  metodePembayaran: PaymentMethodType;
+  totalTagihan: number;
+  tenor: number;
+  periode: number;
+  jumlahCicilan: number;
+  sisaCicilanBelumSelesai: number;
+  tagihanBelumLunas: number;
+  tagihanLunas: number;
+  jatuhTempoTerdekat?: Date;
+  status: TempoStatusType;
+}
+// tempo detail
+export interface ResponseTempoWithPelangganDetailWithMetaType {
+  data: ResponseTempoWithPelangganDetailType[];
+  meta: MetaType;
 }
