@@ -5,10 +5,13 @@ import { TempoService } from "../../../services/tempo.service";
 import useSizeWindows from "../../../hooks/useSizeWindows";
 import { useState } from "react";
 import type { ITempoInstallmentType } from "../../../models/tempoInstallment.model";
+import { useAuthStore } from "../../../stores/authStore";
 
 const useInstallmentsDetail = () => {
   // get id from params
   const { tempoId } = useParams<{ tempoId: string }>();
+
+  const pengguna = useAuthStore((state) => state.pengguna);
 
   // state data pembayaran
   const [dataPembayaran, setDataPembayaran] = useState<
@@ -65,6 +68,7 @@ const useInstallmentsDetail = () => {
     dataPembayaran,
     handleResetDataPembayaran,
     validatedId,
+    pengguna,
   };
 };
 

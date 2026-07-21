@@ -22,7 +22,10 @@ import CardStatistik from "../../../components/ui/cards/CardStatistik";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
 import StatusInstallment from "../../../components/ui/StatusInstallment";
-import { INSTALLMENT_STATUS_TYPE } from "../../../types/constant.type";
+import {
+  INSTALLMENT_STATUS_TYPE,
+  ROLE_INTERNAL_TYPE,
+} from "../../../types/constant.type";
 import CardPembayaran from "./CardPembayaran";
 import NotCompatible from "../../../components/messages/NotCompatible";
 import AlertLabelList from "../../../components/messages/AlertLabelList";
@@ -40,6 +43,7 @@ const InstallmentsDetail = () => {
     setDataPembayaran,
     handleResetDataPembayaran,
     validatedId,
+    pengguna,
   } = useInstallmentsDetail();
 
   return (
@@ -205,7 +209,9 @@ const InstallmentsDetail = () => {
                       <th>Status</th>
                       <th>Dibayar</th>
                       <th>Sisa</th>
-                      <th>Aksi</th>
+                      {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+                        <th>Aksi</th>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -268,26 +274,28 @@ const InstallmentsDetail = () => {
                               {formatRupiah(item.nominal - item.diBayar)}
                             </span>
                           </td>
-                          <td>
-                            {item.status !== INSTALLMENT_STATUS_TYPE.PAID ? (
-                              <button
-                                type="button"
-                                className="text-[0.625rem] font-medium px-2 py-1 border border-emerald-600 rounded-md flex flex-row justify-start items-center gap-1 group hover:text-primary-white transition-all duration-150 ease-in-out hover:bg-emerald-600"
-                                onClick={() => setDataPembayaran(item)}
-                              >
-                                <CreditCard className="size-3" />
+                          {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+                            <td>
+                              {item.status !== INSTALLMENT_STATUS_TYPE.PAID ? (
+                                <button
+                                  type="button"
+                                  className="text-[0.625rem] font-medium px-2 py-1 border border-emerald-600 rounded-md flex flex-row justify-start items-center gap-1 group hover:text-primary-white transition-all duration-150 ease-in-out hover:bg-emerald-600"
+                                  onClick={() => setDataPembayaran(item)}
+                                >
+                                  <CreditCard className="size-3" />
 
-                                <span>Bayar</span>
-                              </button>
-                            ) : (
-                              <div className="flex flex-row justify-start items-center gap-1">
-                                <CircleCheck className="size-3 text-emerald-600" />
-                                <span className="text-emerald-600 text-[0.625rem] font-medium">
-                                  Lunas
-                                </span>
-                              </div>
-                            )}
-                          </td>
+                                  <span>Bayar</span>
+                                </button>
+                              ) : (
+                                <div className="flex flex-row justify-start items-center gap-1">
+                                  <CircleCheck className="size-3 text-emerald-600" />
+                                  <span className="text-emerald-600 text-[0.625rem] font-medium">
+                                    Lunas
+                                  </span>
+                                </div>
+                              )}
+                            </td>
+                          )}
                         </tr>
                       ))
                     ) : (
@@ -314,25 +322,29 @@ const InstallmentsDetail = () => {
               </div>
 
               {/* peringatan */}
-              <div className="w-full">
-                <AlertLabelList
-                  message={[
-                    "Periksa jadwal jatuh tempo setiap angsuran agar pembayaran dapat dilakukan tepat waktu.",
-                    "Pilih cicilan yang ingin dibayar, kemudian masukkan nominal pembayaran dan metode pembayaran pada panel di sebelah kanan.",
-                    "Setiap pembayaran akan otomatis memperbarui status cicilan, sisa tagihan, dan riwayat pembayaran transaksi.",
-                    "Pastikan nominal pembayaran tidak melebihi sisa tagihan pada cicilan yang dipilih untuk menjaga data tetap akurat.",
-                  ]}
-                />
-              </div>
+              {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+                <div className="w-full">
+                  <AlertLabelList
+                    message={[
+                      "Periksa jadwal jatuh tempo setiap angsuran agar pembayaran dapat dilakukan tepat waktu.",
+                      "Pilih cicilan yang ingin dibayar, kemudian masukkan nominal pembayaran dan metode pembayaran pada panel di sebelah kanan.",
+                      "Setiap pembayaran akan otomatis memperbarui status cicilan, sisa tagihan, dan riwayat pembayaran transaksi.",
+                      "Pastikan nominal pembayaran tidak melebihi sisa tagihan pada cicilan yang dipilih untuk menjaga data tetap akurat.",
+                    ]}
+                  />
+                </div>
+              )}
             </div>
 
             {/* pembayaran */}
-            <CardPembayaran
-              tempoId={validatedId ?? null}
-              dataPembayaran={dataPembayaran}
-              jumlahCicilan={dataInstallments?.data?.jumlahCicilan}
-              handleResetDataPembayaran={handleResetDataPembayaran}
-            />
+            {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+              <CardPembayaran
+                tempoId={validatedId ?? null}
+                dataPembayaran={dataPembayaran}
+                jumlahCicilan={dataInstallments?.data?.jumlahCicilan}
+                handleResetDataPembayaran={handleResetDataPembayaran}
+              />
+            )}
           </div>
         </div>
       ) : (

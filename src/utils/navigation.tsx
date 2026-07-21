@@ -50,6 +50,16 @@ export const NAVIGATION_LIST_OWNER: {
     link: "/dashboard/pelanggan",
   },
   {
+    label: "Kredit",
+    icon: CalendarDays,
+    link: "/dashboard/kredit",
+  },
+  {
+    label: "Booking",
+    icon: Clock,
+    link: "/dashboard/booking",
+  },
+  {
     label: "Riwayat Transaksi",
     icon: History,
     link: "/dashboard/riwayat-transaksi",
