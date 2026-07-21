@@ -128,6 +128,8 @@
   - [✅] Metode pembayaran tempo
   - [ ] Testing Skenario
 
+  - [ ] Buat versi mobile untuk pembayaran kredit
+
   - [ ] cek loading di contant table, sesuaikan cols nya dan juga cols data empty nya
 
   - [ ] Perbaiki tampilan riwayat pengajuan

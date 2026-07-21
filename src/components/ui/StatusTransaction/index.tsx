@@ -44,9 +44,8 @@ const StatusTransaction: FC<Props> = ({
         {status === TRANSACTION_STATUS_TYPE.BOOKING &&
           !statusTempo &&
           "Booking"}
-        {(statusTempo === TEMPO_STATUS_TYPE.UNPAID ||
-          statusTempo === TEMPO_STATUS_TYPE.PARTIAL) &&
-          "Belum Lunas"}
+        {statusTempo === TEMPO_STATUS_TYPE.UNPAID && "Belum Lunas"}
+        {statusTempo === TEMPO_STATUS_TYPE.PARTIAL && "Sedang Berjalan"}
         {statusTempo === TEMPO_STATUS_TYPE.PAID && "Lunas"}
         {statusTempo === TEMPO_STATUS_TYPE.OVERDUE && "Terlambat"}
       </span>

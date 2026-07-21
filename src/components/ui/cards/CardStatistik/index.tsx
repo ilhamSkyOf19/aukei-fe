@@ -24,6 +24,7 @@ type Props = {
   isLoading?: boolean;
   withAlert?: string;
   statusTempo?: TempoStatusType;
+  customColSpan?: string;
 };
 const CardStatistik: FC<Props> = ({
   icon,
@@ -35,9 +36,15 @@ const CardStatistik: FC<Props> = ({
   withAlert,
   minus,
   statusTempo,
+  customColSpan,
 }) => {
   return (
-    <div className="grid-cols-1 flex gap-2 flex-col justify-start items-start border border-base-content/10 rounded-2xl md:rounded-xl p-2 relative">
+    <div
+      className={cn(
+        " flex gap-2 flex-col justify-start items-start border border-base-content/10 rounded-2xl md:rounded-xl p-2 relative",
+        customColSpan ? customColSpan : "col-span-1",
+      )}
+    >
       {/* status transaction */}
       {statusTempo && (
         <div className="absolute top-1 right-2">
@@ -60,7 +67,7 @@ const CardStatistik: FC<Props> = ({
 
         {/* label */}
         <div className="flex-7 flex flex-col justify-start items-start gap-0.5">
-          <div className="flex flex-row justify-start items-center gap-0.5">
+          <div className="flex flex-row justify-start items-center gap-1">
             <span className="text-xs font-semibold text-base-content/50">
               {label}
             </span>
@@ -68,7 +75,7 @@ const CardStatistik: FC<Props> = ({
             {withAlert && (
               <div className="tooltip z-30 tooltip-custom" data-tip={withAlert}>
                 <button type="button">
-                  <CircleAlert className="size-3 text-base-content/50" />
+                  <CircleAlert className="size-3 text-base-content/50 hover:text-base-content transition-all duration-150 ease-in-out" />
                 </button>
               </div>
             )}
