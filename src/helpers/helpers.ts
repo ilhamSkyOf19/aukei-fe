@@ -285,3 +285,19 @@ export const getJatuhTempoTextColor = (jatuhTempo: Date | string) => {
 
   return "text-emerald-500";
 };
+
+export const getJatuhTempoText = (date: Date | null | undefined): string => {
+  if (!date) return "-";
+
+  const diff = differenceInCalendarDays(date, new Date());
+
+  if (diff > 0) {
+    return `(${formatNumber(diff)} Hari lagi)`;
+  }
+
+  if (diff < 0) {
+    return `(Terlambat ${formatNumber(Math.abs(diff))} Hari)`;
+  }
+
+  return "(Hari Ini)";
+};

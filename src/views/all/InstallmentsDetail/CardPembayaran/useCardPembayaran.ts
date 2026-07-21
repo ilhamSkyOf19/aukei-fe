@@ -32,6 +32,13 @@ const useCardPembayaran = (params: {
 
   const buttonCalculatorRef = useRef<HTMLButtonElement | null>(null);
 
+  // state error
+  const [isError, setIsError] = useState({
+    METODE_PEMBAYARAN: false,
+    NOMINAL: false,
+    PELANGGAN: false,
+  });
+
   //   modal confirm
   const {
     modalRef: modalConfirmRef,
@@ -98,8 +105,15 @@ const useCardPembayaran = (params: {
           queryKey: ["installments-detail", tempoId],
         });
 
+        queryClient.invalidateQueries({
+          queryKey: ["riwayat-payment-tempo", tempoId],
+        });
+
         // reset
         handleResetDataPembayaran();
+
+        // reset metode pembayaran
+        setMetodePembayaran(null);
 
         reset();
       },
@@ -113,7 +127,14 @@ const useCardPembayaran = (params: {
     data: Pick<CreateTempoPaymentType, "nominal" | "keterangan">,
   ) => {
     try {
-      if (!dataPembayaran || !metodePembayaran) return;
+      if (!dataPembayaran) return;
+
+      if (!metodePembayaran) {
+        return setIsError((prev) => ({
+          ...prev,
+          METODE_PEMBAYARAN: true,
+        }));
+      }
 
       // confirm
       const confirm = await confirmPembayaran({
@@ -146,6 +167,11 @@ const useCardPembayaran = (params: {
       });
     }
 
+    setIsError((prev) => ({
+      ...prev,
+      METODE_PEMBAYARAN: false,
+    }));
+
     setMetodePembayaran(metodePembayaran);
   };
 
@@ -172,6 +198,7 @@ const useCardPembayaran = (params: {
     handleCancelConfirmPembayaran,
     handleConfirmPembayaran,
     dataConfirm,
+    isError,
   };
 };
 

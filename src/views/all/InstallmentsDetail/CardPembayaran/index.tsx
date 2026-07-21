@@ -22,6 +22,7 @@ import InputTextAreaNonIcon from "../../../../components/inputs/InputTextAreaNon
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ButtonSubmitWithIcon from "../../../../components/ui/button/ButtonSubmitWithIcon";
 import ModalAlert from "../../../../components/modals/ModalAlert";
+import ErrorMessage from "../../../../components/messages/ErrorMessage";
 
 type Props = {
   jumlahCicilan?: number;
@@ -63,6 +64,7 @@ const CardPembayaran: FC<Props> = ({
     handleCancelConfirmPembayaran,
     handleConfirmPembayaran,
     modalConfirmRef,
+    isError,
   } = useCardPembayaran({ dataPembayaran, handleResetDataPembayaran, tempoId });
 
   return (
@@ -145,6 +147,7 @@ const CardPembayaran: FC<Props> = ({
                   }}
                   isActive={metodePembayaran === PAYMENT_METHOD_TYPE.TRANSFER}
                   handleClick={() => handleMetodePembayaran("TRANSFER")}
+                  isError={isError.METODE_PEMBAYARAN}
                 />
               </div>
               <div className="col-span-1">
@@ -157,6 +160,7 @@ const CardPembayaran: FC<Props> = ({
                   }}
                   isActive={metodePembayaran === PAYMENT_METHOD_TYPE.QRIS}
                   handleClick={() => handleMetodePembayaran("QRIS")}
+                  isError={isError.METODE_PEMBAYARAN}
                 />
               </div>
               <div className="col-span-2">
@@ -169,6 +173,7 @@ const CardPembayaran: FC<Props> = ({
                   }}
                   isActive={metodePembayaran === PAYMENT_METHOD_TYPE.CASH}
                   handleClick={() => handleMetodePembayaran("CASH")}
+                  isError={isError.METODE_PEMBAYARAN}
                 />
               </div>
 
@@ -190,6 +195,10 @@ const CardPembayaran: FC<Props> = ({
                 </div>
               )}
             </div>
+
+            {isError.METODE_PEMBAYARAN && (
+              <ErrorMessage errorMessage="Harap pilih metode pembayaran" />
+            )}
 
             {/* keterangan */}
             <div className="w-full mt-2.5">

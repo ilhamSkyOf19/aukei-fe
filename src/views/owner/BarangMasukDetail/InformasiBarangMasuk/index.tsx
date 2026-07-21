@@ -205,7 +205,6 @@ const InformasiBarangMasuk: FC<Props> = ({
                           errorMessage={errors?.keterangan?.message}
                           required
                           rows={4}
-                          xs
                         />
                       </div>
                     </CardForm>

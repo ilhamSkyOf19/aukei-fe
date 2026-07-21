@@ -6,6 +6,7 @@ import type {
   ResponseTempoWithPelangganDetailWithMetaType,
   ResponseTempoWithPelangganWithMetaType,
 } from "../models/tempo.model";
+import type { ResponseHistoryPaymentWithMetaType } from "../models/tempoInstallment.model";
 import type { ResponseStructure } from "../types/response.type";
 
 export class TempoService {
@@ -77,6 +78,21 @@ export class TempoService {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseStatistikTempo | null>
     >(`/tempo/statistik/pelanggan/${params.id}`);
+
+    return result.data;
+  }
+
+  // history payment tempo
+  static async historyPaymentTempo(params: {
+    query: Omit<PaginationType, "search"> & { cicilanKe?: string };
+    tempoId: number;
+  }): Promise<ResponseStructure<ResponseHistoryPaymentWithMetaType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseHistoryPaymentWithMetaType | null>
+    >(`/tempo/${params.tempoId}/history-payment`, {
+      params: params.query,
+    });
 
     return result.data;
   }

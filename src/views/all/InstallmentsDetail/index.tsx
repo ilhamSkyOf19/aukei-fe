@@ -12,20 +12,21 @@ import useInstallmentsDetail from "./useInstallmentsDetail";
 import Avatar from "../../../components/ui/Avatar";
 import { cn } from "../../../utils/cn";
 import {
-  formatNumber,
   formatNumberPhone,
   formatRupiah,
+  getJatuhTempoText,
   getJatuhTempoTextColor,
   getWeekFromPeriod,
 } from "../../../helpers/helpers";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import { differenceInDays } from "date-fns";
 import StatusInstallment from "../../../components/ui/StatusInstallment";
 import { INSTALLMENT_STATUS_TYPE } from "../../../types/constant.type";
 import CardPembayaran from "./CardPembayaran";
 import NotCompatible from "../../../components/messages/NotCompatible";
+import AlertLabelList from "../../../components/messages/AlertLabelList";
+import SideBarRiwayatPembayaranTempo from "../../../components/SideBarRiwayatPembayaranTempo";
 
 const InstallmentsDetail = () => {
   const {
@@ -47,7 +48,7 @@ const InstallmentsDetail = () => {
         <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-center">
           {/* statistik */}
           <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
-            <div className="flex flex-col justify-start items-start gap-2.5 ">
+            <div className="flex flex-col justify-start items-start gap-2.5 py-2.5">
               {/* back */}
               <button
                 type="button"
@@ -193,7 +194,7 @@ const InstallmentsDetail = () => {
             {/* informasi installment */}
             <div className="flex-2 flex flex-col justify-start items-start gap-2.5">
               {/* jadwal */}
-              <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5">
+              <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5 flex-col justify-start items-start">
                 <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
                   {/* head */}
                   <thead>
@@ -231,31 +232,23 @@ const InstallmentsDetail = () => {
                             </span>
                           </td>
                           <td>
-                            <div className="flex flex-col justify-start items-start gap-1">
-                              <span className="font-medium">
-                                {formatTanggalLengkap(item.jatuhTempo)}
-                              </span>
-                              <span
-                                className={cn(
-                                  "text-[0.625rem] font-medium",
-                                  getJatuhTempoTextColor(item.jatuhTempo),
-                                )}
-                              >
-                                (
-                                {differenceInDays(
-                                  item.jatuhTempo ?? new Date(),
-                                  new Date(),
-                                ) > 0
-                                  ? `${formatNumber(
-                                      differenceInDays(
-                                        item.jatuhTempo ?? new Date(),
-                                        new Date(),
-                                      ),
-                                    )} Hari lagi`
-                                  : "Hari Ini"}
-                                )
-                              </span>
-                            </div>
+                            {item.status !== INSTALLMENT_STATUS_TYPE.PAID ? (
+                              <div className="flex flex-col justify-start items-start gap-1">
+                                <span className="font-medium">
+                                  {formatTanggalLengkap(item.jatuhTempo)}
+                                </span>
+                                <span
+                                  className={cn(
+                                    "text-[0.625rem] font-medium",
+                                    getJatuhTempoTextColor(item.jatuhTempo),
+                                  )}
+                                >
+                                  {getJatuhTempoText(item.jatuhTempo)}
+                                </span>
+                              </div>
+                            ) : (
+                              <span>-</span>
+                            )}
                           </td>
                           <td>
                             <span className="font-medium">
@@ -311,31 +304,25 @@ const InstallmentsDetail = () => {
                       </tr>
                     )}
                   </tbody>
-                  {/* foot */}
-                  <tfoot>
-                    <tr>
-                      {!true && true && [1].length! > 8 ? (
-                        <>
-                          <th>Jatuh Tempo</th>
-                          <th>Tagihan</th>
-                          <th>Status</th>
-                          <th>Dibayar</th>
-                          <th>Sisar</th>
-                          <th>Aksi</th>
-                        </>
-                      ) : (
-                        <>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                        </>
-                      )}
-                    </tr>
-                  </tfoot>
                 </table>
+                <div className="w-full flex flex-row justify-end items-end p-2.5 border-t border-base-content/10">
+                  {/* button */}
+                  <SideBarRiwayatPembayaranTempo
+                    jumlahCicilan={dataInstallments?.data?.jumlahCicilan ?? 0}
+                  />
+                </div>
+              </div>
+
+              {/* peringatan */}
+              <div className="w-full">
+                <AlertLabelList
+                  message={[
+                    "Periksa jadwal jatuh tempo setiap angsuran agar pembayaran dapat dilakukan tepat waktu.",
+                    "Pilih cicilan yang ingin dibayar, kemudian masukkan nominal pembayaran dan metode pembayaran pada panel di sebelah kanan.",
+                    "Setiap pembayaran akan otomatis memperbarui status cicilan, sisa tagihan, dan riwayat pembayaran transaksi.",
+                    "Pastikan nominal pembayaran tidak melebihi sisa tagihan pada cicilan yang dipilih untuk menjaga data tetap akurat.",
+                  ]}
+                />
               </div>
             </div>
 

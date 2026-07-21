@@ -12,6 +12,7 @@ import {
   formatNumber,
   formatNumberPhone,
   formatRupiah,
+  getJatuhTempoText,
   getJatuhTempoTextColor,
   getWeekFromPeriod,
 } from "../../../helpers/helpers";
@@ -23,7 +24,6 @@ import {
   formatTanggalLengkap,
   formatTanggalPanjang,
 } from "../../../helpers/formatDate";
-import { differenceInDays } from "date-fns";
 import StatusTransaction from "../../../components/ui/StatusTransaction";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
@@ -70,7 +70,7 @@ const KreditDetail = () => {
           {/* statistik */}
           <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
             {/* data pelanggan */}
-            <div className="flex flex-col justify-start items-start gap-2.5 ">
+            <div className="flex flex-col justify-start items-start gap-2.5 py-2.5">
               {/* back */}
               <button
                 type="button"
@@ -185,7 +185,7 @@ const KreditDetail = () => {
                   bgColor: "bg-rose-50",
                   iconColor: "text-rose-400",
                 }}
-                label="Total Kredit"
+                label="Total Tagihan"
                 value={
                   dataStatistikTempo?.data?.totalTagihanJatuhTempo &&
                   dataStatistikTempo.data.totalTagihanJatuhTempo > 0
@@ -302,30 +302,27 @@ const KreditDetail = () => {
                         </div>
                       </td>
                       <td>
-                        <div className="flex flex-col justify-start items-start gap-1">
-                          <span>
-                            {formatTanggalPanjang(
-                              item.jatuhTempoTerdekat ?? new Date(),
-                            )}
-                          </span>
-                          <span
-                            className={cn(
-                              "font-medium text-[0.625rem]",
-                              getJatuhTempoTextColor(
+                        {item.jatuhTempoTerdekat ? (
+                          <div className="flex flex-col justify-start items-start gap-1">
+                            <span>
+                              {formatTanggalPanjang(
                                 item.jatuhTempoTerdekat ?? new Date(),
-                              ),
-                            )}
-                          >
-                            (
-                            {formatNumber(
-                              differenceInDays(
-                                item.jatuhTempoTerdekat ?? new Date(),
-                                new Date(),
-                              ),
-                            )}{" "}
-                            Hari lagi )
-                          </span>
-                        </div>
+                              )}
+                            </span>
+                            <span
+                              className={cn(
+                                "font-medium text-[0.625rem]",
+                                getJatuhTempoTextColor(
+                                  item.jatuhTempoTerdekat ?? new Date(),
+                                ),
+                              )}
+                            >
+                              {getJatuhTempoText(item.jatuhTempoTerdekat)}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs font-medium">-</span>
+                        )}
                       </td>
                       <td>
                         <div className="flex flex-col justify-start items-start gap-1.5">

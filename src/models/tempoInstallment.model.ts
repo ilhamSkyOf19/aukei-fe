@@ -1,5 +1,8 @@
-import type { InstallmentStatusType } from "../types/constant.type";
-import type { ITempoPaymentType } from "./tempoPayment.model";
+import type { InstallmentStatusType, MetaType } from "../types/constant.type";
+import type {
+  ITempoPaymentType,
+  ResponseTempoPaymentType,
+} from "./tempoPayment.model";
 
 export interface ITempoInstallmentType {
   id: number;
@@ -19,3 +22,15 @@ export interface CreateInstallmentType extends Pick<
   ITempoInstallmentType,
   "cicilanKe" | "jatuhTempo" | "nominal"
 > {}
+
+export interface ResponseHistoryPaymentWithMetaType {
+  data: {
+    cicilanKe: number;
+    status: InstallmentStatusType;
+    payments: Pick<
+      ResponseTempoPaymentType,
+      "id" | "nominal" | "tanggalBayar" | "keterangan" | "metodePembayaran"
+    >[];
+  };
+  meta: MetaType;
+}

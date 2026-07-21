@@ -73,7 +73,7 @@ const CardStatistik: FC<Props> = ({
             </span>
 
             {withAlert && (
-              <div className="tooltip z-30 tooltip-custom" data-tip={withAlert}>
+              <div className="tooltip z-10 tooltip-custom" data-tip={withAlert}>
                 <button type="button">
                   <CircleAlert className="size-3 text-base-content/50 hover:text-base-content transition-all duration-150 ease-in-out" />
                 </button>

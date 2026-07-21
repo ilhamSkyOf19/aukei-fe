@@ -12,6 +12,7 @@ import {
   formatNumber,
   formatNumberPhone,
   formatRupiah,
+  getJatuhTempoText,
   getJatuhTempoTextColor,
 } from "../../../helpers/helpers";
 import useKredit from "./useKredit";
@@ -23,7 +24,6 @@ import Avatar from "../../../components/ui/Avatar";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import StatusTransaction from "../../../components/ui/StatusTransaction";
 import DataEmpty from "../../../components/messages/DataEmpty";
-import { differenceInDays } from "date-fns";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import NotCompatible from "../../../components/messages/NotCompatible";
 
@@ -181,7 +181,7 @@ const Kredit = () => {
                   <th>Total Transaksi</th>
                   <th>Belum Lunas</th>
                   <th>Sudah Lunas</th>
-                  <th>Jatuh Tempo Terdekat</th>
+                  <th>Jatuh Tempo</th>
                   <th>Status</th>
                   <th>Aksi</th>
                 </tr>
@@ -239,30 +239,27 @@ const Kredit = () => {
                         </span>
                       </td>
                       <td>
-                        <div className="flex flex-col justify-start items-start gap-1">
-                          <span>
-                            {formatTanggalPanjang(
-                              item.jatuhTempoTerdekat ?? new Date(),
-                            )}
-                          </span>
-                          <span
-                            className={cn(
-                              "font-medium text-[0.625rem]",
-                              getJatuhTempoTextColor(
+                        {item.jatuhTempoTerdekat ? (
+                          <div className="flex flex-col justify-start items-start gap-1">
+                            <span>
+                              {formatTanggalPanjang(
                                 item.jatuhTempoTerdekat ?? new Date(),
-                              ),
-                            )}
-                          >
-                            (
-                            {formatNumber(
-                              differenceInDays(
-                                item.jatuhTempoTerdekat ?? new Date(),
-                                new Date(),
-                              ),
-                            )}{" "}
-                            Hari lagi )
-                          </span>
-                        </div>
+                              )}
+                            </span>
+                            <span
+                              className={cn(
+                                "font-medium text-[0.625rem]",
+                                getJatuhTempoTextColor(
+                                  item.jatuhTempoTerdekat ?? new Date(),
+                                ),
+                              )}
+                            >
+                              {getJatuhTempoText(item.jatuhTempoTerdekat)}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs font-medium">-</span>
+                        )}
                       </td>
                       <td>
                         <StatusTransaction statusTempo={item.status} />
@@ -292,32 +289,6 @@ const Kredit = () => {
                   </tr>
                 )}
               </tbody>
-              {/* foot */}
-              <tfoot>
-                <tr>
-                  {!true && true && [1].length! > 8 ? (
-                    <>
-                      <th>Pelanggan</th>
-                      <th>Total Transaksi</th>
-                      <th>Belum Lunas</th>
-                      <th>Sudah Lunas</th>
-                      <th>Jatuh Tempo Terdekat</th>
-                      <th>Status</th>
-                      <th>Aksi</th>
-                    </>
-                  ) : (
-                    <>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                    </>
-                  )}
-                </tr>
-              </tfoot>
             </table>
           </div>
 

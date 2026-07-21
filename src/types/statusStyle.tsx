@@ -42,3 +42,21 @@ export const statusStyle = {
     icon: <XCircle size={16} />,
   },
 } as const;
+
+export const statusMetodePembayaranStyle = {
+  CASH: {
+    badge: "bg-emerald-100 text-emerald-600",
+    dot: "bg-emerald-500",
+    borderDot: "border-emerald-500",
+  },
+  TRANSFER: {
+    badge: "bg-blue-100 text-blue-600",
+    dot: "bg-blue-500",
+    borderDot: "border-blue-500",
+  },
+  QRIS: {
+    badge: "bg-purple-100 text-purple-600",
+    dot: "bg-purple-500",
+    borderDot: "border-purple-500",
+  },
+} as const;
