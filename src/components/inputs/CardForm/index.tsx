@@ -63,7 +63,7 @@ const CardForm = <T extends FieldValues>({
         <button
           type="button"
           className={cn(
-            "text-primary-white btn-sm btn btn-error",
+            "text-primary-white rounded-lg w-9 h-8 bg-error flex items-center justify-center",
             isPending && "disabled:bg-error disabled:opacity-50",
           )}
           onClick={handleResetForm}
@@ -75,7 +75,7 @@ const CardForm = <T extends FieldValues>({
         <button
           type="submit"
           className={cn(
-            "text-primary-white btn-sm btn btn-success",
+            "text-primary-white rounded-lg w-9 h-8 bg-success flex items-center justify-center",
             isPending && "disabled:bg-success",
           )}
           disabled={isPending || disabled || isDirty === false}

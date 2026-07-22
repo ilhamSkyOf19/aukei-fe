@@ -273,7 +273,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
           <table className="table table-xs lg:table-sm table-zebra">
             {/* head */}
             <thead>
-              <tr>
+              <tr className="text-xs">
                 <th>No</th>
                 <th>Foto</th>
                 <th>Kode</th>

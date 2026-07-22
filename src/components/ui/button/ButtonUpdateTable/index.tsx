@@ -3,16 +3,18 @@ import type { FC } from "react";
 import { cn } from "../../../../utils/cn";
 
 type Props = {
-  handleShowModalFormulir: () => void;
+  handleShowModalFormulir?: () => void;
   customDataTip?: string;
   xs?: boolean;
   noTip?: boolean;
+  handleClick?: () => void;
 };
 const ButtonUpdateTable: FC<Props> = ({
   handleShowModalFormulir,
   customDataTip,
   xs,
   noTip,
+  handleClick,
 }) => {
   return (
     <div
@@ -25,7 +27,10 @@ const ButtonUpdateTable: FC<Props> = ({
           "bg-info rounded-md flex flex-row justify-center items-center hover-overlay",
           xs ? "w-6 h-6" : "w-7 h-7",
         )}
-        onClick={() => handleShowModalFormulir()}
+        onClick={() => {
+          handleShowModalFormulir?.();
+          handleClick?.();
+        }}
       >
         <Pencil className="size-3.5 text-primary-white" />
       </button>

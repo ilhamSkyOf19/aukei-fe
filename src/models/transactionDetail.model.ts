@@ -12,3 +12,13 @@ export interface ITransactionDetailType {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ResponseTransactionDetailType extends Omit<
+  ITransactionDetailType,
+  "createdAt" | "updatedAt"
+> {}
+
+export interface UpdateHargaAndDiskonForRequestType {
+  hargaJual?: number;
+  diskon?: number;
+}
