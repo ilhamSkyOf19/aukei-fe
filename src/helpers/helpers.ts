@@ -103,7 +103,7 @@ export const parseId = (value: string | undefined) => {
 };
 
 export const formatNumber = (value: string | number) => {
-  if (!value) return "";
+  if (!value || value === "0" || value === 0) return "0";
 
   return new Intl.NumberFormat("id-ID").format(Number(value));
 };

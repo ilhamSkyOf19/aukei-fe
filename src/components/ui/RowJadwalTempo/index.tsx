@@ -3,11 +3,16 @@ import { formatRupiah } from "../../../helpers/helpers";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import { cn } from "../../../utils/cn";
 import type { FC } from "react";
-import type { CreateInstallmentType } from "../../../models/tempoInstallment.model";
+import type { ITempoInstallmentType } from "../../../models/tempoInstallment.model";
+import type { InstallmentStatusType } from "../../../types/constant.type";
+import StatusInstallment from "../StatusInstallment";
 
 type Props = {
   aksi?: boolean;
-  dataTempo: CreateInstallmentType[];
+  dataTempo: Pick<
+    ITempoInstallmentType,
+    "id" | "cicilanKe" | "jatuhTempo" | "nominal" | "status"
+  >[];
   maxHeight?: string;
 };
 const RowJadwaTempo: FC<Props> = ({ aksi, dataTempo, maxHeight }) => {
@@ -28,21 +33,28 @@ const RowJadwaTempo: FC<Props> = ({ aksi, dataTempo, maxHeight }) => {
             </span>
           </div>
 
-          <div className="col-span-4 flex flex-row justify-start items-center gap-4">
+          <div className="col-span-3 flex flex-row justify-start items-center gap-4">
             <span className="text-xs font-semibold text-base-content/80">
               Tanggal Jatuh Tempo
             </span>
           </div>
 
           {/* nominal */}
+          <div className={cn("flex flex-row items-center gap-2 col-span-2")}>
+            <span className="text-xs font-semibold text-base-content/80">
+              Nominal
+            </span>
+          </div>
+
+          {/* status */}
           <div
             className={cn(
-              "flex flex-row  items-center gap-2",
-              aksi ? "col-span-3 justify-start" : "col-span-5 justify-end",
+              "flex flex-row  justify-start items-center gap-2",
+              aksi ? "col-span-2 justify-start" : "col-span-4 justify-end",
             )}
           >
             <span className="text-xs font-semibold text-base-content/80">
-              Nominal
+              Status
             </span>
           </div>
 
@@ -66,6 +78,7 @@ const RowJadwaTempo: FC<Props> = ({ aksi, dataTempo, maxHeight }) => {
             dataTempo.map((item) => (
               <Rows
                 key={item.cicilanKe}
+                status={item.status}
                 number={item.cicilanKe}
                 nominal={item.nominal}
                 jatuhTempo={item.jatuhTempo}
@@ -92,6 +105,7 @@ type RowsType = {
   nominal: number;
   lastIndex?: boolean;
   aksi?: boolean;
+  status: InstallmentStatusType;
 };
 const Rows: FC<RowsType> = ({
   nominal,
@@ -99,6 +113,7 @@ const Rows: FC<RowsType> = ({
   jatuhTempo,
   lastIndex,
   aksi,
+  status,
 }) => {
   return (
     <div
@@ -117,7 +132,7 @@ const Rows: FC<RowsType> = ({
       </div>
 
       {/* date */}
-      <div className="col-span-4 flex flex-row justify-start items-center gap-2.5">
+      <div className="col-span-3 flex flex-row justify-start items-center gap-2.5">
         {/* icon */}
         <CalendarDaysIcon className="size-4 text-warning" />
 
@@ -130,16 +145,27 @@ const Rows: FC<RowsType> = ({
       {/* nominal */}
       <div
         className={cn(
-          "flex flex-row  items-center gap-2",
-          aksi ? "col-span-3 justify-start" : "col-span-5 justify-end",
+          "flex flex-row items-center gap-2 col-span-2 justify-start",
         )}
       >
         {/* icon */}
-        <CircleDollarSign className="size-4 text-success" />
+        <CircleDollarSign className="size-4 text-success shrink-0" />
         <span className="text-xs font-semibold text-base-content">
           {formatRupiah(nominal)}
         </span>
       </div>
+
+      {/* nominal */}
+      <div
+        className={cn(
+          "flex flex-row  items-center gap-2",
+          aksi ? "col-span-2 justify-start" : "col-span-4 justify-end",
+        )}
+      >
+        {/* status */}
+        <StatusInstallment status={status} />
+      </div>
+
       {aksi && (
         <div className="col-span-2 flex flex-row justify-end items-center">
           <button type="button" className="group">

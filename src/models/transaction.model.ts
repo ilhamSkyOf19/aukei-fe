@@ -20,11 +20,13 @@ export interface ITransactionType {
   totalItem: number;
   totalDiskon: number;
   totalBayar: number;
+  kembalian: number;
   diBayar: number | null;
   metodePembayaran: PaymentMethodType | null;
   details: Omit<ITransactionDetailType, "createdAt" | "updatedAt">[];
   tempo?: number;
   status: TransactionStatusType;
+  tanggalBooking?: Date | null;
   completedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -65,7 +67,7 @@ export interface ResponseFieldTempo extends Pick<
 > {
   installments: Pick<
     ITempoInstallmentType,
-    "id" | "cicilanKe" | "jatuhTempo" | "nominal"
+    "id" | "cicilanKe" | "jatuhTempo" | "nominal" | "status"
   >[];
 }
 
@@ -74,8 +76,11 @@ export interface ResponseTransactionType extends Omit<
   ITransactionType,
   "tempo" | "pelangganId" | "kasirId"
 > {
-  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
-  kasir: Pick<IPenggunaInternalType, "id" | "nama"> | null;
+  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
+  kasir: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "username" | "isActive"
+  > | null;
   tempo: ResponseFieldTempo | null;
 }
 
@@ -94,6 +99,7 @@ export interface ResponseRiwayatTransactionType {
     | "totalItem"
     | "totalBayar"
     | "metodePembayaran"
+    | "tanggalBooking"
   > & {
     pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
     kasir: Pick<IPenggunaInternalType, "id" | "nama" | "username"> | null;
@@ -128,6 +134,7 @@ export interface ResponseRiwayatTransaksiPelangganType {
       | "totalItem"
       | "totalBayar"
       | "metodePembayaran"
+      | "tanggalBooking"
     > & {
       pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
       statusTempo?: TempoStatusType;
@@ -147,4 +154,55 @@ export interface DetailsLocalStorageType {
   nama: string;
   kode: string;
   stokDikirim?: number;
+}
+
+export interface DataTransaksiBookingForResponseType {
+  id: number;
+  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
+  totalTransaksiBooking: number;
+  totalItemBooking: number;
+  totalItemDikirim: number;
+  totalSisaItem: number;
+  status: TransactionStatusType;
+}
+
+// response tempo with pelanggan
+export interface ResponseTransaksiBookingWithPelangganWithMetaType {
+  data: DataTransaksiBookingForResponseType[];
+  meta: MetaType;
+}
+
+export interface ResponseTransaksiBookingByPelangganType {
+  data: {
+    transaksi?: (Pick<
+      ITransactionType,
+      | "id"
+      | "nomorTransaksi"
+      | "totalItem"
+      | "totalBayar"
+      | "metodePembayaran"
+      | "tanggalBooking"
+      | "diBayar"
+    > & {
+      totalQuantityDelivered: number;
+      totalSisaQuantity: number;
+      statusTempo?: TempoStatusType;
+    })[];
+  };
+  meta?: MetaType;
+}
+
+// response statistik transaksi booking
+export interface ResponseStatistikBookingType {
+  pelanggan?: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
+  totalBooking: number;
+  totalItemBooking: number;
+  totalItemDikirim: number;
+  totalSisaItem: number;
+
+  estimasiOmzet: number;
+  kasMasuk: number;
+  sisaPembayaran: number;
+
+  progressPengiriman: number;
 }

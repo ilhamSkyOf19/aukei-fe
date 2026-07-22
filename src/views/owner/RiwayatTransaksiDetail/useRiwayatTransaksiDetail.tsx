@@ -4,7 +4,7 @@ import { TransactionServices } from "../../../services/transaction.service";
 import { useQuery } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 
 const useRiwayatTransaksiDetail = () => {
@@ -12,10 +12,15 @@ const useRiwayatTransaksiDetail = () => {
   const windowSize = useSizeWindows();
 
   // get id from params
-  const { id } = useParams<{ id: string }>();
+  const { pelangganId } = useParams<{ pelangganId: string }>();
+
+  const navigate = useNavigate();
+
+  // current pathname
+  const currentPathname = useLocation().pathname;
 
   // parse
-  const validatedId = parseId(id);
+  const validatedId = parseId(pelangganId);
 
   // filter metode pembayaran
   const { filter: metodePembayaran, setFilter: handleSetMetodePembayaran } =
@@ -102,6 +107,16 @@ const useRiwayatTransaksiDetail = () => {
   // data pelanggan
   const pelanggan = dataRiwayatTransaksi?.data?.data?.pelanggan;
 
+  // handle detail
+  const handleRedirectDetail = (id: number) => {
+    navigate(`${currentPathname}/transaksi/${id}`);
+  };
+
+  // handle back
+  const handleBack = () => {
+    return navigate(currentPathname.split("/").slice(0, -2).join("/"));
+  };
+
   return {
     metodePembayaran,
     handleSetMetodePembayaran,
@@ -117,6 +132,8 @@ const useRiwayatTransaksiDetail = () => {
     setSort,
     sort,
     pelanggan,
+    handleRedirectDetail,
+    handleBack,
   };
 };
 

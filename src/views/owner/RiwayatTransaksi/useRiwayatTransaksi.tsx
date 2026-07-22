@@ -125,7 +125,7 @@ const useRiwayatTransaksi = () => {
 
   // handle detail
   const handleRedirectDetail = (id: number) => {
-    navigate(`/dashboard/riwayat-transaksi/detail/${id}`);
+    navigate(`/dashboard/riwayat-transaksi/pelanggan/${id}`);
   };
 
   return {

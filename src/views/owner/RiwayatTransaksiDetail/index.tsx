@@ -22,7 +22,10 @@ import {
   formatRupiahShort,
 } from "../../../helpers/helpers";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import { type PaymentMethodType } from "../../../types/constant.type";
+import {
+  TRANSACTION_STATUS_TYPE,
+  type PaymentMethodType,
+} from "../../../types/constant.type";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
@@ -32,6 +35,7 @@ import CardData from "../../../components/ui/cards/CardData";
 import StatusTransaction from "../../../components/ui/StatusTransaction";
 import Avatar from "../../../components/ui/Avatar";
 import useRiwayatTransaksiDetail from "./useRiwayatTransaksiDetail";
+import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 
 const RiwayatTransaksiDetail = () => {
   const {
@@ -49,13 +53,15 @@ const RiwayatTransaksiDetail = () => {
     setSort,
     sort,
     pelanggan,
+    handleRedirectDetail,
+    handleBack,
   } = useRiwayatTransaksiDetail();
 
   return (
     <div className="w-full h-screen overflow-y-auto">
       <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2 p-2">
+        <ButtonBackText handleClick={() => handleBack()} />
         <FilterStatistik
-          withBack
           handleSearch={handleSearch}
           filterSort={{
             handleSort: setSort,
@@ -289,6 +295,7 @@ const RiwayatTransaksiDetail = () => {
                 totalItem={item.totalItem}
                 totalTransaksi={item.totalBayar}
                 status={item.status}
+                handleRedirectDetail={() => handleRedirectDetail(item.id)}
               />
             ))
           ) : (
@@ -342,7 +349,11 @@ const RiwayatTransaksiDetail = () => {
                       </span>
                     </td>
                     <td>
-                      {formatTanggalLengkap(item.completedAt ?? new Date())}
+                      {formatTanggalLengkap(
+                        item.status === TRANSACTION_STATUS_TYPE.BOOKING
+                          ? (item.tanggalBooking ?? new Date())
+                          : (item.completedAt ?? new Date()),
+                      )}
                     </td>
                     <td>{formatNumber(item.totalItem)} item</td>
                     <td>{formatRupiah(item.totalBayar)}</td>
@@ -361,6 +372,7 @@ const RiwayatTransaksiDetail = () => {
                       <button
                         type="button"
                         className="text-info hover:underline"
+                        onClick={() => handleRedirectDetail(item.id)}
                       >
                         detail
                       </button>

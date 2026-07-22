@@ -327,7 +327,7 @@ const useBooking = (params: {
           quantityDelivered: item.stokDikirim,
         })),
         diBayar: dataDiBayar,
-        kembalian: dataDiBayar - (dataDp ?? 0),
+        kembalian: dataDiBayar - (dataDp ?? transactionSummary.saranDp),
         metodePembayaran: metodePembayaran,
         pelangganId: pelanggan.id,
         kasirId: kasir.id,

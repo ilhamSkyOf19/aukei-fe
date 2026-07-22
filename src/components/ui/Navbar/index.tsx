@@ -47,6 +47,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             currentPathname.includes("kredit")) &&
           "hidden",
       )}
+      style={{ minHeight: "2.5rem" }}
     >
       <div className="w-full flex flex-row justify-between items-center">
         <div className="flex-2 flex flex-row justify-start items-center">
@@ -64,13 +65,13 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
               )}
             />
           </label>
-          <h1 className="text-base-content px-4 font-medium capitalize lg:text-lg text-sm lg:font-semibold">
+          <h1 className="text-base-content px-4 font-medium capitalize text-sm lg:font-semibold">
             {title}
           </h1>
         </div>
         <div className="flex-1 flex flex-row justify-end items-center gap-2 lg:gap-6 pr-2">
           {/* beta */}
-          <div className="w-14 h-8 flex justify-center items-center border border-amber-600 bg-amber-100 rounded-xl">
+          <div className="w-14 h-7 flex justify-center items-center border border-amber-600 bg-amber-100 rounded-lg">
             <span className="text-amber-600 font-medium text-xs">Beta</span>
           </div>
 
@@ -83,7 +84,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
               className="cursor-pointer p-2 focus:bg-custom-primary/50 hover:bg-custom-primary/50 rounded-full transition-all duration-150 ease-in-out relative"
               onFocus={() => setIsShowCountNotifikasi(false)}
             >
-              <Bell className="size-6 text-base-content" />
+              <Bell className="size-5 text-base-content" />
 
               {/* count */}
               {isShowCountNotifikasi &&
@@ -211,8 +212,8 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             >
               {/* avatar */}
               <div className="avatar avatar-placeholder">
-                <div className="bg-custom-primary text-neutral-content w-8 rounded-full">
-                  <span className="text-xs lg:text-sm text-custom-secondary font-semibold uppercase">
+                <div className="bg-custom-primary text-neutral-content w-7 rounded-full">
+                  <span className="text-xs text-custom-secondary font-semibold uppercase">
                     {highlightName(pengguna?.nama ?? "")}
                   </span>
                 </div>

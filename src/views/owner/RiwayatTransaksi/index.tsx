@@ -23,7 +23,10 @@ import {
   formatRupiahShort,
 } from "../../../helpers/helpers";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import { type PaymentMethodType } from "../../../types/constant.type";
+import {
+  TRANSACTION_STATUS_TYPE,
+  type PaymentMethodType,
+} from "../../../types/constant.type";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import Avatar from "../../../components/ui/Avatar";
@@ -349,7 +352,11 @@ const RiwayatTransaksi = () => {
                       </span>
                     </td>
                     <td>
-                      {formatTanggalLengkap(item.completedAt ?? new Date())}
+                      {formatTanggalLengkap(
+                        item.status === TRANSACTION_STATUS_TYPE.BOOKING
+                          ? (item.tanggalBooking ?? new Date())
+                          : (item.completedAt ?? new Date()),
+                      )}
                     </td>
                     {/* kasir */}
                     <td>

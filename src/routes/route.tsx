@@ -27,6 +27,8 @@ import KreditPage from "../pages/KreditPage";
 import BookingPage from "../pages/BookingPage";
 import KreditDetailPage from "../pages/KreditDetailPage";
 import InstallmentsDetailPage from "../pages/InstallmentsDetailPage";
+import TransactionDetailPage from "../pages/TransactionDetailPage";
+import BookingByPelangganPage from "../pages/BookingByPelangganPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -258,12 +260,25 @@ const route = createBrowserRouter([
             ),
           },
           {
-            path: "detail/:id",
-            element: (
-              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
-                <RiwayatTransaksiDetailPage />
-              </RoleGuard>
-            ),
+            path: "pelanggan/:pelangganId",
+            children: [
+              {
+                index: true,
+                element: (
+                  <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                    <RiwayatTransaksiDetailPage />
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: "transaksi/:transactionId",
+                element: (
+                  <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                    <TransactionDetailPage />
+                  </RoleGuard>
+                ),
+              },
+            ],
           },
         ],
       },
@@ -333,6 +348,19 @@ const route = createBrowserRouter([
           {
             index: true,
             element: <BookingPage />,
+          },
+          {
+            path: "pelanggan/:pelangganId",
+            children: [
+              {
+                index: true,
+                element: <BookingByPelangganPage />,
+              },
+              {
+                path: "detail/:transactionId",
+                element: <TransactionDetailPage />,
+              },
+            ],
           },
         ],
       },

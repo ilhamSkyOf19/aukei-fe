@@ -14,7 +14,9 @@ const Kasir = () => {
     useKasir();
 
   return (
-    <div className="w-full p-3 lg:h-screen overflow-y-auto">
+    <div
+      className={cn("w-full overflow-y-auto", step !== 3 && "lg:h-screen p-3")}
+    >
       {toast && (
         <Toast
           toast={toast?.id !== null}
@@ -34,7 +36,6 @@ const Kasir = () => {
           className={cn(
             "w-full h-full flex flex-col justify-start items-center gap-2.5",
             isModeKasir && "h-screen",
-            step === 3 && "overflow-y-auto",
           )}
         >
           <div

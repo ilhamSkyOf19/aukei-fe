@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   CalendarDays,
   CircleCheck,
   Clock,
@@ -30,6 +29,7 @@ import CardPembayaran from "./CardPembayaran";
 import NotCompatible from "../../../components/messages/NotCompatible";
 import AlertLabelList from "../../../components/messages/AlertLabelList";
 import SideBarRiwayatPembayaranTempo from "../../../components/SideBarRiwayatPembayaranTempo";
+import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 
 const InstallmentsDetail = () => {
   const {
@@ -49,25 +49,14 @@ const InstallmentsDetail = () => {
   return (
     <div className="w-full h-screen overflow-y-auto">
       {windowSize === "lg" ? (
-        <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-center">
+        <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-start">
+          <ButtonBackText
+            handleClick={() =>
+              navigate(currentPathname.split("/").slice(0, -2).join("/"))
+            }
+          />
           {/* statistik */}
-          <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
-            <div className="flex flex-col justify-start items-start gap-2.5 py-2.5">
-              {/* back */}
-              <button
-                type="button"
-                onClick={() =>
-                  navigate(currentPathname.split("/").slice(0, -2).join("/"))
-                }
-                className="flex flex-row justify-start items-center gap-2 opacity-50 hover:opacity-100 transition-opacity duration-150 ease-in-out"
-              >
-                {/* icon */}
-                <ArrowLeft className="size-4 text-base-content" />
-                <span className="text-base-content text-xs font-medium">
-                  Kembali
-                </span>
-              </button>
-            </div>
+          <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5 mt-2.5">
             <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-2.5">
               {/* pelanggan */}
               <div className="col-span-1 relative flex flex-row justify-start items-center gap-4 border p-2 rounded-2xl md:rounded-xl border-base-content/10">

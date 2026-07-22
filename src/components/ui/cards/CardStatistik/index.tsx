@@ -82,7 +82,7 @@ const CardStatistik: FC<Props> = ({
           </div>
 
           {/* caption */}
-          {caption && (
+          {caption && caption !== "" && (
             <span className="text-[0.625rem] font-medium text-base-content/50">
               {caption}
             </span>
@@ -94,7 +94,7 @@ const CardStatistik: FC<Props> = ({
             <>
               <span
                 className={cn(
-                  "text-xs md:text-sm font-semibold md:mt-1",
+                  "text-xs md:text-sm font-semibold mt-1 md:mt-2",
                   minus ? "text-error" : "text-base-content",
                 )}
               >

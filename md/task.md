@@ -128,11 +128,13 @@
   - [✅] Metode pembayaran tempo
   - [ ] Testing Skenario
 
-  - [ ] Buat versi mobile untuk pembayaran kredit
+  - [ ] Buat halaman booking untuk owner
 
   - [ ] cek loading di contant table, sesuaikan cols nya dan juga cols data empty nya
 
-  - [ ] Perbaiki tampilan riwayat pengajuan
+  - [ ] Membuat detail transaksi yang berisi data dan cetak struk dan tambahkan response status di model nya
+
+  - [✅] Perbaiki tampilan riwayat pengajuan
 
 - [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
 

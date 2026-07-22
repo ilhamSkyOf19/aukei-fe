@@ -1,4 +1,4 @@
-import { ArrowLeft, FileText, Sheet } from "lucide-react";
+import { FileText, Sheet } from "lucide-react";
 import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
 import type { FC } from "react";
 import InputSearch from "../../inputs/InputSearch";
@@ -8,7 +8,7 @@ import listDateRangeLong from "../../../utils/listDateRangeLong";
 import FilterSort from "../Sort";
 import MetodePembayaran from "../MetodePembayaran";
 import StatusTempo from "../StatusTempo";
-import { useNavigate } from "react-router-dom";
+import { cn } from "../../../utils/cn";
 
 type Props = {
   handleSearch: (value: string) => void;
@@ -16,15 +16,14 @@ type Props = {
     handleSort: (value: string) => void;
     value: string;
   };
-  filterMetodePembayaran: {
+  filterMetodePembayaran?: {
     handleMetodePembayaran: (value: string) => void;
     value: string;
   };
-  filterTempo: {
+  filterTempo?: {
     handleTempo: (value: string) => void;
     value: string;
   };
-  withBack?: boolean;
 };
 
 const FilterStatistik: FC<Props> = ({
@@ -32,48 +31,23 @@ const FilterStatistik: FC<Props> = ({
   filterMetodePembayaran,
   filterSort,
   filterTempo,
-  withBack,
 }) => {
-  const navigate = useNavigate();
   return (
     <>
       {/* search */}
       <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl md:hidden flex flex-col justify-start items-start gap-4">
-        {withBack && (
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="flex flex-row justify-start items-center gap-2 opacity-50 hover:opacity-100 transition-opacity duration-150 ease-in-out"
-          >
-            {/* icon */}
-            <ArrowLeft className="size-4 text-base-content" />
-            <span className="text-base-content text-xs font-medium">
-              Kembali
-            </span>
-          </button>
-        )}
-
         <InputSearch handleSearch={handleSearch} />
       </div>
 
       {/* filter */}
       <div className="w-full grid grid-cols-2 md:grid-cols-4 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-2 lg:gap-12">
-        <div className="col-span-1 hidden md:flex flex-col justify-start items-start gap-2">
-          <InputSearch handleSearch={handleSearch} withLabel />
-
-          {withBack && (
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="flex flex-row justify-start items-center gap-2 opacity-50 hover:opacity-100 transition-opacity duration-150 ease-in-out"
-            >
-              {/* icon */}
-              <ArrowLeft className="size-4 text-base-content" />
-              <span className="text-base-content text-xs font-medium">
-                Kembali
-              </span>
-            </button>
+        <div
+          className={cn(
+            " hidden md:flex flex-col justify-start items-start gap-2",
+            filterMetodePembayaran && filterTempo ? "col-span-1" : "col-span-2",
           )}
+        >
+          <InputSearch handleSearch={handleSearch} withLabel />
         </div>
 
         <div className="col-span-2 md:hidden">
@@ -92,29 +66,35 @@ const FilterStatistik: FC<Props> = ({
           />
         </div>
 
-        <div className="col-span-1 flex flex-row justify-start items-start gap-2">
-          <MetodePembayaran
-            setMetode={filterMetodePembayaran.handleMetodePembayaran}
-            customWidth="w-full"
-            value={filterMetodePembayaran.value}
-          />
-          {filterMetodePembayaran.value === "tempo" && (
-            <div className="hidden md:flex">
+        {filterMetodePembayaran && (
+          <div className="col-span-1 flex flex-row justify-start items-start gap-2">
+            <MetodePembayaran
+              setMetode={filterMetodePembayaran.handleMetodePembayaran}
+              customWidth="w-full"
+              value={filterMetodePembayaran.value}
+            />
+
+            {filterMetodePembayaran.value === "tempo" && filterTempo && (
+              <div className="hidden md:flex">
+                <StatusTempo
+                  setStatusTempo={filterTempo.handleTempo}
+                  value={filterTempo.value}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {filterMetodePembayaran &&
+          filterMetodePembayaran.value === "tempo" &&
+          filterTempo && (
+            <div className="col-span-1 md:hidden">
               <StatusTempo
                 setStatusTempo={filterTempo.handleTempo}
                 value={filterTempo.value}
               />
             </div>
           )}
-        </div>
-        {filterMetodePembayaran.value === "tempo" && (
-          <div className="col-span-1 md:hidden">
-            <StatusTempo
-              setStatusTempo={filterTempo.handleTempo}
-              value={filterTempo.value}
-            />
-          </div>
-        )}
       </div>
 
       <div className="flex my-2 flex-row justify-end w-full items-center gap-2 md:hidden">

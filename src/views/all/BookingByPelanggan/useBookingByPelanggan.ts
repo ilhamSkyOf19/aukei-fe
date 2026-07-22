@@ -1,28 +1,28 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useQueries } from "@tanstack/react-query";
-import { TempoService } from "../../../services/tempo.service";
 import useSizeWindows from "../../../hooks/useSizeWindows";
 import { useFilter } from "../../../hooks/useFilter";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
+import { TransactionServices } from "../../../services/transaction.service";
 import { useAuthStore } from "../../../stores/authStore";
 
-const useKreditDetail = () => {
+const useBookingByPelanggan = () => {
   // get id from params
-  const { id } = useParams<{ id: string }>();
+  const { pelangganId } = useParams<{ pelangganId: string }>();
+
+  //   get pengguna
+  const pengguna = useAuthStore((state) => state.pengguna);
 
   //   window size
   const windowSize = useSizeWindows();
-
-  // pengguna
-  const pengguna = useAuthStore((state) => state.pengguna);
 
   const navigate = useNavigate();
 
   // current pathname
   const currentPathname = useLocation().pathname;
 
-  const validatedId = parseId(id);
+  const validatedId = parseId(pelangganId);
 
   //   filter status
   const { filter: status, setFilter: setStatus } = useFilter({
@@ -56,8 +56,9 @@ const useKreditDetail = () => {
   const data = useQueries({
     queries: [
       {
-        queryKey: ["statistik-tempo-pelanggan", validatedId],
-        queryFn: () => TempoService.statistikByPelanggan({ id: validatedId! }),
+        queryKey: ["statistik-booking-pelanggan", validatedId],
+        queryFn: () =>
+          TransactionServices.statistikBookingByPelanggan({ id: validatedId! }),
         enabled: !!validatedId,
         retry: false,
         refetchOnWindowFocus: false,
@@ -65,7 +66,7 @@ const useKreditDetail = () => {
 
       {
         queryKey: [
-          "tempo-detail",
+          "booking-by-pelanggan",
           limit,
           page,
           search,
@@ -74,8 +75,8 @@ const useKreditDetail = () => {
           validatedId,
         ],
         queryFn: () =>
-          TempoService.findAllByPelanggan({
-            id: validatedId!,
+          TransactionServices.findTransaksiBookingByPelanggan({
+            pelangganId: validatedId!,
             query: {
               ...(search && { search }),
               ...(page && { page }),
@@ -92,41 +93,48 @@ const useKreditDetail = () => {
   });
 
   const [
-    { data: dataStatistikTempo, isLoading: isLoadingStatistikTempo },
-    { data: dataTempo, isLoading: isLoadingDataTempo },
+    {
+      data: dataStatistikBookingByPelanggan,
+      isLoading: isLoadingStatistikBookingByPelanggan,
+    },
+    {
+      data: dataBookingByPelanggan,
+      isLoading: isLoadingDataBookingByPelanggan,
+    },
   ] = data;
 
   // is existing data tempo
-  const isExistDataTempo: boolean =
-    !isLoadingDataTempo && dataTempo?.data?.data
-      ? dataTempo?.data?.data?.length > 0
+  const isExistDataBookingByPelanggan: boolean =
+    !isLoadingDataBookingByPelanggan &&
+    dataBookingByPelanggan?.data?.data?.transaksi
+      ? dataBookingByPelanggan?.data?.data?.transaksi?.length > 0
         ? true
         : false
       : false;
 
   // handle redirect
   const handleRedirectDetail = (id: number) => {
-    return navigate(`${currentPathname}/tempo/${id}`);
+    return navigate(`${currentPathname}/detail/${id}`);
   };
 
   return {
     windowSize,
-    dataStatistikTempo,
-    isLoadingStatistikTempo,
     navigate,
     status,
     setStatus,
     handleLimit,
     handlePage,
-    dataTempo,
-    isExistDataTempo,
-    isLoadingDataTempo,
+    isExistDataBookingByPelanggan,
     setSearch,
     setSort,
     sort,
     handleRedirectDetail,
+    dataStatistikBookingByPelanggan,
+    isLoadingStatistikBookingByPelanggan,
+    dataBookingByPelanggan,
+    isLoadingDataBookingByPelanggan,
     pengguna,
   };
 };
 
-export default useKreditDetail;
+export default useBookingByPelanggan;

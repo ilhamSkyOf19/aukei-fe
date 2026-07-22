@@ -20,7 +20,7 @@ export interface ITempoInstallmentType {
 // create installment
 export interface CreateInstallmentType extends Pick<
   ITempoInstallmentType,
-  "cicilanKe" | "jatuhTempo" | "nominal"
+  "cicilanKe" | "jatuhTempo" | "nominal" | "status"
 > {}
 
 export interface ResponseHistoryPaymentWithMetaType {

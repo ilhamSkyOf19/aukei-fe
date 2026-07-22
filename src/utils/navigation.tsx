@@ -1,9 +1,9 @@
 import type { ElementType } from "react";
 import {
   Boxes,
-  CalendarDays,
+  CalendarClock,
   ChartLine,
-  Clock,
+  HandCoins,
   History,
   LayoutDashboard,
   LucideArrowLeftSquare,
@@ -51,12 +51,12 @@ export const NAVIGATION_LIST_OWNER: {
   },
   {
     label: "Kredit",
-    icon: CalendarDays,
+    icon: HandCoins,
     link: "/dashboard/kredit",
   },
   {
     label: "Booking",
-    icon: Clock,
+    icon: CalendarClock,
     link: "/dashboard/booking",
   },
   {
@@ -88,12 +88,12 @@ export const NAVIGATION_LIST_KASIR: {
   },
   {
     label: "Kredit",
-    icon: CalendarDays,
+    icon: HandCoins,
     link: "/dashboard/kredit",
   },
   {
     label: "Booking",
-    icon: Clock,
+    icon: CalendarClock,
     link: "/dashboard/booking",
   },
   {

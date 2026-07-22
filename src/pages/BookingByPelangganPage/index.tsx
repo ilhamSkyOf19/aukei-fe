@@ -2,25 +2,25 @@ import { useEffect, type FC } from "react";
 import HeaderPage from "../../layouts/HeaderPage";
 import { useOutletContext } from "react-router-dom";
 import type { OutletContextType } from "../../types/constant.type";
-import Booking from "../../views/all/Booking";
+import BookingByPelanggan from "../../views/all/BookingByPelanggan";
 
-const BookingPage: FC = () => {
+const BookingByPelangganPage: FC = () => {
   // get context
   const { handleTitle } = useOutletContext<OutletContextType>();
 
   useEffect(() => {
-    handleTitle("Booking");
+    handleTitle("Pelanggan Booking");
   }, [handleTitle]);
 
   return (
     <>
       {/* header page */}
-      <HeaderPage title="Booking | AUKEI" />
+      <HeaderPage title="Pelanggan Booking | AUKEI" />
 
       {/* view toko */}
-      <Booking />
+      <BookingByPelanggan />
     </>
   );
 };
 
-export default BookingPage;
+export default BookingByPelangganPage;

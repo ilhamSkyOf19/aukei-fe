@@ -4,7 +4,10 @@ import type {
   CreateTransactionForRequestType,
   ResponseRiwayatTransactionType,
   ResponseRiwayatTransaksiPelangganType,
+  ResponseStatistikBookingType,
   ResponseTransactionType,
+  ResponseTransaksiBookingByPelangganType,
+  ResponseTransaksiBookingWithPelangganWithMetaType,
 } from "../models/transaction.model";
 import type { ResponseStructure } from "../types/response.type";
 
@@ -64,6 +67,66 @@ export class TransactionServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseRiwayatTransaksiPelangganType | null>
     >(`/transaction/pelanggan/${params.id}`, { params: params.query });
+
+    return result.data;
+  }
+
+  // find  transaksi booking
+  static async findTransaksiBookingWithPelanggan(params: {
+    query: PaginationType;
+  }): Promise<
+    ResponseStructure<ResponseTransaksiBookingWithPelangganWithMetaType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseTransaksiBookingWithPelangganWithMetaType | null>
+    >(`/transaction/booking`, { params: params.query });
+
+    return result.data;
+  }
+
+  // find riwayat transaksi booking by pelanggan
+  static async findTransaksiBookingByPelanggan(params: {
+    pelangganId: number;
+    query: PaginationType & {
+      startDate?: string;
+      endDate?: string;
+      statusTempo?: string;
+      metodePembayaran?: string;
+    };
+  }): Promise<
+    ResponseStructure<ResponseTransaksiBookingByPelangganType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseTransaksiBookingByPelangganType | null>
+    >(`/transaction/booking/pelanggan/${params.pelangganId}`, {
+      params: params.query,
+    });
+
+    return result.data;
+  }
+
+  // statistik
+  static async statistikBooking(): Promise<
+    ResponseStructure<ResponseStatistikBookingType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseStatistikBookingType | null>
+    >(`/transaction/booking/statistik`);
+
+    return result.data;
+  }
+
+  // statistik by pelanggan
+  static async statistikBookingByPelanggan(params: {
+    id: number;
+  }): Promise<ResponseStructure<ResponseStatistikBookingType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseStatistikBookingType | null>
+    >(`/transaction/booking/statistik/pelanggan/${params.id}`);
 
     return result.data;
   }

@@ -2,36 +2,29 @@ import { useQueries } from "@tanstack/react-query";
 import { useFilter } from "../../../hooks/useFilter";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import useSizeWindows from "../../../hooks/useSizeWindows";
-import { TempoService } from "../../../services/tempo.service";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../stores/authStore";
+import { TransactionServices } from "../../../services/transaction.service";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 
-const useKredit = () => {
+const useBooking = () => {
   // window size
   const windowSize = useSizeWindows();
-
-  // navigate
-  const navigate = useNavigate();
 
   // get pengguna
   const pengguna = useAuthStore((state) => state.pengguna);
 
-  // current pahtname
-  const currentPahtname = useLocation().pathname;
+  //   navigate
+  const navigate = useNavigate();
+
+  //   current pathname
+  const currentPathname = useLocation().pathname;
 
   // filter sort
   const { filter: sort, setFilter: setSort } = useFilter({
     paramName: "sort",
     allowQuery: ["asc", "desc"],
     defaultValueCustom: "desc",
-  });
-
-  // filter status
-  const { filter: status, setFilter: setStatus } = useFilter({
-    paramName: "status",
-    allowQuery: ["unpaid", "paid", "overdue", "partial", "semua"],
-    defaultValueCustom: "semua",
   });
 
   // page filter
@@ -53,21 +46,30 @@ const useKredit = () => {
   const data = useQueries({
     queries: [
       {
-        queryKey: ["statistik-tempo"],
-        queryFn: () => TempoService.statistik(),
+        queryKey: ["statistik-booking"],
+        queryFn: () => TransactionServices.statistikBooking(),
         enabled: pengguna?.role === ROLE_INTERNAL_TYPE.OWNER,
         retry: false,
         refetchOnWindowFocus: false,
       },
       {
-        queryKey: ["tempo", limit, page, search, status, sort],
+        queryKey: [
+          "transaksi-booking",
+          {
+            limit,
+            page,
+            search,
+            sort,
+          },
+        ],
         queryFn: () =>
-          TempoService.findAll({
-            ...(search && { search }),
-            ...(page && { page }),
-            ...(limit && { limit }),
-            ...(status && { status }),
-            ...(sort && { sort }),
+          TransactionServices.findTransaksiBookingWithPelanggan({
+            query: {
+              ...(search && { search }),
+              ...(page && { page }),
+              ...(limit && { limit }),
+              ...(sort && { sort }),
+            },
           }),
         retry: false,
         refetchOnWindowFocus: false,
@@ -76,21 +78,21 @@ const useKredit = () => {
   });
 
   const [
-    { data: dataStatistikTempo, isLoading: isLoadingStatistikTempo },
-    { data: dataTempo, isLoading: isLoadingDataTempo },
+    { data: dataStatistikBooking, isLoading: isLoadingStatistikBooking },
+    { data: dataTransaksiBooking, isLoading: isLoadingDataTransaksiBooking },
   ] = data;
 
   // is existing data tempo
-  const isExistDataTempo: boolean =
-    !isLoadingDataTempo && dataTempo?.data?.data
-      ? dataTempo?.data?.data?.length > 0
+  const isExistDataTransaksiBooking: boolean =
+    !isLoadingDataTransaksiBooking && dataTransaksiBooking?.data?.data
+      ? dataTransaksiBooking?.data?.data?.length > 0
         ? true
         : false
       : false;
 
-  // handle redirect
-  const handelRedirectDetail = (id: number) => {
-    return navigate(`${currentPahtname}/pelanggan/${id}`);
+  //   handle redirect
+  const handleRedirect = (pelangganId: number) => {
+    return navigate(`${currentPathname}/pelanggan/${pelangganId}`);
   };
 
   return {
@@ -98,18 +100,16 @@ const useKredit = () => {
     sort,
     setSort,
     setSearch,
-    status,
-    setStatus,
     handleLimit,
     handlePage,
-    dataTempo,
-    dataStatistikTempo,
-    isLoadingDataTempo,
-    isLoadingStatistikTempo,
-    isExistDataTempo,
-    handelRedirectDetail,
+    isExistDataTransaksiBooking,
     pengguna,
+    dataTransaksiBooking,
+    isLoadingDataTransaksiBooking,
+    handleRedirect,
+    dataStatistikBooking,
+    isLoadingStatistikBooking,
   };
 };
 
-export default useKredit;
+export default useBooking;

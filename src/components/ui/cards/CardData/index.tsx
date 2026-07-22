@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import {
   PAYMENT_METHOD_TYPE,
+  TEMPO_STATUS_TYPE,
   type PaymentMethodType,
   type TempoStatusType,
   type TransactionStatusType,
@@ -9,6 +10,8 @@ import {
   Banknote,
   CalendarClock,
   ChevronRight,
+  CircleAlert,
+  CircleCheck,
   Dot,
   Landmark,
   PackageOpen,
@@ -39,6 +42,12 @@ type Props = {
   noMetodePembayaran?: boolean;
   totalTransaksiTempo?: number;
   jatuhTempoTerdekat?: Date;
+  tempoIcon?: boolean;
+  progresCicilan?: {
+    cicilanBelumSelesai?: number;
+    jumlahCicilan?: number;
+  };
+  periode?: number;
 };
 const CardData: FC<Props> = ({
   nomorReferensi,
@@ -53,7 +62,46 @@ const CardData: FC<Props> = ({
   noMetodePembayaran,
   totalTransaksiTempo,
   jatuhTempoTerdekat,
+  tempoIcon,
+  progresCicilan,
+  periode,
 }) => {
+  const isTempo = metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO;
+
+  const isTempoUnpaid = tempoIcon && statusTempo === TEMPO_STATUS_TYPE.UNPAID;
+
+  const isTempoPartial = tempoIcon && statusTempo === TEMPO_STATUS_TYPE.PARTIAL;
+
+  const isTempoPaid = tempoIcon && statusTempo === TEMPO_STATUS_TYPE.PAID;
+
+  const isTempoOverdue = tempoIcon && statusTempo === TEMPO_STATUS_TYPE.OVERDUE;
+
+  const backgroundClass = cn(
+    "w-10 h-10 rounded-full flex items-center justify-center",
+
+    !tempoIcon &&
+      metodePembayaran === PAYMENT_METHOD_TYPE.TRANSFER &&
+      "bg-blue-100",
+
+    !tempoIcon &&
+      metodePembayaran === PAYMENT_METHOD_TYPE.CASH &&
+      "bg-emerald-100",
+
+    !tempoIcon &&
+      metodePembayaran === PAYMENT_METHOD_TYPE.QRIS &&
+      "bg-purple-100",
+
+    !tempoIcon && isTempo && "bg-amber-100",
+
+    isTempoUnpaid && "bg-amber-100",
+
+    isTempoPartial && "bg-emerald-100",
+
+    isTempoPaid && "bg-emerald-100",
+
+    isTempoOverdue && "bg-rose-100",
+  );
+
   return (
     <button
       type="button"
@@ -62,27 +110,32 @@ const CardData: FC<Props> = ({
     >
       <div className="flex flex-row justify-start items-center gap-2.5">
         {/* icon */}
-        <div
-          className={cn(
-            "w-10 h-10 rounded-full flex flex-row justify-center items-center",
-            metodePembayaran === PAYMENT_METHOD_TYPE.TRANSFER && "bg-blue-100",
-            metodePembayaran === PAYMENT_METHOD_TYPE.CASH && "bg-emerald-100",
-            metodePembayaran === PAYMENT_METHOD_TYPE.QRIS && "bg-purple-100",
-            metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && "bg-amber-100",
+        <div className={backgroundClass}>
+          {!tempoIcon && metodePembayaran === PAYMENT_METHOD_TYPE.TRANSFER && (
+            <Landmark className="size-5 text-blue-600" />
           )}
-        >
-          {metodePembayaran === PAYMENT_METHOD_TYPE.TRANSFER && (
-            <Landmark className={cn("size-5", "text-blue-600")} />
+
+          {!tempoIcon && metodePembayaran === PAYMENT_METHOD_TYPE.CASH && (
+            <Banknote className="size-5 text-emerald-600" />
           )}
-          {metodePembayaran === PAYMENT_METHOD_TYPE.CASH && (
-            <Banknote className={cn("size-5", "text-emerald-600")} />
+
+          {!tempoIcon && metodePembayaran === PAYMENT_METHOD_TYPE.QRIS && (
+            <QrCode className="size-5 text-purple-600" />
           )}
-          {metodePembayaran === PAYMENT_METHOD_TYPE.QRIS && (
-            <QrCode className={cn("size-5", "text-purple-600")} />
+
+          {!tempoIcon && metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && (
+            <CalendarClock className="size-5 text-amber-600" />
           )}
-          {metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && (
-            <CalendarClock className={cn("size-5", "text-amber-600")} />
+
+          {isTempoUnpaid && <CalendarClock className="size-5 text-amber-600" />}
+
+          {isTempoPartial && (
+            <CircleCheck className="size-5 text-emerald-600" />
           )}
+
+          {isTempoPaid && <CircleCheck className="size-5 text-emerald-600" />}
+
+          {isTempoOverdue && <CircleAlert className="size-5 text-rose-600" />}
         </div>
 
         {/* data */}
@@ -136,16 +189,27 @@ const CardData: FC<Props> = ({
             )}
 
             {jatuhTempoTerdekat && (
-              <span
-                className={cn(
-                  "font-medium text-[0.625rem]",
-                  getJatuhTempoTextColor(jatuhTempoTerdekat),
-                )}
-              >
-                (
-                {formatNumber(differenceInDays(jatuhTempoTerdekat, new Date()))}{" "}
-                Hari lagi )
-              </span>
+              <>
+                <span
+                  className={cn(
+                    "font-medium text-[0.625rem]",
+                    getJatuhTempoTextColor(jatuhTempoTerdekat),
+                  )}
+                >
+                  (
+                  {formatNumber(
+                    differenceInDays(jatuhTempoTerdekat, new Date()),
+                  )}{" "}
+                  Hari lagi )
+                </span>
+
+                {/* dot */}
+                <Dot className="text-base-content/80" />
+
+                <span className={cn("font-medium text-[0.625rem]")}>
+                  {periode} Minggu
+                </span>
+              </>
             )}
 
             {metodePembayaran && !noMetodePembayaran && (
@@ -168,6 +232,15 @@ const CardData: FC<Props> = ({
           )}
           {/* status */}
           <StatusTransaction status={status} statusTempo={statusTempo} />
+
+          {progresCicilan && (
+            <span className="text-[0.625rem] text-base-content font-medium">
+              {(progresCicilan.jumlahCicilan ?? 0) -
+                (progresCicilan.cicilanBelumSelesai ?? 0)}
+              {""} / {""}
+              {progresCicilan.jumlahCicilan}
+            </span>
+          )}
         </div>
 
         {/* icon */}

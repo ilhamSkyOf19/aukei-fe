@@ -20,10 +20,10 @@ const ButtonTheme = () => {
       />
 
       {/* icon saat dark mode */}
-      <Sun className="swap-on size-7 fill-current text-base-content" />
+      <Sun className="swap-on size-6 fill-current text-base-content" />
 
       {/* icon saat light mode */}
-      <Moon className="swap-off size-7 fill-current text-base-content" />
+      <Moon className="swap-off size-6 fill-current text-base-content" />
     </label>
   );
 };

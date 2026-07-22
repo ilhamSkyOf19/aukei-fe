@@ -1,9 +1,9 @@
 import {
-  ArrowLeft,
   CircleAlert,
   CircleCheck,
   Clock,
   Coins,
+  HandCoins,
   Receipt,
 } from "lucide-react";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
@@ -28,6 +28,9 @@ import StatusTransaction from "../../../components/ui/StatusTransaction";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import NotCompatible from "../../../components/messages/NotCompatible";
+import ButtonBackText from "../../../components/ui/button/ButtonBackText";
+import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
+import CardData from "../../../components/ui/cards/CardData";
 
 const filterStatus: { label: string; value: string }[] = [
   {
@@ -61,30 +64,17 @@ const KreditDetail = () => {
     setSort,
     sort,
     handleRedirectDetail,
+    pengguna,
   } = useKreditDetail();
 
   return (
     <div className="w-full h-screen overflow-y-auto">
-      {windowSize === "lg" ? (
-        <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-center">
+      {(windowSize === "lg" && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) ||
+      pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? (
+        <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-start">
+          <ButtonBackText handleClick={() => navigate("/dashboard/kredit")} />
           {/* statistik */}
-          <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
-            {/* data pelanggan */}
-            <div className="flex flex-col justify-start items-start gap-2.5 py-2.5">
-              {/* back */}
-              <button
-                type="button"
-                onClick={() => navigate("/dashboard/kredit")}
-                className="flex flex-row justify-start items-center gap-2 opacity-50 hover:opacity-100 transition-opacity duration-150 ease-in-out"
-              >
-                {/* icon */}
-                <ArrowLeft className="size-4 text-base-content" />
-                <span className="text-base-content text-xs font-medium">
-                  Kembali
-                </span>
-              </button>
-            </div>
-
+          <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5 mt-2.5">
             <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-2.5">
               <div className="col-span-1 flex flex-row justify-start items-center gap-4 border p-2 rounded-lg border-base-content/10">
                 <Avatar
@@ -236,6 +226,41 @@ const KreditDetail = () => {
             </div>
           </div>
 
+          {/* DATA SM */}
+          {/* DATA SM */}
+          <div className="w-full mt-2.5 flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-2xl border border-transparent dark:border-base-content/10 p-2 gap-2.5 lg:hidden">
+            {isLoadingDataTempo ? (
+              Array.from({ length: 4 }, (_, i) => (
+                <div key={i} className="w-full h-14 skeleton" />
+              ))
+            ) : isExistDataTempo && !isLoadingDataTempo ? (
+              dataTempo?.data?.data.map((item) => (
+                <CardData
+                  handleRedirectDetail={() => handleRedirectDetail(item.id)}
+                  key={item.id}
+                  jatuhTempoTerdekat={item.jatuhTempoTerdekat}
+                  statusTempo={item.status}
+                  nomorReferensi={item.nomorTransaksi ?? ""}
+                  tanggal={item.tanggalTransaksi}
+                  tempoIcon
+                  progresCicilan={{
+                    cicilanBelumSelesai: item.sisaCicilanBelumSelesai,
+                    jumlahCicilan: item.jumlahCicilan,
+                  }}
+                  periode={item.periode}
+                />
+              ))
+            ) : (
+              <div className="w-full flex flex-col justify-center items-center">
+                <DataEmpty
+                  iconData={HandCoins}
+                  title="Data Transaksi Kredit Tidak Tersedia"
+                  description="Belum ada data transaksi kredit yang dapat ditampilkan saat ini"
+                />
+              </div>
+            )}
+          </div>
+
           {/* DATA LG */}
           <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5">
             <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
@@ -359,33 +384,6 @@ const KreditDetail = () => {
                 )}
               </tbody>
               {/* foot */}
-              <tfoot>
-                <tr>
-                  {!true && true && [1].length! > 8 ? (
-                    <>
-                      <th>No. Transaksi</th>
-                      <th>Total Tagihan</th>
-                      <th>Belum Lunas</th>
-                      <th>Lunas</th>
-                      <th>Tenor</th>
-                      <th>Jatuh Tempo</th>
-                      <th>Status</th>
-                      <th>Aksi</th>
-                    </>
-                  ) : (
-                    <>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                    </>
-                  )}
-                </tr>
-              </tfoot>
             </table>
           </div>
 

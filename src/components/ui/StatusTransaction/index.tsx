@@ -25,9 +25,9 @@ const StatusTransaction: FC<Props> = ({
         className={cn(
           "px-2 rounded-md font-medium text-[0.625rem]",
           uppercase && "uppercase",
-          customPy ? customPy : "py-0.5",
+          customPy ?? "py-0.5",
           status === TRANSACTION_STATUS_TYPE.COMPLETED &&
-            "bg-green-100 text-green-600",
+            "bg-emerald-100 text-emerald-600",
           (statusTempo === TEMPO_STATUS_TYPE.UNPAID ||
             status === TRANSACTION_STATUS_TYPE.BOOKING ||
             statusTempo === TEMPO_STATUS_TYPE.PARTIAL) &&
