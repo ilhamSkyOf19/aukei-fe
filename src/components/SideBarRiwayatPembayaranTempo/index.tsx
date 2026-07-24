@@ -11,12 +11,29 @@ import { statusMetodePembayaranStyle } from "../../types/statusStyle";
 import PaginationAndLimit from "../filters/PaginationAndLimit";
 import DataEmpty from "../messages/DataEmpty";
 import StatusInstallment from "../ui/StatusInstallment";
+import type { ResponseTransactionPaymentType } from "../../models/paymentTransaction.model";
+import CardPaymentTransaction from "../ui/cards/CardPaymentTransaction";
 
 type Props = {
   jumlahCicilan: number;
+  paymentTransactions?: Pick<
+    ResponseTransactionPaymentType,
+    | "id"
+    | "jenis"
+    | "kasir"
+    | "keterangan"
+    | "metodePembayaran"
+    | "nominal"
+    | "createdAt"
+    | "diBayar"
+    | "kembalian"
+  >[];
 };
 
-const SideBarRiwayatPembayaranTempo: FC<Props> = ({ jumlahCicilan }) => {
+const SideBarRiwayatPembayaranTempo: FC<Props> = ({
+  jumlahCicilan,
+  paymentTransactions,
+}) => {
   // call use
   const {
     dataRiwayat,
@@ -78,6 +95,19 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({ jumlahCicilan }) => {
               role="tablist"
               className="tabs tabs-box gap-2.5 p-2.5 w-full flex flex-row justify-start items-center overflow-x-auto flex-nowrap scrollbar-thin scrollbar-thumb-custom-secondary border border-base-content/10 shrink-0"
             >
+              <a
+                role="tab"
+                onClick={() => handleSetCicilanKe("dp")}
+                className={cn(
+                  "tab text-xs shrink-0 ",
+                  cicilanKe === "dp"
+                    ? "text-primary-white tab-active bg-custom-secondary"
+                    : "text-base-content",
+                )}
+              >
+                Uang Muka
+              </a>
+
               {Array.from({ length: jumlahCicilan }, (_, i) => (
                 <a
                   key={i}
@@ -85,7 +115,7 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({ jumlahCicilan }) => {
                   onClick={() => handleSetCicilanKe(i + 1)}
                   className={cn(
                     "tab text-xs shrink-0 ",
-                    Number(cicilanKe) === i + 1
+                    typeof cicilanKe === "number" && Number(cicilanKe) === i + 1
                       ? "text-primary-white tab-active bg-custom-secondary"
                       : "text-base-content",
                   )}
@@ -101,126 +131,152 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({ jumlahCicilan }) => {
               <div className="w-full flex flex-row justify-between items-start">
                 <span className="text-sm font-medium">Daftar Riwayat</span>
                 <span className="text-xs font-medium">
-                  Cicilan ke {cicilanKe}
+                  {typeof cicilanKe === "number"
+                    ? `Cicilan ${cicilanKe}`
+                    : "Pembayaran Uang DP"}
                 </span>
               </div>
 
-              <div className="w-full h-[65vh] scrollbar-thin scrollbar-thumb-custom-secondary overflow-y-auto flex flex-col justify-start items-start py-2.5">
-                {isLoadingRiwayat ? (
-                  <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-6">
-                    <div className="skeleton w-full h-28" />
-                    <div className="skeleton w-full h-28" />
-                  </div>
-                ) : isExistDataPayment ? (
-                  dataRiwayat?.data?.data?.payments?.map((item, index) => {
-                    const lastIndex =
-                      index !==
-                      (dataRiwayat?.data?.data?.payments?.length || 0) - 1;
-                    const style =
-                      statusMetodePembayaranStyle[item.metodePembayaran];
+              {typeof cicilanKe === "number" && (
+                <div className="w-full h-[65vh] scrollbar-thin scrollbar-thumb-custom-secondary overflow-y-auto flex flex-col justify-start items-start py-2.5">
+                  {isLoadingRiwayat ? (
+                    <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-6">
+                      <div className="skeleton w-full h-28" />
+                      <div className="skeleton w-full h-28" />
+                    </div>
+                  ) : isExistDataPayment ? (
+                    dataRiwayat?.data?.data?.payments?.map((item, index) => {
+                      const lastIndex =
+                        index !==
+                        (dataRiwayat?.data?.data?.payments?.length || 0) - 1;
+                      const style =
+                        statusMetodePembayaranStyle[item.metodePembayaran];
 
-                    return (
-                      <div
-                        key={item.id}
-                        className="relative grid grid-cols-[36px_1fr] gap-1.5 my-1.5 w-full"
-                      >
-                        <div className="relative flex justify-center">
-                          {lastIndex && (
-                            <div className="absolute top-7 h-[92%] left-1/2 w-px -translate-x-1/2 bg-base-content/20" />
-                          )}
-
-                          {/* dot */}
-                          <div
-                            className={cn(
-                              "mt-1 h-6 w-6 md:h-6 md:w-6 rounded-full border relative flex flex-row justify-center items-center",
-                              style.borderDot,
+                      return (
+                        <div
+                          key={item.id}
+                          className="relative grid grid-cols-[36px_1fr] gap-1.5 my-1.5 w-full"
+                        >
+                          <div className="relative flex justify-center">
+                            {lastIndex && (
+                              <div className="absolute top-7 h-[92%] left-1/2 w-px -translate-x-1/2 bg-base-content/20" />
                             )}
-                          >
+
+                            {/* dot */}
                             <div
                               className={cn(
-                                "w-2.5 h-2.5 md:w-2.5 md:h-2.5 rounded-full bg-base-content",
-                                style.dot,
+                                "mt-1 h-6 w-6 md:h-6 md:w-6 rounded-full border relative flex flex-row justify-center items-center",
+                                style.borderDot,
                               )}
-                            />
-                          </div>
-                        </div>
-                        <article className="w-[95%] max-w-full rounded-2xl md:rounded-xl border border-base-content/10 bg-base-100 p-2.5">
-                          <div className="w-full flex flex-row justify-between items-start">
-                            {/* author */}
-                            <div className="w-full flex flex-col justify-start items-start gap-2">
-                              {/* nama & tanggal */}
-                              <div className="w-full flex flex-row justify-between items-center">
-                                <span className="text-xs text-base-content font-semibold">
-                                  {formatRupiah(item.nominal)}
-                                </span>
-
-                                <span className="text-[0.625rem] font-medium text-base-content">
-                                  {formatTanggalLengkap(item.tanggalBayar)}
-                                </span>
-                              </div>
-
-                              {/* metode pembayaran */}
-                              <div className="w-full flex flex-row justify-start items-center gap-2.5">
-                                <CardLabelMetodePembayaran
-                                  metodePembayaran={item.metodePembayaran}
-                                  noLabel
-                                />
-
-                                {index === 0 && (
-                                  <div className="w-full flex flex-row justify-end items-center">
-                                    <StatusInstallment
-                                      status={dataRiwayat.data?.data?.status}
-                                    />
-                                  </div>
+                            >
+                              <div
+                                className={cn(
+                                  "w-2.5 h-2.5 md:w-2.5 md:h-2.5 rounded-full bg-base-content",
+                                  style.dot,
                                 )}
-                              </div>
+                              />
                             </div>
                           </div>
+                          <article className="w-[95%] max-w-full rounded-2xl md:rounded-xl border border-base-content/10 bg-base-100 p-2.5">
+                            <div className="w-full flex flex-row justify-between items-start">
+                              {/* author */}
+                              <div className="w-full flex flex-col justify-start items-start gap-2">
+                                {/* nama & tanggal */}
+                                <div className="w-full flex flex-row justify-between items-center">
+                                  <span className="text-xs text-base-content font-semibold">
+                                    {formatRupiah(item.nominal)}
+                                  </span>
 
-                          <div
-                            className={cn(
-                              "w-full p-2.5 mt-2.5 border border-base-content/10 rounded-2xl md:rounded-xl flex flex-col justify-start items-start gap-2",
-                            )}
-                          >
-                            {/* label */}
-                            <span className="text-xs font-semibold text-base-content">
-                              Keterangan
-                            </span>
+                                  <span className="text-[0.625rem] font-medium text-base-content">
+                                    {formatTanggalLengkap(item.tanggalBayar)}
+                                  </span>
+                                </div>
 
-                            <p className="text-[0.625rem] font-medium text-base-content">
-                              {item.keterangan === ""
-                                ? "Tidak ada keterangan"
-                                : item.keterangan}
-                            </p>
-                          </div>
-                        </article>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="w-full h-60 flex justify-center items-center">
-                    <DataEmpty
-                      iconData={HistoryIcon}
-                      title="Tidak Ada Riwayat"
-                      description="Belum ada data riwayat yang dapat ditampilkan"
-                      xs
-                    />
-                  </div>
-                )}
+                                {/* metode pembayaran */}
+                                <div className="w-full flex flex-row justify-start items-center gap-2.5">
+                                  <CardLabelMetodePembayaran
+                                    metodePembayaran={item.metodePembayaran}
+                                    noLabel
+                                  />
 
-                {/* pagination */}
-                {(dataRiwayat?.data?.meta?.totalPage ?? 1) >= 2 && (
-                  <div className="w-full flex-1">
-                    <PaginationAndLimit
-                      currentPage={dataRiwayat?.data?.meta?.currentPage ?? 1}
-                      setPage={setPage}
-                      totalPage={dataRiwayat?.data?.meta?.totalPage ?? 1}
-                      isLoading={isLoadingRiwayat}
-                      customWindowSize={3}
-                    />
-                  </div>
-                )}
-              </div>
+                                  {index === 0 && (
+                                    <div className="w-full flex flex-row justify-end items-center">
+                                      <StatusInstallment
+                                        status={dataRiwayat.data?.data?.status}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div
+                              className={cn(
+                                "w-full p-2.5 mt-2.5 border border-base-content/10 rounded-2xl md:rounded-xl flex flex-col justify-start items-start gap-2",
+                              )}
+                            >
+                              {/* label */}
+                              <span className="text-xs font-semibold text-base-content">
+                                Keterangan
+                              </span>
+
+                              <p className="text-[0.625rem] font-medium text-base-content">
+                                {item.keterangan === ""
+                                  ? "Tidak ada keterangan"
+                                  : item.keterangan}
+                              </p>
+                            </div>
+                          </article>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="w-full h-60 flex justify-center items-center">
+                      <DataEmpty
+                        iconData={HistoryIcon}
+                        title="Tidak Ada Riwayat"
+                        description="Belum ada data riwayat yang dapat ditampilkan"
+                        xs
+                      />
+                    </div>
+                  )}
+
+                  {/* pagination */}
+                  {(dataRiwayat?.data?.meta?.totalPage ?? 1) >= 2 && (
+                    <div className="w-full flex-1">
+                      <PaginationAndLimit
+                        currentPage={dataRiwayat?.data?.meta?.currentPage ?? 1}
+                        setPage={setPage}
+                        totalPage={dataRiwayat?.data?.meta?.totalPage ?? 1}
+                        isLoading={isLoadingRiwayat}
+                        customWindowSize={3}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {cicilanKe === "dp" && (
+                <div className="w-full h-[65vh] scrollbar-thin scrollbar-thumb-custom-secondary overflow-y-auto flex flex-col justify-start items-start py-2.5">
+                  {paymentTransactions && paymentTransactions?.length > 0 ? (
+                    paymentTransactions.map((item) => (
+                      <CardPaymentTransaction
+                        key={item.id}
+                        paymentTransactions={item}
+                      />
+                    ))
+                  ) : (
+                    <div className="w-full h-60 flex justify-center items-center">
+                      <DataEmpty
+                        iconData={HistoryIcon}
+                        title="Tidak Ada Riwayat"
+                        description="Belum ada data riwayat yang dapat ditampilkan"
+                        xs
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

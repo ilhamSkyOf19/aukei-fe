@@ -1,5 +1,6 @@
 import z from "zod";
 import type { CreateTempoType } from "../models/tempo.model";
+import { PAYMENT_METHOD_TYPE } from "../types/constant.type";
 
 export class TempoValidations {
   private static readonly INT_MAX = 2_147_483_647;
@@ -41,6 +42,14 @@ export class TempoValidations {
         .optional(),
 
       uangMuka: this.numberSchema("uang muka"),
+
+      metodePembayaranUangDp: z
+        .enum([
+          PAYMENT_METHOD_TYPE.CASH,
+          PAYMENT_METHOD_TYPE.QRIS,
+          PAYMENT_METHOD_TYPE.TRANSFER,
+        ])
+        .optional(),
     })
     .strict() satisfies z.ZodType<CreateTempoType>;
 }

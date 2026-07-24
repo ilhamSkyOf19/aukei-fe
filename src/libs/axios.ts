@@ -45,7 +45,7 @@ instanceAxios.interceptors.response.use(
 
     if (!error.response) {
       console.error("Network error:", error.message);
-      window.location.href = "/error-network";
+      // window.location.href = "/error-network";
       return;
     }
 

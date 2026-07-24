@@ -20,7 +20,7 @@ const useModalTransaksi = (params: {
   ) => void;
   handleCloseModal: () => void;
   data?: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
-    Omit<ResponseProdukForKasirType, "id"> & {
+    Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
       diskon?: number;
     };
 }) => {
@@ -69,7 +69,7 @@ const useModalTransaksi = (params: {
         (diskon ?? data?.diskon ?? 0);
 
       setSubTotal(total);
-    }, 300);
+    }, 200);
 
     return () => clearTimeout(timeout);
   }, [

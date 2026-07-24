@@ -124,6 +124,13 @@
 
 - [✅] Memberikan modal pesan error agar menggunakan booking , jika stok tidak cukup
 
+- [ ] Sesuaikan flow transaksi yang saat ini (lihat BE)
+  - [ ] Sesuaikan pada halaman booking , berikan pesan atau peringatan jika stok tidak mencukupi untuk melakukan pelunasan
+  - [ ] Invalidate query jika success
+  - [ ] Kirim handle toast ke props informasi pembayaran
+  - [ ] status lunas tidak boleh akses selesaikan dan buat kondisi di handle transaction nya
+  - [ ] Refactor Kode
+
 - [✅] Membuat fitur booking
   - [✅] Metode pembayaran tempo
   - [ ] Testing Skenario

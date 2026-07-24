@@ -28,20 +28,19 @@ const HeaderPelangganForKasir: FC<Props> = ({
     >
       <div className="w-full flex flex-row justify-between items-center">
         {/* pelanggan */}
+
         {pelanggan !== null ? (
-          <div className="flex flex-row justify-start items-center gap-6">
-            <div className="flex flex-row justify-start items-center gap-2">
-              <Avatar nama={pelanggan?.nama ?? ""} index={pelanggan?.id} sm />
-              <div className="flex flex-col justify-start items-start gap-1">
-                {/* name */}
-                <span className="text-base-content font-semibold text-sm">
-                  {pelanggan?.nama}
-                </span>
-                {/* no telp */}
-                <span className="text-base-content/80 font-medium text-xs">
-                  {formatNumberPhone(pelanggan?.noWa ?? "")}
-                </span>
-              </div>
+          <div className="flex flex-row justify-start items-center gap-2">
+            <Avatar nama={pelanggan?.nama ?? ""} index={pelanggan?.id} xs />
+            <div className="flex flex-col justify-start items-start gap-0.5">
+              {/* name */}
+              <span className="text-base-content font-semibold text-xs">
+                {pelanggan?.nama}
+              </span>
+              {/* no telp */}
+              <span className="text-base-content/80 text-[0.625rem]">
+                {formatNumberPhone(pelanggan?.noWa ?? "")}
+              </span>
             </div>
           </div>
         ) : (

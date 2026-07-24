@@ -42,10 +42,7 @@ const InputTextNonIcon: FC<Props> = ({
         {label && (
           <>
             <div className="flex-2 relative">
-              <label
-                htmlFor={name}
-                className={cn("capitalize", xs ? "text-xs" : "text-xs")}
-              >
+              <label htmlFor={name} className={cn("capitalize", "text-xs")}>
                 {label}
               </label>
 
@@ -58,10 +55,9 @@ const InputTextNonIcon: FC<Props> = ({
       </div>
       <div
         className={cn(
-          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 ",
-          xs ? "h-7 lg:h-8 px-2.5" : "h-10.5 lg:h-10 px-3",
+          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1  transition-all duration-300 ease-in-out bg-base-100 focus-within:ring-custom-secondary focus-within:border-custom-secondary h-10.5 md:h-9 px-2.5",
           errorMessage && "border-error",
-          label && "mt-2",
+          label && "mt-1.5",
         )}
       >
         <input
@@ -71,10 +67,7 @@ const InputTextNonIcon: FC<Props> = ({
           id={name}
           placeholder={placeholder}
           className={cn(
-            "w-full font-medium text-base-content h-full border-none outline-none placeholder:text-base-content/50 placeholder:font-light",
-            xs
-              ? "text-[0.625rem] lg:text-xs placeholder:text-[0.625rem] lg:placeholder:text-xs"
-              : "text-xs lg:text-xs placeholder:text-xs lg:placeholder:text-xs",
+            "w-full font-medium text-base-content h-full border-none outline-none text-xs",
           )}
           {...(disabled && { disabled: true })}
           maxLength={max}

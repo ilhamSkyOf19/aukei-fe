@@ -17,6 +17,7 @@ type Props<T extends FieldValues = any> = {
   xs?: boolean;
   caption?: string;
   max?: number;
+  name?: string;
 };
 
 export default function InputPrice<T extends FieldValues = any>({
@@ -28,6 +29,7 @@ export default function InputPrice<T extends FieldValues = any>({
   xs,
   caption,
   max,
+  name,
 }: Props<T>) {
   const { field, fieldState } = controller;
 
@@ -44,18 +46,21 @@ export default function InputPrice<T extends FieldValues = any>({
   return (
     <div className={cn("w-full", fieldState.error && "mb-3")}>
       {label && (
-        <label className="text-xs text-base-content">
-          {label}
+        <div className="flex-2 relative">
+          <label htmlFor={name} className={cn("capitalize", "text-xs")}>
+            {label}
+          </label>
 
-          {required && <span className="ml-1 text-error">*</span>}
-        </label>
+          <span className="absolute -top-1 ml-1 text-error">
+            {required && "*"}
+          </span>
+        </div>
       )}
 
       <div
         className={cn(
           "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full",
-          "focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100",
-          xs ? "h-7 lg:h-8 px-2.5" : "h-10.5 lg:h-10 px-3",
+          "focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out bg-base-100 h-10.5 lg:h-9 px-2.5 ",
           fieldState.error && "border-error",
           label && "mt-2",
         )}
@@ -64,6 +69,7 @@ export default function InputPrice<T extends FieldValues = any>({
 
         <input
           type="text"
+          id={name}
           value={displayValue}
           placeholder={placeholder}
           disabled={disabled}

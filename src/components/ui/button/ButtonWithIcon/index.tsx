@@ -1,5 +1,5 @@
-import { Plus, type LucideIcon } from "lucide-react";
-import { type FC } from "react";
+import { type LucideIcon } from "lucide-react";
+import { type FC, type RefObject } from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "../../../../utils/cn";
 
@@ -11,14 +11,13 @@ type Props = {
   handleBtn?: () => void;
   isLoading?: boolean;
   icon?: LucideIcon;
-  customWidth?: string;
-  customHeight?: string;
-  customClass?: string;
-  customSize?: "lg";
   reverse?: boolean;
   noLabel?: boolean;
   disabled?: boolean;
+  customWidth?: string;
+  ref?: RefObject<HTMLButtonElement | null>;
 };
+
 const ButtonWithIcon: FC<Props> = ({
   bgColor,
   label,
@@ -27,27 +26,23 @@ const ButtonWithIcon: FC<Props> = ({
   handleBtn,
   isLoading,
   icon: Icon,
-  customWidth,
-  customHeight,
-  customClass,
   reverse,
-  customSize,
   noLabel,
   disabled,
+  customWidth,
+  ref,
 }) => {
-  // navigation
   const navigate = useNavigate();
 
   return (
     <button
+      ref={ref}
       type="button"
       disabled={disabled ?? isLoading}
       className={cn(
-        "flex justify-center items-center rounded-xl px-3 gap-2",
+        "flex justify-center items-center rounded-xl px-3 gap-2 h-10.5 md:h-9",
+        customWidth ?? "w-auto",
         bgColor ? bgColor : "bg-custom-primary",
-        customWidth ? customWidth : "w-auto",
-        customClass,
-        customHeight ? customHeight : "h-10.5 lg:h-10",
         (disabled ?? isLoading) ? "opacity-50" : "hover-overlay",
       )}
       style={{ cursor: (disabled ?? isLoading) ? "not-allowed" : "pointer" }}
@@ -63,26 +58,17 @@ const ButtonWithIcon: FC<Props> = ({
         <div className="w-20">
           <div
             className={cn(
-              "loading",
-              customSize ? "loading-md" : "loading-sm",
+              "loading loading-sm md:loading-xs",
               textColor ? textColor : "text-custom-secondary",
             )}
           />
         </div>
       ) : (
         <>
-          {Icon ? (
+          {Icon && (
             <Icon
               className={cn(
-                customSize ? "size-6" : "size-4.5 md:size-3.5 xl:size-4",
-                textColor ? textColor : "text-custom-secondary",
-                reverse && "order-2",
-              )}
-            />
-          ) : (
-            <Plus
-              className={cn(
-                customSize ? "size-6" : "size-4.5 md:size-4.5 xl:size-5",
+                "size-4.5 md:size-3.5",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-2",
               )}
@@ -92,8 +78,7 @@ const ButtonWithIcon: FC<Props> = ({
           {!noLabel && (
             <span
               className={cn(
-                "font-medium",
-                customSize ? "text-sm" : "text-xs md:text-xs xl:text-xs",
+                "font-medium text-xs md:text-[0.7rem]",
                 textColor ? textColor : "text-custom-secondary",
                 reverse && "order-1",
               )}

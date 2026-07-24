@@ -9,15 +9,14 @@ import type { ResponsePegawaiType } from "../../../models/pegawai.model";
 import useDeletePegawai from "../../../hooks/useDeletePegawai";
 
 const usePegawai = () => {
-  // query client
   const queryClient = useQueryClient();
 
-  // state choose barang
+  // Daftar pegawai yang dicentang untuk aksi hapus massal
   const [choosePegawai, setChoosePegawai] = useState<
     { id: number; nama: string }[]
   >([]);
 
-  // handle set choose
+  // Toggle centang/un-centang pegawai pada daftar pilihan hapus massal
   const handleSetChoosePegawai = (data: { id: number; nama: string }) => {
     if (choosePegawai.some((item) => item.id === data.id)) {
       setChoosePegawai(choosePegawai.filter((item) => item.id !== data.id));
@@ -26,7 +25,7 @@ const usePegawai = () => {
     }
   };
 
-  // use modal
+  // Modal formulir tambah/edit pegawai
   const {
     modalRef: modalFormulirPegawaiRef,
     handleShowModal: showModalFormulirPegawai,
@@ -35,7 +34,7 @@ const usePegawai = () => {
     dataModal: dataFormulirPegawai,
   } = useModal<{ data?: ResponsePegawaiType }>();
 
-  // use modal delete many
+  // Modal konfirmasi hapus pegawai secara massal
   const {
     modalRef: modalDeleteManyRef,
     handleShowModal: handleShowModalDeleteMany,
@@ -48,31 +47,31 @@ const usePegawai = () => {
     }[];
   }>();
 
-  // use toast
+  // Toast notifikasi hasil aksi (create/update/delete)
   const { toast, handleSetToast } = useToastAnimation();
 
-  //   filter search
+  // Filter pencarian pegawai (query param "search")
   const { search, setSearch: handleSearch } = useFilterSearch("search");
 
-  // sort
+  // Filter urutan data (query param "sort")
   const { filter: sort, setFilter: handleSort } = useFilter({
     paramName: "sort",
     allowQuery: ["asc", "desc"],
   });
 
-  //   page
+  // Filter halaman (pagination, query param "page")
   const { filter: page, setFilter: handlePage } = useFilter({
     paramName: "page",
     isNumber: true,
   });
 
-  //   limit
+  // Filter jumlah data per halaman (query param "limit")
   const { filter: limit, setFilter: handleLimit } = useFilter({
     paramName: "limit",
     isNumber: true,
   });
 
-  //   call query
+  // Ambil data pegawai dari server sesuai filter search/sort/page/limit
   const { data: dataPegawai, isLoading: isLoadingPegawai } = useQuery({
     queryKey: ["pegawai", search, sort, page, limit],
     queryFn: () =>
@@ -86,16 +85,12 @@ const usePegawai = () => {
     refetchOnWindowFocus: false,
   });
 
+  // Apakah data pegawai sudah selesai dimuat dan tidak kosong
   const isExistDataPegawai: boolean =
-    !isLoadingPegawai && dataPegawai?.data?.data
-      ? dataPegawai?.data?.data?.length > 0
-        ? true
-        : false
-      : false;
+    !isLoadingPegawai && !!dataPegawai?.data?.data?.length;
 
-  // handle show modal
+  // Buka modal formulir pegawai; jika id diberikan, isi data pegawai untuk mode edit
   const handleShowModalFormulirPegawai = (id?: number) => {
-    // find pegawai
     if (id) {
       const pegawai = dataPegawai?.data?.data.find((item) => item.id === id);
 
@@ -109,20 +104,17 @@ const usePegawai = () => {
     }
   };
 
-  // use mutation delete many
+  // Mutation untuk menghapus beberapa pegawai sekaligus
   const { mutateAsync: deleteMany, isPending: isPendingDeleteMany } =
     useMutation({
       mutationFn: (ids: number[]) => PegawaiServices.deleteMany(ids),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["pegawai"] });
 
-        // handle toast
         handleSetToast("deleted_pegawai");
-
-        // close modal
         handleCloseModalDeleteMany();
 
-        // reset choose
+        // Reset pilihan setelah berhasil dihapus
         setChoosePegawai([]);
       },
       onError: (err) => {
@@ -130,15 +122,15 @@ const usePegawai = () => {
       },
     });
 
-  // handle delete many
+  // Proses hapus massal pegawai yang dicentang
   const handleDeleteMany = async () => {
     try {
-      // check choose barang
+      // Tidak ada yang dicentang, tidak perlu proses apa pun
       if (choosePegawai.length === 0) {
         return;
       }
 
-      // check
+      // Cek apakah seluruh data pegawai sama persis dengan yang dicentang
       const isSame =
         dataPegawai?.data?.data.length === choosePegawai.length &&
         dataPegawai?.data?.data.every((item) =>
@@ -156,7 +148,7 @@ const usePegawai = () => {
     }
   };
 
-  // use delete barang masuk
+  // Hapus satu pegawai (modal konfirmasi, mutation, dsb dikelola oleh useDeletePegawai)
   const {
     dataDelete,
     handleCloseModalDelete,
@@ -170,7 +162,7 @@ const usePegawai = () => {
     handleToast: handleSetToast,
   });
 
-  // update is active
+  // Mutation untuk mengubah status aktif/nonaktif pegawai
   const {
     mutateAsync: mutateUpdateIsActive,
     isPending: isPendingUpdateIsActive,
@@ -183,8 +175,6 @@ const usePegawai = () => {
       }),
     onSuccess: () => {
       handleSetToast("updated_status");
-
-      // invalidate
       queryClient.invalidateQueries({ queryKey: ["pegawai"] });
     },
     onError: (err) => {
@@ -192,7 +182,7 @@ const usePegawai = () => {
     },
   });
 
-  // handle update is active
+  // Ubah status aktif/nonaktif satu pegawai
   const handelUpdateIsActive = async (data: {
     id: number;
     status: boolean;
@@ -204,6 +194,7 @@ const usePegawai = () => {
     }
   };
 
+  // Ekspos state & handler yang dibutuhkan oleh komponen UI daftar pegawai
   return {
     toast,
     dataPegawai,

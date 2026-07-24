@@ -51,7 +51,7 @@ const Avatar: FC<Props> = ({ index, nama, xs, sm, isActive }) => {
         <span
           className={cn(
             `font-medium uppercase`,
-            xs ? "text-xs" : sm ? "text-sm" : "text-base",
+            xs ? "text-[0.625rem]" : sm ? "text-sm" : "text-base",
             color.text,
           )}
         >

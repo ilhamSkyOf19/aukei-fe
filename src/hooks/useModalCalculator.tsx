@@ -3,7 +3,7 @@ import useModal from "./useModal";
 import type { ErrorType } from "../types/constant.type";
 
 const useModalCalculator = (params: {
-  setIsErrors: (value: SetStateAction<ErrorType[]>) => void;
+  setIsErrors?: (value: SetStateAction<ErrorType[]>) => void;
 }) => {
   const { setIsErrors } = params;
   //   use modal calculator
@@ -16,7 +16,7 @@ const useModalCalculator = (params: {
   // handle show modal calculator
   const handleShowModalCalculator = () => {
     // clear error
-    setIsErrors((prev) =>
+    setIsErrors?.((prev) =>
       prev.filter((item) => item !== "DATA_DI_BAYAR_KOSONG"),
     );
     showModalCalculator();

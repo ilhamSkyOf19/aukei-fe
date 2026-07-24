@@ -10,11 +10,11 @@ const useSideBarRiwayatPembayaranTempo = () => {
   // parse id
   const validatedId = parseId(tempoId);
 
-  const [cicilanKe, setCicilanKe] = useState<number>(1);
+  const [cicilanKe, setCicilanKe] = useState<number | "dp">("dp");
 
   const [page, setPage] = useState<string>("1");
 
-  const handleSetCicilanKe = (cicilanKe: number) => {
+  const handleSetCicilanKe = (cicilanKe: number | "dp") => {
     setCicilanKe(cicilanKe);
     setPage("1");
   };

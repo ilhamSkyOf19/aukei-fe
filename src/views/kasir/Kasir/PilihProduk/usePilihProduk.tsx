@@ -1,6 +1,7 @@
 import type {
   DetailsForCreate,
   DetailsLocalStorageType,
+  ProdukDetailItem,
 } from "../../../../models/transaction.model";
 import { useMemo, useState } from "react";
 import type { ResponseProdukForKasirType } from "../../../../models/produk.model";
@@ -23,6 +24,17 @@ import useConfirm from "../../../../hooks/useConfirm";
 
 type IsErrorsType = "pelanggan" | "details";
 
+// Key localStorage yang digunakan pada flow pilih produk/keranjang
+const LOCAL_STORAGE_KEYS = {
+  FROM_BOOKING: "from-booking",
+  IS_UPDATE_TRANSACTION: "is-update-transaction",
+  IS_UPDATE_KERANJANG: "is-update-keranjang",
+  PELANGGAN: "pelanggan",
+  DETAILS: "details",
+  DATA_FROM_KERANJANG: "data-from-keranjang",
+  METODE_PEMBAYARAN: "metode-pembayaran",
+} as const;
+
 const usePilihProduk = (props: {
   handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
@@ -31,33 +43,33 @@ const usePilihProduk = (props: {
 
   const pengguna = useAuthStore((state) => state.pengguna);
 
-  // get is mode kasir
+  // Mode kasir aktif atau tidak
   const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
 
-  // get search params keranjang id
+  // Ambil keranjangId dari search params
   const { keranjangId } = useParams<{ keranjangId: string }>();
 
-  // parse
+  // Parse keranjangId ke number
   const keranjangIdParse = parseId(keranjangId);
 
-  // navigate
   const navigate = useNavigate();
 
-  // current pathname
+  // Pathname saat ini, dipakai untuk navigate dengan state toast
   const currentPathname = useLocation().pathname;
 
-  // state error
+  // Field form yang sedang error (pelanggan/details)
   const [isErrorsFormState, setIsErrorsFormState] = useState<IsErrorsType[]>(
     [],
   );
 
+  // Flag apakah transaksi ini berasal dari flow booking
   const fromBooking = useMemo<boolean>(() => {
-    const data = localStorage.getItem("from-booking");
+    const data = localStorage.getItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
 
     return data ? JSON.parse(data) : null;
   }, []);
 
-  // use modal add transaksi
+  // Modal formulir tambah/edit transaksi produk
   const {
     modalRef: modalFormulirTransaksiRef,
     handleShowModal: showModalFormulirTransaksi,
@@ -66,12 +78,12 @@ const usePilihProduk = (props: {
     idModal: idModalUpdateTransaksi,
   } = useModal<
     Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id"> & {
+      Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
         diskon?: number;
       }
   >();
 
-  // use confirm
+  // Modal konfirmasi umum (misal konfirmasi ubah ke booking)
   const {
     confirm,
     handleConfirm,
@@ -80,24 +92,13 @@ const usePilihProduk = (props: {
     modalRef: modalConfirmRef,
   } = useConfirm<{ title: string; deskripsi: string }>();
 
-  //   state img details
-  const [produkDetails, setProdukDetails] = useState<
-    (Pick<
-      ResponseProdukForKasirType,
-      | "nama"
-      | "img"
-      | "hargaJual"
-      | "kode"
-      | "hargaJualTerakhirTransaksi"
-      | "id"
-      | "stok"
-    > & { subTotal: number; diskon: number; quantity: number })[]
-  >([]);
+  // Daftar produk yang dipilih beserta detail harga, diskon, qty, dsb
+  const [produkDetails, setProdukDetails] = useState<ProdukDetailItem[]>([]);
 
-  // handle show modal add transaksi
+  // Buka modal formulir transaksi untuk produk baru; jika produk sudah ada, cukup tambah quantity
   const handleShowModalFormulirTransaksi = (
     params: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id"> & {
+      Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
         diskon?: number;
       },
   ) => {
@@ -110,26 +111,33 @@ const usePilihProduk = (props: {
     showModalFormulirTransaksi(undefined, params);
   };
 
-  // handle show modal formulir transaksi for update
+  // Buka modal formulir transaksi untuk mengubah produk yang sudah ada di daftar
   const handleShowModalFormulirTransaksiForUpdate = (produkId: number) => {
-    // find produk details
     const findProduk = produkDetails.find((item) => item.id === produkId);
 
     if (!findProduk) return;
 
     showModalFormulirTransaksi(findProduk.id, {
-      ...findProduk,
       produkId: findProduk.id,
+      quantity: findProduk.quantity,
+      hargaJual: findProduk.hargaJual,
+      img: findProduk.img,
+      kode: findProduk.kode,
+      nama: findProduk.nama,
+      stok: findProduk.stok,
+      diskon: findProduk.diskon,
     });
   };
 
-  // is update
+  // Flag apakah sedang dalam mode update transaksi (diinisialisasi dari localStorage)
   const [isUpdateTransaction, setIsUpdateTransaction] = useState<boolean>(
     () => {
-      const isUpdateTransaction = localStorage.getItem("is-update-transaction");
+      const isUpdateTransaction = localStorage.getItem(
+        LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION,
+      );
       if (isUpdateTransaction) {
-        // delete is update keranjang
-        localStorage.removeItem("is-update-keranjang");
+        // Pastikan flag update keranjang tidak aktif bersamaan
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
         return JSON.parse(isUpdateTransaction);
       } else {
         return false;
@@ -137,26 +145,28 @@ const usePilihProduk = (props: {
     },
   );
 
-  // is update keranjang
+  // Data keranjang yang sedang diupdate (jika ada), diinisialisasi dari localStorage
   const [isUpdateKeranjang, _setIsUpdateKeranjang] = useState<{
     pelangganId: number;
   } | null>(() => {
-    const isUpdateKeranjang = localStorage.getItem("is-update-keranjang");
+    const isUpdateKeranjang = localStorage.getItem(
+      LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG,
+    );
     if (isUpdateKeranjang) {
-      // delete is update transaction
-      localStorage.removeItem("is-update-transaction");
+      // Pastikan flag update transaction tidak aktif bersamaan
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
       return JSON.parse(isUpdateKeranjang);
     } else {
       return null;
     }
   });
 
-  // state pelanggan
+  // Data pelanggan yang dipilih, diinisialisasi dari localStorage
   const [pelanggan, setPelanggan] = useState<Pick<
     IPelangganType,
     "id" | "nama" | "noWa"
   > | null>(() => {
-    const pelanggan = localStorage.getItem("pelanggan");
+    const pelanggan = localStorage.getItem(LOCAL_STORAGE_KEYS.PELANGGAN);
     if (pelanggan) {
       return JSON.parse(pelanggan);
     } else {
@@ -164,49 +174,62 @@ const usePilihProduk = (props: {
     }
   });
 
-  // handle set pelanggan
+  // Set pelanggan terpilih dan bersihkan error/relasi data keranjang lama
   const handleSetPelanggan = (
     params: Pick<IPelangganType, "id" | "nama" | "noWa">,
   ) => {
     if (pelanggan?.id === params.id) return;
 
-    // clear error if existing
+    // Bersihkan error pelanggan jika sebelumnya ada
     if (isErrorsFormState.includes("pelanggan")) handleClearErrors("pelanggan");
     setPelanggan(params);
 
-    // clear local storage data from keranjang
-    localStorage.removeItem("data-from-keranjang");
+    // Pelanggan baru dipilih manual, hapus relasi data dari keranjang sebelumnya
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.DATA_FROM_KERANJANG);
   };
 
-  // handle clear errors
+  // Hapus salah satu field dari daftar error form
   const handleClearErrors = (field: "pelanggan" | "details") => {
     setIsErrorsFormState((prev) => prev.filter((item) => item !== field));
   };
 
-  // use alert
+  // Alert animasi (misal: pelanggan kosong, transaksi kosong)
   const { alert, handleSetAlert } = useAlertAnimation();
 
-  //   use modal pelanggan
+  // Modal pilih pelanggan
   const {
     modalRef: modalChoosePelangganRef,
     handleShowModal: handleShowModalChoosePelanggan,
     handleCloseModal: handleCloseModalChoosePelanggan,
   } = useModal();
 
-  //   handle append
-  const handleAddDetails = (
-    produk: Pick<
-      ResponseProdukForKasirType,
-      | "nama"
-      | "img"
-      | "hargaJual"
-      | "kode"
-      | "hargaJualTerakhirTransaksi"
-      | "id"
-      | "stok"
-    > & { subTotal: number; diskon: number; quantity: number },
-  ) => {
-    // clear errors
+  // Validasi bahwa pelanggan sudah dipilih dan minimal ada 1 produk;
+  // set error state & alert yang sesuai jika tidak valid
+  const validatePelangganDanDetails = (): boolean => {
+    if (produkDetails?.length === 0 || !pelanggan) {
+      if (produkDetails?.length === 0 && !pelanggan) {
+        setIsErrorsFormState(["pelanggan", "details"]);
+      }
+
+      if (!pelanggan) {
+        handleSetAlert("pelanggan_kosong");
+        setIsErrorsFormState((prev) => [...prev, "pelanggan"]);
+        return false;
+      }
+
+      if (produkDetails?.length === 0) {
+        handleSetAlert("transaksi_kosong");
+        setIsErrorsFormState((prev) => [...prev, "details"]);
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  // Tambah produk baru ke daftar, atau update produk yang sudah ada (misal ubah qty/diskon)
+  const handleAddDetails = (produk: ProdukDetailItem) => {
+    // Produk ditambahkan/diubah, bersihkan error "details"
     setIsErrorsFormState((prev) => prev.filter((item) => item !== "details"));
 
     setProdukDetails((prev) => {
@@ -225,12 +248,12 @@ const usePilihProduk = (props: {
         stok: produk.stok,
       };
 
-      // jika belum ada, tambahkan
+      // Jika produk belum ada di daftar, tambahkan sebagai item baru
       if (index === -1) {
         return [...prev, newItem];
       }
 
-      // jika sudah ada, update
+      // Jika sudah ada, update item yang bersangkutan
       const updated = [...prev];
       updated[index] = newItem;
 
@@ -238,7 +261,7 @@ const usePilihProduk = (props: {
     });
   };
 
-  // handle add quantity for existing produk
+  // Jika produk sudah ada di daftar, tambahkan quantity-nya sebanyak 1; return true jika berhasil
   const handleAddQuantityForExistingProduk = (produkId: number) => {
     const existingIndex = produkDetails.findIndex(
       (item) => item.id === produkId,
@@ -263,43 +286,15 @@ const usePilihProduk = (props: {
     return false;
   };
 
-  const handleAppendMany = (
-    produkList: (Pick<
-      ResponseProdukForKasirType,
-      | "nama"
-      | "img"
-      | "hargaJual"
-      | "kode"
-      | "hargaJualTerakhirTransaksi"
-      | "id"
-      | "stok"
-    > & { subTotal: number; diskon: number; quantity: number })[],
-  ) => {
+  // Ganti seluruh daftar produk sekaligus (misal saat load data update transaksi/keranjang)
+  const handleAppendMany = (produkList: ProdukDetailItem[]) => {
     setProdukDetails(produkList);
   };
 
-  // handle local storage
+  // Validasi form, lalu simpan detail produk & pelanggan ke localStorage untuk step berikutnya
   const handleLocalStorage = () => {
-    // check
-    if (produkDetails?.length === 0 || !pelanggan) {
-      if (produkDetails?.length === 0 && !pelanggan) {
-        setIsErrorsFormState(["pelanggan", "details"]);
-      }
+    if (!validatePelangganDanDetails()) return false;
 
-      if (!pelanggan) {
-        handleSetAlert("pelanggan_kosong");
-        setIsErrorsFormState((prev) => [...prev, "pelanggan"]);
-        return false;
-      }
-
-      if (produkDetails?.length === 0) {
-        handleSetAlert("transaksi_kosong");
-        setIsErrorsFormState((prev) => [...prev, "details"]);
-        return false;
-      }
-    }
-
-    // data
     const data: DetailsLocalStorageType[] | null =
       produkDetails.map((item) => ({
         nama: item.nama,
@@ -312,29 +307,29 @@ const usePilihProduk = (props: {
         stokTersedia: item.stok,
       })) ?? null;
 
-    // set details
-    localStorage.setItem("details", JSON.stringify(data));
+    localStorage.setItem(LOCAL_STORAGE_KEYS.DETAILS, JSON.stringify(data));
+    localStorage.setItem(
+      LOCAL_STORAGE_KEYS.PELANGGAN,
+      JSON.stringify(pelanggan),
+    );
 
-    // set pelanggan
-    localStorage.setItem("pelanggan", JSON.stringify(pelanggan));
-
-    // check is update
-    localStorage.removeItem("is-update-transaction");
+    // Data sudah disimpan sebagai transaksi baru dari form ini, bukan mode update
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
 
     return true;
   };
 
-  // handle steps next
+  // Lanjut ke step berikutnya: simpan data, cek stok, dan arahkan ke step yang sesuai
   const handleStepsNext = async () => {
     const canNext = handleLocalStorage();
 
     if (!canNext) return;
 
-    // cek stok produk yang di pilih
+    // Cek apakah ada produk dengan stok habis
     const insufficientStock = produkDetails.some((produk) => produk.stok === 0);
 
     if (insufficientStock && !fromBooking) {
-      // handle confirm
+      // Tawarkan konversi ke booking jika stok tidak mencukupi
       const isConfirm = await confirm({
         title: "Stok Tidak Mencukupi",
         deskripsi:
@@ -345,10 +340,9 @@ const usePilihProduk = (props: {
         return;
       }
 
-      // clear metode pembayaran
-      localStorage.removeItem("metode-pembayaran");
+      // Transaksi jadi booking, metode pembayaran lama tidak relevan lagi
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
 
-      // handle redirect
       return handleSteps(4);
     }
 
@@ -360,32 +354,31 @@ const usePilihProduk = (props: {
       });
 
     if (fromBooking) {
-      localStorage.removeItem("from-booking");
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
       handleSteps(4);
     } else {
       handleSteps(2);
     }
   };
 
-  // handle batalkan update transaction
+  // Batalkan mode update transaksi dan kembali ke step sebelumnya (booking atau normal)
   const handleBatalkanUpdateTransaction = () => {
-    // remove is update transaction
-    localStorage.removeItem("is-update-transaction");
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
 
     if (fromBooking) {
-      localStorage.removeItem("from-booking");
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
       handleSteps(4);
     } else {
       handleSteps(2);
     }
   };
 
-  // handle remove all
+  // Kosongkan seluruh daftar produk
   const handleRemoveAllDetails = () => {
     setProdukDetails([]);
   };
 
-  // handle mutation simpan keranjang
+  // Mutation untuk membuat atau mengupdate keranjang, tergantung ada tidaknya keranjangId
   const { mutateAsync: mutateKeranjang, isPending: isPendingKeranjang } =
     useMutation({
       mutationFn: (req: CreateKeranjangType | UpdateKeranjangType) => {
@@ -399,13 +392,10 @@ const usePilihProduk = (props: {
         }
       },
       onSuccess: (data) => {
-        // set state
         handleRemoveAllDetails();
-
-        // set pelanggan
         setPelanggan(null);
 
-        // check is Update keranjang
+        // Jika ini update keranjang, arahkan kembali ke halaman keranjang pelanggan tsb
         if (isUpdateKeranjang) {
           return navigate(
             `/dashboard/keranjang?pelangganId=${data?.data?.pelanggan?.id}`,
@@ -417,13 +407,13 @@ const usePilihProduk = (props: {
           );
         }
 
-        // check is update transaction
+        // Jika ini update transaksi, bersihkan seluruh state terkait transaksi lama
         if (isUpdateTransaction) {
-          localStorage.removeItem("details");
-          localStorage.removeItem("is-update-transaction");
-          localStorage.removeItem("metode-pembayaran");
-          localStorage.removeItem("pelanggan");
-          localStorage.removeItem("from-booking");
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
 
           setIsUpdateTransaction(false);
         }
@@ -431,6 +421,7 @@ const usePilihProduk = (props: {
         handleToast("simpan_keranjang");
       },
       onError: (error) => {
+        // Tampilkan alert khusus jika keranjang untuk pelanggan ini sudah ada
         if (axios.isAxiosError<ErrorResponse>(error)) {
           if (error.response?.data?.meta?.statusCode === 400) {
             if (
@@ -445,32 +436,15 @@ const usePilihProduk = (props: {
       },
     });
 
-  // remove produk in daftar
+  // Hapus satu produk dari daftar berdasarkan id
   const removeDetails = (id: number) => {
     setProdukDetails((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // handle simpan keranjang
+  // Validasi form, lalu simpan produk terpilih sebagai keranjang baru
   const handleSimpanKeranjang = async () => {
     try {
-      // check
-      if (produkDetails?.length === 0 || !pelanggan) {
-        if (produkDetails?.length === 0 && !pelanggan) {
-          setIsErrorsFormState(["pelanggan", "details"]);
-        }
-
-        if (!pelanggan) {
-          handleSetAlert("pelanggan_kosong");
-          setIsErrorsFormState((prev) => [...prev, "pelanggan"]);
-          return false;
-        }
-
-        if (produkDetails?.length === 0) {
-          handleSetAlert("transaksi_kosong");
-          setIsErrorsFormState((prev) => [...prev, "details"]);
-          return false;
-        }
-      }
+      if (!validatePelangganDanDetails()) return false;
 
       const dataDetails: DetailsForCreate[] = produkDetails.map((item) => ({
         diskon: item.diskon,
@@ -488,42 +462,23 @@ const usePilihProduk = (props: {
     }
   };
 
-  // handle batalkan simpan keranjang
+  // Batalkan proses simpan keranjang (mode update) dan kembali ke halaman keranjang pelanggan
   const handleBatalkanSimpanKeranjang = () => {
     console.log(isUpdateKeranjang?.pelangganId);
 
-    // remove local storage
-    localStorage.removeItem("details");
-    localStorage.removeItem("pelanggan");
-    localStorage.removeItem("is-update-keranjang");
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
 
-    // navigate
     navigate(
       `/dashboard/keranjang?pelangganId=${isUpdateKeranjang?.pelangganId}`,
     );
   };
 
-  // mambuat simpan perubahan keranjang
+  // Validasi form, lalu simpan perubahan pada keranjang yang sedang diupdate
   const handleSimpanPerubahanKeranjang = async () => {
     try {
-      // check
-      if (produkDetails?.length === 0 || !pelanggan) {
-        if (produkDetails?.length === 0 && !pelanggan) {
-          setIsErrorsFormState(["pelanggan", "details"]);
-        }
-
-        if (!pelanggan) {
-          handleSetAlert("pelanggan_kosong");
-          setIsErrorsFormState((prev) => [...prev, "pelanggan"]);
-          return false;
-        }
-
-        if (produkDetails?.length === 0) {
-          handleSetAlert("transaksi_kosong");
-          setIsErrorsFormState((prev) => [...prev, "details"]);
-          return false;
-        }
-      }
+      if (!validatePelangganDanDetails()) return false;
 
       const dataDetails: DetailsForCreate[] = produkDetails.map((item) => ({
         diskon: item.diskon,
@@ -532,10 +487,10 @@ const usePilihProduk = (props: {
         quantity: item.quantity,
       }));
 
-      // clear local storage
-      localStorage.removeItem("details");
-      localStorage.removeItem("pelanggan");
-      localStorage.removeItem("is-update-keranjang");
+      // Bersihkan data form sebelum submit perubahan keranjang
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
 
       await mutateKeranjang({
         details: dataDetails,
@@ -545,6 +500,7 @@ const usePilihProduk = (props: {
     }
   };
 
+  // Ekspos state & handler yang dibutuhkan oleh komponen UI pilih produk
   return {
     handleAddDetails,
     produkDetails,

@@ -17,6 +17,7 @@ import StatusPelanggan from "../../../../components/StatusPelanggan";
 import type { FC } from "react";
 import type {
   PaymentMethodType,
+  TempoStatusType,
   TransactionStatusType,
 } from "../../../../types/constant.type";
 import type { IPenggunaInternalType } from "../../../../models/penggunaInternal.model";
@@ -34,6 +35,7 @@ type Props = {
   pelanggan?: Pick<IPelangganType, "id" | "noWa" | "nama" | "isActive"> | null;
   tanggalTransaksi?: Date | null;
   statusTransaction?: TransactionStatusType | null;
+  statusTempo?: TempoStatusType | null;
 };
 const HeaderTransactionDetail: FC<Props> = ({
   kasir,
@@ -42,6 +44,7 @@ const HeaderTransactionDetail: FC<Props> = ({
   metodePembayaran,
   tanggalTransaksi,
   statusTransaction,
+  statusTempo,
 }) => {
   return (
     <div className="w-full bg-base-100 rounded-2xl md:rounded-xl grid grid-cols-4 p-2.5 gap-2.5 flex-wrap border border-transparent dark:border-base-content/10 shadow-sm">
@@ -61,6 +64,7 @@ const HeaderTransactionDetail: FC<Props> = ({
         smallValue={formatTanggalLengkap(tanggalTransaksi ?? new Date())}
         customWidth="col-span-1"
         statusTransaction={statusTransaction}
+        statusTempo={statusTempo}
       />
 
       {/* data kasir */}
@@ -132,6 +136,7 @@ type CardLargeProps = {
   customWidth?: string;
   isActive?: boolean;
   statusTransaction?: TransactionStatusType | null;
+  statusTempo?: TempoStatusType | null;
 };
 const CardLarge: FC<CardLargeProps> = ({
   icon,
@@ -141,6 +146,7 @@ const CardLarge: FC<CardLargeProps> = ({
   customWidth,
   isActive,
   statusTransaction,
+  statusTempo,
 }) => {
   return (
     <div
@@ -156,9 +162,12 @@ const CardLarge: FC<CardLargeProps> = ({
         </div>
       )}
 
-      {statusTransaction && (
+      {(statusTransaction || statusTempo) && (
         <div className="absolute top-1 right-2">
-          <StatusTransaction status={statusTransaction} />
+          <StatusTransaction
+            statusTempo={statusTempo ?? undefined}
+            status={statusTransaction ?? undefined}
+          />
         </div>
       )}
       {/* icon */}

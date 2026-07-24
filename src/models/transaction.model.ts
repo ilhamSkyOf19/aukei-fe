@@ -5,8 +5,10 @@ import type {
   TransactionStatusType,
 } from "../types/constant.type";
 import type { PaginationType } from "./pagination.model";
+import type { ResponseTransactionPaymentType } from "./paymentTransaction.model";
 import type { IPelangganType } from "./pelanggan.model";
 import type { IPenggunaInternalType } from "./penggunaInternal.model";
+import type { ResponseProdukForKasirType } from "./produk.model";
 import type { ResponseRingkasanStatistikType } from "./statistik.model";
 import type { DataTempoType, ITempo } from "./tempo.model";
 import type { ITempoInstallmentType } from "./tempoInstallment.model";
@@ -20,8 +22,7 @@ export interface ITransactionType {
   totalItem: number;
   totalDiskon: number;
   totalBayar: number;
-  kembalian: number;
-  diBayar: number | null;
+  totalDiBayar: number | null;
   metodePembayaran: PaymentMethodType | null;
   details: Omit<ITransactionDetailType, "createdAt" | "updatedAt">[];
   tempo?: number;
@@ -30,6 +31,18 @@ export interface ITransactionType {
   completedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
+  paymentTransactions?: Pick<
+    ResponseTransactionPaymentType,
+    | "id"
+    | "jenis"
+    | "kasir"
+    | "keterangan"
+    | "metodePembayaran"
+    | "nominal"
+    | "createdAt"
+    | "diBayar"
+    | "kembalian"
+  >[];
 }
 
 export interface QueryRiwayatTransactionType extends PaginationType {
@@ -44,7 +57,6 @@ export interface DetailsForCreate extends Pick<
   "diskon" | "hargaJual" | "quantity"
 > {
   produkId: number;
-  quantityDelivered?: number;
 }
 
 // // created transaction
@@ -52,7 +64,8 @@ export interface CreateTransactionForRequestType extends Pick<
   ITransactionType,
   "metodePembayaran" | "pelangganId"
 > {
-  status?: Exclude<TransactionStatusType, "COMPLETED" | "CANCELLED" | "CART">;
+  status?: Exclude<TransactionStatusType, "CANCELLED" | "CART">;
+  metodePembayaranUangDp?: Exclude<PaymentMethodType, "TEMPO">;
   id?: number;
   diBayar: number;
   kembalian: number;
@@ -153,7 +166,6 @@ export interface DetailsLocalStorageType {
   img: string;
   nama: string;
   kode: string;
-  stokDikirim?: number;
 }
 
 export interface DataTransaksiBookingForResponseType {
@@ -161,8 +173,6 @@ export interface DataTransaksiBookingForResponseType {
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
   totalTransaksiBooking: number;
   totalItemBooking: number;
-  totalItemDikirim: number;
-  totalSisaItem: number;
   status: TransactionStatusType;
 }
 
@@ -182,10 +192,8 @@ export interface ResponseTransaksiBookingByPelangganType {
       | "totalBayar"
       | "metodePembayaran"
       | "tanggalBooking"
-      | "diBayar"
+      | "totalDiBayar"
     > & {
-      totalQuantityDelivered: number;
-      totalSisaQuantity: number;
       statusTempo?: TempoStatusType;
     })[];
   };
@@ -197,12 +205,31 @@ export interface ResponseStatistikBookingType {
   pelanggan?: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
   totalBooking: number;
   totalItemBooking: number;
-  totalItemDikirim: number;
-  totalSisaItem: number;
 
   estimasiOmzet: number;
   kasMasuk: number;
-  sisaPembayaran: number;
+}
 
-  progressPengiriman: number;
+// type for produk detail item choose
+export type ProdukDetailItem = Pick<
+  ResponseProdukForKasirType,
+  | "nama"
+  | "img"
+  | "hargaJual"
+  | "kode"
+  | "hargaJualTerakhirTransaksi"
+  | "id"
+  | "stok"
+> & { subTotal: number; diskon: number; quantity: number };
+
+export interface ResponseStatistikKebutuhanBarang {
+  produk: {
+    id: number;
+    nama: string;
+    kode: string;
+    stokBooking: number;
+    stokTersedia: number;
+    totalKebutuhanStok: number;
+  };
+  siapKirim: boolean;
 }

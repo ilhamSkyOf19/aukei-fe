@@ -7,7 +7,6 @@ export interface ITransactionDetailType {
   totalHarga: number;
   hargaJual: number;
   diskon: number;
-  quantityDelivered: number;
   subtotal: number;
   createdAt: Date;
   updatedAt: Date;

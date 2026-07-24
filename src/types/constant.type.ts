@@ -17,6 +17,16 @@ export const STATUS_INVENTORI_TYPE = {
   POSTED: "POSTED",
 } as const;
 
+export const TRANSACTION_PAYMENT_STATUS_TYPE = {
+  TEMPO_DP: "TEMPO_DP",
+  BOOKING_DP: "BOOKING_DP",
+  PELUNASAN: "PELUNASAN",
+  REFUND: "REFUND",
+} as const;
+
+export type TransactionPaymentStatusType =
+  (typeof TRANSACTION_PAYMENT_STATUS_TYPE)[keyof typeof TRANSACTION_PAYMENT_STATUS_TYPE];
+
 // type status barang masuk
 export type StatusInventoriType =
   (typeof STATUS_INVENTORI_TYPE)[keyof typeof STATUS_INVENTORI_TYPE];

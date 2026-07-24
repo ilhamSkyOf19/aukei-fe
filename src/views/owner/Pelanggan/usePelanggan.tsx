@@ -12,18 +12,15 @@ import type { ErrorResponse } from "../../../types/response.type";
 import { useNavigate } from "react-router-dom";
 
 const usePelanggan = () => {
-  // navigate
   const navigate = useNavigate();
-
-  // query client
   const queryClient = useQueryClient();
 
-  // state choose barang
+  // Daftar pelanggan yang dicentang untuk aksi hapus massal
   const [choosePelanggan, setChoosePelanggan] = useState<
     { id: number; nama: string }[]
   >([]);
 
-  // handle set choose
+  // Toggle centang/un-centang pelanggan pada daftar pilihan hapus massal
   const handleSetChoosePelanggan = (data: { id: number; nama: string }) => {
     if (choosePelanggan.some((item) => item.id === data.id)) {
       setChoosePelanggan(choosePelanggan.filter((item) => item.id !== data.id));
@@ -32,7 +29,7 @@ const usePelanggan = () => {
     }
   };
 
-  // use modal alert failed delete
+  // Modal alert saat penghapusan pelanggan gagal (misal karena masih punya riwayat transaksi)
   const {
     modalRef: modalFailedDeleteRef,
     handleShowModal: handleShowModalFailedDelete,
@@ -44,7 +41,7 @@ const usePelanggan = () => {
     description: string;
   }>();
 
-  // use modal
+  // Modal formulir tambah/edit pelanggan
   const {
     modalRef: modalFormulirPelangganRef,
     handleShowModal: showModalFormulirPelanggan,
@@ -53,7 +50,7 @@ const usePelanggan = () => {
     dataModal: dataFormulirPelanggan,
   } = useModal<{ data?: ResponsePelangganType }>();
 
-  // use modal delete many
+  // Modal konfirmasi hapus pelanggan secara massal
   const {
     modalRef: modalDeleteManyRef,
     handleShowModal: handleShowModalDeleteMany,
@@ -65,31 +62,31 @@ const usePelanggan = () => {
     }[];
   }>();
 
-  // use toast
+  // Toast notifikasi hasil aksi (create/update/delete)
   const { toast, handleSetToast } = useToastAnimation();
 
-  //   filter search
+  // Filter pencarian pelanggan (query param "search")
   const { search, setSearch: handleSearch } = useFilterSearch("search");
 
-  // sort
+  // Filter urutan data (query param "sort")
   const { filter: sort, setFilter: handleSort } = useFilter({
     paramName: "sort",
     allowQuery: ["asc", "desc"],
   });
 
-  //   page
+  // Filter halaman (pagination, query param "page")
   const { filter: page, setFilter: handlePage } = useFilter({
     paramName: "page",
     isNumber: true,
   });
 
-  //   limit
+  // Filter jumlah data per halaman (query param "limit")
   const { filter: limit, setFilter: handleLimit } = useFilter({
     paramName: "limit",
     isNumber: true,
   });
 
-  //   call query
+  // Ambil data pelanggan beserta riwayat transaksi dari server sesuai filter
   const { data: dataPelanggan, isLoading: isLoadingPelanggan } = useQuery({
     queryKey: ["pelanggan", search, sort, page, limit],
     queryFn: () =>
@@ -103,23 +100,19 @@ const usePelanggan = () => {
     refetchOnWindowFocus: false,
   });
 
+  // Apakah data pelanggan sudah selesai dimuat dan tidak kosong
   const isExistDataPelanggan: boolean =
-    !isLoadingPelanggan && dataPelanggan?.data?.data
-      ? dataPelanggan?.data?.data?.length > 0
-        ? true
-        : false
-      : false;
+    !isLoadingPelanggan && !!dataPelanggan?.data?.data?.length;
 
-  // handle show modal
+  // Buka modal formulir pelanggan; jika id diberikan, isi data pelanggan untuk mode edit
   const handleShowModalFormulirPelanggan = (id?: number) => {
-    // find Pelanggan
     if (id) {
-      const Pelanggan = dataPelanggan?.data?.data.find(
+      const pelangganDitemukan = dataPelanggan?.data?.data.find(
         (item) => item.id === id,
       );
 
-      if (Pelanggan) {
-        return showModalFormulirPelanggan(id, { data: Pelanggan });
+      if (pelangganDitemukan) {
+        return showModalFormulirPelanggan(id, { data: pelangganDitemukan });
       }
 
       return;
@@ -128,23 +121,21 @@ const usePelanggan = () => {
     }
   };
 
-  // use mutation delete many
+  // Mutation untuk menghapus beberapa pelanggan sekaligus
   const { mutateAsync: deleteMany, isPending: isPendingDeleteMany } =
     useMutation({
       mutationFn: (ids: number[]) => PelangganServices.deleteMany({ ids }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["pelanggan"] });
 
-        // handle toast
         handleSetToast("deleted_pelanggan");
-
-        // close modal
         handleCloseModalDeleteMany();
 
-        // reset choose
+        // Reset pilihan setelah berhasil dihapus
         setChoosePelanggan([]);
       },
       onError: (err) => {
+        // Tampilkan modal khusus jika gagal karena pelanggan masih punya riwayat transaksi
         if (axios.isAxiosError<ErrorResponse>(err)) {
           if (
             err.response?.data.meta.message?.includes(
@@ -161,15 +152,15 @@ const usePelanggan = () => {
       },
     });
 
-  // handle delete many
+  // Proses hapus massal pelanggan yang dicentang
   const handleDeleteMany = async () => {
     try {
-      // check choose barang
+      // Tidak ada yang dicentang, tidak perlu proses apa pun
       if (choosePelanggan.length === 0) {
         return;
       }
 
-      // check
+      // Cek apakah seluruh data pelanggan sama persis dengan yang dicentang
       const isSame =
         dataPelanggan?.data?.data.length === choosePelanggan.length &&
         dataPelanggan?.data?.data.every((item) =>
@@ -187,7 +178,7 @@ const usePelanggan = () => {
     }
   };
 
-  // handle update is active
+  // Mutation untuk mengubah status aktif/nonaktif pelanggan
   const {
     mutateAsync: mutateUpdateIsActive,
     isPending: isPendingUpdateIsActive,
@@ -200,8 +191,6 @@ const usePelanggan = () => {
       }),
     onSuccess: () => {
       handleSetToast("updated_status");
-
-      // invalidate
       queryClient.invalidateQueries({ queryKey: ["pelanggan"] });
     },
     onError: (err) => {
@@ -209,7 +198,7 @@ const usePelanggan = () => {
     },
   });
 
-  // handle update is active
+  // Ubah status aktif/nonaktif satu pelanggan
   const handelUpdateIsActive = async (data: {
     id: number;
     status: boolean;
@@ -221,12 +210,12 @@ const usePelanggan = () => {
     }
   };
 
-  // handle redirect riwayat transaksi
+  // Arahkan ke halaman detail riwayat transaksi pelanggan
   const handleRedirectRiwayatTransaksiDetail = (id: number) => {
     navigate(`/dashboard/riwayat-transaksi/detail/${id}`);
   };
 
-  // use delete pelanggan
+  // Hapus satu pelanggan (modal konfirmasi, mutation, dsb dikelola oleh useDeletePelanggan)
   const {
     dataDelete,
     handleCloseModalDelete,
@@ -241,6 +230,7 @@ const usePelanggan = () => {
     handleToast: handleSetToast,
   });
 
+  // Ekspos state & handler yang dibutuhkan oleh komponen UI daftar pelanggan
   return {
     toast,
     dataPelanggan,

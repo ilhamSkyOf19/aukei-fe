@@ -59,7 +59,7 @@ export interface ResponseProdukForChooseType {
 // response produk for kasir
 export interface ResponseProdukForKasirType extends Pick<
   IProduk,
-  "id" | "nama" | "kode" | "hargaJual" | "stok" | "img"
+  "id" | "nama" | "kode" | "hargaJual" | "stok" | "img" | "kategori"
 > {
   hargaJualTerakhirTransaksi?: number;
 }

@@ -28,7 +28,7 @@ const DropDown: FC<Props> = ({
   return (
     <div
       className={cn(
-        "h-10.5 lg:h-10 overflow-hidden transition-all duration-200 ease-in-out",
+        "h-10.5 md:h-8.5 overflow-hidden transition-all duration-200 ease-in-out",
         customWidth ? customWidth : "w-full",
         !noBorder &&
           "border border-base-content rounded-xl focus-within:ring-1 focus-within:ring-base-content",
@@ -44,7 +44,7 @@ const DropDown: FC<Props> = ({
           defaultValue={defaultValue}
           value={value}
           className={cn(
-            "text-base-content select w-full border-none outline-none rounded-xl select-md text-xs lg:select-md scrollbar-thumb-custom-secondary",
+            "text-base-content select w-full border-none outline-none rounded-xl select-md text-xs md:select-sm scrollbar-thumb-custom-secondary",
             fontWeight,
           )}
           onChange={handleChange}

@@ -2,7 +2,7 @@ import { type FC, type RefObject } from "react";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import InputSearch from "../../inputs/InputSearch";
 import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
-import { ChevronRight, UserPlus, UsersRound, UserX } from "lucide-react";
+import { ChevronRight, UserRoundPlus, UsersRound, UserX } from "lucide-react";
 import { formatNumberPhone } from "../../../helpers/helpers";
 import useModalChoosePelanggan from "./useModalChoosePelanggan";
 import Pagination from "../../ui/Pagination";
@@ -44,7 +44,7 @@ const ModalChoosePelanggan: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_3" className="modal">
-      <div className="modal-box max-h-[95vh] lg:w-2/5 max-w-5xl rounded-xl bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box max-h-[95vh] lg:w-2/4 max-w-5xl rounded-xl bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-between items-start">
@@ -76,13 +76,16 @@ const ModalChoosePelanggan: FC<Props> = ({
           <div className="w-full flex flex-row justify-between items-start gap-2">
             {/* search */}
             <div className="w-full">
-              <InputSearch handleSearch={handleSearch} />
+              <InputSearch
+                handleSearch={handleSearch}
+                placeholder="Cari nomor / nama. Contoh: Annas"
+              />
             </div>
 
             <div className="w-55 flex flex-row justify-end items-start">
               {/* btn */}
               <ButtonWithIcon
-                icon={UserPlus}
+                icon={UserRoundPlus}
                 label="Pelanggan Baru"
                 handleBtn={handleShowModalFormulirPelanggan}
               />
@@ -90,7 +93,7 @@ const ModalChoosePelanggan: FC<Props> = ({
           </div>
 
           {/* daftar pelanggan */}
-          <div className="w-full flex flex-col justify-start items-start rounded-xl border border-base-content/10 overflow-y-auto scrollbar-thin h-100 mt-4 scrollbar-thumb-custom-secondary">
+          <div className="w-full flex flex-col justify-start items-start rounded-xl border border-base-content/10 overflow-y-auto scrollbar-thin h-90 mt-4 scrollbar-thumb-custom-secondary">
             {/* card pelanggan */}
             {isLoadingPelanggan ? (
               <div className="w-full flex flex-col justify-start items-start gap-1 p-2">
@@ -103,7 +106,7 @@ const ModalChoosePelanggan: FC<Props> = ({
                 <button
                   type="button"
                   key={item.id}
-                  className="w-full flex flex-row justify-between items-center px-4 py-3 border-b border-base-content/10 hover-overlay shrink-0"
+                  className="w-full flex flex-row justify-between items-center px-4 py-2.5 border-b border-base-content/10 hover-overlay shrink-0"
                   onClick={() => {
                     handleChoose({
                       id: item.id,
@@ -115,14 +118,14 @@ const ModalChoosePelanggan: FC<Props> = ({
                 >
                   <div className="flex-2 flex flex-row justify-start items-center gap-4">
                     {/* avatar */}
-                    <Avatar index={index} nama={item.nama} />
+                    <Avatar index={index} nama={item.nama} sm />
 
                     {/* nama and no wa */}
                     <div className="flex flex-col justify-start items-start gap-0.5">
-                      <span className="text-sm font-medium text-base-content">
+                      <span className="text-xs font-medium text-base-content">
                         {item.nama}
                       </span>
-                      <span className="text-xs font-medium text-base-content/50">
+                      <span className="text-[0.7rem] font-medium text-base-content/50">
                         {formatNumberPhone(item.noWa.toString())}
                       </span>
                     </div>

@@ -3,6 +3,7 @@ import type {
   PaymentMethodType,
   TempoStatusType,
 } from "../types/constant.type";
+import type { ResponseTransactionPaymentType } from "./paymentTransaction.model";
 import type { IPelangganType } from "./pelanggan.model";
 import type {
   CreateInstallmentType,
@@ -29,11 +30,14 @@ export interface CreateTempoType extends Pick<
   "uangMuka" | "jumlahCicilan" | "periode"
 > {
   startDate?: string;
+  metodePembayaranUangDp?: Exclude<PaymentMethodType, "TEMPO">;
+  kembalian?: number;
+  diBayar?: number;
 }
 
 // data tempo
 export interface DataTempoType extends CreateTempoType {
-  installments: CreateInstallmentType[];
+  installments?: CreateInstallmentType[];
 }
 
 export interface DataTempoForResponseType {
@@ -100,4 +104,16 @@ export interface ResponseTempoWithInstallment extends Pick<
     ITempoInstallmentType,
     "id" | "jatuhTempo" | "nominal" | "tanggalLunas" | "cicilanKe" | "status"
   > & { diBayar: number })[];
+  paymentTransactions?: Pick<
+    ResponseTransactionPaymentType,
+    | "id"
+    | "jenis"
+    | "kasir"
+    | "keterangan"
+    | "metodePembayaran"
+    | "nominal"
+    | "createdAt"
+    | "diBayar"
+    | "kembalian"
+  >[];
 }

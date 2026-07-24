@@ -1,47 +1,31 @@
 import type { FC } from "react";
-import { cn } from "../../../../utils/cn";
 
 type Props = {
-  handleClick?: () => void;
   label?: string;
   disable?: boolean;
   isLoading?: boolean;
-  bgColor?: string;
-  textColor?: string;
-  customHeight?: string;
-  customWidth?: string;
+  typeButton?: boolean;
+  handleClick?: () => void;
 };
 
 const ButtonText: FC<Props> = ({
   disable,
+  typeButton,
   label,
   isLoading,
-  bgColor,
-  textColor,
   handleClick,
-  customHeight,
-  customWidth,
 }) => {
   return (
     <button
-      type="button"
-      className={cn(
-        "rounded-2xl md:rounded-xl px-4 text-xs lg:text-sm font-semibold hover-overlay disabled:opacity-50 shadow-xs",
-        bgColor,
-        textColor,
-        customHeight ? customHeight : "h-10.5 md:h-10",
-        customHeight,
-        customWidth,
-      )}
+      type={typeButton ? "button" : "submit"}
+      className="h-10.5 md:h-9 text-xs px-4 bg-custom-primary font-semibold text-custom-secondary hover-overlay disabled:opacity-50 rounded-xl shadow-sm"
       disabled={disable || isLoading}
       onClick={() => handleClick?.()}
     >
       {isLoading ? (
         <div className="loading loading-xs" />
       ) : (
-        <span className="text-xs md:text-xs lg:text-[0.625rem] xl:text-xs">
-          {label || "Simpan"}
-        </span>
+        <span className="text-xs md:text-[0.7rem]">{label || "Simpan"}</span>
       )}
     </button>
   );

@@ -5,9 +5,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TransactionDetailValidations } from "../../../../validations/transactionDetail.validation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TransactionDetailServices } from "../../../../services/transactionDetail.service";
+import type { ResponseStatistikKebutuhanBarang } from "../../../../models/transaction.model";
+import type { ResponseStructure } from "../../../../types/response.type";
 
-const useDaftarDetailProduk = (params: { transactionId?: number | null }) => {
-  const { transactionId } = params;
+const useDaftarDetailProduk = (params: {
+  transactionId?: number | null;
+  dataKebutuhanBarang?: ResponseStructure<
+    ResponseStatistikKebutuhanBarang[] | null
+  >;
+  isLoadingKebutuhanBarang?: boolean;
+}) => {
+  const { transactionId, dataKebutuhanBarang, isLoadingKebutuhanBarang } =
+    params;
   // query client
   const queryClient = useQueryClient();
 
@@ -112,6 +121,13 @@ const useDaftarDetailProduk = (params: { transactionId?: number | null }) => {
     });
   };
 
+  const isExistDataKebutuhanBarang: boolean =
+    !isLoadingKebutuhanBarang && !!dataKebutuhanBarang?.data?.length;
+
+  const siapKirim = dataKebutuhanBarang?.data?.some(
+    (item) => item.siapKirim === true,
+  );
+
   return {
     isFromActive,
     handleSetIsFromActive,
@@ -120,6 +136,9 @@ const useDaftarDetailProduk = (params: { transactionId?: number | null }) => {
     onSubmit,
     handleSubmit,
     isPendingUpdate,
+    isExistDataKebutuhanBarang,
+    isLoadingKebutuhanBarang,
+    siapKirim,
   };
 };
 

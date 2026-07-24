@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
 import { useMemo, useState } from "react";
 import {
+  PAYMENT_METHOD_TYPE,
   ROLE_INTERNAL_TYPE,
   TRANSACTION_STATUS_TYPE,
 } from "../../../types/constant.type";
@@ -32,10 +33,14 @@ const useTransactionDetail = (params: {
     if (pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) {
       return navigate(currentPathname.split("/").slice(0, -2).join("/"));
     } else {
-      handleSteps?.(1);
+      if (handleSteps) {
+        handleSteps?.(1);
 
-      // remove local storage
-      localStorage.removeItem("transaction");
+        // remove local storage
+        localStorage.removeItem("transaction");
+      } else {
+        navigate(currentPathname.split("/").slice(0, -2).join("/"));
+      }
     }
   };
 
@@ -54,6 +59,21 @@ const useTransactionDetail = (params: {
     refetchOnWindowFocus: false,
   });
 
+  // data kebutuhan barang
+  const { data: dataKebutuhanBarang, isLoading: isLoadingKebutuhanBarang } =
+    useQuery({
+      queryKey: ["kebutuhan-barang", dataTransaction?.data?.id],
+      queryFn: () =>
+        TransactionServices.kebutuhanBarang({
+          transactionId: dataTransaction?.data?.id!,
+        }),
+      enabled:
+        !!dataTransaction?.data?.id &&
+        dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING,
+      retry: false,
+      refetchOnWindowFocus: false,
+    });
+
   // is status booking
   const isStatusBooking =
     dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING;
@@ -61,57 +81,56 @@ const useTransactionDetail = (params: {
   const isExistingDataTransaction: boolean =
     !isLoadingTransaction && dataTransaction?.data ? true : false;
 
-  // is full booking
-  const isNotFullBooking = dataTransaction?.data?.details?.some(
-    (item) => item.quantityDelivered > 0,
-  );
-
   const transactionSummary = useMemo(() => {
     if (!dataTransaction?.data) {
       return {
-        // jumlah barang
-        totalJumlahBarangDikirim: 0,
-        totalJumlahBarangBooking: 0,
+        totalQuantity: 0,
+        totalPembayaran: 0,
 
-        // uang
-        totalUangBarangDikirim: 0,
-        totalUangBarangBooking: 0,
+        totalDiBayar: 0,
+        totalKembalian: 0,
+
+        uangMuka: 0,
+
+        sisaTagihan: 0,
       };
     }
 
-    let totalJumlahBarangDikirim = 0;
-    let totalJumlahBarangBooking = 0;
+    let totalQuantity = 0;
+    let totalPembayaran = 0;
 
-    let totalUangBarangDikirim = 0;
-    let totalUangBarangBooking = 0;
+    const totalDiBayar = dataTransaction.data.paymentTransactions?.reduce(
+      (total, item) => total + item.diBayar,
+      0,
+    );
 
-    for (const item of dataTransaction?.data?.details) {
-      const quantity = item.quantity;
-      const stokDikirim = item.quantityDelivered ?? 0;
-      const stokBooking = quantity - stokDikirim;
+    const totalKembalian = dataTransaction.data.paymentTransactions?.reduce(
+      (total, item) => total + item.kembalian,
+      0,
+    );
 
-      // ===========================
-      // Jumlah Barang
-      // ===========================
-      totalJumlahBarangDikirim += stokDikirim;
-      totalJumlahBarangBooking += stokBooking;
+    const uangMuka =
+      dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING ||
+      dataTransaction?.data?.metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO
+        ? (dataTransaction.data.tempo?.uangMuka ??
+          dataTransaction?.data?.totalDiBayar)
+        : undefined;
 
-      // ===========================
-      // Nilai Uang
-      // ===========================
-
-      totalUangBarangDikirim += stokDikirim * item.hargaJual;
-      totalUangBarangBooking += stokBooking * item.hargaJual;
+    for (const item of dataTransaction.data.details) {
+      totalQuantity += item.quantity;
+      totalPembayaran += item.quantity * item.hargaJual - item.diskon;
     }
 
     return {
-      // jumlah
-      totalJumlahBarangDikirim,
-      totalJumlahBarangBooking,
+      totalQuantity,
+      totalPembayaran,
 
-      // uang
-      totalUangBarangDikirim,
-      totalUangBarangBooking,
+      totalDiBayar,
+      totalKembalian,
+
+      uangMuka,
+
+      sisaTagihan: Math.abs(totalPembayaran - (totalDiBayar ?? 0)),
     };
   }, [dataTransaction?.data]);
 
@@ -125,12 +144,13 @@ const useTransactionDetail = (params: {
     isLoadingTransaction,
     isExistingDataTransaction,
     handleBackTransaksi,
-    isNotFullBooking,
     transactionSummary,
     isStatusBooking,
     isPageBookingKasir,
     isUbahData,
     setIsUbahData,
+    dataKebutuhanBarang,
+    isLoadingKebutuhanBarang,
   };
 };
 

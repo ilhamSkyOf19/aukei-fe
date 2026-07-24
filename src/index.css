@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Crafty+Girls&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 @import "tailwindcss";
 @plugin "daisyui" {
   themes:
@@ -10,6 +11,7 @@
 
 @theme {
   --font-poppins: "Poppins", sans-serif;
+  --font-inter: "Inter", sans-serif;
   --color-custom-primary: #cdde00;
   --color-custom-secondary: #28484b;
   --color-custom-surface: #315659;
@@ -31,6 +33,21 @@
   .step-primary > .step-icon {
     --step-bg: var(--color-custom-primary);
     --step-fg: var(--color-primary-black);
+  }
+}
+
+@layer base {
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="password"]::placeholder,
+  input[type="number"]::placeholder,
+  input[type="search"]::placeholder,
+  input[type="tel"]::placeholder,
+  input[type="url"]::placeholder,
+  textarea::placeholder {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
   }
 }
 
@@ -268,6 +285,77 @@ input:-webkit-autofill:active {
       height: 15%;
       top: 7%;
       right: 7%;
+    }
+  }
+}
+
+.modal {
+  @layer daisyui.l1.l2.l3 {
+    pointer-events: none;
+    visibility: hidden;
+    position: fixed;
+    inset: calc(0.25rem /* 4px */ * 0) /* 0rem = 0px */;
+    margin: calc(0.25rem /* 4px */ * 0) /* 0rem = 0px */;
+    display: grid;
+    height: 100%;
+    max-height: none;
+    width: 100%;
+    max-width: none;
+    align-items: center;
+    justify-items: center;
+    background-color: transparent;
+    padding: calc(0.25rem /* 4px */ * 0) /* 0rem = 0px */;
+    color: inherit;
+    transition:
+      visibility 0.3s allow-discrete,
+      background-color 0.3s ease-out,
+      opacity 0.1s ease-out;
+    overflow: clip;
+    overscroll-behavior: contain;
+    z-index: 999;
+    scrollbar-gutter: auto;
+    &::backdrop {
+      display: none;
+    }
+  }
+  @layer daisyui.l1.l2 {
+    &.modal-open,
+    &[open],
+    &:target,
+    .modal-toggle:checked + & {
+      pointer-events: auto;
+      visibility: visible;
+      opacity: 100%;
+      transition:
+        visibility 0s allow-discrete,
+        background-color 0.3s ease-out,
+        opacity 0.1s ease-out,
+        backdrop-filter 0.3s ease-out;
+      background-color: oklch(0% 0 0 / 0.3);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      .modal-box {
+        translate: 0 0;
+        scale: 1;
+        opacity: 1;
+      }
+      :root:has(&) {
+        --page-has-backdrop: 1;
+        --page-overflow: hidden;
+        --page-scroll-bg: var(--page-scroll-bg-on);
+        --page-scroll-gutter: stable;
+        --page-scroll-transition: var(--page-scroll-transition-on);
+        animation: set-page-has-scroll forwards;
+        animation-timeline: scroll();
+      }
+    }
+    @starting-style {
+      &.modal-open,
+      &[open],
+      &:target,
+      .modal-toggle:checked + & {
+        opacity: 0%;
+      }
     }
   }
 }

@@ -18,17 +18,32 @@ import { useAuthStore } from "../../../stores/authStore";
 import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangMasuk.service";
 import useModal from "../../../hooks/useModal";
 
+// Batas waktu (ms) setelah posting sebelum dianggap expired dan tidak bisa dibatalkan
+const BATAS_WAKTU_BATALKAN_POSTING_MS = 2 * 60 * 1000; // 2 menit
+
 const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { fromPengajuanBarang } = params;
 
   const pengguna = useAuthStore((state) => state.pengguna);
-  // query client
+
   const queryClient = useQueryClient();
 
-  // navigate
   const navigate = useNavigate();
 
-  // show modal konfirmasi posting
+  // Invalidate seluruh query terkait detail barang masuk & notifikasi setelah suatu aksi berhasil
+  const invalidateBarangMasukQueries = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["barang-masuk-detail", validatedId],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["notifikasi-global"],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["notifikasi-produk"],
+    });
+  };
+
+  // Modal konfirmasi untuk aksi posting/cancel posting/cancel verifikasi/setuju
   const {
     modalRef: modalKonfirmasiPostingRef,
     confirm,
@@ -37,7 +52,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     data: dataConfirm,
   } = useConfirm<{ bigTitle: string; smallTitle: string }>();
 
-  // handle show modal ajukan
+  // Modal formulir verifikasi (setuju/tolak) pengajuan barang masuk
   const {
     modalRef: modalFormulirVerifikasiOrPengajuan,
     handleShowModal: showModalFormulirVerifikasiOrPengajuan,
@@ -46,7 +61,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     dataModal: dataModalFormulirVerifikasiOrPengajuan,
   } = useModal<{ type: "pengajuan" | "tolak" }>();
 
-  // handle show modal formulir verifikasi or pengajuan
+  // Buka modal formulir verifikasi/pengajuan, tolak jika daftar barang masuk masih kosong
   const handleShowModalFormulirVerifikasiOrPengajuan = (
     id?: number | undefined,
     data?:
@@ -63,18 +78,17 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     showModalFormulirVerifikasiOrPengajuan(id, data);
   };
 
-  // use alert
+  // Alert animasi (misal: barang masuk kosong, expired)
   const { alert, handleSetAlert } = useAlertAnimation();
 
-  // use toast
+  // Toast notifikasi hasil aksi (posting, cancel, verifikasi, dsb)
   const { toast, handleSetToast } = useToastAnimation();
 
-  // get id from params
+  // Ambil dan validasi id barang masuk dari URL params
   const { id } = useParams<{ id: string }>();
-  // parse
   const validatedId = parseId(id);
 
-  // use query
+  // Ambil detail data barang masuk dari server
   const { data: dataBarangMasukDetail, isLoading: isLoadingBarangMasukDetail } =
     useQuery({
       queryKey: ["barang-masuk-detail", validatedId],
@@ -84,26 +98,16 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
       refetchOnWindowFocus: false,
     });
 
-  // mutate posting
+  // Mutation untuk memposting barang masuk (stok diperbarui)
   const { mutateAsync: mutatePosting, isPending: isPendingPosting } =
     useMutation({
       mutationFn: (id: number) => BarangMasukServices.posted(id),
       onSuccess: () => {
-        // handle toast
         handleSetToast("posted");
-
-        // revalidated
-        queryClient.invalidateQueries({
-          queryKey: ["barang-masuk-detail", validatedId],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["notifikasi-global"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["notifikasi-produk"],
-        });
+        invalidateBarangMasukQueries();
       },
       onError: (err) => {
+        // Tampilkan alert khusus jika gagal karena daftar barang masuk kosong
         if (axios.isAxiosError<ErrorResponse>(err)) {
           if (
             err?.response?.data?.meta?.customField?.includes(
@@ -116,7 +120,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
       },
     });
 
-  // handle posting
+  // Proses posting barang masuk: validasi status & data, konfirmasi, lalu kirim ke server
   const handlePosting = async (id?: number) => {
     try {
       if (
@@ -130,7 +134,6 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
         return;
       }
 
-      // confirm
       const isConfirm = await confirm({
         bigTitle: "Apakah Anda yakin ingin memposting data barang masuk?",
         smallTitle:
@@ -147,7 +150,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     }
   };
 
-  // mutate cancel posting
+  // Mutation untuk membatalkan posting barang masuk (stok dikembalikan)
   const {
     mutateAsync: mutateCancelPosting,
     isPending: isPendingCancelPosting,
@@ -155,26 +158,15 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     mutationFn: (id: number) => BarangMasukServices.cancelPosted(id),
 
     onSuccess: () => {
-      // handle toast
       handleSetToast("cancel_posted");
-
-      // invalidated
-      queryClient.invalidateQueries({
-        queryKey: ["barang-masuk-detail", validatedId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["notifikasi-global"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["notifikasi-produk"],
-      });
+      invalidateBarangMasukQueries();
     },
     onError: (err) => {
       console.log(err);
     },
   });
 
-  // cancel verifikasi
+  // Mutation untuk membatalkan verifikasi pengajuan barang masuk
   const {
     mutateAsync: mutateCancelVerifikasi,
     isPending: isPendingCancelVerifikasi,
@@ -183,33 +175,22 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
       PengajuanBarangMasukServices.cancelVerifikasi({ barangMasukId: id }),
 
     onSuccess: () => {
-      // handle toast
       handleSetToast("canceled_verifikasi");
-
-      // invalidated
-      queryClient.invalidateQueries({
-        queryKey: ["barang-masuk-detail", validatedId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["notifikasi-global"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["notifikasi-produk"],
-      });
+      invalidateBarangMasukQueries();
     },
     onError: (err) => {
       console.log(err);
     },
   });
 
-  // is expired
+  // Apakah batas waktu untuk membatalkan posting sudah lewat
   const isExpired =
     dataBarangMasukDetail?.data &&
     dataBarangMasukDetail?.data?.postedAt &&
     Date.now() - new Date(dataBarangMasukDetail.data.postedAt).getTime() >
-      2 * 60 * 1000; // 2 minutes
+      BATAS_WAKTU_BATALKAN_POSTING_MS;
 
-  // handle posting
+  // Proses batalkan posting: validasi status, cek expired, konfirmasi, lalu kirim ke server
   const handleCancelPosting = async (id?: number) => {
     try {
       if (
@@ -218,13 +199,11 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
       )
         return;
 
-      // check expired
       if (isExpired) {
         handleSetAlert("expired");
         return;
       }
 
-      // confirm
       const isConfirm = await confirm({
         bigTitle:
           "Apakah Anda yakin ingin membatalkan posting data barang masuk?",
@@ -242,7 +221,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     }
   };
 
-  // handle verifikasi
+  // Proses batalkan verifikasi pengajuan: validasi status, cek expired, konfirmasi, lalu kirim ke server
   const handleCancelVerifikasi = async (id?: number) => {
     try {
       if (
@@ -251,13 +230,11 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
       )
         return;
 
-      // check expired
       if (isExpired) {
         handleSetAlert("expired");
         return;
       }
 
-      // confirm
       const isConfirm = await confirm({
         bigTitle:
           "Apakah Anda yakin ingin membatalkan verifikasi pengajuan barang masuk?",
@@ -275,7 +252,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     }
   };
 
-  // use delete barang masuk
+  // Hapus barang masuk (mutation & redirect dikelola oleh useDeleteBarangMasuk)
   const {
     dataDelete,
     handleCloseModalDelete,
@@ -298,7 +275,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     },
   });
 
-  // mutation
+  // Mutation untuk verifikasi (setuju/tolak) pengajuan barang masuk
   const {
     mutateAsync: mutateVerifikasiPengajuanBarang,
     isPending: isPendingVerifikasiPengajuanBarang,
@@ -309,12 +286,10 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
       status: Exclude<StatusInventoriType, "DRAFT" | "PENDING">;
     }) => PengajuanBarangMasukServices.verifikasi(data),
     onSuccess: () => {
-      // revalidated
       queryClient.invalidateQueries({
         queryKey: ["barang-masuk-detail", validatedId],
       });
 
-      // set toast
       handleSetToast("approved_pengajuan");
     },
     onError: (err) => {
@@ -322,13 +297,11 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     },
   });
 
-  // handle setuju
+  // Proses setuju pengajuan barang masuk: konfirmasi, lalu verifikasi dengan status POSTED
   const handleSetuju = async () => {
     try {
-      // check validated id
       if (!validatedId || !fromPengajuanBarang) return;
 
-      // confirm
       const isConfirm = await confirm({
         bigTitle: "Apakah Anda yakin ingin menyetujui pengajuan barang masuk?",
         smallTitle:
@@ -348,6 +321,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     }
   };
 
+  // Status barang masuk saat ini
   const isStatusPosted =
     dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.POSTED;
   const isStatusDraft =
@@ -355,17 +329,21 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const isStatusRejected =
     dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.REJECTED;
 
+  // Apakah form tambah barang boleh ditampilkan, tergantung asal halaman & role pengguna
   const canShowFormTambahBarang =
     (!fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) ||
     (fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
 
+  // Apakah data barang masuk masih bisa diupdate
   const isCanUpdate =
     isStatusDraft ||
     (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
 
+  // Apakah posting masih bisa dibatalkan (status posted, role owner, belum expired)
   const isCanBatalkanPosting =
     isStatusPosted && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && !isExpired;
 
+  // Ekspos state & handler yang dibutuhkan oleh komponen UI detail barang masuk
   return {
     dataBarangMasukDetail,
     isLoadingBarangMasukDetail,

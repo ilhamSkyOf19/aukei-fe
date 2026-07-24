@@ -1,12 +1,10 @@
 import {
   BanknoteArrowDown,
   CalendarClock,
-  Package,
-  PackageCheck,
-  PackageSearch,
+  PackageMinus,
   Receipt,
   TrendingUp,
-  Wallet,
+  Truck,
 } from "lucide-react";
 import { cn } from "../../../utils/cn";
 import {
@@ -24,6 +22,7 @@ import InputSearch from "../../../components/inputs/InputSearch";
 import FilterSort from "../../../components/filters/Sort";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
 import CardDataTransaksiBooking from "../../../components/ui/cards/CardDataTransaksiBooking";
+import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 
 const RiwayatTransaksi = () => {
   const {
@@ -40,122 +39,126 @@ const RiwayatTransaksi = () => {
     handleRedirect,
     dataStatistikBooking,
     isLoadingStatistikBooking,
+    dataKebutuhanBarang,
+    isExistDataKebutuhanBarang,
+    isLoadingKebutuhanBarang,
   } = useBooking();
 
   return (
     <div className="w-full h-screen overflow-y-auto">
       <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2.5 p-2">
         {/* statistik */}
-        {pengguna?.role === "OWNER" && (
-          <div className="w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
-            <CardStatistik
-              icon={{
-                icon: CalendarClock,
-                bgColor: "bg-amber-50",
-                iconColor: "text-amber-600",
-              }}
-              label="Total Booking"
-              value={
-                dataStatistikBooking?.data?.totalBooking &&
-                dataStatistikBooking?.data?.totalBooking > 0
-                  ? formatNumber(dataStatistikBooking?.data?.totalBooking ?? 0)
-                  : "0"
-              }
-              caption={windowSize === "sm" ? "" : "Total transaksi booking."}
-              isLoading={isLoadingStatistikBooking}
-            />
+        <div
+          className={cn(
+            "w-full grid grid-cols-2 md:grid-cols-2 gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5",
+            pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+              ? "lg:grid-cols-3"
+              : "lg:grid-cols-4",
+          )}
+        >
+          {/* total produk booking */}
+          <CardStatistik
+            icon={{
+              icon: PackageMinus,
+              bgColor: "bg-rose-50",
+              iconColor: "text-rose-600",
+            }}
+            label="Total Produk Booking"
+            value={formatNumber(dataKebutuhanBarang?.data?.length ?? 0)}
+            caption={windowSize === "sm" ? "" : "Total produk yang dibooking."}
+            isLoading={isLoadingKebutuhanBarang}
+          />
 
-            <CardStatistik
-              icon={{
-                icon: TrendingUp,
-                bgColor: "bg-blue-50",
-                iconColor: "text-blue-600",
-              }}
-              label="Estimasi Omzet"
-              value={formatRupiah(
-                dataStatistikBooking?.data?.estimasiOmzet ?? 0,
-              )}
-              caption={windowSize === "sm" ? "" : "Estimasi omzet booking."}
-              isLoading={isLoadingStatistikBooking}
-            />
+          {/* total stok yang dibutuhkan */}
+          <CardStatistik
+            icon={{
+              icon: Truck,
+              bgColor: "bg-emerald-50",
+              iconColor: "text-emerald-600",
+            }}
+            label="Total Stok Yang Dibutuhkan"
+            value={formatNumber(
+              dataKebutuhanBarang?.data?.reduce(
+                (total, item) => total + item.produk.totalKebutuhanStok,
+                0,
+              ) ?? 0,
+            )}
+            caption={windowSize === "sm" ? "" : "Stok yang dibutuhkan"}
+            isLoading={isLoadingKebutuhanBarang}
+          />
 
-            <CardStatistik
-              icon={{
-                icon: BanknoteArrowDown,
-                bgColor: "bg-emerald-50",
-                iconColor: "text-emerald-600",
-              }}
-              label="Kas Masuk"
-              value={formatRupiah(dataStatistikBooking?.data?.kasMasuk ?? 0)}
-              caption={windowSize === "sm" ? "" : "Kas masuk booking."}
-              isLoading={isLoadingStatistikBooking}
-            />
+          {/* total stok yang sudah tersedia */}
+          <CardStatistik
+            icon={{
+              icon: Truck,
+              bgColor: "bg-emerald-50",
+              iconColor: "text-emerald-600",
+            }}
+            label="Total Stok Terpenuhi"
+            value={formatNumber(
+              dataKebutuhanBarang?.data?.reduce(
+                (total, item) =>
+                  total +
+                  Math.min(
+                    item.produk.stokBooking,
+                    item.produk.stokTersedia < 0 ? 0 : item.produk.stokTersedia,
+                  ),
+                0,
+              ) ?? 0,
+            )}
+            caption={windowSize === "sm" ? "" : "Stok yang sudah terpenuhi"}
+            isLoading={isLoadingKebutuhanBarang}
+          />
 
-            <CardStatistik
-              icon={{
-                icon: Wallet,
-                bgColor: "bg-rose-50",
-                iconColor: "text-rose-400",
-              }}
-              label="Sisa Pembayaran"
-              value={formatRupiah(
-                dataStatistikBooking?.data?.sisaPembayaran ?? 0,
-              )}
-              caption={
-                windowSize === "sm"
-                  ? ""
-                  : "Sisa pembayaran yang masih harus dibayar."
-              }
-              isLoading={isLoadingStatistikBooking}
-            />
+          {pengguna?.role === "OWNER" && (
+            <>
+              <CardStatistik
+                icon={{
+                  icon: CalendarClock,
+                  bgColor: "bg-amber-50",
+                  iconColor: "text-amber-600",
+                }}
+                label="Total Booking"
+                value={
+                  dataStatistikBooking?.data?.totalBooking &&
+                  dataStatistikBooking?.data?.totalBooking > 0
+                    ? formatNumber(
+                        dataStatistikBooking?.data?.totalBooking ?? 0,
+                      )
+                    : "0"
+                }
+                caption={windowSize === "sm" ? "" : "Total transaksi booking."}
+                isLoading={isLoadingStatistikBooking}
+              />
 
-            <CardStatistik
-              icon={{
-                icon: Package,
-                bgColor: "bg-blue-50",
-                iconColor: "text-blue-400",
-              }}
-              label="Total Item Booking"
-              value={formatNumber(
-                dataStatistikBooking?.data?.totalItemBooking ?? 0,
-              )}
-              caption={
-                windowSize === "sm" ? "" : "Total item booking keseluruhan."
-              }
-              isLoading={isLoadingStatistikBooking}
-            />
+              <CardStatistik
+                icon={{
+                  icon: TrendingUp,
+                  bgColor: "bg-blue-50",
+                  iconColor: "text-blue-600",
+                }}
+                label="Estimasi Omzet"
+                value={formatRupiah(
+                  dataStatistikBooking?.data?.estimasiOmzet ?? 0,
+                )}
+                caption={windowSize === "sm" ? "" : "Estimasi omzet booking."}
+                isLoading={isLoadingStatistikBooking}
+              />
 
-            <CardStatistik
-              icon={{
-                icon: PackageCheck,
-                bgColor: "bg-emerald-50",
-                iconColor: "text-emerald-400",
-              }}
-              label="Total Item Dikirim"
-              caption={
-                windowSize === "sm" ? "" : "Total item yang sudah dikirim."
-              }
-              value={formatNumber(
-                dataStatistikBooking?.data?.totalItemDikirim ?? 0,
-              )}
-            />
-
-            <CardStatistik
-              icon={{
-                icon: PackageSearch,
-                bgColor: "bg-amber-50",
-                iconColor: "text-amber-400",
-              }}
-              label="Total Item Belum Dikirim"
-              caption={
-                windowSize === "sm" ? "" : "Total item yang belum dikirim."
-              }
-              value={formatNumber(
-                dataStatistikBooking?.data?.totalSisaItem ?? 0,
-              )}
-            />
-          </div>
-        )}
+              <CardStatistik
+                icon={{
+                  icon: BanknoteArrowDown,
+                  bgColor: "bg-emerald-50",
+                  iconColor: "text-emerald-600",
+                }}
+                label="Kas Masuk"
+                value={formatRupiah(dataStatistikBooking?.data?.kasMasuk ?? 0)}
+                caption={windowSize === "sm" ? "" : "Kas masuk booking."}
+                isLoading={isLoadingStatistikBooking}
+              />
+            </>
+          )}
+        </div>
 
         {/* filter */}
         <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl md:hidden flex flex-col justify-start items-start gap-4">
@@ -214,8 +217,6 @@ const RiwayatTransaksi = () => {
                 <th>Pelanggan</th>
                 <th>Total Transaksi</th>
                 <th>Total Item Booking</th>
-                <th>Total Item Dikirim</th>
-                <th>Total Sisa Item</th>
                 <th>Status</th>
                 <th>Aksi</th>
               </tr>
@@ -263,23 +264,9 @@ const RiwayatTransaksi = () => {
                       {formatNumber(item.totalTransaksiBooking)} Transaksi
                     </td>
                     <td>
-                      <span className="text-info font-medium">
+                      <span className="font-medium">
                         {item.totalItemBooking > 0
                           ? `${formatNumber(item.totalItemBooking)} Pcs`
-                          : "-"}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="text-success font-medium">
-                        {item.totalItemDikirim > 0
-                          ? `${formatNumber(item.totalItemDikirim)} Pcs`
-                          : "-"}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="text-error font-medium">
-                        {item.totalSisaItem > 0
-                          ? `${formatNumber(item.totalSisaItem)} Pcs`
                           : "-"}
                       </span>
                     </td>

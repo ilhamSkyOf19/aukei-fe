@@ -5,6 +5,7 @@ import type {
   ResponseRiwayatTransactionType,
   ResponseRiwayatTransaksiPelangganType,
   ResponseStatistikBookingType,
+  ResponseStatistikKebutuhanBarang,
   ResponseTransactionType,
   ResponseTransaksiBookingByPelangganType,
   ResponseTransaksiBookingWithPelangganWithMetaType,
@@ -81,6 +82,20 @@ export class TransactionServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseTransaksiBookingWithPelangganWithMetaType | null>
     >(`/transaction/booking`, { params: params.query });
+
+    return result.data;
+  }
+
+  // kebutuhan barang booking
+  static async kebutuhanBarang(params: {
+    transactionId?: number;
+  }): Promise<ResponseStructure<ResponseStatistikKebutuhanBarang[] | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseStatistikKebutuhanBarang[] | null>
+    >(`/transaction/booking/kebutuhan-barang`, {
+      params,
+    });
 
     return result.data;
   }

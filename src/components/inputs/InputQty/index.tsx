@@ -61,11 +61,15 @@ const InputQty = <T extends FieldValues = any>({
       )}
     >
       {label && (
-        <label className="lg:text-sm text-base-content">
-          {label}
+        <div className="flex-2 relative">
+          <label htmlFor={"quantity"} className={cn("capitalize", "text-xs")}>
+            {label}
+          </label>
 
-          {required && <span className="ml-1 text-error">*</span>}
-        </label>
+          <span className="absolute -top-1 ml-1 text-error">
+            {required && "*"}
+          </span>
+        </div>
       )}
       <div
         className={clsx(
@@ -84,6 +88,7 @@ const InputQty = <T extends FieldValues = any>({
 
         <input
           type="text"
+          id="quantity"
           inputMode="numeric"
           autoComplete="off"
           value={displayValue}

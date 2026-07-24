@@ -306,6 +306,9 @@ const InstallmentsDetail = () => {
                   {/* button */}
                   <SideBarRiwayatPembayaranTempo
                     jumlahCicilan={dataInstallments?.data?.jumlahCicilan ?? 0}
+                    paymentTransactions={
+                      dataInstallments?.data?.paymentTransactions
+                    }
                   />
                 </div>
               </div>

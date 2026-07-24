@@ -12,6 +12,7 @@ type Props<T extends FieldValues = any> = {
   disabled?: boolean;
   xs?: boolean;
   handleClearError?: () => void;
+  name: string;
 };
 
 export default function InputPhoneNumber<T extends FieldValues = any>({
@@ -22,6 +23,7 @@ export default function InputPhoneNumber<T extends FieldValues = any>({
   disabled,
   xs,
   handleClearError,
+  name,
 }: Props<T>) {
   const { field, fieldState } = controller;
 
@@ -38,32 +40,33 @@ export default function InputPhoneNumber<T extends FieldValues = any>({
 
   return (
     <div className="w-full">
-      {label && (
-        <label className="text-xs text-base-content">
+      <div className="flex-2 relative">
+        <label htmlFor={name} className={cn("capitalize", "text-xs")}>
           {label}
-
-          {required && <span className="ml-1 text-error">*</span>}
         </label>
-      )}
+
+        <span className="absolute -top-1 ml-1 text-error">
+          {required && "*"}
+        </span>
+      </div>
 
       <div
         className={cn(
           "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full",
-          "focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100",
-          xs ? "h-8 px-2" : "h-10.5 lg:h-10 px-3",
+          "h-10.5 md:h-9 px-2.5 focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out bg-base-100",
           fieldState.error && "border-error",
-          label && "mt-2",
+          label && "mt-1.5",
         )}
       >
         <input
+          id={name}
           type="text"
           value={displayValue}
           placeholder={placeholder}
           disabled={disabled}
           autoComplete="off"
           className={cn(
-            "h-full w-full border-none bg-transparent outline-none font-medium text-base-content placeholder:font-normal",
-            xs ? "text-[0.7rem] lg:text-xs" : "text-xs",
+            "h-full w-full text-xs border-none bg-transparent outline-none font-medium text-base-content placeholder:font-normal",
           )}
           onChange={(e) => {
             const raw = unformatPhoneNumber(e.target.value);

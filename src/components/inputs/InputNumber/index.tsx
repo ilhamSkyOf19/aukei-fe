@@ -15,6 +15,7 @@ type Props<T extends FieldValues = any> = {
   max?: number;
   defaultValue?: number;
   xs?: boolean;
+  name?: string;
 };
 
 const InputNumber = <T extends FieldValues = any>({
@@ -26,6 +27,7 @@ const InputNumber = <T extends FieldValues = any>({
   max,
   defaultValue,
   xs,
+  name,
 }: Props<T>) => {
   const { field, fieldState } = controller;
 
@@ -52,7 +54,10 @@ const InputNumber = <T extends FieldValues = any>({
       <div className="w-full text-base-content relative flex flex-row justify-between items-center">
         {label && (
           <div className="flex-2 relative">
-            <label className="capitalize text-xs text-base-content">
+            <label
+              htmlFor={name}
+              className="capitalize text-xs text-base-content"
+            >
               {label}
             </label>
 
@@ -63,14 +68,14 @@ const InputNumber = <T extends FieldValues = any>({
 
       <div
         className={clsx(
-          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 px-3",
-          xs ? "h-7 lg:h-8 px-2.5" : "h-10.5 lg:h-10 px-3",
+          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out bg-base-100 px-2.5 h-10.5 md:h-9",
           fieldState.error && "border-error",
           label && "mt-2",
         )}
       >
         <input
           type="text"
+          id={name}
           inputMode="numeric"
           placeholder={placeholder}
           disabled={disabled}

@@ -25,14 +25,14 @@ const ButtonUpdateTable: FC<Props> = ({
         type="button"
         className={cn(
           "bg-info rounded-md flex flex-row justify-center items-center hover-overlay",
-          xs ? "w-6 h-6" : "w-7 h-7",
+          xs ? "w-6 h-6" : "w-6 h-6",
         )}
         onClick={() => {
           handleShowModalFormulir?.();
           handleClick?.();
         }}
       >
-        <Pencil className="size-3.5 text-primary-white" />
+        <Pencil className="size-3 text-primary-white" />
       </button>
     </div>
   );

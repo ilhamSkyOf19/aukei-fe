@@ -3,25 +3,57 @@ import { formatRupiah } from "../../../helpers/helpers";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import { cn } from "../../../utils/cn";
 import type { FC } from "react";
-import type { ITempoInstallmentType } from "../../../models/tempoInstallment.model";
+import type { CreateInstallmentType } from "../../../models/tempoInstallment.model";
 import type { InstallmentStatusType } from "../../../types/constant.type";
 import StatusInstallment from "../StatusInstallment";
 
 type Props = {
   aksi?: boolean;
-  dataTempo: Pick<
-    ITempoInstallmentType,
-    "id" | "cicilanKe" | "jatuhTempo" | "nominal" | "status"
-  >[];
+  dataTempo?: CreateInstallmentType[];
   maxHeight?: string;
+  customEmptyMessage?: string;
+  handleCustomTanggal?: () => void;
+  startDateWatch?: string;
 };
-const RowJadwaTempo: FC<Props> = ({ aksi, dataTempo, maxHeight }) => {
+const RowJadwaTempo: FC<Props> = ({
+  aksi,
+  dataTempo,
+  maxHeight,
+  customEmptyMessage,
+  handleCustomTanggal,
+  startDateWatch,
+}) => {
   return (
     <div className="w-full flex flex-col justify-start items-start gap-2">
       {/* title */}
-      <h3 className="text-xs font-medium text-base-content">
-        Jadwal Cicilan Tempo
-      </h3>
+      <div className="w-full flex flex-row justify-between items-center">
+        <div className="flex flex-row justify-start items-center gap-1.5">
+          <h3 className="text-xs font-medium text-base-content">
+            Jadwal Cicilan Tempo
+          </h3>
+          <span className="text-[0.7rem]">-</span>
+          <span className="text-[0.7rem] text-base-content">
+            Dimulai dari :{" "}
+            <span className="font-medium">
+              {formatTanggalPanjang(startDateWatch ?? new Date())}{" "}
+              <span className="ml-1 font-normal">
+                {!startDateWatch && "(Hari ini)"}
+              </span>
+            </span>
+          </span>
+        </div>
+
+        {handleCustomTanggal && (
+          <button
+            type="button"
+            onClick={() => handleCustomTanggal()}
+            className="flex flex-row justify-start items-center gap-1.5 hover:underline transition-all duration-150 ease-in-out"
+          >
+            <CalendarDaysIcon className="size-3.5 text-info" />
+            <span className="text-[0.7rem] text-info">Pilih Tanggal</span>
+          </button>
+        )}
+      </div>
 
       <div className="w-full flex flex-col justify-start items-start border overflow-hidden border-base-content/10 rounded-xl">
         {/* header */}
@@ -74,7 +106,7 @@ const RowJadwaTempo: FC<Props> = ({ aksi, dataTempo, maxHeight }) => {
             maxHeight ? maxHeight : "max-h-60 ",
           )}
         >
-          {dataTempo?.length > 0 ? (
+          {dataTempo && dataTempo?.length > 0 ? (
             dataTempo.map((item) => (
               <Rows
                 key={item.cicilanKe}
@@ -89,7 +121,8 @@ const RowJadwaTempo: FC<Props> = ({ aksi, dataTempo, maxHeight }) => {
           ) : (
             <div className="col-span-10 flex flex-row w-full justify-center items-center py-12 px-4">
               <span className="text-xs text-base-content/50">
-                Silahkan pilih jumlah cicilan dan tenor
+                {customEmptyMessage ??
+                  "Silahkan pilih jumlah cicilan dan tenor"}
               </span>
             </div>
           )}

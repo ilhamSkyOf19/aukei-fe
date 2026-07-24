@@ -1,4 +1,4 @@
-import { useQueries } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { useFilter } from "../../../hooks/useFilter";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import useSizeWindows from "../../../hooks/useSizeWindows";
@@ -95,6 +95,22 @@ const useBooking = () => {
     return navigate(`${currentPathname}/pelanggan/${pelangganId}`);
   };
 
+  const { data: dataKebutuhanBarang, isLoading: isLoadingKebutuhanBarang } =
+    useQuery({
+      queryKey: ["kebutuhan-barang"],
+      queryFn: () => TransactionServices.kebutuhanBarang({}),
+      retry: false,
+      refetchOnWindowFocus: false,
+    });
+
+  // is existing data kebutuhan barang
+  const isExistDataKebutuhanBarang: boolean =
+    !isLoadingKebutuhanBarang && dataKebutuhanBarang?.data
+      ? dataKebutuhanBarang?.data?.length > 0
+        ? true
+        : false
+      : false;
+
   return {
     windowSize,
     sort,
@@ -109,6 +125,9 @@ const useBooking = () => {
     handleRedirect,
     dataStatistikBooking,
     isLoadingStatistikBooking,
+    isExistDataKebutuhanBarang,
+    dataKebutuhanBarang,
+    isLoadingKebutuhanBarang,
   };
 };
 

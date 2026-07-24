@@ -3,7 +3,6 @@ import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import { cn } from "../../../utils/cn";
 import InputTextNonIcon from "../../inputs/InputTextNonIcon";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import ButtonSubmit from "../../ui/button/ButtonSubmit";
 import useModalFormulirPelanggan from "./useModalFormulirPelanggan";
 import type {
   CreatePelangganType,
@@ -13,6 +12,7 @@ import type {
 import InputPhoneNumber from "../../inputs/InputPhoneNumber";
 import { UserRound } from "lucide-react";
 import AlertLabel from "../../messages/AlertLabel";
+import ButtonText from "../../ui/button/ButtonText";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -78,6 +78,7 @@ const ModalFormulirPelanggan: FC<Props> = ({
               placeholder="Masukan no whatsapp aktif"
               label="No Whatsapp"
               required
+              name="noWa"
               handleClearError={handleClearErrorNoWa}
             />
 
@@ -95,7 +96,7 @@ const ModalFormulirPelanggan: FC<Props> = ({
                 }}
               />
               {/* button submit */}
-              <ButtonSubmit
+              <ButtonText
                 label={`Simpan`}
                 isLoading={isPendingMutatePelanggan}
                 disable={id ? !isDirty : false}

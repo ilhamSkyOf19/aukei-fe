@@ -2,7 +2,6 @@ import type { FC, RefObject } from "react";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import { cn } from "../../../utils/cn";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import ButtonSubmit from "../../ui/button/ButtonSubmit";
 import useModalTransaksi from "./useModalTransaksi";
 import type { DetailsForCreate } from "../../../models/transaction.model";
 import type { ResponseProdukForKasirType } from "../../../models/produk.model";
@@ -11,6 +10,7 @@ import InputPrice from "../../inputs/InputPrice";
 import { formatRupiah } from "../../../helpers/helpers";
 import AlertLabel from "../../messages/AlertLabel";
 import { ShoppingBasket } from "lucide-react";
+import ButtonText from "../../ui/button/ButtonText";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -28,7 +28,7 @@ type Props = {
   ) => void;
   handleCloseModal: () => void;
   data?: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
-    Omit<ResponseProdukForKasirType, "id"> & {
+    Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
       diskon?: number;
     };
   index?: number;
@@ -53,7 +53,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box lg:w-3/4 max-w-4xl rounded-xl max-h-[85vh] bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box lg:w-3/4 max-w-3xl rounded-xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
@@ -71,19 +71,19 @@ const ModalFormulirTransaksi: FC<Props> = ({
             <div className="flex-3 flex flex-col justify-start items-start gap-4 mt-4">
               {/* img */}
               {data?.img && (
-                <div className="w-full flex justify-center items-center group">
+                <div className="w-full flex justify-center items-center">
                   <img
                     src={data.img}
                     alt="wall panel"
-                    className="w-full h-70 object-contain group-hover:scale-102 transition-all duration-300 origin-center"
+                    className="w-full h-60 object-contain"
                     loading="lazy"
                   />
                 </div>
               )}
 
               {/* data */}
-              <div className="w-full flex flex-col justify-start items-start gap-4">
-                <div className="w-full flex flex-row justify-around items-start gap-4 pb-4 border-b border-base-content/10">
+              <div className="w-full flex flex-col justify-start items-start gap-2.5">
+                <div className="w-full flex flex-row justify-around items-start gap-2.5 pb-4 border-b border-base-content/10">
                   {/* nama produk */}
                   <Label label={`Nama Produk`} value={data?.nama || ""} />
 
@@ -93,11 +93,10 @@ const ModalFormulirTransaksi: FC<Props> = ({
                     label={`Stok Produk`}
                     value={data?.stok.toString() || ""}
                     small
-                    lastIndex
                   />
                 </div>
 
-                <div className="w-full flex flex-row justify-around items-start gap-4">
+                <div className="w-full flex flex-row justify-around items-start gap-2.5">
                   {/* harga jual */}
                   <Label
                     label={`Harga Jual Patokan`}
@@ -110,7 +109,6 @@ const ModalFormulirTransaksi: FC<Props> = ({
                     label={`Harga Jual Terakhir Transaksi`}
                     value={formatRupiah(data?.hargaJualTerakhirTransaksi ?? "")}
                     small
-                    lastIndex
                   />
                 </div>
               </div>
@@ -127,6 +125,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 required={true}
                 controller={hargaJualController}
                 placeholder={`Masukan harga jual`}
+                name="hargaJual"
               />
 
               {/* diskon */}
@@ -134,6 +133,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 label={`Diskon`}
                 controller={diskonController}
                 placeholder={`Masukan diskon`}
+                name="diskon"
               />
 
               {/* input quantity  */}
@@ -145,7 +145,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
 
               {/* sub total */}
               <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
-                <span className="text-sm text-base-content">Sub Total</span>
+                <span className="text-xs text-base-content">Sub Total</span>
                 <span className="text-base font-semibold text-base-content">
                   {formatRupiah(subTotal)}
                 </span>
@@ -166,7 +166,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
                   label="Batal"
                 />
                 {/* button submit */}
-                <ButtonSubmit label={`Simpan`} />
+                <ButtonText label={`Tambahkan`} />
               </div>
             </form>
           </div>
@@ -182,25 +182,30 @@ type LabelProps = {
   value: string;
   bold?: boolean;
   small?: boolean;
-  lastIndex?: boolean;
+  withCaption?: string;
 };
-const Label = ({ label, value, bold, small, lastIndex }: LabelProps) => {
+const Label = ({ label, value, bold, small, withCaption }: LabelProps) => {
   return (
     <div
       className={cn(
-        "w-full flex flex-row justify-start items-start",
-        !lastIndex && "border-r border-base-content/10",
+        "w-full flex flex-row justify-start items-start border border-base-content/10 rounded-xl p-2.5 gap-0.5",
       )}
     >
       <div className="flex flex-col justify-start items-start gap-1">
-        <span className="text-xs font-medium text-base-content/50">
+        <span className="text-[0.625rem] font-medium text-base-content/80">
           {label}
         </span>
         <span
-          className={`text-base ${bold ? "font-bold" : "font-semibold"} ${small ? "text-sm" : "text-base"} text-base-content`}
+          className={`text-xs ${bold ? "font-bold" : "font-semibold"} ${small ? "text-sm" : "text-base"} text-base-content`}
         >
           {value}
         </span>
+
+        {withCaption && (
+          <span className="text-[0.625rem] text-base-content/80">
+            {withCaption}
+          </span>
+        )}
       </div>
     </div>
   );

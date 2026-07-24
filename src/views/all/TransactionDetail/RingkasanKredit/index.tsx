@@ -5,6 +5,7 @@ import type { ResponseTransactionType } from "../../../../models/transaction.mod
 import { cn } from "../../../../utils/cn";
 import type { LucideIcon } from "lucide-react";
 import { formatRupiah, getWeekFromPeriod } from "../../../../helpers/helpers";
+import { TRANSACTION_STATUS_TYPE } from "../../../../types/constant.type";
 
 type Props = {
   dataTransaction?: ResponseStructure<ResponseTransactionType | null>;
@@ -69,6 +70,12 @@ const RingkasanKredit: FC<Props> = ({
               <RowJadwaTempo
                 dataTempo={dataTransaction?.data?.tempo?.installments ?? []}
                 maxHeight="max-h-80"
+                customEmptyMessage={
+                  dataTransaction?.data?.status ===
+                  TRANSACTION_STATUS_TYPE.BOOKING
+                    ? "Silahkan selesaikan booking untuk mengatur jadwal cicilan"
+                    : undefined
+                }
               />
             </div>
           </div>

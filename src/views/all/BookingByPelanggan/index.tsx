@@ -1,12 +1,8 @@
 import {
   BanknoteArrowDown,
   CalendarClock,
-  Package,
-  PackageCheck,
-  PackageSearch,
   Receipt,
   TrendingUp,
-  Wallet,
 } from "lucide-react";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
 import {
@@ -158,71 +154,6 @@ const BookingByPelanggan = () => {
                 caption={windowSize === "sm" ? "" : "Kas masuk booking."}
                 isLoading={isLoadingStatistikBookingByPelanggan}
               />
-
-              <CardStatistik
-                icon={{
-                  icon: Wallet,
-                  bgColor: "bg-rose-50",
-                  iconColor: "text-rose-400",
-                }}
-                label="Sisa Pembayaran"
-                value={formatRupiah(
-                  dataStatistikBookingByPelanggan?.data?.sisaPembayaran ?? 0,
-                )}
-                caption={
-                  windowSize === "sm"
-                    ? ""
-                    : "Sisa pembayaran yang masih harus dibayar."
-                }
-                isLoading={isLoadingStatistikBookingByPelanggan}
-              />
-
-              <CardStatistik
-                icon={{
-                  icon: Package,
-                  bgColor: "bg-blue-50",
-                  iconColor: "text-blue-400",
-                }}
-                label="Total Item Booking"
-                value={formatNumber(
-                  dataStatistikBookingByPelanggan?.data?.totalItemBooking ?? 0,
-                )}
-                caption={
-                  windowSize === "sm" ? "" : "Total item booking keseluruhan."
-                }
-                isLoading={isLoadingStatistikBookingByPelanggan}
-              />
-
-              <CardStatistik
-                icon={{
-                  icon: PackageCheck,
-                  bgColor: "bg-emerald-50",
-                  iconColor: "text-emerald-400",
-                }}
-                label="Total Item Dikirim"
-                caption={
-                  windowSize === "sm" ? "" : "Total item yang sudah dikirim."
-                }
-                value={formatNumber(
-                  dataStatistikBookingByPelanggan?.data?.totalItemDikirim ?? 0,
-                )}
-                isLoading={isLoadingStatistikBookingByPelanggan}
-              />
-
-              <CardStatistik
-                icon={{
-                  icon: PackageSearch,
-                  bgColor: "bg-amber-50",
-                  iconColor: "text-amber-400",
-                }}
-                label="Total Item Belum Dikirim"
-                caption={
-                  windowSize === "sm" ? "" : "Total item yang belum dikirim."
-                }
-                value={formatNumber(
-                  dataStatistikBookingByPelanggan?.data?.totalSisaItem ?? 0,
-                )}
-              />
             </div>
           </div>
 
@@ -280,7 +211,6 @@ const BookingByPelanggan = () => {
                   totalItem={item.totalItem}
                   nomorReferensi={item.nomorTransaksi ?? ""}
                   tanggalBooking={item.tanggalBooking ?? new Date()}
-                  diBayar={item.diBayar ?? 0}
                 />
               ))
             ) : (
@@ -295,7 +225,7 @@ const BookingByPelanggan = () => {
           </div>
 
           {/* DATA LG */}
-          <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5">
+          <div className="w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5">
             <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
               {/* head */}
               <thead>
@@ -303,11 +233,15 @@ const BookingByPelanggan = () => {
                   <th>No. Transaksi</th>
                   <th>Total Item</th>
                   <th>Total Bayar</th>
-                  <th>Dibayar</th>
-                  <th>Kurang</th>
-                  <th>Dikirim</th>
-                  <th>Sisa</th>
-                  <th>Metode Pembayaran</th>
+                  <th>Uang Muka</th>
+                  <th>
+                    <div
+                      className="tooltip text-xs font-normal"
+                      data-tip="Metode Pembayaran Uang Muka"
+                    >
+                      <span className="font-bold">Metode Pembayaran</span>
+                    </div>
+                  </th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -348,30 +282,13 @@ const BookingByPelanggan = () => {
                           </span>
                         </td>
                         <td>
-                          <span className="text-info font-medium">
+                          <span className="text-blue-600 font-medium">
                             {formatRupiah(item.totalBayar)}
                           </span>
                         </td>
                         <td>
-                          <span className="text-success font-medium">
-                            {formatRupiah(item.diBayar ?? 0)}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-error font-medium">
-                            {formatRupiah(
-                              item.totalBayar - (item.diBayar ?? 0),
-                            )}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-success font-medium">
-                            {formatNumber(item.totalQuantityDelivered ?? 0)} Pcs
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-error font-medium">
-                            {formatNumber(item.totalSisaQuantity ?? 0)} Pcs
+                          <span className="text-emerald-600 font-medium">
+                            {formatRupiah(item.totalDiBayar ?? 0)}
                           </span>
                         </td>
                         <td>

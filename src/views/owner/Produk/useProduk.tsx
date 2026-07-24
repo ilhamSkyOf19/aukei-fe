@@ -8,17 +8,22 @@ import { useToastAnimation } from "../../../hooks/useToast";
 import useModal from "../../../hooks/useModal";
 import useDeleteProduk from "../../../hooks/useDeleteProduk";
 
+// Key localStorage untuk menyimpan cluster inventori yang sedang aktif
+const LOCAL_STORAGE_KEYS = {
+  ACTIVE_CLUSTER: "active-cluster",
+} as const;
+
+// Cluster inventori yang tersedia pada halaman produk
+type InventoriCluster = "produk" | "kategori" | "spesifikasi" | "";
+
 const useProduk = () => {
-  // current pathname
   const currentPathname = useLocation().pathname;
 
-  // search params
   const [_searchParams, setSearchParams] = useSearchParams();
 
-  // query client
   const queryClient = useQueryClient();
 
-  // use modal delete
+  // Modal konfirmasi hapus produk
   const {
     modalRef: modalDeleteRef,
     handleShowModal: handleShowModalDelete,
@@ -27,7 +32,7 @@ const useProduk = () => {
     dataModal: dataDeleteProduk,
   } = useModal<{ nama: string }>();
 
-  // use modal failed delete
+  // Modal alert saat penghapusan produk gagal
   const {
     modalRef: modalFailedDeleteRef,
     handleShowModal: showModalFailedDelete,
@@ -35,7 +40,7 @@ const useProduk = () => {
     dataModal: dataModalFailedDelete,
   } = useModal<{ titleMessage: string; description: string }>();
 
-  // handle modal failed delete
+  // Tampilkan modal gagal hapus dengan pesan berisi nama produk yang gagal dihapus
   const handleShowModalFailedDelete = () => {
     showModalFailedDelete(undefined, {
       titleMessage: `Produk "${dataDeleteProduk?.nama}" tidak dapat dihapus`,
@@ -44,7 +49,7 @@ const useProduk = () => {
     });
   };
 
-  // use delete
+  // Hapus satu produk (mutation, redirect, invalidate query dikelola oleh useDeleteProduk)
   const { handleDeleteProduk, isPendingDeleteProduk } = useDeleteProduk({
     handleShowModalFailedDelete,
     validatedIdParams: idModalDelete || null,
@@ -54,73 +59,64 @@ const useProduk = () => {
       queryClient.invalidateQueries({ queryKey: ["produk"] }),
   });
 
-  // navigate
   const navigate = useNavigate();
 
-  // toast
   const { toast, handleSetToast } = useToastAnimation();
 
-  //   is active Cluster inventori
-  const [isActiveCluster, setIsActiveCluster] = useState<
-    "produk" | "kategori" | "spesifikasi" | ""
-  >("");
+  // Cluster inventori yang sedang aktif (produk/kategori/spesifikasi)
+  const [isActiveCluster, setIsActiveCluster] = useState<InventoriCluster>("");
 
-  // handle is active
-  const handleActiveCluster = (
-    Cluster: "produk" | "kategori" | "spesifikasi" | "",
-  ) => {
-    // set state
-    setIsActiveCluster(Cluster);
+  // Ubah cluster aktif, reset search params, dan simpan pilihan ke localStorage
+  const handleActiveCluster = (cluster: InventoriCluster) => {
+    setIsActiveCluster(cluster);
 
-    // clear params
+    // Cluster berganti, params filter lama sudah tidak relevan
     setSearchParams({});
 
-    //  set localstorage
-    localStorage.setItem("active-cluster", Cluster);
+    localStorage.setItem(LOCAL_STORAGE_KEYS.ACTIVE_CLUSTER, cluster);
   };
 
+  // Muat cluster aktif terakhir dari localStorage saat pertama kali render, default ke "produk"
   useEffect(() => {
-    // get localstorage
-    const datalocalStorage = localStorage.getItem("active-cluster");
+    const datalocalStorage = localStorage.getItem(
+      LOCAL_STORAGE_KEYS.ACTIVE_CLUSTER,
+    );
 
-    // check
     if (datalocalStorage) {
-      setIsActiveCluster(
-        datalocalStorage as "produk" | "kategori" | "spesifikasi",
-      );
+      setIsActiveCluster(datalocalStorage as InventoriCluster);
     } else {
       setIsActiveCluster("produk");
     }
   }, []);
 
-  // search filter
+  // Filter pencarian produk (query param "search")
   const { search, setSearch: handleSearch } = useFilterSearch("search");
 
-  // sort filter
+  // Filter urutan data (query param "sort"), default descending
   const { filter: sort, setFilter: handleSort } = useFilter({
     paramName: "sort",
     allowQuery: ["asc", "desc"],
     defaultValueCustom: "desc",
   });
 
-  // kategori filter
+  // Filter kategori produk (query param "kategori")
   const { filter: kategori, setFilter: handleKategori } = useFilter({
     paramName: "kategori",
   });
 
-  // page filter
+  // Filter halaman (pagination, query param "page")
   const { filter: page, setFilter: handlePage } = useFilter({
     paramName: "page",
     isNumber: true,
   });
 
-  // limit filter
+  // Filter jumlah data per halaman (query param "limit")
   const { filter: limit, setFilter: handleLimit } = useFilter({
     paramName: "limit",
     isNumber: true,
   });
 
-  // use query
+  // Ambil data produk dari server sesuai filter search/sort/kategori/page/limit
   const { data: dataProduk, isLoading: isLoadingProduk } = useQuery({
     queryKey: ["produk", { search, sort, kategori, limit, page }],
     queryFn: () =>
@@ -135,25 +131,21 @@ const useProduk = () => {
     retry: false,
   });
 
-  // is exist data
+  // Apakah data produk sudah selesai dimuat dan tidak kosong
   const isExistDataProduk: boolean =
-    !isLoadingProduk && dataProduk?.data?.data
-      ? dataProduk?.data?.data?.length > 0
-        ? true
-        : false
-      : false;
+    !isLoadingProduk && !!dataProduk?.data?.data?.length;
 
-  // handle redirect detail
+  // Arahkan ke halaman detail produk
   const handleRedirectDetail = (id: number) => {
     navigate(`${currentPathname}/${id}`);
   };
 
-  // handle redirect tambah
+  // Arahkan ke halaman tambah produk
   const handleRedirectTambah = () => {
     navigate(`${currentPathname}/tambah`);
   };
 
-  // update is active
+  // Mutation untuk mengubah status aktif/nonaktif produk
   const {
     mutateAsync: mutateUpdateIsActive,
     isPending: isPendingUpdateIsActive,
@@ -166,8 +158,6 @@ const useProduk = () => {
       }),
     onSuccess: () => {
       handleSetToast("updated_status");
-
-      // invalidate
       queryClient.invalidateQueries({ queryKey: ["produk"] });
     },
     onError: (err) => {
@@ -175,7 +165,7 @@ const useProduk = () => {
     },
   });
 
-  // handle update is active
+  // Ubah status aktif/nonaktif satu produk
   const handelUpdateIsActive = async (data: {
     id: number;
     status: boolean;
@@ -187,6 +177,7 @@ const useProduk = () => {
     }
   };
 
+  // Ekspos state & handler yang dibutuhkan oleh komponen UI daftar produk
   return {
     handleRedirectDetail,
     handleRedirectTambah,

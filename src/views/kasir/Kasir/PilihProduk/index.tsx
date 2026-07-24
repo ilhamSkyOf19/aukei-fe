@@ -89,264 +89,189 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
       )}
 
       {/* content left */}
-      <div className="flex-2 h-full grid grid-rows-8 gap-2.5">
-        <div className="w-full row-span-9 grid grid-rows-8 gap-2.5">
-          {/* PREVIEW PRODUK TRANSAKSI */}
-          <div
-            className={cn(
-              "w-full flex flex-col justify-start items-start rounded-xl bg-base-100 shadow-sm border border-transparent gap-2.5 grid-rows-4 row-span-6",
-              isErrorsFormState.includes("details")
-                ? "border-error"
-                : "dark:border-base-content/10",
-            )}
-          >
-            {/* pilih pelanggan */}
-            <div className="w-full p-2.5 row-span-1 flex flex-row justify-between items-center border-b border-base-content/10">
-              <div className="w-full flex flex-row justify-between items-center">
-                {/* pelanggan */}
-                {pelanggan ? (
-                  <div className="flex flex-row justify-start items-center gap-6">
-                    <div className="flex flex-row justify-start items-center gap-2">
-                      <Avatar
-                        nama={pelanggan?.nama ?? ""}
-                        index={pelanggan?.id}
-                        sm
-                      />
-                      <div className="flex flex-col justify-start items-start gap-1">
-                        {/* name */}
-                        <span className="text-base-content font-semibold text-sm">
-                          {pelanggan?.nama}
-                        </span>
-                        {/* no telp */}
-                        <span className="text-base-content/80 font-medium text-xs">
-                          {formatNumberPhone(pelanggan?.noWa ?? "")}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* button ganti pelanggan */}
-                    <ButtonWithIcon
-                      icon={ArrowLeftRight}
-                      handleBtn={() => handleShowModalChoosePelanggan()}
-                      customHeight="h-8"
-                      bgColor="bg-info"
-                      textColor="text-primary-white"
-                      noLabel
-                    />
-                  </div>
-                ) : (
-                  <ButtonWithIcon
-                    icon={UsersRound}
-                    label="Pilih Pelanggan"
-                    handleBtn={() => handleShowModalChoosePelanggan()}
-                    customHeight="h-9.5"
-                  />
-                )}
-
-                {/* kasir */}
-                <div
-                  className={cn(
-                    "flex flex-row justify-start items-center gap-2 h-10 min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10",
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "w-7 h-7 dark:border-base-content/10 rounded-lg flex justify-center items-center",
-                      isModeKasir
-                        ? "border border-primary-white"
-                        : "bg-base-300 border border-transparent ",
-                    )}
-                  >
-                    <UserRound
-                      className={cn(
-                        "size-4",
-                        isModeKasir
-                          ? "text-primary-white"
-                          : "text-base-content",
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col justify-start items-start">
-                    <span
-                      className={cn(
-                        "text-[0.625rem] font-medium",
-                        isModeKasir
-                          ? "text-primary-white"
-                          : "text-base-content/50",
-                      )}
-                    >
-                      Kasir
-                    </span>
-                    <span
-                      className={cn(
-                        "text-xs font-medium",
-                        isModeKasir
-                          ? "text-primary-white"
-                          : "text-base-content",
-                      )}
-                    >
-                      {pengguna?.nama}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* header */}
-            <div className="w-full px-2.5 row-span-1 flex flex-row justify-between items-center pb-2">
-              <h3 className="text-sm font-medium text-base-content">
-                {isUpdateKeranjang ? "Ubah Keranjang" : "Data Transaksi"}
-              </h3>
-
-              {produkDetails.length > 0 && (
-                <button
-                  type="button"
-                  className="py-1.5 px-2 flex flex-row justify-start items-center gap-2 border border-transparent hover:border-error rounded-xl transition-all duration-150 ease-in-out"
-                  onClick={handleRemoveAllDetails}
-                >
-                  <Trash2 className="lg:size-3.5 xl:size-4 text-error" />
-                  <span className="lg:text-[0.625rem] xl:text-[0.7rem] font-medium text-error">
-                    Kosongkan Semua
-                  </span>
-                </button>
-              )}
-            </div>
-
-            {/* DATA */}
-            <div className="w-full row-span-2 px-2.5 overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary flex flex-col justify-start items-start gap-2.5">
-              {produkDetails.length > 0 ? (
-                produkDetails?.map((produk) => (
-                  <div
-                    key={produk.id}
-                    className="w-full flex flex-row justify-between items-center border-b border-base-content/10 pb-2.5"
-                  >
-                    {/* content 1 */}
-                    <div className="flex-1 flex flex-row justify-start items-center gap-4">
-                      {/* img */}
-                      <div className="w-11 h-11 rounded-2xl overflow-hidden flex justify-center items-center">
-                        <img src={produk.img} alt="foto produk" />
-                      </div>
-
-                      {/* nama dan kode */}
-                      <div className="flex flex-col justify-start items-start gap-1">
-                        <div className="flex flex-row justify-start items-start gap-2">
-                          <span className="text-xs font-semibold text-base-content">
-                            {produk.nama}
-                          </span>
-                          {produk.stok < produk.quantity && (
-                            <span className="text-[0.625rem] font-medium text-error">
-                              stok kurang
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex flex-row justify-start items-center gap-0.5">
-                          <span className="text-[0.7rem] font-medium text-base-content/50">
-                            {produk.kode}
-                          </span>
-                          <span className="text-xs font-medium text-base-content/50">
-                            <Dot className="size-4" />
-                          </span>
-                          <span className="text-[0.7rem] font-medium text-base-content">
-                            {formatRupiah(produk.hargaJual)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* content 2 */}
-                    <div className="flex-1 grid grid-cols-3 justify-end items-center gap-5">
-                      {/* quantity */}
-                      <span className="col-span-1 text-end text-xs font-semibold text-base-content">
-                        {formatNumber(produk.quantity)} x
-                      </span>
-
-                      {/* sub total */}
-                      <span className="col-span-1 text-xs font-medium text-base-content">
-                        {produk.subTotal > 1500000
-                          ? formatRupiahShort(produk.subTotal)
-                          : formatRupiah(produk.subTotal)}
-                      </span>
-
-                      {/* aksi */}
-                      <div className="col-span-1 flex flex-row justify-start items-start gap-1">
-                        <ButtonUpdateTable
-                          handleShowModalFormulir={() =>
-                            handleShowModalFormulirTransaksiForUpdate(produk.id)
-                          }
-                          noTip
-                        />
-                        <ButtonDeleteTable
-                          handleShowModalDelete={() => removeDetails(produk.id)}
-                          noTip
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="w-full h-full justify-center items-center">
-                  <DataEmpty
-                    iconData={PackageX}
-                    title="Silahkan Pilih Produk"
-                    description="Silahkan pilih produk untuk melakukan transaksi"
+      {/* PREVIEW PRODUK TRANSAKSI */}
+      <div
+        className={cn(
+          "w-full flex-3 flex flex-col justify-start items-start rounded-xl bg-base-100 shadow-sm border border-transparent h-full",
+          isErrorsFormState.includes("details")
+            ? "border-error"
+            : "dark:border-base-content/10",
+        )}
+      >
+        {/* pilih pelanggan */}
+        <div className="w-full flex-1 p-2.5 flex flex-row justify-between items-center border-b border-base-content/10">
+          <div className="w-full flex flex-row justify-between items-center">
+            {/* pelanggan */}
+            {pelanggan ? (
+              <div className="flex flex-row justify-start items-center gap-6">
+                <div className="flex flex-row justify-start items-center gap-2">
+                  <Avatar
+                    nama={pelanggan?.nama ?? ""}
+                    index={pelanggan?.id}
                     xs
                   />
+                  <div className="flex flex-col justify-start items-start gap-0.5">
+                    {/* name */}
+                    <span className="text-base-content font-semibold text-xs">
+                      {pelanggan?.nama}
+                    </span>
+                    {/* no telp */}
+                    <span className="text-base-content/80 text-[0.625rem]">
+                      {formatNumberPhone(pelanggan?.noWa ?? "")}
+                    </span>
+                  </div>
                 </div>
+
+                {/* button ganti pelanggan */}
+                <ButtonWithIcon
+                  icon={ArrowLeftRight}
+                  handleBtn={() => handleShowModalChoosePelanggan()}
+                  bgColor="bg-info"
+                  textColor="text-primary-white"
+                  label="Ganti"
+                />
+              </div>
+            ) : (
+              <ButtonWithIcon
+                icon={UsersRound}
+                label="Pilih Pelanggan"
+                handleBtn={() => handleShowModalChoosePelanggan()}
+              />
+            )}
+
+            {/* kasir */}
+            <div
+              className={cn(
+                "flex flex-row justify-start items-center gap-2 h-10 min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10",
               )}
+            >
+              <div
+                className={cn(
+                  "w-7 h-7 dark:border-base-content/10 rounded-lg flex justify-center items-center",
+                  isModeKasir
+                    ? "border border-primary-white"
+                    : "bg-base-300 border border-transparent ",
+                )}
+              >
+                <UserRound
+                  className={cn(
+                    "size-4",
+                    isModeKasir ? "text-primary-white" : "text-base-content",
+                  )}
+                />
+              </div>
+              <div className="flex flex-col justify-start items-start">
+                <span
+                  className={cn(
+                    "text-[0.625rem] font-medium",
+                    isModeKasir ? "text-primary-white" : "text-base-content/50",
+                  )}
+                >
+                  Kasir
+                </span>
+                <span
+                  className={cn(
+                    "text-xs font-medium",
+                    isModeKasir ? "text-primary-white" : "text-base-content",
+                  )}
+                >
+                  {pengguna?.nama}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* header */}
+        <div className="w-full h-6 px-2.5 flex flex-row justify-between items-center my-1.5">
+          <h3 className="text-xs font-medium text-base-content">
+            {isUpdateKeranjang ? "Ubah Keranjang" : "Data Transaksi"}
+          </h3>
+
+          {produkDetails.length > 0 && (
+            <button
+              type="button"
+              className="py-1.5 px-2 flex flex-row justify-start items-center gap-2 border border-transparent hover:border-error rounded-xl transition-all duration-150 ease-in-out"
+              onClick={handleRemoveAllDetails}
+            >
+              <Trash2 className="lg:size-3.5 text-error" />
+              <span className="lg:text-[0.625rem] font-medium text-error">
+                Kosongkan Semua
+              </span>
+            </button>
+          )}
+        </div>
+
+        {/* DATA */}
+        <div className="w-full flex-16 px-2.5 overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary flex flex-col justify-start items-start gap-2.5">
+          {produkDetails.length > 0 ? (
+            produkDetails?.map((produk) => (
+              <CardData
+                key={produk.id}
+                handleShowModalFormulirTransaksiForUpdate={
+                  handleShowModalFormulirTransaksiForUpdate
+                }
+                removeDetails={removeDetails}
+                {...produk}
+              />
+            ))
+          ) : (
+            <div className="w-full h-full justify-center items-center">
+              <DataEmpty
+                iconData={PackageX}
+                title="Silahkan Pilih Produk"
+                description="Silahkan pilih produk untuk melakukan transaksi"
+                xs
+              />
+            </div>
+          )}
+        </div>
+
+        {/* total */}
+        <div className="w-full flex-1 flex flex-col justify-start items-start p-3 border-t border-custom-secondary/50">
+          {/* sub total & total diskon */}
+          <div className="w-full flex flex-col justify-start items-start gap-2.5 pb-4 border-b border-base-content/30 border-dashed">
+            {/* sub total */}
+            <div className="w-full flex flex-row justify-between items-center">
+              <span className="md:text-xs text-base-content/80">Subtotal</span>
+              <span className=" md:text-xs font-semibold text-base-content">
+                {formatRupiah(
+                  produkDetails.reduce((a, b) => a + b.subTotal, 0),
+                )}
+              </span>
+            </div>
+
+            {/* total diskon */}
+            <div className="w-full flex flex-row justify-between items-center">
+              <span className="md:text-xs text-base-content/80">
+                Total Diskon
+              </span>
+              <div className="flex flex-row justify-start items-center gap-1">
+                {produkDetails.reduce((a, b) => a + b.diskon, 0) > 0 && (
+                  <span className="md:text-xs font-semibold text-error">
+                    <Minus className="size-2" />
+                  </span>
+                )}
+
+                <span className="md:text-xs font-semibold text-error">
+                  {formatRupiah(
+                    produkDetails.reduce((a, b) => a + b.diskon, 0),
+                  )}
+                </span>
+              </div>
             </div>
           </div>
 
           {/* total */}
-          <div className="w-full row-span-2 flex flex-col justify-start items-start rounded-xl border border-transparent dark:border-base-content/10 px-3 py-4 bg-base-100 shadow-sm">
-            {/* sub total & total diskon */}
-            <div className="w-full flex flex-col justify-start items-start gap-2.5 pb-4 border-b border-base-content/10">
-              {/* sub total */}
-              <div className="w-full flex flex-row justify-between items-center">
-                <span className="lg:text-[0.625rem] xl:text-xs font-medium text-base-content/60">
-                  Subtotal
-                </span>
-                <span className="lg:text-[0.625rem] xl:text-xs font-semibold text-base-content">
-                  {formatRupiah(
-                    produkDetails.reduce((a, b) => a + b.subTotal, 0),
-                  )}
-                </span>
-              </div>
-
-              {/* total diskon */}
-              <div className="w-full flex flex-row justify-between items-center">
-                <span className="lg:text-[0.625rem] xl:text-xs font-medium text-base-content/60">
-                  Total Diskon
-                </span>
-                <div className="flex flex-row justify-start items-center gap-1">
-                  {produkDetails.reduce((a, b) => a + b.diskon, 0) > 0 && (
-                    <span className="lg:text-[0.625rem] xl:text-xs font-semibold text-error">
-                      <Minus className="size-2" />
-                    </span>
-                  )}
-
-                  <span className="lg:text-[0.625rem] xl:text-xs font-semibold text-error">
-                    {formatRupiah(
-                      produkDetails.reduce((a, b) => a + b.diskon, 0),
-                    )}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* total */}
-            <div className="w-full flex flex-row justify-between items-center pt-3 pb-1">
-              <span className="xl:text-sm font-semibold text-base-content">
-                Total
-              </span>
-              <span className="xl:text-sm font-medium text-emerald-600">
-                {formatRupiah(
-                  produkDetails.reduce(
-                    (a, b) => a + (b.subTotal - b.diskon),
-                    0,
-                  ),
-                )}
-              </span>
-            </div>
+          <div className="w-full flex flex-row justify-between items-center pt-3 pb-1">
+            <span className="md:text-sm font-semibold text-base-content">
+              Total
+            </span>
+            <span className="md:text-base font-semibold text-emerald-600">
+              {formatRupiah(
+                produkDetails.reduce((a, b) => a + (b.subTotal - b.diskon), 0),
+              )}
+            </span>
           </div>
         </div>
 
@@ -394,7 +319,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
         ) : (
           <div
             className={cn(
-              "w-full row-span-1 flex flex-row justify-between items-center bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-xl xl:p-1 h-12 tooltip",
+              "w-full row-span-1 flex flex-row justify-between items-center xl:p-1 h-12 tooltip",
               isUpdateTransaction ? "gap-2" : "gap-4",
             )}
             data-tip={
@@ -427,7 +352,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                 <>
                   {/* icon */}
                   <ShoppingCart className="xl:size-4 text-base-content" />
-                  <span className="text-base-content xl:text-xs font-semibold">
+                  <span className="text-base-content md:text-[0.7rem] font-semibold">
                     Masukan ke Keranjang
                   </span>
                 </>
@@ -450,7 +375,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                   <>
                     {/* icon */}
                     <X className="size-4 text-primary-white" />
-                    <span className="text-primary-white text-xs font-semibold">
+                    <span className="text-primary-white text-[0.7rem] font-semibold">
                       Batalkan
                     </span>
                   </>
@@ -478,7 +403,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
                 ) : (
                   <CreditCard className="size-4 text-custom-secondary" />
                 )}
-                <span className="text-custom-secondary xl:text-xs font-semibold">
+                <span className="text-custom-secondary text-[0.7rem] font-semibold">
                   {isUpdateTransaction ? "Simpan" : "Pembayaran"}
                 </span>
               </button>
@@ -493,6 +418,7 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
         onAppendMany={handleAppendMany}
         step={step}
         pelangganId={pelanggan?.id}
+        dataChooseProduk={produkDetails}
       />
 
       {/* modal choose pelanggan  */}
@@ -524,4 +450,90 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
     </div>
   );
 };
+
+// card data
+type CardDataProps = {
+  id: number;
+  img: string;
+  nama: string;
+  kode: string;
+  stok: number;
+  quantity: number;
+  hargaJual: number;
+  subTotal: number;
+  handleShowModalFormulirTransaksiForUpdate: (id: number) => void;
+  removeDetails: (id: number) => void;
+};
+const CardData: FC<CardDataProps> = ({
+  handleShowModalFormulirTransaksiForUpdate,
+  removeDetails,
+  ...produk
+}) => {
+  return (
+    <div className="w-full flex flex-row justify-between items-center border-b border-base-content/10 pb-2.5">
+      {/* content 1 */}
+      <div className="flex-1 flex flex-row justify-start items-center gap-4">
+        {/* img */}
+        <div className="w-8 h-8 rounded-lg overflow-hidden flex justify-center items-center">
+          <img src={produk.img} alt="foto produk" />
+        </div>
+
+        {/* nama dan kode */}
+        <div className="flex flex-col justify-start items-start gap-0.5">
+          <div className="flex flex-row justify-start items-start gap-2">
+            <span className="text-[0.7rem] font-semibold text-base-content">
+              {produk.nama}
+            </span>
+            {produk.stok < produk.quantity && (
+              <span className="text-[0.625rem] font-medium text-error">
+                stok kurang
+              </span>
+            )}
+          </div>
+          <div className="flex flex-row justify-start items-center gap-0.5">
+            <span className="text-[0.625rem] font-medium text-base-content/50">
+              {produk.kode}
+            </span>
+            <span className="text-xs font-medium text-base-content/50">
+              <Dot className="size-4" />
+            </span>
+            <span className="text-[0.625rem] font-medium text-base-content">
+              {formatRupiah(produk.hargaJual)}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* content 2 */}
+      <div className="flex-1 grid grid-cols-4 gap-0.5 justify-end items-center">
+        {/* quantity */}
+        <span className="col-span-1 text-center text-[0.625rem] font-semibold text-base-content">
+          {formatNumber(produk.quantity)} x
+        </span>
+
+        {/* sub total */}
+        <span className="col-span-2 text-xs font-medium text-base-content">
+          {produk.subTotal > 1500000
+            ? formatRupiahShort(produk.subTotal)
+            : formatRupiah(produk.subTotal)}
+        </span>
+
+        {/* aksi */}
+        <div className="col-span-1 flex flex-row justify-end items-start gap-1">
+          <ButtonUpdateTable
+            handleShowModalFormulir={() =>
+              handleShowModalFormulirTransaksiForUpdate(produk.id)
+            }
+            noTip
+          />
+          <ButtonDeleteTable
+            handleShowModalDelete={() => removeDetails(produk.id)}
+            noTip
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default PilihProduk;

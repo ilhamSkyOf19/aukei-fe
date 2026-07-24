@@ -28,14 +28,14 @@ const ButtonDeleteTable: FC<Props> = ({
         className={cn(
           " bg-error rounded-md flex flex-row justify-center items-center disabled:opacity-50",
           !disabled && "hover-overlay",
-          xs ? "w-6 h-6" : "w-7 h-7",
+          xs ? "w-6 h-6" : "w-6 h-6",
         )}
         style={{
           cursor: disabled ? "not-allowed" : "pointer",
         }}
         onClick={() => handleShowModalDelete()}
       >
-        <Trash2 className="size-3.5 text-primary-white" />
+        <Trash2 className="size-3 text-primary-white" />
       </button>
     </div>
   );
