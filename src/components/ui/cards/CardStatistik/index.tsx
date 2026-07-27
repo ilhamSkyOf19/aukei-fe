@@ -41,122 +41,133 @@ const CardStatistik: FC<Props> = ({
   return (
     <div
       className={cn(
-        "flex flex-row justify-start items-center p-2.5 rounded-2xl md:rounded-xl border border-base-content/10 h-24 gap-4 relative",
+        "flex flex-row py-2.5 justify-start items-center p-2.5 rounded-2xl md:rounded-xl border border-base-content/10 gap-4 relative",
         customColSpan ?? "col-span-1",
+        isLoading && "skeleton h-24",
       )}
     >
-      {/* status transaction */}
-      {statusTempo && (
-        <div className="absolute top-1 right-2">
-          <StatusTransaction statusTempo={statusTempo} />
-        </div>
-      )}
+      {!isLoading && (
+        <>
+          {/* status transaction */}
+          {statusTempo && (
+            <div className="absolute top-1 right-2">
+              <StatusTransaction statusTempo={statusTempo} />
+            </div>
+          )}
 
-      <div className=" flex flex-row justify-start items-center gap-2.5">
-        {/* icon */}
-        <div className="flex-1 flex flex-row justify-start items-center">
-          <div
-            className={cn(
-              "w-14 h-14 flex justify-center items-center rounded-full",
-              icon.bgColor,
-            )}
-          >
-            <icon.icon className={cn("size-6", icon.iconColor)} />
-          </div>
-        </div>
+          <div className=" flex flex-row justify-start items-center gap-2.5">
+            {/* icon */}
+            <div className="flex-1 flex flex-row justify-start items-center">
+              <div
+                className={cn(
+                  "w-14 h-14 flex justify-center items-center rounded-full",
+                  icon.bgColor,
+                )}
+              >
+                <icon.icon className={cn("size-6", icon.iconColor)} />
+              </div>
+            </div>
 
-        {/* label */}
-        <div className="flex-7 flex flex-col justify-start items-start gap-0.5">
-          <div className="w-full flex flex-col justify-start items-start gap-0.5">
-            <div className="flex flex-row justify-start items-center gap-2.5">
-              <span className="text-[0.625rem] font-medium text-base-content/70">
-                {label}
-              </span>
+            {/* label */}
+            <div className="flex-7 flex flex-col justify-start items-start gap-0.5">
+              <div className="w-full flex flex-col justify-start items-start gap-0.5">
+                <div className="flex flex-row justify-start items-center gap-2.5">
+                  <span className="text-[0.625rem] font-medium text-base-content/70">
+                    {label}
+                  </span>
 
-              {withAlert && (
-                <div
-                  className="tooltip z-10 tooltip-custom"
-                  data-tip={withAlert}
+                  {withAlert && (
+                    <div
+                      className="tooltip z-10 tooltip-custom"
+                      data-tip={withAlert}
+                    >
+                      <button type="button">
+                        <CircleAlert className="size-3 text-base-content/50 hover:text-base-content transition-all duration-150 ease-in-out" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <span
+                  className={cn(
+                    "text-xs md:text-sm font-semibold",
+                    minus ? "text-error" : "text-base-content",
+                  )}
                 >
-                  <button type="button">
-                    <CircleAlert className="size-3 text-base-content/50 hover:text-base-content transition-all duration-150 ease-in-out" />
-                  </button>
+                  {value ?? 0}
+                </span>
+              </div>
+
+              {detail && (
+                <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
+                  {/* icon */}
+                  {detail.down !== undefined && (
+                    <ArrowDown
+                      className={cn(
+                        "size-3",
+                        detail.reverseColor
+                          ? "text-emerald-500"
+                          : "text-rose-500",
+                      )}
+                    />
+                  )}
+                  {detail.up !== undefined && (
+                    <ArrowUp
+                      className={cn(
+                        "size-3",
+                        detail.reverseColor
+                          ? "text-rose-500"
+                          : "text-emerald-500",
+                      )}
+                    />
+                  )}
+
+                  {detail.same !== undefined && (
+                    <ArrowUp
+                      className={cn(
+                        "size-3",
+                        detail.reverseColor
+                          ? "text-rose-500"
+                          : "text-emerald-500",
+                      )}
+                    />
+                  )}
+
+                  {/* value */}
+                  <span
+                    className={cn(
+                      "md:text-[0.625rem] font-medium",
+                      detail.down
+                        ? detail.reverseColor
+                          ? "text-emerald-400"
+                          : "text-rose-400"
+                        : detail.reverseColor
+                          ? "text-rose-400"
+                          : "text-emerald-400",
+                    )}
+                  >
+                    {detail.up || detail.down || detail.same}%
+                  </span>
+
+                  {/* label */}
+                  <span className="text-[0.625rem] font-medium text-base-content/70">
+                    dari periode lalu
+                  </span>
+                </div>
+              )}
+
+              {/* caption */}
+              {caption && (
+                <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
+                  <span className="text-[0.625rem] font-medium text-base-content/70">
+                    {caption}
+                  </span>
                 </div>
               )}
             </div>
-
-            <span
-              className={cn(
-                "text-xs md:text-sm font-semibold",
-                minus ? "text-error" : "text-base-content",
-              )}
-            >
-              {value ?? 0}
-            </span>
           </div>
-
-          {detail && (
-            <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
-              {/* icon */}
-              {detail.down !== undefined && (
-                <ArrowDown
-                  className={cn(
-                    "size-3",
-                    detail.reverseColor ? "text-emerald-500" : "text-rose-500",
-                  )}
-                />
-              )}
-              {detail.up !== undefined && (
-                <ArrowUp
-                  className={cn(
-                    "size-3",
-                    detail.reverseColor ? "text-rose-500" : "text-emerald-500",
-                  )}
-                />
-              )}
-
-              {detail.same !== undefined && (
-                <ArrowUp
-                  className={cn(
-                    "size-3",
-                    detail.reverseColor ? "text-rose-500" : "text-emerald-500",
-                  )}
-                />
-              )}
-
-              {/* value */}
-              <span
-                className={cn(
-                  "md:text-[0.625rem] font-medium",
-                  detail.down
-                    ? detail.reverseColor
-                      ? "text-emerald-400"
-                      : "text-rose-400"
-                    : detail.reverseColor
-                      ? "text-rose-400"
-                      : "text-emerald-400",
-                )}
-              >
-                {detail.up || detail.down || detail.same}%
-              </span>
-
-              {/* label */}
-              <span className="text-[0.625rem] font-medium text-base-content/70">
-                dari periode lalu
-              </span>
-            </div>
-          )}
-
-          {/* caption */}
-          {caption && (
-            <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
-              <span className="text-[0.625rem] font-medium text-base-content/70">
-                {caption}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };

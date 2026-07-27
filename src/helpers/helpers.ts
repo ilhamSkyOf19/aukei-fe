@@ -310,3 +310,20 @@ export const getLocalStorageJSON = <T>(key: string): T | null => {
     return null;
   }
 };
+
+export const getRankColor = (rank: number): string => {
+  switch (rank) {
+    case 1:
+      return "text-amber-600 fill-amber-500";
+    case 2:
+      return "text-zinc-500 fill-zinc-400";
+    case 3:
+      return "text-stone-600 fill-stone-500";
+    case 4:
+      return "text-emerald-600 fill-emerald-500";
+    case 5:
+      return "text-indigo-600 fill-indigo-500";
+    default:
+      return "text-slate-400 fill-slate-300";
+  }
+};

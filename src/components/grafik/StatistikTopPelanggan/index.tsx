@@ -35,14 +35,29 @@ const StatistikTopPelanggan = () => {
             <div className="w-full h-12 skeleton" />
           </div>
         ) : dataTopPelanggan && dataTopPelanggan.length > 0 ? (
-          dataTopPelanggan.map((item) => (
-            <CardTopPelanggan
-              key={item.id}
-              nama={item.nama}
-              totalTransaksi={item.totalTransaksi}
-              totalBelanja={item.totalBelanja}
-            />
-          ))
+          <>
+            {dataTopPelanggan.map((item) => (
+              <CardTopPelanggan
+                key={item.id}
+                nama={item.nama}
+                totalTransaksi={item.totalTransaksi}
+                totalBelanja={item.totalBelanja}
+              />
+            ))}
+
+            {/* button */}
+            <div className="w-full flex flex-row justify-center items-center pt-3">
+              <button
+                type="button"
+                className="text-xs font-medium text-base-content/50 hover:text-base-content transition-colors duration-150 ease-in-out py-0.5 flex flex-row justify-start items-start gap-2"
+              >
+                <span>Lihat Semua Pelanggan</span>
+
+                {/* icon */}
+                <ArrowRight className="size-4" />
+              </button>
+            </div>
+          </>
         ) : (
           <div className="w-full h-70 gap-4 flex flex-col justify-center items-center">
             <UserRoundX className="size-12 text-base-content" />
@@ -50,26 +65,6 @@ const StatistikTopPelanggan = () => {
               Tidak ada Top Pelanggan
             </span>
           </div>
-        )}
-      </div>
-
-      {/* button */}
-      <div className="w-full flex flex-row justify-center items-center pt-3">
-        {isLoading ? (
-          <div className="w-40 h-4 skeleton" />
-        ) : (
-          dataTopPelanggan &&
-          dataTopPelanggan.length > 0 && (
-            <button
-              type="button"
-              className="text-xs font-medium text-base-content/50 hover:text-base-content transition-colors duration-150 ease-in-out py-0.5 flex flex-row justify-start items-start gap-2"
-            >
-              <span>Lihat Semua Pelanggan</span>
-
-              {/* icon */}
-              <ArrowRight className="size-4" />
-            </button>
-          )
         )}
       </div>
     </div>

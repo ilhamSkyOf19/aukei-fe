@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { ProdukServices } from "../../../../services/produk.service";
 import { useState } from "react";
 import useFilterState from "../../../../services/useFilterState";
+import { StatistikServices } from "../../../../services/statistik.service";
 
 const usePantauStok = (params: { pilihan: string }) => {
   const { pilihan } = params;
@@ -19,22 +20,44 @@ const usePantauStok = (params: { pilihan: string }) => {
     kategori,
   } = useFilterState();
 
-  const { data: dataProduk, isLoading: isLoadingDataProduk } = useQuery({
-    queryKey: ["pantauan-stok", { sort, limit, page, search, kategori }],
-    queryFn: () =>
-      ProdukServices.pantauanStok({
-        ...(sort && { sort }),
-        ...(limit && { limit }),
-        ...(page && { page }),
-        ...(search && { search }),
-        ...(kategori && { kategori }),
-      }),
-    staleTime: Infinity,
-    gcTime: Infinity,
-    retry: false,
-    refetchOnWindowFocus: false,
-    enabled: pilihan === "pantauanStok",
+  const data = useQueries({
+    queries: [
+      {
+        queryKey: ["pantauan-stok", { sort, limit, page, search, kategori }],
+        queryFn: () =>
+          ProdukServices.pantauanStok({
+            ...(sort && { sort }),
+            ...(limit && { limit }),
+            ...(page && { page }),
+            ...(search && { search }),
+            ...(kategori && { kategori }),
+          }),
+        staleTime: Infinity,
+        gcTime: Infinity,
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: pilihan === "pantauanStok",
+      },
+
+      {
+        queryKey: ["statistik-pantauan-stok", { kategori }],
+        queryFn: () =>
+          StatistikServices.statistikPantauanStok({
+            ...(kategori && { kategori }),
+          }),
+        staleTime: Infinity,
+        gcTime: Infinity,
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: pilihan === "pantauanStok",
+      },
+    ],
   });
+
+  const [
+    { data: dataProduk, isLoading: isLoadingDataProduk },
+    { data: dataStatistik, isLoading: isLoadingStatistik },
+  ] = data;
 
   //   is existing data
   const isExistDataProduk: boolean =
@@ -51,6 +74,8 @@ const usePantauStok = (params: { pilihan: string }) => {
     handleKategori,
     sort,
     kategori,
+    dataStatistik,
+    isLoadingStatistik,
   };
 };
 

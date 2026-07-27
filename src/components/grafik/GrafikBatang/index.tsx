@@ -15,6 +15,8 @@ import { RechartsDevtools } from "@recharts/devtools";
 import DropDown from "../../inputs/DropDown";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import useGrafikBatang from "./useGrafikBatang";
+import DataEmpty from "../../messages/DataEmpty";
+import { ChartLine } from "lucide-react";
 
 const renderCustomizedLabel = (props: LabelProps) => {
   // window size
@@ -110,7 +112,7 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
             </span>
           </div>
         </div>
-      ) : (
+      ) : chartData && chartData.length > 0 ? (
         <BarChart
           margin={{
             top: 20,
@@ -130,7 +132,7 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
               fontSize: windowSize === "sm" ? 10 : 10,
               fontWeight: "500",
             }}
-            interval={windowSize === "sm" ? 4 : 2}
+            interval={windowSize === "sm" ? 4 : 1}
           />
           <YAxis
             tickFormatter={(value) => formatNumberK(value)}
@@ -174,6 +176,14 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
 
           <RechartsDevtools />
         </BarChart>
+      ) : (
+        <div className="w-full flex flex-col justify-center items-center">
+          <DataEmpty
+            xs
+            iconData={ChartLine}
+            description="Belum ada data grafik yang dapat ditampilkan saat ini"
+          />
+        </div>
       )}
     </div>
   );

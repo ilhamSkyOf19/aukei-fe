@@ -58,8 +58,8 @@ const RiwayatTransaksiDetail = () => {
   } = useRiwayatTransaksiDetail();
 
   return (
-    <div className="w-full h-screen overflow-y-auto">
-      <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2 p-2">
+    <div className="w-full ">
+      <div className="w-full flex flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5">
         <ButtonBackText handleClick={() => handleBack()} />
         <FilterStatistik
           handleSearch={handleSearch}
@@ -203,7 +203,7 @@ const RiwayatTransaksiDetail = () => {
               }
             />
 
-            {dataRiwayatTransaksi?.data?.data?.statistik?.totalPiutang !==
+            {dataRiwayatTransaksi?.data?.data?.statistik?.totalPiutangTempo !==
               undefined && (
               <CardStatistik
                 isLoading={isLoadingRiwayatTransaksi}
@@ -217,11 +217,11 @@ const RiwayatTransaksiDetail = () => {
                   windowSize === "sm"
                     ? formatRupiahShort(
                         dataRiwayatTransaksi?.data?.data?.statistik
-                          ?.totalPiutang ?? 0,
+                          ?.totalPiutangTempo ?? 0,
                       )
                     : formatRupiah(
                         dataRiwayatTransaksi?.data?.data?.statistik
-                          ?.totalPiutang ?? 0,
+                          ?.totalPiutangTempo ?? 0,
                       )
                 }
                 caption={

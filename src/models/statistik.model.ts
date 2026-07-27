@@ -1,4 +1,4 @@
-import type { PaymentMethodType } from "../types/constant.type";
+import type { MetaType, PaymentMethodType } from "../types/constant.type";
 
 // response riwayat transaksi
 export interface ResponseRingkasanStatistikType {
@@ -118,13 +118,21 @@ export interface ResponseStatistikTopPelangganType {
 }
 
 // statistik top produk
-export interface ResponseStatistikTopProdukType {
-  id: number;
-  nama: string;
-  kode: string;
-  totalTerjual: number;
-  totalOmzet: number;
-  value: number;
+export interface ResponseStatistikTopProdukWithMetaType {
+  data: {
+    id: number;
+    nama: string;
+    kode: string;
+    totalTerjual: number;
+    totalOmzet: number;
+    value: number;
+    kategori: string;
+    rankQty: number | null;
+    rankOmzet: number | null;
+    rankKategori: number | null;
+    img: string;
+  }[];
+  meta: MetaType;
 }
 
 // statistik kebutuha barang
@@ -133,4 +141,9 @@ export interface ResponseStatistikKebutuhanBarangBookingType {
   totalItemBooking: number;
   totalProdukPerluRestock: number;
   totalKebutuhanStok: number;
+}
+
+export interface ResponseStatistikPantauanStokType {
+  produkRestock: number;
+  totalItemRestock: number;
 }

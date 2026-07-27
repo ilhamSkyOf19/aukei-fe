@@ -16,6 +16,8 @@ import {
 } from "../../../../helpers/formatDate";
 import { STATUS_PERGERAKAN } from "../../../../types/constant.type";
 import AlertLabel from "../../../../components/messages/AlertLabel";
+import CardStatistik from "../../../../components/ui/cards/CardStatistik";
+import { Package } from "lucide-react";
 
 type Props = {
   pilihan: string;
@@ -32,6 +34,8 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
     handleSort,
     sort,
     kategori,
+    dataStatistik,
+    isLoadingStatistik,
   } = usePantauStok({ pilihan });
   return (
     <div className="w-full flex flex-col justify-start items-start">
@@ -61,6 +65,45 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
           />
         </div>
       </div>
+
+      <div className="w-full flex flex-col justify-start items-start mt-2.5 bg-base-100 p-2.5 rounded-2xl md:rounded-xl">
+        <div className="w-full gap-0.5 flex flex-col justify-start items-start mb-4">
+          <span className="text-sm font-medium text-base-content">
+            Ringkasan Restock
+          </span>
+          <span className="text-[0.7rem] w-[70%] text-base-content/70">
+            Ringkasan restock di bawah ini dihitung berdasarkan filter kategori
+            yang sedang diterapkan.
+          </span>
+        </div>
+
+        {/* statistik */}
+        <div className="w-full grid grid-cols-2 gap-2.5">
+          <CardStatistik
+            isLoading={isLoadingStatistik}
+            icon={{
+              icon: Package,
+              bgColor: "bg-amber-100",
+              iconColor: "text-amber-400",
+            }}
+            label={"Total Produk Restock"}
+            value={formatNumber(dataStatistik?.data?.produkRestock ?? 0)}
+            caption="Total produk yang perlu direstock"
+          />
+          <CardStatistik
+            isLoading={isLoadingStatistik}
+            icon={{
+              icon: Package,
+              bgColor: "bg-blue-100",
+              iconColor: "text-blue-400",
+            }}
+            label={"Total Item Restock"}
+            value={formatNumber(dataStatistik?.data?.totalItemRestock ?? 0)}
+            caption="Total item yang perlu direstock"
+          />
+        </div>
+      </div>
+
       {/* data */}
       <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5">
         <table className="table table-xs lg:table-sm table-zebra">

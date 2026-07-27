@@ -82,16 +82,16 @@ const useGrafikBatang = () => {
   // data chart
   const chartData = useMemo(() => {
     if (isChoose === "produk") {
-      return dataProduk?.data ?? [];
+      return dataProduk?.data ?? null;
     }
     if (isChoose === "item") {
-      return dataItem?.data ?? [];
+      return dataItem?.data ?? null;
     }
     if (isChoose === "rusak") {
-      return dataBarangRusak?.data ?? [];
+      return dataBarangRusak?.data ?? null;
     }
     if (isChoose === "hilang") {
-      return dataBarangHilang?.data ?? [];
+      return dataBarangHilang?.data ?? null;
     }
   }, [isChoose, dataProduk, dataItem, dataBarangRusak, dataBarangHilang]);
 

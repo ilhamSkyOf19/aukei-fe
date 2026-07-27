@@ -41,7 +41,7 @@ const Produk = () => {
 
       <div className="w-full mb-2.5 flex flex-col justify-start items-start">
         {/* button cluster */}
-        <div className="w-full flex flex-row justify-center fixed md:sticky p-2 top-14 z-20 backdrop-blur-2xl shrink-0">
+        <div className="w-full flex flex-row justify-center fixed md:sticky p-2 top-14 z-8 backdrop-blur-2xl shrink-0">
           <div className="w-full flex flex-row justify-start items-center bg-base-100 shadow-sm h-16 md:h-14 p-2 gap-2 dark:border dark:border-base-content/10 rounded-2xl md:rounded-xl overflow-x-auto">
             {/* produk */}
             <ButtonCluster

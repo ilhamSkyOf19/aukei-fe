@@ -44,8 +44,8 @@ const RiwayatTransaksi = () => {
   } = useRiwayatTransaksi();
 
   return (
-    <div className="w-full h-screen overflow-y-auto">
-      <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2.5 md:gap-4 p-2">
+    <div className="w-full">
+      <div className="w-full  flex flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5">
         <FilterStatistik
           handleSearch={handleSearch}
           filterSort={{

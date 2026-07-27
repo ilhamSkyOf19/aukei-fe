@@ -6,7 +6,6 @@ import type { FC } from "react";
 import { cn } from "../../utils/cn";
 import { formatRupiah } from "../../helpers/helpers";
 import { formatTanggalLengkap } from "../../helpers/formatDate";
-import CardLabelMetodePembayaran from "../ui/cards/CardLabelMetodePembayaran";
 import { statusMetodePembayaranStyle } from "../../types/statusStyle";
 import PaginationAndLimit from "../filters/PaginationAndLimit";
 import DataEmpty from "../messages/DataEmpty";
@@ -264,7 +263,7 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
               )}
 
               {cicilanKe === "dp" && (
-                <div className="w-full h-[65vh] scrollbar-thin scrollbar-thumb-custom-secondary overflow-y-auto flex flex-col justify-start items-start py-2.5">
+                <div className="w-full h-[65vh] scrollbar-thin scrollbar-thumb-custom-secondary overflow-y-auto flex flex-col justify-start items-start py-2.5 gap-2.5">
                   {paymentTransactions && paymentTransactions?.length > 0 ? (
                     paymentTransactions.map((item) => (
                       <CardPaymentTransaction

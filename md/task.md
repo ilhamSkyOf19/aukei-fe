@@ -127,29 +127,32 @@
 - [✅] Perbaiki service keranjang
 
 - [✅] Perbaiki ui
-  - [ ] Rapihkan service dari barang keluar
+  - [✅] saya ingin membuat tombol booking tersendiri , agar dapat melakukan booking tidak menggunakan handle redirect booking,
 
-- [] Membuat
-  - [60%] saya ingin membuat tombol booking tersendiri , agar dapat melakukan booking tidak menggunakan handle redirect booking,
+- [✅] Buat pesan empty jika data chart tidak ada
 
-- [ ] Buat statistik pantauan stok
+- [✅] Buat statistik pantauan stok
 
-- [ ] Buat fungsi refresh di statistik dan membuat design mobile
+- [✅] Buat fungsi refresh di statistik
+
+- [ ] dan membuat design mobile
+
+- [ ] Membuat navigasi untuk kasir, dan memperbaiki notifikasi stok
 
 - [ ] perbaiki halaman data pelanggan
 
 - [ ] Sesuaikan flow transaksi yang saat ini (lihat BE)
-  - [ ] Sesuaikan pada halaman booking , berikan pesan atau peringatan jika stok tidak mencukupi untuk melakukan pelunasan
-  - [ ] Invalidate query jika success
-  - [ ] Kirim handle toast ke props informasi pembayaran
-  - [ ] status lunas tidak boleh akses selesaikan dan buat kondisi di handle transaction nya
+  - [✅] Sesuaikan pada halaman booking , berikan pesan atau peringatan jika stok tidak mencukupi untuk melakukan pelunasan
+  - [✅] Invalidate query jika success
+  - [✅] Kirim handle toast ke props informasi pembayaran
+  - [✅] status lunas tidak boleh akses selesaikan dan buat kondisi di handle transaction nya
   - [ ] Refactor Kode
 
 - [✅] Membuat fitur booking
   - [✅] Metode pembayaran tempo
-  - [ ] Testing Skenario
+  - [✅] Testing Skenario
 
-  - [ ] Buat halaman booking untuk owner
+  - [✅] Buat halaman booking untuk owner
 
   - [ ] cek loading di contant table, sesuaikan cols nya dan juga cols data empty nya
 
@@ -157,14 +160,16 @@
 
   - [✅] Perbaiki tampilan riwayat pengajuan
 
-- [ ] Membuat daftar riwayat transaksi berdasarkan pelanggan
+- [✅] Membuat daftar riwayat transaksi berdasarkan pelanggan
 
 - [ ] Membuat ui tombol tombol pada preview after transaksi
 
-- [ ] Membuat fitur update pelanggan di keranjang
+- [✅] Membuat fitur update pelanggan di keranjang
 
-- [ ] Membuat formulir update pelanggan (Owner)
+- [✅] Membuat formulir update pelanggan (Owner)
 
 - [ ] Membuat fitur struk pembayaran
 
 - [ ] berikan pesan alert ketika handlesubmit jika error, agar tidak return saja
+
+- [ ] Cek data yang belum di berikan loading

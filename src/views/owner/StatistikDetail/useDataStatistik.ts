@@ -36,7 +36,7 @@ type StatistikConfig = {
   caption?: string;
   minus?: boolean;
   withAlert?: string;
-  detail: Record<string, any>;
+  detail?: Record<string, any>;
 };
 
 const useDataStatistik = (params: {
@@ -45,7 +45,7 @@ const useDataStatistik = (params: {
 }) => {
   const { windowSize, statistik } = params;
   const dataStatistik: StatistikConfig[] = [
-    // ==== KEUANGAN ====
+    // ==== 💰 RINGKASAN PENJUALAN ====
     {
       key: "kasMasuk",
       category: "keuangan",
@@ -76,35 +76,6 @@ const useDataStatistik = (params: {
       },
     },
     {
-      key: "transaksiSelesai",
-      category: "keuangan",
-      icon: {
-        icon: Receipt,
-        bgColor: "bg-blue-100",
-        iconColor: "text-blue-400",
-      },
-      label: windowSize === "sm" ? "Transaksi" : "Total Transaksi Selesai",
-      value:
-        windowSize === "sm"
-          ? formatNumberK(statistik?.data?.totalTransaksiSelesai.total ?? 0) ||
-            "0"
-          : formatNumber(statistik?.data?.totalTransaksiSelesai.total ?? 0) ||
-            "0",
-      caption:
-        windowSize !== "sm" ? "Jumlah transaksi yang sudah selesai" : undefined,
-      detail: {
-        ...(statistik?.data?.totalTransaksiSelesai?.trend === "down" && {
-          down: statistik?.data?.totalTransaksiSelesai?.persentase,
-        }),
-        ...(statistik?.data?.totalTransaksiSelesai?.trend === "up" && {
-          up: statistik?.data?.totalTransaksiSelesai?.persentase,
-        }),
-        ...(statistik?.data?.totalTransaksiSelesai?.trend === "same" && {
-          same: statistik?.data?.totalTransaksiSelesai?.persentase,
-        }),
-      },
-    },
-    {
       key: "omzetSelesai",
       category: "keuangan",
       icon: {
@@ -130,6 +101,66 @@ const useDataStatistik = (params: {
         }),
         ...(statistik?.data?.totalOmzetSelesai?.trend === "same" && {
           same: statistik?.data?.totalOmzetSelesai?.persentase,
+        }),
+      },
+    },
+    {
+      key: "labaSelesai",
+      category: "keuangan",
+      icon: {
+        icon: TrendingUp,
+        bgColor: "bg-emerald-100",
+        iconColor: "text-emerald-400",
+      },
+      label: windowSize === "sm" ? "Laba" : "Total Laba Selesai",
+      value:
+        windowSize === "sm"
+          ? formatRupiahShort(statistik?.data?.totalLabaSelesai.total ?? 0)
+          : formatRupiah(statistik?.data?.totalLabaSelesai.total ?? 0),
+      minus: (statistik?.data?.totalLabaSelesai?.total ?? 0) < 0,
+      caption:
+        windowSize !== "sm"
+          ? "Total keuntungan dari transaksi yang sudah selesai"
+          : undefined,
+      withAlert: "Data Laba sudah dikurangi kerugian",
+      detail: {
+        ...(statistik?.data?.totalLabaSelesai?.trend === "down" && {
+          down: statistik?.data?.totalLabaSelesai?.persentase,
+        }),
+        ...(statistik?.data?.totalLabaSelesai?.trend === "up" && {
+          up: statistik?.data?.totalLabaSelesai?.persentase,
+        }),
+        ...(statistik?.data?.totalLabaSelesai?.trend === "same" && {
+          same: statistik?.data?.totalLabaSelesai?.persentase,
+        }),
+      },
+    },
+    {
+      key: "transaksiSelesai",
+      category: "keuangan",
+      icon: {
+        icon: Receipt,
+        bgColor: "bg-blue-100",
+        iconColor: "text-blue-400",
+      },
+      label: windowSize === "sm" ? "Transaksi" : "Total Transaksi Selesai",
+      value:
+        windowSize === "sm"
+          ? formatNumberK(statistik?.data?.totalTransaksiSelesai.total ?? 0) ||
+            "0"
+          : formatNumber(statistik?.data?.totalTransaksiSelesai.total ?? 0) ||
+            "0",
+      caption:
+        windowSize !== "sm" ? "Jumlah transaksi yang sudah selesai" : undefined,
+      detail: {
+        ...(statistik?.data?.totalTransaksiSelesai?.trend === "down" && {
+          down: statistik?.data?.totalTransaksiSelesai?.persentase,
+        }),
+        ...(statistik?.data?.totalTransaksiSelesai?.trend === "up" && {
+          up: statistik?.data?.totalTransaksiSelesai?.persentase,
+        }),
+        ...(statistik?.data?.totalTransaksiSelesai?.trend === "same" && {
+          same: statistik?.data?.totalTransaksiSelesai?.persentase,
         }),
       },
     },
@@ -193,6 +224,8 @@ const useDataStatistik = (params: {
         }),
       },
     },
+
+    // ==== ⚠ PERLU PERHATIAN ====
     {
       key: "piutang",
       category: "keuangan",
@@ -210,48 +243,24 @@ const useDataStatistik = (params: {
         windowSize !== "sm"
           ? "Total nilai piutang yang belum dibayar"
           : undefined,
-      detail: {
-        ...(statistik?.data?.totalPiutang?.trend === "down" && {
-          down: statistik?.data?.totalPiutang?.persentase,
-        }),
-        ...(statistik?.data?.totalPiutang?.trend === "up" && {
-          up: statistik?.data?.totalPiutang?.persentase,
-        }),
-        ...(statistik?.data?.totalPiutang?.trend === "same" && {
-          same: statistik?.data?.totalPiutang?.persentase,
-        }),
-      },
     },
     {
-      key: "labaSelesai",
-      category: "keuangan",
+      key: "bookingAktif",
+      category: "booking",
       icon: {
-        icon: TrendingUp,
-        bgColor: "bg-emerald-100",
-        iconColor: "text-emerald-400",
+        icon: CalendarClock,
+        bgColor: "bg-blue-100",
+        iconColor: "text-blue-400",
       },
-      label: windowSize === "sm" ? "Laba" : "Total Laba Selesai",
+      label: windowSize === "sm" ? "Booking" : "Booking Aktif",
       value:
         windowSize === "sm"
-          ? formatRupiahShort(statistik?.data?.totalLabaSelesai.total ?? 0)
-          : formatRupiah(statistik?.data?.totalLabaSelesai.total ?? 0),
-      minus: (statistik?.data?.totalLabaSelesai?.total ?? 0) < 0,
+          ? formatNumberK(statistik?.data?.totalBookingAktif.total ?? 0) || "0"
+          : formatNumber(statistik?.data?.totalBookingAktif.total ?? 0) || "0",
       caption:
         windowSize !== "sm"
-          ? "Total keuntungan dari transaksi yang sudah selesai"
+          ? "Jumlah transaksi booking yang masih aktif"
           : undefined,
-      withAlert: "Data Laba sudah dikurangi kerugian",
-      detail: {
-        ...(statistik?.data?.totalLabaSelesai?.trend === "down" && {
-          down: statistik?.data?.totalLabaSelesai?.persentase,
-        }),
-        ...(statistik?.data?.totalLabaSelesai?.trend === "up" && {
-          up: statistik?.data?.totalLabaSelesai?.persentase,
-        }),
-        ...(statistik?.data?.totalLabaSelesai?.trend === "same" && {
-          same: statistik?.data?.totalLabaSelesai?.persentase,
-        }),
-      },
     },
     {
       key: "kerugian",
@@ -284,152 +293,7 @@ const useDataStatistik = (params: {
       },
     },
 
-    // ==== BARANG ====
-    {
-      key: "produkTerjual",
-      category: "barang",
-      icon: {
-        icon: ShoppingBag,
-        bgColor: "bg-purple-100",
-        iconColor: "text-purple-400",
-      },
-      label: windowSize === "sm" ? "Produk" : "Total Produk Terjual",
-      value:
-        windowSize === "sm"
-          ? formatNumberK(statistik?.data?.totalProdukTerjual.total ?? 0)
-          : formatNumber(statistik?.data?.totalProdukTerjual.total ?? 0),
-      caption:
-        windowSize !== "sm"
-          ? "Jumlah produk unik yang berhasil terjual"
-          : undefined,
-      detail: {
-        ...(statistik?.data?.totalProdukTerjual?.trend === "down" && {
-          down: statistik?.data?.totalProdukTerjual?.persentase,
-        }),
-        ...(statistik?.data?.totalProdukTerjual?.trend === "up" && {
-          up: statistik?.data?.totalProdukTerjual?.persentase,
-        }),
-        ...(statistik?.data?.totalProdukTerjual?.trend === "same" && {
-          same: statistik?.data?.totalProdukTerjual?.persentase,
-        }),
-      },
-    },
-    {
-      key: "itemTerjual",
-      category: "barang",
-      icon: {
-        icon: Package,
-        bgColor: "bg-purple-100",
-        iconColor: "text-purple-400",
-      },
-      label: windowSize === "sm" ? "Item" : "Total Item Terjual",
-      value:
-        windowSize === "sm"
-          ? formatNumberK(statistik?.data?.totalItemTerjual.total ?? 0)
-          : formatNumber(statistik?.data?.totalItemTerjual.total ?? 0),
-      caption:
-        windowSize !== "sm" ? "Total item yang berhasil terjual" : undefined,
-      detail: {
-        ...(statistik?.data?.totalItemTerjual?.trend === "down" && {
-          down: statistik?.data?.totalItemTerjual?.persentase,
-        }),
-        ...(statistik?.data?.totalItemTerjual?.trend === "up" && {
-          up: statistik?.data?.totalItemTerjual?.persentase,
-        }),
-        ...(statistik?.data?.totalItemTerjual?.trend === "same" && {
-          same: statistik?.data?.totalItemTerjual?.persentase,
-        }),
-      },
-    },
-    {
-      key: "barangRusak",
-      category: "barang",
-      icon: {
-        icon: PackageX,
-        bgColor: "bg-amber-100",
-        iconColor: "text-amber-400",
-      },
-      label: windowSize === "sm" ? "Rusak" : "Total Barang Rusak",
-      value:
-        windowSize === "sm"
-          ? formatNumberK(statistik?.data?.totalBarangRusak.total ?? 0)
-          : formatNumber(statistik?.data?.totalBarangRusak.total ?? 0),
-      caption: windowSize !== "sm" ? "Total barang rusak" : undefined,
-      detail: {
-        ...(statistik?.data?.totalBarangRusak?.trend === "down" && {
-          down: statistik?.data?.totalBarangRusak?.persentase,
-          reverseColor: true,
-        }),
-        ...(statistik?.data?.totalBarangRusak?.trend === "up" && {
-          up: statistik?.data?.totalBarangRusak?.persentase,
-          reverseColor: true,
-        }),
-        ...(statistik?.data?.totalBarangRusak?.trend === "same" && {
-          same: statistik?.data?.totalBarangRusak?.persentase,
-          reverseColor: true,
-        }),
-      },
-    },
-    {
-      key: "barangHilang",
-      category: "barang",
-      icon: {
-        icon: PackageMinus,
-        bgColor: "bg-amber-100",
-        iconColor: "text-amber-400",
-      },
-      label: windowSize === "sm" ? "Hilang" : "Total Barang Hilang",
-      value:
-        windowSize === "sm"
-          ? formatNumberK(statistik?.data?.totalBarangHilang.total ?? 0)
-          : formatNumber(statistik?.data?.totalBarangHilang.total ?? 0),
-      caption: windowSize !== "sm" ? "Total barang hilang" : undefined,
-      detail: {
-        ...(statistik?.data?.totalBarangHilang?.trend === "down" && {
-          down: statistik?.data?.totalBarangHilang?.persentase,
-          reverseColor: true,
-        }),
-        ...(statistik?.data?.totalBarangHilang?.trend === "up" && {
-          up: statistik?.data?.totalBarangHilang?.persentase,
-          reverseColor: true,
-        }),
-        ...(statistik?.data?.totalBarangHilang?.trend === "same" && {
-          same: statistik?.data?.totalBarangHilang?.persentase,
-          reverseColor: true,
-        }),
-      },
-    },
-
-    // ==== BOOKING ====
-    {
-      key: "bookingAktif",
-      category: "booking",
-      icon: {
-        icon: CalendarClock,
-        bgColor: "bg-blue-100",
-        iconColor: "text-blue-400",
-      },
-      label: windowSize === "sm" ? "Booking" : "Booking Aktif",
-      value:
-        windowSize === "sm"
-          ? formatNumberK(statistik?.data?.totalBookingAktif.total ?? 0) || "0"
-          : formatNumber(statistik?.data?.totalBookingAktif.total ?? 0) || "0",
-      caption:
-        windowSize !== "sm"
-          ? "Jumlah transaksi booking yang masih aktif"
-          : undefined,
-      detail: {
-        ...(statistik?.data?.totalBookingAktif?.trend === "down" && {
-          down: statistik?.data?.totalBookingAktif?.persentase,
-        }),
-        ...(statistik?.data?.totalBookingAktif?.trend === "up" && {
-          up: statistik?.data?.totalBookingAktif?.persentase,
-        }),
-        ...(statistik?.data?.totalBookingAktif?.trend === "same" && {
-          same: statistik?.data?.totalBookingAktif?.persentase,
-        }),
-      },
-    },
+    // ==== 📅 BOOKING ====
     {
       key: "potensiOmzetBooking",
       category: "booking",
@@ -447,46 +311,6 @@ const useDataStatistik = (params: {
           : formatRupiah(statistik?.data?.totalPotensiOmzetBooking.total ?? 0),
       caption:
         windowSize !== "sm" ? "Potensi omzet dari seluruh booking" : undefined,
-      detail: {
-        ...(statistik?.data?.totalPotensiOmzetBooking?.trend === "down" && {
-          down: statistik?.data?.totalPotensiOmzetBooking?.persentase,
-        }),
-        ...(statistik?.data?.totalPotensiOmzetBooking?.trend === "up" && {
-          up: statistik?.data?.totalPotensiOmzetBooking?.persentase,
-        }),
-        ...(statistik?.data?.totalPotensiOmzetBooking?.trend === "same" && {
-          same: statistik?.data?.totalPotensiOmzetBooking?.persentase,
-        }),
-      },
-    },
-    {
-      key: "dpBooking",
-      category: "booking",
-      icon: {
-        icon: Receipt,
-        bgColor: "bg-blue-100",
-        iconColor: "text-blue-400",
-      },
-      label: windowSize === "sm" ? "DP Booking" : "Total DP Booking",
-      value:
-        windowSize === "sm"
-          ? formatRupiahShort(statistik?.data?.totalDpBooking.total ?? 0)
-          : formatRupiah(statistik?.data?.totalDpBooking.total ?? 0),
-      caption:
-        windowSize !== "sm"
-          ? "Total DP yang sudah diterima dari booking"
-          : undefined,
-      detail: {
-        ...(statistik?.data?.totalDpBooking?.trend === "down" && {
-          down: statistik?.data?.totalDpBooking?.persentase,
-        }),
-        ...(statistik?.data?.totalDpBooking?.trend === "up" && {
-          up: statistik?.data?.totalDpBooking?.persentase,
-        }),
-        ...(statistik?.data?.totalDpBooking?.trend === "same" && {
-          same: statistik?.data?.totalDpBooking?.persentase,
-        }),
-      },
     },
     {
       key: "sisaTagihanBooking",
@@ -507,20 +331,92 @@ const useDataStatistik = (params: {
         windowSize !== "sm"
           ? "Total sisa tagihan booking yang belum dibayar"
           : undefined,
-      detail: {
-        ...(statistik?.data?.totalSisaTagihanBooking?.trend === "down" && {
-          down: statistik?.data?.totalSisaTagihanBooking?.persentase,
-          reverseColor: true,
-        }),
-        ...(statistik?.data?.totalSisaTagihanBooking?.trend === "up" && {
-          up: statistik?.data?.totalSisaTagihanBooking?.persentase,
-          reverseColor: true,
-        }),
-        ...(statistik?.data?.totalSisaTagihanBooking?.trend === "same" && {
-          same: statistik?.data?.totalSisaTagihanBooking?.persentase,
-          reverseColor: true,
-        }),
+    },
+
+    // ==== 📦 INVENTORI ====
+    {
+      key: "itemTerjual",
+      category: "barang",
+      icon: {
+        icon: Package,
+        bgColor: "bg-purple-100",
+        iconColor: "text-purple-400",
       },
+      label: windowSize === "sm" ? "Item" : "Total Item Terjual",
+      value:
+        windowSize === "sm"
+          ? formatNumberK(statistik?.data?.totalItemTerjual.total ?? 0)
+          : formatNumber(statistik?.data?.totalItemTerjual.total ?? 0),
+      caption:
+        windowSize !== "sm" ? "Total item yang berhasil terjual" : undefined,
+    },
+
+    // ==== SISANYA (tidak disebutkan di list, tetap disimpan di akhir) ====
+    {
+      key: "produkTerjual",
+      category: "barang",
+      icon: {
+        icon: ShoppingBag,
+        bgColor: "bg-purple-100",
+        iconColor: "text-purple-400",
+      },
+      label: windowSize === "sm" ? "Produk" : "Total Produk Terjual",
+      value:
+        windowSize === "sm"
+          ? formatNumberK(statistik?.data?.totalProdukTerjual.total ?? 0)
+          : formatNumber(statistik?.data?.totalProdukTerjual.total ?? 0),
+      caption:
+        windowSize !== "sm"
+          ? "Jumlah produk unik yang berhasil terjual"
+          : undefined,
+    },
+    {
+      key: "barangRusak",
+      category: "barang",
+      icon: {
+        icon: PackageX,
+        bgColor: "bg-amber-100",
+        iconColor: "text-amber-400",
+      },
+      label: windowSize === "sm" ? "Rusak" : "Total Barang Rusak",
+      value:
+        windowSize === "sm"
+          ? formatNumberK(statistik?.data?.totalBarangRusak.total ?? 0)
+          : formatNumber(statistik?.data?.totalBarangRusak.total ?? 0),
+      caption: windowSize !== "sm" ? "Total barang rusak" : undefined,
+    },
+    {
+      key: "barangHilang",
+      category: "barang",
+      icon: {
+        icon: PackageMinus,
+        bgColor: "bg-amber-100",
+        iconColor: "text-amber-400",
+      },
+      label: windowSize === "sm" ? "Hilang" : "Total Barang Hilang",
+      value:
+        windowSize === "sm"
+          ? formatNumberK(statistik?.data?.totalBarangHilang.total ?? 0)
+          : formatNumber(statistik?.data?.totalBarangHilang.total ?? 0),
+      caption: windowSize !== "sm" ? "Total barang hilang" : undefined,
+    },
+    {
+      key: "dpBooking",
+      category: "booking",
+      icon: {
+        icon: Receipt,
+        bgColor: "bg-blue-100",
+        iconColor: "text-blue-400",
+      },
+      label: windowSize === "sm" ? "DP Booking" : "Total DP Booking",
+      value:
+        windowSize === "sm"
+          ? formatRupiahShort(statistik?.data?.totalDpBooking.total ?? 0)
+          : formatRupiah(statistik?.data?.totalDpBooking.total ?? 0),
+      caption:
+        windowSize !== "sm"
+          ? "Total DP yang sudah diterima dari booking"
+          : undefined,
     },
     {
       key: "produkBooking",
@@ -537,17 +433,6 @@ const useDataStatistik = (params: {
           : formatNumber(statistik?.data?.totalProdukBooking.total ?? 0),
       caption:
         windowSize !== "sm" ? "Jumlah produk unik pada booking" : undefined,
-      detail: {
-        ...(statistik?.data?.totalProdukBooking?.trend === "down" && {
-          down: statistik?.data?.totalProdukBooking?.persentase,
-        }),
-        ...(statistik?.data?.totalProdukBooking?.trend === "up" && {
-          up: statistik?.data?.totalProdukBooking?.persentase,
-        }),
-        ...(statistik?.data?.totalProdukBooking?.trend === "same" && {
-          same: statistik?.data?.totalProdukBooking?.persentase,
-        }),
-      },
     },
     {
       key: "itemBooking",
@@ -563,20 +448,8 @@ const useDataStatistik = (params: {
           ? formatNumberK(statistik?.data?.totalItemBooking.total ?? 0)
           : formatNumber(statistik?.data?.totalItemBooking.total ?? 0),
       caption: windowSize !== "sm" ? "Jumlah item pada booking" : undefined,
-      detail: {
-        ...(statistik?.data?.totalItemBooking?.trend === "down" && {
-          down: statistik?.data?.totalItemBooking?.persentase,
-        }),
-        ...(statistik?.data?.totalItemBooking?.trend === "up" && {
-          up: statistik?.data?.totalItemBooking?.persentase,
-        }),
-        ...(statistik?.data?.totalItemBooking?.trend === "same" && {
-          same: statistik?.data?.totalItemBooking?.persentase,
-        }),
-      },
     },
   ];
-
   return { dataStatistik };
 };
 

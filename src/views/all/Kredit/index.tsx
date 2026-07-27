@@ -55,7 +55,12 @@ const Kredit = () => {
     <div className="w-full">
       {(windowSize === "lg" && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) ||
       pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? (
-        <div className="w-full flex flex-col justify-start items-center px-2.5">
+        <div
+          className={cn(
+            "w-full flex flex-col justify-start items-center px-2.5",
+            pengguna.role === ROLE_INTERNAL_TYPE.OWNER && "pt-2.5",
+          )}
+        >
           {/* statistik */}
           {pengguna?.role === "OWNER" && (
             <div className="w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
@@ -182,7 +187,7 @@ const Kredit = () => {
           )}
 
           {/* filter */}
-          <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl lg:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-2.5">
+          <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl lg:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-2.5 ">
             <div className="w-full md:flex-1 flex flex-row justify-start items-center">
               {/* input search */}
               <InputSearch

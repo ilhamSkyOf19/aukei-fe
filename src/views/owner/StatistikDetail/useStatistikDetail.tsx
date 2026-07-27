@@ -2,14 +2,14 @@ import useSizeWindows from "../../../hooks/useSizeWindows";
 import { useQuery } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { StatistikServices } from "../../../services/statistik.service";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   Banknote,
   CalendarClock,
   LineChart,
   LucidePackage,
-  PackagePlus,
   PackageSearch,
+  Star,
   type LucideIcon,
 } from "lucide-react";
 import useDataStatistik from "./useDataStatistik";
@@ -18,28 +18,34 @@ import type { ChildRef } from "../../../types/ref.type";
 const pilihan: { key: string; label: string; icon: LucideIcon }[] = [
   {
     key: "semua",
-    label: "Semua Statistik",
+    label: "Semua Laporan",
     icon: LineChart,
   },
   {
     key: "keuangan",
-    label: "Statistik Keuangan",
+    label: "Laporan Penjualan",
     icon: Banknote,
   },
-  {
-    key: "booking",
-    label: "Statistik Booking",
-    icon: CalendarClock,
-  },
+
   {
     key: "barang",
-    label: "Statistik Barang",
+    label: "Laporan Barang",
     icon: LucidePackage,
   },
   {
+    key: "booking",
+    label: "Laporan Booking",
+    icon: CalendarClock,
+  },
+  {
     key: "pantauanStok",
-    label: "Pantauan Stok",
+    label: "Laporan Stok",
     icon: PackageSearch,
+  },
+  {
+    key: "topProduk",
+    label: "Laporan Top Produk",
+    icon: Star,
   },
 ];
 

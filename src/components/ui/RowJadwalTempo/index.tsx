@@ -1,4 +1,9 @@
-import { CalendarDaysIcon, CircleDollarSign, Trash2 } from "lucide-react";
+import {
+  CalendarDaysIcon,
+  CircleDollarSign,
+  CreditCard,
+  Trash2,
+} from "lucide-react";
 import { formatRupiah } from "../../../helpers/helpers";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import { cn } from "../../../utils/cn";
@@ -6,6 +11,7 @@ import type { FC } from "react";
 import type { CreateInstallmentType } from "../../../models/tempoInstallment.model";
 import type { InstallmentStatusType } from "../../../types/constant.type";
 import StatusInstallment from "../StatusInstallment";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
   aksi?: boolean;
@@ -14,6 +20,8 @@ type Props = {
   customEmptyMessage?: string;
   handleCustomTanggal?: () => void;
   startDateWatch?: string;
+  pelangganId?: number;
+  tempoId?: number;
 };
 const RowJadwaTempo: FC<Props> = ({
   aksi,
@@ -22,7 +30,11 @@ const RowJadwaTempo: FC<Props> = ({
   customEmptyMessage,
   handleCustomTanggal,
   startDateWatch,
+  pelangganId,
+  tempoId,
 }) => {
+  const currentPathname = useLocation().pathname;
+  const navigate = useNavigate();
   return (
     <div className="w-full flex flex-col justify-start items-start gap-2">
       {/* title */}
@@ -39,6 +51,24 @@ const RowJadwaTempo: FC<Props> = ({
             </span>
           </span>
         </div>
+
+        {/* transaction detail */}
+        {currentPathname.includes("transaksi") && (
+          <button
+            type="button"
+            onClick={() =>
+              navigate(
+                `/dashboard/kredit/pelanggan/${pelangganId}/tempo/${tempoId}`,
+              )
+            }
+            className="flex flex-row justify-start items-center gap-1.5 hover:underline transition-all duration-150 ease-in-out"
+          >
+            <CreditCard className="size-3.5 text-info" />
+            <span className="text-[0.7rem] text-info">
+              Lihat Detail Pembayaran
+            </span>
+          </button>
+        )}
 
         {handleCustomTanggal && (
           <button

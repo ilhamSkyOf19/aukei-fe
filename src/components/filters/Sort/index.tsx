@@ -7,8 +7,20 @@ type Props = {
   customWidth?: string;
   value?: string;
   noLabel?: boolean;
+  customLabel?: {
+    0: string;
+    1: string;
+  };
+  customTitle?: string;
 };
-const FilterSort: FC<Props> = ({ setSort, customWidth, value, noLabel }) => {
+const FilterSort: FC<Props> = ({
+  setSort,
+  customWidth,
+  value,
+  noLabel,
+  customLabel,
+  customTitle,
+}) => {
   return (
     <div
       className={cn(
@@ -18,14 +30,14 @@ const FilterSort: FC<Props> = ({ setSort, customWidth, value, noLabel }) => {
     >
       {!noLabel && (
         <span className="text-xs text-base-content/80 font-medium">
-          Urutkan
+          {customTitle ?? "Urutkan"}
         </span>
       )}
       <DropDown
         handleChange={(e) => setSort(e.target.value)}
         listChoose={[
-          { value: "asc", label: "Terlama" },
-          { value: "desc", label: "Terbaru" },
+          { value: "asc", label: customLabel ? customLabel[0] : "Terlama" },
+          { value: "desc", label: customLabel ? customLabel[1] : "Terbaru" },
         ]}
         placeholder="Urutkan"
         value={value || "asc"}

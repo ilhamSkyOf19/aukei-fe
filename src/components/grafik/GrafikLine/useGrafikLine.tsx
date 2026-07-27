@@ -114,19 +114,19 @@ const useGrafikLine = (params: {
   // data chart
   const dataChart = useMemo(() => {
     if (isChoose === "omzet") {
-      return dataOmzet?.data ?? [];
+      return dataOmzet?.data ?? null;
     }
     if (isChoose === "modal") {
-      return dataModal?.data ?? [];
+      return dataModal?.data ?? null;
     }
     if (isChoose === "laba") {
-      return dataLaba?.data ?? [];
+      return dataLaba?.data ?? null;
     }
     if (isChoose === "kasMasuk") {
-      return dataKasMasuk?.data ?? [];
+      return dataKasMasuk?.data ?? null;
     }
     if (isChoose === "kerugian") {
-      return dataKerugian?.data ?? [];
+      return dataKerugian?.data ?? null;
     }
   }, [isChoose, dataOmzet, dataModal, dataLaba, dataKasMasuk, dataKerugian]);
 

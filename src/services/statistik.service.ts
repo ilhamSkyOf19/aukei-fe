@@ -6,8 +6,9 @@ import type {
   ResponseRingkasanStatistikType,
   ResponseChartMetodePembayaranType,
   ResponseStatistikTopPelangganType,
-  ResponseStatistikTopProdukType,
   ResponseStatistikKebutuhanBarangBookingType,
+  ResponseStatistikPantauanStokType,
+  ResponseStatistikTopProdukWithMetaType,
 } from "../models/statistik.model";
 import type {
   QueryRiwayatTransactionType,
@@ -188,13 +189,18 @@ export class StatistikServices {
   }
 
   // top produk
-  static async statistikTopProduk(query: {
-    startDate?: string;
-    endDate?: string;
-  }): Promise<ResponseStructure<ResponseStatistikTopProdukType[] | null>> {
+  static async statistikTopProduk(
+    query: Pick<PaginationType, "page" | "search" | "limit"> & {
+      sortQty?: string;
+      sortOmzet?: string;
+      kategori?: string;
+      startDate?: string;
+      endDate?: string;
+    },
+  ): Promise<ResponseStructure<ResponseStatistikTopProdukWithMetaType | null>> {
     // call api
     const result = await instanceAxios.get<
-      ResponseStructure<ResponseStatistikTopProdukType[] | null>
+      ResponseStructure<ResponseStatistikTopProdukWithMetaType | null>
     >("/statistik/top-produk", { params: query });
 
     return result.data;
@@ -224,6 +230,17 @@ export class StatistikServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseStatistikKebutuhanBarangBookingType | null>
     >("/statistik/statistik-kebutuhan-barang-booking", { params: query });
+
+    return result.data;
+  }
+
+  // sttaistik pantauan stok
+  static async statistikPantauanStok(query: {
+    kategori?: string;
+  }): Promise<ResponseStructure<ResponseStatistikPantauanStokType | null>> {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseStatistikPantauanStokType | null>
+    >("/statistik/statistik-pantauan-stok", { params: query });
 
     return result.data;
   }

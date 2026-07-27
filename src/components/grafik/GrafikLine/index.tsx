@@ -1,4 +1,4 @@
-import { forwardRef, type FC } from "react";
+import { forwardRef } from "react";
 import { cn } from "../../../utils/cn";
 import {
   Area,
@@ -14,6 +14,8 @@ import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import DropDown from "../../inputs/DropDown";
 import useGrafikLine from "./useGrafikLine";
 import type { ChildRef } from "../../../types/ref.type";
+import DataEmpty from "../../messages/DataEmpty";
+import { ChartLine } from "lucide-react";
 
 // grafik line
 type GrafikLineProps = {
@@ -73,7 +75,7 @@ const GrafikLine = forwardRef<ChildRef, GrafikLineProps>(
               </span>
             </div>
           </div>
-        ) : (
+        ) : dataChart && dataChart?.length > 0 ? (
           <AreaChart
             style={{
               width: "100%",
@@ -101,19 +103,7 @@ const GrafikLine = forwardRef<ChildRef, GrafikLineProps>(
                 fontSize: windowSize === "sm" ? 10 : 10,
                 fontWeight: "500",
               }}
-              interval={
-                windowSize === "sm"
-                  ? 5
-                  : dataChart
-                    ? dataChart?.length > 25
-                      ? 3
-                      : dataChart?.length > 16
-                        ? 2
-                        : dataChart?.length > 12
-                          ? 1
-                          : 0
-                    : 0
-              }
+              interval={windowSize === "sm" ? 5 : 1}
             />
             <YAxis
               width={60}
@@ -158,6 +148,14 @@ const GrafikLine = forwardRef<ChildRef, GrafikLineProps>(
             />
             <RechartsDevtools />
           </AreaChart>
+        ) : (
+          <div className="w-full flex flex-col justify-center items-center">
+            <DataEmpty
+              xs
+              iconData={ChartLine}
+              description="Belum ada data grafik yang dapat ditampilkan saat ini"
+            />
+          </div>
         )}
       </div>
     );

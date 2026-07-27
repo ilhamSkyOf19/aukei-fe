@@ -6,7 +6,7 @@ import { formatTanggalPanjang } from "../../../helpers/formatDate";
 
 const StatistikTopProduk = () => {
   const { dataTopProduk, endDate, isLoading, startDate } =
-    useStatistikTopProduk();
+    useStatistikTopProduk({ customLimit: 5 });
   return (
     <div className="md:flex-1 md:h-full flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 md:p-2.5 md:px-0 h-90">
       {/* header */}
@@ -34,9 +34,9 @@ const StatistikTopProduk = () => {
             <div className="w-full h-12 skeleton" />
             <div className="w-full h-12 skeleton" />
           </div>
-        ) : dataTopProduk && dataTopProduk.length > 0 ? (
+        ) : dataTopProduk?.data && dataTopProduk?.data?.length > 0 ? (
           <>
-            {dataTopProduk.map((item) => (
+            {dataTopProduk.data.map((item) => (
               <CardTopProduk
                 key={item.id}
                 nama={item.nama}

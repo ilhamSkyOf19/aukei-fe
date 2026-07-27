@@ -40,7 +40,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
   return (
     <nav
       className={cn(
-        "navbar w-full bg-base-100 shadow-sm flex flex-row justify-between items-center top-0 border-b border-base-content/10 sticky z-30",
+        "navbar w-full bg-base-100 shadow-sm flex flex-row justify-between items-center top-0 border-b border-base-content/10 sticky z-10",
         pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
           // (currentPathname.includes("kasir") ||
           //   currentPathname.includes("keranjang") ||
