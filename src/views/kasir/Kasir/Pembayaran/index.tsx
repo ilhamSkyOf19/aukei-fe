@@ -83,8 +83,8 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
           )}
         >
           {/* title */}
-          <h3 className="text-sm font-medium text-base-content">
-            Ringkasan Transaksi
+          <h3 className="text-base font-medium text-base-content">
+            Pembayaran
           </h3>
 
           <div className="flex flex-row justify-end items-center gap-4">

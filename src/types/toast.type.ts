@@ -276,8 +276,8 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     message: "Transaksi berhasil dibuat",
   },
   updated_transaction: {
-    color: "success",
-    message: "Transaksi berhasil diperbarui",
+    color: "info",
+    message: "Data berhasil diperbarui",
   },
   simpan_keranjang: {
     color: "success",

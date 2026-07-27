@@ -293,8 +293,6 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
 
   // Validasi form, lalu simpan detail produk & pelanggan ke localStorage untuk step berikutnya
   const handleLocalStorage = () => {
-    if (!validatePelangganDanDetails()) return false;
-
     const data: DetailsLocalStorageType[] | null =
       produkDetails.map((item) => ({
         nama: item.nama,
@@ -316,19 +314,32 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     // Data sudah disimpan sebagai transaksi baru dari form ini, bukan mode update
     localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
 
+    // remove from booking
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
+
     return true;
   };
 
-  // Lanjut ke step berikutnya: simpan data, cek stok, dan arahkan ke step yang sesuai
-  const handleStepsNext = async () => {
+  // handle booking
+  const handleRedirectBooking = () => {
     const canNext = handleLocalStorage();
 
     if (!canNext) return;
 
+    // Transaksi jadi booking, metode pembayaran lama tidak relevan lagi
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
+
+    return handleSteps(4);
+  };
+
+  // Lanjut ke step berikutnya: simpan data, cek stok, dan arahkan ke step yang sesuai
+  const handleStepsNext = async (toPembayaran?: boolean) => {
+    if (!validatePelangganDanDetails()) return;
+
     // Cek apakah ada produk dengan stok habis
     const insufficientStock = produkDetails.some((produk) => produk.stok <= 0);
 
-    if (insufficientStock && !fromBooking) {
+    if (insufficientStock && (!fromBooking || toPembayaran)) {
       // Tawarkan konversi ke booking jika stok tidak mencukupi
       const isConfirm = await confirm({
         title: "Stok Tidak Mencukupi",
@@ -340,13 +351,21 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
         return;
       }
 
-      // Transaksi jadi booking, metode pembayaran lama tidak relevan lagi
+      // remove metode pembayaran
       localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
+      // Jika user memilih konversi ke booking, arahkan ke step booking
 
+      // handle local storage
+      handleLocalStorage();
+
+      // handle steps
       return handleSteps(4);
     }
 
-    if (isUpdateTransaction)
+    // handle local storage
+    handleLocalStorage();
+
+    if (isUpdateTransaction || isUpdateKeranjang || fromBooking)
       navigate(currentPathname, {
         state: {
           toast: "updated_transaction",
@@ -355,7 +374,7 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
 
     if (fromBooking) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
-      handleSteps(4);
+      handleSteps(toPembayaran ? 2 : 4);
     } else {
       handleSteps(2);
     }
@@ -444,7 +463,7 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
   // Validasi form, lalu simpan produk terpilih sebagai keranjang baru
   const handleSimpanKeranjang = async () => {
     try {
-      if (!validatePelangganDanDetails()) return false;
+      if (!validatePelangganDanDetails()) return;
 
       const dataDetails: DetailsForCreate[] = produkDetails.map((item) => ({
         diskon: item.diskon,
@@ -536,6 +555,10 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     dataConfirm,
     handleConfirm,
     step,
+
+    handleRedirectBooking,
+
+    fromBooking,
   };
 };
 

@@ -75,6 +75,9 @@ const useSideBar = () => {
     // hapus data transaksi
     clearTransactionStorage();
 
+    // reset steps
+    resetStep();
+
     return true;
   };
 

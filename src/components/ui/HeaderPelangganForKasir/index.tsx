@@ -11,12 +11,17 @@ type Props = {
   kasir?: PayloadPenggunaInternalType | null;
   rowSpanCustom?: string;
   colSpanCustom?: string;
+  label?: {
+    bigTitle?: string;
+    smallTitle?: string;
+  };
 };
 const HeaderPelangganForKasir: FC<Props> = ({
   kasir,
   pelanggan,
   colSpanCustom,
   rowSpanCustom,
+  label,
 }) => {
   return (
     <div
@@ -47,6 +52,18 @@ const HeaderPelangganForKasir: FC<Props> = ({
           <span className="text-xs text-base-content">
             Pelanggan tidak tersedia
           </span>
+        )}
+
+        {/* label */}
+        {label && (
+          <div className="flex flex-col justify-start items-center">
+            <span className="text-base font-medium text-base-content">
+              {label.bigTitle}
+            </span>
+            <span className="text-[0.7rem] font-medium text-base-content/70">
+              {label.smallTitle}
+            </span>
+          </div>
         )}
 
         {/* kasir */}

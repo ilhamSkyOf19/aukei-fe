@@ -2,6 +2,7 @@ import { type FC } from "react";
 import ShowProduk from "./ShowProduk";
 import {
   ArrowLeftRight,
+  CalendarClock,
   CreditCard,
   Dot,
   Minus,
@@ -71,6 +72,9 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
     modalConfirmRef,
     handleConfirm,
     step,
+
+    handleRedirectBooking,
+    fromBooking,
   } = usePilihProduk({
     handleToast,
   });
@@ -273,9 +277,8 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
           </div>
         </div>
 
-        {/* button chart and transaksi */}
-        {isUpdateKeranjang ? (
-          <div className="w-full row-span-1 flex flex-row justify-between items-center gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-xl  xl:p-1 h-12">
+        {isUpdateKeranjang && (
+          <div className="w-full row-span-1 flex flex-row justify-between items-center gap-2.5 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-xl  xl:p-1 h-12">
             {/* button batalkan */}
             <button
               type="button"
@@ -314,11 +317,12 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
               )}
             </button>
           </div>
-        ) : (
+        )}
+
+        {!isUpdateKeranjang && (
           <div
             className={cn(
-              "w-full row-span-1 flex flex-row justify-between items-center xl:p-1 h-12 tooltip",
-              isUpdateTransaction ? "gap-2" : "gap-4",
+              "w-full gap-2.5 row-span-1 flex flex-row justify-between items-center xl:p-1 h-12 tooltip",
             )}
             data-tip={
               !pelanggan || produkDetails.length === 0
@@ -331,7 +335,8 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
               type="button"
               disabled={produkDetails.length === 0 || !pelanggan}
               className={cn(
-                "flex-1 flex flex-row justify-center items-center gap-4 xl:h-full rounded-xl border border-custom-primary disabled:opacity-50",
+                "flex flex-row justify-center items-center gap-2.5 xl:h-full rounded-xl border border-custom-primary disabled:opacity-50",
+                fromBooking ? "w-12" : "flex-1",
                 (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
               )}
               style={{
@@ -350,13 +355,64 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
                 <>
                   {/* icon */}
                   <ShoppingCart className="xl:size-4 text-base-content" />
-                  <span className="text-base-content md:text-[0.7rem] font-semibold">
-                    Masukan ke Keranjang
-                  </span>
+                  {!fromBooking && (
+                    <span className="text-base-content md:text-[0.7rem] font-semibold">
+                      Keranjang
+                    </span>
+                  )}
                 </>
               )}
             </button>
 
+            {/* button booking */}
+            {!fromBooking ? (
+              <button
+                type="button"
+                disabled={produkDetails.length === 0 || !pelanggan}
+                className={cn(
+                  "flex-1 flex flex-row justify-center items-center gap-2.5 xl:h-full rounded-xl border border-custom-primary disabled:opacity-50",
+                  (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
+                )}
+                style={{
+                  cursor:
+                    produkDetails.length === 0 || !pelanggan
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+                onClick={() => handleRedirectBooking()}
+              >
+                {/* icon */}
+                <CalendarClock className="xl:size-4 text-base-content" />
+                <span className="text-base-content md:text-[0.7rem] font-semibold">
+                  Booking
+                </span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={produkDetails.length === 0 || !pelanggan}
+                className={cn(
+                  "flex flex-row justify-center items-center gap-2.5 xl:h-full rounded-xl border border-custom-primary disabled:opacity-50",
+                  fromBooking ? "px-2.5" : "flex-1",
+                  (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
+                )}
+                style={{
+                  cursor:
+                    produkDetails.length === 0 || !pelanggan
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+                onClick={() => handleStepsNext(true)}
+              >
+                {/* icon */}
+                <CreditCard className="xl:size-4 text-base-content" />
+                <span className="text-base-content md:text-[0.7rem] font-semibold">
+                  Pembayaran
+                </span>
+              </button>
+            )}
+
+            {/* button transaksi */}
             <div
               className={cn(
                 "flex-1 flex flex-row h-full justify-end items-center gap-2",
@@ -365,7 +421,7 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
               {isUpdateTransaction && (
                 <button
                   type="button"
-                  className="flex flex-row justify-center items-center gap-4 h-full flex-1 rounded-xl bg-error hover-overlay "
+                  className="flex flex-row justify-center items-center gap-2.5 h-full flex-1 rounded-xl bg-error hover-overlay "
                   onClick={() => {
                     handleBatalkanUpdateTransaction();
                   }}
@@ -393,7 +449,7 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
                       ? "not-allowed"
                       : "pointer",
                 }}
-                onClick={handleStepsNext}
+                onClick={() => handleStepsNext()}
               >
                 {/* icon */}
                 {isUpdateTransaction ? (

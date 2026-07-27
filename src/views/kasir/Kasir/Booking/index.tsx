@@ -60,7 +60,14 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
       <div className="col-span-2 grid grid-rows-10 min-h-0 gap-2.5">
         {/* pelanggan */}
         <div className="row-span-1 flex flex-row justify-between items-center">
-          <HeaderPelangganForKasir pelanggan={pelanggan} kasir={kasir} />
+          <HeaderPelangganForKasir
+            pelanggan={pelanggan}
+            kasir={kasir}
+            label={{
+              bigTitle: "Booking",
+              smallTitle: "Silahkan lengkapi data untuk melakukan booking",
+            }}
+          />
         </div>
         <div className="row-span-9 grid grid-rows-9 bg-base-100 rounded-xl pb-1">
           {/* title */}

@@ -19,36 +19,33 @@ const clearLocalStorage = () => {
 };
 
 instanceAxios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
-    // clear transaction storage
-    clearLocalStorage();
-    // TIMEOUT
+    // timeout
     if (error.code === "ECONNABORTED") {
-      return (window.location.href = "/");
+      clearLocalStorage();
+      window.location.href = "/";
+      return;
     }
 
-    if (error?.response?.status === 404 || error?.response?.status === 400) {
-      return Promise.reject(error);
-    }
-
-    // autorized
-    if (
-      error?.response &&
-      (error.response?.status === 401 || error.response.status === 403) &&
-      !error.config.url?.includes("/auth/me")
-    ) {
-      window.location.href = "/login";
-    }
-
+    // network error
     if (!error.response) {
-      console.error("Network error:", error.message);
+      clearLocalStorage();
       window.location.href = "/error-network";
       return;
     }
 
+    // unauthorized
+    if (
+      (error.response.status === 401 || error.response.status === 403) &&
+      !error.config.url?.includes("/auth/me")
+    ) {
+      clearLocalStorage();
+      window.location.href = "/login";
+      return;
+    }
+
+    // error lain serahkan ke caller
     return Promise.reject(error);
   },
 );

@@ -126,7 +126,7 @@
 
 - [✅] Perbaiki service keranjang
 
-- [ ] Perbaiki ui
+- [✅] Perbaiki ui
   - [ ] Rapihkan service dari barang keluar
 
 - [] Membuat

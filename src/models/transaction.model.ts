@@ -135,7 +135,7 @@ export interface ResponseRiwayatTransaksiPelangganType {
       | "totalTransaksi"
       | "totalOmzet"
       | "totalRataRataTransaksi"
-      | "totalPiutang"
+      | "totalPiutangTempo"
       | "totalProdukTerjual"
       | "totalItemTerjual"
     >;
@@ -154,7 +154,7 @@ export interface ResponseRiwayatTransaksiPelangganType {
       status?: TransactionStatusType;
     })[];
   };
-  meta: MetaType;
+  meta?: MetaType;
 }
 
 export interface DetailsLocalStorageType {
