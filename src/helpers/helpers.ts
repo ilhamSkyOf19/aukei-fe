@@ -79,16 +79,16 @@ export const generatePageNumbers = (
 export const generateColorForStok = (
   stok: number,
   stokMinimum: number,
-): "text-emerald-600" | "text-warning" | "text-error" => {
+): "text-emerald-500" | "text-amber-500" | "text-rose-500" => {
   if (stok === 0 || stok < 0) {
-    return "text-error";
+    return "text-rose-500";
   }
 
   if (stok > stokMinimum + 10) {
-    return "text-emerald-600";
+    return "text-emerald-500";
   }
 
-  return "text-warning";
+  return "text-amber-500";
 };
 
 // parse id
@@ -300,4 +300,13 @@ export const getJatuhTempoText = (date: Date | null | undefined): string => {
   }
 
   return "(Hari Ini)";
+};
+
+export const getLocalStorageJSON = <T>(key: string): T | null => {
+  try {
+    const rawValue = localStorage.getItem(key);
+    return rawValue ? (JSON.parse(rawValue) as T) : null;
+  } catch {
+    return null;
+  }
 };

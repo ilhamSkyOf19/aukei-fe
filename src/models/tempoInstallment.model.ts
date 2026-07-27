@@ -29,7 +29,12 @@ export interface ResponseHistoryPaymentWithMetaType {
     status: InstallmentStatusType;
     payments: Pick<
       ResponseTempoPaymentType,
-      "id" | "nominal" | "tanggalBayar" | "keterangan" | "metodePembayaran"
+      | "id"
+      | "nominal"
+      | "tanggalBayar"
+      | "keterangan"
+      | "metodePembayaran"
+      | "kasir"
     >[];
   };
   meta: MetaType;

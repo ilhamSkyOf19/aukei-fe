@@ -186,7 +186,7 @@ const CardLarge: FC<CardLargeProps> = ({
       {icon.metodePembayaran === "CASH" && (
         <div
           className={cn(
-            "w-16 h-16 flex justify-center items-center rounded-full",
+            "w-14 h-14 flex justify-center items-center rounded-full",
             "bg-emerald-50 dark:bg-emerald-100",
           )}
         >
@@ -198,7 +198,7 @@ const CardLarge: FC<CardLargeProps> = ({
       {icon.metodePembayaran === "TRANSFER" && (
         <div
           className={cn(
-            "w-16 h-16 flex justify-center items-center rounded-full",
+            "w-14 h-14 flex justify-center items-center rounded-full",
             "bg-blue-50 dark:bg-blue-100",
           )}
         >
@@ -210,7 +210,7 @@ const CardLarge: FC<CardLargeProps> = ({
       {icon.metodePembayaran === "QRIS" && (
         <div
           className={cn(
-            "w-16 h-16 flex justify-center items-center rounded-full",
+            "w-14 h-14 flex justify-center items-center rounded-full",
             "bg-purple-50 dark:bg-purple-100",
           )}
         >
@@ -222,7 +222,7 @@ const CardLarge: FC<CardLargeProps> = ({
       {icon.metodePembayaran === "TEMPO" && (
         <div
           className={cn(
-            "w-16 h-16 flex justify-center items-center rounded-full",
+            "w-14 h-14 flex justify-center items-center rounded-full",
             "bg-amber-50 dark:bg-amber-100",
           )}
         >

@@ -25,9 +25,9 @@ const DataPelanggan = () => {
   } = useDataPelanggan();
 
   return (
-    <div className="w-full h-full grid grid-rows-10 rounded-xl bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
+    <div className="w-full h-full flex flex-col justify-start items-start gap-2.5  rounded-xl bg-base-100 shadow-sm p-4 border border-transparent dark:border-base-content/10">
       {/* header */}
-      <div className="w-full row-span-1 flex flex-col justify-start items-start gap-2">
+      <div className="w-full flex-1 flex flex-col justify-start items-start gap-2">
         {/* title */}
         <h3 className="text-base-content text-sm font-semibold">
           Pilih Pelanggan
@@ -40,7 +40,7 @@ const DataPelanggan = () => {
       </div>
 
       {/* daftar pelanggan */}
-      <div className="w-full row-span-8 py-2 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary justify-start items-start mt-2">
+      <div className="w-full flex-10 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary justify-start items-start">
         {/* card */}
         {isLoadingPelanggan ? (
           Array.from({ length: 8 }, (_, i) => i).map((item) => (
@@ -71,7 +71,7 @@ const DataPelanggan = () => {
         )}
       </div>
 
-      <div className="w-full row-span-1 flex flex-row justify-center items-center">
+      <div className="w-full flex-1 flex flex-row justify-center items-center">
         {/* buat pagination pelanggan */}
         <Pagination
           currentPage={dataPelanggan?.data?.meta?.currentPage || 1}

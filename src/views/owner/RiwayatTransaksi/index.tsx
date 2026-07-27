@@ -1,18 +1,9 @@
 import {
   Banknote,
-  BanknoteArrowDown,
   CalendarClock,
-  ChartColumn,
-  Clock3,
-  FileText,
   History,
   Landmark,
-  Package,
   QrCode,
-  Receipt,
-  Sheet,
-  ShoppingBag,
-  TrendingUp,
 } from "lucide-react";
 import type { FC } from "react";
 import { cn } from "../../../utils/cn";
@@ -20,7 +11,6 @@ import {
   formatNumber,
   formatNumberPhone,
   formatRupiah,
-  formatRupiahShort,
 } from "../../../helpers/helpers";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
 import {
@@ -30,8 +20,6 @@ import {
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import Avatar from "../../../components/ui/Avatar";
-import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
-import CardStatistik from "../../../components/ui/cards/CardStatistik";
 import FilterStatistik from "../../../components/filters/FilterStatistik";
 import CardData from "../../../components/ui/cards/CardData";
 import StatusTransaction from "../../../components/ui/StatusTransaction";
@@ -45,8 +33,6 @@ const RiwayatTransaksi = () => {
     setStatusTempo,
     statusTempo,
     handleRedirectDetail,
-    isLoadingRingkasanStatistik,
-    ringkasanStatistik,
     dataRiwayatTransaksi,
     handleSearch,
     isExistDataRiwayatTransaksi,
@@ -75,206 +61,6 @@ const RiwayatTransaksi = () => {
             value: statusTempo,
           }}
         />
-
-        {/* data */}
-        <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
-          <div className="w-full flex flex-row justify-between items-start">
-            {/* title */}
-            <h3 className="text-sm font-semibold text-base-content">
-              Ringkasan Statistik
-            </h3>
-
-            {/* aksi */}
-            <div className="flex flex-row justify-end items-center gap-2">
-              {/* button export */}
-              <div className="md:flex flex-row justify-start items-center gap-2 hidden">
-                <ButtonWithIcon
-                  icon={FileText}
-                  label="Export PDF"
-                  bgColor="bg-error"
-                  textColor="text-primary-white"
-                />
-                <ButtonWithIcon
-                  icon={Sheet}
-                  label="Export Excel"
-                  bgColor="bg-success"
-                  textColor="text-primary-white"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2">
-            <CardStatistik
-              isLoading={isLoadingRingkasanStatistik}
-              icon={{
-                icon: Receipt,
-                bgColor: "bg-blue-100",
-                iconColor: "text-blue-400",
-              }}
-              label={windowSize === "sm" ? "Transaksi" : "Total Transaksi"}
-              value={
-                formatNumber(ringkasanStatistik?.data?.totalTransaksi ?? 0) ||
-                "0"
-              }
-              caption={
-                windowSize !== "sm"
-                  ? "Jumlah transaksi berdasarkan tanggal"
-                  : undefined
-              }
-            />
-
-            <CardStatistik
-              isLoading={isLoadingRingkasanStatistik}
-              icon={{
-                icon: BanknoteArrowDown,
-                bgColor: "bg-emerald-100",
-                iconColor: "text-emerald-400",
-              }}
-              label={windowSize === "sm" ? "Omzet" : "Total Omzet"}
-              value={
-                windowSize === "sm"
-                  ? formatRupiahShort(ringkasanStatistik?.data?.totalOmzet ?? 0)
-                  : formatRupiah(ringkasanStatistik?.data?.totalOmzet ?? 0)
-              }
-              caption={
-                windowSize !== "sm"
-                  ? "Total omzet dari transaksi penjualan"
-                  : undefined
-              }
-            />
-
-            <CardStatistik
-              isLoading={isLoadingRingkasanStatistik}
-              icon={{
-                icon: ChartColumn,
-                bgColor: "bg-emerald-100",
-                iconColor: "text-emerald-400",
-              }}
-              label={
-                windowSize === "sm" ? "Rata-rata" : "Total Rata-rata transaksi"
-              }
-              value={
-                windowSize === "sm"
-                  ? formatRupiahShort(
-                      ringkasanStatistik?.data?.totalRataRataTransaksi ?? 0,
-                    )
-                  : formatRupiah(
-                      ringkasanStatistik?.data?.totalRataRataTransaksi ?? 0,
-                    )
-              }
-              caption={
-                windowSize !== "sm"
-                  ? "Total omzet dari transaksi penjualan"
-                  : undefined
-              }
-            />
-
-            <CardStatistik
-              isLoading={isLoadingRingkasanStatistik}
-              icon={{
-                icon: Package,
-                bgColor: "bg-amber-100",
-                iconColor: "text-amber-400",
-              }}
-              label={windowSize === "sm" ? "Modal" : "Total Modal"}
-              value={
-                windowSize === "sm"
-                  ? formatRupiahShort(ringkasanStatistik?.data?.totalModal ?? 0)
-                  : formatRupiah(ringkasanStatistik?.data?.totalModal ?? 0)
-              }
-              caption={
-                windowSize !== "sm"
-                  ? "Total biaya modal untuk transaksi penjualan"
-                  : undefined
-              }
-            />
-
-            {ringkasanStatistik?.data?.totalPiutang !== undefined && (
-              <CardStatistik
-                isLoading={isLoadingRingkasanStatistik}
-                icon={{
-                  icon: Clock3,
-                  bgColor: "bg-red-100",
-                  iconColor: "text-red-400",
-                }}
-                label={windowSize === "sm" ? "Piutang" : "Total Piutang"}
-                value={
-                  windowSize === "sm"
-                    ? formatRupiahShort(
-                        ringkasanStatistik?.data?.totalPiutang ?? 0,
-                      )
-                    : formatRupiah(ringkasanStatistik?.data?.totalPiutang ?? 0)
-                }
-                caption={
-                  windowSize !== "sm"
-                    ? "Total nilai piutang yang belum dibayar"
-                    : undefined
-                }
-              />
-            )}
-
-            <CardStatistik
-              isLoading={isLoadingRingkasanStatistik}
-              icon={{
-                icon: ShoppingBag,
-                bgColor: "bg-purple-100",
-                iconColor: "text-purple-400",
-              }}
-              label={windowSize === "sm" ? "Produk" : "Total Produk Terjual"}
-              value={
-                ringkasanStatistik?.data?.totalProdukTerjual
-                  ? formatNumber(
-                      ringkasanStatistik?.data?.totalProdukTerjual ?? 0,
-                    )
-                  : "0"
-              }
-              caption={
-                windowSize !== "sm" ? "Jumlah produk yang terjual" : undefined
-              }
-            />
-
-            <CardStatistik
-              isLoading={isLoadingRingkasanStatistik}
-              icon={{
-                icon: Package,
-                bgColor: "bg-indigo-100",
-                iconColor: "text-indigo-400",
-              }}
-              label={windowSize === "sm" ? "Item" : "Total Item Terjual"}
-              value={
-                ringkasanStatistik?.data?.totalItemTerjual
-                  ? formatNumber(
-                      ringkasanStatistik?.data?.totalItemTerjual ?? 0,
-                    )
-                  : "0"
-              }
-              caption={
-                windowSize !== "sm" ? "Jumlah item yang terjual" : undefined
-              }
-            />
-
-            <CardStatistik
-              isLoading={isLoadingRingkasanStatistik}
-              icon={{
-                icon: TrendingUp,
-                bgColor: "bg-green-100",
-                iconColor: "text-green-400",
-              }}
-              label={windowSize === "sm" ? "Laba" : "Total Laba"}
-              value={
-                windowSize === "sm"
-                  ? formatRupiahShort(ringkasanStatistik?.data?.totalLaba ?? 0)
-                  : formatRupiah(ringkasanStatistik?.data?.totalLaba ?? 0)
-              }
-              caption={
-                windowSize !== "sm"
-                  ? "Total keuntungan dari transaksi penjualan"
-                  : undefined
-              }
-              withAlert={`Data Laba belum dikurangi dengan total kerugian`}
-            />
-          </div>
-        </div>
 
         {/* data untuk mobile */}
         <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-2xl border border-transparent dark:border-base-content/10 p-2 gap-2.5 order-3 lg:hidden">

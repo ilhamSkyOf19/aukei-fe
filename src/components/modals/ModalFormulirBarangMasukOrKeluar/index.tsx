@@ -3,7 +3,6 @@ import { cn } from "../../../utils/cn";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import InputTextAreaNonIcon from "../../inputs/InputTextAreaNonIcon";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import ButtonSubmit from "../../ui/button/ButtonSubmit";
 import { InputDate } from "../../inputs/InputDate";
 import type {
   FieldValues,
@@ -14,6 +13,7 @@ import type {
 import type { IJenisKeluarType } from "../../../models/jenisKeluar.model";
 import InputChoose from "../../inputs/InputChoose";
 import { Truck } from "lucide-react";
+import ButtonText from "../../ui/button/ButtonText";
 type Props<T extends FieldValues> = {
   modalRef: RefObject<HTMLDialogElement | null>;
   errorKeteranganMessage?: string;
@@ -109,19 +109,18 @@ const ModalFormulirBarangMasukOrKeluar = <T extends FieldValues>({
                   errorMessage={errorKeteranganMessage}
                   rows={8}
                 />
-              </div>
-            </div>
 
-            {/* action */}
-            <div className="w-full mt-6 flex flex-row justify-end items-center gap-4">
-              {/* button close */}
-              <ButtonCloseText
-                handleClose={() => {
-                  handleCloseModalWithReset();
-                }}
-              />
-              {/* button submit */}
-              <ButtonSubmit label={`Simpan`} isLoading={isPending} />
+                <div className="w-full flex flex-row justify-end items-center gap-2.5">
+                  {/* button close */}
+                  <ButtonCloseText
+                    handleClose={() => {
+                      handleCloseModalWithReset();
+                    }}
+                  />
+                  {/* button submit */}
+                  <ButtonText label={`Simpan`} isLoading={isPending} />
+                </div>
+              </div>
             </div>
           </form>
         </div>

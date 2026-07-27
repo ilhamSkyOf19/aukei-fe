@@ -4,27 +4,6 @@ export type Toast = {
   isAnimationOut: boolean;
 };
 
-export const TOAST_CONFIG_KATEGORI_PRODUK: Record<
-  string,
-  {
-    message: string;
-    color: "success" | "error" | "info" | "warning" | "neutral";
-  }
-> = {
-  created: {
-    color: "success",
-    message: "Kategori produk berhasil ditambahkan",
-  },
-  updated: {
-    color: "info",
-    message: "Kategori produk berhasil diperbarui",
-  },
-  deleted: {
-    color: "error",
-    message: "Kategori produk berhasil dihapus",
-  },
-};
-
 // toast produk
 export const TOAST_CONFIG_PRODUK: Record<
   string,
@@ -49,6 +28,18 @@ export const TOAST_CONFIG_PRODUK: Record<
     color: "info",
     message: "Status berhasil diperbarui",
   },
+  created_kategori: {
+    color: "success",
+    message: "Kategori produk berhasil ditambahkan",
+  },
+  updated_kategori: {
+    color: "info",
+    message: "Kategori produk berhasil diperbarui",
+  },
+  deleted_kategori: {
+    color: "error",
+    message: "Kategori produk berhasil dihapus",
+  },
 };
 
 // toast produk detail
@@ -62,6 +53,10 @@ export const TOAST_CONFIG_PRODUK_DETAIL: Record<
   updated_produk: {
     color: "info",
     message: "Produk berhasil diperbarui",
+  },
+  updated_status: {
+    color: "info",
+    message: "Status berhasil diperbarui",
   },
 };
 

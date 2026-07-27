@@ -9,19 +9,16 @@ type Props = {
   isLoading?: boolean;
   author: Pick<IPenggunaInternalType, "id" | "nama" | "isActive" | "username">;
   tanggalDiajukan?: Date | null;
-  customHeight?: string;
 };
 const InformasiPengajuan: FC<Props> = ({
   author,
   isLoading,
   tanggalDiajukan,
-  customHeight,
 }) => {
   return (
     <div
       className={cn(
         "rounded-2xl md:rounded-xl bg-base-100 shadow-xs border border-transparent dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6",
-        customHeight ? customHeight : "lg:min-h-70",
       )}
     >
       {/* title */}
@@ -51,7 +48,7 @@ const InformasiPengajuan: FC<Props> = ({
               )}
             >
               {/* label */}
-              <span className="flex-1 text-xs lg:text-sm text-base-content/90 font-medium">
+              <span className="flex-1 text-xs text-base-content font-medium">
                 Diajukan Oleh
               </span>
 
@@ -61,11 +58,7 @@ const InformasiPengajuan: FC<Props> = ({
                 <div className="w-full flex flex-row justify-end items-center gap-4">
                   {/* nama */}
                   <div className="px-4 flex flex-col justify-center items-start border-r border-base-content/10">
-                    <span
-                      className={
-                        "text-[0.625rem] lg:text-sm font-medium text-base-content"
-                      }
-                    >
+                    <span className={"text-xs font-medium text-base-content"}>
                       {author.nama}
                     </span>
                   </div>
@@ -108,7 +101,7 @@ const InformasiPengajuan: FC<Props> = ({
               )}
             >
               {/* label */}
-              <span className="text-xs lg:text-sm text-base-content/90 font-medium">
+              <span className="text-xs text-base-content font-medium">
                 Tanggal Diajukan
               </span>
 
@@ -141,7 +134,7 @@ const InformasiPengajuan: FC<Props> = ({
               )}
             >
               {/* label */}
-              <span className="text-xs lg:text-sm text-base-content/90 font-medium">
+              <span className="text-xs text-base-content font-medium">
                 Riwayat Pengajuan
               </span>
 

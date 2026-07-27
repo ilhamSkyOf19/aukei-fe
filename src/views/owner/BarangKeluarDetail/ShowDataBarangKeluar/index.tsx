@@ -89,7 +89,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
   return (
     <>
       {/* for sm */}
-      <div className="w-full flex flex-col justify-start items-center mt-2 gap-3 lg:hidden">
+      <div className="w-full flex flex-col justify-start items-center gap-3 lg:hidden">
         {/* data empty */}
         {isLoadingBarangKeluarDetail ? (
           Array.from({ length: 3 }).map((_, index) => (
@@ -240,25 +240,12 @@ const ShowDataBarangKeluar: FC<Props> = ({
       </div>
 
       {/* for lg */}
-      <div className="w-full hidden lg:flex rounded-xl bg-base-100 dark:border dark:border-base-content/10 flex-col justify-start items-start p-4">
-        {/* header */}
-
-        <div className="w-full flex flex-row justify-between items-center">
-          <p className="text-base font-semibold text-base-content">
-            Daftar Barang Keluar
-          </p>
-
-          {/* count */}
-          <p className="text-xs px-3 py-1 rounded-full font-medium bg-gray-300">
-            {dataBarangKeluarDetail?.data?.detailBarangKeluars.length} barang
-          </p>
-        </div>
-
-        <div className="overflow-x-auto w-full my-8">
+      <div className="w-full hidden lg:flex bg-base-100 dark:border dark:border-base-content/10 flex-col justify-start items-start rounded-2xl md:rounded-xl overflow-hidden">
+        <div className="overflow-x-auto w-full">
           <table className="table table-xs lg:table-sm">
             {/* head */}
             <thead>
-              <tr>
+              <tr className="text-[0.7rem] bg-base-200 h-12">
                 <th>No</th>
                 <th>Foto</th>
                 <th>Kode</th>
@@ -288,7 +275,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                     <tr
                       key={item.id}
                       className={cn(
-                        "transition-all duration-75 ease-in-out text-base-content",
+                        "transition-all duration-75 ease-in-out text-base-content text-[0.7rem]",
                         isActiveAksi === item.id && "bg-base-200",
                       )}
                     >

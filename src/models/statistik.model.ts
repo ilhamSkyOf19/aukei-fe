@@ -7,68 +7,96 @@ export interface ResponseRingkasanStatistikType {
   totalRataRataTransaksi: number;
   totalModal: number;
   totalLaba: number;
-  totalPiutang?: number;
+  totalPiutangTempo?: number;
   totalProdukTerjual: number;
   totalItemTerjual: number;
+  totalTransaksiBooking: number;
+  totalNilaiBooking: number;
+  totalBookingTerbayar: number;
+  totalBookingBelumTerbayar: number;
+  totalUangDiterima: number;
+  totalUangKembalian: number;
+  totalKasMasuk: number;
+  totalPiutangKasMasuk: number;
+}
+
+export interface StatistikTrendType {
+  total: number;
+  persentase: number;
+  trend: "up" | "down" | "same";
 }
 
 // response statistik with persentase
 export interface ResponseStatistikWithPersentaseType {
-  totalTransaksi: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalOmzet: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalRataRataTransaksi: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalModal: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalLaba: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalPiutang: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalProdukTerjual: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalItemTerjual: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalKerugian: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalBarangRusak: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
-  totalBarangHilang: {
-    total: number;
-    persentase: number;
-    trend: "up" | "down" | "same";
-  };
+  // ===========================
+  // KEUANGAN (REALISASI)
+  // ===========================
+
+  /** Seluruh uang yang benar-benar diterima */
+  totalKasMasuk: StatistikTrendType;
+
+  /** Jumlah transaksi yang sudah selesai */
+  totalTransaksiSelesai: StatistikTrendType;
+
+  /** Omzet dari transaksi selesai */
+  totalOmzetSelesai: StatistikTrendType;
+
+  /** Nilai rata-rata transaksi selesai */
+  rataRataTransaksiSelesai: StatistikTrendType;
+
+  /** Total biaya modal transaksi selesai */
+  totalModalSelesai: StatistikTrendType;
+
+  /** Total laba transaksi selesai */
+  totalLabaSelesai: StatistikTrendType;
+
+  /** Total piutang yang belum lunas */
+  totalPiutang: StatistikTrendType;
+
+  // ===========================
+  // PENJUALAN
+  // ===========================
+
+  /** Jumlah produk unik yang berhasil terjual */
+  totalProdukTerjual: StatistikTrendType;
+
+  /** Total item yang berhasil terjual */
+  totalItemTerjual: StatistikTrendType;
+
+  // ===========================
+  // BOOKING
+  // ===========================
+
+  /** Jumlah transaksi booking yang masih aktif */
+  totalBookingAktif: StatistikTrendType;
+
+  /** Potensi omzet seluruh booking */
+  totalPotensiOmzetBooking: StatistikTrendType;
+
+  /** Total DP yang sudah diterima */
+  totalDpBooking: StatistikTrendType;
+
+  /** Total sisa tagihan booking */
+  totalSisaTagihanBooking: StatistikTrendType;
+
+  /** Jumlah produk unik pada booking */
+  totalProdukBooking: StatistikTrendType;
+
+  /** Total item pada booking */
+  totalItemBooking: StatistikTrendType;
+
+  // ===========================
+  // INVENTORI
+  // ===========================
+
+  /** Total kerugian */
+  totalKerugian: StatistikTrendType;
+
+  /** Total barang rusak */
+  totalBarangRusak: StatistikTrendType;
+
+  /** Total barang hilang */
+  totalBarangHilang: StatistikTrendType;
 }
 
 export interface ResponseChartType {
@@ -97,4 +125,12 @@ export interface ResponseStatistikTopProdukType {
   totalTerjual: number;
   totalOmzet: number;
   value: number;
+}
+
+// statistik kebutuha barang
+export interface ResponseStatistikKebutuhanBarangBookingType {
+  totalProdukBooking: number;
+  totalItemBooking: number;
+  totalProdukPerluRestock: number;
+  totalKebutuhanStok: number;
 }

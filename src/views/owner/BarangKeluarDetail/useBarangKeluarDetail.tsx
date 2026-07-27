@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAlertAnimation } from "../../../hooks/useAlert";
@@ -7,6 +7,7 @@ import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import useConfirm from "../../../hooks/useConfirm";
 import {
+  BATAS_WAKTU_BATALKAN_POSTING_MS,
   ROLE_INTERNAL_TYPE,
   STATUS_INVENTORI_TYPE,
   type StatusInventoriType,
@@ -27,6 +28,9 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
   // navigate
   const navigate = useNavigate();
+
+  // current pathname
+  const currentPathname = useLocation().pathname;
 
   // show modal konfirmasi posting
   const {
@@ -217,7 +221,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     dataBarangKeluarDetail?.data &&
     dataBarangKeluarDetail?.data?.postedAt &&
     Date.now() - new Date(dataBarangKeluarDetail?.data?.postedAt).getTime() >
-      24 * 60 * 60 * 1000;
+      BATAS_WAKTU_BATALKAN_POSTING_MS;
 
   // handle posting
   const handleCancelPosting = async (id: number) => {
@@ -371,6 +375,17 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const isCanUpdate =
     isStatusDraft ||
     (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
+
+  // hadle back
+  const handleBack = () => {
+    return navigate(
+      currentPathname
+        .split("/")
+        .slice(0, pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? -2 : -1)
+        .join("/"),
+    );
+  };
+
   return {
     dataBarangKeluarDetail,
     isLoadingBarangKeluarDetail,
@@ -415,6 +430,8 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     canShowFormTambahBarang,
     isCanUpdate,
     isCanBatalkanPosting,
+
+    handleBack,
   };
 };
 

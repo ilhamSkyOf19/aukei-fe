@@ -55,7 +55,7 @@ const InputTextAreaNonIcon: FC<Props> = ({
           "mt-2 flex flex-row justify-start items-center gap-2 border rounded-xl w-full transition-all duration-300 ease-in-out bg-base-100 focus-within:ring-1",
           errorMessage
             ? "border-error focus-within:ring-error"
-            : "border-base-content/40 focus-within:ring-base-content",
+            : "border-base-content/40 focus-within:ring-custom-secondary",
         )}
       >
         <textarea

@@ -124,6 +124,20 @@
 
 - [✅] Memberikan modal pesan error agar menggunakan booking , jika stok tidak cukup
 
+- [✅] Perbaiki service keranjang
+
+- [ ] Perbaiki ui
+  - [ ] Rapihkan service dari barang keluar
+
+- [] Membuat
+  - [60%] saya ingin membuat tombol booking tersendiri , agar dapat melakukan booking tidak menggunakan handle redirect booking,
+
+- [ ] Buat statistik pantauan stok
+
+- [ ] Buat fungsi refresh di statistik dan membuat design mobile
+
+- [ ] perbaiki halaman data pelanggan
+
 - [ ] Sesuaikan flow transaksi yang saat ini (lihat BE)
   - [ ] Sesuaikan pada halaman booking , berikan pesan atau peringatan jika stok tidak mencukupi untuk melakukan pelunasan
   - [ ] Invalidate query jika success

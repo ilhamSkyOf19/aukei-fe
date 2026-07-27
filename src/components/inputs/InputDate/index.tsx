@@ -86,14 +86,7 @@ export const InputDate = <T extends FieldValues>({
       {label && (
         <>
           <div className="flex-2 relative">
-            <label
-              className={cn(
-                "capitalize",
-                xs ? "text-xs" : "text-xs lg:text-sm",
-              )}
-            >
-              {label}
-            </label>
+            <label className={cn("capitalize text-xs")}>{label}</label>
 
             <span className="absolute -top-1 ml-1 text-error">
               {required && "*"}
@@ -108,7 +101,6 @@ export const InputDate = <T extends FieldValues>({
             "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-40 focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 ",
             xs ? "h-7 lg:h-8 px-2.5" : "h-9 lg:h-10 px-3",
             error && "border-error",
-            label && "mt-2",
           )}
         >
           <input
@@ -134,7 +126,7 @@ export const InputDate = <T extends FieldValues>({
       </div>
 
       {selected && (
-        <p className="text-xs text-base-content font-medium -mt-8 py-3 px-3 border rounded-xl border-base-content/50">
+        <p className="text-xs text-base-content font-medium -mt-12 py-3">
           Tanggal Pilih:{" "}
           {noTime?.endTime
             ? endOfDay(selected).toLocaleString()

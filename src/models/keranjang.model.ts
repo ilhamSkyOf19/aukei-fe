@@ -21,4 +21,5 @@ export interface ResponseKeranjangType extends Pick<
   "id" | "details" | "status" | "totalBayar" | "totalDiskon" | "totalItem"
 > {
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
+  kasir: Pick<IPelangganType, "id" | "nama" | "noWa">;
 }

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BarangMasukServices } from "../../../services/barangMasuk.service";
@@ -8,6 +8,7 @@ import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import useConfirm from "../../../hooks/useConfirm";
 import {
+  BATAS_WAKTU_BATALKAN_POSTING_MS,
   ROLE_INTERNAL_TYPE,
   STATUS_INVENTORI_TYPE,
   type StatusInventoriType,
@@ -19,7 +20,6 @@ import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangM
 import useModal from "../../../hooks/useModal";
 
 // Batas waktu (ms) setelah posting sebelum dianggap expired dan tidak bisa dibatalkan
-const BATAS_WAKTU_BATALKAN_POSTING_MS = 2 * 60 * 1000; // 2 menit
 
 const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { fromPengajuanBarang } = params;
@@ -29,6 +29,9 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
+
+  // currentpathname
+  const currentPathname = useLocation().pathname;
 
   // Invalidate seluruh query terkait detail barang masuk & notifikasi setelah suatu aksi berhasil
   const invalidateBarangMasukQueries = () => {
@@ -343,6 +346,16 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const isCanBatalkanPosting =
     isStatusPosted && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && !isExpired;
 
+  // hadle back
+  const handleBack = () => {
+    return navigate(
+      currentPathname
+        .split("/")
+        .slice(0, pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? -2 : -1)
+        .join("/"),
+    );
+  };
+
   // Ekspos state & handler yang dibutuhkan oleh komponen UI detail barang masuk
   return {
     dataBarangMasukDetail,
@@ -392,6 +405,8 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     canShowFormTambahBarang,
     isCanUpdate,
     isCanBatalkanPosting,
+
+    handleBack,
   };
 };
 

@@ -7,6 +7,9 @@ import { PegawaiServices } from "../../../services/pegawai.service";
 import useModal from "../../../hooks/useModal";
 import type { ResponsePegawaiType } from "../../../models/pegawai.model";
 import useDeletePegawai from "../../../hooks/useDeletePegawai";
+import axios from "axios";
+import type { ErrorResponse } from "../../../types/response.type";
+import useConfirm from "../../../hooks/useConfirm";
 
 const usePegawai = () => {
   const queryClient = useQueryClient();
@@ -24,6 +27,14 @@ const usePegawai = () => {
       setChoosePegawai((prev) => [...prev, data]);
     }
   };
+
+  // use modal alert confirm
+  const {
+    modalRef: modalAlertConfirmRef,
+    handleCancel: handleCancelModalAlertConfirm,
+    data,
+    confirm,
+  } = useConfirm<{ bigTitle: string; smallTitle: string }>();
 
   // Modal formulir tambah/edit pegawai
   const {
@@ -104,6 +115,16 @@ const usePegawai = () => {
     }
   };
 
+  // handle show modal failed delete
+  const handleShowModalFailedDelete = async () => {
+    // confirm
+    await confirm({
+      bigTitle: "Data pegawai ini masih digunakan di transaksi.",
+      smallTitle:
+        "Data untuk saat ini tidak dapat dihapus. Silahkan pilih data lain.",
+    });
+  };
+
   // Mutation untuk menghapus beberapa pegawai sekaligus
   const { mutateAsync: deleteMany, isPending: isPendingDeleteMany } =
     useMutation({
@@ -117,8 +138,17 @@ const usePegawai = () => {
         // Reset pilihan setelah berhasil dihapus
         setChoosePegawai([]);
       },
-      onError: (err) => {
-        console.log(err);
+      onError: async (err) => {
+        if (axios.isAxiosError<ErrorResponse>(err)) {
+          if (err.response?.data?.meta?.message?.includes("Relationship")) {
+            // close modal delete
+            handleCloseModalDeleteMany();
+
+            await handleShowModalFailedDelete();
+
+            return;
+          }
+        }
       },
     });
 
@@ -160,6 +190,7 @@ const usePegawai = () => {
     handleInvalidate: () =>
       queryClient.refetchQueries({ queryKey: ["pegawai"] }),
     handleToast: handleSetToast,
+    handleShowModalFailedDelete: handleShowModalFailedDelete,
   });
 
   // Mutation untuk mengubah status aktif/nonaktif pegawai
@@ -227,6 +258,9 @@ const usePegawai = () => {
     handelUpdateIsActive,
     variablesUpdateIsActive,
     isPendingUpdateIsActive,
+    modalAlertConfirmRef,
+    handleCancelModalAlertConfirm,
+    data,
   };
 };
 

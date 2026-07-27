@@ -1,4 +1,5 @@
 import instanceAxios from "../libs/axios";
+import type { PaginationType } from "../models/pagination.model";
 import type {
   ResponseStatistikWithPersentaseType,
   ResponseChartType,
@@ -6,8 +7,13 @@ import type {
   ResponseChartMetodePembayaranType,
   ResponseStatistikTopPelangganType,
   ResponseStatistikTopProdukType,
+  ResponseStatistikKebutuhanBarangBookingType,
 } from "../models/statistik.model";
-import type { QueryRiwayatTransactionType } from "../models/transaction.model";
+import type {
+  QueryRiwayatTransactionType,
+  ResponseStatistikBookingType,
+  ResponseStatistikKebutuhanBarangWithMetaType,
+} from "../models/transaction.model";
 import type { ResponseStructure } from "../types/response.type";
 
 export class StatistikServices {
@@ -64,6 +70,32 @@ export class StatistikServices {
     return result.data;
   }
 
+  // get chart kas masuk
+  static async chartKasMasuk(query: {
+    startDate?: string;
+    endDate?: string;
+  }): Promise<ResponseStructure<ResponseChartType[] | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseChartType[] | null>
+    >("/statistik/chart-kas-masuk", { params: query });
+
+    return result.data;
+  }
+
+  // get chart  kerugian
+  static async chartKerugian(query: {
+    startDate?: string;
+    endDate?: string;
+  }): Promise<ResponseStructure<ResponseChartType[] | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseChartType[] | null>
+    >("/statistik/chart-kerugian", { params: query });
+
+    return result.data;
+  }
+
   // get chart laba
   static async chartLaba(query: {
     startDate?: string;
@@ -86,6 +118,32 @@ export class StatistikServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseChartType[] | null>
     >("/statistik/chart-produk", { params: query });
+
+    return result.data;
+  }
+
+  // get chart barang rusak
+  static async chartBarangRusak(query: {
+    startDate?: string;
+    endDate?: string;
+  }): Promise<ResponseStructure<ResponseChartType[] | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseChartType[] | null>
+    >("/statistik/chart-barang-rusak", { params: query });
+
+    return result.data;
+  }
+
+  // get chart barang hilang
+  static async chartBarangHilang(query: {
+    startDate?: string;
+    endDate?: string;
+  }): Promise<ResponseStructure<ResponseChartType[] | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseChartType[] | null>
+    >("/statistik/chart-barang-hilang", { params: query });
 
     return result.data;
   }
@@ -138,6 +196,34 @@ export class StatistikServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseStatistikTopProdukType[] | null>
     >("/statistik/top-produk", { params: query });
+
+    return result.data;
+  }
+
+  // kebutuhan barang
+  static async kebutuhanBarangBooking(
+    query: PaginationType & { kategori?: string },
+  ): Promise<
+    ResponseStructure<ResponseStatistikKebutuhanBarangWithMetaType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseStatistikKebutuhanBarangWithMetaType | null>
+    >("/statistik/kebutuhan-barang-booking", { params: query });
+
+    return result.data;
+  }
+
+  //  statistik kebutuhan barang booking
+  static async statistikKebutuhanBarangBooking(query: {
+    kategori?: string;
+  }): Promise<
+    ResponseStructure<ResponseStatistikKebutuhanBarangBookingType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseStatistikKebutuhanBarangBookingType | null>
+    >("/statistik/statistik-kebutuhan-barang-booking", { params: query });
 
     return result.data;
   }

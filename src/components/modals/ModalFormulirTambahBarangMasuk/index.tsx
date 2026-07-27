@@ -7,7 +7,7 @@ import InputNumber from "../../inputs/InputNumber";
 import type { CreateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
 import { PackagePlus, Trash2 } from "lucide-react";
 import InputSearch from "../../inputs/InputSearch";
-import { formatRupiah } from "../../../helpers/helpers";
+import { formatRupiah, formatRupiahShort } from "../../../helpers/helpers";
 import useModalFormulirTambahBarangMasuk from "./useModalFormulirTambahBarangMasuk";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
@@ -98,7 +98,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                 {/* modal show data produk for choose */}
                 <div
                   className={cn(
-                    "absolute bg-base-100 w-full z-40 rounded-lg top-full grid transition-all duration-300 ease-in-out",
+                    "absolute bg-base-100 w-full z-40 rounded-2xl md:rounded-xl shadow-xl top-full grid transition-all duration-300 ease-in-out",
                     activeComponentChooseProduk
                       ? "grid-rows-[1fr]"
                       : "grid-rows-[0fr]",
@@ -107,7 +107,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                   <div className="overflow-y-scroll scrollbar-thin">
                     <div
                       className={cn(
-                        "w-full flex flex-col h-40 rounded-lg px-2.5 py-4 gap-2",
+                        "w-full flex flex-col h-40 px-2.5 py-4 gap-2",
                       )}
                     >
                       {isLoadingProdukForChoose ? (
@@ -135,10 +135,10 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
 
                               {/* nama */}
                               <div className="flex flex-col justify-start items-start gap-1">
-                                <p className="text-xs text-left font-medium lg:text-sm text-base-content lg:font-semibold">
+                                <p className="text-xs text-left font-medium text-base-content">
                                   {item.nama}
                                 </p>
-                                <p className="text-[0.625rem] font-medium lg:text-xs text-base-content/50 lg:font-semibold">
+                                <p className="text-[0.625rem] font-medium lg:text-xs text-base-content/70">
                                   {item.kode}
                                 </p>
                               </div>
@@ -150,8 +150,10 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                                 Harga Beli
                               </span>
                               {/* value */}
-                              <span className="text-[0.625rem] font-semibold text-base-content">
-                                {formatRupiah(item.hargaBeli)}
+                              <span className="text-[0.625rem] font-medium text-base-content">
+                                {item.hargaBeli > 1000000
+                                  ? formatRupiahShort(item.hargaBeli)
+                                  : formatRupiah(item.hargaBeli)}
                               </span>
                             </div>
                           </button>
@@ -192,10 +194,10 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
 
                           {/* nama */}
                           <div className="flex flex-col justify-start items-start gap-1">
-                            <p className="text-xs lg:text-sm font-semibold text-base-content">
+                            <p className="text-xs font-medium text-base-content">
                               {item.nama}
                             </p>
-                            <p className="text-[0.625rem] lg:text-xs text-base-content/50 font-medium">
+                            <p className="text-[0.625rem] lg:text-xs text-base-content/70 font-medium">
                               {item.kode}
                             </p>
                           </div>

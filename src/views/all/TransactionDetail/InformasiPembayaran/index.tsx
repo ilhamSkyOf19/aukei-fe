@@ -38,7 +38,6 @@ type Props = {
     totalPembayaran: number;
     totalDiBayar: number | undefined;
     totalKembalian: number | undefined;
-    uangMuka: number | null | undefined;
     sisaTagihan: number | undefined;
   };
   isPageBookingKasir?: boolean;
@@ -151,7 +150,10 @@ const InformasiPembayaran: FC<Props> = ({
                   <div className="w-30 h-4 skeleton" />
                 ) : (
                   <span className="text-xs text-base-content font-semibold">
-                    {formatRupiah(transactionSummary.uangMuka ?? 0)}
+                    {formatRupiah(
+                      (transactionSummary.totalDiBayar ?? 0) -
+                        (transactionSummary.totalKembalian ?? 0),
+                    )}
                   </span>
                 )}
               </div>
@@ -171,20 +173,23 @@ const InformasiPembayaran: FC<Props> = ({
               )}
             </div>
             {/* kembalian */}
-            {dataTransaction?.data?.metodePembayaran === "CASH" && (
-              <div className="w-full flex flex-row justify-between items-center">
-                <span className="text-xs text-base-content/70 font-medium">
-                  Kembalian
-                </span>
-                {isLoadingTransaction ? (
-                  <div className="w-30 h-4 skeleton" />
-                ) : (
-                  <span className="text-xs text-emerald-600 font-semibold">
-                    {formatRupiah(transactionSummary.totalKembalian ?? 0)}
+            {dataTransaction?.data?.metodePembayaran === "CASH" ||
+              (dataTransaction?.data?.paymentTransactions?.some(
+                (item) => item.metodePembayaran === "CASH",
+              ) && (
+                <div className="w-full flex flex-row justify-between items-center">
+                  <span className="text-xs text-base-content/70 font-medium">
+                    Kembalian
                   </span>
-                )}
-              </div>
-            )}
+                  {isLoadingTransaction ? (
+                    <div className="w-30 h-4 skeleton" />
+                  ) : (
+                    <span className="text-xs text-emerald-600 font-semibold">
+                      {formatRupiah(transactionSummary.totalKembalian ?? 0)}
+                    </span>
+                  )}
+                </div>
+              ))}
             {dataTransaction?.data?.status === "BOOKING" && (
               <div className="w-full flex flex-row justify-between items-center">
                 <span className="text-xs text-base-content/70 font-medium">

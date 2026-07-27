@@ -14,7 +14,7 @@ const useGrafikBatang = () => {
   const data = useQueries({
     queries: [
       {
-        queryKey: ["chart-produk", startDate, endDate],
+        queryKey: ["chart-produk", startDate, endDate, isChoose],
         queryFn: () =>
           StatistikServices.chartProduk({
             ...(startDate && { startDate }),
@@ -25,7 +25,7 @@ const useGrafikBatang = () => {
         enabled: isChoose === "produk" && !!startDate && !!endDate,
       },
       {
-        queryKey: ["chart-item", startDate, endDate],
+        queryKey: ["chart-item", startDate, endDate, isChoose],
         queryFn: () =>
           StatistikServices.chartItem({
             ...(startDate && { startDate }),
@@ -34,6 +34,28 @@ const useGrafikBatang = () => {
         retry: false,
         refetchOnWindowFocus: false,
         enabled: isChoose === "item" && !!startDate && !!endDate,
+      },
+      {
+        queryKey: ["chart-barang-rusak", startDate, endDate, isChoose],
+        queryFn: () =>
+          StatistikServices.chartBarangRusak({
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+          }),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: isChoose === "rusak" && !!startDate && !!endDate,
+      },
+      {
+        queryKey: ["chart-barang-hilang", startDate, endDate, isChoose],
+        queryFn: () =>
+          StatistikServices.chartBarangHilang({
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+          }),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: isChoose === "hilang" && !!startDate && !!endDate,
       },
     ],
   });
@@ -45,6 +67,16 @@ const useGrafikBatang = () => {
       isFetching: isFetchingProduk,
     },
     { data: dataItem, isLoading: isLoadingItem, isFetching: isFetchingItem },
+    {
+      data: dataBarangRusak,
+      isLoading: isLoadingBarangRusak,
+      isFetching: isFetchingBarangRusak,
+    },
+    {
+      data: dataBarangHilang,
+      isLoading: isLoadingBarangHilang,
+      isFetching: isFetchingBarangHilang,
+    },
   ] = data;
 
   // data chart
@@ -55,7 +87,13 @@ const useGrafikBatang = () => {
     if (isChoose === "item") {
       return dataItem?.data ?? [];
     }
-  }, [isChoose, dataProduk, dataItem]);
+    if (isChoose === "rusak") {
+      return dataBarangRusak?.data ?? [];
+    }
+    if (isChoose === "hilang") {
+      return dataBarangHilang?.data ?? [];
+    }
+  }, [isChoose, dataProduk, dataItem, dataBarangRusak, dataBarangHilang]);
 
   // loading chart aktif
   const isLoading = useMemo(() => {
@@ -65,12 +103,22 @@ const useGrafikBatang = () => {
     if (isChoose === "item") {
       return isLoadingItem || isFetchingItem;
     }
+    if (isChoose === "rusak") {
+      return isLoadingBarangRusak || isFetchingBarangRusak;
+    }
+    if (isChoose === "hilang") {
+      return isLoadingBarangHilang || isFetchingBarangHilang;
+    }
   }, [
     isChoose,
     isLoadingProduk,
     isFetchingProduk,
     isLoadingItem,
     isFetchingItem,
+    isLoadingBarangRusak,
+    isFetchingBarangRusak,
+    isLoadingBarangHilang,
+    isFetchingBarangHilang,
   ]);
 
   const handleSetIsChoose = (value: string) => {

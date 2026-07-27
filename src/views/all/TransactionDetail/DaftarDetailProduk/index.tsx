@@ -101,7 +101,7 @@ const DaftarDetailProduk: FC<Props> = ({
                   <>
                     {dataTransaction?.data?.details.map((item, index) => {
                       const kebutuhanBarang = dataKebutuhanBarang?.data?.find(
-                        (kebutuhan) => kebutuhan.produk.id === item.id,
+                        (kebutuhan) => kebutuhan.produk.id === item.produk.id,
                       );
 
                       return (
@@ -294,9 +294,7 @@ const DaftarDetailProduk: FC<Props> = ({
                                   {formatNumber(
                                     dataKebutuhanBarang?.data?.reduce(
                                       (total, item) =>
-                                        total +
-                                        item.produk.stokBooking -
-                                        item.produk.stokTersedia,
+                                        total + item.produk.stokBooking,
                                       0,
                                     ) ?? 0,
                                   )}{" "}

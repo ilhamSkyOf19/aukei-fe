@@ -52,10 +52,10 @@ const Kredit = () => {
     pengguna,
   } = useKredit();
   return (
-    <div className="w-full h-screen overflow-y-auto">
+    <div className="w-full">
       {(windowSize === "lg" && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) ||
       pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? (
-        <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-center">
+        <div className="w-full flex flex-col justify-start items-center px-2.5">
           {/* statistik */}
           {pengguna?.role === "OWNER" && (
             <div className="w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
@@ -192,7 +192,7 @@ const Kredit = () => {
               />
             </div>
 
-            <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
+            <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-2.5 mt-3 md:mt-0">
               {/* filter sort */}
               <FilterSort
                 setSort={setSort}

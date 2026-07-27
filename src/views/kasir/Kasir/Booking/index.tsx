@@ -11,14 +11,7 @@ import {
   unformatRupiah,
 } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import {
-  ArrowLeftRight,
-  Banknote,
-  CalendarClock,
-  Landmark,
-  QrCode,
-  X,
-} from "lucide-react";
+import { ArrowLeftRight, Banknote, Landmark, QrCode, X } from "lucide-react";
 import CardMetodePembayaran from "../../../../components/ui/cards/CardMetodePembayaran";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
@@ -26,12 +19,11 @@ import ModalAlert from "../../../../components/modals/ModalAlert";
 import { PAYMENT_METHOD_TYPE } from "../../../../types/constant.type";
 
 type Props = {
-  handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
   kasir?: PayloadPenggunaInternalType | null;
 };
 
-const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
+const Booking: FC<Props> = ({ handleToast, kasir }) => {
   // call use
   const {
     dataDetails,
@@ -62,7 +54,7 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
     setDataDp,
 
     dataDp,
-  } = useBooking({ handleSteps, handleToast, kasir });
+  } = useBooking({ handleToast, kasir });
   return (
     <div className="w-full h-[95vh]  grid grid-cols-3 gap-2.5">
       <div className="col-span-2 grid grid-rows-10 min-h-0 gap-2.5">
@@ -157,15 +149,16 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                         <span
                           className={cn(
                             "xl:text-[0.7rem]",
-                            item.stokTersedia === 0
+                            item?.stokTersedia && item.stokTersedia <= 0
                               ? "text-error"
                               : "text-base-content",
                           )}
                         >
                           {/* stok tersedia */}
-                          {item.stokTersedia > 0
-                            ? formatNumber(item.stokTersedia)
-                            : 0}
+                          {item?.stokTersedia && item.stokTersedia > 0
+                            ? formatNumber(item?.stokTersedia)
+                            : 0}{" "}
+                          Pcs
                         </span>
                       </td>
                       <td>
@@ -253,7 +246,7 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
             </div>
 
             {/* saran dp */}
-            <div className="w-full flex flex-row justify-between items-center py-1 border-t border-base-content/10">
+            <div className="w-full flex flex-row justify-between items-center py-1 border-t border-base-content/10 pt-2.5">
               {/* label */}
               <p className="text-[0.7rem] font-medium text-base-content">
                 Saran DP{" "}
@@ -300,7 +293,7 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
 
         <div className="flex flex-col justify-start items-start gap-2.5 w-full mt-2.5">
           <span className="text-sm font-medium text-base-content">
-            Metode Pembayaran
+            Metode Pembayaran Uang DP
           </span>
 
           <div className="w-full flex flex-col justify-start items-start gap-2.5">
@@ -315,6 +308,7 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                 handleClick={() => handleMetodePembayaran("CASH")}
                 isActive={metodePembayaran === "CASH"}
                 noDeskripsi
+                isError={isErrors?.includes("METODE_PEMBAYARAN_KOSONG")}
               />
 
               {/* transfer */}
@@ -327,9 +321,9 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                 handleClick={() => handleMetodePembayaran("TRANSFER")}
                 isActive={metodePembayaran === "TRANSFER"}
                 noDeskripsi
+                isError={isErrors?.includes("METODE_PEMBAYARAN_KOSONG")}
               />
             </div>
-
             <div className="w-full flex flex-row justify-between items-center gap-2.5">
               {/* qris */}
               <CardMetodePembayaran
@@ -341,29 +335,22 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                 handleClick={() => handleMetodePembayaran("QRIS")}
                 isActive={metodePembayaran === "QRIS"}
                 noDeskripsi
-              />
-
-              {/* tempo */}
-              <CardMetodePembayaran
-                icon={CalendarClock}
-                bgColor="bg-amber-50"
-                iconColor="text-amber-500"
-                label="Kredit / Cicilan"
-                description="Bayar melalui kredit atau cicilan."
-                handleClick={() => handleMetodePembayaran("TEMPO")}
-                isActive={metodePembayaran === "TEMPO"}
-                noDeskripsi
+                isError={isErrors?.includes("METODE_PEMBAYARAN_KOSONG")}
               />
             </div>
 
+            {isErrors?.includes("METODE_PEMBAYARAN_KOSONG") && (
+              <ErrorMessage errorMessage="Silahkan pilih metode pembayaran" />
+            )}
+
             {/* ringkasan pembayaran */}
             {metodePembayaran === PAYMENT_METHOD_TYPE.CASH && (
-              <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5 border-b border-base-content/10 pb-2.5">
+              <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5 border-b border-dashed border-base-content/30 pb-2.5">
                 <span className="text-sm font-medium text-base-content">
-                  Ringkasan Pembayaran
+                  Ringkasan Pembayaran Tunai
                 </span>
                 <div className="w-full flex flex-row justify-between items-center">
-                  <span className="text-xs font-medium text-base-content">
+                  <span className="text-[0.7rem] font-medium text-base-content">
                     Uang Diterima
                   </span>
                   {/* total */}
@@ -372,7 +359,7 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                   </span>
                 </div>
                 <div className="w-full flex flex-row justify-between items-center">
-                  <span className="text-xs font-medium text-base-content">
+                  <span className="text-[0.7rem] font-medium text-base-content">
                     Uang Kembalian
                   </span>
                   {/* total */}
@@ -386,7 +373,6 @@ const Booking: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                 </div>
               </div>
             )}
-
             {/* button */}
             <div className="w-full flex flex-col justify-start items-center gap-1 mt-2.5">
               {/* button bayar */}

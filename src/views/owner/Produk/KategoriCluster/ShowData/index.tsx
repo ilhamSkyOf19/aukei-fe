@@ -7,15 +7,16 @@ import { EllipsisVertical, Pencil, Tag, Trash2 } from "lucide-react";
 import type { ResponseKategoriProdukType } from "../../../../../models/kategoriProduk.model";
 import DataEmpty from "../../../../../components/messages/DataEmpty";
 import ModalFormulirKategoriProduk from "../../../../../components/modals/ModalFormulirKategoriProduk";
-import Toast from "../../../../../components/messages/Toast";
-import { TOAST_CONFIG_KATEGORI_PRODUK } from "../../../../../types/toast.type";
-import Alert from "../../../../../components/messages/Alert";
-import { ALERT_CONFIG_KATEGORI_PRODUK } from "../../../../../types/alert.types";
 import ModalDelete from "../../../../../components/modals/ModalDelete";
 import ButtonWithIcon from "../../../../../components/ui/button/ButtonWithIcon";
 import LabelButtonDropDownWithIcon from "../../../../../components/ui/button/LabelButtonDropDownWithIcon";
+import ButtonText from "../../../../../components/ui/button/ButtonText";
 
-const ShowData = () => {
+type Props = {
+  handleSetAlert: (alert: string) => void;
+  handleSetToast: (toast: string) => void;
+};
+const ShowData: FC<Props> = ({ handleSetAlert, handleSetToast }) => {
   // call use
   const {
     dataKategoriProduk,
@@ -29,39 +30,18 @@ const ShowData = () => {
     handleCloseModalFormulirKategori,
     handleShowModalFormulirKategori,
     modalFormulirKategoriRef,
-    toast,
-    alert,
     handleCloseModalDelete,
     handleDelete,
     handleShowModalDelete,
     isPendingDelete,
     modalDeleteRef,
     dataDelete,
-  } = useShowData();
+  } = useShowData({ handleSetAlert, handleSetToast });
 
   return (
-    <div className="lg:rounded-xl flex-2 lg:bg-base-100 flex flex-col justify-start items-start lg:p-4 lg:h-[75vh] border border-transparent dark:border-base-content/10">
-      {/* alert */}
-      {alert && (
-        <Alert
-          alert={alert?.id !== null}
-          isAnimationOut={alert?.isAnimationOut || false}
-          label={ALERT_CONFIG_KATEGORI_PRODUK[alert.type].message}
-        />
-      )}
-
-      {/* toast */}
-      {toast && (
-        <Toast
-          toast={toast?.id !== null}
-          isAnimationOut={toast?.isAnimationOut || false}
-          label={TOAST_CONFIG_KATEGORI_PRODUK[toast.type].message}
-          color={TOAST_CONFIG_KATEGORI_PRODUK[toast.type].color}
-        />
-      )}
-
+    <div className="lg:rounded-xl flex-2 lg:bg-base-100 flex flex-col justify-start items-start lg:h-[75vh] border border-transparent dark:border-base-content/10">
       {/* filter */}
-      <div className="rounded-2xl bg-base-100 p-2.5 lg:p-0 w-full flex flex-col md:flex-row justify-start items-start mb-4 lg:mb-0">
+      <div className="rounded-2xl bg-base-100 p-2.5 w-full flex flex-col md:flex-row justify-start items-start lg:mb-0">
         {/* button add  */}
         <div className="md:hidden block w-full mb-3">
           <ButtonWithIcon
@@ -95,7 +75,7 @@ const ShowData = () => {
       </div>
 
       {/* content */}
-      <div className="w-full flex flex-col justify-start items-center gap-2 lg:mt-4 lg:overflow-y-auto lg:py-4 lg:scrollbar-thumb-custom-secondary">
+      <div className="w-full flex flex-col justify-start items-center gap-2 lg:overflow-y-auto lg:py-2.5 lg:px-2.5 scrollbar-thumb-custom-secondary scrollbar-thin mt-2.5">
         {isLoadingKategoriProduk ? (
           Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className="w-full h-18 skeleton" />
@@ -120,16 +100,18 @@ const ShowData = () => {
       </div>
 
       {/* pagination and limits */}
-      <PaginationAndLimit
-        currentPage={dataKategoriProduk?.data?.meta.currentPage || null}
-        totalPage={dataKategoriProduk?.data?.meta.totalPage || null}
-        setPage={handlePage}
-        setLimit={handleLimit}
-        customPositionPagination="end"
-        customWindowSize={3}
-        emptyData={!isExistDataKategoriProduk}
-        limit={dataKategoriProduk?.data?.meta?.limit}
-      />
+      <div className="w-full lg:px-2.5 py-1.5">
+        <PaginationAndLimit
+          currentPage={dataKategoriProduk?.data?.meta.currentPage || null}
+          totalPage={dataKategoriProduk?.data?.meta.totalPage || null}
+          setPage={handlePage}
+          setLimit={handleLimit}
+          customPositionPagination="end"
+          customWindowSize={3}
+          emptyData={!isExistDataKategoriProduk}
+          limit={dataKategoriProduk?.data?.meta?.limit}
+        />
+      </div>
 
       {/* modal  */}
       <ModalFormulirKategoriProduk
@@ -169,16 +151,16 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
     <div className="w-full flex flex-row justify-start items-center min-h-18 rounded-2xl border border-base-content/20 px-4 py-2 bg-base-100">
       <div className="flex-2 flex flex-row justify-start items-center h-full gap-3">
         <Tag className="size-5 text-base-content" />
-        <span className="text-base-content font-semibold text-xs md:text-sm">
+        <span className="text-base-content font-semibold text-xs">
           {data.nama}
         </span>
       </div>
 
       <div className="flex-2 flex flex-col justify-center items-start">
-        <span className="text-[0.625rem] font-semibold text-base-content">
+        <span className="text-[0.7rem] font-semibold text-base-content">
           Keterangan:
         </span>
-        <span className="text-[0.625rem] lg:text-[0.7rem] text-base-content">
+        <span className="text-[0.7rem] lg:text-[0.7rem] text-base-content">
           {data.keterangan || "-"}
         </span>
       </div>
@@ -186,20 +168,18 @@ const CardKategoriProduk: FC<KategoriProdukProps> = ({
       {/* aksi */}
       <div className="lg:flex-1 flex flex-row justify-end items-center mx-1">
         <div className="w-full hidden md:flex flex-row justify-end items-center gap-2.5">
-          <button
-            type="button"
-            className="btn btn-xs btn-info text-primary-white"
-            onClick={() => handleUpdate?.(data.id)}
-          >
-            Ubah
-          </button>
-          <button
-            type="button"
-            className="btn btn-xs btn-error text-primary-white"
-            onClick={() => handleDelete()}
-          >
-            Hapus
-          </button>
+          <ButtonText
+            bgColor="bg-info"
+            textColor="text-primary-white"
+            handleClick={() => handleUpdate?.(data.id)}
+            label="Update"
+          />
+          <ButtonText
+            bgColor="bg-error"
+            textColor="text-primary-white"
+            handleClick={() => handleDelete()}
+            label="Hapus"
+          />
         </div>
 
         {/* dropdowm */}

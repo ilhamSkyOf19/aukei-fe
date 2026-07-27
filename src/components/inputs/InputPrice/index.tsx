@@ -47,7 +47,10 @@ export default function InputPrice<T extends FieldValues = any>({
     <div className={cn("w-full", fieldState.error && "mb-3")}>
       {label && (
         <div className="flex-2 relative">
-          <label htmlFor={name} className={cn("capitalize", "text-xs")}>
+          <label
+            htmlFor={name}
+            className={cn("capitalize text-base-content", "text-xs")}
+          >
             {label}
           </label>
 

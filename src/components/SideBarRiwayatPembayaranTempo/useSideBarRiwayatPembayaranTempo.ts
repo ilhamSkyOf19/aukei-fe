@@ -26,7 +26,8 @@ const useSideBarRiwayatPembayaranTempo = () => {
       TempoService.historyPaymentTempo({
         tempoId: validatedId!,
         query: {
-          ...(cicilanKe && { cicilanKe: cicilanKe.toString() }),
+          ...(cicilanKe &&
+            cicilanKe !== "dp" && { cicilanKe: cicilanKe.toString() }),
           ...(page && { page }),
         },
       }),

@@ -79,11 +79,10 @@ const InformasiBarangKeluar: FC<Props> = ({
   });
 
   return (
-    <div className="w-full flex flex-col justify-start items-center lg:items-start lg:flex-row gap-2">
+    <div className="w-full flex flex-col justify-start items-center lg:items-stretch lg:flex-row gap-2">
       {author && (
         <InformasiPengajuan
           author={author}
-          customHeight="lg:min-h-75"
           isLoading={isLoadingBarangKeluarDetail}
           tanggalDiajukan={tanggalDiajukan}
         />
@@ -91,7 +90,7 @@ const InformasiBarangKeluar: FC<Props> = ({
 
       {/* informasi barang keluar */}
 
-      <div className="rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-75">
+      <div className="rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6">
         {/* title */}
         <div className="w-full flex flex-row justify-start items-center">
           <h2 className="text-base-content text-sm font-semibold">
@@ -120,7 +119,7 @@ const InformasiBarangKeluar: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <span className="text-xs lg:text-sm text-base-content/90 font-medium">
+                <span className="text-xs text-base-content font-medium">
                   Tanggal Barang Keluar
                 </span>
 
@@ -158,7 +157,7 @@ const InformasiBarangKeluar: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <span className="text-xs lg:text-sm text-base-content/90 font-medium">
+                <span className="text-xs text-base-content font-medium">
                   Jenis Keluar
                 </span>
 
@@ -241,7 +240,7 @@ const InformasiBarangKeluar: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <span className="text-xs lg:text-sm text-base-content/90 font-medium">
+                <span className="text-xs text-base-content font-medium">
                   Keterangan
                 </span>
 
@@ -292,7 +291,6 @@ const InformasiBarangKeluar: FC<Props> = ({
                           errorMessage={errors?.keterangan?.message}
                           required
                           rows={4}
-                          xs
                         />
                       </div>
                     </CardForm>
@@ -305,7 +303,7 @@ const InformasiBarangKeluar: FC<Props> = ({
       </div>
 
       {/* informasi ringkasan */}
-      <div className="rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6 lg:min-h-75">
+      <div className="rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6">
         {/* title */}
         <div className="w-full flex flex-row justify-start items-center">
           <h2 className="text-base-content text-sm font-semibold">Ringkasan</h2>
@@ -332,7 +330,7 @@ const InformasiBarangKeluar: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <span className="text-xs lg:text-sm text-base-content font-medium">
+                <span className="text-xs text-base-content font-medium">
                   Total Barang Keluar
                 </span>
 
@@ -356,11 +354,11 @@ const InformasiBarangKeluar: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <span className="text-xs lg:text-sm text-base-content/90 font-medium">
+                <span className="text-xs text-base-content font-medium">
                   Total Nilai
                 </span>
 
-                {/* keterangan */}
+                {/* total nilai */}
                 <div className="mt-2">
                   <span className="text-lg text-base-content font-semibold">
                     {formatRupiah(totalNilai ?? 0)}

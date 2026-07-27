@@ -17,31 +17,14 @@ import type { DataTempoType } from "../../../../models/tempo.model";
 import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import useModalCalculator from "../../../../hooks/useModalCalculator";
 import useModalTempo from "../../../../hooks/useModalTempo";
-
-// Daftar key localStorage yang digunakan pada flow pembayaran
-const LOCAL_STORAGE_KEYS = {
-  METODE_PEMBAYARAN: "metode-pembayaran",
-  DETAILS: "details",
-  TEMPO: "tempo",
-  PELANGGAN: "pelanggan",
-  DATA_FROM_KERANJANG: "data-from-keranjang",
-  DI_BAYAR: "di-bayar",
-  TRANSACTION: "transaction",
-  IS_UPDATE_TRANSACTION: "is-update-transaction",
-} as const;
+import { LOCAL_STORAGE_KEYS } from "../../../../utils/localStorageKeys";
+import { getLocalStorageJSON } from "../../../../helpers/helpers";
+import { useStepStore } from "../../../../stores/stepStore";
 
 // Delay debounce saat menyimpan metode pembayaran non-CASH ke localStorage
 const METODE_PEMBAYARAN_SYNC_DEBOUNCE_MS = 500;
 
 // Ambil dan parse data JSON dari localStorage, return null jika tidak ada/invalid
-const getLocalStorageJSON = <T,>(key: string): T | null => {
-  try {
-    const rawValue = localStorage.getItem(key);
-    return rawValue ? (JSON.parse(rawValue) as T) : null;
-  } catch {
-    return null;
-  }
-};
 
 // Simpan data ke localStorage dalam bentuk JSON string
 const setLocalStorageJSON = (key: string, value: unknown) => {
@@ -120,11 +103,12 @@ const buildTransactionPayload = ({
 };
 
 const usePembayaran = (params: {
-  handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
   kasir?: PayloadPenggunaInternalType | null;
 }) => {
-  const { handleSteps, handleToast, kasir } = params;
+  const { handleToast, kasir } = params;
+
+  const { setStep: handleSteps } = useStepStore((state) => state);
 
   // Daftar error validasi yang sedang aktif pada form pembayaran
   const [isErrors, setIsErrors] = useState<ErrorType[]>([]);

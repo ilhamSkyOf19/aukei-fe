@@ -161,7 +161,7 @@ export interface DetailsLocalStorageType {
   produkId: number;
   quantity: number;
   hargaJual: number;
-  stokTersedia: number;
+  stokTersedia?: number;
   diskon: number;
   img: string;
   nama: string;
@@ -232,4 +232,27 @@ export interface ResponseStatistikKebutuhanBarang {
     totalKebutuhanStok: number;
   };
   siapKirim: boolean;
+}
+
+export interface ResponseStatistikKebutuhanBarangWithMetaType {
+  data: {
+    id: number;
+    nama: string;
+    kode: string;
+    stokBooking: number;
+    stokTersedia: number;
+    totalKebutuhanStok: number;
+    img: string;
+    kategori: string;
+    stokMinimum: number;
+    isActive: boolean;
+  }[];
+  meta: MetaType;
+}
+
+export interface ResponseStatistikKebutuhanBarangBookingType {
+  totalProdukBooking: number;
+  totalItemBooking: number;
+  totalProdukPerluRestock: number;
+  totalKebutuhanStok: number;
 }

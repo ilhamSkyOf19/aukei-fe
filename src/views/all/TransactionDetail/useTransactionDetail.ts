@@ -2,19 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
 import { useMemo, useState } from "react";
 import {
-  PAYMENT_METHOD_TYPE,
   ROLE_INTERNAL_TYPE,
   TRANSACTION_STATUS_TYPE,
 } from "../../../types/constant.type";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useAuthStore } from "../../../stores/authStore";
+import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
+import { useStepStore } from "../../../stores/stepStore";
 
-const useTransactionDetail = (params: {
-  handleSteps?: (value: number) => void;
-  transactionId?: number;
-}) => {
-  const { handleSteps, transactionId: transactionIdProps } = params;
+const useTransactionDetail = (params: { transactionId?: number }) => {
+  const { transactionId: transactionIdProps } = params;
+
+  // handle steps
+  const { setStep: handleSteps } = useStepStore((state) => state);
 
   // state is ubah data
   const [isUbahData, setIsUbahData] = useState<boolean>(false);
@@ -30,17 +31,13 @@ const useTransactionDetail = (params: {
 
   // handle back transaksi
   const handleBackTransaksi = () => {
-    if (pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) {
+    if (!currentPathname.includes("kasir")) {
       return navigate(currentPathname.split("/").slice(0, -2).join("/"));
     } else {
-      if (handleSteps) {
-        handleSteps?.(1);
+      handleSteps?.(1);
 
-        // remove local storage
-        localStorage.removeItem("transaction");
-      } else {
-        navigate(currentPathname.split("/").slice(0, -2).join("/"));
-      }
+      // remove local storage
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.TRANSACTION);
     }
   };
 
@@ -90,8 +87,6 @@ const useTransactionDetail = (params: {
         totalDiBayar: 0,
         totalKembalian: 0,
 
-        uangMuka: 0,
-
         sisaTagihan: 0,
       };
     }
@@ -109,13 +104,6 @@ const useTransactionDetail = (params: {
       0,
     );
 
-    const uangMuka =
-      dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING ||
-      dataTransaction?.data?.metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO
-        ? (dataTransaction.data.tempo?.uangMuka ??
-          dataTransaction?.data?.totalDiBayar)
-        : undefined;
-
     for (const item of dataTransaction.data.details) {
       totalQuantity += item.quantity;
       totalPembayaran += item.quantity * item.hargaJual - item.diskon;
@@ -127,8 +115,6 @@ const useTransactionDetail = (params: {
 
       totalDiBayar,
       totalKembalian,
-
-      uangMuka,
 
       sisaTagihan: Math.abs(totalPembayaran - (totalDiBayar ?? 0)),
     };

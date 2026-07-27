@@ -10,6 +10,8 @@ import {
 import useLogOut from "../../../hooks/useLogOut";
 import useHasScroll from "../../../hooks/useHasScroll";
 import useConfirm from "../../../hooks/useConfirm";
+import { useStepStore } from "../../../stores/stepStore";
+import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 
 const useSideBar = () => {
   // get auth context
@@ -34,15 +36,17 @@ const useSideBar = () => {
     handleCancel,
   } = useConfirm();
 
+  const { resetStep } = useStepStore((state) => state);
+
   const clearTransactionStorage = () => {
-    localStorage.removeItem("pelanggan");
-    localStorage.removeItem("details");
-    localStorage.removeItem("di-bayar");
-    localStorage.removeItem("metode-pembayaran");
-    localStorage.removeItem("is-update-keranjang");
-    localStorage.removeItem("is-update-transaction");
-    localStorage.removeItem("data-from-keranjang");
-    localStorage.removeItem("tempo");
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.DATA_FROM_KERANJANG);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.TEMPO);
   };
 
   const canLeaveTransaction = async (): Promise<boolean> => {
@@ -50,9 +54,11 @@ const useSideBar = () => {
     if (pengguna?.role !== ROLE_INTERNAL_TYPE.KASIR) {
       return true;
     }
+
     // get data local storage
     const activeTransaction =
-      localStorage.getItem("pelanggan") || localStorage.getItem("details");
+      localStorage.getItem(LOCAL_STORAGE_KEYS.PELANGGAN) ||
+      localStorage.getItem(LOCAL_STORAGE_KEYS.DETAILS);
 
     // tidak ada transaksi aktif
     if (!activeTransaction) {
@@ -108,12 +114,12 @@ const useSideBar = () => {
       pathname.includes("/dashboard/inventori")
     ) {
       // clear active cluster
-      localStorage.removeItem("active-cluster");
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACTIVE_CLUSTER);
     }
 
     // clear transaction and steps
-    localStorage.removeItem("steps");
-    localStorage.removeItem("transaction");
+    resetStep();
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.TRANSACTION);
 
     // clear cluster
     // handleClearDataActiveCluster();

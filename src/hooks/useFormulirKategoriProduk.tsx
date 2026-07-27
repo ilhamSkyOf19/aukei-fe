@@ -10,19 +10,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { KategoriProdukServices } from "../services/kategoriProduk.service";
 import axios from "axios";
 import type { ErrorResponse } from "../types/response.type";
-import { useNavigate } from "react-router-dom";
 
 type Props = {
   dataUpdate?: UpdateKategoriProdukType & { id: number };
   handleCloseModal?: () => void;
+  handleSetToast?: (toast: string) => void;
 };
 
-const useFormulirKategoriProduk = ({ dataUpdate, handleCloseModal }: Props) => {
+const useFormulirKategoriProduk = ({
+  dataUpdate,
+  handleCloseModal,
+  handleSetToast,
+}: Props) => {
   // query client
   const queryClient = useQueryClient();
-
-  // navigate
-  const naviate = useNavigate();
 
   // use form
   const {
@@ -69,12 +70,7 @@ const useFormulirKategoriProduk = ({ dataUpdate, handleCloseModal }: Props) => {
       //   close modal
       handleCloseModal?.();
 
-      // set toast
-      naviate(".", {
-        state: {
-          toast: dataUpdate ? "updated" : "created",
-        },
-      });
+      handleSetToast?.(dataUpdate ? "updated_kategori" : "created_kategori");
 
       //   reset
       reset();

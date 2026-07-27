@@ -69,7 +69,7 @@ const InformasiBarangMasuk: FC<Props> = ({
   });
 
   return (
-    <div className="w-full flex flex-col justify-start items-center lg:items-start lg:flex-row gap-2">
+    <div className="w-full flex flex-col justify-start items-center lg:items-stretch lg:flex-row gap-2">
       {/* informasi author */}
       {author && (
         <InformasiPengajuan
@@ -82,7 +82,6 @@ const InformasiBarangMasuk: FC<Props> = ({
       <div
         className={cn(
           " rounded-2xl md:rounded-xl bg-base-100 shadow-xs border border-transparent dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6",
-          author ? "lg:min-h-70" : "lg:min-h-55",
         )}
       >
         {/* title */}
@@ -113,8 +112,8 @@ const InformasiBarangMasuk: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <span className="text-xs lg:text-sm text-base-content/90 font-medium">
-                  Tanggal Masuk
+                <span className="text-xs text-base-content font-medium">
+                  Tanggal Barang Masuk
                 </span>
 
                 {/* value */}
@@ -150,7 +149,7 @@ const InformasiBarangMasuk: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <span className="text-xs lg:text-sm text-base-content/90 font-medium">
+                <span className="text-xs text-base-content font-medium">
                   Keterangan
                 </span>
 
@@ -220,7 +219,6 @@ const InformasiBarangMasuk: FC<Props> = ({
       <div
         className={cn(
           "rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-4 lg:p-6",
-          author ? "lg:min-h-70" : "lg:min-h-55",
         )}
       >
         {/* title */}
@@ -249,7 +247,7 @@ const InformasiBarangMasuk: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <span className="text-xs lg:text-sm text-base-content font-medium">
+                <span className="text-xs text-base-content font-medium">
                   Total Barang Masuk
                 </span>
 
@@ -273,7 +271,7 @@ const InformasiBarangMasuk: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <span className="text-xs lg:text-sm text-base-content/90 font-medium">
+                <span className="text-xs text-base-content font-medium">
                   Total Nilai
                 </span>
 
@@ -297,7 +295,7 @@ const InformasiBarangMasuk: FC<Props> = ({
         onSubmit={onSubmit}
         useControll={tanggalMasukController}
         isPending={isPendingUpdate}
-        bigTitle="Formulir Ubah Tanggal Barang Masuk"
+        bigTitle="Formulir Ubah Tanggal"
         smallTitle="Ubah tanggal barang masuk"
       />
     </div>

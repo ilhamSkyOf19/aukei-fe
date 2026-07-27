@@ -40,12 +40,12 @@ instanceAxios.interceptors.response.use(
       (error.response?.status === 401 || error.response.status === 403) &&
       !error.config.url?.includes("/auth/me")
     ) {
-      // window.location.href = "/login";
+      window.location.href = "/login";
     }
 
     if (!error.response) {
       console.error("Network error:", error.message);
-      // window.location.href = "/error-network";
+      window.location.href = "/error-network";
       return;
     }
 

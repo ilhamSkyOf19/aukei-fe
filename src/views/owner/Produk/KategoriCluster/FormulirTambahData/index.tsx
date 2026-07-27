@@ -1,9 +1,13 @@
+import type { FC } from "react";
 import InputTextAreaNonIcon from "../../../../../components/inputs/InputTextAreaNonIcon";
 import InputTextNonIcon from "../../../../../components/inputs/InputTextNonIcon";
-import ButtonSubmit from "../../../../../components/ui/button/ButtonSubmit";
 import useFormulirKategoriProduk from "../../../../../hooks/useFormulirKategoriProduk";
+import ButtonText from "../../../../../components/ui/button/ButtonText";
 
-const FormulirTambahData = () => {
+type Props = {
+  handleSetToast: (toast: string) => void;
+};
+const FormulirTambahData: FC<Props> = ({ handleSetToast }) => {
   // call use hook
   const {
     errors,
@@ -11,7 +15,7 @@ const FormulirTambahData = () => {
     isPendingMutateKategoriProduk,
     onSubmit,
     register,
-  } = useFormulirKategoriProduk({});
+  } = useFormulirKategoriProduk({ handleSetToast });
 
   return (
     <form
@@ -21,19 +25,13 @@ const FormulirTambahData = () => {
       {/* header */}
       <div className="w-full flex flex-row justify-between items-center">
         {/* title */}
-        <h2 className="text-base font-semibold text-base-content">
+        <h2 className="text-sm font-semibold text-base-content">
           Tambah Kategori
         </h2>
-
-        {/* button submit */}
-        <ButtonSubmit
-          disable={isPendingMutateKategoriProduk}
-          isLoading={isPendingMutateKategoriProduk}
-        />
       </div>
 
       {/* input */}
-      <div className="w-full flex flex-col justify-start items-start mt-8">
+      <div className="w-full flex flex-col justify-start items-start mt-2.5">
         {/* input nama */}
         <InputTextNonIcon
           register={register("nama")}
@@ -54,6 +52,14 @@ const FormulirTambahData = () => {
           errorMessage={errors?.keterangan?.message}
           max={100}
           rows={8}
+        />
+
+        {/* button submit */}
+        <ButtonText
+          label="Simpan"
+          disable={isPendingMutateKategoriProduk}
+          isLoading={isPendingMutateKategoriProduk}
+          customWidth="w-full"
         />
       </div>
     </form>

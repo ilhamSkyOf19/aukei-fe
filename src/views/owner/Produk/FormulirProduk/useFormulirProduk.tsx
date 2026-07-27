@@ -190,6 +190,11 @@ const useFormulirProduk = () => {
   //   query kategori
   const { dataKategori, isLoadingKategori } = useKategoriForChoose();
 
+  // handle back
+  const handleBack = () => {
+    return navigate(currentPathname.split("/").slice(0, -1).join("/"));
+  };
+
   return {
     register,
     errors,
@@ -209,6 +214,8 @@ const useFormulirProduk = () => {
     isiPerBoxController,
 
     validatedIdParams,
+
+    handleBack,
   };
 };
 

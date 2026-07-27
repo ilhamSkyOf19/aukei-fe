@@ -33,12 +33,9 @@ const RowJadwaTempo: FC<Props> = ({
           </h3>
           <span className="text-[0.7rem]">-</span>
           <span className="text-[0.7rem] text-base-content">
-            Dimulai dari :{" "}
+            Terhitung dari :{" "}
             <span className="font-medium">
               {formatTanggalPanjang(startDateWatch ?? new Date())}{" "}
-              <span className="ml-1 font-normal">
-                {!startDateWatch && "(Hari ini)"}
-              </span>
             </span>
           </span>
         </div>

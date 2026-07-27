@@ -26,7 +26,6 @@ interface TransactionSummary {
   totalPembayaran: number;
   totalDiBayar: number | undefined;
   totalKembalian: number | undefined;
-  uangMuka: number | null | undefined;
   sisaTagihan: number | undefined;
 }
 
@@ -71,8 +70,6 @@ const useInformasiPembayaran = ({
       mutationFn: (data: CreateTransactionForRequestType) =>
         TransactionServices.create(data),
       onSuccess: (data) => {
-        alert("Transaksi Berhasil");
-
         // invlaidated query
         if (data?.data) {
           queryClient.invalidateQueries({

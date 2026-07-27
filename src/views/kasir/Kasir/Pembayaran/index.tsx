@@ -25,12 +25,11 @@ import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInt
 import CardMetodePembayaran from "../../../../components/ui/cards/CardMetodePembayaran";
 
 type Props = {
-  handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
   kasir?: PayloadPenggunaInternalType | null;
 };
 
-const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
+const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
   // call use
   const {
     handleMetodePembayaran,
@@ -61,7 +60,6 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
     modalTempoRef,
     handleSetDataTempo,
   } = usePembayaran({
-    handleSteps,
     handleToast,
     kasir,
   });
@@ -69,10 +67,10 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
   // perbaiki design nya
 
   return (
-    <div className="w-full h-[95vh] grid grid-rows-9 gap-4">
+    <div className="w-full h-full grid grid-rows-9 gap-4">
       <div
         className={cn(
-          "row-span-1 grid  gap-2.5 transition-all duration-300 ease-in-out grid-cols-7",
+          "row-span-1 grid h-full gap-2.5 transition-all duration-300 ease-in-out grid-cols-7",
         )}
       >
         {/* header */}
@@ -112,25 +110,25 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
         {/* data pelanggan */}
         <div
           className={
-            "w-full col-span-2 row-span-1 flex flex-col justify-start items-start gap-2"
+            "w-full  col-span-2 row-span-1 flex flex-col justify-start items-start gap-2"
           }
         >
           <HeaderPelangganForKasir kasir={kasir} pelanggan={pelanggan} />
         </div>
       </div>
 
-      <div className={cn("row-span-8 grid gap-2.5 grid-cols-7")}>
+      <div className={cn("h-full grid gap-2.5 grid-cols-7")}>
         {/* daftar produk */}
-        <div className={cn("h-full grid grid-rows-3 gap-2 min-h-0 col-span-5")}>
+        <div className={cn("h-full col-span-5")}>
           <div
             className={cn(
-              "overflow-y-auto row-span-2 rounded-xl border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6",
+              "w-full h-full overflow-y-auto row-span-2 rounded-xl border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6",
             )}
           >
-            <table className="table table-xs table-pin-rows table-pin-cols table-zebra">
+            <table className="table  table-zebra">
               {/* head */}
-              <thead className="bg-base-content/5 h-10">
-                <tr className="text-[0.625rem]">
+              <thead>
+                <tr className="text-[0.7rem] h-12 bg-base-200">
                   <th>Gambar</th>
                   <th>Nama Produk</th>
                   <th>Harga (Rp)</th>
@@ -143,7 +141,10 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                 {/* row 1 */}
                 {dataDetails && dataDetails.length > 0 ? (
                   dataDetails.map((item) => (
-                    <tr key={item.produkId} className="h-15">
+                    <tr
+                      key={item.produkId}
+                      className="text-[0.7rem] text-base-content"
+                    >
                       <td>
                         <div className="avatar">
                           <div className="mask mask-squircle h-10 w-10">
@@ -153,10 +154,10 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
                       </td>
                       <td>
                         <div className="flex flex-col justify-start items-start gap-px">
-                          <p className="xl:text-[0.7rem] text-base-content">
+                          <p className="xl:text-[0.7rem] font-medium">
                             {item.nama}
                           </p>
-                          <span className="xl:text-[0.625rem] font-medium text-base-content/50">
+                          <span className="xl:text-[0.625rem] font-medium text-base-content/70">
                             {item.kode}
                           </span>
                         </div>
@@ -209,7 +210,12 @@ const Pembayaran: FC<Props> = ({ handleSteps, handleToast, kasir }) => {
               {/* title */}
               <TitleModalFormulir title="Ringkasan Pembayaran" keterangan="" />
 
-              <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-4 border-b border-base-content/10 pb-2.5">
+              <div
+                className={cn(
+                  "w-full flex flex-col justify-start items-start gap-2.5 mt-4  border-base-content/10 pb-2.5",
+                  metodePembayaran && "border-b",
+                )}
+              >
                 {dataDetails && (
                   <>
                     {/* sub total & total diskon */}

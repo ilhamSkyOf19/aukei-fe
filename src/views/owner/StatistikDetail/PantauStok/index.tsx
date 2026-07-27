@@ -1,0 +1,218 @@
+import { type FC } from "react";
+import { cn } from "../../../../utils/cn";
+import {
+  formatNumber,
+  generateColorForStok,
+} from "../../../../helpers/helpers";
+import DataEmpty from "../../../../components/messages/DataEmpty";
+import FilterSort from "../../../../components/filters/Sort";
+import FilterKategori from "../../../../components/filters/Kategori";
+import InputSearch from "../../../../components/inputs/InputSearch";
+import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
+import usePantauStok from "./usePantauStok";
+import {
+  formatTanggalLengkap,
+  formatTanggalPanjang,
+} from "../../../../helpers/formatDate";
+import { STATUS_PERGERAKAN } from "../../../../types/constant.type";
+import AlertLabel from "../../../../components/messages/AlertLabel";
+
+type Props = {
+  pilihan: string;
+};
+const PantauStok: FC<Props> = ({ pilihan }) => {
+  const {
+    dataProduk,
+    isExistDataProduk,
+    isLoadingDataProduk,
+    handleKategori,
+    handleLimit,
+    handlePage,
+    handleSearch,
+    handleSort,
+    sort,
+    kategori,
+  } = usePantauStok({ pilihan });
+  return (
+    <div className="w-full flex flex-col justify-start items-start">
+      {/* filter */}
+      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-2.5">
+        <div className="w-full md:flex-1 flex flex-col justify-start items-start gap-1.5">
+          <InputSearch
+            handleSearch={handleSearch}
+            placeholder="Cari produk berdasarkan nama atau kode ..."
+            withLabel
+          />
+        </div>
+
+        <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center gap-3 md:gap-4 mt-3 md:mt-0">
+          {/* filter kategori */}
+          <FilterKategori
+            setKategori={handleKategori}
+            customWidth="w-full md:w-40"
+            value={kategori}
+          />
+
+          {/* filter sort */}
+          <FilterSort
+            setSort={handleSort}
+            customWidth="w-full md:w-30"
+            value={sort}
+          />
+        </div>
+      </div>
+      {/* data */}
+      <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5">
+        <table className="table table-xs lg:table-sm table-zebra">
+          {/* head */}
+          <thead>
+            <tr className="h-12 bg-base-200 text-[0.7rem]">
+              <th>Foto</th>
+              <th>Kode</th>
+              <th>Nama</th>
+              <th>Kategori</th>
+              <th>Stok Tersedia</th>
+              <th>Stok Minimum</th>
+              <th>Terakhir Restock</th>
+              <th>Pergerakan</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoadingDataProduk ? (
+              Array.from({ length: 4 }).map((_, index) => (
+                <tr key={index}>
+                  <td colSpan={10}>
+                    <div className="skeleton h-12 w-full py-1" />
+                  </td>
+                </tr>
+              ))
+            ) : isExistDataProduk ? (
+              dataProduk?.data?.data?.map((produk, _) => (
+                <tr
+                  key={produk.id}
+                  className={cn(
+                    "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+                  )}
+                >
+                  {/* foto */}
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
+                          <img
+                            src={produk.img}
+                            alt="Foto Produk"
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  {/* kode */}
+                  <td className="font-medium text-info">{produk.kode}</td>
+                  {/* nama */}
+                  <td>{produk.nama}</td>
+                  {/* kategori */}
+                  <td>{produk.kategori.nama}</td>
+                  {/* stok */}
+                  <td
+                    className={cn(
+                      "font-medium",
+                      generateColorForStok(produk.stok, produk.stokMinimum),
+                    )}
+                  >
+                    {formatNumber(produk.stok.toString())}
+                  </td>
+
+                  {/* stok minimum */}
+                  <td>
+                    <span className="font-semibold ">
+                      {formatNumber(produk.stokMinimum)}
+                    </span>
+                  </td>
+
+                  {/* terkhir restock */}
+                  <td>
+                    <span>
+                      {produk.restockTerakhir
+                        ? formatTanggalPanjang(produk.restockTerakhir)
+                        : "-"}
+                    </span>
+                  </td>
+
+                  {/* penjualan */}
+                  <td>
+                    {produk.statusPergerakan !== null ? (
+                      <span
+                        className={cn(
+                          "text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full capitalize",
+                          produk.statusPergerakan === STATUS_PERGERAKAN.CEPAT &&
+                            "bg-emerald-500",
+                          produk.statusPergerakan ===
+                            STATUS_PERGERAKAN.LAMBAT && "bg-amber-500",
+                          produk.statusPergerakan ===
+                            STATUS_PERGERAKAN.NORMAL && "bg-blue-500",
+                        )}
+                      >
+                        {produk?.statusPergerakan?.toLowerCase()}
+                      </span>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    {produk?.stok > produk.stokMinimum ? (
+                      <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-emerald-500 ">
+                        Cukup
+                      </span>
+                    ) : produk?.stok < produk.stokMinimum &&
+                      produk?.stok !== 0 ? (
+                      <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-amber-500 ">
+                        Menipis
+                      </span>
+                    ) : (
+                      <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-rose-500 ">
+                        Habis
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={10}>
+                  <div className="w-full h-full flex flex-col justify-center items-center">
+                    <DataEmpty
+                      title="Data Produk Tidak Tersedia"
+                      description="Belum ada data produk yang dapat ditampilkan saat ini."
+                    />
+                  </div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* alert label */}
+      <div className="w-full mt-2.5">
+        <AlertLabel message="Pergerakan dihitung berdasarkan data terakhir restock barang." />
+      </div>
+
+      {/* pagination and limti */}
+      <PaginationAndLimit
+        currentPage={dataProduk?.data?.meta?.currentPage ?? 1}
+        totalPage={dataProduk?.data?.meta?.totalPage ?? 1}
+        setPage={handlePage}
+        setLimit={handleLimit}
+        limit={dataProduk?.data?.meta?.limit ?? 8}
+        isLoading={isLoadingDataProduk}
+        emptyData={!isExistDataProduk}
+      />
+    </div>
+  );
+};
+
+export default PantauStok;

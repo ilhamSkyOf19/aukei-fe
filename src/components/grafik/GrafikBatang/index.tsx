@@ -58,7 +58,7 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
     startDate,
   } = useGrafikBatang();
   return (
-    <div className="lg:flex-1 flex flex-col justify-between items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl gap-4 h-80 md:h-100 lg:h-90">
+    <div className=" flex flex-col justify-between items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl gap-4 h-80 md:h-100">
       {/* header */}
       <div className="w-full flex flex-row justify-between items-start px-2 md:px-4 pt-2 gap-4">
         {/* header */}
@@ -79,18 +79,26 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
           isLoading={isLoading}
           listChoose={[
             {
-              label: "Produk",
+              label: "Produk Terjual",
               value: "produk",
             },
             {
-              label: "Item",
+              label: "Item terjual",
               value: "item",
+            },
+            {
+              label: "Barang Rusak",
+              value: "rusak",
+            },
+            {
+              label: "Barang Hilang",
+              value: "hilang",
             },
           ]}
           handleChange={(e) => handleSetIsChoose(e.target.value)}
           placeholder="Jenis"
           defaultValue="produk"
-          customWidth="w-40 md:w-30"
+          customWidth="w-40"
         />
       </div>
 
@@ -119,7 +127,7 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
           <XAxis
             dataKey="date"
             tick={{
-              fontSize: windowSize === "sm" ? 10 : 11,
+              fontSize: windowSize === "sm" ? 10 : 10,
               fontWeight: "500",
             }}
             interval={windowSize === "sm" ? 4 : 2}
@@ -127,7 +135,7 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
           <YAxis
             tickFormatter={(value) => formatNumberK(value)}
             tick={{
-              fontSize: windowSize === "sm" ? 10 : 11,
+              fontSize: windowSize === "sm" ? 10 : 10,
               fontWeight: "500",
             }}
           />
@@ -140,10 +148,10 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
 
               return (
                 <div className="rounded-2xl border bg-base-100 p-4 shadow-xl w-30 border-base-content">
-                  <p className="text-xs font-medium text-base-content/80">
+                  <p className="text-[0.7rem] font-medium text-base-content/80">
                     {data.date}
                   </p>
-                  <p className="text-sm font-semibold text-base-content">
+                  <p className="text-xs font-semibold text-base-content">
                     {formatNumber(data.value)}
                   </p>
                 </div>

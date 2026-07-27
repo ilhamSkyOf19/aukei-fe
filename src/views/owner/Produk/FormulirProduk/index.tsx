@@ -3,9 +3,9 @@ import InputImg from "../../../../components/inputs/InputImg";
 import InputNumber from "../../../../components/inputs/InputNumber";
 import InputPrice from "../../../../components/inputs/InputPrice";
 import InputTextNonIcon from "../../../../components/inputs/InputTextNonIcon";
-import ButtonBackNonIcon from "../../../../components/ui/button/ButtonBackNonIcon";
 import ButtonBackText from "../../../../components/ui/button/ButtonBackText";
-import ButtonSubmit from "../../../../components/ui/button/ButtonSubmit";
+import ButtonCloseText from "../../../../components/ui/button/ButtonCloseText";
+import ButtonText from "../../../../components/ui/button/ButtonText";
 import type {
   CreateProdukType,
   UpdateProdukType,
@@ -31,29 +31,31 @@ const FormulirProduk = () => {
     isiPerBoxController,
     stokMinimumController,
     validatedIdParams,
+
+    handleBack,
   } = useFormulirProduk();
 
   return (
-    <div className="w-full md:h-full lg:h-auto overflow-y-auto">
-      <div className="w-full mb-30 md:mb-20 lg:mb-20 h-full flex flex-col justify-start items-start px-2.5">
+    <div className="w-full">
+      <div className="w-full h-full flex flex-col justify-start items-start px-2.5">
         {/* content */}
         <div className="w-full rounded-2xl md:rounded-xl shadow-xs dark:border dark:border-base-content/10 flex mt-4 flex-col justify-start items-start bg-base-100 px-4 lg:px-6 py-4">
           {/* header formulir */}
-          <div className="w-full flex flex-row lg:flex-col lg:justify-start lg:items-start lg:gap-4 relative justify-center items-center">
+          <div className="w-full flex flex-row lg:justify-start lg:items-start lg:gap-4 relative justify-center items-center">
             {/* button kembali */}
             <div className="absolute lg:relative left-0">
               <ButtonBackText />
             </div>
 
             {/* title */}
-            <div className="w-full flex flex-col justify-start lg:items-start items-center">
+            <div className="w-full flex flex-col justify-start items-end">
               {/* title */}
-              <h2 className="text-sm lg:text-xl font-semibold text-base-content">
+              <h2 className="text-sm lg:text-base font-semibold text-base-content">
                 Formulir {validatedIdParams ? "Ubah" : "Tambah"} Produk
               </h2>
 
               {/* keterangan */}
-              <p className="text-xs lg:text-sm font-medium text-base-content/50">
+              <p className="text-xs font-medium text-base-content/50">
                 Silahkan isi formulir dibawah ini
               </p>
             </div>
@@ -207,13 +209,14 @@ const FormulirProduk = () => {
               ) : (
                 <>
                   {/* button cancel */}
-                  <ButtonBackNonIcon
-                    label="Batal"
+                  <ButtonCloseText
+                    label="Kembali"
                     disabled={isLoadingKategori}
+                    handleClose={() => handleBack()}
                   />
 
                   {/* button submit */}
-                  <ButtonSubmit isLoading={isPendingMutateProduk} />
+                  <ButtonText isLoading={isPendingMutateProduk} />
                 </>
               )}
             </div>

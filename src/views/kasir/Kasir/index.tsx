@@ -10,13 +10,10 @@ import Booking from "./Booking";
 
 const Kasir = () => {
   // call use
-  const { step, handleSteps, isModeKasir, handleSetToast, toast, kasir } =
-    useKasir();
+  const { step, handleSetToast, toast, kasir } = useKasir();
 
   return (
-    <div
-      className={cn("w-full overflow-y-auto", step !== 3 && "lg:h-screen p-3")}
-    >
+    <div className={cn("w-full h-full pt-2.5 px-2.5")}>
       {toast && (
         <Toast
           toast={toast?.id !== null}
@@ -27,55 +24,21 @@ const Kasir = () => {
       )}
 
       <div
-        className={cn(
-          "min-h-[85vh] w-full lg:flex flex-col justify-start items-start hidden",
-          isModeKasir && "fixed z-40 top-0 left-0 right-0 bottom-0 bg-base-300",
-        )}
+        className={cn("w-full h-full flex flex-col justify-start items-center")}
       >
-        <div
-          className={cn(
-            "w-full h-full flex flex-col justify-start items-center gap-2.5",
-            isModeKasir && "h-screen",
-          )}
-        >
-          <div
-            className={cn(
-              "w-full h-full flex flex-col justify-start items-center",
-              isModeKasir && "p-2",
-            )}
-          >
-            {/* pilih produk */}
-            {step === 1 && (
-              <PilihProduk
-                handleSteps={handleSteps}
-                step={step}
-                handleToast={handleSetToast}
-              />
-            )}
-            {/* pembayaran */}
-            {step === 2 && (
-              <Pembayaran
-                handleSteps={handleSteps}
-                handleToast={handleSetToast}
-                kasir={kasir}
-              />
-            )}
+        {/* pilih produk */}
+        {step === 1 && <PilihProduk handleToast={handleSetToast} />}
+        {/* pembayaran */}
+        {step === 2 && (
+          <Pembayaran handleToast={handleSetToast} kasir={kasir} />
+        )}
 
-            {/* struk */}
-            {step === 3 && <Struk handleSteps={handleSteps} />}
+        {/* struk */}
+        {step === 3 && <Struk />}
 
-            {/* booking */}
-            {step === 4 && (
-              <Booking
-                handleSteps={handleSteps}
-                handleToast={handleSetToast}
-                kasir={kasir}
-              />
-            )}
-          </div>
-        </div>
+        {/* booking */}
+        {step === 4 && <Booking handleToast={handleSetToast} kasir={kasir} />}
       </div>
-
       {/* message  */}
       <NotCompatible />
     </div>

@@ -4,13 +4,13 @@ export type Alert = {
   isAnimationOut: boolean;
 };
 
-export const ALERT_CONFIG_KATEGORI_PRODUK: Record<
+export const ALERT_CONFIG_PRODUK: Record<
   string,
   {
     message: string;
   }
 > = {
-  cancel_delete: {
+  cancel_delete_kategori: {
     message:
       "Kategori Produk tidak dapat dihapus karena masih digunakan oleh Produk.",
   },

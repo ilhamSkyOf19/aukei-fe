@@ -16,6 +16,7 @@ type Props = {
   disabled?: boolean;
   customWidth?: string;
   ref?: RefObject<HTMLButtonElement | null>;
+  classHidden?: string;
 };
 
 const ButtonWithIcon: FC<Props> = ({
@@ -31,6 +32,7 @@ const ButtonWithIcon: FC<Props> = ({
   disabled,
   customWidth,
   ref,
+  classHidden,
 }) => {
   const navigate = useNavigate();
 
@@ -40,9 +42,10 @@ const ButtonWithIcon: FC<Props> = ({
       type="button"
       disabled={disabled ?? isLoading}
       className={cn(
-        "flex justify-center items-center rounded-xl px-3 gap-2 h-10.5 md:h-9",
+        "flex-row justify-center items-center rounded-xl px-3 gap-2 h-10.5 md:h-9",
+        classHidden ?? "flex",
         customWidth ?? "w-auto",
-        bgColor ? bgColor : "bg-custom-primary",
+        bgColor ?? "bg-custom-primary",
         (disabled ?? isLoading) ? "opacity-50" : "hover-overlay",
       )}
       style={{ cursor: (disabled ?? isLoading) ? "not-allowed" : "pointer" }}
@@ -59,7 +62,7 @@ const ButtonWithIcon: FC<Props> = ({
           <div
             className={cn(
               "loading loading-sm md:loading-xs",
-              textColor ? textColor : "text-custom-secondary",
+              textColor ?? "text-custom-secondary",
             )}
           />
         </div>
@@ -69,7 +72,7 @@ const ButtonWithIcon: FC<Props> = ({
             <Icon
               className={cn(
                 "size-4.5 md:size-3.5",
-                textColor ? textColor : "text-custom-secondary",
+                textColor ?? "text-custom-secondary",
                 reverse && "order-2",
               )}
             />
@@ -79,7 +82,7 @@ const ButtonWithIcon: FC<Props> = ({
             <span
               className={cn(
                 "font-medium text-xs md:text-[0.7rem]",
-                textColor ? textColor : "text-custom-secondary",
+                textColor ?? "text-custom-secondary",
                 reverse && "order-1",
               )}
             >

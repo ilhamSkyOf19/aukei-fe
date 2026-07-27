@@ -91,15 +91,7 @@ export default function InputImg<T extends FieldValues = any>({
             />
 
             {!disabled && (
-              <div
-                className="
-                  absolute right-4 top-4
-                  rounded-lg bg-primary-white/95
-                  px-3 py-2 text-xs font-medium
-                  text-slate-700 shadow
-                  backdrop-blur
-                "
-              >
+              <div className="absolute right-4 top-4 rounded-2xl md:rounded-xl bg-primary-white/50 px-2.5 py-2 text-[0.7rem] font-medium shadow backdrop-blur-3xl text-primary-black hover:bg-primary-white transition-all duration-150 ease-in-out">
                 Ganti Foto
               </div>
             )}

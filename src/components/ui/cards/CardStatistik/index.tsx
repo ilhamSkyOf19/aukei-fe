@@ -41,8 +41,8 @@ const CardStatistik: FC<Props> = ({
   return (
     <div
       className={cn(
-        " flex gap-2 flex-col justify-start items-start border border-base-content/10 rounded-2xl md:rounded-xl p-2 relative",
-        customColSpan ? customColSpan : "col-span-1",
+        "flex flex-row justify-start items-center p-2.5 rounded-2xl md:rounded-xl border border-base-content/10 h-24 gap-4 relative",
+        customColSpan ?? "col-span-1",
       )}
     >
       {/* status transaction */}
@@ -52,137 +52,65 @@ const CardStatistik: FC<Props> = ({
         </div>
       )}
 
-      <div className=" flex flex-row justify-start items-start gap-2.5">
+      <div className=" flex flex-row justify-start items-center gap-2.5">
         {/* icon */}
         <div className="flex-1 flex flex-row justify-start items-center">
           <div
             className={cn(
-              "w-10 h-10 rounded-xl flex flex-row justify-center items-center",
+              "w-14 h-14 flex justify-center items-center rounded-full",
               icon.bgColor,
             )}
           >
-            <icon.icon className={cn("size-5", icon.iconColor)} />
+            <icon.icon className={cn("size-6", icon.iconColor)} />
           </div>
         </div>
 
         {/* label */}
         <div className="flex-7 flex flex-col justify-start items-start gap-0.5">
-          <div className="flex flex-row justify-start items-center gap-1">
-            <span className="text-xs font-semibold text-base-content/50">
-              {label}
-            </span>
-
-            {withAlert && (
-              <div className="tooltip z-10 tooltip-custom" data-tip={withAlert}>
-                <button type="button">
-                  <CircleAlert className="size-3 text-base-content/50 hover:text-base-content transition-all duration-150 ease-in-out" />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* caption */}
-          {caption && caption !== "" && (
-            <span className="text-[0.625rem] font-medium text-base-content/50">
-              {caption}
-            </span>
-          )}
-
-          {isLoading ? (
-            <div className="w-20 h-3 md:w-30 md:h-4 skeleton"></div>
-          ) : (
-            <>
-              <span
-                className={cn(
-                  "text-xs md:text-sm font-semibold mt-1 md:mt-2",
-                  minus ? "text-error" : "text-base-content",
-                )}
-              >
-                {value ?? 0}
+          <div className="w-full flex flex-col justify-start items-start gap-0.5">
+            <div className="flex flex-row justify-start items-center gap-2.5">
+              <span className="text-[0.625rem] font-medium text-base-content/70">
+                {label}
               </span>
 
-              {detail && (
-                <div className="hidden md:flex flex-row gap-1 justify-start items-center">
-                  {/* icon */}
-                  {detail.down !== undefined && (
-                    <ArrowDown
-                      className={cn(
-                        "size-3",
-                        detail.reverseColor
-                          ? "text-emerald-400"
-                          : "text-rose-400",
-                      )}
-                    />
-                  )}
-                  {detail.up !== undefined && (
-                    <ArrowUp
-                      className={cn(
-                        "size-3",
-                        detail.reverseColor
-                          ? "text-rose-400"
-                          : "text-emerald-400",
-                      )}
-                    />
-                  )}
-
-                  {detail.same !== undefined && (
-                    <ArrowUp
-                      className={cn(
-                        "size-3",
-                        detail.reverseColor
-                          ? "text-rose-400"
-                          : "text-emerald-400",
-                      )}
-                    />
-                  )}
-
-                  {/* value */}
-                  <span
-                    className={cn(
-                      "md:text-[0.7rem] font-semibold",
-                      detail.down
-                        ? detail.reverseColor
-                          ? "text-emerald-400"
-                          : "text-rose-400"
-                        : detail.reverseColor
-                          ? "text-rose-400"
-                          : "text-emerald-400",
-                    )}
-                  >
-                    {detail.up || detail.down || detail.same}%
-                  </span>
-
-                  {/* label */}
-                  <span className=" md:text-[0.7rem] font-medium text-base-content/80">
-                    dari periode lalu
-                  </span>
+              {withAlert && (
+                <div
+                  className="tooltip z-10 tooltip-custom"
+                  data-tip={withAlert}
+                >
+                  <button type="button">
+                    <CircleAlert className="size-3 text-base-content/50 hover:text-base-content transition-all duration-150 ease-in-out" />
+                  </button>
                 </div>
               )}
-            </>
-          )}
-        </div>
-      </div>
+            </div>
 
-      {detail && (
-        <div className="flex flex-row gap-1 justify-start items-start md:hidden">
-          {isLoading ? (
-            <div className="w-30 h-4 skeleton" />
-          ) : (
-            <>
+            <span
+              className={cn(
+                "text-xs md:text-sm font-semibold",
+                minus ? "text-error" : "text-base-content",
+              )}
+            >
+              {value ?? 0}
+            </span>
+          </div>
+
+          {detail && (
+            <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
               {/* icon */}
               {detail.down !== undefined && (
                 <ArrowDown
                   className={cn(
-                    "size-3.5",
-                    detail.reverseColor ? "text-emerald-400" : "text-rose-400",
+                    "size-3",
+                    detail.reverseColor ? "text-emerald-500" : "text-rose-500",
                   )}
                 />
               )}
               {detail.up !== undefined && (
                 <ArrowUp
                   className={cn(
-                    "size-3.5",
-                    detail.reverseColor ? "text-rose-400" : "text-emerald-400",
+                    "size-3",
+                    detail.reverseColor ? "text-rose-500" : "text-emerald-500",
                   )}
                 />
               )}
@@ -190,8 +118,8 @@ const CardStatistik: FC<Props> = ({
               {detail.same !== undefined && (
                 <ArrowUp
                   className={cn(
-                    "size-3.5",
-                    detail.reverseColor ? "text-rose-400" : "text-emerald-400",
+                    "size-3",
+                    detail.reverseColor ? "text-rose-500" : "text-emerald-500",
                   )}
                 />
               )}
@@ -199,7 +127,7 @@ const CardStatistik: FC<Props> = ({
               {/* value */}
               <span
                 className={cn(
-                  "text-[0.625rem] md:text-xs font-semibold",
+                  "md:text-[0.625rem] font-medium",
                   detail.down
                     ? detail.reverseColor
                       ? "text-emerald-400"
@@ -213,13 +141,22 @@ const CardStatistik: FC<Props> = ({
               </span>
 
               {/* label */}
-              <span className="text-[0.625rem] md:text-xs font-medium text-base-content/80">
+              <span className="text-[0.625rem] font-medium text-base-content/70">
                 dari periode lalu
               </span>
-            </>
+            </div>
+          )}
+
+          {/* caption */}
+          {caption && (
+            <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
+              <span className="text-[0.625rem] font-medium text-base-content/70">
+                {caption}
+              </span>
+            </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

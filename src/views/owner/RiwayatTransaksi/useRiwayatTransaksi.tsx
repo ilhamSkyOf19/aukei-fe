@@ -5,7 +5,6 @@ import { TransactionServices } from "../../../services/transaction.service";
 import { useQueries } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
-import { StatistikServices } from "../../../services/statistik.service";
 
 const useRiwayatTransaksi = () => {
   // window size
@@ -59,27 +58,6 @@ const useRiwayatTransaksi = () => {
     queries: [
       {
         queryKey: [
-          "ringkasan-statistik",
-          startDate,
-          endDate,
-          metodePembayaran,
-          statusTempo,
-        ],
-        queryFn: () =>
-          StatistikServices.ringkasanStatistik({
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-            ...(metodePembayaran && {
-              metodePembayaran: metodePembayaran.toLowerCase(),
-            }),
-            ...(statusTempo && { statusTempo: statusTempo.toLowerCase() }),
-          }),
-        retry: false,
-        refetchOnWindowFocus: false,
-        enabled: !!startDate && !!endDate,
-      },
-      {
-        queryKey: [
           "riwayat-transaksi",
           startDate,
           endDate,
@@ -110,10 +88,8 @@ const useRiwayatTransaksi = () => {
     ],
   });
 
-  const [
-    { data: ringkasanStatistik, isLoading: isLoadingRingkasanStatistik },
-    { data: dataRiwayatTransaksi, isLoading: isLoadingRiwayatTransaksi },
-  ] = data;
+  const [{ data: dataRiwayatTransaksi, isLoading: isLoadingRiwayatTransaksi }] =
+    data;
 
   // is existing data riwayat transaksi
   const isExistDataRiwayatTransaksi: boolean =
@@ -135,8 +111,6 @@ const useRiwayatTransaksi = () => {
     setStatusTempo,
     windowSize,
     handleRedirectDetail,
-    ringkasanStatistik,
-    isLoadingRingkasanStatistik,
     isExistDataRiwayatTransaksi,
     dataRiwayatTransaksi,
     isLoadingRiwayatTransaksi,

@@ -69,6 +69,29 @@
   box-sizing: border-box;
 }
 
+/* Firefox */
+* {
+  scrollbar-color: var(--color-custom-secondary) var(--color-primary-white);
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-primary-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-custom-secondary);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-custom-primary);
+}
+
 body {
   font-family: var(--font-poppins);
   background-color: var(--color-primary-white);

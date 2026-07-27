@@ -103,3 +103,14 @@ export type ErrorType =
   | "METODE_PEMBAYARAN_KOSONG"
   | "DATA_DI_BAYAR_KOSONG"
   | "DATA_TEMPO_KOSONG";
+
+export const STATUS_PERGERAKAN = {
+  CEPAT: "CEPAT",
+  NORMAL: "NORMAL",
+  LAMBAT: "LAMBAT",
+} as const;
+
+export type StatusPergerakan =
+  (typeof STATUS_PERGERAKAN)[keyof typeof STATUS_PERGERAKAN];
+
+export const BATAS_WAKTU_BATALKAN_POSTING_MS = 2 * 60 * 1000;

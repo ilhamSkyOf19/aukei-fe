@@ -14,10 +14,7 @@ const Keranjang = () => {
   return (
     <div
       className={cn(
-        "w-full h-screen flex flex-col justify-start items-start gap-2",
-        isModeKasir
-          ? "fixed z-40 top-0 left-0 right-0 bottom-0 bg-base-300"
-          : "p-4",
+        "w-full flex flex-col h-screen justify-start items-start gap-2 p-2.5",
       )}
     >
       {toast && (
@@ -29,11 +26,9 @@ const Keranjang = () => {
         />
       )}
 
-      {isModeKasir && <HeaderKasir />}
-
       <div className="w-full h-full flex-row justify-between items-start gap-2 lg:flex hidden">
         {/* left */}
-        <div className="flex-3 h-full flex flex-col justify-start items-start">
+        <div className="flex-2 h-full flex flex-col justify-start items-start">
           {/* daftar pelanggan */}
           <DataPelanggan />
         </div>

@@ -255,25 +255,12 @@ const ShowDataBarangMasuk: FC<Props> = ({
       </div>
 
       {/* for lg */}
-      <div className="w-full hidden lg:flex rounded-xl bg-base-100 dark:border dark:border-base-content/10 flex-col justify-start items-start p-4">
-        {/* header */}
-
-        <div className="w-full flex flex-row justify-between items-center">
-          <p className="text-base font-semibold text-base-content">
-            Daftar Barang Masuk
-          </p>
-
-          {/* count */}
-          <p className="text-xs px-3 py-1 rounded-full font-medium bg-gray-300">
-            {dataBarangMasukDetail?.data?.detailBarangMasuks.length} barang
-          </p>
-        </div>
-
-        <div className="overflow-x-auto w-full my-8">
+      <div className="w-full hidden lg:flex bg-base-100 dark:border dark:border-base-content/10 flex-col justify-start items-start rounded-2xl md:rounded-xl gap-4 overflow-hidden">
+        <div className="overflow-x-auto w-full">
           <table className="table table-xs lg:table-sm table-zebra">
             {/* head */}
             <thead>
-              <tr className="text-xs">
+              <tr className="text-xs h-12 text-[0.7rem] bg-base-200">
                 <th>No</th>
                 <th>Foto</th>
                 <th>Kode</th>
@@ -304,7 +291,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                     <tr
                       key={item.id}
                       className={cn(
-                        "transition-all duration-75 ease-in-out text-base-content",
+                        "transition-all duration-75 ease-in-out text-base-content text-[0.7rem]",
                         isActiveAksi === item.id && "bg-base-200",
                       )}
                     >

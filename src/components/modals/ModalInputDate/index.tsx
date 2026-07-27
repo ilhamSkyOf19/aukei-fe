@@ -2,13 +2,14 @@ import { type RefObject } from "react";
 import { cn } from "../../../utils/cn";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import ButtonSubmit from "../../ui/button/ButtonSubmit";
 import { InputDate } from "../../inputs/InputDate";
 import type {
   FieldValues,
   UseControllerReturn,
   UseFormHandleSubmit,
 } from "react-hook-form";
+import { Calendar } from "lucide-react";
+import ButtonText from "../../ui/button/ButtonText";
 type Props<T extends FieldValues> = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleSubmit: UseFormHandleSubmit<T>;
@@ -32,11 +33,15 @@ const ModalInputDate = <T extends FieldValues>({
 }: Props<T>) => {
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
+      <div className="modal-box w-11/12 lg:w-2/6 max-w-5xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin rounded-2xl md:rounded-xl">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
-            <TitleModalFormulir title={bigTitle} keterangan={smallTitle} />
+            <TitleModalFormulir
+              withIcon={{ icon: Calendar }}
+              title={bigTitle}
+              keterangan={smallTitle}
+            />
           </div>
 
           {/* form */}
@@ -50,7 +55,7 @@ const ModalInputDate = <T extends FieldValues>({
             <InputDate controller={useControll} label="Tanggal Masuk" />
 
             {/* action */}
-            <div className="w-full mt-6 flex flex-row justify-end items-center gap-4">
+            <div className="w-full flex flex-row justify-end items-center gap-4">
               {/* button close */}
               <ButtonCloseText
                 handleClose={() => {
@@ -58,7 +63,7 @@ const ModalInputDate = <T extends FieldValues>({
                 }}
               />
               {/* button submit */}
-              <ButtonSubmit label={`Simpan`} isLoading={isPending} />
+              <ButtonText label={`Simpan`} isLoading={isPending} />
             </div>
           </form>
         </div>

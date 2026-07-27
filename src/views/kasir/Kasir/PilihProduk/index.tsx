@@ -33,11 +33,9 @@ import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTabl
 import ModalAlert from "../../../../components/modals/ModalAlert";
 
 type Props = {
-  step: number;
-  handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
 };
-const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
+const PilihProduk: FC<Props> = ({ handleToast }) => {
   // call use
   const {
     handleAddDetails,
@@ -72,13 +70,13 @@ const PilihProduk: FC<Props> = ({ handleSteps, step, handleToast }) => {
     dataConfirm,
     modalConfirmRef,
     handleConfirm,
+    step,
   } = usePilihProduk({
-    handleSteps,
     handleToast,
   });
 
   return (
-    <div className="w-full h-[95vh] flex flex-row justify-between items-start gap-3">
+    <div className="w-full h-full flex flex-row justify-between items-start gap-3">
       {alert && (
         <Alert
           alert={alert?.id !== null}

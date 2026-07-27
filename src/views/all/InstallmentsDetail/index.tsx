@@ -47,9 +47,9 @@ const InstallmentsDetail = () => {
   } = useInstallmentsDetail();
 
   return (
-    <div className="w-full h-screen overflow-y-auto">
+    <div className="w-full">
       {windowSize === "lg" ? (
-        <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-start">
+        <div className="w-full px-2.5 pt-2.5 flex flex-col justify-start items-start">
           <ButtonBackText
             handleClick={() =>
               navigate(currentPathname.split("/").slice(0, -2).join("/"))
@@ -86,12 +86,17 @@ const InstallmentsDetail = () => {
                       {dataInstallments?.data?.pelanggan?.nama}
                     </p>
                   </div>
-
                   <span className="text-[0.625rem]  md:text-xs text-base-content ">
                     {formatNumberPhone(
                       dataInstallments?.data?.pelanggan?.noWa ?? "",
                     )}
                   </span>
+
+                  <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
+                    <span className="text-[0.625rem] font-medium text-base-content/70">
+                      Informasi pelanggan
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -118,7 +123,7 @@ const InstallmentsDetail = () => {
                 }}
                 label="Total Tagihan"
                 value={formatRupiah(dataInstallments?.data?.totalTagihan ?? 0)}
-                caption="Keseluruhan."
+                caption="Total tagihan keseluruhan."
                 isLoading={isLoadingDataInstallments}
                 withAlert="Total tagihan setelah DP"
               />
@@ -131,7 +136,7 @@ const InstallmentsDetail = () => {
                 }}
                 label="Uang Muka (DP)"
                 value={formatRupiah(dataInstallments?.data?.uangMuka ?? 0)}
-                caption="Total uang muka yang dibayar."
+                caption="Total uang muka yang dibayarkan."
                 isLoading={isLoadingDataInstallments}
               />
 

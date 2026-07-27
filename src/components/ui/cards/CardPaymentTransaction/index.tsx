@@ -58,7 +58,12 @@ const CardPaymentTransaction: FC<Props> = ({ paymentTransactions }) => {
       {/* value */}
       <div className="col-span-2 grid grid-cols-14 gap-1.5">
         <div className="col-span-1 flex flex-col justify-start items-start gap-1.5">
-          {Array.from({ length: 7 }).map((_, index) => (
+          {Array.from({
+            length:
+              paymentTransactions.metodePembayaran === PAYMENT_METHOD_TYPE.CASH
+                ? 8
+                : 7,
+          }).map((_, index) => (
             <span key={index} className="text-[0.7rem] text-base-content">
               :
             </span>

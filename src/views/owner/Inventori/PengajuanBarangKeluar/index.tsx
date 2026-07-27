@@ -46,7 +46,7 @@ const PengajuanBarangKeluar = () => {
   } = usePengajuanBarangKeluar();
 
   return (
-    <div className="w-full  mb-30 md:mb-10 lg:mb-20 ">
+    <div className="w-full">
       {/* toast create */}
       {toast && (
         <Toast
@@ -57,18 +57,9 @@ const PengajuanBarangKeluar = () => {
         />
       )}
 
-      <div className="card flex flex-col justify-start items-start px-2.5 pt-2.5">
+      <div className="card flex flex-col justify-start items-start px-2.5 pt-2.5 md:pt-0">
         {/* filter */}
         <div className="w-full bg-base-100 p-2.5 border border-transparent dark:border-base-content/10 flex flex-col md:flex-row justify-start items-start md:items-start rounded-2xl md:rounded-xl shadow-sm">
-          {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
-            <ButtonWithIcon
-              icon={PackagePlus}
-              label="Tambah Barang Masuk"
-              handleBtn={() => {}}
-              customClass="md:hidden w-full mb-3"
-            />
-          )}
-
           <div className="w-full md:flex-1 flex flex-row justify-start items-center">
             {/* input search */}
             <InputSearch
@@ -77,7 +68,7 @@ const PengajuanBarangKeluar = () => {
               withLabel
             />
           </div>
-          <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-4 lg:min-h-18 mt-3 md:mt-0">
+          <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-2.5 mt-3 md:mt-0">
             {/* input range date */}
             <RangeDate customWidth="w-full md:w-60" />
 
@@ -87,29 +78,11 @@ const PengajuanBarangKeluar = () => {
               customWidth="w-full md:w-40"
               value={sort}
             />
-
-            {/* button add barang masuk */}
-            {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
-              <div className="flex-col justify-start items-start gap-1.5 hidden md:flex">
-                <span className="text-xs text-base-content/80 font-medium">
-                  Aksi
-                </span>
-
-                <ButtonWithIcon
-                  icon={PackagePlus}
-                  label="Tambah Barang Masuk"
-                  handleBtn={() => {}}
-                  customClass="hidden md:flex"
-                  noLabel={windowSize === "md" && true}
-                  {...(windowSize === "md" && { customSize: "lg" })}
-                />
-              </div>
-            )}
           </div>
         </div>
 
         {/* SHOW DATA FOR SM */}
-        <div className="flex w-full flex-col justify-start items-center gap-2 mt-2 md:hidden">
+        <div className="flex w-full flex-col justify-start items-center gap-2.5 mt-2.5 md:hidden">
           {isLoadingPengajuanBarangKeluar ? (
             <>
               <div className="w-full h-20 skeleton border border-base-content/10" />
@@ -144,11 +117,11 @@ const PengajuanBarangKeluar = () => {
         </div>
 
         {/* SHOW DATA FOR MD, LG, XL */}
-        <div className="overflow-x-auto w-full bg-base-100 rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-4 hidden md:flex">
-          <table className="w-full table table-xs lg:table-sm mb-2">
+        <div className="overflow-x-auto w-full bg-base-100 rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-2.5 hidden md:flex">
+          <table className="w-full table table-xs mb-2">
             {/* head */}
             <thead>
-              <tr className="h-12 bg-base-200 text-xs">
+              <tr className="h-12 bg-base-200 text-[0.7rem]">
                 <th>Diajukan Oleh</th>
                 <th>Tanggal Diajukan</th>
                 <th>Kode Referensi</th>
@@ -164,7 +137,7 @@ const PengajuanBarangKeluar = () => {
               {isLoadingPengajuanBarangKeluar ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={10}>
+                    <td colSpan={9}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>
@@ -174,7 +147,7 @@ const PengajuanBarangKeluar = () => {
                   <tr
                     key={barang.id}
                     className={cn(
-                      "transition-all duration-75 ease-in-out h-18 text-xs text-base-content",
+                      "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                     )}
                   >
                     {/* author */}
@@ -246,7 +219,7 @@ const PengajuanBarangKeluar = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={10}>
+                  <td colSpan={9}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
                         title="Data Barang Keluar Tidak Tersedia"
@@ -260,33 +233,14 @@ const PengajuanBarangKeluar = () => {
             {/* foot */}
             <tfoot>
               <tr>
-                {!isLoadingPengajuanBarangKeluar &&
-                isExistDataPengajuanBarangKeluar &&
-                dataPengajuanBarangKeluar?.data?.data?.length! > 8 ? (
-                  <>
-                    <th>Diajukan Oleh</th>
-                    <th>Tanggal Diajukan</th>
-                    <th>Kode Referensi</th>
-                    <th>Tanggal Keluar</th>
-                    <th>Keterangan</th>
-                    <th>Jumlah</th>
-                    <th>Jenis Keluar</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                  </>
-                ) : (
-                  <>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                  </>
-                )}
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
               </tr>
             </tfoot>
           </table>

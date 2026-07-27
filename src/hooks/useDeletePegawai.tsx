@@ -1,11 +1,14 @@
 import useModal from "./useModal";
 import { useMutation } from "@tanstack/react-query";
 import { PegawaiServices } from "../services/pegawai.service";
+import axios from "axios";
+import type { ErrorResponse } from "../types/response.type";
 
 const useDeletePegawai = (params: {
   handleInvalidate?: () => Promise<void>;
   handleToast?: (toast: string) => void;
   redirect?: () => void;
+  handleShowModalFailedDelete?: () => Promise<void>;
 }) => {
   // use modal delete
   const {
@@ -31,8 +34,18 @@ const useDeletePegawai = (params: {
         // close modal
         handleCloseModalDelete();
       },
-      onError: (err) => {
-        console.log(err);
+      onError: async (err) => {
+        if (axios.isAxiosError<ErrorResponse>(err)) {
+          if (err.response?.data?.meta?.message?.includes("Relationship")) {
+            // close modal delete
+            handleCloseModalDelete();
+
+            // confirm
+            await params.handleShowModalFailedDelete?.();
+
+            return;
+          }
+        }
       },
     },
   );

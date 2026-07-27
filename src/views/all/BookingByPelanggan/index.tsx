@@ -60,10 +60,10 @@ const BookingByPelanggan = () => {
   } = useBookingByPelanggan();
 
   return (
-    <div className="w-full h-screen overflow-y-auto">
+    <div className="w-full">
       {(windowSize === "lg" && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) ||
       pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? (
-        <div className="w-full mb-30 md:mb-10 lg:mb-20 p-2 flex flex-col justify-start items-start">
+        <div className="w-full px-2.5 pt-2.5 flex flex-col justify-start items-start">
           <ButtonBackText handleClick={() => navigate("/dashboard/booking")} />
           {/* statistik */}
           <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5 mt-2.5">

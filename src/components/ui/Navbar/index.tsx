@@ -40,11 +40,11 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
   return (
     <nav
       className={cn(
-        "navbar w-full bg-base-100 shadow-sm flex flex-row justify-between items-center relative border-b border-base-content/10",
+        "navbar w-full bg-base-100 shadow-sm flex flex-row justify-between items-center top-0 border-b border-base-content/10 sticky z-30",
         pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
-          (currentPathname.includes("kasir") ||
-            currentPathname.includes("keranjang") ||
-            currentPathname.includes("kredit")) &&
+          // (currentPathname.includes("kasir") ||
+          //   currentPathname.includes("keranjang") ||
+          //   currentPathname.includes("kredit")) &&
           "hidden",
       )}
       style={{ minHeight: "2.5rem" }}
@@ -97,7 +97,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
             </button>
             <ul
               tabIndex={-1}
-              className="dropdown-content overflow-hidden menu bg-base-100 rounded-box z-50 w-80 border border-base-content/10 lg:w-130 p-2 shadow-sm mt-1.5"
+              className="dropdown-content overflow-hidden menu bg-base-100 rounded-box w-80 border border-base-content/10 lg:w-130 p-2 shadow-sm mt-1.5"
             >
               <li className="mb-1">
                 <div className="w-full flex flex-row justify-between items-center hover:bg-transparent active:bg-transparent cursor-default h-full overflow-y-auto scrollbar-thumb-custom-secondary">

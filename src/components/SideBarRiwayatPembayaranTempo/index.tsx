@@ -165,13 +165,13 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
                             {/* dot */}
                             <div
                               className={cn(
-                                "mt-1 h-6 w-6 md:h-6 md:w-6 rounded-full border relative flex flex-row justify-center items-center",
+                                "mt-1 h-6 w-6 md:h-5 md:w-5 rounded-full border relative flex flex-row justify-center items-center",
                                 style.borderDot,
                               )}
                             >
                               <div
                                 className={cn(
-                                  "w-2.5 h-2.5 md:w-2.5 md:h-2.5 rounded-full bg-base-content",
+                                  "w-2.5 h-2.5 md:w-2 md:h-2 rounded-full bg-base-content",
                                   style.dot,
                                 )}
                               />
@@ -183,21 +183,28 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
                               <div className="w-full flex flex-col justify-start items-start gap-2">
                                 {/* nama & tanggal */}
                                 <div className="w-full flex flex-row justify-between items-center">
-                                  <span className="text-xs text-base-content font-semibold">
+                                  <span className="text-sm text-base-content font-semibold">
                                     {formatRupiah(item.nominal)}
                                   </span>
 
-                                  <span className="text-[0.625rem] font-medium text-base-content">
+                                  <span className="text-[0.625rem] text-base-content">
                                     {formatTanggalLengkap(item.tanggalBayar)}
                                   </span>
                                 </div>
 
-                                {/* metode pembayaran */}
+                                {/* kasir & metode pembayaran */}
                                 <div className="w-full flex flex-row justify-start items-center gap-2.5">
-                                  <CardLabelMetodePembayaran
-                                    metodePembayaran={item.metodePembayaran}
-                                    noLabel
-                                  />
+                                  <div className="flex flex-row justify-start items-center gap-1.5">
+                                    {/* kasir */}
+                                    <div className="flex flex-row justify-start items-center pr-2.5 border-r border-base-content/30">
+                                      <span className="text-[0.7rem] text-base-content">
+                                        {item.kasir.nama}
+                                      </span>
+                                    </div>
+                                    <span className="text-[0.625rem] text-base-content">
+                                      {item.metodePembayaran}
+                                    </span>
+                                  </div>
 
                                   {index === 0 && (
                                     <div className="w-full flex flex-row justify-end items-center">
@@ -212,7 +219,7 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
 
                             <div
                               className={cn(
-                                "w-full p-2.5 mt-2.5 border border-base-content/10 rounded-2xl md:rounded-xl flex flex-col justify-start items-start gap-2",
+                                "w-full p-2.5 mt-2.5 border border-base-content/10 rounded-2xl md:rounded-xl flex flex-col justify-start items-start gap-1.5",
                               )}
                             >
                               {/* label */}
@@ -220,7 +227,7 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
                                 Keterangan
                               </span>
 
-                              <p className="text-[0.625rem] font-medium text-base-content">
+                              <p className="text-[0.625rem] text-base-content">
                                 {item.keterangan === ""
                                   ? "Tidak ada keterangan"
                                   : item.keterangan}

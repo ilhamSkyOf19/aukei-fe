@@ -21,6 +21,7 @@ import { parseId } from "../../../../helpers/helpers";
 import useIsModeKasirStore from "../../../../stores/iseModaKasirStore";
 import { useAuthStore } from "../../../../stores/authStore";
 import useConfirm from "../../../../hooks/useConfirm";
+import { useStepStore } from "../../../../stores/stepStore";
 
 type IsErrorsType = "pelanggan" | "details";
 
@@ -35,11 +36,10 @@ const LOCAL_STORAGE_KEYS = {
   METODE_PEMBAYARAN: "metode-pembayaran",
 } as const;
 
-const usePilihProduk = (props: {
-  handleSteps: (value: number) => void;
-  handleToast: (value: string) => void;
-}) => {
-  const { handleSteps, handleToast } = props;
+const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
+  const { handleToast } = props;
+
+  const { setStep: handleSteps, step } = useStepStore((state) => state);
 
   const pengguna = useAuthStore((state) => state.pengguna);
 
@@ -326,7 +326,7 @@ const usePilihProduk = (props: {
     if (!canNext) return;
 
     // Cek apakah ada produk dengan stok habis
-    const insufficientStock = produkDetails.some((produk) => produk.stok === 0);
+    const insufficientStock = produkDetails.some((produk) => produk.stok <= 0);
 
     if (insufficientStock && !fromBooking) {
       // Tawarkan konversi ke booking jika stok tidak mencukupi
@@ -535,6 +535,7 @@ const usePilihProduk = (props: {
     handleCancelConfirm,
     dataConfirm,
     handleConfirm,
+    step,
   };
 };
 

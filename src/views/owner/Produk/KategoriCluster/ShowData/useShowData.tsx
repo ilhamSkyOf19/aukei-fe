@@ -5,12 +5,14 @@ import { KategoriProdukServices } from "../../../../../services/kategoriProduk.s
 import useModal from "../../../../../hooks/useModal";
 import { useEffect, useState } from "react";
 import type { UpdateKategoriProdukType } from "../../../../../models/kategoriProduk.model";
-import { useToastAnimation } from "../../../../../hooks/useToast";
 import axios from "axios";
 import type { ErrorResponse } from "../../../../../types/response.type";
-import { useAlertAnimation } from "../../../../../hooks/useAlert";
 
-const useShowData = () => {
+const useShowData = (params: {
+  handleSetAlert: (alert: string) => void;
+  handleSetToast: (toast: string) => void;
+}) => {
+  const { handleSetAlert, handleSetToast } = params;
   // query client
   const queryClient = useQueryClient();
 
@@ -18,12 +20,6 @@ const useShowData = () => {
   const [dataKategoriForUpdate, setDataKategoriForUpdate] = useState<
     (UpdateKategoriProdukType & { id: number }) | null
   >(null);
-
-  // toast
-  const { toast, handleSetToast } = useToastAnimation();
-
-  // alert
-  const { alert, handleSetAlert } = useAlertAnimation();
 
   // search filter
   const { search, setSearch: handleSearch } = useFilterSearch("search");
@@ -116,7 +112,7 @@ const useShowData = () => {
       mutationFn: (id: number) => KategoriProdukServices.delete(id),
       onSuccess: () => {
         // handle toast
-        handleSetToast("deleted");
+        handleSetToast("deleted_kategori");
 
         // refetch
         queryClient.invalidateQueries({ queryKey: ["kategori-produk"] });
@@ -132,7 +128,7 @@ const useShowData = () => {
             err?.response?.data?.meta?.customField?.includes("KategoriProduk")
           ) {
             // show modal alert
-            handleSetAlert("cancel_delete");
+            handleSetAlert("cancel_delete_kategori");
           }
         }
       },
@@ -167,7 +163,6 @@ const useShowData = () => {
     handleShowModalDelete,
     handleCloseModalDelete,
     dataDelete,
-    toast,
     alert,
   };
 };

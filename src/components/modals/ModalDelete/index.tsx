@@ -2,9 +2,9 @@ import { AlertCircle } from "lucide-react";
 import { useState, type FC, type RefObject } from "react";
 import clsx from "clsx";
 import { cn } from "../../../utils/cn";
-import ButtonDelete from "../../ui/button/ButtonDelete";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ErrorMessage from "../../messages/ErrorMessage";
+import ButtonText from "../../ui/button/ButtonText";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
@@ -167,7 +167,13 @@ const ModalDelete: FC<Props> = ({
           />
 
           {/* button delete */}
-          <ButtonDelete handleDelete={handleNext} isLoading={isLoadingDelete} />
+          <ButtonText
+            bgColor="bg-error"
+            textColor="text-primary-white"
+            label="hapus"
+            handleClick={handleNext}
+            isLoading={isLoadingDelete}
+          />
         </div>
       </div>
     </dialog>

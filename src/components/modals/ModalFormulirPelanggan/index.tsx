@@ -83,7 +83,7 @@ const ModalFormulirPelanggan: FC<Props> = ({
             />
 
             {/* alert */}
-            <div className="w-full mt-2.5">
+            <div className={cn("w-full", errors?.noWa && "mt-4")}>
               <AlertLabel message="Pastikan nomor whatsapp yang dimasukkan adalah nomor aktif" />
             </div>
 

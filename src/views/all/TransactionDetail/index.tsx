@@ -8,10 +8,9 @@ import { PAYMENT_METHOD_TYPE } from "../../../types/constant.type";
 import InformasiPembayaran from "./InformasiPembayaran";
 
 type Props = {
-  handleSteps?: (value: number) => void;
   transactionId?: number;
 };
-const TransactionDetail: FC<Props> = ({ handleSteps, transactionId }) => {
+const TransactionDetail: FC<Props> = ({ transactionId }) => {
   // call use
   const {
     dataTransaction,
@@ -25,13 +24,12 @@ const TransactionDetail: FC<Props> = ({ handleSteps, transactionId }) => {
     setIsUbahData,
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
-  } = useTransactionDetail({ handleSteps, transactionId });
+  } = useTransactionDetail({ transactionId });
 
   return (
     <div
       className={cn(
-        "w-full md:h-screen  overflow-y-auto h-full flex flex-col justify-start items-start p-2.5 gap-2.5",
-        transactionId ? "pb-10" : "pb-20",
+        "w-full flex flex-col justify-start items-start gap-2.5 pt-2.5 px-2.5",
       )}
     >
       {/* back */}
@@ -66,7 +64,6 @@ const TransactionDetail: FC<Props> = ({ handleSteps, transactionId }) => {
           dataKebutuhanBarang={dataKebutuhanBarang}
           isLoadingKebutuhanBarang={isLoadingKebutuhanBarang}
         />
-
         <InformasiPembayaran
           dataTransaction={dataTransaction}
           setIsUbahData={setIsUbahData}

@@ -48,13 +48,13 @@ const SideBarRiwayatPengajuan = () => {
       </div>
 
       {/* drawer side */}
-      <div className="drawer-side">
+      <div className="drawer-side z-30">
         <label
           aria-label="close sidebar"
           className="drawer-overlay"
           onClick={handleClose}
         />
-        <div className="menu bg-base-100 h-screen w-80 md:w-120 overflow-hidden">
+        <div className="menu bg-base-100 h-screen w-70 md:w-120 overflow-hidden">
           <div className="w-full h-full flex flex-col justify-start items-start p-2.5">
             {isLoadingRiwayat ? (
               <div className="w-full flex flex-col justify-start items-start">
@@ -129,9 +129,9 @@ const SideBarRiwayatPengajuan = () => {
                               {/* author */}
                               <div className="w-full flex flex-col justify-start items-start gap-2">
                                 {/* nama & tanggal */}
-                                <div className="w-full flex flex-row justify-between items-center">
-                                  <div className="flex flex-row justify-start items-center gap-2.5">
-                                    <span className="text-xs text-base-content font-medium pr-2.5 border-r border-base-content/10">
+                                <div className="w-full flex flex-row justify-between items-start md:items-center">
+                                  <div className="flex flex-col md:flex-row  justify-start items-start md:items-center gap-2.5">
+                                    <span className="text-xs text-base-content font-medium pr-2.5 md:border-r md:border-base-content/10">
                                       {item.author.nama}
                                     </span>
                                     {/* status */}
@@ -163,15 +163,15 @@ const SideBarRiwayatPengajuan = () => {
 
                             <div
                               className={cn(
-                                "w-full p-2.5 mt-3 border  rounded-2xl md:rounded-xl flex flex-col justify-start items-start gap-2 border-base-content/10",
+                                "w-full mt-2.5 flex flex-col justify-start items-start gap-0.5 border-base-content/10",
                               )}
                             >
                               {/* label */}
-                              <span className="text-xs font-semibold text-base-content">
+                              <span className="text-[0.7rem] font-medium text-base-content">
                                 Keterangan
                               </span>
 
-                              <p className="text-[0.625rem] font-medium text-base-content">
+                              <p className="text-[0.625rem] text-base-content">
                                 {item.keterangan}
                               </p>
                             </div>

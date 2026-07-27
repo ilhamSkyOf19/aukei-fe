@@ -2,7 +2,7 @@ import { MonitorSmartphone } from "lucide-react";
 
 const NotCompatible = () => {
   return (
-    <div className="w-full h-[80vh] flex flex-col justify-center items-center lg:hidden">
+    <div className="w-full h-full flex flex-col justify-center items-center lg:hidden">
       {/* icon */}
       <div className="flex flex-row justify-center items-center">
         <MonitorSmartphone className="size-35 stroke-1" />

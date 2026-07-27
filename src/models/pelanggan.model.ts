@@ -46,6 +46,7 @@ export interface ResponsePelangganForKeranjangWithMetaType {
 export interface ResponsePelangganWithRiwayatAndMetaType {
   data: (IPelangganType & {
     totalTransaction?: number;
+    booking?: number;
     kredit?: {
       berjalan: number;
       selesai: number;

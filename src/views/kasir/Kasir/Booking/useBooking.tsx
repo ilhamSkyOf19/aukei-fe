@@ -16,19 +16,9 @@ import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInt
 import { useMutation } from "@tanstack/react-query";
 import { TransactionServices } from "../../../../services/transaction.service";
 import useConfirm from "../../../../hooks/useConfirm";
-
-// Key localStorage yang digunakan pada flow booking
-const LOCAL_STORAGE_KEYS = {
-  METODE_PEMBAYARAN: "metode-pembayaran",
-  DETAILS: "details",
-  PELANGGAN: "pelanggan",
-  DATA_FROM_KERANJANG: "data-from-keranjang",
-  DI_BAYAR: "di-bayar",
-  TRANSACTION: "transaction",
-  TEMPO: "tempo",
-  IS_UPDATE_TRANSACTION: "is-update-transaction",
-  FROM_BOOKING: "from-booking",
-} as const;
+import { LOCAL_STORAGE_KEYS } from "../../../../utils/localStorageKeys";
+import { getLocalStorageJSON } from "../../../../helpers/helpers";
+import { useStepStore } from "../../../../stores/stepStore";
 
 // Persentase minimal DP yang disarankan dari total transaksi
 const MINIMAL_DP_PERCENTAGE = 0.3;
@@ -36,27 +26,18 @@ const MINIMAL_DP_PERCENTAGE = 0.3;
 // Delay debounce saat menyimpan metode pembayaran non-CASH ke localStorage
 const METODE_PEMBAYARAN_SYNC_DEBOUNCE_MS = 500;
 
-// Ambil dan parse data JSON dari localStorage, return null jika tidak ada/invalid
-const getLocalStorageJSON = <T,>(key: string): T | null => {
-  try {
-    const rawValue = localStorage.getItem(key);
-    return rawValue ? (JSON.parse(rawValue) as T) : null;
-  } catch {
-    return null;
-  }
-};
-
 // Simpan data ke localStorage dalam bentuk JSON string
 const setLocalStorageJSON = (key: string, value: unknown) => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 
 const useBooking = (params: {
-  handleSteps: (value: number) => void;
   handleToast: (value: string) => void;
   kasir?: PayloadPenggunaInternalType | null;
 }) => {
-  const { handleSteps, handleToast, kasir } = params;
+  const { handleToast, kasir } = params;
+
+  const { setStep: handleSteps } = useStepStore((state) => state);
 
   // Daftar error validasi yang sedang aktif
   const [isErrors, setIsErrors] = useState<ErrorType[]>([]);
@@ -92,6 +73,17 @@ const useBooking = (params: {
     () =>
       getLocalStorageJSON<Pick<IPelangganType, "id" | "nama" | "noWa">>(
         LOCAL_STORAGE_KEYS.PELANGGAN,
+      ),
+    [],
+  );
+
+  // get data transaction id from keranjang
+  const dataFromKeranjang = useMemo<{
+    transactionId: number;
+  } | null>(
+    () =>
+      getLocalStorageJSON<{ transactionId: number }>(
+        LOCAL_STORAGE_KEYS.DATA_FROM_KERANJANG,
       ),
     [],
   );
@@ -160,6 +152,11 @@ const useBooking = (params: {
 
     // Hapus nominal dibayar jika metode bukan CASH
     if (metode !== "CASH") localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
+
+    // clear errors
+    setIsErrors((prev) =>
+      prev.filter((item) => item !== "METODE_PEMBAYARAN_KOSONG"),
+    );
   };
 
   // Ringkasan transaksi: total qty, subtotal, diskon, total transaksi, dan saran DP (30%)
@@ -260,6 +257,7 @@ const useBooking = (params: {
 
       const dataTransaction: CreateTransactionForRequestType = {
         // Sertakan detail tempo (DP) jika metode pembayaran TEMPO
+        ...(dataFromKeranjang && { id: dataFromKeranjang.transactionId }),
         ...(metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && {
           tempo: {
             jumlahCicilan: 0,
@@ -275,7 +273,10 @@ const useBooking = (params: {
           quantity: item.quantity,
         })),
         diBayar: dataDiBayar,
-        kembalian: dataDiBayar - nilaiDp,
+        kembalian:
+          metodePembayaran === PAYMENT_METHOD_TYPE.CASH
+            ? dataDiBayar - nilaiDp
+            : 0,
         metodePembayaran: metodePembayaran,
         pelangganId: pelanggan.id,
         kasirId: kasir.id,

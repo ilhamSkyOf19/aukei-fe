@@ -1,4 +1,4 @@
-import type { MetaType } from "../types/constant.type";
+import type { MetaType, StatusPergerakan } from "../types/constant.type";
 import type { IKategoriProdukType } from "./kategoriProduk.model";
 
 export interface IProduk {
@@ -68,4 +68,13 @@ export interface ResponseProdukForKasirType extends Pick<
 export interface ResponseProdukForKasirWithMetaType {
   meta: MetaType;
   data: ResponseProdukForKasirType[];
+}
+
+export interface ResponsePantauStokWithMetaType {
+  meta: MetaType;
+  data: (ProdukResponseType & {
+    restockTerakhir: Date | null;
+
+    statusPergerakan: StatusPergerakan | null;
+  })[];
 }

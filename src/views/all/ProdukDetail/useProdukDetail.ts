@@ -7,12 +7,13 @@ import { useController, useForm } from "react-hook-form";
 import type { UpdateProdukType } from "../../../models/produk.model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProdukValidation } from "../../../validations/produk.validation";
-import { KategoriProdukServices } from "../../../services/kategoriProduk.service";
 import { useToastAnimation } from "../../../hooks/useToast";
 import useModal from "../../../hooks/useModal";
 import useDeleteProduk from "../../../hooks/useDeleteProduk";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
+import useUpdateProdukIsActive from "../../../validations/useUpdateProdukIsActive";
+import useKategoriForChoose from "../../../hooks/useKategoriForChoose";
 
 const useProdukDetail = () => {
   // state key update
@@ -49,14 +50,10 @@ const useProdukDetail = () => {
   const isExistData = dataProduk?.data !== null;
 
   // use query kategori produk
-  const { data: dataKategoriForChoose, isLoading: isLoadingKategoriForChoose } =
-    useQuery({
-      queryKey: ["kategori-produk"],
-      queryFn: () => KategoriProdukServices.findAllForChoose(),
-      enabled: isExistData,
-      refetchOnWindowFocus: false,
-      retry: false,
-    });
+  const {
+    dataKategori: dataKategoriForChoose,
+    isLoadingKategori: isLoadingKategoriForChoose,
+  } = useKategoriForChoose();
 
   // handle redirect formulir
   const handleRedirectFormulir = () => {
@@ -255,6 +252,16 @@ const useProdukDetail = () => {
     redirectPathname: currentPathname.split("/").slice(0, -1).join("/"),
   });
 
+  // handle update
+  const { handelUpdateIsActive, isPendingUpdateIsActive } =
+    useUpdateProdukIsActive({
+      handleSetToast,
+      handleInvalidate: () =>
+        queryClient.invalidateQueries({
+          queryKey: ["detail-produk", validatedIdParams],
+        }),
+    });
+
   return {
     handleRedirectFormulir,
     isExistData,
@@ -282,6 +289,8 @@ const useProdukDetail = () => {
     handleCloseModalDelete,
     isiPerBoxController,
     stokMinimumController,
+    handelUpdateIsActive,
+    isPendingUpdateIsActive,
   };
 };
 

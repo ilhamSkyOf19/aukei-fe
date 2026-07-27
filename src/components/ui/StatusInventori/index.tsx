@@ -13,7 +13,7 @@ const StatusInventori: FC<Props> = ({ status }) => {
     <div className="flex flex-row justify-start items-center">
       <p
         className={cn(
-          "text-xs rounded-full uppercase font-medium px-2 py-1",
+          "text-[0.625rem] rounded-full uppercase font-medium px-2 py-1",
           status === STATUS_INVENTORI_TYPE.DRAFT && "text-blue-600 bg-blue-100",
           status === STATUS_INVENTORI_TYPE.PENDING &&
             "text-amber-600 bg-amber-100",

@@ -26,7 +26,6 @@ const InputTextNonIcon: FC<Props> = ({
   register,
   max,
   disabled,
-  xs,
   withCaption,
   captionSize,
 }) => {
@@ -94,7 +93,7 @@ const InputTextNonIcon: FC<Props> = ({
       )}
 
       {/* error message */}
-      <ErrorMessage xs={xs} errorMessage={errorMessage} />
+      <ErrorMessage errorMessage={errorMessage} />
     </div>
   );
 };

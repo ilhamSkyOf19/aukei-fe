@@ -2,6 +2,7 @@ import {
   BanknoteArrowDown,
   CalendarClock,
   PackageMinus,
+  PackageSearch,
   Receipt,
   TrendingUp,
   Truck,
@@ -44,9 +45,11 @@ const RiwayatTransaksi = () => {
     isLoadingKebutuhanBarang,
   } = useBooking();
 
+  // sesuiakan lagi dengan ui yang sudah diperbarui
+
   return (
-    <div className="w-full h-screen overflow-y-auto">
-      <div className="w-full mb-30 md:mb-20 lg:mb-20 flex flex-col justify-start items-start gap-2.5 p-2">
+    <div className="w-full">
+      <div className="w-full flex flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5">
         {/* statistik */}
         <div
           className={cn(
@@ -59,7 +62,7 @@ const RiwayatTransaksi = () => {
           {/* total produk booking */}
           <CardStatistik
             icon={{
-              icon: PackageMinus,
+              icon: PackageSearch,
               bgColor: "bg-rose-50",
               iconColor: "text-rose-600",
             }}
@@ -69,25 +72,25 @@ const RiwayatTransaksi = () => {
             isLoading={isLoadingKebutuhanBarang}
           />
 
-          {/* total stok yang dibutuhkan */}
+          {/* total stok yang dibooking */}
           <CardStatistik
             icon={{
               icon: Truck,
-              bgColor: "bg-emerald-50",
-              iconColor: "text-emerald-600",
+              bgColor: "bg-amber-50",
+              iconColor: "text-amber-600",
             }}
-            label="Total Stok Yang Dibutuhkan"
+            label="Total Stok Yang Dibooking"
             value={formatNumber(
               dataKebutuhanBarang?.data?.reduce(
-                (total, item) => total + item.produk.totalKebutuhanStok,
+                (total, item) => total + item.produk.stokBooking,
                 0,
               ) ?? 0,
             )}
-            caption={windowSize === "sm" ? "" : "Stok yang dibutuhkan"}
+            caption={windowSize === "sm" ? "" : "Stok yang dibooking"}
             isLoading={isLoadingKebutuhanBarang}
           />
 
-          {/* total stok yang sudah tersedia */}
+          {/* total stok yang sudah terpenuhi */}
           <CardStatistik
             icon={{
               icon: Truck,
@@ -107,6 +110,24 @@ const RiwayatTransaksi = () => {
               ) ?? 0,
             )}
             caption={windowSize === "sm" ? "" : "Stok yang sudah terpenuhi"}
+            isLoading={isLoadingKebutuhanBarang}
+          />
+
+          {/* total stok yang belum terpenuhi */}
+          <CardStatistik
+            icon={{
+              icon: Truck,
+              bgColor: "bg-rose-50",
+              iconColor: "text-rose-600",
+            }}
+            label="Total Stok Belum Terpenuhi"
+            value={formatNumber(
+              dataKebutuhanBarang?.data?.reduce(
+                (total, item) => total + item.produk.totalKebutuhanStok,
+                0,
+              ) ?? 0,
+            )}
+            caption={windowSize === "sm" ? "" : "Stok yang belum terpenuhi"}
             isLoading={isLoadingKebutuhanBarang}
           />
 

@@ -91,6 +91,9 @@ const useModalFormulirPegawai = (params: {
           toast: id ? "updated_pegawai" : "created_pegawai",
         },
       });
+
+      // reset
+      reset();
     },
     onError: (err) => {
       if (axios.isAxiosError<ErrorResponse>(err)) {

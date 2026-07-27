@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { cn } from "../../../../utils/cn";
 
 type Props = {
   label?: string;
@@ -6,6 +7,9 @@ type Props = {
   isLoading?: boolean;
   typeButton?: boolean;
   handleClick?: () => void;
+  customWidth?: string;
+  bgColor?: string;
+  textColor?: string;
 };
 
 const ButtonText: FC<Props> = ({
@@ -14,11 +18,19 @@ const ButtonText: FC<Props> = ({
   label,
   isLoading,
   handleClick,
+  customWidth,
+  bgColor,
+  textColor,
 }) => {
   return (
     <button
       type={typeButton ? "button" : "submit"}
-      className="h-10.5 md:h-9 text-xs px-4 bg-custom-primary font-semibold text-custom-secondary hover-overlay disabled:opacity-50 rounded-xl shadow-sm"
+      className={cn(
+        "h-10.5 md:h-9 text-xs px-4 font-semibold hover-overlay disabled:opacity-50 rounded-xl shadow-sm",
+        customWidth ?? "w-auto",
+        bgColor ?? " bg-custom-primary",
+        textColor ?? "text-custom-secondary ",
+      )}
       disabled={disable || isLoading}
       onClick={() => handleClick?.()}
     >

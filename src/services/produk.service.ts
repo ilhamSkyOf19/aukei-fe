@@ -2,6 +2,7 @@ import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
   ProdukResponseType,
+  ResponsePantauStokWithMetaType,
   ResponseProdukForChooseType,
   ResponseProdukForKasirWithMetaType,
   ResponseProdukWithMetaType,
@@ -9,6 +10,22 @@ import type {
 import type { ResponseStructure } from "../types/response.type";
 
 export class ProdukServices {
+  // pantauan stok
+  static async pantauanStok(
+    query: PaginationType & {
+      kategori?: string;
+    },
+  ): Promise<ResponseStructure<ResponsePantauStokWithMetaType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponsePantauStokWithMetaType | null>
+    >(`/produk/pantauan-stok`, {
+      params: query,
+    });
+
+    return result.data;
+  }
+
   // find all
   static async findAll(
     query: PaginationType & {
