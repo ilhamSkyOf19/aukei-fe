@@ -10,6 +10,7 @@ import { cn } from "../../../utils/cn";
 type Props = {
   status?: TransactionStatusType;
   statusTempo?: TempoStatusType;
+  statusTempoDueToday?: boolean;
   uppercase?: boolean;
   customPy?: string;
 };
@@ -18,6 +19,7 @@ const StatusTransaction: FC<Props> = ({
   statusTempo,
   uppercase,
   customPy,
+  statusTempoDueToday,
 }) => {
   return (
     <>
@@ -34,7 +36,7 @@ const StatusTransaction: FC<Props> = ({
             "bg-amber-100 text-amber-600",
           statusTempo === TEMPO_STATUS_TYPE.PAID &&
             "bg-green-100 text-green-600",
-          statusTempo === TEMPO_STATUS_TYPE.OVERDUE &&
+          (statusTempo === TEMPO_STATUS_TYPE.OVERDUE || statusTempoDueToday) &&
             "bg-red-100 text-red-600",
         )}
       >
@@ -48,6 +50,7 @@ const StatusTransaction: FC<Props> = ({
         {statusTempo === TEMPO_STATUS_TYPE.PARTIAL && "Sedang Berjalan"}
         {statusTempo === TEMPO_STATUS_TYPE.PAID && "Lunas"}
         {statusTempo === TEMPO_STATUS_TYPE.OVERDUE && "Terlambat"}
+        {statusTempoDueToday && "Jatuh Tempo"}
       </span>
     </>
   );

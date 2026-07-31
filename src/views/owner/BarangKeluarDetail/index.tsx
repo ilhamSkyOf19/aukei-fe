@@ -328,7 +328,6 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       {/* formulir */}
       {canShowFormTambahBarang && (
         <FormulirTambahBarangKeluar
-          status={dataBarangKeluarDetail?.data?.status}
           totalBarang={
             dataBarangKeluarDetail?.data?.detailBarangKeluars?.length ?? 0
           }
@@ -343,6 +342,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
         dataBarangKeluarDetail={dataBarangKeluarDetail}
         fromPengajuanBarang={fromPengajuanBarang}
         role={pengguna?.role}
+        handleSetAlert={handleSetAlert}
       />
 
       {/* modal konfirmasi */}

@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useState,
-  type ForwardedRef,
-} from "react";
+import { useEffect, useMemo, useState, type ForwardedRef } from "react";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useQueries } from "@tanstack/react-query";
 import { StatistikServices } from "../../../services/statistik.service";
@@ -22,7 +16,7 @@ const useGrafikLine = (params: {
       case "semua":
         setIsChoose("omzet");
         break;
-      case "keuangan":
+      case "penjualan":
         setIsChoose("omzet");
         break;
       case "barang":
@@ -167,7 +161,7 @@ const useGrafikLine = (params: {
 
   const getOpsiGrafik = (kategori: string) => {
     switch (kategori) {
-      case "keuangan":
+      case "penjualan":
       case "semua":
         return [
           { label: "Omzet Terjual", value: "omzet" },
@@ -187,37 +181,37 @@ const useGrafikLine = (params: {
 
   const filteredOpsiGrafik = getOpsiGrafik(params.pilihan);
 
-  const activeQuery = useMemo(() => {
-    switch (isChoose) {
-      case "omzet":
-        return data[0];
+  // const activeQuery = useMemo(() => {
+  //   switch (isChoose) {
+  //     case "omzet":
+  //       return data[0];
 
-      case "modal":
-        return data[1];
+  //     case "modal":
+  //       return data[1];
 
-      case "laba":
-        return data[2];
+  //     case "laba":
+  //       return data[2];
 
-      case "kasMasuk":
-        return data[3];
+  //     case "kasMasuk":
+  //       return data[3];
 
-      case "kerugian":
-        return data[4];
+  //     case "kerugian":
+  //       return data[4];
 
-      default:
-        return data[0];
-    }
-  }, [data, isChoose]);
+  //     default:
+  //       return data[0];
+  //   }
+  // }, [data, isChoose]);
 
-  useImperativeHandle(
-    params.ref,
-    () => ({
-      async refetchActive() {
-        await activeQuery.refetch();
-      },
-    }),
-    [activeQuery],
-  );
+  // useImperativeHandle(
+  //   params.ref,
+  //   () => ({
+  //     async refetchActive() {
+  //       await activeQuery.refetch();
+  //     },
+  //   }),
+  //   [activeQuery],
+  // );
 
   return {
     isChoose,

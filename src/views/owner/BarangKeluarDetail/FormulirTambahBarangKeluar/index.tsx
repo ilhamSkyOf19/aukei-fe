@@ -1,11 +1,11 @@
 import { type FC } from "react";
-import {
-  STATUS_INVENTORI_TYPE,
-  type StatusInventoriType,
-} from "../../../../types/constant.type";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import { cn } from "../../../../utils/cn";
-import { formatRupiah, formatRupiahShort } from "../../../../helpers/helpers";
+import {
+  formatNumber,
+  formatRupiah,
+  formatRupiahShort,
+} from "../../../../helpers/helpers";
 import { Trash2 } from "lucide-react";
 import InputNumber from "../../../../components/inputs/InputNumber";
 import ButtonSubmitWithIcon from "../../../../components/ui/button/ButtonSubmitWithIcon";
@@ -16,13 +16,11 @@ import ModalFormulirTambahBarangKeluar from "../../../../components/modals/Modal
 import FormCariProdukInventori from "../../../../components/forms/FormCariProdukInventori";
 
 type Props = {
-  status?: StatusInventoriType;
   totalBarang: number;
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
 };
 const FormulirTambahBarangKeluar: FC<Props> = ({
-  status,
   totalBarang,
   handleSetToast,
   handleSetAlert,
@@ -55,10 +53,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
 
   return (
     <div
-      className={cn(
-        "w-full flex flex-col justify-start items-center gap-2",
-        status !== STATUS_INVENTORI_TYPE.DRAFT && "hidden",
-      )}
+      className={cn("w-full flex flex-col justify-start items-center gap-2")}
     >
       <div className="w-full lg:hidden flex flex-row justify-between items-center">
         <div className="flex flex-col justify-start items-start gap-1.5">
@@ -141,7 +136,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
 
         {/* card produk choose */}
         {produkChoose && (
-          <div className="w-full flex flex-col justify-start items-start gap-2">
+          <div className="w-full flex flex-col justify-start items-start gap-2 mt-4">
             <p className="text-xs font-medium text-base-content">
               Daftar Pilihan Barang
             </p>
@@ -151,7 +146,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
                 key={produkChoose.id}
                 className="col-span-1 flex flex-row justify-start items-center hover:bg-custom-primary/50 p-2 rounded-2xl md:rounded-xl transition-all duration-100 ease-in-out border border-base-content/10"
               >
-                <div className="w-full flex flex-row justify-start items-start gap-2">
+                <div className="w-full flex flex-row justify-start items-center gap-2">
                   <div className="flex-2 w-full flex flex-row justify-start items-start gap-4">
                     {/* img */}
                     <div className="w-11 h-11 rounded-xl overflow-hidden">
@@ -161,14 +156,18 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
                         className="w-full h-full object-cover"
                       />
                     </div>
-
-                    {/* nama */}
-                    <div className="flex flex-col justify-start items-start gap-0.5">
+                    <div className="flex flex-col justify-start items-start gap-1">
                       <p className="text-xs font-medium text-base-content">
                         {produkChoose.nama}
                       </p>
                       <p className="text-[0.625rem] text-base-content/70 font-medium">
                         {produkChoose.kode}
+                      </p>
+                      <p className="text-[0.625rem] gap-1.5 flex flex-row justify-start items-center text-base-content/70">
+                        <span>Stok: </span>
+                        <span className="font-medium">
+                          {formatNumber(produkChoose.stok)}
+                        </span>
                       </p>
                     </div>
                   </div>

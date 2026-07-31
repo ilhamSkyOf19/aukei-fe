@@ -38,9 +38,11 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     queryClient.invalidateQueries({
       queryKey: ["barang-masuk-detail", validatedId],
     });
+
     queryClient.invalidateQueries({
       queryKey: ["notifikasi-global"],
     });
+
     queryClient.invalidateQueries({
       queryKey: ["notifikasi-produk"],
     });
@@ -289,11 +291,9 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
       status: Exclude<StatusInventoriType, "DRAFT" | "PENDING">;
     }) => PengajuanBarangMasukServices.verifikasi(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["barang-masuk-detail", validatedId],
-      });
-
       handleSetToast("approved_pengajuan");
+
+      invalidateBarangMasukQueries();
     },
     onError: (err) => {
       console.log(err);
@@ -334,8 +334,14 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
   // Apakah form tambah barang boleh ditampilkan, tergantung asal halaman & role pengguna
   const canShowFormTambahBarang =
-    (!fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) ||
-    (fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
+    (!fromPengajuanBarang &&
+      pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
+      dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT) ||
+    (fromPengajuanBarang &&
+      pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
+      (dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
+        dataBarangMasukDetail?.data?.status ===
+          STATUS_INVENTORI_TYPE.REJECTED));
 
   // Apakah data barang masuk masih bisa diupdate
   const isCanUpdate =

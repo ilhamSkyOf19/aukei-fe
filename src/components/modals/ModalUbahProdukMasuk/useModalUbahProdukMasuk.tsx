@@ -8,13 +8,13 @@ import type { ResponseProdukForChooseType } from "../../../models/produk.model";
 import { useEffect, useRef, useState } from "react";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { BarangMasukDetailServices } from "../../../services/barangMasukDetail.service";
-import { useClickOutside } from "../../../hooks/useClickOutSide";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import type { InputSearchRef } from "../../../types/ref.type";
 import { useController, useForm } from "react-hook-form";
 import type { StatusInventoriType } from "../../../types/constant.type";
 import useDataProdukForChoose from "../../../hooks/useDataProdukForChoose";
+import { useClickOutside } from "../../../hooks/useClickOutside";
 
 const useModalUbahProdukMasuk = (params: {
   idBarangMasuk?: number;
@@ -25,6 +25,7 @@ const useModalUbahProdukMasuk = (params: {
       nama: string;
       kode: string;
       img: string;
+      stok: number;
     };
     jumlahBox: number;
     hargaBeli: number;
@@ -103,7 +104,7 @@ const useModalUbahProdukMasuk = (params: {
     useDataProdukForChoose({ search });
 
   useClickOutside({
-    ref: wrapperRef,
+    refs: [wrapperRef],
     callback: () => {
       setActiveComponentChooseProduk(false);
     },
@@ -250,6 +251,7 @@ const useModalUbahProdukMasuk = (params: {
       hargaBeli: hargaBeli,
       img: produk.img,
       kode: produk.kode,
+      stok: produk.stok,
     });
   }, [produk]);
 

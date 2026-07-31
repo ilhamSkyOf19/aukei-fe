@@ -269,7 +269,8 @@ const ShowDataBarangMasuk: FC<Props> = ({
                 <th>Harga Beli Satuan</th>
                 <th>Jumlah Box</th>
                 <th>Isi PerBox</th>
-                <th>Total</th>
+                <th>Total Item</th>
+                <th>Total Nilai</th>
                 {(isRejectedKasir ||
                   isDrafOwner ||
                   dataBarangMasukDetail?.data?.status ===
@@ -419,6 +420,9 @@ const ShowDataBarangMasuk: FC<Props> = ({
                       <td className="font-medium">
                         {formatNumber(item.produk.isiPerBox.toString())}
                       </td>
+                      <td className="font-medium">
+                        {formatNumber(item.jumlahStok)}
+                      </td>
                       {/* total */}
                       <td className="font-medium">
                         {formatRupiah(
@@ -426,6 +430,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             (item.produk.isiPerBox * item.jumlahBox),
                         )}
                       </td>
+
                       {/* detail */}
                       {(isRejectedKasir ||
                         isDrafOwner ||

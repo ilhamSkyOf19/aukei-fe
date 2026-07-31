@@ -7,11 +7,12 @@ import DropDown from "../../inputs/DropDown";
 import listDateRange from "../../../utils/listDateRange";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmit from "../../ui/button/ButtonSubmit";
-import { type FC } from "react";
+import { type Dispatch, type FC, type SetStateAction } from "react";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
-import useRangeDate from "../../../hooks/useRangeDate";
+import useRangeDate, { type RangeDateState } from "../../../hooks/useRangeDate";
 import { format } from "date-fns";
 import { CalendarDays } from "lucide-react";
+import ButtonText from "../../ui/button/ButtonText";
 
 // props
 type Props = {
@@ -22,6 +23,10 @@ type Props = {
   noLabel?: boolean;
   labelDown?: boolean;
   noLabelAll?: boolean;
+  state?: {
+    value: RangeDateState;
+    onChange?: Dispatch<SetStateAction<RangeDateState | undefined>>;
+  };
 };
 
 const RangeDate: FC<Props> = ({
@@ -39,20 +44,24 @@ const RangeDate: FC<Props> = ({
   listDate,
   labelDown,
   noLabelAll,
+  state,
 }) => {
   // use hook
   const {
     closeModalDate,
     handleApply,
     handleOnChangeDropDown,
-    searchParams,
     modalDateRef,
     selected,
     setSelected,
+    startDate,
+    endDate,
+    selectedOption,
   } = useRangeDate({
     listDate: listDate ?? listDateRange,
     defaultStartDate,
     defaultEndDate,
+    state,
   });
 
   return (
@@ -60,7 +69,7 @@ const RangeDate: FC<Props> = ({
       className={cn(
         "flex  justify-start items-start",
         noLabel ? "flex-row gap-2" : "flex-col gap-1.5",
-        customWidth ? customWidth : "w-60",
+        customWidth ?? "w-60",
       )}
     >
       {/* icon */}
@@ -70,23 +79,35 @@ const RangeDate: FC<Props> = ({
 
       <div className="flex w-full flex-col justify-start items-start gap-1.5">
         {!noLabelAll && (
-          <div className="flex flex-row justify-start items-center gap-1">
+          <div className="grid grid-cols-4 gap-1">
             {!noLabel && (
-              <span className="text-xs text-base-content/80 font-medium">
+              <span className="text-xs col-span-1 text-left text-base-content/80 font-medium">
                 Tanggal :
               </span>
             )}
 
-            {searchParams.get("start-date") && searchParams.get("end-date") && (
+            {startDate && endDate && (
               <span
                 className={cn(
-                  "text-xs font-medium text-base-content",
+                  "text-xs font-medium text-base-content col-span-3",
                   labelDown ? "hidden" : "hidden lg:block",
                 )}
               >
-                {formatTanggalPanjang(searchParams.get("start-date")!)}
-                {" - "}
-                {formatTanggalPanjang(searchParams.get("end-date")!)}
+                {startDate?.includes(endDate) ? (
+                  <span className="text-emerald-600">
+                    {formatTanggalPanjang(startDate!)}
+                  </span>
+                ) : (
+                  <>
+                    <span className="text-emerald-600">
+                      {formatTanggalPanjang(startDate!)}
+                    </span>
+                    {" - "}
+                    <span className="text-rose-600">
+                      {formatTanggalPanjang(endDate!)}
+                    </span>
+                  </>
+                )}
               </span>
             )}
           </div>
@@ -107,21 +128,33 @@ const RangeDate: FC<Props> = ({
                 value: "aturTanggal",
               },
             ]}
-            defaultValue={"aturTanggal"}
+            value={selectedOption}
           />
         </div>
 
         {/* for sm */}
-        {searchParams.get("start-date") && searchParams.get("end-date") && (
+        {startDate && endDate && (
           <span
             className={cn(
               "text-xs font-medium text-base-content",
               labelDown ? "block" : "lg:hidden",
             )}
           >
-            {formatTanggalPanjang(searchParams.get("start-date")!)}
-            {" - "}
-            {formatTanggalPanjang(searchParams.get("end-date")!)}
+            {startDate?.includes(endDate) ? (
+              <span className="text-emerald-600">
+                {formatTanggalPanjang(startDate!)}
+              </span>
+            ) : (
+              <>
+                <span className="text-emerald-600">
+                  {formatTanggalPanjang(startDate!)}
+                </span>
+                {" - "}
+                <span className="text-rose-600">
+                  {formatTanggalPanjang(endDate!)}
+                </span>
+              </>
+            )}
           </span>
         )}
       </div>
@@ -137,7 +170,6 @@ const RangeDate: FC<Props> = ({
               Silahkan Pilih Tanggal
             </h2>
           </div>
-
           <div className="w-full flex flex-row justify-center items-center mt-6">
             <div className="scale-100 origin-top-center">
               <DayPicker
@@ -148,7 +180,6 @@ const RangeDate: FC<Props> = ({
               />
             </div>
           </div>
-
           <div className="w-full flex flex-col gap-2 justify-start items-start mt-6">
             <p className="text-xs font-medium">Pilihan Tanggal : </p>
 
@@ -157,7 +188,6 @@ const RangeDate: FC<Props> = ({
               {formatTanggalPanjang(selected?.to ?? new Date())}
             </span>
           </div>
-
           {/* close modal */}
           <div className="w-full flex flex-row justify-end gap-2 items-end mt-8">
             {/* button reset */}
@@ -172,7 +202,7 @@ const RangeDate: FC<Props> = ({
             <ButtonCloseText handleClose={closeModalDate} />
 
             {/* handle apply */}
-            <ButtonSubmit
+            <ButtonText
               label="Terapkan"
               typeButton
               handleClick={handleApply}

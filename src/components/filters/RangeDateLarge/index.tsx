@@ -10,6 +10,7 @@ import { CalendarDays } from "lucide-react";
 import listDateRangeLong from "../../../utils/listDateRangeLong";
 import { DayPicker } from "react-day-picker";
 import useRangeDate from "../../../hooks/useRangeDate";
+import ButtonText from "../../ui/button/ButtonText";
 
 type Props = {
   customWidth?: string;
@@ -27,11 +28,12 @@ const RangeDateLarge: FC<Props> = ({
     closeModalDate,
     handleApply,
     handleOnChangeDropDown,
-    searchParams,
     modalDateRef,
     selected,
     selectedOption,
     setSelected,
+    startDate,
+    endDate,
   } = useRangeDate({
     listDate: listDateRangeLong,
     defaultStartDate,
@@ -75,12 +77,12 @@ const RangeDateLarge: FC<Props> = ({
           </option>
         </select>
 
-        {searchParams.get("start-date") && searchParams.get("end-date") && (
+        {startDate && endDate && (
           <div className="">
             <span className="text-xs font-medium text-base-content">
-              {formatTanggalPanjang(searchParams.get("start-date")!)}
+              {formatTanggalPanjang(startDate!)}
               {" - "}
-              {formatTanggalPanjang(searchParams.get("end-date")!)}
+              {formatTanggalPanjang(endDate!)}
             </span>
           </div>
         )}
@@ -98,9 +100,7 @@ const RangeDateLarge: FC<Props> = ({
               onSelect={setSelected}
               defaultMonth={
                 selected?.from ??
-                (searchParams.get("start-date")
-                  ? new Date(searchParams.get("start-date")!)
-                  : new Date())
+                (startDate ? new Date(startDate!) : new Date())
               }
             />
           </div>
@@ -126,7 +126,7 @@ const RangeDateLarge: FC<Props> = ({
 
             <ButtonCloseText handleClose={closeModalDate} />
 
-            <ButtonSubmit
+            <ButtonText
               label="Terapkan"
               typeButton
               handleClick={handleApply}

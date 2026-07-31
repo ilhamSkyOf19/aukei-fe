@@ -15,8 +15,11 @@ import { BarangKeluarDetailServices } from "../../../../services/barangKeluarDet
 import type { UpdateBarangKeluarDetailType } from "../../../../models/barangKeluarDetail.model";
 import { BarangKeluarDetailValidation } from "../../../../validations/barangKeluarDetail.validation";
 
-const useShowBarangKeluar = (params: { status?: StatusInventoriType }) => {
-  const { status } = params;
+const useShowBarangKeluar = (params: {
+  status?: StatusInventoriType;
+  handleSetAlert: (data: string) => void;
+}) => {
+  const { status, handleSetAlert } = params;
 
   // query client
   const queryClient = useQueryClient();
@@ -200,8 +203,14 @@ const useShowBarangKeluar = (params: { status?: StatusInventoriType }) => {
             err?.response?.data?.meta?.customField?.includes("same_jumlah_stok")
           ) {
             setError("jumlahStok", {
-              message: "Jumlah Stok tidak boleh sama dengan sebelumnya",
+              message: "Tidak boleh sama dengan sebelumnya",
             });
+          }
+
+          if (
+            err.response?.data?.meta?.customField?.includes("stok_not_enough")
+          ) {
+            handleSetAlert("stok_not_enough");
           }
         }
       },
@@ -213,15 +222,13 @@ const useShowBarangKeluar = (params: { status?: StatusInventoriType }) => {
     try {
       if (!dataUpdate || !data || !status) return;
 
-      console.log(data.jumlahStok, dataUpdate.jumlahStok);
-
       // check same jumlah stok
       if (
         dataUpdate.type === "jumlahStok" &&
         data.jumlahStok === dataUpdate.jumlahStok
       ) {
         setError("jumlahStok", {
-          message: "Jumlah Stok tidak boleh sama dengan sebelumnya",
+          message: "Tidak boleh sama dengan sebelumnya",
         });
         return;
       }

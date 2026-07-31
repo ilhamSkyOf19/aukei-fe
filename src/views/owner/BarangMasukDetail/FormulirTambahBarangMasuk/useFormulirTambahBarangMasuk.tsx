@@ -8,12 +8,12 @@ import type { CreateBarangMasukDetailType } from "../../../../models/barangMasuk
 import type { ResponseProdukForChooseType } from "../../../../models/produk.model";
 import { useEffect, useRef, useState } from "react";
 import { BarangMasukDetailServices } from "../../../../services/barangMasukDetail.service";
-import { useClickOutside } from "../../../../hooks/useClickOutSide";
 import axios from "axios";
 import type { ErrorResponse } from "../../../../types/response.type";
 import type { InputSearchRef } from "../../../../types/ref.type";
 import useModal from "../../../../hooks/useModal";
 import useDataProdukForChoose from "../../../../hooks/useDataProdukForChoose";
+import { useClickOutside } from "../../../../hooks/useClickOutside";
 
 const useFormulirTambahBarangMasuk = (params: {
   handleSetToast: (data: string) => void;
@@ -60,7 +60,7 @@ const useFormulirTambahBarangMasuk = (params: {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useClickOutside({
-    ref: wrapperRef,
+    refs: [wrapperRef],
     callback: () => {
       setActiveComponentChooseProduk(false);
     },

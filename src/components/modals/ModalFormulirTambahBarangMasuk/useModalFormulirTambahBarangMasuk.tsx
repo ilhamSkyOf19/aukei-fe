@@ -9,11 +9,11 @@ import type { ResponseProdukForChooseType } from "../../../models/produk.model";
 import { useEffect, useRef, useState } from "react";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { BarangMasukDetailServices } from "../../../services/barangMasukDetail.service";
-import { useClickOutside } from "../../../hooks/useClickOutSide";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import type { InputSearchRef } from "../../../types/ref.type";
 import useDataProdukForChoose from "../../../hooks/useDataProdukForChoose";
+import { useClickOutside } from "../../../hooks/useClickOutside";
 
 const useModalFormulirTambahBarangMasuk = (params: {
   handleCloseModal: () => void;
@@ -77,7 +77,7 @@ const useModalFormulirTambahBarangMasuk = (params: {
     useDataProdukForChoose({ search });
 
   useClickOutside({
-    ref: wrapperRef,
+    refs: [wrapperRef],
     callback: () => {
       setActiveComponentChooseProduk(false);
     },

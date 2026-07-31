@@ -6,8 +6,6 @@ import { WifiOff } from "lucide-react";
 import { useNetworkStatus } from "../../hooks/useNetworkStatus";
 import Navbar from "../../components/ui/Navbar";
 import Sidebar from "../../components/ui/SideBar";
-import { getLocalStorageJSON } from "../../helpers/helpers";
-import { LOCAL_STORAGE_KEYS } from "../../utils/localStorageKeys";
 import { useStepStore } from "../../stores/stepStore";
 
 const DashboardLayout: FC = () => {
@@ -43,7 +41,7 @@ const DashboardLayout: FC = () => {
       {/* content */}
       <div
         className={cn(
-          "drawer-content h-screen bg-base-300 pb-4",
+          "drawer-content h-screen bg-base-300 pb-4 overflow-x-hidden",
           isCanShowScrollbar ? "overflow-y-auto" : "overflow-hidden",
         )}
       >

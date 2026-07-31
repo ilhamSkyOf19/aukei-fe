@@ -110,11 +110,18 @@ export interface ResponseChartMetodePembayaranType {
   persentase: number;
 }
 
-export interface ResponseStatistikTopPelangganType {
-  id: number;
-  nama: string;
-  totalTransaksi: number;
-  totalBelanja: number;
+export interface ResponseStatistikTopPelangganWithMetaType {
+  data: {
+    id: number;
+    nama: string;
+    noWa: string;
+    isActive: boolean;
+    totalTransaksi: number;
+    totalNilaiTransaksi: number;
+    rankTransaksi: number | null;
+    rankNilaiTransaksi: number | null;
+  }[];
+  meta: MetaType;
 }
 
 // statistik top produk

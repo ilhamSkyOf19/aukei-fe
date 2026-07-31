@@ -10,7 +10,6 @@ type Props = {
   customWidth?: string;
   fontWeight?: string;
   noBorder?: boolean;
-  defaultValue?: string;
   value?: string;
 };
 const DropDown: FC<Props> = ({
@@ -22,7 +21,6 @@ const DropDown: FC<Props> = ({
   fontWeight,
   listBtn,
   noBorder,
-  defaultValue,
   value,
 }) => {
   return (
@@ -41,15 +39,16 @@ const DropDown: FC<Props> = ({
         </div>
       ) : (
         <select
-          defaultValue={defaultValue}
-          value={value}
+          value={value ?? ""}
           className={cn(
             "text-base-content select w-full border-none outline-none rounded-xl select-md text-xs md:select-sm scrollbar-thumb-custom-secondary",
             fontWeight,
           )}
           onChange={handleChange}
         >
-          <option disabled={true}>{placeholder}</option>
+          <option disabled value={""}>
+            {placeholder}
+          </option>
           {listChoose?.length > 0 ? (
             <>
               {listChoose.map((item, index) => (

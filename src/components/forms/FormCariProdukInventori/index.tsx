@@ -4,7 +4,11 @@ import type { InputSearchRef } from "../../../types/ref.type";
 import { cn } from "../../../utils/cn";
 import type { ResponseStructure } from "../../../types/response.type";
 import type { ResponseProdukForChooseType } from "../../../models/produk.model";
-import { formatRupiah, formatRupiahShort } from "../../../helpers/helpers";
+import {
+  formatNumber,
+  formatRupiah,
+  formatRupiahShort,
+} from "../../../helpers/helpers";
 
 type Props = {
   inputSearchRef: RefObject<InputSearchRef | null>;
@@ -59,7 +63,7 @@ const FormCariProdukInventori: FC<Props> = ({
         {/* modal show data produk for choose */}
         <div
           className={cn(
-            "absolute bg-base-100 w-full shadow-xl z-40 rounded-2xl md:rounded-xl top-full grid transition-all duration-300 ease-in-out pb-2.5 mt-1",
+            "absolute bg-base-100 w-full shadow-xl z-10 rounded-2xl md:rounded-xl top-full grid transition-all duration-300 ease-in-out pb-2.5 mt-1",
             activeComponentChooseProduk ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
           )}
         >
@@ -75,7 +79,7 @@ const FormCariProdukInventori: FC<Props> = ({
                   <button
                     type="button"
                     key={item.id}
-                    className="w-full flex flex-row justify-between items-start gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border border-base-content/10 rounded-xl"
+                    className="w-full flex flex-row justify-between items-center gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border border-base-content/10 rounded-xl"
                     onClick={() => handleSetValueProdukId(item.id)}
                   >
                     <div className="flex-3 flex flex-row col row justify-start items-start gap-4">
@@ -95,6 +99,12 @@ const FormCariProdukInventori: FC<Props> = ({
                         </p>
                         <p className="text-[0.625rem] text-base-content/70 font-medium">
                           {item.kode}
+                        </p>
+                        <p className="text-[0.625rem] gap-1.5 flex flex-row justify-start items-center text-base-content/70">
+                          <span>Stok: </span>
+                          <span className="font-medium">
+                            {formatNumber(item.stok)}
+                          </span>
                         </p>
                       </div>
                     </div>

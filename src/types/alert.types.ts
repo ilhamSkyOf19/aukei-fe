@@ -55,6 +55,9 @@ export const ALERT_CONFIG_BARANG_KELUAR_DETAIL: Record<
   expired: {
     message: "Mohon maaf, barang keluar sudah tidak dapat dibatalkan.",
   },
+  stok_not_enough: {
+    message: "Mohon maaf, stok tidak mencukupi.",
+  },
 };
 
 export const ALERT_CONFIG_TRANSACTION: Record<

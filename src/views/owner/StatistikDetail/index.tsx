@@ -15,18 +15,20 @@ import DataBooking from "./DataBooking";
 import PantauStok from "./PantauStok";
 import ButtonRefresh from "./ButtonRefresh";
 import TopProduk from "./TopProduk";
+import TopPelanggan from "./TopPelanggan";
 
 const StatistikDetail = () => {
   const {
     windowSize,
     isLoadingStatistik,
-    statistik,
     pilihan,
-    pilihanStatistik,
-    setPilihanStatistik,
+    selectedLaporan,
+    setSelectedLaporan,
     filteredStatistik,
     handleRefresh,
     grafikLineRef,
+    endDate,
+    startDate,
   } = useStatistikDetail();
 
   return (
@@ -55,16 +57,18 @@ const StatistikDetail = () => {
                   type="button"
                   className={cn(
                     "w-full h-12 rounded-2xl md:rounded-xl border flex flex-row justify-start items-center gap-2.5 px-2.5 transition-all duration-100 ease-in-out",
-                    pilihanStatistik === item.key
+                    selectedLaporan === item.key
                       ? "border-custom-secondary bg-custom-primary shadow-md text-custom-secondary"
                       : "border-base-content/10 hover:border-custom-secondary text-base-content hover:bg-custom-primary/10",
                   )}
-                  onClick={() => setPilihanStatistik(item.key)}
+                  onClick={() => setSelectedLaporan(item.key)}
                 >
                   {/* icon */}
                   <item.icon className={cn("size-5")} />
 
-                  <span className="text-xs font-medium">{item.label}</span>
+                  <span className="text-xs font-medium text-left">
+                    {item.label}
+                  </span>
                 </button>
               ))}
             </div>
@@ -72,9 +76,10 @@ const StatistikDetail = () => {
         </div>
 
         {/* content */}
-        <div className="flex-4 flex flex-col justify-start items-start gap-1">
-          {pilihanStatistik !== "pantauanStok" &&
-            pilihanStatistik !== "topProduk" && (
+        <div className="flex-4 flex flex-col justify-start items-start gap-2.5">
+          {selectedLaporan !== "pantauanStok" &&
+            selectedLaporan !== "topProduk" &&
+            selectedLaporan !== "topPelanggan" && (
               <>
                 <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
                   {/* aksi */}
@@ -109,9 +114,11 @@ const StatistikDetail = () => {
                   <div
                     className={cn(
                       "w-full grid grid-cols-2 gap-2",
-                      pilihanStatistik === "booking"
+                      selectedLaporan === "booking"
                         ? "lg:grid-cols-3"
-                        : "lg:grid-cols-3",
+                        : selectedLaporan === "barang"
+                          ? "lg:grid-cols-4"
+                          : "lg:grid-cols-3",
                     )}
                   >
                     {isLoadingStatistik ? (
@@ -142,61 +149,65 @@ const StatistikDetail = () => {
                 </div>
 
                 {/* grafik */}
-                <div className="w-full gap-2.5 flex flex-col justify-between items-start md:gap-4">
-                  {pilihanStatistik !== "booking" &&
-                    pilihanStatistik !== "pantauanStok" &&
-                    pilihanStatistik !== "topProduk" && (
-                      <>
-                        <GrafikLine
-                          ref={grafikLineRef}
-                          windowSize={windowSize}
-                          pilihan={pilihanStatistik}
-                        />
+                <div className="w-full gap-2.5 flex flex-col justify-between items-start md:gap-2.5">
+                  {selectedLaporan !== "booking" && (
+                    <>
+                      <GrafikLine
+                        ref={grafikLineRef}
+                        windowSize={windowSize}
+                        pilihan={selectedLaporan}
+                      />
 
-                        {/* graifk  */}
-                        {(pilihanStatistik === "barang" ||
-                          pilihanStatistik === "semua") && (
-                          <GrafikBatang windowSize={windowSize} />
-                        )}
+                      {/* graifk  */}
+                      {(selectedLaporan === "barang" ||
+                        selectedLaporan === "semua") && (
+                        <GrafikBatang windowSize={windowSize} />
+                      )}
 
-                        {/* grafik pie */}
-                        <div className="w-full gap-2.5 flex flex-col justify-between items-start md:gap-4">
-                          <div className="w-full flex flex-row justify-start items-start gap-2.5">
-                            {(pilihanStatistik === "keuangan" ||
-                              pilihanStatistik === "semua") && (
-                              <GrafikPieMetodePembayaran />
-                            )}
+                      {/* grafik pie */}
+                      <div className="w-full gap-2.5 flex flex-col justify-between items-start md:gap-2.5">
+                        <div className="w-full flex flex-row justify-start items-start gap-2.5">
+                          {selectedLaporan === "semua" && (
+                            <GrafikPieMetodePembayaran />
+                          )}
 
-                            {(pilihanStatistik === "semua" ||
-                              pilihanStatistik === "keuangan") && (
-                              <StatistikTopProduk />
-                            )}
-                          </div>
-
-                          <div className="lg:flex-1 w-full flex flex-col md:flex-row justify-between items-start gap-2.5 md:gap-4 md:h-90 h-auto">
-                            {(pilihanStatistik === "keuangan" ||
-                              pilihanStatistik === "semua") && (
-                              <>
-                                <StatistikTopPelanggan />
-                              </>
-                            )}
-                          </div>
+                          {selectedLaporan === "semua" && (
+                            <StatistikTopProduk
+                              rangeDate={{
+                                startDate,
+                                endDate,
+                              }}
+                            />
+                          )}
                         </div>
-                      </>
-                    )}
+
+                        <div className="lg:flex-1 w-full flex flex-col md:flex-row justify-between items-start gap-2.5 md:gap-4 md:h-90 h-auto">
+                          {selectedLaporan === "semua" && (
+                            <>
+                              <StatistikTopPelanggan
+                                rangeDate={{ startDate, endDate }}
+                              />
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </>
             )}
 
-          {pilihanStatistik === "booking" && (
-            <DataBooking pilihan={pilihanStatistik} />
+          {selectedLaporan === "booking" && (
+            <DataBooking pilihan={selectedLaporan} />
           )}
 
-          {pilihanStatistik === "pantauanStok" && (
-            <PantauStok pilihan={pilihanStatistik} />
+          {selectedLaporan === "pantauanStok" && (
+            <PantauStok pilihan={selectedLaporan} />
           )}
 
-          {pilihanStatistik === "topProduk" && <TopProduk />}
+          {selectedLaporan === "topProduk" && <TopProduk />}
+
+          {selectedLaporan === "topPelanggan" && <TopPelanggan />}
         </div>
       </div>
     </div>

@@ -33,12 +33,14 @@ type Props = {
   dataBarangKeluarDetail?: ResponseStructure<ResponseBarangKeluarWithDetailType | null>;
   fromPengajuanBarang?: boolean;
   role?: RoleInternalType;
+  handleSetAlert: (data: string) => void;
 };
 const ShowDataBarangKeluar: FC<Props> = ({
   dataBarangKeluarDetail,
   isLoadingBarangKeluarDetail,
   fromPengajuanBarang,
   role,
+  handleSetAlert,
 }) => {
   const {
     handleSetIsActiveAksi,
@@ -67,6 +69,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
     dataUpdateBarangKeluar,
   } = useShowBarangKeluar({
     status: dataBarangKeluarDetail?.data?.status,
+    handleSetAlert: handleSetAlert,
   });
 
   // existing data
@@ -446,23 +449,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
               )}
             </tbody>
             {/* foot */}
-            {!isLoadingBarangKeluarDetail &&
-              isExistData &&
-              dataBarangKeluarDetail?.data?.detailBarangKeluars?.length! >
-                8 && (
-                <tfoot>
-                  <tr>
-                    <th></th>
-                    <th>Foto</th>
-                    <th>Kode</th>
-                    <th>Nama</th>
-                    <th>Kategori</th>
-                    <th>Harga Modal Satuan</th>
-                    <th>Jumlah Stok</th>
-                    {!fromPengajuanBarang && !isStatusPosted && <th>Aksi</th>}
-                  </tr>
-                </tfoot>
-              )}
           </table>
         </div>
       </div>

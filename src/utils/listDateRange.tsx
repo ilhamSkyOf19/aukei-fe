@@ -73,10 +73,6 @@ const listDateRange: { label: string; value: string }[] = [
       endDate: format(new Date(now.getFullYear() - 1, 11, 31), "yyyy-MM-dd"),
     }),
   },
-  {
-    label: "Semua",
-    value: "reset",
-  },
 ];
 
 export default listDateRange;

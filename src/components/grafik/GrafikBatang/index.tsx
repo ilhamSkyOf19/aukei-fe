@@ -99,7 +99,6 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
           ]}
           handleChange={(e) => handleSetIsChoose(e.target.value)}
           placeholder="Jenis"
-          defaultValue="produk"
           customWidth="w-40"
         />
       </div>

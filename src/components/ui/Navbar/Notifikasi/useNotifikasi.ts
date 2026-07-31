@@ -1,0 +1,233 @@
+import { useQueries } from "@tanstack/react-query";
+import { useRef, useState } from "react";
+import { NotifikasiGlobalServices } from "../../../../services/notifikasiGlobal.service";
+import { useNavigate } from "react-router-dom";
+import { useRefresh } from "../../../../hooks/useRefresh";
+import { useClickOutside } from "../../../../hooks/useClickOutside";
+import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
+import { ROLE_INTERNAL_TYPE } from "../../../../types/constant.type";
+
+const useNotifikasi = (params: {
+  pengguna?: PayloadPenggunaInternalType | null;
+}) => {
+  const { pengguna } = params;
+
+  const [isChoose, setIsChoose] = useState<string>("semua");
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const ulRef = useRef<HTMLUListElement>(null);
+  const buttonDropdownRef = useRef<HTMLButtonElement>(null);
+
+  // get pengguna
+
+  // use click outside
+  useClickOutside({
+    refs: [ulRef, buttonDropdownRef],
+    callback: () => setIsOpen(false),
+  });
+
+  // navigate
+  const navigate = useNavigate();
+
+  // query notifikasi global
+  const data = useQueries({
+    queries: [
+      {
+        queryKey: ["notifikasi-global"],
+        queryFn: () => NotifikasiGlobalServices.findAll(),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: isChoose === "semua",
+      },
+
+      {
+        queryKey: ["notifikasi-produk"],
+        queryFn: () =>
+          NotifikasiGlobalServices.findNotifikasiProduk({ limit: "8" }),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: isChoose === "produk",
+      },
+      {
+        queryKey: ["notifikasi-tempo"],
+        queryFn: () =>
+          NotifikasiGlobalServices.findNotifikasiTempo({ limit: "8" }),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: isChoose === "tempo",
+      },
+      {
+        queryKey: ["notifikasi-pengajuan-barang"],
+        queryFn: () =>
+          NotifikasiGlobalServices.findNotifikasiPengajuanBarang({
+            limit: "8",
+          }),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: isChoose === "pengajuan",
+      },
+    ],
+  });
+
+  const [
+    {
+      data: notifikasiGlobal,
+      isLoading: isLoadingNotifikasiGlobal,
+      refetch: refetchNotifikasi,
+    },
+
+    {
+      data: dataNotifikasiProduk,
+      isLoading: isLoadingDataNotifikasiProduk,
+      refetch: refetchDataNotifikasiProduk,
+    },
+
+    {
+      data: dataNotifikasiTempo,
+      isLoading: isLoadingDataNotifikasiTempo,
+      refetch: refetchDataNotifikasiTempo,
+    },
+    {
+      data: dataNotifikasiPengajuanBarang,
+      isLoading: isLoadingDataNotifikasiPengajuanBarang,
+      refetch: refetchDataNotifikasiPengajuanBarang,
+    },
+  ] = data;
+
+  // data notifikasi global produk
+  const dataNotifikasiGlobalProduk = notifikasiGlobal?.data?.notifikasiProduk;
+
+  // data notifikasi global tempo
+  const dataNotifikasiGlobalTempoOverdue =
+    notifikasiGlobal?.data?.notifikasiTempoOverdue;
+
+  // data notifikasi pengajuan barang
+  const dataNotifikasiGlobalPengajuanBarang =
+    notifikasiGlobal?.data?.notifikasiPengajuanBarang;
+
+  // is existing data notifikasi global produk
+  const isExistingNotifikasiGlobal =
+    (dataNotifikasiGlobalProduk && dataNotifikasiGlobalProduk.length > 0) ||
+    (dataNotifikasiGlobalTempoOverdue &&
+      dataNotifikasiGlobalTempoOverdue.length > 0) ||
+    (dataNotifikasiGlobalPengajuanBarang &&
+      dataNotifikasiGlobalPengajuanBarang.length > 0);
+
+  //   handle redirect produk detail
+  const handleRedirectProdukDetail = (id: number) => {
+    setIsOpen(false);
+    return navigate(`/dashboard/produk/${id}`);
+  };
+
+  //   handle redirect tempo detail
+  const handleRedirectTempoDetail = (params: {
+    tempoId: number;
+    pelangganId: number;
+  }) => {
+    setIsOpen(false);
+    return navigate(
+      `/dashboard/kredit/pelanggan/${params.pelangganId}/tempo/${params.tempoId}`,
+    );
+  };
+
+  // handle redirect pengajuan barang detail
+  const handleRedirectPengajuanBarangDetail = (params: {
+    barangMasukId?: number;
+    barangKeluarId?: number;
+  }) => {
+    // close
+    setIsOpen(false);
+
+    if (pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) {
+      if (params.barangMasukId) {
+        navigate(
+          `/dashboard/inventori/pengajuan-barang-masuk/${params.barangMasukId}`,
+        );
+      } else {
+        navigate(
+          `/dashboard/inventori/pengajuan-barang-keluar/${params.barangKeluarId}`,
+        );
+      }
+    } else {
+      if (params.barangMasukId) {
+        navigate(`/dashboard/pengajuan-barang-masuk/${params.barangMasukId}`);
+      } else {
+        navigate(`/dashboard/pengajuan-barang-keluar/${params.barangKeluarId}`);
+      }
+    }
+  };
+
+  //   handle referesh
+  const onRefresh = async () => {
+    if (isChoose === "semua") {
+      await refetchNotifikasi({
+        throwOnError: true,
+      });
+    } else if (isChoose === "produk") {
+      await refetchDataNotifikasiProduk({
+        throwOnError: true,
+      });
+    } else if (isChoose === "tempo")
+      await refetchDataNotifikasiTempo({
+        throwOnError: true,
+      });
+    else if (isChoose === "pengajuan")
+      await refetchDataNotifikasiPengajuanBarang({
+        throwOnError: true,
+      });
+  };
+
+  //   is loading
+  const {
+    isLoading: isLoadingRefresh,
+    refresh: handleRefresh,
+    disabled: disabledRefresh,
+  } = useRefresh({
+    onRefresh,
+  });
+
+  // get count notifikasi global
+  const countNotifikasiGlobal =
+    dataNotifikasiGlobalProduk &&
+    dataNotifikasiGlobalTempoOverdue &&
+    dataNotifikasiGlobalPengajuanBarang
+      ? dataNotifikasiGlobalProduk?.length +
+        dataNotifikasiGlobalTempoOverdue?.length +
+        dataNotifikasiGlobalPengajuanBarang?.length
+      : undefined;
+
+  return {
+    isChoose,
+    handleSetIsChoose: setIsChoose,
+    dataNotifikasiGlobalProduk,
+    isLoadingNotifikasiGlobal,
+    handleRedirectProdukDetail,
+    dataNotifikasiProduk,
+    dataNotifikasiTempo,
+    isLoadingDataNotifikasiProduk,
+    isLoadingDataNotifikasiTempo,
+    handleRefresh,
+    isLoadingRefresh,
+    disabledRefresh,
+
+    isExistingNotifikasiGlobal,
+    dataNotifikasiGlobalTempoOverdue,
+
+    handleIsOpen: setIsOpen,
+    isOpen,
+    ulRef,
+    buttonDropdownRef,
+    handleRedirectTempoDetail,
+
+    countNotifikasiGlobal,
+
+    dataNotifikasiPengajuanBarang,
+    isLoadingDataNotifikasiPengajuanBarang,
+
+    dataNotifikasiGlobalPengajuanBarang,
+    handleRedirectPengajuanBarangDetail,
+  };
+};
+
+export default useNotifikasi;

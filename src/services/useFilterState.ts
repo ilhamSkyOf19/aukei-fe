@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { RangeDateState } from "../hooks/useRangeDate";
 
 const useFilterState = () => {
   // filter sort
@@ -14,10 +15,25 @@ const useFilterState = () => {
   const [search, setSearch] = useState<string>("");
 
   // sort qty
-  const [sortQty, setSortQty] = useState<string | undefined>("desc");
+  const [sortQty, setSortQty] = useState<string | undefined>(undefined);
 
   // sort omzet
-  const [sortOmzet, setSortOmzet] = useState<string | undefined>("desc");
+  const [sortOmzet, setSortOmzet] = useState<string | undefined>(undefined);
+
+  // sort total transaksi
+  const [sortTotalTransaksi, setSortTotalTransaksi] = useState<
+    string | undefined
+  >(undefined);
+
+  // total nilai transaksi
+  const [sortTotalNilaiTransaksi, setSortTotalNilaiTransaksi] = useState<
+    string | undefined
+  >(undefined);
+
+  // start date end date
+  const [startDateEndDate, setStartDateEndDate] = useState<
+    RangeDateState | undefined
+  >(undefined);
 
   // handle sort qty
   const handleSortQty = (value: string) => {
@@ -31,10 +47,17 @@ const useFilterState = () => {
     setSortQty(undefined);
   };
 
-  // date
-  const [startDate, setStartDate] = useState<Date | null>(null);
+  // handle sort total transaksi
+  const handleSortTotalTransaksi = (value: string) => {
+    setSortTotalTransaksi(value);
+    setSortTotalNilaiTransaksi(undefined);
+  };
 
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  // handle total nilai transaksi
+  const handleTotalNilaiTransaksi = (value: string) => {
+    setSortTotalNilaiTransaksi(value);
+    setSortTotalTransaksi(undefined);
+  };
 
   // kategori
   const [kategori, setKategori] = useState<string | undefined>(undefined);
@@ -54,14 +77,16 @@ const useFilterState = () => {
     setSearch,
     kategori,
     handleKategori,
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
     sortQty,
     sortOmzet,
     handleSortQty,
     handleSortOmzet,
+    startDateEndDate,
+    setStartDateEndDate,
+    handleSortTotalTransaksi,
+    handleTotalNilaiTransaksi,
+    sortTotalTransaksi,
+    sortTotalNilaiTransaksi,
   };
 };
 

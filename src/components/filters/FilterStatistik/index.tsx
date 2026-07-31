@@ -103,14 +103,12 @@ const FilterStatistik: FC<Props> = ({
           label="Export PDF"
           bgColor="bg-error"
           textColor="text-primary-white"
-          customHeight="h-9"
         />
         <ButtonWithIcon
           icon={Sheet}
           label="Export Excel"
           bgColor="bg-success"
           textColor="text-primary-white"
-          customHeight="h-9"
         />
       </div>
     </>

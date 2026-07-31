@@ -21,7 +21,7 @@ import {
   formatRupiahShort,
 } from "../../../helpers/helpers";
 
-type KategoriStatistik = "keuangan" | "booking" | "barang";
+type KategoriStatistik = "penjualan" | "booking" | "barang";
 
 type StatistikConfig = {
   key: string;
@@ -48,7 +48,7 @@ const useDataStatistik = (params: {
     // ==== 💰 RINGKASAN PENJUALAN ====
     {
       key: "kasMasuk",
-      category: "keuangan",
+      category: "penjualan",
       icon: {
         icon: Receipt,
         bgColor: "bg-blue-100",
@@ -77,7 +77,7 @@ const useDataStatistik = (params: {
     },
     {
       key: "omzetSelesai",
-      category: "keuangan",
+      category: "penjualan",
       icon: {
         icon: BanknoteArrowDown,
         bgColor: "bg-emerald-100",
@@ -106,7 +106,7 @@ const useDataStatistik = (params: {
     },
     {
       key: "labaSelesai",
-      category: "keuangan",
+      category: "penjualan",
       icon: {
         icon: TrendingUp,
         bgColor: "bg-emerald-100",
@@ -137,7 +137,7 @@ const useDataStatistik = (params: {
     },
     {
       key: "transaksiSelesai",
-      category: "keuangan",
+      category: "penjualan",
       icon: {
         icon: Receipt,
         bgColor: "bg-blue-100",
@@ -166,7 +166,7 @@ const useDataStatistik = (params: {
     },
     {
       key: "rataRataTransaksiSelesai",
-      category: "keuangan",
+      category: "penjualan",
       icon: {
         icon: ChartColumn,
         bgColor: "bg-emerald-100",
@@ -197,7 +197,7 @@ const useDataStatistik = (params: {
     },
     {
       key: "modalSelesai",
-      category: "keuangan",
+      category: "penjualan",
       icon: {
         icon: Package,
         bgColor: "bg-amber-100",
@@ -228,7 +228,7 @@ const useDataStatistik = (params: {
     // ==== ⚠ PERLU PERHATIAN ====
     {
       key: "piutang",
-      category: "keuangan",
+      category: "penjualan",
       icon: {
         icon: Clock3,
         bgColor: "bg-amber-100",
@@ -264,7 +264,7 @@ const useDataStatistik = (params: {
     },
     {
       key: "kerugian",
-      category: "keuangan",
+      category: "penjualan",
       icon: {
         icon: TrendingDown,
         bgColor: "bg-amber-100",

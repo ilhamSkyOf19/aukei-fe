@@ -148,7 +148,6 @@ const RiwayatTransaksiDetail = () => {
                   : undefined
               }
             />
-
             <CardStatistik
               isLoading={isLoadingRiwayatTransaksi}
               icon={{
@@ -174,7 +173,6 @@ const RiwayatTransaksiDetail = () => {
                   : undefined
               }
             />
-
             <CardStatistik
               isLoading={isLoadingRiwayatTransaksi}
               icon={{
@@ -202,7 +200,6 @@ const RiwayatTransaksiDetail = () => {
                   : undefined
               }
             />
-
             {dataRiwayatTransaksi?.data?.data?.statistik?.totalPiutangTempo !==
               undefined && (
               <CardStatistik
@@ -231,7 +228,6 @@ const RiwayatTransaksiDetail = () => {
                 }
               />
             )}
-
             <CardStatistik
               isLoading={isLoadingRiwayatTransaksi}
               icon={{
@@ -252,7 +248,6 @@ const RiwayatTransaksiDetail = () => {
                 windowSize !== "sm" ? "Jumlah produk yang terjual" : undefined
               }
             />
-
             <CardStatistik
               isLoading={isLoadingRiwayatTransaksi}
               icon={{
@@ -328,7 +323,7 @@ const RiwayatTransaksiDetail = () => {
               {false ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={8}>
+                    <td colSpan={7}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>
@@ -381,7 +376,7 @@ const RiwayatTransaksiDetail = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={10}>
+                  <td colSpan={7}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
                         title="Data Riwayat Transaksi Tidak Tersedia"
@@ -392,32 +387,6 @@ const RiwayatTransaksiDetail = () => {
                 </tr>
               )}
             </tbody>
-            {/* foot */}
-            <tfoot>
-              <tr>
-                {!true && true && [1].length! > 8 ? (
-                  <>
-                    <th>No. Transaksi</th>
-                    <th>Tanggal</th>
-                    <th>Total Item</th>
-                    <th>Total Pembayaran</th>
-                    <th>Pembayaran</th>
-                    <th>Status</th>
-                    <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
-                  </>
-                ) : (
-                  <>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                  </>
-                )}
-              </tr>
-            </tfoot>
           </table>
         </div>
 

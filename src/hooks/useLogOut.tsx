@@ -12,23 +12,26 @@ const useLogOut = (params: { redirectUrl?: boolean }) => {
   const navigate = useNavigate();
 
   // use mutation
-  const { mutateAsync: handleLogout } = useMutation({
-    mutationFn: async () => AuthServices.logout(),
-    onSuccess: async () => {
-      logout();
+  const { mutateAsync: handleLogout, isPending: isPendingLogout } = useMutation(
+    {
+      mutationFn: async () => AuthServices.logout(),
+      onSuccess: async () => {
+        logout();
 
-      if (redirectUrl) {
+        if (redirectUrl) {
+          navigate("/login", { replace: true });
+        }
+      },
+
+      onError: async () => {
         navigate("/login", { replace: true });
-      }
+      },
     },
-
-    onError: async () => {
-      navigate("/login", { replace: true });
-    },
-  });
+  );
 
   return {
     handleLogout,
+    isPendingLogout,
   };
 };
 

@@ -40,7 +40,7 @@ const FilterSort: FC<Props> = ({
           { value: "desc", label: customLabel ? customLabel[1] : "Terbaru" },
         ]}
         placeholder="Urutkan"
-        value={value || "asc"}
+        value={value}
       />
     </div>
   );

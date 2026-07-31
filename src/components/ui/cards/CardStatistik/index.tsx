@@ -78,7 +78,7 @@ const CardStatistik: FC<Props> = ({
 
                   {withAlert && (
                     <div
-                      className="tooltip z-10 tooltip-custom"
+                      className="tooltip z-5 tooltip-custom"
                       data-tip={withAlert}
                     >
                       <button type="button">

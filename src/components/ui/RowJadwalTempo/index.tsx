@@ -4,12 +4,15 @@ import {
   CreditCard,
   Trash2,
 } from "lucide-react";
-import { formatRupiah } from "../../../helpers/helpers";
+import { formatRupiah, getStatusDueToday } from "../../../helpers/helpers";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import { cn } from "../../../utils/cn";
 import type { FC } from "react";
 import type { CreateInstallmentType } from "../../../models/tempoInstallment.model";
-import type { InstallmentStatusType } from "../../../types/constant.type";
+import {
+  INSTALLMENT_STATUS_TYPE,
+  type InstallmentStatusType,
+} from "../../../types/constant.type";
 import StatusInstallment from "../StatusInstallment";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -35,6 +38,7 @@ const RowJadwaTempo: FC<Props> = ({
 }) => {
   const currentPathname = useLocation().pathname;
   const navigate = useNavigate();
+
   return (
     <div className="w-full flex flex-col justify-start items-start gap-2">
       {/* title */}
@@ -223,7 +227,14 @@ const Rows: FC<RowsType> = ({
         )}
       >
         {/* status */}
-        <StatusInstallment status={status} />
+        <StatusInstallment
+          {...(getStatusDueToday({
+            status,
+            jatuhTempo,
+          })
+            ? { statusDueToday: true }
+            : { status: status })}
+        />
       </div>
 
       {aksi && (

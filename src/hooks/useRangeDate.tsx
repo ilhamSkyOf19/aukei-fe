@@ -1,42 +1,69 @@
-import { useEffect, useMemo, useState } from "react";
-import useModal from "./useModal";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { format } from "date-fns";
-import type { DateRange } from "react-day-picker";
+import { type DateRange } from "react-day-picker";
 import { useSearchParams } from "react-router-dom";
+import useModal from "./useModal";
 
-const useRangeDate = (params: {
+export type RangeDateState = {
+  startDate?: string | undefined;
+  endDate?: string | undefined;
+};
+
+type UseRangeDateProps = {
   listDate: {
     label: string;
     value: string;
   }[];
+
   defaultStartDate?: string;
   defaultEndDate?: string;
-}) => {
-  const {
-    listDate,
-    defaultEndDate = format(new Date(), "yyyy-MM-dd"),
-    defaultStartDate = format(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() - 1,
-        new Date().getDate(),
-      ),
-      "yyyy-MM-dd",
+
+  state?: {
+    value?: RangeDateState;
+    onChange?: Dispatch<SetStateAction<RangeDateState | undefined>>;
+  };
+};
+
+const useRangeDate = ({
+  listDate,
+  defaultEndDate = format(new Date(), "yyyy-MM-dd"),
+  defaultStartDate = format(
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() - 1,
+      new Date().getDate(),
     ),
-  } = params;
+    "yyyy-MM-dd",
+  ),
+  state,
+}: UseRangeDateProps) => {
+  const isControlled = !!state;
 
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const startDate = isControlled
+    ? state?.value?.startDate
+    : (searchParams.get("start-date") ?? defaultStartDate);
+
+  const endDate = isControlled
+    ? state?.value?.endDate
+    : (searchParams.get("end-date") ?? defaultEndDate);
+
   const [selected, setSelected] = useState<DateRange>();
 
-  // set default date pertama kali
   useEffect(() => {
-    if (!defaultStartDate || !defaultEndDate) return;
+    if (isControlled) return;
 
-    const startDate = searchParams.get("start-date");
-    const endDate = searchParams.get("end-date");
+    const hasStart = searchParams.has("start-date");
+    const hasEnd = searchParams.has("end-date");
 
-    if (startDate && endDate) return;
+    if (hasStart && hasEnd) return;
 
     const params = new URLSearchParams(searchParams);
 
@@ -46,36 +73,69 @@ const useRangeDate = (params: {
     setSearchParams(params, {
       replace: true,
     });
-  }, [defaultStartDate, defaultEndDate]);
+  }, [
+    isControlled,
+    defaultStartDate,
+    defaultEndDate,
+    searchParams,
+    setSearchParams,
+  ]);
 
-  // sync selected dengan URL
   useEffect(() => {
-    const startDate = searchParams.get("start-date");
-    const endDate = searchParams.get("end-date");
+    if (!startDate || !endDate) {
+      setSelected(undefined);
+      return;
+    }
 
-    if (startDate && endDate) {
-      setSelected({
-        from: new Date(startDate),
-        to: new Date(endDate),
+    setSelected({
+      from: new Date(startDate),
+      to: new Date(endDate),
+    });
+  }, [startDate, endDate]);
+
+  const setRangeDate = (startDate?: string, endDate?: string) => {
+    if (isControlled && state?.onChange) {
+      state.onChange({
+        startDate,
+        endDate,
       });
-    }
-  }, [searchParams]);
 
-  const setRangeDate = (reset: boolean, startDate: string, endDate: string) => {
+      return;
+    }
+
     const params = new URLSearchParams(searchParams);
-
-    if (reset) {
-      params.delete("start-date");
-      params.delete("end-date");
-    }
 
     if (startDate) {
       params.set("start-date", startDate);
+    } else {
+      params.delete("start-date");
     }
 
     if (endDate) {
       params.set("end-date", endDate);
+    } else {
+      params.delete("end-date");
     }
+
+    setSearchParams(params, {
+      replace: true,
+    });
+  };
+
+  const resetRangeDate = () => {
+    if (isControlled && state?.onChange) {
+      state.onChange({
+        startDate: defaultStartDate,
+        endDate: defaultEndDate,
+      });
+
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams);
+
+    params.set("start-date", defaultStartDate);
+    params.set("end-date", defaultEndDate);
 
     setSearchParams(params, {
       replace: true,
@@ -89,32 +149,24 @@ const useRangeDate = (params: {
     }
 
     if (value === "reset") {
-      if (!defaultStartDate || !defaultEndDate) {
-        setSelected({
-          from: new Date(defaultStartDate ?? ""),
-          to: new Date(defaultEndDate ?? ""),
-        });
-      } else {
-        setSelected(undefined);
-      }
-      setRangeDate(true, defaultStartDate ?? "", defaultEndDate ?? "");
+      setSelected({
+        from: new Date(defaultStartDate),
+        to: new Date(defaultEndDate),
+      });
 
+      resetRangeDate();
       return;
     }
 
-    const range = JSON.parse(value) as {
-      startDate: string;
-      endDate: string;
-    };
+    const range = JSON.parse(value) as RangeDateState;
 
-    setRangeDate(false, range.startDate, range.endDate);
+    setRangeDate(range.startDate, range.endDate);
   };
 
   const handleApply = () => {
     if (!selected?.from || !selected?.to) return;
 
     setRangeDate(
-      false,
       format(selected.from, "yyyy-MM-dd"),
       format(selected.to, "yyyy-MM-dd"),
     );
@@ -122,25 +174,20 @@ const useRangeDate = (params: {
     closeModalDate();
   };
 
-  // dropdown value aktif
   const selectedOption = useMemo(() => {
-    const startDate = searchParams.get("start-date");
-    const endDate = searchParams.get("end-date");
-
     if (!startDate || !endDate) return "";
 
     const found = listDate.find((item) => {
       if (item.value === "reset") return false;
 
-      const range = JSON.parse(item.value);
+      const range = JSON.parse(item.value) as RangeDateState;
 
       return range.startDate === startDate && range.endDate === endDate;
     });
 
     return found?.value ?? "aturTanggal";
-  }, [searchParams]);
+  }, [listDate, startDate, endDate]);
 
-  // modal
   const {
     modalRef: modalDateRef,
     handleShowModal: handleShowModalDate,
@@ -148,15 +195,22 @@ const useRangeDate = (params: {
   } = useModal();
 
   return {
+    startDate,
+    endDate,
+
     selected,
     setSelected,
-    handleOnChangeDropDown,
-    handleApply,
+
     selectedOption,
+
+    handleApply,
+    handleOnChangeDropDown,
+
+    setRangeDate,
+    resetRangeDate,
+
     modalDateRef,
     closeModalDate,
-    searchParams,
-    setRangeDate,
   };
 };
 

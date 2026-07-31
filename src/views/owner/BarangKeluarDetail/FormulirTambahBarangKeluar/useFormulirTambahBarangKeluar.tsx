@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { CreateBarangKeluarDetailType } from "../../../../models/barangKeluarDetail.model";
 import type { ResponseProdukForChooseType } from "../../../../models/produk.model";
 import { useEffect, useRef, useState } from "react";
-import { useClickOutside } from "../../../../hooks/useClickOutSide";
 import axios from "axios";
 import type { ErrorResponse } from "../../../../types/response.type";
 import type { InputSearchRef } from "../../../../types/ref.type";
@@ -14,6 +13,7 @@ import useModal from "../../../../hooks/useModal";
 import { BarangKeluarDetailValidation } from "../../../../validations/barangKeluarDetail.validation";
 import { BarangKeluarDetailServices } from "../../../../services/barangKeluarDetail.service";
 import useDataProdukForChoose from "../../../../hooks/useDataProdukForChoose";
+import { useClickOutside } from "../../../../hooks/useClickOutside";
 
 const useFormulirTambahBarangKeluar = (params: {
   handleSetToast: (data: string) => void;
@@ -58,7 +58,7 @@ const useFormulirTambahBarangKeluar = (params: {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useClickOutside({
-    ref: wrapperRef,
+    refs: [wrapperRef],
     callback: () => {
       setActiveComponentChooseProduk(false);
     },
@@ -126,12 +126,34 @@ const useFormulirTambahBarangKeluar = (params: {
         if (err.response?.data?.meta?.statusCode === 409) {
           handleSetAlert("produk_choose_exist_in_data");
         }
+
+        if (err.response?.data.meta.statusCode === 400) {
+          if (
+            err?.response?.data?.meta?.customField?.includes("stok_not_enough")
+          ) {
+            handleSetAlert("stok_not_enough");
+          }
+        }
       }
     },
   });
 
   const onSubmit = async (data: CreateBarangKeluarDetailType) => {
-    await mutateBarangKeluarDetail(data);
+    try {
+      // check stok
+      if (
+        dataProdukForChoose?.data?.some(
+          (item) => item.id === data.produkId && item.stok < data.jumlahStok,
+        )
+      ) {
+        handleSetAlert("stok_not_enough");
+        return;
+      }
+
+      await mutateBarangKeluarDetail(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleShowActiveComponentChooseProduk = () => {

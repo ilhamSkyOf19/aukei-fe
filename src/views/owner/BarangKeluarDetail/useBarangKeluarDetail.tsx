@@ -67,6 +67,24 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     showModalFormulirVerifikasiOrPengajuan(id, data);
   };
 
+  // invalidate
+  const invalidateQueries = () => {
+    // revalidated
+    queryClient.invalidateQueries({
+      queryKey: ["barang-keluar-detail", validatedId],
+    });
+
+    // revalidated
+    queryClient.invalidateQueries({
+      queryKey: ["notifikasi-global"],
+    });
+
+    // revalidated
+    queryClient.invalidateQueries({
+      queryKey: ["notifikasi-produk"],
+    });
+  };
+
   // use alert
   const { alert, handleSetAlert } = useAlertAnimation();
 
@@ -99,19 +117,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
         handleSetToast("posted");
 
         // revalidated
-        queryClient.invalidateQueries({
-          queryKey: ["barang-keluar-detail", validatedId],
-        });
-
-        // revalidated
-        queryClient.invalidateQueries({
-          queryKey: ["notifikasi-global"],
-        });
-
-        // revalidated
-        queryClient.invalidateQueries({
-          queryKey: ["notifikasi-produk"],
-        });
+        invalidateQueries();
       },
       onError: (err) => {
         if (axios.isAxiosError<ErrorResponse>(err)) {
@@ -121,6 +127,12 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
             )
           ) {
             handleSetAlert("empty_barang_keluar");
+          }
+
+          if (
+            err?.response?.data?.meta?.customField?.includes("stok_not_enough")
+          ) {
+            handleSetAlert("stok_not_enough");
           }
         }
       },
@@ -168,20 +180,8 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
       // handle toast
       handleSetToast("cancel_posted");
 
-      // revalidated
-      queryClient.invalidateQueries({
-        queryKey: ["barang-keluar-detail", validatedId],
-      });
-
-      // revalidated
-      queryClient.invalidateQueries({
-        queryKey: ["notifikasi-global"],
-      });
-
-      // revalidated
-      queryClient.invalidateQueries({
-        queryKey: ["notifikasi-produk"],
-      });
+      // invalidated
+      invalidateQueries();
     },
     onError: (err) => {
       console.log(err);
@@ -201,15 +201,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
       handleSetToast("canceled_verifikasi");
 
       // invalidated
-      queryClient.invalidateQueries({
-        queryKey: ["barang-keluar-detail", validatedId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["notifikasi-global"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["notifikasi-produk"],
-      });
+      invalidateQueries();
     },
     onError: (err) => {
       console.log(err);
@@ -298,9 +290,12 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const isStatusRejected =
     dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.REJECTED;
 
+  // can show form tambah barang
   const canShowFormTambahBarang =
-    (!fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) ||
-    (fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
+    ((!fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) ||
+      (fromPengajuanBarang && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR)) &&
+    (dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
+      dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.REJECTED);
 
   const isCanBatalkanPosting =
     isStatusPosted && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && !isExpired;
@@ -334,13 +329,11 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
       status: Exclude<StatusInventoriType, "DRAFT" | "PENDING">;
     }) => PengajuanBarangKeluarServices.verifikasi(data),
     onSuccess: () => {
-      // revalidated
-      queryClient.invalidateQueries({
-        queryKey: ["barang-keluar-detail", validatedId],
-      });
-
       // set toast
       handleSetToast("approved_pengajuan");
+
+      // invalidated
+      invalidateQueries();
     },
     onError: (err) => {
       console.log(err);

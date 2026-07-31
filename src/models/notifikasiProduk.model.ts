@@ -1,9 +1,12 @@
-import { type JenisNotifikasiProdukType } from "../types/constant.type";
+import {
+  type JenisNotifikasiProdukType,
+  type MetaType,
+} from "../types/constant.type";
 import type { IProduk } from "./produk.model";
 
 export interface INotifikasiProdukType {
   id: number;
-  produk: Pick<IProduk, "id" | "nama" | "kode" | "img">;
+  produk: Pick<IProduk, "id" | "nama" | "kode" | "img" | "kategori" | "stok">;
   jenisNotifikasiProduk: JenisNotifikasiProdukType;
   createdAt: Date;
   updatedAt: Date;
@@ -17,9 +20,7 @@ export interface PushNotifikasiProdukType {
 }
 
 // response
-export interface ResponseNotifikasiProdukType extends INotifikasiProdukType {}
-
-// to response
-export const toResponseNotifikasiProdukType = (
-  notifikasi: ResponseNotifikasiProdukType,
-): ResponseNotifikasiProdukType => notifikasi;
+export interface ResponseNotifikasiProdukWithMetaType {
+  data: INotifikasiProdukType[];
+  meta: MetaType;
+}

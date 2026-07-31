@@ -139,25 +139,26 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                 </p>
 
                 {/* caption */}
-                {isStatusPosted && (
-                  <div className="hidden lg:flex flex-row justify-start items-center gap-2">
-                    <div className="status status-success status-sm" />
+                {isStatusPosted &&
+                  pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
+                    <div className="hidden lg:flex flex-row justify-start items-center gap-2">
+                      <div className="status status-success status-sm" />
 
-                    <span className="text-xs text-base-content">
-                      {isExpired
-                        ? "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
-                        : `Anda dapat membatalkan postingan sebelum waktu habis : `}
-                    </span>
-                    {!isExpired && (
-                      <CountDown
-                        expiredAt={subtractMinutes(
-                          dataBarangMasukDetail?.data?.postedAt ?? new Date(),
-                          2,
-                        )}
-                      />
-                    )}
-                  </div>
-                )}
+                      <span className="text-xs text-base-content">
+                        {isExpired
+                          ? "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
+                          : `Anda dapat membatalkan postingan sebelum waktu habis : `}
+                      </span>
+                      {!isExpired && (
+                        <CountDown
+                          expiredAt={subtractMinutes(
+                            dataBarangMasukDetail?.data?.postedAt ?? new Date(),
+                            2,
+                          )}
+                        />
+                      )}
+                    </div>
+                  )}
               </div>
             </div>
 
@@ -325,15 +326,6 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       {/* formulir */}
       {canShowFormTambahBarang && (
         <FormulirTambahBarangMasuk
-          hidden={
-            dataBarangMasukDetail?.data?.status ===
-              STATUS_INVENTORI_TYPE.POSTED ||
-            dataBarangMasukDetail?.data?.status ===
-              STATUS_INVENTORI_TYPE.PENDING
-          }
-          totalBarang={
-            dataBarangMasukDetail?.data?.detailBarangMasuks?.length ?? 0
-          }
           handleSetToast={handleSetToast}
           handleSetAlert={handleSetAlert}
         />

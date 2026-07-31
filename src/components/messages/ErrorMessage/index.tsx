@@ -3,14 +3,16 @@ import { cn } from "../../../utils/cn";
 
 type Props = {
   errorMessage?: string;
+  xs?: boolean;
 };
-const ErrorMessage: FC<Props> = ({ errorMessage }) => {
+const ErrorMessage: FC<Props> = ({ errorMessage, xs }) => {
   return (
     <div className="w-full h-2.5">
       <span
         className={cn(
-          "text-[0.7rem] text-error transition-opacity duration-200 ease-in-out",
+          " text-error transition-opacity duration-200 ease-in-out",
           errorMessage ? "opacity-100" : "opacity-0",
+          xs ? "text-[0.625rem]" : "text-[0.7rem]",
         )}
       >
         {errorMessage}

@@ -7,7 +7,7 @@ type Props = {
 };
 const ButtonDetailTable: FC<Props> = ({ handleRedirect, customDataTip }) => {
   return (
-    <div className="tooltip z-10" data-tip={customDataTip ?? "detail"}>
+    <div className="tooltip z-2" data-tip={customDataTip ?? "detail"}>
       {/* detail transaksi */}
       <button
         type="button"

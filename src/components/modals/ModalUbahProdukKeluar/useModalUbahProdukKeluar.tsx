@@ -8,13 +8,13 @@ import type { ResponseProdukForChooseType } from "../../../models/produk.model";
 import { useEffect, useRef, useState } from "react";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { BarangKeluarDetailServices } from "../../../services/barangKeluarDetail.service";
-import { useClickOutside } from "../../../hooks/useClickOutSide";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import type { InputSearchRef } from "../../../types/ref.type";
 import { useController, useForm } from "react-hook-form";
 import type { StatusInventoriType } from "../../../types/constant.type";
 import useDataProdukForChoose from "../../../hooks/useDataProdukForChoose";
+import { useClickOutside } from "../../../hooks/useClickOutside";
 
 const useModalUbahProdukKeluar = (params: {
   idBarangKeluar?: number;
@@ -98,7 +98,7 @@ const useModalUbahProdukKeluar = (params: {
     useDataProdukForChoose({ search });
 
   useClickOutside({
-    ref: wrapperRef,
+    refs: [wrapperRef],
     callback: () => {
       setActiveComponentChooseProduk(false);
     },

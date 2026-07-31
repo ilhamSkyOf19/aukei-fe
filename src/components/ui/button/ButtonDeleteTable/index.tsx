@@ -18,7 +18,7 @@ const ButtonDeleteTable: FC<Props> = ({
 }) => {
   return (
     <div
-      className="tooltip z-10"
+      className="tooltip z-2"
       data-tip={!noTip ? (customDataTip ?? "hapus") : ""}
     >
       {/* update */}

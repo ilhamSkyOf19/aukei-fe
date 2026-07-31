@@ -1,22 +1,44 @@
 import { type FC } from "react";
 import { formatNumber, formatRupiah } from "../../../helpers/helpers";
 import { ArrowRight, CircleAlert, UserRoundX } from "lucide-react";
-import useStatistikTopPelanggan from "./useStatistikTopPelanggan";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
+import useStatistikTopPelanggan from "../../../hooks/useStatistikTopPelanggan";
 
-const StatistikTopPelanggan = () => {
-  const { dataTopPelanggan, endDate, isLoading, startDate } =
-    useStatistikTopPelanggan();
+type Props = {
+  rangeDate: {
+    startDate: string;
+    endDate: string;
+  };
+};
+const StatistikTopPelanggan: FC<Props> = ({ rangeDate }) => {
+  const {
+    dataTopPelanggan,
+    isLoading,
+    startDateEndDate: { endDate, startDate },
+    handleSelectedLaporan,
+  } = useStatistikTopPelanggan({
+    customLimit: 5,
+    customStartDateEndDate: rangeDate,
+  });
   return (
     <div className="md:flex-1 md:h-full flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 md:p-2.5 md:px-0 h-90">
       {/* header */}
       <div className="w-full flex flex-row justify-start items-start gap-2 mb-2 px-2.5">
-        <h3 className="text-sm font-semibold text-base-content capitalize">
-          Top 5 Pelanggan
-        </h3>
+        <div className="flex flex-col justify-start items-start gap-0.5">
+          <h3 className="text-sm font-semibold text-base-content capitalize">
+            Top 5 Pelanggan
+          </h3>
+          <span className="text-xs text-base-content ">
+            Data diurutkan berdasarkan jumlah transaksi terbanyak.
+          </span>
+        </div>
         <div
           className="tooltip z-30 tooltip-custom"
-          data-tip={`Data dari periode ${formatTanggalPanjang(startDate)} - ${formatTanggalPanjang(endDate)}`}
+          data-tip={
+            startDate && endDate
+              ? `Data dari periode ${formatTanggalPanjang(startDate)} - ${formatTanggalPanjang(endDate)}`
+              : "-"
+          }
         >
           <button className="p-0.5">
             <CircleAlert className="size-4 text-base-content/50" />
@@ -34,14 +56,14 @@ const StatistikTopPelanggan = () => {
             <div className="w-full h-12 skeleton" />
             <div className="w-full h-12 skeleton" />
           </div>
-        ) : dataTopPelanggan && dataTopPelanggan.length > 0 ? (
+        ) : dataTopPelanggan?.data && dataTopPelanggan.data.length > 0 ? (
           <>
-            {dataTopPelanggan.map((item) => (
+            {dataTopPelanggan.data.map((item) => (
               <CardTopPelanggan
                 key={item.id}
                 nama={item.nama}
                 totalTransaksi={item.totalTransaksi}
-                totalBelanja={item.totalBelanja}
+                totalBelanja={item.totalNilaiTransaksi}
               />
             ))}
 
@@ -50,6 +72,7 @@ const StatistikTopPelanggan = () => {
               <button
                 type="button"
                 className="text-xs font-medium text-base-content/50 hover:text-base-content transition-colors duration-150 ease-in-out py-0.5 flex flex-row justify-start items-start gap-2"
+                onClick={() => handleSelectedLaporan("topPelanggan")}
               >
                 <span>Lihat Semua Pelanggan</span>
 

@@ -5,10 +5,10 @@ import type {
   ResponseChartType,
   ResponseRingkasanStatistikType,
   ResponseChartMetodePembayaranType,
-  ResponseStatistikTopPelangganType,
   ResponseStatistikKebutuhanBarangBookingType,
   ResponseStatistikPantauanStokType,
   ResponseStatistikTopProdukWithMetaType,
+  ResponseStatistikTopPelangganWithMetaType,
 } from "../models/statistik.model";
 import type {
   QueryRiwayatTransactionType,
@@ -176,13 +176,19 @@ export class StatistikServices {
   }
 
   // top pelanggan
-  static async statistikTopPelanggan(query: {
-    startDate?: string;
-    endDate?: string;
-  }): Promise<ResponseStructure<ResponseStatistikTopPelangganType[] | null>> {
+  static async statistikTopPelanggan(
+    query: Pick<PaginationType, "page" | "search" | "limit"> & {
+      sortTotalTransaksi?: string;
+      sortTotalNilaiTransaksi?: string;
+      startDate?: string;
+      endDate?: string;
+    },
+  ): Promise<
+    ResponseStructure<ResponseStatistikTopPelangganWithMetaType | null>
+  > {
     // call api
     const result = await instanceAxios.get<
-      ResponseStructure<ResponseStatistikTopPelangganType[] | null>
+      ResponseStructure<ResponseStatistikTopPelangganWithMetaType | null>
     >("/statistik/top-pelanggan", { params: query });
 
     return result.data;

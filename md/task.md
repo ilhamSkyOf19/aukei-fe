@@ -135,6 +135,31 @@
 
 - [✅] Buat fungsi refresh di statistik
 
+- [✅] Buat halaman laporan top produk
+
+- [✅] Buat halaman laporan top pelanggan
+
+- [✅] Buat kondisi untuk jatuh tempo hari ini di row jadwal tempo
+
+- [ ] Tampilkan informasi stok di barang masuk / keluar
+
+- [ ] Integrasi Notifkasi pengajuan barang
+
+- [ ] Sesuaikan data
+
+- [ ] Isi Data Dabase
+
+- [ ] Buat Card Notifkasi Tempo
+
+- [ ] Lakukan invalidated setelah :
+  - Selesai Transaksi -> notifikasi produk
+  - Posted Barang Masuk -> notifikasi produk
+  - Posted Barang Keluar -> notifikasi produk
+  - Pelunasan installment -> hapus notifikasi di backend + invalidated notifikasi tempo
+  - Cek backend
+
+- [ ] Perbaiki UI notifikasi
+
 - [ ] dan membuat design mobile
 
 - [ ] Membuat navigasi untuk kasir, dan memperbaiki notifikasi stok

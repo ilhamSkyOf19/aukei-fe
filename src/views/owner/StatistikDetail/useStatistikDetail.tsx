@@ -2,7 +2,7 @@ import useSizeWindows from "../../../hooks/useSizeWindows";
 import { useQuery } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { StatistikServices } from "../../../services/statistik.service";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import {
   Banknote,
   CalendarClock,
@@ -14,40 +14,50 @@ import {
 } from "lucide-react";
 import useDataStatistik from "./useDataStatistik";
 import type { ChildRef } from "../../../types/ref.type";
+import {
+  useLaporanStore,
+  type LaporanPilihanType,
+} from "../../../stores/laporanStore";
 
-const pilihan: { key: string; label: string; icon: LucideIcon }[] = [
-  {
-    key: "semua",
-    label: "Semua Laporan",
-    icon: LineChart,
-  },
-  {
-    key: "keuangan",
-    label: "Laporan Penjualan",
-    icon: Banknote,
-  },
+const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
+  [
+    {
+      key: "semua",
+      label: "Semua Laporan",
+      icon: LineChart,
+    },
+    {
+      key: "penjualan",
+      label: "Laporan Penjualan",
+      icon: Banknote,
+    },
 
-  {
-    key: "barang",
-    label: "Laporan Barang",
-    icon: LucidePackage,
-  },
-  {
-    key: "booking",
-    label: "Laporan Booking",
-    icon: CalendarClock,
-  },
-  {
-    key: "pantauanStok",
-    label: "Laporan Stok",
-    icon: PackageSearch,
-  },
-  {
-    key: "topProduk",
-    label: "Laporan Top Produk",
-    icon: Star,
-  },
-];
+    {
+      key: "barang",
+      label: "Laporan Barang",
+      icon: LucidePackage,
+    },
+    {
+      key: "booking",
+      label: "Laporan Booking",
+      icon: CalendarClock,
+    },
+    {
+      key: "pantauanStok",
+      label: "Laporan Stok",
+      icon: PackageSearch,
+    },
+    {
+      key: "topProduk",
+      label: "Laporan Top Produk",
+      icon: Star,
+    },
+    {
+      key: "topPelanggan",
+      label: "Laporan Top Pelanggan",
+      icon: Star,
+    },
+  ];
 
 const useStatistikDetail = () => {
   // window size
@@ -60,8 +70,10 @@ const useStatistikDetail = () => {
 
   // tambahkan grafik batang
 
-  // state pilihan
-  const [pilihanStatistik, setPilihanStatistik] = useState<string>("semua");
+  // laporan pilihan store
+  const { selectedLaporan, setSelectedLaporan } = useLaporanStore(
+    (state) => state,
+  );
 
   // filter date
   const { startDate, endDate } = useFilterRangeDate();
@@ -87,10 +99,10 @@ const useStatistikDetail = () => {
 
   const filteredStatistik = useMemo(
     () =>
-      pilihanStatistik === "semua"
+      selectedLaporan === "semua"
         ? dataStatistik
-        : dataStatistik.filter((item) => item.category === pilihanStatistik),
-    [pilihanStatistik, dataStatistik],
+        : dataStatistik.filter((item) => item.category === selectedLaporan),
+    [selectedLaporan, dataStatistik],
   );
 
   // handle refetch
@@ -98,19 +110,21 @@ const useStatistikDetail = () => {
     await refetch({
       throwOnError: true,
     });
-    await grafikLineRef.current?.refetchActive();
+    // await grafikLineRef.current?.refetchActive();
   };
 
   return {
     windowSize,
-    statistik,
     isLoadingStatistik,
     pilihan,
-    pilihanStatistik,
-    setPilihanStatistik,
+    selectedLaporan,
+    setSelectedLaporan,
     filteredStatistik,
     handleRefresh,
     grafikLineRef,
+
+    startDate,
+    endDate,
   };
 };
 

@@ -53,6 +53,7 @@ export interface ResponseProdukForChooseType {
   nama: string;
   kode: string;
   hargaBeli: number;
+  stok: number;
   img: string;
 }
 

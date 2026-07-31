@@ -15,6 +15,7 @@ import {
   formatRupiah,
   getJatuhTempoText,
   getJatuhTempoTextColor,
+  getStatusDueToday,
   getWeekFromPeriod,
 } from "../../../helpers/helpers";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
@@ -200,9 +201,9 @@ const InstallmentsDetail = () => {
                       <th>#</th>
                       <th>Jatuh Tempo</th>
                       <th>Tagihan</th>
-                      <th>Status</th>
                       <th>Dibayar</th>
                       <th>Sisa</th>
+                      <th>Status</th>
                       {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
                         <th>Aksi</th>
                       )}
@@ -232,32 +233,32 @@ const InstallmentsDetail = () => {
                             </span>
                           </td>
                           <td>
-                            {item.status !== INSTALLMENT_STATUS_TYPE.PAID ? (
-                              <div className="flex flex-col justify-start items-start gap-1">
-                                <span className="font-medium">
-                                  {formatTanggalLengkap(item.jatuhTempo)}
-                                </span>
-                                <span
-                                  className={cn(
-                                    "text-[0.625rem] font-medium",
-                                    getJatuhTempoTextColor(item.jatuhTempo),
-                                  )}
-                                >
-                                  {getJatuhTempoText(item.jatuhTempo)}
-                                </span>
-                              </div>
-                            ) : (
-                              <span>-</span>
-                            )}
+                            <div className="flex flex-col justify-start items-start gap-1">
+                              <span className="font-medium">
+                                {formatTanggalLengkap(item.jatuhTempo)}
+                              </span>
+                              <span
+                                className={cn(
+                                  "text-[0.625rem] font-medium",
+                                  getJatuhTempoTextColor(
+                                    item.jatuhTempo,
+                                    item.tanggalLunas,
+                                  ),
+                                )}
+                              >
+                                {getJatuhTempoText(
+                                  item.jatuhTempo,
+                                  item.tanggalLunas,
+                                )}
+                              </span>
+                            </div>
                           </td>
                           <td>
                             <span className="font-medium">
                               {formatRupiah(item.nominal)}
                             </span>
                           </td>
-                          <td>
-                            <StatusInstallment status={item.status} />
-                          </td>
+
                           <td>
                             <span className="text-success font-medium">
                               {formatRupiah(item.diBayar)}
@@ -267,6 +268,16 @@ const InstallmentsDetail = () => {
                             <span className="font-medium text-error">
                               {formatRupiah(item.nominal - item.diBayar)}
                             </span>
+                          </td>
+                          <td>
+                            <StatusInstallment
+                              {...(getStatusDueToday({
+                                status: item.status,
+                                jatuhTempo: item.jatuhTempo,
+                              })
+                                ? { statusDueToday: true }
+                                : { status: item.status })}
+                            />
                           </td>
                           {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
                             <td>

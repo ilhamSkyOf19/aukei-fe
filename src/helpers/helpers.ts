@@ -1,4 +1,5 @@
-import { differenceInCalendarDays } from "date-fns";
+import { compareAsc, differenceInCalendarDays, startOfDay } from "date-fns";
+import { INSTALLMENT_STATUS_TYPE } from "../types/constant.type";
 
 export const highlightName = (name: string) => {
   const words = name.split(" ");
@@ -272,8 +273,18 @@ export const getWeekFromPeriod = (days: number): number => {
   return Math.ceil(days / 7);
 };
 
-export const getJatuhTempoTextColor = (jatuhTempo: Date | string) => {
-  const sisaHari = differenceInCalendarDays(new Date(jatuhTempo), new Date());
+export const getJatuhTempoTextColor = (
+  jatuhTempo: Date | string,
+  tanggalLunas?: Date | null,
+) => {
+  const sisaHari = differenceInCalendarDays(
+    new Date(jatuhTempo),
+    tanggalLunas ?? new Date(),
+  );
+
+  if (sisaHari === 0) {
+    return tanggalLunas ? "text-emerald-500" : "text-rose-500";
+  }
 
   if (sisaHari <= 3) {
     return "text-rose-500";
@@ -286,20 +297,34 @@ export const getJatuhTempoTextColor = (jatuhTempo: Date | string) => {
   return "text-emerald-500";
 };
 
-export const getJatuhTempoText = (date: Date | null | undefined): string => {
+export const getJatuhTempoText = (
+  date: Date | null | undefined,
+  tanggalLunas?: Date | null,
+  noBrackets?: boolean,
+): string => {
   if (!date) return "-";
 
-  const diff = differenceInCalendarDays(date, new Date());
+  const diff = differenceInCalendarDays(date, tanggalLunas ?? new Date());
 
   if (diff > 0) {
-    return `(${formatNumber(diff)} Hari lagi)`;
+    return noBrackets
+      ? `${formatNumber(diff)} Hari lagi`
+      : `(${formatNumber(diff)} Hari lagi)`;
   }
 
   if (diff < 0) {
-    return `(Terlambat ${formatNumber(Math.abs(diff))} Hari)`;
+    return noBrackets
+      ? `Terlambat ${formatNumber(Math.abs(diff))} Hari`
+      : `(Terlambat ${formatNumber(Math.abs(diff))} Hari)`;
   }
 
-  return "(Hari Ini)";
+  return tanggalLunas
+    ? noBrackets
+      ? "Tepat Waktu"
+      : "(Tepat Waktu)"
+    : noBrackets
+      ? "Hari Ini"
+      : "(Hari Ini)";
 };
 
 export const getLocalStorageJSON = <T>(key: string): T | null => {
@@ -309,6 +334,36 @@ export const getLocalStorageJSON = <T>(key: string): T | null => {
   } catch {
     return null;
   }
+};
+
+export const formatTimeAgo = (date: Date | string): string => {
+  const now = new Date();
+  const target = new Date(date);
+
+  const diffMs = now.getTime() - target.getTime();
+
+  const seconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  // kurang dari 1 menit
+  if (seconds < 60) {
+    return "Baru saja";
+  }
+
+  // kurang dari 1 jam
+  if (minutes < 60) {
+    return `${minutes} menit lalu`;
+  }
+
+  // kurang dari 1 hari
+  if (hours < 24) {
+    return `${hours} jam lalu`;
+  }
+
+  // hari
+  return `${days} hari lalu`;
 };
 
 export const getRankColor = (rank: number): string => {
@@ -326,4 +381,14 @@ export const getRankColor = (rank: number): string => {
     default:
       return "text-slate-400 fill-slate-300";
   }
+};
+
+export const getStatusDueToday = (params: {
+  status: string;
+  jatuhTempo: Date;
+}): boolean => {
+  return (
+    params.status === INSTALLMENT_STATUS_TYPE.UNPAID &&
+    compareAsc(startOfDay(params.jatuhTempo), startOfDay(new Date())) === 0
+  );
 };

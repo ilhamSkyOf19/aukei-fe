@@ -63,7 +63,7 @@ const ShowProduk: FC<Props> = ({
   } = useShowProduk({ pelangganId, step, onAppendMany });
 
   return (
-    <div className="flex-5 h-full grid grid-rows-2">
+    <div className="flex-5 max-h-full grid grid-rows-2">
       <div className="flex row-span-2 flex-col justify-start text-start gap-2">
         {/* header */}
         <div className="w-full flex flex-row justify-between items-start border border-transparent dark:border-base-content/10 p-1.5 bg-base-100 shadow-sm rounded-xl gap-2.5">

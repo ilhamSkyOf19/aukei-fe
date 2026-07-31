@@ -16,11 +16,12 @@ import useGrafikLine from "./useGrafikLine";
 import type { ChildRef } from "../../../types/ref.type";
 import DataEmpty from "../../messages/DataEmpty";
 import { ChartLine } from "lucide-react";
+import type { LaporanPilihanType } from "../../../stores/laporanStore";
 
 // grafik line
 type GrafikLineProps = {
   windowSize: "sm" | "md" | "lg";
-  pilihan: string;
+  pilihan: LaporanPilihanType;
 };
 const GrafikLine = forwardRef<ChildRef, GrafikLineProps>(
   ({ windowSize, pilihan }, ref) => {
@@ -61,7 +62,6 @@ const GrafikLine = forwardRef<ChildRef, GrafikLineProps>(
             listChoose={filteredOpsiGrafik}
             handleChange={(e) => handleSetIsChoose(e.target.value)}
             placeholder="Jenis"
-            defaultValue="omzet"
             customWidth="w-40"
           />
         </div>

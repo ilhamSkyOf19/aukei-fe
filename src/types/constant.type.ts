@@ -1,3 +1,12 @@
+import {
+  Ban,
+  CircleCheckBig,
+  CircleX,
+  Clock3,
+  FilePenLine,
+  type LucideIcon,
+} from "lucide-react";
+
 // role internal
 export const ROLE_INTERNAL_TYPE = {
   OWNER: "OWNER",
@@ -114,3 +123,60 @@ export type StatusPergerakan =
   (typeof STATUS_PERGERAKAN)[keyof typeof STATUS_PERGERAKAN];
 
 export const BATAS_WAKTU_BATALKAN_POSTING_MS = 2 * 60 * 1000;
+
+export const inventoryNotification: Record<
+  StatusInventoriType,
+  {
+    title: string;
+    description: string;
+    color: string;
+    bg: string;
+    bullet: string;
+    icon: LucideIcon;
+  }
+> = {
+  DRAFT: {
+    title: "Pengajuan Draft",
+    description: "Pengajuan masih berupa draft.",
+    color: "text-blue-500",
+    bg: "bg-blue-50",
+    bullet: "status-custom-blue",
+    icon: FilePenLine,
+  },
+
+  PENDING: {
+    title: "Menunggu Persetujuan",
+    description: "Pengajuan barang menunggu persetujuan.",
+    color: "text-amber-500",
+    bg: "bg-amber-50",
+    bullet: "status-custom-yellow",
+    icon: Clock3,
+  },
+
+  POSTED: {
+    title: "Pengajuan Disetujui",
+    description: "Pengajuan berhasil diproses.",
+    color: "text-emerald-500",
+    bg: "bg-emerald-50",
+    bullet: "status-custom-green",
+    icon: CircleCheckBig,
+  },
+
+  REJECTED: {
+    title: "Pengajuan Ditolak",
+    description: "Pengajuan barang ditolak.",
+    color: "text-rose-500",
+    bg: "bg-rose-50",
+    bullet: "status-custom-red",
+    icon: CircleX,
+  },
+
+  CANCELLED: {
+    title: "Pengajuan Dibatalkan",
+    description: "Pengajuan dibatalkan.",
+    color: "text-gray-500",
+    bg: "bg-gray-50",
+    bullet: "",
+    icon: Ban,
+  },
+} as const;

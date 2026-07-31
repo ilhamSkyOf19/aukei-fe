@@ -4,7 +4,6 @@ import {
   Package,
   PackagePlus,
   ShoppingBag,
-  Tag,
   Trash,
   View,
 } from "lucide-react";
@@ -310,7 +309,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                     <th>Stok</th>
                     <th>Isi PerBox</th>
                     <th>Aktif</th>
-                    <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
+                    <th>Aksi</th>
                   </tr>
                 </tfoot>
               )}

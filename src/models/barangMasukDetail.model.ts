@@ -15,6 +15,8 @@ export interface IBarangMasukDetailType {
     | "stok"
   >;
   jumlahBox: number;
+  jumlahStok: number;
+  sisaStok: number;
   createdAt: Date;
   updatedAt: Date;
 }

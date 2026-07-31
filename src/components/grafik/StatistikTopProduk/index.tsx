@@ -1,22 +1,44 @@
 import { type FC } from "react";
 import { formatNumberK, formatRupiahShort } from "../../../helpers/helpers";
 import { ArrowRight, CircleAlert, PackageX } from "lucide-react";
-import useStatistikTopProduk from "./useStatistikTopProduk";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
+import useStatistikTopProduk from "../../../hooks/useStatistikTopProduk";
 
-const StatistikTopProduk = () => {
-  const { dataTopProduk, endDate, isLoading, startDate } =
-    useStatistikTopProduk({ customLimit: 5 });
+type Props = {
+  rangeDate: {
+    startDate: string;
+    endDate: string;
+  };
+};
+const StatistikTopProduk: FC<Props> = ({ rangeDate }) => {
+  const {
+    dataTopProduk,
+    isLoading,
+    startDateEndDate: { endDate, startDate },
+    handleSelectedLaporan,
+  } = useStatistikTopProduk({
+    customLimit: 5,
+    customStartDateEndDate: rangeDate,
+  });
   return (
     <div className="md:flex-1 md:h-full flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 md:p-2.5 md:px-0 h-90">
       {/* header */}
       <div className="w-full flex flex-row justify-start items-start mb-2 px-2.5 gap-2">
-        <h3 className="text-sm font-semibold text-base-content capitalize">
-          Top 5 Produk Terlaris
-        </h3>
+        <div className="w-full flex flex-col justify-start items-start gap-0.5">
+          <h3 className="text-sm font-semibold text-base-content capitalize">
+            Top 5 Produk Terlaris
+          </h3>
+          <span className="text-xs text-base-content">
+            Data diurutkan berdasarkan jumlah item terjual terbanyak.
+          </span>
+        </div>
         <div
           className="tooltip z-30 tooltip-custom"
-          data-tip={`Data dari periode ${formatTanggalPanjang(startDate)} - ${formatTanggalPanjang(endDate)}`}
+          data-tip={
+            startDate && endDate
+              ? `Data dari periode ${formatTanggalPanjang(startDate)} - ${formatTanggalPanjang(endDate)}`
+              : "-"
+          }
         >
           <button className="p-0.5">
             <CircleAlert className="size-4 text-base-content/50" />
@@ -51,6 +73,7 @@ const StatistikTopProduk = () => {
               <button
                 type="button"
                 className="text-xs font-medium text-base-content/50 hover:text-base-content transition-colors duration-150 ease-in-out py-0.5 flex flex-row justify-start items-start gap-2"
+                onClick={() => handleSelectedLaporan("topProduk")}
               >
                 <span>Lihat Semua Produk</span>
 

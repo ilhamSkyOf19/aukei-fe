@@ -223,6 +223,7 @@ input:-webkit-autofill:active {
     color: var(--color-custom-blue) /* var(--color-primary) */;
   }
 }
+
 .status-custom-yellow {
   @layer daisyui.l1.l2 {
     background-color: var(--color-custom-yellow) /* var(--color-primary) */;

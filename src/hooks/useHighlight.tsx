@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useClickOutside } from "./useClickOutSide";
+import { useClickOutside } from "./useClickOutside";
 
 const useHighlight = () => {
   // state is active aksi
@@ -13,7 +13,7 @@ const useHighlight = () => {
 
   // use click outside
   useClickOutside({
-    ref: wrapperRef,
+    refs: [wrapperRef],
     callback: () => {
       if (isHighlight !== 0) {
         handleSetIsHighlight(0);

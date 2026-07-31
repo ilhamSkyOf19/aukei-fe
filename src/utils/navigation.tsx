@@ -1,5 +1,6 @@
 import type { ElementType } from "react";
 import {
+  Bell,
   Boxes,
   CalendarClock,
   ChartLine,
@@ -105,5 +106,10 @@ export const NAVIGATION_LIST_KASIR: {
     label: "Pengajuan Barang Keluar",
     icon: LucideArrowLeftSquare,
     link: "/dashboard/pengajuan-barang-keluar",
+  },
+  {
+    label: "Notifikasi",
+    icon: Bell,
+    link: "/dashboard/notifikasi",
   },
 ];
