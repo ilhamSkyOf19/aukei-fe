@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Bell, ClockAlert, RefreshCw } from "lucide-react";
+import { Bell, BellOff, ClockAlert, RefreshCw } from "lucide-react";
 import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import { cn } from "../../../../utils/cn";
 import useNotifikasi from "./useNotifikasi";
@@ -201,7 +201,14 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
                     ))}
                   </>
                 ) : (
-                  <div></div>
+                  <div className="pointer-events-none w-full h-full flex flex-col justify-center items-center">
+                    <DataEmpty
+                      iconData={BellOff}
+                      title="Tidak Ada Notifikasi"
+                      description="Belum ada data notifikasi yang dapat ditampilkan saat ini"
+                      xs
+                    />
+                  </div>
                 ))}
 
               {/* data notifikasi produk */}
@@ -220,7 +227,7 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
                 ) : (
                   <div className="pointer-events-none w-full h-full flex flex-col justify-center items-center">
                     <DataEmpty
-                      iconData={ClockAlert}
+                      iconData={BellOff}
                       title="Tidak Ada Notifikasi Produk"
                       description="Belum ada data notifikasi produk yang dapat ditampilkan saat ini"
                       xs
@@ -243,7 +250,7 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
                 ) : (
                   <div className="pointer-events-none w-full h-full flex flex-col justify-center items-center">
                     <DataEmpty
-                      iconData={ClockAlert}
+                      iconData={BellOff}
                       title="Tidak Ada Notifikasi Jatuh Tempo"
                       description="Belum ada data notifikasi jatuh tempo yang dapat ditampilkan saat ini"
                       xs
@@ -268,7 +275,7 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
                 ) : (
                   <div className="pointer-events-none w-full h-full flex flex-col justify-center items-center">
                     <DataEmpty
-                      iconData={ClockAlert}
+                      iconData={BellOff}
                       title="Tidak Ada Notifikasi Pengajuan Barang"
                       description="Belum ada data notifikasi pengajuan barang yang dapat ditampilkan saat ini"
                       xs

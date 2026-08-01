@@ -17,6 +17,7 @@ type Props = {
   customWidth?: string;
   ref?: RefObject<HTMLButtonElement | null>;
   classHidden?: string;
+  typeButton?: "submit";
 };
 
 const ButtonWithIcon: FC<Props> = ({
@@ -33,13 +34,14 @@ const ButtonWithIcon: FC<Props> = ({
   customWidth,
   ref,
   classHidden,
+  typeButton,
 }) => {
   const navigate = useNavigate();
 
   return (
     <button
       ref={ref}
-      type="button"
+      type={typeButton ?? "button"}
       disabled={disabled ?? isLoading}
       className={cn(
         "flex-row justify-center items-center rounded-xl px-3 gap-2 h-10.5 md:h-9",

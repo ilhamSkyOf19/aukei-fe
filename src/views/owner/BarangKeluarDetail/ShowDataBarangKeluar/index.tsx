@@ -255,7 +255,8 @@ const ShowDataBarangKeluar: FC<Props> = ({
                 <th>Nama</th>
                 <th>Kategori</th>
                 <th>Harga Modal Satuan</th>
-                <th>Jumlah Stok</th>
+                <th>Stok Saat Ini</th>
+                <th>Stok Keluar</th>
                 <th>Total</th>
                 {(isRejectedKasir ||
                   isDrafOwner ||
@@ -351,7 +352,12 @@ const ShowDataBarangKeluar: FC<Props> = ({
                         )}
                       </td>
 
-                      {/* jumlah stok */}
+                      {/* stok saat ini */}
+                      <td className="font-medium">
+                        {formatNumber(item.produk.stok)}
+                      </td>
+
+                      {/* stok keluar */}
                       <td className="font-medium">
                         {dataUpdate?.type === "jumlahStok" &&
                         dataUpdate?.id === item.id ? (
@@ -375,9 +381,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                           </CardForm>
                         ) : (
                           <div className="flex flex-row justify-start items-start gap-2">
-                            <span>
-                              {formatNumber(item.jumlahStok.toString())}
-                            </span>
+                            <span>{formatNumber(item.jumlahStok)}</span>
 
                             {/* button update */}
                             {(isRejectedKasir ||

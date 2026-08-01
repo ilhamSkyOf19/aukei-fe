@@ -366,6 +366,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           kodeReferensi={dataBarangKeluarDetail?.data?.kodeReferensi ?? ""}
           type={dataModalFormulirVerifikasiOrPengajuan?.type}
           role={pengguna?.role}
+          handleSetAlert={handleSetAlert}
         />
       )}
 

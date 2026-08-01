@@ -17,6 +17,7 @@ type Props = {
   kodeReferensi: string;
   role?: RoleInternalType;
   type?: "tolak" | "pengajuan";
+  handleSetAlert?: (data: string) => void;
 };
 
 const ModalFormulirVerifikasiOrPengajuan: FC<Props> = ({
@@ -27,6 +28,7 @@ const ModalFormulirVerifikasiOrPengajuan: FC<Props> = ({
   kodeReferensi,
   role,
   type,
+  handleSetAlert,
 }) => {
   // call use
   const {
@@ -40,6 +42,7 @@ const ModalFormulirVerifikasiOrPengajuan: FC<Props> = ({
     barangKeluarId,
     barangMasukId,
     role,
+    handleSetAlert,
   });
 
   return (

@@ -49,6 +49,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
       nama: string;
       kode: string;
       img: string;
+      stok: number;
     };
     jumlahBox: number;
     hargaBeli: number;

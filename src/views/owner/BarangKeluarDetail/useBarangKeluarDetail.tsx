@@ -64,6 +64,16 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
       return;
     }
 
+    // check some stok keluar > current stok
+    if (
+      dataBarangKeluarDetail?.data?.detailBarangKeluars.some(
+        (item) => item.jumlahStok > item.produk.stok,
+      )
+    ) {
+      handleSetAlert("stok_not_enough");
+      return;
+    }
+
     showModalFormulirVerifikasiOrPengajuan(id, data);
   };
 
@@ -149,6 +159,16 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
       if (dataBarangKeluarDetail?.data?.detailBarangKeluars.length === 0) {
         handleSetAlert("empty_barang_keluar");
+        return;
+      }
+
+      // check some stok keluar > current stok
+      if (
+        dataBarangKeluarDetail?.data?.detailBarangKeluars.some(
+          (item) => item.jumlahStok > item.produk.stok,
+        )
+      ) {
+        handleSetAlert("stok_not_enough");
         return;
       }
 

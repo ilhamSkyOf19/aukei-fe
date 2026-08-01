@@ -11,15 +11,24 @@ import {
 } from "../../../types/constant.type";
 import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangMasuk.service";
 import { PengajuanBarangKeluarServices } from "../../../services/pengajuanBarangkeluar.service";
+import axios from "axios";
+import type { ErrorResponse } from "../../../types/response.type";
 
 const useModalFormulirVerifikasiOrPengajuan = (params: {
   barangMasukId?: number;
   barangKeluarId?: number;
   handleCloseModal: () => void;
   role?: RoleInternalType;
+  handleSetAlert?: (data: string) => void;
 }) => {
   // get params
-  const { barangKeluarId, barangMasukId, handleCloseModal, role } = params;
+  const {
+    barangKeluarId,
+    barangMasukId,
+    handleCloseModal,
+    role,
+    handleSetAlert,
+  } = params;
 
   // query client
   const queryClient = useQueryClient();
@@ -111,7 +120,21 @@ const useModalFormulirVerifikasiOrPengajuan = (params: {
       });
     },
     onError: (err) => {
-      console.log(err);
+      if (axios.isAxiosError<ErrorResponse>(err)) {
+        if (
+          err?.response?.data?.meta?.customField?.includes(
+            "empty_barang_keluar",
+          )
+        ) {
+          handleSetAlert?.("empty_barang_keluar");
+        }
+
+        if (
+          err?.response?.data?.meta?.customField?.includes("stok_not_enough")
+        ) {
+          handleSetAlert?.("stok_not_enough");
+        }
+      }
     },
   });
 

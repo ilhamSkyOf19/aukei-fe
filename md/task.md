@@ -141,9 +141,19 @@
 
 - [✅] Buat kondisi untuk jatuh tempo hari ini di row jadwal tempo
 
-- [ ] Tampilkan informasi stok di barang masuk / keluar
+- [✅] Integrasi Notifkasi pengajuan barang
 
-- [ ] Integrasi Notifkasi pengajuan barang
+- [50%] Tampilkan informasi stok di barang masuk / keluar
+  - [✅] Tampilkan informasi stok di modal formulir barang masuk
+  - [✅] Tampilkan informasi stok di modal formulir barang keluar
+  - [✅] Tampilkan informasi stok di modal formulir update barang masuk
+  - [✅] Tampilkan informasi stok di modal formulir update barang keluar
+
+- [ ] Testing skenario barang masuk / keluar + pengajuan barang + notifikasi
+
+- [ ] Testing skenario notifikasi stok barang
+
+- [ ] Testing skenario notifikasi jatuh tempo
 
 - [ ] Sesuaikan data
 

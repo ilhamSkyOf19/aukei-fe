@@ -4,13 +4,14 @@ import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonSubmitWithIcon from "../../ui/button/ButtonSubmitWithIcon";
 import InputNumber from "../../inputs/InputNumber";
-import { PackageMinus, Trash2 } from "lucide-react";
+import { PackageMinus } from "lucide-react";
 import InputSearch from "../../inputs/InputSearch";
-import { formatRupiah } from "../../../helpers/helpers";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
 import useModalFormulirTambahBarangKeluar from "./useModalFormulirTambahBarangKeluar";
 import type { CreateBarangKeluarDetailType } from "../../../models/barangKeluarDetail.model";
+import CardProdukForChooseInventori from "../../ui/cards/CardProdukForChooseInventori";
+import CardProdukForAfterChooseInventori from "../../ui/cards/CardProdukForAfterChooseInventori";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
@@ -99,7 +100,7 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                   className={cn(
                     "absolute bg-base-100 w-full z-40 rounded-lg top-full grid transition-all duration-300 ease-in-out",
                     activeComponentChooseProduk
-                      ? "grid-rows-[1fr]"
+                      ? "grid-rows-[1fr] pb-2.5"
                       : "grid-rows-[0fr]",
                   )}
                 >
@@ -116,44 +117,11 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                       ) : dataProdukForChoose?.data &&
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
-                          <button
-                            type="button"
+                          <CardProdukForChooseInventori
                             key={item.id}
-                            className="w-full flex flex-row justify-between rounded-2xl md:rounded-xl items-start gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border-b border-base-content/10"
-                            onClick={() => handleSetValueProdukId(item.id)}
-                          >
-                            <div className="flex-2 lg:flex-3 flex flex-row justify-start items-start gap-4">
-                              {/* img */}
-                              <div className="w-11 shrink-0 h-11 rounded-2xl md:rounded-xl overflow-hidden">
-                                <img
-                                  src={item.img}
-                                  alt="foto produk"
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-
-                              {/* nama */}
-                              <div className="flex flex-col justify-start items-start gap-1">
-                                <p className="text-xs text-left font-medium lg:text-sm text-base-content lg:font-semibold">
-                                  {item.nama}
-                                </p>
-                                <p className="text-[0.625rem] font-medium lg:text-xs text-base-content/50 lg:font-semibold">
-                                  {item.kode}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex-1 flex flex-col justify-start items-start gap-1">
-                              {/* label */}
-                              <span className="text-[0.625rem] text-base-content/50 text-left">
-                                Harga Beli Saat Ini
-                              </span>
-                              {/* value */}
-                              <span className="text-[0.625rem] font-semibold text-base-content">
-                                {formatRupiah(item.hargaBeli)}
-                              </span>
-                            </div>
-                          </button>
+                            data={item}
+                            handleSetValueProdukId={handleSetValueProdukId}
+                          />
                         ))
                       ) : (
                         <div className="w-full h-full flex flex-col justify-center items-center">
@@ -173,54 +141,11 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                   <p className="text-xs font-medium text-base-content">
                     Daftar Pilihan Barang:
                   </p>
-                  <div
-                    key={produkChoose.id}
-                    className="w-full flex flex-row justify-between items-center hover:bg-custom-primary/50 p-2 rounded-2xl md:rounded-xl transition-all duration-100 ease-in-out"
-                  >
-                    <div className="w-full flex flex-row justify-start items-start gap-2">
-                      <div className="flex-2 flex flex-row justify-start items-start gap-4">
-                        {/* img */}
-                        <div className="w-11 shrink-0 h-11 rounded-2xl md:rounded-xl overflow-hidden">
-                          <img
-                            src={produkChoose.img}
-                            alt="foto produk"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-
-                        {/* nama */}
-                        <div className="flex flex-col justify-start items-start gap-1">
-                          <p className="text-xs lg:text-sm text-base-content font-semibold">
-                            {produkChoose.nama}
-                          </p>
-                          <p className="text-[0.625rem] lg:text-xs text-base-content/50 font-medium">
-                            {produkChoose.kode}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* harga beli */}
-                      <div className="flex-1 flex flex-col justify-start items-start gap-1">
-                        {/* label */}
-                        <span className="text-[0.625rem] text-base-content/50">
-                          Harga Beli
-                        </span>
-                        {/* value */}
-                        <span className="text-[0.625rem] font-semibold text-base-content">
-                          {formatRupiah(produkChoose.hargaBeli)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* button trash */}
-                    <button
-                      type="button"
-                      className="p-2 hover-oveerlay rounded-full bg-error text-primary-white"
-                      onClick={() => handleDeleteValueProdukId()}
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                  </div>
+                  <CardProdukForAfterChooseInventori
+                    data={produkChoose}
+                    handleDeleteValueProdukId={handleDeleteValueProdukId}
+                    customWidth="w-full"
+                  />
                 </div>
               )}
             </div>

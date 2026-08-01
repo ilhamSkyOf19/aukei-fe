@@ -337,7 +337,9 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     if (!validatePelangganDanDetails()) return;
 
     // Cek apakah ada produk dengan stok habis
-    const insufficientStock = produkDetails.some((produk) => produk.stok <= 0);
+    const insufficientStock = produkDetails.some(
+      (produk) => produk.quantity > produk.stok,
+    );
 
     if (insufficientStock && (!fromBooking || toPembayaran)) {
       // Tawarkan konversi ke booking jika stok tidak mencukupi
