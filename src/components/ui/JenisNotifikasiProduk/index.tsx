@@ -7,13 +7,17 @@ import { cn } from "../../../utils/cn";
 
 type Props = {
   jenisNotifikasi: JenisNotifikasiProdukType;
+  xs?: boolean;
 };
-const JenisNotifikasiProduk: FC<Props> = ({ jenisNotifikasi }) => {
+const JenisNotifikasiProduk: FC<Props> = ({ jenisNotifikasi, xs }) => {
   return (
     <div className="flex flex-row justify-start items-center">
       <p
         className={cn(
-          "text-[0.625rem] rounded-md font-medium px-2 py-1 border",
+          "  font-medium  border",
+          xs
+            ? "text-[0.525rem] px-1.5 py-0.5 rounded-sm"
+            : "rounded-md text-[0.625rem] px-2 py-1",
           jenisNotifikasi === JENIS_NOTIFIKASI_PRODUK_TYPE.STOK_MINUS ||
             jenisNotifikasi === JENIS_NOTIFIKASI_PRODUK_TYPE.STOK_EMPTY
             ? "text-error border-error"

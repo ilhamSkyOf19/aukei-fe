@@ -17,6 +17,8 @@ import useDeleteBarangKeluar from "../../../hooks/useDeleteBarangKeluar";
 import { useAuthStore } from "../../../stores/authStore";
 import useModal from "../../../hooks/useModal";
 import { PengajuanBarangKeluarServices } from "../../../services/pengajuanBarangkeluar.service";
+import { useMemo } from "react";
+import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 
 const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { fromPengajuanBarang } = params;
@@ -399,6 +401,18 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     );
   };
 
+  const fromPengajuanBarangNotifikasi = useMemo<boolean | null>(() => {
+    const data = localStorage.getItem(LOCAL_STORAGE_KEYS.FROM_PENGAJUAN_BARANG);
+
+    if (!data) return null;
+
+    try {
+      return JSON.parse(data) as boolean;
+    } catch {
+      return null;
+    }
+  }, []);
+
   return {
     dataBarangKeluarDetail,
     isLoadingBarangKeluarDetail,
@@ -445,6 +459,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isCanBatalkanPosting,
 
     handleBack,
+    fromPengajuanBarangNotifikasi,
   };
 };
 

@@ -65,6 +65,11 @@ export const NAVIGATION_LIST_OWNER: {
     icon: History,
     link: "/dashboard/riwayat-transaksi",
   },
+  {
+    label: "Notifikasi",
+    icon: Bell,
+    link: "/dashboard/notifikasi",
+  },
 ];
 
 export const NAVIGATION_LIST_KASIR: {

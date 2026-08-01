@@ -69,6 +69,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     isCanUpdate,
     isCanBatalkanPosting,
     handleBack,
+    fromPengajuanBarangNotifikasi,
   } = useBarangKeluarDetail({ fromPengajuanBarang });
 
   return (
@@ -175,7 +176,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                 )}
 
                 {/* button verifikasi */}
-                {fromPengajuanBarang &&
+                {(fromPengajuanBarang || fromPengajuanBarangNotifikasi) &&
                   pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
                   dataBarangKeluarDetail?.data?.status ===
                     STATUS_INVENTORI_TYPE.PENDING && (
@@ -358,7 +359,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       />
 
       {/* modal pengajuan */}
-      {fromPengajuanBarang && (
+      {(fromPengajuanBarang || fromPengajuanBarangNotifikasi) && (
         <ModalFormulirVerifikasiOrPengajuan
           modalRef={modalFormulirVerifikasiOrPengajuan}
           handleCloseModal={handleCloseModalFormulirVerifikasiOrPengajuan}

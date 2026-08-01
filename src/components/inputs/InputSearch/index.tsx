@@ -7,6 +7,7 @@ import ErrorMessage from "../../messages/ErrorMessage";
 import type { InputSearchRef } from "../../../types/ref.type";
 
 type Props = {
+  value?: string;
   handleSearch: (value: string) => void;
   handleOnFocus?: () => void;
   handleClear?: () => void;
@@ -19,6 +20,7 @@ type Props = {
 const InputSearch = forwardRef<InputSearchRef, Props>(
   (
     {
+      value,
       handleSearch,
       handleOnFocus,
       handleClear,
@@ -33,32 +35,42 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
 
     const defaultValueSearch = searchParams.get("search") ?? "";
 
-    const [inputValue, setInputValue] = useState<string>(defaultValueSearch);
+    const [inputValue, setInputValue] = useState(defaultValueSearch);
 
+    // apakah controlled
+    const isControlled = value !== undefined;
+
+    // nilai yang ditampilkan
+    const displayValue = isControlled ? value : inputValue;
+
+    // hanya sinkronkan state internal jika uncontrolled
     useEffect(() => {
-      setInputValue(defaultValueSearch);
-    }, [defaultValueSearch]);
+      if (!isControlled) {
+        setInputValue(defaultValueSearch);
+      }
+    }, [defaultValueSearch, isControlled]);
 
+    // debounce search
     useEffect(() => {
       const timer = setTimeout(() => {
-        handleSearch(inputValue);
+        handleSearch(displayValue);
       }, 500);
 
       return () => clearTimeout(timer);
-    }, [inputValue, handleSearch]);
+    }, [displayValue, handleSearch]);
 
     const handleReset = () => {
-      setInputValue("");
+      if (!isControlled) {
+        setInputValue("");
+      }
+
+      handleSearch("");
       handleClear?.();
     };
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        handleReset,
-      }),
-      [],
-    );
+    useImperativeHandle(ref, () => ({
+      handleReset,
+    }));
 
     return (
       <div
@@ -72,6 +84,7 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
             Cari
           </span>
         )}
+
         <div
           className={cn(
             "w-full flex flex-row justify-start items-center",
@@ -96,12 +109,18 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
               autoComplete="off"
               minLength={1}
               maxLength={100}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              value={displayValue}
+              onChange={(e) => {
+                if (!isControlled) {
+                  setInputValue(e.target.value);
+                } else {
+                  handleSearch(e.target.value);
+                }
+              }}
               onFocus={handleOnFocus}
             />
 
-            {inputValue !== "" && (
+            {displayValue !== "" && (
               <button
                 type="button"
                 className="h-full rounded-tr-md rounded-br-md flex justify-center items-center"
@@ -112,7 +131,7 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
             )}
           </div>
         </div>
-        {/* error message */}
+
         {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
       </div>
     );

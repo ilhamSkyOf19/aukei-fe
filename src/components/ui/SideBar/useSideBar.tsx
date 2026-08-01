@@ -12,6 +12,7 @@ import useHasScroll from "../../../hooks/useHasScroll";
 import useConfirm from "../../../hooks/useConfirm";
 import { useStepStore } from "../../../stores/stepStore";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
+import { useNotifikasiStore } from "../../../stores/notifikasiStore";
 
 const useSideBar = () => {
   // get auth context
@@ -36,7 +37,10 @@ const useSideBar = () => {
     handleCancel,
   } = useConfirm();
 
-  const { resetStep } = useStepStore((state) => state);
+  const resetStep = useStepStore((state) => state.resetStep);
+
+  // get method in notifikasi store
+  const resetNotifikasi = useNotifikasiStore((state) => state.resetNotifikasi);
 
   const clearTransactionStorage = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
@@ -107,7 +111,6 @@ const useSideBar = () => {
     // check path keranjang
     if (pathname.includes("/dashboard/keranjang")) {
       // clear keranjang
-      console.log("ok");
       clearTransactionStorage();
     }
 
@@ -118,6 +121,15 @@ const useSideBar = () => {
     ) {
       // clear active cluster
       localStorage.removeItem(LOCAL_STORAGE_KEYS.ACTIVE_CLUSTER);
+    }
+
+    // clear from pengajuan barang
+    if (pathname.includes("pengajuan-barang") || pathname.includes("barang")) {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_PENGAJUAN_BARANG);
+    }
+
+    if (pathname.includes("notifikasi")) {
+      resetNotifikasi();
     }
 
     // clear transaction and steps

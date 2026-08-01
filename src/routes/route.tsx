@@ -29,6 +29,8 @@ import KreditDetailPage from "../pages/KreditDetailPage";
 import InstallmentsDetailPage from "../pages/InstallmentsDetailPage";
 import TransactionDetailPage from "../pages/TransactionDetailPage";
 import BookingByPelangganPage from "../pages/BookingByPelangganPage";
+import NotFoundPage from "../pages/404";
+import NotifikasiPage from "../pages/NotifikasiPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -97,14 +99,14 @@ const route = createBrowserRouter([
   },
 
   //   // ── 404 ─────────────────────────────────────────────────
-  //   {
-  //     path: "/404",
-  //     element: <NotFoundPage />,
-  //   },
-  //   {
-  //     path: "*",
-  //     element: <NotFoundPage />,
-  //   },
+  // {
+  //   path: "/404",
+  //   element: <NotFoundPage />,
+  // },
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
 
   //   //  ─── Forget Password───────────────────────────────────────────────────────────
   //   {
@@ -405,6 +407,10 @@ const route = createBrowserRouter([
             ),
           },
         ],
+      },
+      {
+        path: "notifikasi",
+        element: <NotifikasiPage />,
       },
     ],
   },

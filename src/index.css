@@ -25,6 +25,7 @@
   --color-custom-green: oklch(76.5% 0.177 163.223);
   --color-custom-yellow: oklch(82.8% 0.189 84.429);
   --color-custom-purple: oklch(71.4% 0.203 305.504);
+  --color-custom-red: oklch(58.6% 0.253 17.585);
 }
 
 @layer daisyui.l1.l2 {
@@ -221,6 +222,13 @@ input:-webkit-autofill:active {
   @layer daisyui.l1.l2 {
     background-color: var(--color-custom-blue) /* var(--color-primary) */;
     color: var(--color-custom-blue) /* var(--color-primary) */;
+  }
+}
+
+.status-custom-red {
+  @layer daisyui.l1.l2 {
+    background-color: var(--color-custom-red) /* var(--color-primary) */;
+    color: var(--color-custom-red) /* var(--color-primary) */;
   }
 }
 

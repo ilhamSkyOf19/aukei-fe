@@ -10,4 +10,5 @@ export const LOCAL_STORAGE_KEYS = {
   IS_UPDATE_KERANJANG: "is-update-keranjang",
   FROM_BOOKING: "from-booking",
   ACTIVE_CLUSTER: "active-cluster",
+  FROM_PENGAJUAN_BARANG: "from-pengajuan-barang",
 } as const;

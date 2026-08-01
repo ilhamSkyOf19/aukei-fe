@@ -149,11 +149,15 @@
   - [✅] Tampilkan informasi stok di modal formulir update barang masuk
   - [✅] Tampilkan informasi stok di modal formulir update barang keluar
 
-- [ ] Testing skenario barang masuk / keluar + pengajuan barang + notifikasi
+- [✅] Testing skenario barang masuk / keluar + pengajuan barang + notifikasi
 
-- [ ] Testing skenario notifikasi stok barang
+- [✅] Testing skenario notifikasi stok barang
 
-- [ ] Testing skenario notifikasi jatuh tempo
+- [✅] Testing skenario notifikasi jatuh tempo
+
+- [ ] Tambahkan state current pahtname untuk query infinity
+
+- [ ] Buat halaman notifikasi dan memperbaiki ui mobile
 
 - [ ] Sesuaikan data
 

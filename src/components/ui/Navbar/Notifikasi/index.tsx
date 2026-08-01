@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Bell, BellOff, ClockAlert, RefreshCw } from "lucide-react";
+import { ArrowRight, Bell, BellOff, RefreshCw } from "lucide-react";
 import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import { cn } from "../../../../utils/cn";
 import useNotifikasi from "./useNotifikasi";
@@ -57,6 +57,7 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
     isLoadingDataNotifikasiPengajuanBarang,
     dataNotifikasiGlobalPengajuanBarang,
     handleRedirectPengajuanBarangDetail,
+    handleRedirectDetail,
   } = useNotifikasi({ pengguna });
 
   return (
@@ -91,7 +92,7 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
       </button>
       <ul
         ref={ulRef}
-        className="dropdown-content overflow-hidden menu bg-base-100 rounded-box w-80 border border-base-content/10 md:w-130 shadow-2xl rounded-2xl md:rounded-xl mt-1.5  "
+        className="dropdown-content overflow-hidden menu bg-base-100 rounded-box w-80 border border-base-content/10 md:w-130 shadow-2xl rounded-2xl md:rounded-xl mt-1.5"
       >
         <li>
           <div className="w-full flex flex-row justify-between items-center hover:bg-transparent active:bg-transparent cursor-default h-full overflow-y-auto scrollbar-thumb-custom-secondary">
@@ -153,7 +154,7 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
           </div>
         </li>
 
-        <li className="w-full h-100 cursor-default">
+        <li className="w-full h-100">
           {isLoadingNotifikasiGlobal ||
           isLoadingDataNotifikasiProduk ||
           isLoadingDataNotifikasiTempo ||
@@ -285,6 +286,24 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
             </div>
           )}
         </li>
+
+        {/* button detail */}
+        {isChoose !== "semua" && (
+          <li>
+            <div className="w-full flex flex-row cursor-default justify-end items-end hover:bg-transparent active:bg-transparent border-t border-base-content/30 rounded-none">
+              <button
+                type="button"
+                className="flex flex-row justify-start items-center gap-2.5 hover:underline"
+                onClick={handleRedirectDetail}
+              >
+                <span className="text-[0.7rem] text-base-content">
+                  Lihat Semua
+                </span>
+                <ArrowRight className="size-4 text-base-content" />
+              </button>
+            </div>
+          </li>
+        )}
       </ul>
       {/* <div className="pointer-events-none w-full h-full flex flex-col justify-center items-center">
                 <DataEmpty

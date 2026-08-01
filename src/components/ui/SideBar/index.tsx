@@ -35,7 +35,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
       <div
         ref={divRef}
         className={cn(
-          "flex h-screen overflow-hidden overflow-y-auto flex-col items-start justify-between is-drawer-close:w-16 lg:is-drawer-open:w-50 is-drawer-open:w-70 bg-custom-secondary",
+          "flex h-screen overflow-hidden overflow-y-auto flex-col items-start justify-between is-drawer-close:w-15 lg:is-drawer-open:w-50 is-drawer-open:w-70 bg-custom-secondary",
           hasScroll && "is-drawer-close:w-18",
         )}
       >
@@ -87,7 +87,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                   >
                     <item.icon
                       className={cn(
-                        "my-1.5 inline-block size-6 text-base-content group-hover:text-custom-secondary transition-all duration-150 ease-in-out",
+                        "my-1.5 inline-block size-5 text-base-content group-hover:text-custom-secondary transition-all duration-150 ease-in-out",
                         item.link === "/dashboard"
                           ? pathname === "/dashboard"
                             ? "text-custom-secondary"

@@ -6,6 +6,7 @@ import { useRefresh } from "../../../../hooks/useRefresh";
 import { useClickOutside } from "../../../../hooks/useClickOutside";
 import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import { ROLE_INTERNAL_TYPE } from "../../../../types/constant.type";
+import { useNotifikasiStore } from "../../../../stores/notifikasiStore";
 
 const useNotifikasi = (params: {
   pengguna?: PayloadPenggunaInternalType | null;
@@ -29,6 +30,11 @@ const useNotifikasi = (params: {
 
   // navigate
   const navigate = useNavigate();
+
+  // get store notifikasi
+  const setSelectedNotifikasi = useNotifikasiStore(
+    (state) => state.setSelectedNotifikasi,
+  );
 
   // query notifikasi global
   const data = useQueries({
@@ -197,7 +203,24 @@ const useNotifikasi = (params: {
         dataNotifikasiGlobalPengajuanBarang?.length
       : undefined;
 
+  // handle redirect detail
+  const handleRedirectDetail = () => {
+    if (isChoose === "produk") {
+      setSelectedNotifikasi("produk");
+    } else if (isChoose === "tempo") {
+      setSelectedNotifikasi("tempo");
+    } else {
+      setSelectedNotifikasi("pengajuanBarang");
+    }
+
+    // close
+    setIsOpen(false);
+
+    navigate("/dashboard/notifikasi");
+  };
+
   return {
+    handleRedirectDetail,
     isChoose,
     handleSetIsChoose: setIsChoose,
     dataNotifikasiGlobalProduk,

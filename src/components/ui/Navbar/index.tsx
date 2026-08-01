@@ -1,11 +1,4 @@
-import {
-  Bell,
-  ChevronDown,
-  LogOut,
-  LucideBellOff,
-  PanelRightClose,
-  RefreshCw,
-} from "lucide-react";
+import { LogOut, PanelRightClose } from "lucide-react";
 import { type FC } from "react";
 import { useAuthStore } from "../../../stores/authStore";
 import { cn } from "../../../utils/cn";

@@ -13,9 +13,9 @@ import useStatistikDetail from "./useStatistikDetail";
 import { cn } from "../../../utils/cn";
 import DataBooking from "./DataBooking";
 import PantauStok from "./PantauStok";
-import ButtonRefresh from "./ButtonRefresh";
 import TopProduk from "./TopProduk";
 import TopPelanggan from "./TopPelanggan";
+import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
 
 const StatistikDetail = () => {
   const {

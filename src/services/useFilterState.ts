@@ -3,16 +3,16 @@ import type { RangeDateState } from "../hooks/useRangeDate";
 
 const useFilterState = () => {
   // filter sort
-  const [sort, setSort] = useState<string>("desc");
+  const [sort, setSort] = useState<string | undefined>(undefined);
 
   // filter limit
-  const [limit, setLimit] = useState<string>("8");
+  const [limit, setLimit] = useState<string | undefined>(undefined);
 
   // filter page
-  const [page, setPage] = useState<string>("1");
+  const [page, setPage] = useState<string | undefined>(undefined);
 
   // search
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string | undefined>(undefined);
 
   // sort qty
   const [sortQty, setSortQty] = useState<string | undefined>(undefined);
@@ -66,6 +66,20 @@ const useFilterState = () => {
     setKategori(value === "semua" ? undefined : value);
   };
 
+  // handle clear
+  const handleClear = () => {
+    setSort(undefined);
+    setLimit(undefined);
+    setPage(undefined);
+    setSearch("");
+    setKategori(undefined);
+    setSortQty(undefined);
+    setSortOmzet(undefined);
+    setStartDateEndDate(undefined);
+    setSortTotalTransaksi(undefined);
+    setSortTotalNilaiTransaksi(undefined);
+  };
+
   return {
     sort,
     setSort,
@@ -87,6 +101,7 @@ const useFilterState = () => {
     handleTotalNilaiTransaksi,
     sortTotalTransaksi,
     sortTotalNilaiTransaksi,
+    handleClear,
   };
 };
 
