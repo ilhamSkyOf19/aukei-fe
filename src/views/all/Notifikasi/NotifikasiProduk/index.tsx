@@ -11,42 +11,46 @@ type Props = {
   limit?: string;
   page?: string;
   handleRedirectDetail?: (id: number) => void;
+  windowSize?: "sm" | "md" | "lg";
 };
 
-const NotifikasiProduk = forwardRef<ChildRef, Props>((props, ref) => {
-  const { dataNotifikasiProduk, handleRefresh, isExistDataNotifikasiProduk } =
-    useNotifikasiProduk({ ...props });
+const NotifikasiProduk = forwardRef<ChildRef, Props>(
+  ({ windowSize, ...props }, ref) => {
+    const { dataNotifikasiProduk, handleRefresh, isExistDataNotifikasiProduk } =
+      useNotifikasiProduk({ ...props });
 
-  useImperativeHandle(ref, () => ({
-    refetchActive: handleRefresh,
-  }));
+    useImperativeHandle(ref, () => ({
+      refetchActive: handleRefresh,
+    }));
 
-  return (
-    <div className="w-full flex flex-col justify-start items-start gap-2.5">
-      {!isExistDataNotifikasiProduk ? (
-        dataNotifikasiProduk?.data?.data.map((item) => (
-          <CardNotifikasiProduk
-            key={item.id}
-            data={item}
-            {...(props.handleRedirectDetail && {
-              handleRedirectProdukDetail: (id: number) =>
-                props.handleRedirectDetail?.(id),
-            })}
-            large
-          />
-        ))
-      ) : (
-        <div className="w-full flex flex-row justify-center items-center">
-          <DataEmpty
-            iconData={BellOff}
-            title="Tidak Ada Notifikasi Produk"
-            description="Belum ada data notifikasi produk yang dapat ditampilkan saat ini, silahkan coba tekan tombol refresh"
-            xs
-          />
-        </div>
-      )}
-    </div>
-  );
-});
+    return (
+      <div className="w-full flex flex-col justify-start items-start gap-2.5">
+        {isExistDataNotifikasiProduk ? (
+          dataNotifikasiProduk?.data?.data.map((item) => (
+            <CardNotifikasiProduk
+              key={item.id}
+              data={item}
+              {...(props.handleRedirectDetail && {
+                handleRedirectProdukDetail: (id: number) =>
+                  props.handleRedirectDetail?.(id),
+              })}
+              large
+              windowSize={windowSize}
+            />
+          ))
+        ) : (
+          <div className="w-full flex flex-row justify-center items-center">
+            <DataEmpty
+              iconData={BellOff}
+              title="Tidak Ada Notifikasi Produk"
+              description="Belum ada data notifikasi produk yang dapat ditampilkan saat ini, silahkan coba tekan tombol refresh"
+              xs
+            />
+          </div>
+        )}
+      </div>
+    );
+  },
+);
 
 export default NotifikasiProduk;

@@ -10,6 +10,7 @@ import {
   useNotifikasiStore,
   type NotifikasiPilihanType,
 } from "../../../stores/notifikasiStore";
+import useSizeWindows from "../../../hooks/useSizeWindows";
 
 const pilihan: {
   key: NotifikasiPilihanType;
@@ -37,6 +38,9 @@ const pilihan: {
 const useNotifikasi = () => {
   // navigate
   const navigate = useNavigate();
+
+  // window size
+  const windowSize = useSizeWindows();
 
   // pengguna
   const pengguna = useAuthStore((state) => state.pengguna);
@@ -135,6 +139,8 @@ const useNotifikasi = () => {
     notifikasiProdukRef,
     handleRedirectDetail,
     pengguna,
+
+    windowSize,
   };
 };
 

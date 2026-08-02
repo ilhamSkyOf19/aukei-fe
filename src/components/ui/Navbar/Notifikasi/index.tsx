@@ -105,7 +105,7 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
             <button
               type="button"
               className={cn(
-                "w-12 cursor-pointer flex flex-col justify-center gap-1 items-center absolute disabled:opacity-50 top-1 right-2",
+                "w-12 cursor-pointer flex flex-col justify-center gap-1 items-center absolute disabled:opacity-50 top-1 right-0",
                 !isLoadingNotifikasiGlobal && "p-1",
               )}
               disabled={
@@ -122,7 +122,7 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
                 <>
                   <RefreshCw className="size-5 animate-spin text-base-content" />
 
-                  <span className="text-[0.625rem] skeleton skeleton-text">
+                  <span className="text-[0.625rem] hidden md:flex skeleton skeleton-text">
                     Refresh
                   </span>
                 </>
@@ -134,14 +134,14 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
         </li>
 
         {/* choose */}
-        <li className="mb-4 w-full ">
+        <li className="mb-4 w-full mt-2">
           <div className="w-full flex scrollbar-thin scrollbar-thumb-custom-secondary flex-row py-2.5 gap-2.5 justify-start overflow-x-auto items-start hover:bg-transparent active:bg-transparent cursor-default">
             {chooseList.map((item, index) => (
               <button
                 key={index}
                 type="button"
                 className={cn(
-                  "px-2.5 py-1.5 rounded-full text-base-content text-[0.7rem] border border-transparent transition-all duration-100 ease-in-out",
+                  "px-2.5 py-1.5 rounded-full text-base-content text-[0.7rem] border border-transparent transition-all duration-100 ease-in-out shrink-0",
                   isChoose === item.value
                     ? "bg-custom-secondary text-primary-white border "
                     : "bg-base-300 hover:border-custom-secondary ",
@@ -296,10 +296,8 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
                 className="flex flex-row justify-start items-center gap-2.5 hover:underline"
                 onClick={handleRedirectDetail}
               >
-                <span className="text-[0.7rem] text-base-content">
-                  Lihat Semua
-                </span>
-                <ArrowRight className="size-4 text-base-content" />
+                <span className="text-[0.7rem] text-info">Lihat Semua</span>
+                <ArrowRight className="size-4 text-info" />
               </button>
             </div>
           </li>

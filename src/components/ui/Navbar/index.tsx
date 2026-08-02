@@ -64,14 +64,16 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           <ButtonTheme />
 
           {/* button logout */}
-          <ButtonWithIcon
-            icon={LogOut}
-            label="Keluar"
-            bgColor="bg-error"
-            textColor="text-primary-white"
-            handleBtn={() => handleLogout()}
-            isLoading={isPendingLogout}
-          />
+          <div className="hidden md:flex">
+            <ButtonWithIcon
+              icon={LogOut}
+              label="Keluar"
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              handleBtn={() => handleLogout()}
+              isLoading={isPendingLogout}
+            />
+          </div>
         </div>
       </div>
     </nav>

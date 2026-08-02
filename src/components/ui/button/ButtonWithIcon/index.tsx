@@ -44,7 +44,7 @@ const ButtonWithIcon: FC<Props> = ({
       type={typeButton ?? "button"}
       disabled={disabled ?? isLoading}
       className={cn(
-        "flex-row justify-center items-center rounded-xl px-3 gap-2 h-10.5 md:h-9",
+        "flex-row shrink-0 justify-center items-center rounded-xl px-3 gap-2 h-10.5 md:h-9",
         classHidden ?? "flex",
         customWidth ?? "w-auto",
         bgColor ?? "bg-custom-primary",

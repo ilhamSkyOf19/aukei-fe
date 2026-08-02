@@ -25,16 +25,17 @@ const Notifikasi = () => {
     notifikasiProdukRef,
     handleRedirectDetail,
     pengguna,
+    windowSize,
   } = useNotifikasi();
 
   return (
     <div className="w-full">
-      <div className="w-full flex flex-row justify-start items-stretch gap-2.5 px-2 pt-2.5">
+      <div className="w-full flex flex-col md:flex-row justify-start items-stretch gap-2.5 px-2 pt-2.5">
         {/* pilihan */}
         <div className="flex-2 w-full flex flex-col justify-start items-start">
           <div
             className={cn(
-              "bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start sticky",
+              "bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start md:sticky ",
               pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? "top-14" : "top-0",
             )}
           >
@@ -50,14 +51,14 @@ const Notifikasi = () => {
             </div>
 
             {/* pilihan */}
-            <div className="w-full flex flex-col justify-start items-start gap-2.5">
+            <div className="w-full flex flex-row md:flex-col justify-start items-start gap-2.5 overflow-y-auto">
               {/* btn */}
               {pilihan.map((item, index) => (
                 <button
                   key={index}
                   type="button"
                   className={cn(
-                    "w-full h-12 rounded-2xl md:rounded-xl border flex flex-row justify-start items-center gap-2.5 px-2.5 transition-all duration-100 ease-in-out",
+                    "md:w-full h-12 rounded-2xl md:rounded-xl border flex flex-row justify-start items-center gap-2.5 px-2.5 transition-all duration-100 ease-in-out shrink-0 ",
                     selectedNotifikasi === item.key
                       ? "border-custom-secondary bg-custom-primary shadow-md text-custom-secondary"
                       : "border-base-content/10 hover:border-custom-secondary text-base-content hover:bg-custom-primary/10",
@@ -112,6 +113,7 @@ const Notifikasi = () => {
                 handleRedirectDetail: (id: number) =>
                   handleRedirectDetail({ id }),
               })}
+              windowSize={windowSize}
             />
           )}
 
@@ -134,6 +136,7 @@ const Notifikasi = () => {
               }
               setLimit={setLimit}
               setPage={setPage}
+              windowSize={windowSize}
             />
           )}
 
@@ -154,6 +157,7 @@ const Notifikasi = () => {
                   barangKeluarId: params.barangKeluarId,
                 })
               }
+              windowSize={windowSize}
             />
           )}
         </div>

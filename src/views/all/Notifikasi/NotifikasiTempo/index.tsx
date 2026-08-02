@@ -17,10 +17,11 @@ type Props = {
     pelangganId: number;
     tempoId: number;
   }) => void;
+  windowSize?: "sm" | "md" | "lg";
 };
 
 const NotifikasiTempo = forwardRef<ChildRef, Props>(
-  ({ setLimit, setPage, ...props }, ref) => {
+  ({ setLimit, setPage, windowSize, ...props }, ref) => {
     const { dataNotifikasiTempo, handleRefresh, isExistDataNotifikasiTempo } =
       useNotifikasiTempo({ ...props });
 
@@ -45,6 +46,7 @@ const NotifikasiTempo = forwardRef<ChildRef, Props>(
                     tempoId: params.tempoId,
                   })
                 }
+                windowSize={windowSize}
                 large
               />
             ))

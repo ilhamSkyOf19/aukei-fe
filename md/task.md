@@ -155,7 +155,9 @@
 
 - [✅] Testing skenario notifikasi jatuh tempo
 
-- [❗] Design Mobile
+- [ ] Design Mobile
+  - [✅] Halaman Statistik
+  - [ ] Halaman Riwayat
 
 - [ ] Tambahkan state current pahtname untuk query infinity
 
