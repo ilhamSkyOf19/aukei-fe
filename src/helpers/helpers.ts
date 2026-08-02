@@ -19,6 +19,8 @@ export const subtractMinutes = (date: Date, minutes: number): Date => {
 
 // format rp
 export const formatRupiah = (value: number | string): string => {
+  if (value === 0 || value === "0") return "Rp 0";
+
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",

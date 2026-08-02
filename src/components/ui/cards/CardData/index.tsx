@@ -18,16 +18,20 @@ import {
   QrCode,
 } from "lucide-react";
 import { cn } from "../../../../utils/cn";
-import { formatTanggalLengkap } from "../../../../helpers/formatDate";
+import {
+  formatTanggalLengkap,
+  formatTanggalPanjang,
+} from "../../../../helpers/formatDate";
 import {
   formatNumber,
   formatNumberPhone,
   formatRupiah,
+  formatRupiahShort,
+  getJatuhTempoText,
   getJatuhTempoTextColor,
 } from "../../../../helpers/helpers";
 import StatusTransaction from "../../StatusTransaction";
 import type { IPelangganType } from "../../../../models/pelanggan.model";
-import { differenceInDays } from "date-fns";
 
 type Props = {
   nomorReferensi?: string;
@@ -48,6 +52,13 @@ type Props = {
     jumlahCicilan?: number;
   };
   periode?: number;
+  titleTanggal?: Date;
+  tagihan?: number;
+  diBayar?: number;
+  sisa?: number;
+  withBg?: boolean;
+  disabled?: boolean;
+  statusAbsolute?: boolean;
 };
 const CardData: FC<Props> = ({
   nomorReferensi,
@@ -65,6 +76,13 @@ const CardData: FC<Props> = ({
   tempoIcon,
   progresCicilan,
   periode,
+  titleTanggal,
+  diBayar,
+  sisa,
+  tagihan,
+  withBg,
+  disabled,
+  statusAbsolute,
 }) => {
   const isTempo = metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO;
 
@@ -105,7 +123,15 @@ const CardData: FC<Props> = ({
   return (
     <button
       type="button"
-      className="w-full flex flex-row justify-between items-center p-2 rounded-2xl border border-base-content/10 hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out"
+      disabled={disabled}
+      className={cn(
+        "w-full flex flex-row justify-between items-center p-2 rounded-2xl border border-base-content/10 relative",
+        withBg &&
+          "bg-base-100 shadow-sm border border-transparent dark:border-base-content/10",
+        !disabled &&
+          "hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out",
+      )}
+      style={{ cursor: disabled ? "default" : "pointer" }}
       onClick={handleRedirectDetail}
     >
       <div className="flex flex-row justify-start items-center gap-2.5">
@@ -141,9 +167,28 @@ const CardData: FC<Props> = ({
         {/* data */}
         <div className="flex flex-col justify-start items-start gap-0.5">
           {/* kode referensi */}
-          <span className="text-[0.625rem] font-semibold text-base-content text-left">
-            {nomorReferensi ?? pelanggan?.nama}
-          </span>
+          {(nomorReferensi || pelanggan) && (
+            <span className="text-[0.625rem] font-semibold text-base-content text-left">
+              {nomorReferensi ?? pelanggan?.nama}
+            </span>
+          )}
+
+          {/* title tanggal */}
+          {titleTanggal && (
+            <>
+              <span className="text-[0.625rem] font-semibold text-base-content text-left">
+                {formatTanggalPanjang(titleTanggal)}
+              </span>
+              <span
+                className={cn(
+                  "text-[0.625rem] text-base-content text-left",
+                  getJatuhTempoTextColor(titleTanggal),
+                )}
+              >
+                {getJatuhTempoText(titleTanggal)}
+              </span>
+            </>
+          )}
 
           {/* date */}
           {tanggal && (
@@ -170,7 +215,6 @@ const CardData: FC<Props> = ({
                 <Dot className="text-base-content/80" />
               </>
             )}
-
             {/* total item */}
             {totalItem && (
               <>
@@ -187,7 +231,6 @@ const CardData: FC<Props> = ({
                 <Dot className="text-base-content/80 -ml-2" />
               </>
             )}
-
             {jatuhTempoTerdekat && (
               <>
                 <span
@@ -196,33 +239,79 @@ const CardData: FC<Props> = ({
                     getJatuhTempoTextColor(jatuhTempoTerdekat),
                   )}
                 >
-                  (
-                  {formatNumber(
-                    differenceInDays(jatuhTempoTerdekat, new Date()),
-                  )}{" "}
-                  Hari lagi )
+                  {getJatuhTempoText(jatuhTempoTerdekat)}
                 </span>
-
                 {/* dot */}
-                <Dot className="text-base-content/80" />
-
-                <span className={cn("font-medium text-[0.625rem]")}>
-                  {periode} Minggu
-                </span>
+                {periode && (
+                  <>
+                    <Dot className="text-base-content/80" />
+                    <span className={cn("font-medium text-[0.625rem]")}>
+                      {periode} Minggu
+                    </span>
+                  </>
+                )}
               </>
             )}
-
             {metodePembayaran && !noMetodePembayaran && (
               <span className="text-[0.625rem] capitalize text-base-content/80">
                 {metodePembayaran.toLowerCase()}
               </span>
             )}
+
+            {/* informasi kredit */}
+            {tagihan !== undefined &&
+              diBayar !== undefined &&
+              sisa !== undefined && (
+                <div className="flex flex-row justify-start items-start gap-2.5 mt-2.5">
+                  <div className="flex flex-col justify-start items-start gap-0.5 pr-2.5 border-r border-base-content/30">
+                    {/* label */}
+                    <span className="text-[0.625rem] text-base-content/70">
+                      Tagihan
+                    </span>
+                    {/* value */}
+                    <span className="text-[0.625rem] text-base-content font-medium">
+                      {tagihan > 500000
+                        ? formatRupiahShort(tagihan)
+                        : formatRupiah(tagihan)}
+                    </span>
+                  </div>
+                  <div className="flex flex-col justify-start items-start gap-0.5 pr-2.5 border-r border-base-content/30">
+                    {/* label */}
+                    <span className="text-[0.625rem] text-base-content/70">
+                      Di Bayar
+                    </span>
+                    {/* value */}
+                    <span className="text-[0.625rem] text-base-content font-medium">
+                      {diBayar > 500000
+                        ? formatRupiahShort(diBayar)
+                        : formatRupiah(diBayar)}
+                    </span>
+                  </div>
+                  <div className="flex flex-col justify-start items-start gap-0.5 ">
+                    {/* label */}
+                    <span className="text-[0.625rem] text-base-content/70">
+                      Sisa
+                    </span>
+                    {/* value */}
+                    <span className="text-[0.625rem] text-base-content font-medium">
+                      {sisa > 500000
+                        ? formatRupiahShort(sisa)
+                        : formatRupiah(sisa)}
+                    </span>
+                  </div>
+                </div>
+              )}
           </div>
         </div>
       </div>
 
       {/* total */}
-      <div className="flex flex-row justify-end items-center gap-2">
+      <div
+        className={cn(
+          "flex-row justify-end items-center gap-2",
+          statusAbsolute ? "absolute top-2.5 right-2.5" : "flex ",
+        )}
+      >
         <div className="flex flex-col justify-start items-end gap-2">
           {/* total */}
           {totalTransaksi && (
@@ -243,8 +332,8 @@ const CardData: FC<Props> = ({
           )}
         </div>
 
-        {/* icon */}
-        <ChevronRight className="size-4 text-base-content" />
+        {/* icon chevron */}
+        {!disabled && <ChevronRight className="size-4 text-base-content" />}
       </div>
     </button>
   );

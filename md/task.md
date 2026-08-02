@@ -157,7 +157,8 @@
 
 - [ ] Design Mobile
   - [✅] Halaman Statistik
-  - [ ] Halaman Riwayat
+  - [✅] Halaman Notifkasi
+  - [ ] Halaman Kredit
 
 - [ ] Tambahkan state current pahtname untuk query infinity
 

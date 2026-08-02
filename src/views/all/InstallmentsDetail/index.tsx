@@ -31,6 +31,7 @@ import NotCompatible from "../../../components/messages/NotCompatible";
 import AlertLabelList from "../../../components/messages/AlertLabelList";
 import SideBarRiwayatPembayaranTempo from "../../../components/SideBarRiwayatPembayaranTempo";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
+import CardData from "../../../components/ui/cards/CardData";
 
 const InstallmentsDetail = () => {
   const {
@@ -49,7 +50,8 @@ const InstallmentsDetail = () => {
 
   return (
     <div className="w-full">
-      {windowSize === "lg" ? (
+      {(windowSize === "lg" && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) ||
+      pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? (
         <div className="w-full px-2.5 pt-2.5 flex flex-col justify-start items-start">
           <ButtonBackText
             handleClick={() =>
@@ -60,7 +62,7 @@ const InstallmentsDetail = () => {
           <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5 mt-2.5">
             <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-2.5">
               {/* pelanggan */}
-              <div className="col-span-1 relative flex flex-row justify-start items-center gap-4 border p-2 rounded-2xl md:rounded-xl border-base-content/10">
+              <div className="col-span-2 md:col-span-1 relative flex flex-row justify-start items-center gap-4 border p-2 rounded-2xl md:rounded-xl border-base-content/10">
                 <div className="absolute top-2 right-2">
                   {/* status */}
                   <p
@@ -114,6 +116,7 @@ const InstallmentsDetail = () => {
                 value={dataInstallments?.data?.nomorTransaksi ?? ""}
                 caption="Nomor transaksi."
                 isLoading={isLoadingDataInstallments}
+                customColSpan="col-span-2 md:col-span-1"
               />
 
               <CardStatistik
@@ -189,11 +192,55 @@ const InstallmentsDetail = () => {
             </div>
           </div>
 
+          {/* DATA SM */}
+          <div className="w-full mt-2.5 flex flex-col justify-start items-start gap-2.5 md:hidden">
+            {/* title */}
+            <h3 className="w-full text-center my-2.5 font-medium text-lg">
+              Jadwal Cicilan
+            </h3>
+            {isLoadingDataInstallments ? (
+              Array.from({ length: 4 }, (_, i) => (
+                <div key={i} className="w-full h-14 skeleton" />
+              ))
+            ) : isExistDataInstallments ? (
+              dataInstallments?.data?.installments.map((item) => (
+                <CardData
+                  key={item.id}
+                  statusTempo={item.status}
+                  titleTanggal={item.jatuhTempo}
+                  tagihan={item.nominal}
+                  diBayar={item.diBayar}
+                  sisa={item.nominal - item.diBayar}
+                  statusAbsolute
+                  disabled
+                  tempoIcon
+                  withBg
+                />
+              ))
+            ) : (
+              <div className="w-full flex flex-col justify-center items-center">
+                <DataEmpty
+                  iconData={HandCoins}
+                  title="Data Transaksi Kredit Tidak Tersedia"
+                  description="Belum ada data transaksi kredit yang dapat ditampilkan saat ini"
+                />
+              </div>
+            )}
+
+            {/* button riwayat pembayaran */}
+            <SideBarRiwayatPembayaranTempo
+              jumlahCicilan={dataInstallments?.data?.jumlahCicilan ?? 0}
+              paymentTransactions={dataInstallments?.data?.paymentTransactions}
+              customBtnWidth="w-full"
+            />
+          </div>
+
+          {/* for lg */}
           <div className="w-full flex flex-row justify-between items-start gap-2.5">
             {/* informasi installment */}
             <div className="flex-2 flex flex-col justify-start items-start gap-2.5">
               {/* jadwal */}
-              <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5 flex-col justify-start items-start">
+              <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden md:flex mt-2.5 flex-col justify-start items-start">
                 <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
                   {/* head */}
                   <thead>
@@ -318,15 +365,17 @@ const InstallmentsDetail = () => {
                     )}
                   </tbody>
                 </table>
-                <div className="w-full flex flex-row justify-end items-end p-2.5 border-t border-base-content/10">
-                  {/* button */}
-                  <SideBarRiwayatPembayaranTempo
-                    jumlahCicilan={dataInstallments?.data?.jumlahCicilan ?? 0}
-                    paymentTransactions={
-                      dataInstallments?.data?.paymentTransactions
-                    }
-                  />
-                </div>
+                {windowSize !== "sm" && (
+                  <div className="w-full flex flex-row justify-end items-end p-2.5 border-t border-base-content/10">
+                    {/* button */}
+                    <SideBarRiwayatPembayaranTempo
+                      jumlahCicilan={dataInstallments?.data?.jumlahCicilan ?? 0}
+                      paymentTransactions={
+                        dataInstallments?.data?.paymentTransactions
+                      }
+                    />
+                  </div>
+                )}
               </div>
 
               {/* peringatan */}

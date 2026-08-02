@@ -214,7 +214,7 @@ const Kredit = () => {
           </div>
 
           {/* DATA SM */}
-          <div className="w-full mt-2.5 flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-2xl border border-transparent dark:border-base-content/10 p-2 gap-2.5 lg:hidden">
+          <div className="w-full mt-2.5 flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-2xl border border-transparent dark:border-base-content/10 p-2 gap-2.5 md:hidden">
             {isLoadingDataTempo ? (
               Array.from({ length: 4 }, (_, i) => (
                 <div key={i} className="w-full h-14 skeleton" />
@@ -246,7 +246,7 @@ const Kredit = () => {
           </div>
 
           {/* DATA LG */}
-          <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5">
+          <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden md:flex mt-2.5">
             <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
               {/* head */}
               <thead>

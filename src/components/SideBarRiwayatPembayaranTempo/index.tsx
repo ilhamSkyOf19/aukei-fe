@@ -27,11 +27,13 @@ type Props = {
     | "diBayar"
     | "kembalian"
   >[];
+  customBtnWidth?: string;
 };
 
 const SideBarRiwayatPembayaranTempo: FC<Props> = ({
   jumlahCicilan,
   paymentTransactions,
+  customBtnWidth,
 }) => {
   // call use
   const {
@@ -58,7 +60,10 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
         <button
           type="button"
           onClick={handleOpen}
-          className="drawer-button h-10 md:h-10.5 rounded-xl bg-custom-primary shadow-xs flex flex-row justify-start items-center gap-2 px-3 hover-overlay"
+          className={cn(
+            "drawer-button h-10 md:h-10.5 rounded-xl bg-custom-primary shadow-xs flex flex-row justify-center items-center gap-2 px-3 hover-overlay",
+            customBtnWidth ?? "w-auto",
+          )}
         >
           <History className="size-4 text-custom-secondary" />
           <span className="text-xs font-medium text-custom-secondary">
