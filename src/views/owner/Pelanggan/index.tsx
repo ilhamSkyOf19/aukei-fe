@@ -1,16 +1,4 @@
-import {
-  Check,
-  Clock,
-  Eye,
-  Hourglass,
-  PackagePlus,
-  PackageSearch,
-  Pencil,
-  Phone,
-  ShoppingBag,
-  Trash2,
-  type LucideIcon,
-} from "lucide-react";
+import { PackagePlus, Trash2 } from "lucide-react";
 import Toast from "../../../components/messages/Toast";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import { TOAST_CONFIG_PELANGGAN } from "../../../types/toast.type";
@@ -25,11 +13,10 @@ import usePelanggan from "./usePelanggan";
 import { formatNumber, formatNumberPhone } from "../../../helpers/helpers";
 import ModalAlert from "../../../components/modals/ModalAlert";
 import AlertLabel from "../../../components/messages/AlertLabel";
-import Avatar from "../../../components/ui/Avatar";
-import type { FC } from "react";
 import ButtonUpdateTable from "../../../components/ui/button/ButtonUpdateTable";
 import ButtonDeleteTable from "../../../components/ui/button/ButtonDeleteTable";
 import ButtonDetailTable from "../../../components/ui/button/ButtonDetailTable";
+import CardPelanggan from "../../../components/ui/cards/CardPelanggan";
 
 const Pelanggan = () => {
   // call use
@@ -137,132 +124,19 @@ const Pelanggan = () => {
             </>
           ) : isExistDataPelanggan ? (
             dataPelanggan?.data?.data.map((pelanggan) => (
-              <div
-                key={pelanggan.id}
-                className="w-full flex flex-col justify-start items-start bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 p-4"
-              >
-                {/* content 1 */}
-                <div className="w-full flex flex-row justify-between items-center pb-4 borde border-b border-base-content/10">
-                  <div className="flex flex-1 justify-start items-start gap-4">
-                    <Avatar nama={pelanggan?.nama} index={pelanggan.id} />
-                    <div className="flex flex-col justify-start items-start gap-1">
-                      {/* name */}
-                      <span className="text-base-content font-semibold text-sm">
-                        {pelanggan?.nama}
-                      </span>
-                      {/* no telp */}
-                      <div className="w-full flex flex-row justify-start items-center gap-2">
-                        <Phone className="size-3 text-base-content/80" />
-                        <span className="text-base-content/80 text-xs">
-                          {formatNumberPhone(pelanggan?.noWa)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="hidden md:flex flex-1 flex-row justify-end items-center gap-12">
-                    <Aksi
-                      handleRedirectRiwayatTransaksiDetail={
-                        handleRedirectRiwayatTransaksiDetail
-                      }
-                      handelUpdateIsActive={handelUpdateIsActive}
-                      handleShowModalDelete={handleShowModalDelete}
-                      handleShowModalFormulirPelanggan={
-                        handleShowModalFormulirPelanggan
-                      }
-                      pelanggan={pelanggan}
-                      isLoadingAktif={
-                        isPendingDelete &&
-                        variablesUpdateIsActive?.id === pelanggan.id
-                      }
-                      isPendingDelete={isPendingDelete}
-                      totalTransaction={pelanggan?.totalTransaction}
-                    />
-                  </div>
-                </div>
-
-                {/* content 2 */}
-                <div className="w-full flex flex-col md:flex-row justify-start items-start gap-2 py-2 border-b border-base-content/10 md:border-none">
-                  {/* total transaksi */}
-                  <LabelCardPelanggan
-                    label="Total Transaksi"
-                    icon={{
-                      icon: ShoppingBag,
-                      bgColor: "bg-purple-100",
-                      iconColor: "text-purple-400",
-                    }}
-                    value={pelanggan.totalTransaction}
-                  />
-
-                  {/* kredit selesai */}
-                  <LabelCardPelanggan
-                    label="Kredit Selesai"
-                    icon={{
-                      icon: Check,
-                      bgColor: "bg-emerald-100",
-                      iconColor: "text-emerald-400",
-                    }}
-                    value={pelanggan.kredit?.selesai}
-                  />
-
-                  {/* kredit berjalan */}
-                  <LabelCardPelanggan
-                    label="Kredit Berjalan"
-                    icon={{
-                      icon: Clock,
-                      bgColor: "bg-amber-100",
-                      iconColor: "text-amber-400",
-                    }}
-                    value={pelanggan.kredit?.berjalan}
-                  />
-
-                  {/* kredit terlambat */}
-                  <LabelCardPelanggan
-                    label="Kredit Terlambat"
-                    icon={{
-                      icon: Hourglass,
-                      bgColor: "bg-rose-100",
-                      iconColor: "text-rose-400",
-                    }}
-                    value={pelanggan.kredit?.terlambat}
-                  />
-
-                  {/* booking*/}
-                  <LabelCardPelanggan
-                    label="Booking"
-                    icon={{
-                      icon: PackageSearch,
-                      bgColor: "bg-amber-100",
-                      iconColor: "text-amber-400",
-                    }}
-                    value={pelanggan.booking}
-                  />
-                </div>
-
-                {/* content 3 */}
-                <div className="w-full pt-2 md:hidden flex flex-row justify-between items-center">
-                  {/* aksi active */}
-                  <div className="flex-1 flex flex-row justify-start items-center gap-4">
-                    <Aksi
-                      handleRedirectRiwayatTransaksiDetail={
-                        handleRedirectRiwayatTransaksiDetail
-                      }
-                      handelUpdateIsActive={handelUpdateIsActive}
-                      handleShowModalDelete={handleShowModalDelete}
-                      handleShowModalFormulirPelanggan={
-                        handleShowModalFormulirPelanggan
-                      }
-                      pelanggan={pelanggan}
-                      isLoadingAktif={
-                        isPendingDelete &&
-                        variablesUpdateIsActive?.id === pelanggan.id
-                      }
-                      isPendingDelete={isPendingDelete}
-                      totalTransaction={pelanggan?.totalTransaction}
-                    />
-                  </div>
-                </div>
-              </div>
+              <CardPelanggan
+                data={pelanggan}
+                handelUpdateIsActive={handelUpdateIsActive}
+                handleRedirectRiwayatTransaksiDetail={
+                  handleRedirectRiwayatTransaksiDetail
+                }
+                handleShowModalDelete={handleShowModalDelete}
+                handleShowModalFormulirPelanggan={
+                  handleShowModalFormulirPelanggan
+                }
+                variablesUpdateIsActive={variablesUpdateIsActive}
+                isPendingDelete={isPendingDelete}
+              />
             ))
           ) : (
             <div className="w-full h-full flex flex-col justify-center items-center">
@@ -583,169 +457,4 @@ const Pelanggan = () => {
   );
 };
 
-type LabelCardPelangganProps = {
-  icon: {
-    icon: LucideIcon;
-    bgColor: string;
-    iconColor: string;
-  };
-  label: string;
-  value?: number;
-};
-
-// label card pelanggan
-const LabelCardPelanggan: FC<LabelCardPelangganProps> = ({
-  icon,
-  label,
-  value,
-}) => {
-  return (
-    <div className="w-full md:flex-1 flex flex-row md:flex-col justify-between md:justify-start items-center md:items-start shrink-0">
-      {/* icon and label */}
-      <div className="flex-1 flex flex-row justify-start items-center gap-2.5">
-        {/* icon */}
-        <div
-          className={cn(
-            "w-8.5 h-8.5 rounded-lg flex justify-center items-center",
-            icon.bgColor,
-          )}
-        >
-          <icon.icon className={cn("size-4", icon.iconColor)} />
-        </div>
-
-        {/* label */}
-        <div className="flex flex-col justify-start items-start gap-1">
-          <p className="text-xs font-medium text-base-content">{label}</p>
-
-          <div className="flex-1 md:flex flex-row justify-end items-center hidden">
-            <span className="text-xs text-medium text-base-content">
-              {value ? (
-                formatNumber(value)
-              ) : (
-                <span className="text-base-content/50 text-xs italic font-light">
-                  Kosong
-                </span>
-              )}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* value */}
-      <div className="flex-1 flex flex-row justify-end items-center md:hidden">
-        <span className="text-xs text-medium text-base-content">
-          {value ? (
-            formatNumber(value)
-          ) : (
-            <span className="text-base-content/50 text-xs italic font-light">
-              Kosong
-            </span>
-          )}
-        </span>
-      </div>
-    </div>
-  );
-};
-
-type Props = {
-  isLoadingAktif?: boolean;
-  pelanggan: {
-    id: number;
-    nama: string;
-    noWa: string;
-    isActive: boolean;
-  };
-  isPendingDelete?: boolean;
-  totalTransaction?: number;
-  handelUpdateIsActive: (params: { id: number; status: boolean }) => void;
-  handleShowModalFormulirPelanggan: (id: number) => void;
-  handleShowModalDelete: (
-    id?: number,
-    data?: {
-      nama: string;
-    },
-  ) => void;
-  handleRedirectRiwayatTransaksiDetail: (id: number) => void;
-};
-// aksi
-const Aksi: FC<Props> = ({
-  isLoadingAktif,
-  totalTransaction,
-  isPendingDelete,
-  pelanggan,
-  handelUpdateIsActive,
-  handleShowModalFormulirPelanggan,
-  handleShowModalDelete,
-  handleRedirectRiwayatTransaksiDetail,
-}) => {
-  return (
-    <>
-      {/* label */}
-      <div className=" flex flex-row justify-start items-center gap-4">
-        <span className="text-xs font-medium text-base-content">Aktif</span>
-
-        {/* input */}
-        {isLoadingAktif ? (
-          <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
-            <div className="loading loading-xs" />
-          </div>
-        ) : (
-          <input
-            type="checkbox"
-            checked={pelanggan.isActive}
-            className="toggle toggle-success toggle-sm"
-            onChange={() =>
-              handelUpdateIsActive({
-                id: pelanggan.id,
-                status: !pelanggan.isActive,
-              })
-            }
-          />
-        )}
-      </div>
-
-      {/* aksi */}
-      <div className="flex flex-1 flex-row justify-end items-center gap-2">
-        {/* button redirect */}
-        <button
-          type="button"
-          className="w-8 h-8 flex justify-center items-center rounded-lg hover-overlay bg-custom-primary/50"
-          onClick={() => handleRedirectRiwayatTransaksiDetail(pelanggan.id)}
-        >
-          <Eye className="text-custom-secondary size-4" />
-        </button>
-        {/* button update */}
-        <button
-          type="button"
-          className="w-8 h-8 flex justify-center items-center rounded-lg hover-overlay bg-blue-100"
-          onClick={() => handleShowModalFormulirPelanggan(pelanggan.id)}
-        >
-          <Pencil className="text-blue-400 size-4" />
-        </button>
-        {/* button delete */}
-        <button
-          type="button"
-          disabled={(totalTransaction ?? 0) > 0 || isPendingDelete}
-          className="w-8 h-8 disabled:opacity-50 not-disabled:hover-overlay flex justify-center items-center rounded-lg bg-rose-100"
-          style={{
-            cursor: (totalTransaction ?? 0) > 0 ? "not-allowed" : "pointer",
-          }}
-          onClick={() => {
-            if ((totalTransaction ?? 0) > 0) return;
-
-            handleShowModalDelete(pelanggan.id, {
-              nama: pelanggan.nama,
-            });
-          }}
-        >
-          {isPendingDelete ? (
-            <div className="loading loading-xs" />
-          ) : (
-            <Trash2 className="text-rose-400 size-4" />
-          )}
-        </button>
-      </div>
-    </>
-  );
-};
 export default Pelanggan;

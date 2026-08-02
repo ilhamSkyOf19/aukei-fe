@@ -7,6 +7,7 @@ import {
   PackageMinus,
   PackageX,
   Receipt,
+  ReceiptText,
   ShoppingBag,
   TrendingDown,
   TrendingUp,
@@ -50,19 +51,16 @@ const useDataStatistik = (params: {
       key: "kasMasuk",
       category: "penjualan",
       icon: {
-        icon: Receipt,
+        icon: ReceiptText,
         bgColor: "bg-blue-100",
         iconColor: "text-blue-400",
       },
       label: windowSize === "sm" ? "Kas Masuk" : "Total Kas Masuk",
       value:
         windowSize === "sm"
-          ? formatNumberK(statistik?.data?.totalKasMasuk.total ?? 0) || "0"
-          : formatNumber(statistik?.data?.totalKasMasuk.total ?? 0) || "0",
-      caption:
-        windowSize !== "sm"
-          ? "Jumlah kas masuk berdasarkan tanggal"
-          : undefined,
+          ? formatRupiahShort(statistik?.data?.totalKasMasuk.total ?? 0) || "0"
+          : formatRupiah(statistik?.data?.totalKasMasuk.total ?? 0) || "0",
+      caption: "Jumlah kas masuk berdasarkan tanggal",
       detail: {
         ...(statistik?.data?.totalKasMasuk?.trend === "down" && {
           down: statistik?.data?.totalKasMasuk?.persentase,
@@ -75,6 +73,7 @@ const useDataStatistik = (params: {
         }),
       },
     },
+
     {
       key: "omzetSelesai",
       category: "penjualan",
@@ -88,10 +87,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatRupiahShort(statistik?.data?.totalOmzetSelesai.total ?? 0)
           : formatRupiah(statistik?.data?.totalOmzetSelesai.total ?? 0),
-      caption:
-        windowSize !== "sm"
-          ? "Total omzet dari transaksi yang sudah selesai"
-          : undefined,
+      caption: "Total omzet dari transaksi yang sudah selesai",
       detail: {
         ...(statistik?.data?.totalOmzetSelesai?.trend === "down" && {
           down: statistik?.data?.totalOmzetSelesai?.persentase,
@@ -118,10 +114,7 @@ const useDataStatistik = (params: {
           ? formatRupiahShort(statistik?.data?.totalLabaSelesai.total ?? 0)
           : formatRupiah(statistik?.data?.totalLabaSelesai.total ?? 0),
       minus: (statistik?.data?.totalLabaSelesai?.total ?? 0) < 0,
-      caption:
-        windowSize !== "sm"
-          ? "Total keuntungan dari transaksi yang sudah selesai"
-          : undefined,
+      caption: "Total keuntungan dari transaksi yang sudah selesai",
       withAlert: "Data Laba sudah dikurangi kerugian",
       detail: {
         ...(statistik?.data?.totalLabaSelesai?.trend === "down" && {
@@ -150,8 +143,7 @@ const useDataStatistik = (params: {
             "0"
           : formatNumber(statistik?.data?.totalTransaksiSelesai.total ?? 0) ||
             "0",
-      caption:
-        windowSize !== "sm" ? "Jumlah transaksi yang sudah selesai" : undefined,
+      caption: "Jumlah transaksi yang sudah selesai",
       detail: {
         ...(statistik?.data?.totalTransaksiSelesai?.trend === "down" && {
           down: statistik?.data?.totalTransaksiSelesai?.persentase,
@@ -179,10 +171,7 @@ const useDataStatistik = (params: {
               statistik?.data?.rataRataTransaksiSelesai.total ?? 0,
             )
           : formatRupiah(statistik?.data?.rataRataTransaksiSelesai.total ?? 0),
-      caption:
-        windowSize !== "sm"
-          ? "Rata-rata nilai transaksi yang sudah selesai"
-          : undefined,
+      caption: "Rata-rata nilai transaksi yang sudah selesai",
       detail: {
         ...(statistik?.data?.rataRataTransaksiSelesai?.trend === "down" && {
           down: statistik?.data?.rataRataTransaksiSelesai?.persentase,
@@ -208,10 +197,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatRupiahShort(statistik?.data?.totalModalSelesai.total ?? 0)
           : formatRupiah(statistik?.data?.totalModalSelesai.total ?? 0),
-      caption:
-        windowSize !== "sm"
-          ? "Total biaya modal untuk transaksi selesai"
-          : undefined,
+      caption: "Total biaya modal untuk transaksi selesai",
       detail: {
         ...(statistik?.data?.totalModalSelesai?.trend === "down" && {
           down: statistik?.data?.totalModalSelesai?.persentase,
@@ -239,10 +225,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatRupiahShort(statistik?.data?.totalPiutang.total ?? 0)
           : formatRupiah(statistik?.data?.totalPiutang.total ?? 0),
-      caption:
-        windowSize !== "sm"
-          ? "Total nilai piutang yang belum dibayar"
-          : undefined,
+      caption: "Total nilai piutang yang belum dibayar",
     },
     {
       key: "bookingAktif",
@@ -257,10 +240,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatNumberK(statistik?.data?.totalBookingAktif.total ?? 0) || "0"
           : formatNumber(statistik?.data?.totalBookingAktif.total ?? 0) || "0",
-      caption:
-        windowSize !== "sm"
-          ? "Jumlah transaksi booking yang masih aktif"
-          : undefined,
+      caption: "Jumlah transaksi booking yang masih aktif",
     },
     {
       key: "kerugian",
@@ -275,8 +255,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatRupiahShort(statistik?.data?.totalKerugian.total ?? 0)
           : formatRupiah(statistik?.data?.totalKerugian.total ?? 0),
-      caption:
-        windowSize !== "sm" ? "Total kerugian dari barang keluar" : undefined,
+      caption: "Total kerugian dari barang keluar",
       detail: {
         ...(statistik?.data?.totalKerugian?.trend === "down" && {
           down: statistik?.data?.totalKerugian?.persentase,
@@ -309,8 +288,7 @@ const useDataStatistik = (params: {
               statistik?.data?.totalPotensiOmzetBooking.total ?? 0,
             )
           : formatRupiah(statistik?.data?.totalPotensiOmzetBooking.total ?? 0),
-      caption:
-        windowSize !== "sm" ? "Potensi omzet dari seluruh booking" : undefined,
+      caption: "Potensi omzet dari seluruh booking",
     },
     {
       key: "sisaTagihanBooking",
@@ -327,10 +305,7 @@ const useDataStatistik = (params: {
               statistik?.data?.totalSisaTagihanBooking.total ?? 0,
             )
           : formatRupiah(statistik?.data?.totalSisaTagihanBooking.total ?? 0),
-      caption:
-        windowSize !== "sm"
-          ? "Total sisa tagihan booking yang belum dibayar"
-          : undefined,
+      caption: "Total sisa tagihan booking yang belum dibayar",
     },
 
     // ==== 📦 INVENTORI ====
@@ -347,8 +322,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatNumberK(statistik?.data?.totalItemTerjual.total ?? 0)
           : formatNumber(statistik?.data?.totalItemTerjual.total ?? 0),
-      caption:
-        windowSize !== "sm" ? "Total item yang berhasil terjual" : undefined,
+      caption: "Total item yang berhasil terjual",
     },
 
     // ==== SISANYA (tidak disebutkan di list, tetap disimpan di akhir) ====
@@ -365,10 +339,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatNumberK(statistik?.data?.totalProdukTerjual.total ?? 0)
           : formatNumber(statistik?.data?.totalProdukTerjual.total ?? 0),
-      caption:
-        windowSize !== "sm"
-          ? "Jumlah produk unik yang berhasil terjual"
-          : undefined,
+      caption: "Jumlah produk unik yang berhasil terjual",
     },
     {
       key: "barangRusak",
@@ -383,7 +354,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatNumberK(statistik?.data?.totalBarangRusak.total ?? 0)
           : formatNumber(statistik?.data?.totalBarangRusak.total ?? 0),
-      caption: windowSize !== "sm" ? "Total barang rusak" : undefined,
+      caption: "Total barang rusak",
     },
     {
       key: "barangHilang",
@@ -398,7 +369,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatNumberK(statistik?.data?.totalBarangHilang.total ?? 0)
           : formatNumber(statistik?.data?.totalBarangHilang.total ?? 0),
-      caption: windowSize !== "sm" ? "Total barang hilang" : undefined,
+      caption: "Total barang hilang",
     },
     {
       key: "dpBooking",
@@ -413,10 +384,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatRupiahShort(statistik?.data?.totalDpBooking.total ?? 0)
           : formatRupiah(statistik?.data?.totalDpBooking.total ?? 0),
-      caption:
-        windowSize !== "sm"
-          ? "Total DP yang sudah diterima dari booking"
-          : undefined,
+      caption: "Total DP yang sudah diterima dari booking",
     },
     {
       key: "produkBooking",
@@ -431,8 +399,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatNumberK(statistik?.data?.totalProdukBooking.total ?? 0)
           : formatNumber(statistik?.data?.totalProdukBooking.total ?? 0),
-      caption:
-        windowSize !== "sm" ? "Jumlah produk unik pada booking" : undefined,
+      caption: "Jumlah produk unik pada booking",
     },
     {
       key: "itemBooking",
@@ -447,7 +414,7 @@ const useDataStatistik = (params: {
         windowSize === "sm"
           ? formatNumberK(statistik?.data?.totalItemBooking.total ?? 0)
           : formatNumber(statistik?.data?.totalItemBooking.total ?? 0),
-      caption: windowSize !== "sm" ? "Jumlah item pada booking" : undefined,
+      caption: "Jumlah item pada booking",
     },
   ];
   return { dataStatistik };

@@ -157,7 +157,7 @@ const GrafikPieMetodePembayaran: FC<Props> = ({ isAnimationActive = true }) => {
           )}
         </div>
 
-        <div className="flex-2 h-full flex px-4 flex-col justify-center items-center gap-1 md:gap-4">
+        <div className="flex-3  md:flex-2 h-full flex flex-col justify-center items-center gap-1 md:gap-4">
           {isLoading ? (
             <>
               <div className="w-full h-4 skeleton" />

@@ -234,19 +234,21 @@ export interface ResponseStatistikKebutuhanBarang {
   siapKirim: boolean;
 }
 
+// statistik kebutuhan barang type
+export interface StatistikKebutuhanBarangType {
+  id: number;
+  nama: string;
+  kode: string;
+  stokBooking: number;
+  stokTersedia: number;
+  totalKebutuhanStok: number;
+  img: string;
+  kategori: string;
+  stokMinimum: number;
+  isActive: boolean;
+}
 export interface ResponseStatistikKebutuhanBarangWithMetaType {
-  data: {
-    id: number;
-    nama: string;
-    kode: string;
-    stokBooking: number;
-    stokTersedia: number;
-    totalKebutuhanStok: number;
-    img: string;
-    kategori: string;
-    stokMinimum: number;
-    isActive: boolean;
-  }[];
+  data: StatistikKebutuhanBarangType[];
   meta: MetaType;
 }
 

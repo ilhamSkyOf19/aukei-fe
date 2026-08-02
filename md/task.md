@@ -155,6 +155,8 @@
 
 - [✅] Testing skenario notifikasi jatuh tempo
 
+- [❗] Design Mobile
+
 - [ ] Tambahkan state current pahtname untuk query infinity
 
 - [ ] Buat halaman notifikasi dan memperbaiki ui mobile

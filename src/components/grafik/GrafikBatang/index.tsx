@@ -70,8 +70,15 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
           </h3>
 
           <span className="text-xs font-medium text-base-content/50">
-            Grafik {isChoose} terjual selama periode{" "}
-            {formatTanggalPanjang(startDate)} - {formatTanggalPanjang(endDate)}
+            {windowSize === "sm"
+              ? `
+              ${formatTanggalPanjang(startDate)}${" "}
+              - ${formatTanggalPanjang(endDate)}
+              `
+              : `
+              Grafik ${isChoose} terjual selama periode ${formatTanggalPanjang(startDate)}${" "}
+              - ${formatTanggalPanjang(endDate)}
+              `}
           </span>
         </div>
 

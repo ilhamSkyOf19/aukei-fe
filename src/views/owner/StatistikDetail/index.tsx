@@ -33,10 +33,11 @@ const StatistikDetail = () => {
 
   return (
     <div className="w-full">
-      <div className="w-full flex flex-row justify-start items-stretch gap-2.5 px-2 pt-2.5">
+      <div className="w-full flex lg:flex-row flex-col justify-start items-stretch gap-2.5 px-2 pt-2.5">
         {/* pilihan */}
         <div className="flex-1 w-full flex flex-col justify-start items-start">
-          <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start sticky top-14 ">
+          {/* PERBAIKI CARD FILTER NYA  */}
+          <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start lg:sticky top-14 ">
             {/* title */}
             <div className="flex flex-col justify-start items-start gap-0.5">
               <h3 className="text-sm font-semibold text-base-content">
@@ -49,14 +50,14 @@ const StatistikDetail = () => {
             </div>
 
             {/* pilihan */}
-            <div className="w-full flex flex-col justify-start items-start gap-2.5">
+            <div className="w-full flex flex-row overflow-y-auto lg:flex-col justify-start items-start gap-2.5">
               {/* btn */}
               {pilihan.map((item, index) => (
                 <button
                   key={index}
                   type="button"
                   className={cn(
-                    "w-full h-12 rounded-2xl md:rounded-xl border flex flex-row justify-start items-center gap-2.5 px-2.5 transition-all duration-100 ease-in-out",
+                    "lg:w-full h-12 rounded-2xl md:rounded-xl border flex flex-row justify-start items-center gap-2.5 px-2.5 transition-all duration-100 ease-in-out shrink-0",
                     selectedLaporan === item.key
                       ? "border-custom-secondary bg-custom-primary shadow-md text-custom-secondary"
                       : "border-base-content/10 hover:border-custom-secondary text-base-content hover:bg-custom-primary/10",
@@ -166,30 +167,45 @@ const StatistikDetail = () => {
 
                       {/* grafik pie */}
                       <div className="w-full gap-2.5 flex flex-col justify-between items-start md:gap-2.5">
-                        <div className="w-full flex flex-row justify-start items-start gap-2.5">
+                        <div className="w-full flex flex-col lg:flex-row justify-start items-stretch gap-2.5">
                           {selectedLaporan === "semua" && (
                             <GrafikPieMetodePembayaran />
                           )}
 
-                          {selectedLaporan === "semua" && (
-                            <StatistikTopProduk
-                              rangeDate={{
-                                startDate,
-                                endDate,
-                              }}
-                            />
-                          )}
+                          <div className="w-full lg:flex-1 flex flex-row items-stretch justify-start gap-2.5">
+                            {selectedLaporan === "semua" && (
+                              <StatistikTopProduk
+                                rangeDate={{
+                                  startDate,
+                                  endDate,
+                                }}
+                                customHeight="md:h-full"
+                              />
+                            )}
+
+                            {windowSize === "md" &&
+                              selectedLaporan === "semua" && (
+                                <>
+                                  <StatistikTopPelanggan
+                                    rangeDate={{ startDate, endDate }}
+                                    customHeight="h-full"
+                                  />
+                                </>
+                              )}
+                          </div>
                         </div>
 
-                        <div className="lg:flex-1 w-full flex flex-col md:flex-row justify-between items-start gap-2.5 md:gap-4 md:h-90 h-auto">
-                          {selectedLaporan === "semua" && (
-                            <>
-                              <StatistikTopPelanggan
-                                rangeDate={{ startDate, endDate }}
-                              />
-                            </>
-                          )}
-                        </div>
+                        {windowSize !== "md" && (
+                          <div className="hidden lg:flex-1 w-full lg:flex flex-col md:flex-row justify-between items-start gap-2.5 md:gap-4 md:h-90 h-auto">
+                            {selectedLaporan === "semua" && (
+                              <>
+                                <StatistikTopPelanggan
+                                  rangeDate={{ startDate, endDate }}
+                                />
+                              </>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </>
                   )}

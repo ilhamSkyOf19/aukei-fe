@@ -3,14 +3,16 @@ import { formatNumberK, formatRupiahShort } from "../../../helpers/helpers";
 import { ArrowRight, CircleAlert, PackageX } from "lucide-react";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import useStatistikTopProduk from "../../../hooks/useStatistikTopProduk";
+import { cn } from "../../../utils/cn";
 
 type Props = {
   rangeDate: {
     startDate: string;
     endDate: string;
   };
+  customHeight?: string;
 };
-const StatistikTopProduk: FC<Props> = ({ rangeDate }) => {
+const StatistikTopProduk: FC<Props> = ({ rangeDate, customHeight }) => {
   const {
     dataTopProduk,
     isLoading,
@@ -21,7 +23,12 @@ const StatistikTopProduk: FC<Props> = ({ rangeDate }) => {
     customStartDateEndDate: rangeDate,
   });
   return (
-    <div className="md:flex-1 md:h-full flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 md:p-2.5 md:px-0 h-90">
+    <div
+      className={cn(
+        "md:flex-1 md:h-full flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 md:p-2.5 md:px-0",
+        customHeight ?? "h-90",
+      )}
+    >
       {/* header */}
       <div className="w-full flex flex-row justify-start items-start mb-2 px-2.5 gap-2">
         <div className="w-full flex flex-col justify-start items-start gap-0.5">

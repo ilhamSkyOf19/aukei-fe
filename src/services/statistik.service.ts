@@ -12,7 +12,6 @@ import type {
 } from "../models/statistik.model";
 import type {
   QueryRiwayatTransactionType,
-  ResponseStatistikBookingType,
   ResponseStatistikKebutuhanBarangWithMetaType,
 } from "../models/transaction.model";
 import type { ResponseStructure } from "../types/response.type";

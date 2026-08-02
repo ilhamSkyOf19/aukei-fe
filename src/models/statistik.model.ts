@@ -110,35 +110,39 @@ export interface ResponseChartMetodePembayaranType {
   persentase: number;
 }
 
+export interface StatistikTopPelangganType {
+  id: number;
+  nama: string;
+  noWa: string;
+  isActive: boolean;
+  totalTransaksi: number;
+  totalNilaiTransaksi: number;
+  rankTransaksi: number | null;
+  rankNilaiTransaksi: number | null;
+}
+
 export interface ResponseStatistikTopPelangganWithMetaType {
-  data: {
-    id: number;
-    nama: string;
-    noWa: string;
-    isActive: boolean;
-    totalTransaksi: number;
-    totalNilaiTransaksi: number;
-    rankTransaksi: number | null;
-    rankNilaiTransaksi: number | null;
-  }[];
+  data: StatistikTopPelangganType[];
   meta: MetaType;
+}
+
+export interface DataStatistikTopProdukType {
+  id: number;
+  nama: string;
+  kode: string;
+  totalTerjual: number;
+  totalOmzet: number;
+  value: number;
+  kategori: string;
+  rankQty: number | null;
+  rankOmzet: number | null;
+  rankKategori: number | null;
+  img: string;
 }
 
 // statistik top produk
 export interface ResponseStatistikTopProdukWithMetaType {
-  data: {
-    id: number;
-    nama: string;
-    kode: string;
-    totalTerjual: number;
-    totalOmzet: number;
-    value: number;
-    kategori: string;
-    rankQty: number | null;
-    rankOmzet: number | null;
-    rankKategori: number | null;
-    img: string;
-  }[];
+  data: DataStatistikTopProdukType[];
   meta: MetaType;
 }
 

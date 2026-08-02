@@ -12,6 +12,7 @@ import {
 import RankStar from "../../../../components/ui/RankStar";
 import RangeDate from "../../../../components/filters/RangeDate";
 import useStatistikTopPelanggan from "../../../../hooks/useStatistikTopPelanggan";
+import CardPelanggan from "../../../../components/ui/cards/CardPelanggan";
 
 const TopPelanggan = () => {
   const {
@@ -32,7 +33,7 @@ const TopPelanggan = () => {
   return (
     <div className="w-full flex flex-col justify-start items-start">
       {/* filter */}
-      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
+      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-end lg:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
         <div className="w-full md:flex-1 flex flex-col justify-start items-start gap-1.5">
           <InputSearch
             handleSearch={handleSearch}
@@ -41,11 +42,11 @@ const TopPelanggan = () => {
           />
         </div>
 
-        <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center gap-3 md:gap-2.5 mt-3 md:mt-0">
+        <div className="w-full md:flex-wrap md:flex-2 flex flex-col md:flex-row justify-start md:justify-end items-center gap-3 md:gap-2.5 mt-3 md:mt-0">
           {/* filter sort total transaksi */}
           <FilterSort
             setSort={handleSortTotalTransaksi}
-            customWidth="w-full md:w-40"
+            customWidth="w-full md:w-30 lg:w-40"
             value={sortTotalTransaksi}
             customLabel={["Tersedikit", "Terbanyak"]}
             customTitle="Urutkan Total Transaksi"
@@ -54,7 +55,7 @@ const TopPelanggan = () => {
           {/* filter sort total nilai */}
           <FilterSort
             setSort={handleTotalNilaiTransaksi}
-            customWidth="w-full md:w-40"
+            customWidth="w-full md:w-30 lg:w-40"
             value={sortTotalNilaiTransaksi}
             customLabel={["Tersedikit", "Terbanyak"]}
             customTitle="Urutkan Nilai Transaksi"
@@ -66,12 +67,46 @@ const TopPelanggan = () => {
               value: startDateEndDate,
               onChange: setStartDateEndDate,
             }}
-            customWidth="w-62"
+            customWidth="w-full md:w-50 lg:w-62"
           />
         </div>
       </div>
 
-      {/* data */}
+      {/* data SM & MD */}
+      <div className="w-full lg:hidden flex flex-col justify-start items-center gap-2.5 pt-3 pb-2">
+        {/* card */}
+        {isLoading ? (
+          <>
+            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+          </>
+        ) : isExistData ? (
+          dataTopPelanggan?.data.map((pelanggan) => (
+            <CardPelanggan
+              data={{
+                id: pelanggan.id,
+                nama: pelanggan.nama,
+                noWa: pelanggan.noWa,
+                onlyStatus: pelanggan.isActive,
+                totalTransaction: pelanggan.totalTransaksi,
+                totalNilaiTransaction: pelanggan.totalNilaiTransaksi,
+                rankNilaiTransaction: pelanggan.rankNilaiTransaksi ?? 0,
+                rankTransaction: pelanggan.rankTransaksi ?? 0,
+              }}
+            />
+          ))
+        ) : (
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            <DataEmpty
+              title="Data Pelanggan Tidak Tersedia"
+              description="Belum ada data pelanggan yang dapat ditampilkan saat ini."
+            />
+          </div>
+        )}
+      </div>
+
+      {/* data LG */}
       <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex mt-2.5">
         <table className="table table-xs lg:table-sm table-zebra">
           {/* head */}

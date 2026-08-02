@@ -1,6 +1,5 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { ProdukServices } from "../../../../services/produk.service";
-import { useState } from "react";
 import useFilterState from "../../../../services/useFilterState";
 import { StatistikServices } from "../../../../services/statistik.service";
 

@@ -3,14 +3,16 @@ import { formatNumber, formatRupiah } from "../../../helpers/helpers";
 import { ArrowRight, CircleAlert, UserRoundX } from "lucide-react";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import useStatistikTopPelanggan from "../../../hooks/useStatistikTopPelanggan";
+import { cn } from "../../../utils/cn";
 
 type Props = {
   rangeDate: {
     startDate: string;
     endDate: string;
   };
+  customHeight?: string;
 };
-const StatistikTopPelanggan: FC<Props> = ({ rangeDate }) => {
+const StatistikTopPelanggan: FC<Props> = ({ rangeDate, customHeight }) => {
   const {
     dataTopPelanggan,
     isLoading,
@@ -21,7 +23,12 @@ const StatistikTopPelanggan: FC<Props> = ({ rangeDate }) => {
     customStartDateEndDate: rangeDate,
   });
   return (
-    <div className="md:flex-1 md:h-full flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 md:p-2.5 md:px-0 h-90">
+    <div
+      className={cn(
+        "md:flex-1 md:h-full flex flex-col justify-start items-start bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg py-2.5 md:p-2.5 md:px-0",
+        customHeight ?? " h-90",
+      )}
+    >
       {/* header */}
       <div className="w-full flex flex-row justify-start items-start gap-2 mb-2 px-2.5">
         <div className="flex flex-col justify-start items-start gap-0.5">

@@ -50,8 +50,15 @@ const GrafikLine = forwardRef<ChildRef, GrafikLineProps>(
             </h3>
 
             <span className="text-xs font-medium text-base-content/80">
-              Grafik {isChoose} selama periode {formatTanggalPanjang(startDate)}{" "}
-              - {formatTanggalPanjang(endDate)}
+              {windowSize === "sm"
+                ? `
+              ${formatTanggalPanjang(startDate)}${" "}
+              - ${formatTanggalPanjang(endDate)}
+              `
+                : `
+              Grafik ${isChoose} selama periode ${formatTanggalPanjang(startDate)}${" "}
+              - ${formatTanggalPanjang(endDate)}
+              `}
             </span>
           </div>
 

@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { StatistikServices } from "../../../../services/statistik.service";
 import type { ResponseStatistikKebutuhanBarangBookingType } from "../../../../models/statistik.model";
 import { useMemo } from "react";
