@@ -51,6 +51,11 @@ const ButtonWithIcon: FC<Props> = ({
         (disabled ?? isLoading) ? "opacity-50" : "hover-overlay",
       )}
       style={{ cursor: (disabled ?? isLoading) ? "not-allowed" : "pointer" }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+        }
+      }}
       onClick={() => {
         if (handleBtn) {
           handleBtn();

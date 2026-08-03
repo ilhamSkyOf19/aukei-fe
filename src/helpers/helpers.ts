@@ -244,7 +244,7 @@ export const formatRupiahShort = (value: number): string => {
 
   // Ribu
   if (value >= 1_000) {
-    return `Rp ${(value / 1_000).toFixed(0).replace(".", ",")}K`;
+    return `Rp ${(value / 1_000).toFixed(1).replace(".", ",")}K`;
   }
 
   return `Rp ${value.toLocaleString("id-ID")}`;

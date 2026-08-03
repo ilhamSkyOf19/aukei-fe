@@ -2,6 +2,7 @@ import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
   ProdukResponseType,
+  ResponseGetModalType,
   ResponsePantauStokWithMetaType,
   ResponseProdukForChooseType,
   ResponseProdukForKasirWithMetaType,
@@ -139,6 +140,31 @@ export class ProdukServices {
     const result = await instanceAxios.delete<ResponseStructure<null>>(
       `/produk/${id}`,
     );
+
+    return result.data;
+  }
+
+  // harga modal
+  static async hargaModal(
+    id: number,
+  ): Promise<ResponseStructure<ResponseGetModalType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseGetModalType | null>
+    >(`/produk/${id}/harga-modal`);
+
+    return result.data;
+  }
+
+  // update harga jual
+  static async updateHargaJual(params: {
+    id: number;
+    req: { hargaJual: number };
+  }): Promise<ResponseStructure<ProdukResponseType | null>> {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<ProdukResponseType | null>
+    >(`/produk/${params.id}/harga-jual`, params.req);
 
     return result.data;
   }

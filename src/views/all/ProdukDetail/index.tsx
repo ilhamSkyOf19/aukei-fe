@@ -4,6 +4,7 @@ import {
   CircleCheck,
   Clock,
   PencilLineIcon,
+  RefreshCcw,
   SendHorizonal,
   Trash,
   Trash2Icon,
@@ -33,6 +34,7 @@ import ButtonInline from "../../../components/ui/button/ButtonInline";
 import useProdukDetail from "./useProdukDetail";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import ButtonText from "../../../components/ui/button/ButtonText";
+import ModalGenerateHargaJual from "../../../components/modals/ModalGenerateHargaJual";
 
 const ProdukDetail = () => {
   // call use
@@ -65,6 +67,11 @@ const ProdukDetail = () => {
     stokMinimumController,
     handelUpdateIsActive,
     isPendingUpdateIsActive,
+    dataModalGenerateHargaJual,
+    handleCloseModalGenerateHargaJual,
+    handleShowModalGenerateHargaJual,
+    modalGenerateHargaJualRef,
+    handleSetToast,
   } = useProdukDetail();
 
   return (
@@ -362,7 +369,7 @@ const ProdukDetail = () => {
             </div>
 
             {/* content harga  */}
-            <div className="w-full flex flex-row justify-between gap-2.5 items-start border-t border-base-content/30 pt-2">
+            <div className="w-full flex flex-row justify-between gap-2.5 items-stretch border-t border-base-content/30 pt-2">
               {isLoadingDataProduk ? (
                 <>
                   <div className="flex-1 h-20 skeleton" />
@@ -387,11 +394,28 @@ const ProdukDetail = () => {
 
                       {/* harga */}
                       {keyUpdate !== "hargaJual" ? (
-                        <>
+                        <div className="flex flex-row justify-start items-center gap-4">
                           <span className="text-lg font-semibold text-emerald-500">
                             {formatRupiah(dataProduk?.data?.hargaJual ?? 0)}
                           </span>
-                        </>
+
+                          <div
+                            className="tooltip"
+                            data-tip="kalkulasi harga jual"
+                          >
+                            <ButtonWithIcon
+                              icon={RefreshCcw}
+                              bgColor="bg-info"
+                              textColor="text-primary-white"
+                              noLabel
+                              handleBtn={() =>
+                                handleShowModalGenerateHargaJual(undefined, {
+                                  produk: { id: dataProduk?.data?.id },
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
                       ) : (
                         <CardForm
                           handleResetForm={handleResetForm}
@@ -751,6 +775,15 @@ const ProdukDetail = () => {
         handleDelete={() => handleDeleteProduk()}
         isLoadingDelete={isPendingDeleteProduk}
         bigTitle={`Apakah anda yakin ingin menghapus data "${dataProduk?.data?.nama}" ini?`}
+      />
+
+      {/* modal generate harga jual */}
+      <ModalGenerateHargaJual
+        modalRef={modalGenerateHargaJualRef}
+        handleCloseModal={handleCloseModalGenerateHargaJual}
+        handleSetToast={handleSetToast}
+        data={{ id: dataModalGenerateHargaJual?.produk.id }}
+        noInfo
       />
     </main>
   );

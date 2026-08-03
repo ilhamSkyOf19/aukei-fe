@@ -101,4 +101,13 @@ export class ProdukValidation {
       status: z.boolean("Mohon isi status"),
     })
     .strict() satisfies z.ZodType<UpdateStatusType>;
+
+  // generate harga
+  static readonly GENERATE_HARGA = z
+    .object({
+      customLaba: z
+        .number("Mohon isi custom laba")
+        .min(0, "Mohon isi custom laba"),
+    })
+    .strict() satisfies z.ZodType<{ customLaba: number }>;
 }

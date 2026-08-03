@@ -7,19 +7,23 @@ type Props = {
   icon: LucideIcon;
   handleClick: () => void;
   color?: string;
+  disabled?: boolean;
 };
 const LabelButtonDropDownWithIcon: FC<Props> = ({
   handleClick,
   icon: Icon,
   label,
   color,
+  disabled,
 }) => {
   return (
     <button
       type="button"
+      disabled={disabled}
       className={cn(
         "flex flex-row justify-start items-center gap-3",
         color ? color : "text-base-content",
+        disabled && "opacity-70 hover:bg-transparent active:bg-transparent",
       )}
       onClick={handleClick}
     >

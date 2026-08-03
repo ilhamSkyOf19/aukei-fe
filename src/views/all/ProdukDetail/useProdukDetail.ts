@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ProdukServices } from "../../../services/produk.service";
 import { useEffect, useState } from "react";
 import { useController, useForm } from "react-hook-form";
-import type { UpdateProdukType } from "../../../models/produk.model";
+import type { IProduk, UpdateProdukType } from "../../../models/produk.model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProdukValidation } from "../../../validations/produk.validation";
 import { useToastAnimation } from "../../../hooks/useToast";
@@ -238,6 +238,14 @@ const useProdukDetail = () => {
     }
   };
 
+  // use modal generate harga jual
+  const {
+    modalRef: modalGenerateHargaJualRef,
+    handleShowModal: handleShowModalGenerateHargaJual,
+    handleCloseModal: handleCloseModalGenerateHargaJual,
+    dataModal: dataModalGenerateHargaJual,
+  } = useModal<{ produk: Partial<Pick<IProduk, "id">> }>();
+
   // use modal delete
   const {
     modalRef: modalDeleteRef,
@@ -291,6 +299,11 @@ const useProdukDetail = () => {
     stokMinimumController,
     handelUpdateIsActive,
     isPendingUpdateIsActive,
+    handleShowModalGenerateHargaJual,
+    handleCloseModalGenerateHargaJual,
+    modalGenerateHargaJualRef,
+    dataModalGenerateHargaJual,
+    handleSetToast,
   };
 };
 

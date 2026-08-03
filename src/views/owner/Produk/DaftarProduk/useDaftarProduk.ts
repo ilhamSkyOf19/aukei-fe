@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useModal from "../../../../hooks/useModal";
 import useDeleteProduk from "../../../../hooks/useDeleteProduk";
 import useUpdateProdukIsActive from "../../../../validations/useUpdateProdukIsActive";
+import type { IProduk } from "../../../../models/produk.model";
 
 const useDaftarProduk = (params: {
   handleSetToast: (toast: string) => void;
@@ -32,6 +33,19 @@ const useDaftarProduk = (params: {
     handleCloseModal: handleCloseModalFailedDelete,
     dataModal: dataModalFailedDelete,
   } = useModal<{ titleMessage: string; description: string }>();
+
+  // Modal generate harga jual
+  const {
+    modalRef: modalGenerateHargaJualRef,
+    handleShowModal: handleShowModalGenerateHargaJual,
+    handleCloseModal: handleCloseModalGenerateHargaJual,
+    dataModal: dataModalGenerateHargaJual,
+  } = useModal<{
+    produk: Pick<
+      IProduk,
+      "id" | "nama" | "img" | "hargaJual" | "kategori" | "kode"
+    >;
+  }>();
 
   // Tampilkan modal gagal hapus dengan pesan berisi nama produk yang gagal dihapus
   const handleShowModalFailedDelete = () => {
@@ -142,6 +156,10 @@ const useDaftarProduk = (params: {
     modalFailedDeleteRef,
     handleCloseModalFailedDelete,
     dataModalFailedDelete,
+    modalGenerateHargaJualRef,
+    handleCloseModalGenerateHargaJual,
+    handleShowModalGenerateHargaJual,
+    dataModalGenerateHargaJual,
   };
 };
 

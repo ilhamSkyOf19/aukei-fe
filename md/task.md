@@ -155,14 +155,14 @@
 
 - [✅] Testing skenario notifikasi jatuh tempo
 
-- [ ] Design Mobile
+- [✅] Design Mobile
   - [✅] Halaman Statistik
   - [✅] Halaman Notifkasi
-  - [ ] Halaman Kredit
+  - [✅] Halaman Kredit
+
+- [ ] Fitur generate harga otomatis
 
 - [ ] Tambahkan state current pahtname untuk query infinity
-
-- [ ] Buat halaman notifikasi dan memperbaiki ui mobile
 
 - [ ] Sesuaikan data
 

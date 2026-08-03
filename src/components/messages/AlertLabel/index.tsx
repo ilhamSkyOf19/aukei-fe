@@ -10,7 +10,7 @@ const AlertLabel: FC<Props> = ({ message, warning }) => {
   return (
     <div
       className={cn(
-        "w-full gap-2.5 flex flex-row justify-start items-center px-4 py-3 rounded-2xl md:rounded-xl border ",
+        "w-full gap-2.5 flex flex-row justify-start items-center p-2.5 rounded-2xl md:rounded-xl border ",
         warning
           ? "border-rose-600 bg-red-600/5"
           : "border-blue-600 bg-blue-600/5",

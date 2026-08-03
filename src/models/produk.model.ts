@@ -79,3 +79,8 @@ export interface ResponsePantauStokWithMetaType {
     statusPergerakan: StatusPergerakan | null;
   })[];
 }
+
+export interface ResponseGetModalType {
+  totalModal: number;
+  totalStok: number;
+}

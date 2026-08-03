@@ -233,7 +233,7 @@ const KreditDetail = () => {
       </div>
 
       {/* DATA SM */}
-      <div className="w-full mt-2.5 flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-2xl border border-transparent dark:border-base-content/10 p-2 gap-2.5 md:hidden">
+      <div className="w-full mt-2.5 flex flex-col justify-start items-start gap-2.5 md:hidden">
         {isLoadingDataTempo ? (
           Array.from({ length: 4 }, (_, i) => (
             <div key={i} className="w-full h-14 skeleton" />
@@ -253,6 +253,7 @@ const KreditDetail = () => {
                 jumlahCicilan: item.jumlahCicilan,
               }}
               periode={item.periode}
+              withBg
             />
           ))
         ) : (

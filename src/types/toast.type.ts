@@ -20,6 +20,10 @@ export const TOAST_CONFIG_PRODUK: Record<
     color: "info",
     message: "Produk berhasil diperbarui",
   },
+  updated_harga_jual_produk: {
+    color: "info",
+    message: "Harga Jual Produk berhasil diperbarui",
+  },
   deleted_produk: {
     color: "error",
     message: "Produk berhasil dihapus",
@@ -57,6 +61,10 @@ export const TOAST_CONFIG_PRODUK_DETAIL: Record<
   updated_status: {
     color: "info",
     message: "Status berhasil diperbarui",
+  },
+  updated_harga_jual_produk: {
+    color: "info",
+    message: "Harga Jual Produk berhasil diperbarui",
   },
 };
 

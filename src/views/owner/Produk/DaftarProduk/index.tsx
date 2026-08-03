@@ -3,6 +3,7 @@ import {
   EllipsisVertical,
   Package,
   PackagePlus,
+  RefreshCcw,
   ShoppingBag,
   Trash,
   View,
@@ -28,6 +29,8 @@ import ModalAlert from "../../../../components/modals/ModalAlert";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 import useDaftarProduk from "./useDaftarProduk";
+import ButtonGenerateHargaJual from "../../../../components/ui/button/ButtonGenerateHargaJual";
+import ModalGenerateHargaJual from "../../../../components/modals/ModalGenerateHargaJual";
 
 type Props = {
   handleSetToast: (toast: string) => void;
@@ -59,6 +62,10 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
     dataModalFailedDelete,
     handleCloseModalFailedDelete,
     modalFailedDeleteRef,
+    dataModalGenerateHargaJual,
+    handleCloseModalGenerateHargaJual,
+    handleShowModalGenerateHargaJual,
+    modalGenerateHargaJualRef,
   } = useDaftarProduk({ handleSetToast });
 
   return (
@@ -138,6 +145,19 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                 variablesUpdateIsActive={variablesUpdateIsActive}
                 handelUpdateIsActive={handelUpdateIsActive}
                 handleRedirectDetail={handleRedirectDetail}
+                disableGenerateHargaJual={produk.stok <= 0}
+                handleShowModalGenerateHargaJual={() =>
+                  handleShowModalGenerateHargaJual(undefined, {
+                    produk: {
+                      id: produk.id,
+                      hargaJual: produk.hargaJual,
+                      img: produk.img,
+                      kategori: produk.kategori,
+                      nama: produk.nama,
+                      kode: produk.kode,
+                    },
+                  })
+                }
                 handleShowModalDelete={() =>
                   handleShowModalDelete(produk.id, {
                     nama: produk.nama,
@@ -260,9 +280,26 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                         />
                       )}
                     </td>
+
                     {/* detail */}
                     <td>
                       <div className="flex flex-row justify-start items-center gap-2">
+                        {/* button generate harga jual */}
+                        <ButtonGenerateHargaJual
+                          disabled={produk.stok <= 0}
+                          handleShowModalGenerateHargaJual={() =>
+                            handleShowModalGenerateHargaJual(undefined, {
+                              produk: {
+                                id: produk.id,
+                                hargaJual: produk.hargaJual,
+                                img: produk.img,
+                                kategori: produk.kategori,
+                                nama: produk.nama,
+                                kode: produk.kode,
+                              },
+                            })
+                          }
+                        />
                         {/* button  */}
                         <ButtonDetailTable
                           handleRedirect={() => handleRedirectDetail(produk.id)}
@@ -293,26 +330,6 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                 </tr>
               )}
             </tbody>
-            {/* foot */}
-            {!isLoadingProduk &&
-              isExistDataProduk &&
-              dataProduk?.data?.data?.length! > 8 && (
-                <tfoot>
-                  <tr>
-                    <th></th>
-                    <th>Foto</th>
-                    <th>Kode</th>
-                    <th>Nama</th>
-                    <th>Kategori</th>
-                    <th>Harga Beli Satuan</th>
-                    <th>Harga Jual Satuan</th>
-                    <th>Stok</th>
-                    <th>Isi PerBox</th>
-                    <th>Aktif</th>
-                    <th>Aksi</th>
-                  </tr>
-                </tfoot>
-              )}
           </table>
         </div>
 
@@ -341,6 +358,14 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
         bigTitle={dataModalFailedDelete?.titleMessage ?? ""}
         smallTitle={dataModalFailedDelete?.description ?? ""}
       />
+
+      {/* modal generate harga jual */}
+      <ModalGenerateHargaJual
+        modalRef={modalGenerateHargaJualRef}
+        handleCloseModal={handleCloseModalGenerateHargaJual}
+        handleSetToast={handleSetToast}
+        data={dataModalGenerateHargaJual?.produk}
+      />
     </>
   );
 };
@@ -349,16 +374,30 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
 type DropDownProps = {
   handleRedirectDetail: () => void;
   handleShowModalDelete: () => void;
+  handleShowModalGenerateHargaJual?: () => void;
+  disableGenerateHargaJual?: boolean;
 };
 const DropDown: FC<DropDownProps> = ({
   handleRedirectDetail,
   handleShowModalDelete,
+  handleShowModalGenerateHargaJual,
+  disableGenerateHargaJual,
 }) => {
   return (
     <ul
       tabIndex={-1}
       className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
     >
+      {handleShowModalGenerateHargaJual && (
+        <li>
+          <LabelButtonDropDownWithIcon
+            label="Kalkulasi"
+            icon={RefreshCcw}
+            handleClick={() => handleShowModalGenerateHargaJual()}
+            disabled={disableGenerateHargaJual}
+          />
+        </li>
+      )}
       <li>
         <LabelButtonDropDownWithIcon
           label="Detail"
@@ -399,6 +438,8 @@ type CardProdukProps = {
     status: boolean;
   };
   handelUpdateIsActive?: (params: { id: number; status: boolean }) => void;
+  handleShowModalGenerateHargaJual: () => void;
+  disableGenerateHargaJual?: boolean;
 };
 
 // card produk
@@ -409,6 +450,8 @@ const CardProduk: FC<CardProdukProps> = ({
   handleShowModalDelete,
   produk,
   handelUpdateIsActive,
+  handleShowModalGenerateHargaJual,
+  disableGenerateHargaJual,
 }) => {
   return (
     <div className="w-full bg-base-100 rounded-2xl flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
@@ -458,6 +501,10 @@ const CardProduk: FC<CardProdukProps> = ({
             <DropDown
               handleRedirectDetail={() => handleRedirectDetail(produk.id)}
               handleShowModalDelete={() => handleShowModalDelete()}
+              handleShowModalGenerateHargaJual={() =>
+                handleShowModalGenerateHargaJual()
+              }
+              disableGenerateHargaJual={disableGenerateHargaJual}
             />
           </div>
 
