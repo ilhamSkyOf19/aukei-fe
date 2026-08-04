@@ -92,6 +92,7 @@ export interface ResponseTempoWithInstallment extends Pick<
   ITempo,
   "uangMuka" | "jumlahCicilan" | "periode"
 > {
+  transactionId: number;
   nomorTransaksi?: string | null;
   tanggalTransaksi: Date;
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;

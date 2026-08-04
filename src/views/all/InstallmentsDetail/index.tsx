@@ -5,6 +5,7 @@ import {
   CreditCard,
   HandCoins,
   ListOrdered,
+  Printer,
   ReceiptText,
 } from "lucide-react";
 import useInstallmentsDetail from "./useInstallmentsDetail";
@@ -32,6 +33,8 @@ import AlertLabelList from "../../../components/messages/AlertLabelList";
 import SideBarRiwayatPembayaranTempo from "../../../components/SideBarRiwayatPembayaranTempo";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import CardData from "../../../components/ui/cards/CardData";
+import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
+import { InvoiceServices } from "../../../services/invoice.service";
 
 const InstallmentsDetail = () => {
   const {
@@ -367,6 +370,20 @@ const InstallmentsDetail = () => {
                 </table>
                 {windowSize !== "sm" && (
                   <div className="w-full flex flex-row justify-end items-end p-2.5 border-t border-base-content/10">
+                    {dataInstallments?.data?.transactionId && (
+                      <ButtonWithIcon
+                        icon={Printer}
+                        bgColor="bg-info"
+                        textColor="text-primary-white"
+                        label="Cetak Struk Kredit"
+                        handleBtn={() =>
+                          InvoiceServices.printInvoiceKredit({
+                            id: dataInstallments?.data?.transactionId ?? 0,
+                          })
+                        }
+                      />
+                    )}
+
                     {/* button */}
                     <SideBarRiwayatPembayaranTempo
                       jumlahCicilan={dataInstallments?.data?.jumlahCicilan ?? 0}

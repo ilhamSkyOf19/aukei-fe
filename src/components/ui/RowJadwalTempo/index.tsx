@@ -2,29 +2,38 @@ import {
   CalendarDaysIcon,
   CircleDollarSign,
   CreditCard,
+  Printer,
   Trash2,
 } from "lucide-react";
 import { formatRupiah, getStatusDueToday } from "../../../helpers/helpers";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import { cn } from "../../../utils/cn";
 import type { FC } from "react";
-import type { CreateInstallmentType } from "../../../models/tempoInstallment.model";
+import type { ITempoInstallmentType } from "../../../models/tempoInstallment.model";
 import {
-  INSTALLMENT_STATUS_TYPE,
+  TEMPO_STATUS_TYPE,
   type InstallmentStatusType,
 } from "../../../types/constant.type";
 import StatusInstallment from "../StatusInstallment";
 import { useLocation, useNavigate } from "react-router-dom";
+import ButtonWithIcon from "../button/ButtonWithIcon";
+import { InvoiceServices } from "../../../services/invoice.service";
+import useRowJadwal from "./useRowJadwal";
 
 type Props = {
   aksi?: boolean;
-  dataTempo?: CreateInstallmentType[];
+  dataTempo?: Pick<
+    ITempoInstallmentType,
+    "nominal" | "jatuhTempo" | "status" | "id" | "cicilanKe"
+  >[];
   maxHeight?: string;
   customEmptyMessage?: string;
   handleCustomTanggal?: () => void;
   startDateWatch?: string;
   pelangganId?: number;
   tempoId?: number;
+  transactionId?: number;
+  withInvoice?: boolean;
 };
 const RowJadwaTempo: FC<Props> = ({
   aksi,
@@ -35,9 +44,50 @@ const RowJadwaTempo: FC<Props> = ({
   startDateWatch,
   pelangganId,
   tempoId,
+  transactionId,
+  withInvoice,
 }) => {
+  const {
+    handlePrintAll,
+    handlePrintSelected,
+    handleSelectTempoPayment,
+    selectedTempoPaymentIds,
+  } = useRowJadwal();
+
   const currentPathname = useLocation().pathname;
   const navigate = useNavigate();
+
+  const layout = (() => {
+    if (!aksi && !withInvoice) {
+      return {
+        status: "col-span-4",
+        action: "",
+        invoice: "",
+      };
+    }
+
+    if (aksi && !withInvoice) {
+      return {
+        status: "col-span-2",
+        action: "col-span-2",
+        invoice: "",
+      };
+    }
+
+    if (!aksi && withInvoice) {
+      return {
+        status: "col-span-2",
+        action: "",
+        invoice: "col-span-2",
+      };
+    }
+
+    return {
+      status: "col-span-1",
+      action: "col-span-1",
+      invoice: "col-span-2",
+    };
+  })();
 
   return (
     <div className="w-full flex flex-col justify-start items-start gap-2">
@@ -89,42 +139,46 @@ const RowJadwaTempo: FC<Props> = ({
       <div className="w-full flex flex-col justify-start items-start border overflow-hidden border-base-content/10 rounded-xl">
         {/* header */}
         <div className="w-full grid grid-cols-10 gap-2 px-4 py-3 bg-gray-200 sticky top-0 z-10">
-          {/* number */}
-          <div className="col-span-1 flex flex-row justify-start items-center">
+          <div className="col-span-1 flex items-center">
             <span className="text-xs font-semibold text-base-content/80">
               No
             </span>
           </div>
 
-          <div className="col-span-3 flex flex-row justify-start items-center gap-4">
+          <div className="col-span-3 flex items-center">
             <span className="text-xs font-semibold text-base-content/80">
               Tanggal Jatuh Tempo
             </span>
           </div>
 
-          {/* nominal */}
-          <div className={cn("flex flex-row items-center gap-2 col-span-2")}>
+          <div className="col-span-2 flex items-center">
             <span className="text-xs font-semibold text-base-content/80">
               Nominal
             </span>
           </div>
 
-          {/* status */}
           <div
-            className={cn(
-              "flex flex-row  justify-start items-center gap-2",
-              aksi ? "col-span-2 justify-start" : "col-span-4 justify-end",
-            )}
+            className={cn("flex items-center justify-center", layout.status)}
           >
-            <span className="text-xs font-semibold text-base-content/80">
+            <span className="text-xs font-semibold text-center text-base-content/80">
               Status
             </span>
           </div>
 
           {aksi && (
-            <div className="col-span-2 flex flex-row justify-end items-center">
+            <div className={cn("flex justify-end items-center", layout.action)}>
               <span className="text-xs font-semibold text-base-content/80">
                 Aksi
+              </span>
+            </div>
+          )}
+
+          {withInvoice && (
+            <div
+              className={cn("flex justify-end items-center", layout.invoice)}
+            >
+              <span className="text-xs font-semibold text-base-content/80">
+                Struk
               </span>
             </div>
           )}
@@ -147,6 +201,8 @@ const RowJadwaTempo: FC<Props> = ({
                 jatuhTempo={item.jatuhTempo}
                 lastIndex={item.cicilanKe === dataTempo.length}
                 aksi={aksi}
+                invoice={() => handlePrintAll({ tempoPaymentId: item.id })}
+                layout={layout}
               />
             ))
           ) : (
@@ -159,6 +215,19 @@ const RowJadwaTempo: FC<Props> = ({
           )}
         </div>
       </div>
+
+      {/* button print */}
+      {transactionId && (
+        <div className="w-full flex flex-row justify-end items-end">
+          <ButtonWithIcon
+            icon={Printer}
+            label="Cetak Struk Kredit"
+            handleBtn={() =>
+              InvoiceServices.printInvoiceKredit({ id: transactionId })
+            }
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -170,6 +239,12 @@ type RowsType = {
   lastIndex?: boolean;
   aksi?: boolean;
   status: InstallmentStatusType;
+  invoice?: () => void;
+  layout: {
+    status: string;
+    action: string;
+    invoice: string;
+  };
 };
 const Rows: FC<RowsType> = ({
   nominal,
@@ -178,6 +253,8 @@ const Rows: FC<RowsType> = ({
   lastIndex,
   aksi,
   status,
+  invoice,
+  layout,
 }) => {
   return (
     <div
@@ -186,62 +263,68 @@ const Rows: FC<RowsType> = ({
         !lastIndex && "border-b border-base-content/10",
       )}
     >
-      {/* number */}
-      <div className="col-span-1 flex flex-row justify-start items-center">
-        <div className="w-6 h-6 flex flex-row justify-center items-center rounded-full bg-custom-primary/50">
-          <span className="text-custom-secondary text-[0.625rem] font-medium">
+      {/* No */}
+      <div className="col-span-1 flex items-center">
+        <div className="w-6 h-6 rounded-full bg-custom-primary/50 flex justify-center items-center">
+          <span className="text-custom-secondary text-[10px] font-medium">
             {number}
           </span>
         </div>
       </div>
 
-      {/* date */}
-      <div className="col-span-3 flex flex-row justify-start items-center gap-2.5">
-        {/* icon */}
+      {/* Tanggal */}
+      <div className="col-span-3 flex items-center gap-2">
         <CalendarDaysIcon className="size-4 text-warning" />
 
-        {/* date */}
-        <span className="text-xs font-medium text-base-content">
+        <span className="text-xs font-medium">
           {formatTanggalPanjang(jatuhTempo)}
         </span>
       </div>
 
-      {/* nominal */}
-      <div
-        className={cn(
-          "flex flex-row items-center gap-2 col-span-2 justify-start",
-        )}
-      >
-        {/* icon */}
-        <CircleDollarSign className="size-4 text-success shrink-0" />
-        <span className="text-xs font-semibold text-base-content">
-          {formatRupiah(nominal)}
-        </span>
+      {/* Nominal */}
+      <div className="col-span-2 flex items-center gap-2">
+        <CircleDollarSign className="size-4 text-success" />
+
+        <span className="text-xs font-semibold">{formatRupiah(nominal)}</span>
       </div>
 
-      {/* nominal */}
-      <div
-        className={cn(
-          "flex flex-row  items-center gap-2",
-          aksi ? "col-span-2 justify-start" : "col-span-4 justify-end",
-        )}
-      >
-        {/* status */}
+      {/* Status */}
+      <div className={cn("flex justify-center items-center", layout.status)}>
         <StatusInstallment
           {...(getStatusDueToday({
             status,
             jatuhTempo,
           })
             ? { statusDueToday: true }
-            : { status: status })}
+            : { status })}
         />
       </div>
 
+      {/* Aksi */}
       {aksi && (
-        <div className="col-span-2 flex flex-row justify-end items-center">
+        <div className={cn("flex justify-end items-center", layout.action)}>
           <button type="button" className="group">
-            <Trash2 className="size-4 text-base-content/50 group-hover:text-error transition-all duration-150 ease-in-out" />
+            <Trash2 className="size-4 text-base-content/50 group-hover:text-error transition-all" />
           </button>
+        </div>
+      )}
+
+      {/* Struk */}
+      {invoice && (
+        <div className={cn("flex justify-end items-center", layout.invoice)}>
+          {status !== TEMPO_STATUS_TYPE.UNPAID ? (
+            <button
+              type="button"
+              className="text-[0.625rem] font-medium px-2 py-1 border border-emerald-600 rounded-md flex flex-row justify-start items-center gap-1 group hover:text-primary-white transition-all duration-150 ease-in-out hover:bg-emerald-600"
+              onClick={() => invoice()}
+            >
+              <Printer className="size-3" />
+
+              <span>Cetak</span>
+            </button>
+          ) : (
+            <span>-</span>
+          )}
         </div>
       )}
     </div>

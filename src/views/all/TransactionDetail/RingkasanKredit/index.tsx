@@ -78,6 +78,8 @@ const RingkasanKredit: FC<Props> = ({
                     ? "Silahkan selesaikan booking untuk mengatur jadwal cicilan"
                     : undefined
                 }
+                transactionId={dataTransaction?.data?.id}
+                withInvoice
               />
             </div>
           </div>
