@@ -160,7 +160,9 @@
   - [✅] Halaman Notifkasi
   - [✅] Halaman Kredit
 
-- [ ] Fitur generate harga otomatis
+- [✅] Fitur generate harga otomatis
+
+- [ ] Buat fitur struk
 
 - [ ] Tambahkan state current pahtname untuk query infinity
 

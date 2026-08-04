@@ -28,6 +28,7 @@ import ErrorMessage from "../../../../components/messages/ErrorMessage";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ModalTempoPayment from "../../../../components/modals/ModalTempoPayment";
 import { formatTanggalPanjang } from "../../../../helpers/formatDate";
+import { InvoiceServices } from "../../../../services/invoice.service";
 
 type Props = {
   dataTransaction?: ResponseStructure<ResponseTransactionType | null>;
@@ -612,14 +613,19 @@ const InformasiPembayaran: FC<Props> = ({
               {/* cetak struk */}
               <ButtonWithIcon
                 icon={Printer}
-                customWidth="w-full"
+                customWidth="flex-1"
                 label="Cetak Struk"
+                handleBtn={() =>
+                  InvoiceServices.printInvoice({
+                    id: dataTransaction?.data?.id ?? 0,
+                  })
+                }
               />
 
               {/* download struk */}
               <ButtonWithIcon
                 icon={FileDown}
-                customWidth="w-full"
+                customWidth="flex-1"
                 bgColor="bg-gray-400"
                 label="Download PDF"
                 textColor="text-primary-white"
