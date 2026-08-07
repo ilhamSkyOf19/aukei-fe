@@ -112,12 +112,10 @@ export interface ResponseRiwayatTransactionType {
     | "totalItem"
     | "totalBayar"
     | "metodePembayaran"
-    | "tanggalBooking"
   > & {
     pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
     kasir: Pick<IPenggunaInternalType, "id" | "nama" | "username"> | null;
-    statusTempo?: TempoStatusType;
-    status?: TransactionStatusType;
+    status: TransactionStatusType;
   })[];
   meta: MetaType;
 }
@@ -135,7 +133,6 @@ export interface ResponseRiwayatTransaksiPelangganType {
       | "totalTransaksi"
       | "totalOmzet"
       | "totalRataRataTransaksi"
-      | "totalPiutangTempo"
       | "totalProdukTerjual"
       | "totalItemTerjual"
     >;
@@ -147,11 +144,9 @@ export interface ResponseRiwayatTransaksiPelangganType {
       | "totalItem"
       | "totalBayar"
       | "metodePembayaran"
-      | "tanggalBooking"
     > & {
       pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
-      statusTempo?: TempoStatusType;
-      status?: TransactionStatusType;
+      status: TransactionStatusType;
     })[];
   };
   meta?: MetaType;
@@ -257,4 +252,12 @@ export interface ResponseStatistikKebutuhanBarangBookingType {
   totalItemBooking: number;
   totalProdukPerluRestock: number;
   totalKebutuhanStok: number;
+}
+
+export interface ResponseForReturBarang extends Pick<
+  ITransactionType,
+  "id" | "nomorTransaksi" | "details" | "completedAt" | "status"
+> {
+  kasir: Pick<IPenggunaInternalType, "id" | "nama" | "username" | "isActive">;
+  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
 }

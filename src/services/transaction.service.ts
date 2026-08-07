@@ -2,6 +2,7 @@ import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
   CreateTransactionForRequestType,
+  ResponseForReturBarang,
   ResponseRiwayatTransactionType,
   ResponseRiwayatTransaksiPelangganType,
   ResponseStatistikBookingType,
@@ -42,7 +43,6 @@ export class TransactionServices {
       startDate?: string;
       endDate?: string;
       metodePembayaran?: string;
-      statusTempo?: string;
     },
   ): Promise<ResponseStructure<ResponseRiwayatTransactionType | null>> {
     // call api
@@ -54,20 +54,20 @@ export class TransactionServices {
   }
 
   // find riwayat transaksi by pelanggan
-  static async findRiwayatTransaksiByPelanggan(params: {
+  static async findRiwayatTransaksiCompletedNotTempoByPelanggan(params: {
     id: number;
     query: PaginationType & {
       startDate?: string;
       endDate?: string;
       metodePembayaran?: string;
-      status?: string;
-      statusTempo?: string;
     };
   }): Promise<ResponseStructure<ResponseRiwayatTransaksiPelangganType | null>> {
     // call api
     const result = await instanceAxios.get<
       ResponseStructure<ResponseRiwayatTransaksiPelangganType | null>
-    >(`/transaction/pelanggan/${params.id}`, { params: params.query });
+    >(`/transaction/completed/pelanggan/${params.id}`, {
+      params: params.query,
+    });
 
     return result.data;
   }
@@ -142,6 +142,18 @@ export class TransactionServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseStatistikBookingType | null>
     >(`/transaction/booking/statistik/pelanggan/${params.id}`);
+
+    return result.data;
+  }
+
+  // find transaksi by for retur barang
+  static async findTransaksiForReturBarang(params: {
+    id: number;
+  }): Promise<ResponseStructure<ResponseForReturBarang | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseForReturBarang | null>
+    >(`/transaction/${params.id}/for-retur-barang`);
 
     return result.data;
   }

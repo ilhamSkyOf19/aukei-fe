@@ -91,6 +91,16 @@ export const TRANSACTION_STATUS_TYPE = {
 export type TransactionStatusType =
   (typeof TRANSACTION_STATUS_TYPE)[keyof typeof TRANSACTION_STATUS_TYPE];
 
+export const RETURN_STATUS = {
+  DRAFT: "DRAFT",
+  PENDING: "PENDING",
+  APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
+  CANCELLED: "CANCELLED",
+} as const;
+
+export type ReturnStatus = (typeof RETURN_STATUS)[keyof typeof RETURN_STATUS];
+
 // outlet context type
 export type OutletContextType = {
   handleTitle: (title: string) => void;

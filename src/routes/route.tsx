@@ -31,6 +31,8 @@ import TransactionDetailPage from "../pages/TransactionDetailPage";
 import BookingByPelangganPage from "../pages/BookingByPelangganPage";
 import NotFoundPage from "../pages/404";
 import NotifikasiPage from "../pages/NotifikasiPage";
+import ReturBarangPage from "../pages/ReturBarangPage";
+import DaftarReturBarangPage from "../pages/DaftarReturBarangPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -255,30 +257,31 @@ const route = createBrowserRouter([
         children: [
           {
             index: true,
-            element: (
-              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
-                <RiwayatTransaksiPage />
-              </RoleGuard>
-            ),
+            element: <RiwayatTransaksiPage />,
           },
           {
             path: "pelanggan/:pelangganId",
             children: [
               {
                 index: true,
-                element: (
-                  <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
-                    <RiwayatTransaksiDetailPage />
-                  </RoleGuard>
-                ),
+                element: <RiwayatTransaksiDetailPage />,
               },
               {
                 path: "transaksi/:transactionId",
-                element: (
-                  <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
-                    <TransactionDetailPage />
-                  </RoleGuard>
-                ),
+                children: [
+                  {
+                    index: true,
+                    element: <TransactionDetailPage />,
+                  },
+                  {
+                    path: "daftar-retur-barang",
+                    element: <DaftarReturBarangPage />,
+                  },
+                  {
+                    path: "retur-barang",
+                    element: <ReturBarangPage />,
+                  },
+                ],
               },
             ],
           },

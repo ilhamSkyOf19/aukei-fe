@@ -81,6 +81,7 @@ export default function InputPrice<T extends FieldValues = any>({
             "h-full w-full border-none bg-transparent outline-none font-medium text-base-content placeholder:font-normal",
             xs ? "text-[0.7rem]" : "text-xs",
           )}
+          style={{ cursor: disabled ? "not-allowed" : "text" }}
           onChange={(e) => {
             const raw = unformatRupiah(e.target.value);
 

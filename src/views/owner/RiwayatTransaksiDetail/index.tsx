@@ -3,7 +3,6 @@ import {
   BanknoteArrowDown,
   CalendarClock,
   ChartColumn,
-  Clock3,
   FileText,
   History,
   Landmark,
@@ -22,10 +21,7 @@ import {
   formatRupiahShort,
 } from "../../../helpers/helpers";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import {
-  TRANSACTION_STATUS_TYPE,
-  type PaymentMethodType,
-} from "../../../types/constant.type";
+import { type PaymentMethodType } from "../../../types/constant.type";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
@@ -42,8 +38,6 @@ const RiwayatTransaksiDetail = () => {
     metodePembayaran,
     handleSetMetodePembayaran,
     windowSize,
-    setStatusTempo,
-    statusTempo,
     dataRiwayatTransaksi,
     handleSearch,
     isExistDataRiwayatTransaksi,
@@ -70,10 +64,6 @@ const RiwayatTransaksiDetail = () => {
           filterMetodePembayaran={{
             handleMetodePembayaran: handleSetMetodePembayaran,
             value: metodePembayaran,
-          }}
-          filterTempo={{
-            handleTempo: setStatusTempo,
-            value: statusTempo,
           }}
         />
 
@@ -200,34 +190,6 @@ const RiwayatTransaksiDetail = () => {
                   : undefined
               }
             />
-            {dataRiwayatTransaksi?.data?.data?.statistik?.totalPiutangTempo !==
-              undefined && (
-              <CardStatistik
-                isLoading={isLoadingRiwayatTransaksi}
-                icon={{
-                  icon: Clock3,
-                  bgColor: "bg-red-100",
-                  iconColor: "text-red-400",
-                }}
-                label={windowSize === "sm" ? "Piutang" : "Total Piutang"}
-                value={
-                  windowSize === "sm"
-                    ? formatRupiahShort(
-                        dataRiwayatTransaksi?.data?.data?.statistik
-                          ?.totalPiutangTempo ?? 0,
-                      )
-                    : formatRupiah(
-                        dataRiwayatTransaksi?.data?.data?.statistik
-                          ?.totalPiutangTempo ?? 0,
-                      )
-                }
-                caption={
-                  windowSize !== "sm"
-                    ? "Total nilai piutang yang belum dibayar"
-                    : undefined
-                }
-              />
-            )}
             <CardStatistik
               isLoading={isLoadingRiwayatTransaksi}
               icon={{
@@ -286,7 +248,6 @@ const RiwayatTransaksiDetail = () => {
                 nomorReferensi={item.nomorTransaksi || ""}
                 tanggal={item?.completedAt || new Date()}
                 metodePembayaran={item.metodePembayaran || "CASH"}
-                statusTempo={item.statusTempo}
                 totalItem={item.totalItem}
                 totalTransaksi={item.totalBayar}
                 status={item.status}
@@ -344,11 +305,7 @@ const RiwayatTransaksiDetail = () => {
                       </span>
                     </td>
                     <td>
-                      {formatTanggalLengkap(
-                        item.status === TRANSACTION_STATUS_TYPE.BOOKING
-                          ? (item.tanggalBooking ?? new Date())
-                          : (item.completedAt ?? new Date()),
-                      )}
+                      {formatTanggalLengkap(item.completedAt ?? new Date())}
                     </td>
                     <td>{formatNumber(item.totalItem)} item</td>
                     <td>{formatRupiah(item.totalBayar)}</td>
@@ -358,10 +315,7 @@ const RiwayatTransaksiDetail = () => {
                       />
                     </td>
                     <td>
-                      <StatusTransaction
-                        status={item.status}
-                        statusTempo={item.statusTempo}
-                      />
+                      <StatusTransaction status={item.status} />
                     </td>
                     <td>
                       <button

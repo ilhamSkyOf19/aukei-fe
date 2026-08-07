@@ -6,8 +6,21 @@ type Props = {
   setMetode: (value: string) => void;
   customWidth?: string;
   value?: string;
+  notTempo?: boolean;
 };
-const MetodePembayaran: FC<Props> = ({ setMetode, customWidth, value }) => {
+const MetodePembayaran: FC<Props> = ({
+  setMetode,
+  customWidth,
+  value,
+  notTempo,
+}) => {
+  const listMetode: { value: string; label: string }[] = [
+    { value: "cash", label: "Tunai" },
+    { value: "transfer", label: "Transfer" },
+    { value: "qris", label: "QRIS" },
+    { value: "tempo", label: "Tempo" },
+    { value: "semua", label: "Semua" },
+  ];
   return (
     <div
       className={cn(
@@ -18,13 +31,11 @@ const MetodePembayaran: FC<Props> = ({ setMetode, customWidth, value }) => {
       <span className="text-xs text-base-content/80 font-medium">Metode</span>
       <DropDown
         handleChange={(e) => setMetode(e.target.value)}
-        listChoose={[
-          { value: "cash", label: "Tunai" },
-          { value: "transfer", label: "Transfer" },
-          { value: "qris", label: "QRIS" },
-          { value: "tempo", label: "Tempo" },
-          { value: "semua", label: "Semua" },
-        ]}
+        listChoose={
+          notTempo
+            ? listMetode.filter((item) => item.value !== "tempo")
+            : listMetode
+        }
         placeholder="Metode"
         value={value || "semua"}
       />

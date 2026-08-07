@@ -326,3 +326,17 @@ export const TOAST_CONFIG_KERANJANG: Record<
     message: "Keranjang berhasil dihapus",
   },
 };
+
+// toast daftar retur barang
+export const TOAST_CONFIG_RETUR_BARANG: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  created_retur_barang: {
+    color: "success",
+    message: "Data retur berhasil disimpan dan diajukan ke owner.",
+  },
+};

@@ -312,6 +312,7 @@ const Rows: FC<RowsType> = ({
       {/* Struk */}
       {invoice && (
         <div className={cn("flex justify-end items-center", layout.invoice)}>
+          {/* BUAT FLAG PARTIAL */}
           {status !== TEMPO_STATUS_TYPE.UNPAID ? (
             <button
               type="button"

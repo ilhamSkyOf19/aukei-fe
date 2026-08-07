@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import clsx from "clsx";
-import type { FieldValues, UseControllerReturn } from "react-hook-form";
+import { type FieldValues, type UseControllerReturn } from "react-hook-form";
 
 import { cn } from "../../../utils/cn";
 import ErrorMessage from "../../messages/ErrorMessage";

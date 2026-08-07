@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TransactionDetailServices } from "../../../../services/transactionDetail.service";
 import type { ResponseStatistikKebutuhanBarang } from "../../../../models/transaction.model";
 import type { ResponseStructure } from "../../../../types/response.type";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const useDaftarDetailProduk = (params: {
   transactionId?: number | null;
@@ -19,6 +20,12 @@ const useDaftarDetailProduk = (params: {
     params;
   // query client
   const queryClient = useQueryClient();
+
+  // navigate
+  const navigate = useNavigate();
+
+  // current pathname
+  const currentPathname = useLocation().pathname;
 
   // state is active
   const [isFromActive, setIsFromActive] = useState<{
@@ -128,6 +135,16 @@ const useDaftarDetailProduk = (params: {
     (item) => item.siapKirim === true,
   );
 
+  // handle to retur
+  const handleToRetur = () => {
+    navigate(`${currentPathname}/retur-barang`);
+  };
+
+  // handle daftar retur barang
+  const handleDaftarReturBarang = () => {
+    navigate(`${currentPathname}/daftar-retur-barang`);
+  };
+
   return {
     isFromActive,
     handleSetIsFromActive,
@@ -137,8 +154,9 @@ const useDaftarDetailProduk = (params: {
     handleSubmit,
     isPendingUpdate,
     isExistDataKebutuhanBarang,
-    isLoadingKebutuhanBarang,
     siapKirim,
+    handleToRetur,
+    handleDaftarReturBarang,
   };
 };
 

@@ -15,6 +15,8 @@ import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTabl
 import AlertLabelList from "../../../../components/messages/AlertLabelList";
 import { TRANSACTION_STATUS_TYPE } from "../../../../types/constant.type";
 import AlertLabel from "../../../../components/messages/AlertLabel";
+import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
+import { Eye, Undo } from "lucide-react";
 
 type Props = {
   isLoadingTransaction: boolean;
@@ -46,6 +48,8 @@ const DaftarDetailProduk: FC<Props> = ({
     handleSubmit,
     siapKirim,
     isExistDataKebutuhanBarang,
+    handleToRetur,
+    handleDaftarReturBarang,
   } = useDaftarDetailProduk({
     transactionId: dataTransaction?.data?.id,
     dataKebutuhanBarang,
@@ -72,7 +76,8 @@ const DaftarDetailProduk: FC<Props> = ({
                   <th>Nama Produk</th>
                   <th>Harga (Rp)</th>
                   <th>Diskon (Rp)</th>
-                  <th>Dipesan</th>
+                  <th>Qty. Pesan</th>
+                  <th>Qty. Retur</th>
                   {dataTransaction?.data?.status ===
                     TRANSACTION_STATUS_TYPE.BOOKING && (
                     <>
@@ -119,7 +124,7 @@ const DaftarDetailProduk: FC<Props> = ({
                           </td>
                           <td>
                             <div className="flex flex-col justify-start items-start gap-px">
-                              <p className="xl:text-[0.7rem] text-base-content">
+                              <p className="xl:text-[0.7rem] text-base-content font-semibold">
                                 {item.produk.nama}
                               </p>
                               <span className="xl:text-[0.7rem] font-medium text-base-content/70">
@@ -222,10 +227,15 @@ const DaftarDetailProduk: FC<Props> = ({
                             )}
                           </td>
                           <td>
-                            {" "}
                             <span className="xl:text-[0.7rem] text-base-content">
                               {/* qty */}
                               {formatNumber(item.quantity)} Pcs
+                            </span>
+                          </td>
+                          <td>
+                            <span className="xl:text-[0.7rem] text-base-content">
+                              {/* qty */}
+                              {formatNumber(item.totalRetur)} Pcs
                             </span>
                           </td>
                           {dataTransaction?.data?.status ===
@@ -274,8 +284,8 @@ const DaftarDetailProduk: FC<Props> = ({
                         colSpan={
                           dataTransaction?.data?.status ===
                           TRANSACTION_STATUS_TYPE.BOOKING
-                            ? 9
-                            : 7
+                            ? 10
+                            : 8
                         }
                       >
                         <div className="h-10 flex flex-row justify-between items-center">
@@ -331,7 +341,25 @@ const DaftarDetailProduk: FC<Props> = ({
           </div>
         </div>
       </div>
-
+      {/* alert label */}
+      <AlertLabel message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur." />
+      {/* button retur */}
+      <div className="w-full flex flex-row justify-end items-end gap-2.5">
+        <ButtonWithIcon
+          label="Lihat Daftar Retur Barang"
+          icon={Eye}
+          bgColor="bg-info"
+          textColor="text-primary-white"
+          handleBtn={() => handleDaftarReturBarang()}
+        />
+        <ButtonWithIcon
+          label="Retur Barang"
+          icon={Undo}
+          bgColor="bg-error"
+          textColor="text-primary-white"
+          handleBtn={() => handleToRetur()}
+        />
+      </div>
       {isExistDataKebutuhanBarang &&
         !isLoadingKebutuhanBarang &&
         !siapKirim && (
@@ -340,7 +368,6 @@ const DaftarDetailProduk: FC<Props> = ({
             message="Masih terdapat barang yang kekurangan stok. Lengkapi stok terlebih dahulu sebelum menyelesaikan booking."
           />
         )}
-
       {/* transaksi booking */}
       {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
         <AlertLabelList
@@ -352,7 +379,6 @@ const DaftarDetailProduk: FC<Props> = ({
           ]}
         />
       )}
-
       {/* ringkasan kredit */}
       <RingkasanKredit
         dataTransaction={dataTransaction}

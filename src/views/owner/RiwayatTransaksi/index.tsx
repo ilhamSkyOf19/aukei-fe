@@ -13,10 +13,7 @@ import {
   formatRupiah,
 } from "../../../helpers/helpers";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import {
-  TRANSACTION_STATUS_TYPE,
-  type PaymentMethodType,
-} from "../../../types/constant.type";
+import { type PaymentMethodType } from "../../../types/constant.type";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import Avatar from "../../../components/ui/Avatar";
@@ -24,14 +21,12 @@ import FilterStatistik from "../../../components/filters/FilterStatistik";
 import CardData from "../../../components/ui/cards/CardData";
 import StatusTransaction from "../../../components/ui/StatusTransaction";
 import useRiwayatTransaksi from "./useRiwayatTransaksi";
+import AlertLabel from "../../../components/messages/AlertLabel";
 
 const RiwayatTransaksi = () => {
   const {
     metodePembayaran,
     handleSetMetodePembayaran,
-    windowSize,
-    setStatusTempo,
-    statusTempo,
     handleRedirectDetail,
     dataRiwayatTransaksi,
     handleSearch,
@@ -56,12 +51,7 @@ const RiwayatTransaksi = () => {
             handleMetodePembayaran: handleSetMetodePembayaran,
             value: metodePembayaran,
           }}
-          filterTempo={{
-            handleTempo: setStatusTempo,
-            value: statusTempo,
-          }}
         />
-
         {/* data untuk mobile */}
         <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-2xl border border-transparent dark:border-base-content/10 p-2 gap-2.5 order-3 lg:hidden">
           {isLoadingRiwayatTransaksi ? (
@@ -78,7 +68,6 @@ const RiwayatTransaksi = () => {
                 nomorReferensi={item.nomorTransaksi || ""}
                 tanggal={item?.completedAt || new Date()}
                 metodePembayaran={item.metodePembayaran || "CASH"}
-                statusTempo={item.statusTempo}
                 totalItem={item.totalItem}
                 totalTransaksi={item.totalBayar}
                 status={item.status}
@@ -94,9 +83,8 @@ const RiwayatTransaksi = () => {
             </div>
           )}
         </div>
-
         {/* data untuk > mobile */}
-        <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex order-3">
+        <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex">
           <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
             {/* head */}
 
@@ -138,11 +126,7 @@ const RiwayatTransaksi = () => {
                       </span>
                     </td>
                     <td>
-                      {formatTanggalLengkap(
-                        item.status === TRANSACTION_STATUS_TYPE.BOOKING
-                          ? (item.tanggalBooking ?? new Date())
-                          : (item.completedAt ?? new Date()),
-                      )}
+                      {formatTanggalLengkap(item.completedAt ?? new Date())}
                     </td>
                     {/* kasir */}
                     <td>
@@ -200,10 +184,7 @@ const RiwayatTransaksi = () => {
                       />
                     </td>
                     <td>
-                      <StatusTransaction
-                        status={item.status}
-                        statusTempo={item.statusTempo}
-                      />
+                      <StatusTransaction status={item.status} />
                     </td>
                     <td>
                       <button
@@ -230,40 +211,13 @@ const RiwayatTransaksi = () => {
               )}
             </tbody>
             {/* foot */}
-            <tfoot>
-              <tr>
-                {!true && true && [1].length! > 8 ? (
-                  <>
-                    <th>No. Transaksi</th>
-                    <th>Tanggal</th>
-                    <th>Kasir</th>
-                    <th>Pelanggan</th>
-                    <th>Total Item</th>
-                    <th>Total Pembayaran</th>
-                    <th>Pembayaran</th>
-                    <th>Status</th>
-                    <th className="sticky right-0 bg-base-200 z-10">Aksi</th>
-                  </>
-                ) : (
-                  <>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                  </>
-                )}
-              </tr>
-            </tfoot>
           </table>
         </div>
 
+        {/* alert label */}
+        <AlertLabel message="Data diurutkan berdasarkan pelanggan, dengan transaksi terbaru dari setiap pelanggan ditampilkan" />
         {/* pagination */}
-        <div className="w-full order-4 -mt-2">
+        <div className="w-full -mt-2">
           <PaginationAndLimit
             currentPage={dataRiwayatTransaksi?.data?.meta?.currentPage || 1}
             setPage={setPage}

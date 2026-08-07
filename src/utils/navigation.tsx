@@ -10,6 +10,7 @@ import {
   LucideArrowLeftSquare,
   LucideArrowRightSquare,
   Package,
+  ReceiptText,
   ShoppingCart,
   Store,
   UsersRound,
@@ -101,6 +102,11 @@ export const NAVIGATION_LIST_KASIR: {
     label: "Booking",
     icon: CalendarClock,
     link: "/dashboard/booking",
+  },
+  {
+    label: "Riwayat Transaksi",
+    icon: ReceiptText,
+    link: "/dashboard/riwayat-transaksi",
   },
   {
     label: "Pengajuan Barang Masuk",

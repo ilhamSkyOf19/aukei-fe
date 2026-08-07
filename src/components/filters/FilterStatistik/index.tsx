@@ -43,8 +43,7 @@ const FilterStatistik: FC<Props> = ({
       <div className="w-full grid grid-cols-2 md:grid-cols-4 bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-2 lg:gap-12">
         <div
           className={cn(
-            " hidden md:flex flex-col justify-start items-start gap-2",
-            filterMetodePembayaran && filterTempo ? "col-span-1" : "col-span-2",
+            "col-span-1 hidden md:flex flex-col justify-start items-start gap-2",
           )}
         >
           <InputSearch handleSearch={handleSearch} withLabel />
@@ -72,6 +71,7 @@ const FilterStatistik: FC<Props> = ({
               setMetode={filterMetodePembayaran.handleMetodePembayaran}
               customWidth="w-full"
               value={filterMetodePembayaran.value}
+              notTempo={filterTempo === undefined}
             />
 
             {filterMetodePembayaran.value === "tempo" && filterTempo && (

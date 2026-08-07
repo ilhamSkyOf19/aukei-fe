@@ -1,15 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useFilter } from "../../../hooks/useFilter";
-import useSizeWindows from "../../../hooks/useSizeWindows";
 import { TransactionServices } from "../../../services/transaction.service";
 import { useQueries } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 
 const useRiwayatTransaksi = () => {
-  // window size
-  const windowSize = useSizeWindows();
-
   // navigate
   const navigate = useNavigate();
 
@@ -20,13 +16,6 @@ const useRiwayatTransaksi = () => {
       allowQuery: ["semua", "cash", "transfer", "qris", "tempo"],
       defaultValueCustom: "semua",
     });
-
-  // filter status tempo
-  const { filter: statusTempo, setFilter: setStatusTempo } = useFilter({
-    paramName: "status-tempo",
-    allowQuery: ["semua", "unpaid", "paid", "overdue"],
-    defaultValueCustom: "semua",
-  });
 
   // filter search
   const { search, setSearch: handleSearch } = useFilterSearch("search");
@@ -62,7 +51,6 @@ const useRiwayatTransaksi = () => {
           startDate,
           endDate,
           metodePembayaran,
-          statusTempo,
           page,
           limit,
           search,
@@ -75,7 +63,6 @@ const useRiwayatTransaksi = () => {
             ...(metodePembayaran && {
               metodePembayaran: metodePembayaran.toLowerCase(),
             }),
-            ...(statusTempo && { statusTempo: statusTempo.toLowerCase() }),
             ...(page && { page }),
             ...(limit && { limit }),
             ...(search && { search }),
@@ -107,9 +94,6 @@ const useRiwayatTransaksi = () => {
   return {
     metodePembayaran,
     handleSetMetodePembayaran,
-    statusTempo,
-    setStatusTempo,
-    windowSize,
     handleRedirectDetail,
     isExistDataRiwayatTransaksi,
     dataRiwayatTransaksi,

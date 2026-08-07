@@ -26,16 +26,9 @@ const useRiwayatTransaksiDetail = () => {
   const { filter: metodePembayaran, setFilter: handleSetMetodePembayaran } =
     useFilter({
       paramName: "metode-pembayaran",
-      allowQuery: ["semua", "cash", "transfer", "qris", "tempo"],
+      allowQuery: ["semua", "cash", "transfer", "qris"],
       defaultValueCustom: "semua",
     });
-
-  // filter status tempo
-  const { filter: statusTempo, setFilter: setStatusTempo } = useFilter({
-    paramName: "status-tempo",
-    allowQuery: ["semua", "unpaid", "paid", "overdue"],
-    defaultValueCustom: "semua",
-  });
 
   // filter search
   const { search, setSearch: handleSearch } = useFilterSearch("search");
@@ -71,14 +64,13 @@ const useRiwayatTransaksiDetail = () => {
         startDate,
         endDate,
         metodePembayaran,
-        statusTempo,
         page,
         limit,
         search,
         sort,
       ],
       queryFn: () =>
-        TransactionServices.findRiwayatTransaksiByPelanggan({
+        TransactionServices.findRiwayatTransaksiCompletedNotTempoByPelanggan({
           id: validatedId!,
           query: {
             ...(startDate && { startDate }),
@@ -86,7 +78,6 @@ const useRiwayatTransaksiDetail = () => {
             ...(metodePembayaran && {
               metodePembayaran: metodePembayaran.toLowerCase(),
             }),
-            ...(statusTempo && { statusTempo: statusTempo.toLowerCase() }),
             ...(page && { page }),
             ...(limit && { limit }),
             ...(search && { search }),
@@ -120,8 +111,6 @@ const useRiwayatTransaksiDetail = () => {
   return {
     metodePembayaran,
     handleSetMetodePembayaran,
-    statusTempo,
-    setStatusTempo,
     windowSize,
     isExistDataRiwayatTransaksi,
     dataRiwayatTransaksi,

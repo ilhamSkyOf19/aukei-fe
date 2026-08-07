@@ -162,7 +162,17 @@
 
 - [✅] Fitur generate harga otomatis
 
-- [ ] Buat fitur struk
+- [80%] Buat fitur struk
+  - Buat flag untuk status kredit payment
+
+- [❗] Sebelum membuat halaman return barang , perbaiki dulu halaman riwayat transaksi booking, kredit dan riwayat completed, mulai sekarang jangan di campur campur , dan perbaiki juga di bagian backend nya.
+
+- [❗] Buat fitur return barang
+  - [✅] Testing create
+  - [ ] Buat pesan create
+  - [ ] Buat informasi pending jika sudah di ajukan
+  - [ ] Buat sidebar riwayat pengajuan
+  - [ ] Buat halaman pengajuan return untuk owner
 
 - [ ] Tambahkan state current pahtname untuk query infinity
 
