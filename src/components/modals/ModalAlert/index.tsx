@@ -45,7 +45,11 @@ const ModalAlert: FC<Props> = ({
         <div className="w-full flex flex-row justify-end items-end gap-2 mt-8">
           {/* button close */}
           {handleCloseModal && (
-            <ButtonCloseText label={"Batal"} handleClose={handleCloseModal} />
+            <ButtonCloseText
+              disabled={isLoading}
+              label={"Batal"}
+              handleClose={handleCloseModal}
+            />
           )}
 
           {handleConfirm && (

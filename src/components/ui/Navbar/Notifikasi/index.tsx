@@ -7,6 +7,7 @@ import CardNotifikasiTempo from "../../cards/CardNotifikasiTempo";
 import CardNotifikasiPengajuanBarang from "../../cards/CardNotifikasiPengajuanBarang";
 import CardNotifikasiProduk from "../../cards/CardNotifikasiProduk";
 import DataEmpty from "../../../messages/DataEmpty";
+import CardNotifikasiPengajuanReturBarang from "../../cards/CardNotifikasiPengajuanReturBarang";
 
 const chooseList: { label: string; value: string }[] = [
   {
@@ -24,6 +25,10 @@ const chooseList: { label: string; value: string }[] = [
   {
     label: "Pengajuan Barang",
     value: "pengajuan",
+  },
+  {
+    label: "Pengajuan Retur Barang",
+    value: "pengajuanReturBarang",
   },
 ];
 
@@ -58,6 +63,10 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
     dataNotifikasiGlobalPengajuanBarang,
     handleRedirectPengajuanBarangDetail,
     handleRedirectDetail,
+    dataNotifikasiPengajuanReturBarang,
+    dataNotifikasiGlobalPengajuanReturBarang,
+    isLoadingDataNotifikasiPengajuanReturBarang,
+    handleRedirectPengajuanReturBarangDetail,
   } = useNotifikasi({ pengguna });
 
   return (
@@ -114,7 +123,8 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
                 disabledRefresh ||
                 isLoadingDataNotifikasiProduk ||
                 isLoadingDataNotifikasiTempo ||
-                isLoadingDataNotifikasiPengajuanBarang
+                isLoadingDataNotifikasiPengajuanBarang ||
+                isLoadingDataNotifikasiPengajuanReturBarang
               }
               onClick={() => handleRefresh()}
             >
@@ -200,6 +210,19 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
                         }
                       />
                     ))}
+
+                    {/* data pengajuan reur barang */}
+                    {dataNotifikasiGlobalPengajuanReturBarang?.map(
+                      (data, index) => (
+                        <CardNotifikasiPengajuanReturBarang
+                          key={index}
+                          data={data}
+                          handleRedirectPengajuanReturBarangDetail={
+                            handleRedirectPengajuanReturBarangDetail
+                          }
+                        />
+                      ),
+                    )}
                   </>
                 ) : (
                   <div className="pointer-events-none w-full h-full flex flex-col justify-center items-center">
@@ -270,6 +293,31 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
                       data={item}
                       handleRedirectPengajuanBarangDetail={
                         handleRedirectPengajuanBarangDetail
+                      }
+                    />
+                  ))
+                ) : (
+                  <div className="pointer-events-none w-full h-full flex flex-col justify-center items-center">
+                    <DataEmpty
+                      iconData={BellOff}
+                      title="Tidak Ada Notifikasi Pengajuan Barang"
+                      description="Belum ada data notifikasi pengajuan barang yang dapat ditampilkan saat ini"
+                      xs
+                    />
+                  </div>
+                ))}
+
+              {/* data notifikasi pengajuan retur barang */}
+              {isChoose === "pengajuanReturBarang" &&
+                (dataNotifikasiPengajuanReturBarang &&
+                dataNotifikasiPengajuanReturBarang.data &&
+                dataNotifikasiPengajuanReturBarang.data?.length > 0 ? (
+                  dataNotifikasiPengajuanReturBarang.data.map((item, index) => (
+                    <CardNotifikasiPengajuanReturBarang
+                      key={index}
+                      data={item}
+                      handleRedirectPengajuanReturBarangDetail={
+                        handleRedirectPengajuanReturBarangDetail
                       }
                     />
                   ))

@@ -169,8 +169,13 @@
 
 - [❗] Buat fitur return barang
   - [✅] Testing create
-  - [ ] Buat pesan create
-  - [ ] Buat informasi pending jika sudah di ajukan
+  - [✅] Buat pesan create
+  - [✅] Buat halaman daftar retur barang berdasarkan role nya
+  - [✅] Buat informasi pending jika sudah di ajukan
+  - [✅] Buat fitur redirect dari halam retur barang ke detail retur barang jika sudah membuat data
+  - [✅] Buat riwayat pengajuan return barang
+  - [ ] Buat fitur toast saat setelah mengajukan untuk kasir dan setelah verifikasi untuk owner
+  - [ ] Buat invalidated notifikasi ketika setelah verifikasi dan mengajukan
   - [ ] Buat sidebar riwayat pengajuan
   - [ ] Buat halaman pengajuan return untuk owner
 

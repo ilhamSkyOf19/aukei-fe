@@ -163,13 +163,13 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
                         >
                           <div className="relative flex justify-center">
                             {lastIndex && (
-                              <div className="absolute top-7 h-[92%] left-1/2 w-px -translate-x-1/2 bg-base-content/20" />
+                              <div className="absolute top-6.5 h-[93%] -bottom-6 left-1/2 w-px -translate-x-1/2 bg-base-content/20" />
                             )}
 
                             {/* dot */}
                             <div
                               className={cn(
-                                "mt-1 h-6 w-6 md:h-5 md:w-5 rounded-full border relative flex flex-row justify-center items-center",
+                                "mt-1 h-6 w-6 md:h-5.5 md:w-5.5 rounded-full border relative flex flex-row justify-center items-center",
                                 style.borderDot,
                               )}
                             >

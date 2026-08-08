@@ -8,7 +8,6 @@ import {
   Phone,
   ReceiptText,
   Trash2,
-  Undo,
   Undo2,
   UserRound,
   X,
@@ -37,6 +36,7 @@ import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import ModalAlert from "../../../components/modals/ModalAlert";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import AlertLabel from "../../../components/messages/AlertLabel";
+import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 
 const ReturBarang = () => {
   const {
@@ -57,6 +57,8 @@ const ReturBarang = () => {
     handleSubmit,
     isPendingMutateReturBarang,
     onSubmit,
+    isCanSimpanAndAjukan,
+    pengguna,
   } = useReturBarang();
 
   return (
@@ -120,6 +122,8 @@ const ReturBarang = () => {
             isActive={dataForReturBarang?.data?.pelanggan?.isActive}
           />
         </div>
+
+        {/* data */}
         <div
           className={cn(
             "w-full flex flex-col justify-start items-start rounded-xl border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm overflow-hidden",
@@ -441,7 +445,7 @@ const ReturBarang = () => {
                   name="customTotalRefund"
                   placeholder="Contoh: 10.000"
                   caption="Silahkan isi jika ingin mengubah total refund"
-                  disabled={fields.length === 0}
+                  disabled={!isCanSimpanAndAjukan}
                 />
               </div>
 
@@ -459,9 +463,14 @@ const ReturBarang = () => {
 
                 {/* simpan dan ajukan */}
                 <ButtonWithIcon
+                  disabled={!isCanSimpanAndAjukan}
                   typeButton="submit"
                   icon={Check}
-                  label="Simpan dan Ajukan"
+                  label={
+                    pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+                      ? "Simpan dan Review"
+                      : "Simpan dan Ajukan"
+                  }
                   customWidth="col-span-1"
                 />
               </div>
@@ -480,6 +489,7 @@ const ReturBarang = () => {
         handleCloseModal={handleCancelConfirm}
         handleConfirm={handleConfirm}
         labelNext="Lanjutkan"
+        isLoading={isPendingMutateReturBarang}
       />
     </div>
   );

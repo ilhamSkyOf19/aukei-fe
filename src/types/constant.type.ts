@@ -190,3 +190,60 @@ export const inventoryNotification: Record<
     icon: Ban,
   },
 } as const;
+
+export const returBarangNotification: Record<
+  ReturnStatus,
+  {
+    title: string;
+    description: string;
+    color: string;
+    bg: string;
+    bullet: string;
+    icon: LucideIcon;
+  }
+> = {
+  DRAFT: {
+    title: "Pengajuan Draft",
+    description: "Pengajuan masih berupa draft.",
+    color: "text-blue-500",
+    bg: "bg-blue-50",
+    bullet: "status-custom-blue",
+    icon: FilePenLine,
+  },
+
+  PENDING: {
+    title: "Menunggu Persetujuan",
+    description: "Pengajuan retur barang menunggu persetujuan.",
+    color: "text-amber-500",
+    bg: "bg-amber-50",
+    bullet: "status-custom-yellow",
+    icon: Clock3,
+  },
+
+  APPROVED: {
+    title: "Pengajuan Disetujui",
+    description: "Pengajuan retur barang berhasil diproses.",
+    color: "text-emerald-500",
+    bg: "bg-emerald-50",
+    bullet: "status-custom-green",
+    icon: CircleCheckBig,
+  },
+
+  REJECTED: {
+    title: "Pengajuan Ditolak",
+    description: "Pengajuan retur barang ditolak.",
+    color: "text-rose-500",
+    bg: "bg-rose-50",
+    bullet: "status-custom-red",
+    icon: CircleX,
+  },
+
+  CANCELLED: {
+    title: "Pengajuan Dibatalkan",
+    description: "Pengajuan retur barang dibatalkan.",
+    color: "text-gray-500",
+    bg: "bg-gray-50",
+    bullet: "",
+    icon: Ban,
+  },
+} as const;

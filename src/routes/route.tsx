@@ -33,6 +33,7 @@ import NotFoundPage from "../pages/404";
 import NotifikasiPage from "../pages/NotifikasiPage";
 import ReturBarangPage from "../pages/ReturBarangPage";
 import DaftarReturBarangPage from "../pages/DaftarReturBarangPage";
+import ReturBarangDetailPage from "../pages/ReturBarangDetailPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -275,7 +276,16 @@ const route = createBrowserRouter([
                   },
                   {
                     path: "daftar-retur-barang",
-                    element: <DaftarReturBarangPage />,
+                    children: [
+                      {
+                        index: true,
+                        element: <DaftarReturBarangPage />,
+                      },
+                      {
+                        path: "detail/:returBarangId",
+                        element: <ReturBarangDetailPage />,
+                      },
+                    ],
                   },
                   {
                     path: "retur-barang",

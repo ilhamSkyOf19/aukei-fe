@@ -11,9 +11,13 @@ import StatusPelanggan from "../../../../components/StatusPelanggan";
 import type { FC } from "react";
 import type {
   PaymentMethodType,
+  ReturnStatus,
+  RoleInternalType,
   TempoStatusType,
   TransactionStatusType,
 } from "../../../../types/constant.type";
+import RoleLabel from "../../RoleLabel";
+import StatusReturBarang from "../../StatusReturBarang";
 
 type Props = {
   label: string;
@@ -31,8 +35,10 @@ type Props = {
   smallValue?: string | null;
   customWidth?: string;
   isActive?: boolean;
+  role?: RoleInternalType;
   statusTransaction?: TransactionStatusType | null;
   statusTempo?: TempoStatusType | null;
+  statusRetur?: ReturnStatus;
 };
 const CardStatistikLarge: FC<Props> = ({
   icon,
@@ -43,6 +49,8 @@ const CardStatistikLarge: FC<Props> = ({
   isActive,
   statusTransaction,
   statusTempo,
+  statusRetur,
+  role,
 }) => {
   return (
     <div
@@ -58,6 +66,12 @@ const CardStatistikLarge: FC<Props> = ({
         </div>
       )}
 
+      {role && (
+        <div className="absolute top-2 right-2">
+          <RoleLabel role={role} />
+        </div>
+      )}
+
       {(statusTransaction || statusTempo) && (
         <div className="absolute top-1 right-2">
           <StatusTransaction
@@ -66,11 +80,17 @@ const CardStatistikLarge: FC<Props> = ({
           />
         </div>
       )}
+
+      {statusRetur && (
+        <div className="absolute top-1 right-2">
+          <StatusReturBarang status={statusRetur ?? undefined} />
+        </div>
+      )}
       {/* icon */}
       {icon.largeIcon && (
         <div
           className={cn(
-            "w-14 h-14 flex justify-center items-center rounded-full",
+            "w-14 h-14 shrink-0 flex justify-center items-center rounded-full",
             icon.bgColor,
           )}
         >

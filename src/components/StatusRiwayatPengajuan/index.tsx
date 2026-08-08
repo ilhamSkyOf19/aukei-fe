@@ -31,13 +31,13 @@ export const StatusPending = ({ size }: { size?: Size }) => {
   return (
     <div
       className={cn(
-        `inline-flex items-center gap-2 rounded-lg text-sm font-semibold bg-amber-100 text-amber-600`,
+        `inline-flex items-center gap-2 rounded-lg text-sm font-medium bg-amber-100 text-amber-600`,
         size === "xs" ? "px-2.5 py-1.5" : "px-3 py-2",
       )}
     >
       <ClockAlert size={size === "xs" ? 14 : 16} />
       <span className={cn(size === "xs" ? "text-[0.625rem]" : "text-xs")}>
-        {STATUS_INVENTORI_TYPE.PENDING}
+        Menunggu
       </span>
     </div>
   );
@@ -47,13 +47,13 @@ export const StatusRejected = ({ size }: { size?: Size }) => {
   return (
     <div
       className={cn(
-        `inline-flex items-center gap-2 rounded-lg text-sm font-semibold bg-rose-100 text-rose-600`,
+        `inline-flex items-center gap-2 rounded-lg text-sm font-medium bg-rose-100 text-rose-600`,
         size === "xs" ? "px-2.5 py-1.5" : "px-3 py-2",
       )}
     >
       <RefreshCcw size={size === "xs" ? 14 : 16} />
       <span className={cn(size === "xs" ? "text-[0.625rem]" : "text-xs")}>
-        {STATUS_INVENTORI_TYPE.REJECTED}
+        Ditolak
       </span>
     </div>
   );
@@ -68,7 +68,7 @@ export const StatusPosted: FC<StatusPostedProps> = ({ size, label }) => {
   return (
     <div
       className={cn(
-        `inline-flex items-center gap-2 rounded-lg text-sm font-semibold bg-emerald-100 text-emerald-600`,
+        `inline-flex items-center gap-2 rounded-lg text-sm font-medium bg-emerald-100 text-emerald-600`,
         size === "xs" ? "px-2.5 py-1.5" : "px-3 py-2",
       )}
     >
@@ -89,13 +89,13 @@ export const StatusDraft: FC<StatusDraftProps> = ({ label, size }) => {
   return (
     <div
       className={cn(
-        `inline-flex items-center gap-2 rounded-lg text-sm font-semibold bg-sky-100 text-sky-600`,
+        `inline-flex items-center gap-2 rounded-lg text-sm font-medium bg-sky-100 text-sky-600`,
         size === "xs" ? "px-2.5 py-1.5" : "px-3 py-2",
       )}
     >
       <Inbox size={size === "xs" ? 14 : 16} />
       <span className={cn(size === "xs" ? "text-[0.625rem]" : "text-xs")}>
-        {label ?? "KOSONG"}
+        {label ?? "Kosong"}
       </span>
     </div>
   );

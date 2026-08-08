@@ -1,8 +1,5 @@
 import z from "zod";
-import type {
-  CreateReturnDetailRequestType,
-  CreateReturnRequestType,
-} from "../models/returBarang.model";
+import type { CreateReturnRequestType } from "../models/returBarang.model";
 
 export class ReturBarangValidations {
   static readonly CREATE = z
@@ -53,4 +50,23 @@ export class ReturBarangValidations {
         .min(1, "Minimal harus terdapat 1 detail return."),
     })
     .strict() satisfies z.ZodType<CreateReturnRequestType>;
+
+  static readonly KETERANGAN = z
+    .object({
+      keterangan: z
+        .string("keterangan harap diisi")
+        .min(1, "keterangan harap diisi")
+        .max(300, "keterangan maksimal 300 karakter"),
+    })
+    .strict() satisfies z.ZodType<{ keterangan: string }>;
+
+  static readonly KETERANGAN_PENGAJUAN = z
+    .object({
+      keterangan: z
+        .string("keterangan harap diisi")
+        .min(1, "keterangan harap diisi")
+        .max(300, "keterangan maksimal 300 karakter")
+        .optional(),
+    })
+    .strict() satisfies z.ZodType<{ keterangan?: string }>;
 }

@@ -1,7 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type NotifikasiPilihanType = "produk" | "tempo" | "pengajuanBarang";
+export type NotifikasiPilihanType =
+  | "produk"
+  | "tempo"
+  | "pengajuanBarang"
+  | "pengajuanReturBarang";
 
 interface NotifikasiStore {
   selectedNotifikasi: NotifikasiPilihanType;

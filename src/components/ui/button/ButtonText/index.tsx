@@ -33,7 +33,6 @@ const ButtonText: FC<Props> = ({
         !disable && "hover-overlay",
       )}
       disabled={disable || isLoading}
-      style={{ cursor: disable ? "not-allowed" : "pointer" }}
       onClick={() => handleClick?.()}
     >
       {isLoading ? (

@@ -1,8 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import useModal from "./useModal";
 
+type ConfirmOptions = {
+  disableCloseAfterSubmit?: boolean;
+};
+
 const useConfirm = <T = undefined,>() => {
-  const { modalRef, handleShowModal, handleCloseModal } = useModal();
+  const {
+    modalRef,
+    handleShowModal,
+    handleCloseModal: closeModal,
+  } = useModal();
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -10,8 +18,20 @@ const useConfirm = <T = undefined,>() => {
 
   const resolverRef = useRef<((value: boolean) => void) | null>(null);
 
-  const confirm = (data?: T) => {
+  const disableCloseAfterSubmitRef = useRef<boolean>(false);
+
+  // handle final close modal
+  const handleCloseModal = () => {
+    closeModal();
+    setData(undefined);
+  };
+
+  const confirm = (data?: T, options?: ConfirmOptions) => {
     setData(data);
+
+    disableCloseAfterSubmitRef.current =
+      options?.disableCloseAfterSubmit ?? false;
+
     handleShowModal();
 
     return new Promise<boolean>((resolve) => {
@@ -23,8 +43,11 @@ const useConfirm = <T = undefined,>() => {
     resolverRef.current?.(true);
     resolverRef.current = null;
 
+    if (disableCloseAfterSubmitRef.current) {
+      return;
+    }
+
     handleCloseModal();
-    setData(undefined);
   };
 
   const clearData = () => {
@@ -59,6 +82,7 @@ const useConfirm = <T = undefined,>() => {
     confirm,
     handleConfirm,
     handleCancel,
+    handleCloseModal,
   };
 };
 

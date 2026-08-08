@@ -1,6 +1,6 @@
 import { Eye } from "lucide-react";
 import { cn } from "../../utils/cn";
-import { STATUS_INVENTORI_TYPE } from "../../types/constant.type";
+import { RETURN_STATUS } from "../../types/constant.type";
 import {
   StatusDraft,
   StatusPending,
@@ -8,25 +8,24 @@ import {
   StatusRejected,
 } from "../StatusRiwayatPengajuan";
 import { formatTanggalPanjang } from "../../helpers/formatDate";
-import useSideBarRiwayatPengajuan from "./useSideBarRiwayatPengajuan";
-import { statusStyle } from "../../types/statusStyle";
+import { statusStyleReturBarang } from "../../types/statusStyle";
 import PaginationAndLimit from "../filters/PaginationAndLimit";
 import useContentSideBar from "../../hooks/useContentSideBar";
+import useSideBarRiwayatPengajuan from "./useSideBarRiwayatPengajuanReturBarang";
 
-const SideBarRiwayatPengajuan = () => {
+const SideBarRiwayatPengajuanReturBarang = () => {
   // call use
   const {
-    dataRiwayat,
+    dataRiwayatReturBarang,
     isExistDataRiwayat,
-    isLoadingRiwayat,
+    isLoadingRiwayatReturBarang,
     setPage,
-    isBarangMasuk,
   } = useSideBarRiwayatPengajuan();
 
   const { drawerRef, handleClose, handleOpen } = useContentSideBar();
 
   return (
-    <div className="drawer drawer-end">
+    <div className="drawer drawer-end flex flex-row justify-end items-end">
       <input
         ref={drawerRef}
         id="my-drawer-5"
@@ -42,7 +41,7 @@ const SideBarRiwayatPengajuan = () => {
         >
           <Eye className="size-4 text-custom-secondary" />
           <span className="text-xs font-medium text-custom-secondary">
-            Lihat
+            Lihat Riwayat Pengajuan Retur
           </span>
         </button>
       </div>
@@ -56,7 +55,7 @@ const SideBarRiwayatPengajuan = () => {
         />
         <div className="menu bg-base-100 h-screen w-70 md:w-120 overflow-hidden">
           <div className="w-full h-full flex flex-col justify-start items-start p-2.5">
-            {isLoadingRiwayat ? (
+            {isLoadingRiwayatReturBarang ? (
               <div className="w-full flex flex-col justify-start items-start">
                 {/* title skeleton */}
                 <div className="w-full border-b border-base-content/50 pb-4">
@@ -74,29 +73,28 @@ const SideBarRiwayatPengajuan = () => {
               <>
                 <div className="w-full flex-1 flex flex-col justify-start items-start pb-4 mb-2 gap-1">
                   <h1 className="text-base font-semibold text-base-content">
-                    Riwayat Pengajuan{" "}
-                    {isBarangMasuk ? "Barang Masuk" : "Barang Keluar"}
+                    Riwayat Pengajuan Retur Barang
                   </h1>
 
                   <span className="text-xs text-base-content/50">
-                    Berikut adalah riwayat perubahan dan status dari pengajuan
-                    ini.
+                    Berikut adalah riwayat pengajuan retur barang
                   </span>
                 </div>
 
                 <div className="w-full flex-12 scrollbar-thumb-custom-secondary overflow-y-auto flex flex-col justify-start items-start">
                   {/* is loading */}
-                  {isLoadingRiwayat ? (
+                  {isLoadingRiwayatReturBarang ? (
                     <div className="w-full flex flex-row justify-center items-center">
                       <span className="text-base-content/60 text-xs ">
                         Riwayat Tidak Tersedia
                       </span>
                     </div>
                   ) : isExistDataRiwayat ? (
-                    dataRiwayat?.data?.data.map((item, index) => {
-                      const style = statusStyle[item.status];
+                    dataRiwayatReturBarang?.data?.data.map((item, index) => {
+                      const style = statusStyleReturBarang[item.status];
                       const isLast =
-                        index === (dataRiwayat?.data?.data?.length || 0) - 1;
+                        index ===
+                        (dataRiwayatReturBarang?.data?.data?.length || 0) - 1;
 
                       return (
                         <div
@@ -112,7 +110,7 @@ const SideBarRiwayatPengajuan = () => {
                             {/* dot */}
                             <div
                               className={cn(
-                                "mt-1 h-6 w-6 md:h-5.5 md:w-5.5 rounded-full border relative flex flex-row justify-center items-center",
+                                "mt-0.5 h-6 w-6 md:h-5.5 md:w-5.5 rounded-full border relative flex flex-row justify-center items-center",
                                 style.borderDot,
                               )}
                             >
@@ -137,19 +135,21 @@ const SideBarRiwayatPengajuan = () => {
                                     {/* status */}
                                     <div className="flex flex-row justify-start items-center">
                                       {item.status ===
-                                        STATUS_INVENTORI_TYPE.POSTED && (
-                                        <StatusPosted size="xs" />
+                                        RETURN_STATUS.APPROVED && (
+                                        <StatusPosted
+                                          size="xs"
+                                          label="Disetujui"
+                                        />
                                       )}
                                       {item.status ===
-                                        STATUS_INVENTORI_TYPE.REJECTED && (
+                                        RETURN_STATUS.REJECTED && (
                                         <StatusRejected size="xs" />
                                       )}
-                                      {item.status ===
-                                        STATUS_INVENTORI_TYPE.DRAFT && (
+                                      {item.status === RETURN_STATUS.DRAFT && (
                                         <StatusDraft size="xs" />
                                       )}
                                       {item.status ===
-                                        STATUS_INVENTORI_TYPE.PENDING && (
+                                        RETURN_STATUS.PENDING && (
                                         <StatusPending size="xs" />
                                       )}
                                     </div>
@@ -185,13 +185,17 @@ const SideBarRiwayatPengajuan = () => {
                 </div>
 
                 {/* pagination */}
-                {(dataRiwayat?.data?.meta?.totalPage ?? 1) >= 2 && (
+                {(dataRiwayatReturBarang?.data?.meta?.totalPage ?? 1) >= 2 && (
                   <div className="w-full flex-1">
                     <PaginationAndLimit
-                      currentPage={dataRiwayat?.data?.meta?.currentPage ?? 1}
+                      currentPage={
+                        dataRiwayatReturBarang?.data?.meta?.currentPage ?? 1
+                      }
                       setPage={setPage}
-                      totalPage={dataRiwayat?.data?.meta?.totalPage ?? 1}
-                      isLoading={isLoadingRiwayat}
+                      totalPage={
+                        dataRiwayatReturBarang?.data?.meta?.totalPage ?? 1
+                      }
+                      isLoading={isLoadingRiwayatReturBarang}
                       customWindowSize={3}
                     />
                   </div>
@@ -205,4 +209,4 @@ const SideBarRiwayatPengajuan = () => {
   );
 };
 
-export default SideBarRiwayatPengajuan;
+export default SideBarRiwayatPengajuanReturBarang;

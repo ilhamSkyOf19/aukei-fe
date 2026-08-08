@@ -40,8 +40,8 @@ const DataBooking: FC<Props> = ({ pilihan }) => {
   } = useDataBooking({ pilihan });
   return (
     <div className="w-full flex flex-col justify-start items-start gap-2.5 -mt-2">
-      {/* filter */}
       <div className="w-full flex flex-col justify-start items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
+        {/* filter */}
         <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start">
           <div className="w-full md:flex-1 flex flex-col justify-start items-start gap-1.5">
             <InputSearch

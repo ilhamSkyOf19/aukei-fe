@@ -5,7 +5,6 @@ import {
   CalendarClock,
   ChartLine,
   HandCoins,
-  History,
   LayoutDashboard,
   LucideArrowLeftSquare,
   LucideArrowRightSquare,
@@ -63,7 +62,7 @@ export const NAVIGATION_LIST_OWNER: {
   },
   {
     label: "Riwayat Transaksi",
-    icon: History,
+    icon: ReceiptText,
     link: "/dashboard/riwayat-transaksi",
   },
   {

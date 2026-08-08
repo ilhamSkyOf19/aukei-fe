@@ -1,4 +1,5 @@
-import type { ReturnStatus } from "../types/constant.type";
+import type { MetaType, ReturnStatus } from "../types/constant.type";
+import type { IPelangganType } from "./pelanggan.model";
 import type { IPenggunaInternalType } from "./penggunaInternal.model";
 import type { IProduk } from "./produk.model";
 import type { ITransactionType } from "./transaction.model";
@@ -37,8 +38,6 @@ export interface CreateReturBarangForService extends Pick<
 
 export interface IReturnDetailType {
   id: number;
-
-  returnTransactionId: number;
 
   transactionDetailId: number;
 
@@ -88,7 +87,7 @@ export interface IReturnTransactionType {
 
   createdById: number;
 
-  createdBy?: Pick<IPenggunaInternalType, "id" | "nama" | "username">;
+  createdBy?: Pick<IPenggunaInternalType, "id" | "nama" | "username" | "role">;
 
   tanggalReturn: Date;
 
@@ -98,7 +97,10 @@ export interface IReturnTransactionType {
 
   verifiedById?: number | null;
 
-  verifiedBy?: Pick<IPenggunaInternalType, "id" | "nama" | "username"> | null;
+  verifiedBy?: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "username" | "role"
+  > | null;
 
   verifiedAt?: Date | null;
 
@@ -138,3 +140,64 @@ export type ResponseReturnDetailType = Pick<
     }
   >;
 };
+
+export interface ResponseRegularReturnTransactionType {
+  id: number;
+  kodeReferensi: string;
+  transactionId: number;
+  createdBy: Pick<IPenggunaInternalType, "id" | "nama" | "role">;
+  tanggalReturn: Date;
+  status: ReturnStatus;
+  keterangan?: string | null;
+  totalRefundAll: number;
+  verifiedBy?: Pick<IPenggunaInternalType, "id" | "nama" | "role"> | null;
+  verifiedAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// response with meta
+export interface ResponseRegularReturnTransactionWithMetaType {
+  data: Array<ResponseRegularReturnTransactionType>;
+  meta: MetaType;
+}
+
+export type ResponseReturnForByIdType = Pick<
+  IReturnTransactionType,
+  | "id"
+  | "createdBy"
+  | "keterangan"
+  | "kodeReferensi"
+  | "status"
+  | "tanggalReturn"
+  | "verifiedBy"
+  | "verifiedAt"
+  | "totalRefundAll"
+> & {
+  returDetails: Omit<IReturnDetailType, "transactionDetail">[];
+  transaction: Pick<
+    ITransactionType,
+    "id" | "nomorTransaksi" | "status" | "completedAt"
+  > & {
+    details: Array<
+      Pick<
+        ITransactionDetailType,
+        | "id"
+        | "hargaJual"
+        | "produk"
+        | "totalRetur"
+        | "diskon"
+        | "quantity"
+        | "subtotal"
+      >
+    >;
+    pelanggan: Pick<IPelangganType, "id" | "noWa" | "nama" | "isActive">;
+  };
+};
+
+export interface ResponseUpdateStatusReturnTransactionType extends Pick<
+  IReturnTransactionType,
+  "id" | "status" | "kodeReferensi"
+> {
+  tanggalDiAjukan: Date;
+}

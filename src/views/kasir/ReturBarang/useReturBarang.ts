@@ -19,8 +19,13 @@ import useConfirm from "../../../hooks/useConfirm";
 import { ReturBarangServices } from "../../../services/returBarang.service";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
+import { useAuthStore } from "../../../stores/authStore";
+import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 
 const useReturBarang = () => {
+  const pengguna = useAuthStore((state) => state.pengguna);
+
+  // navigate
   const navigate = useNavigate();
 
   const currentPathname = useLocation().pathname;
@@ -51,6 +56,7 @@ const useReturBarang = () => {
     handleCancel: handleCancelConfirm,
     handleConfirm,
     modalRef: modalConfirmRef,
+    handleCloseModal: handleCloseModalConfirm,
   } = useConfirm<{
     bigTitle: string;
     smallTitle: string;
@@ -193,18 +199,23 @@ const useReturBarang = () => {
   } = useMutation({
     mutationFn: (data: CreateReturBarangForService) =>
       ReturBarangServices.create(data),
-    onSuccess: () => {
+    onSuccess: (data) => {
       // reset
       reset();
 
-      navigate(
-        `${currentPathname.split("/").slice(0, -1).join("/")}/daftar-retur-barang`,
-        {
-          state: {
-            toast: "created_retur_barang",
+      if (data) {
+        navigate(
+          `${currentPathname.split("/").slice(0, -1).join("/")}/daftar-retur-barang/detail/${data.data?.id}`,
+          {
+            state: {
+              toast: "created_retur_barang",
+            },
           },
-        },
-      );
+        );
+      }
+
+      // close modal confirm
+      handleCloseModalConfirm();
     },
     onError: (err) => {
       if (axios.isAxiosError<ErrorResponse>(err)) {
@@ -226,11 +237,18 @@ const useReturBarang = () => {
       if (!validateTransactionId) return;
 
       // confirm
-      const isConfirm = await confirm({
-        bigTitle: "Apakah Anda yakin ingin memproses retur barang?",
-        smallTitle:
-          "Pastikan seluruh data retur sudah benar. Setelah diajukan, retur akan menunggu verifikasi dari owner sebelum diproses.",
-      });
+      const isConfirm = await confirm(
+        {
+          bigTitle: "Apakah Anda yakin ingin memproses retur barang?",
+          smallTitle:
+            pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+              ? "Pastikan seluruh data retur sudah benar. Retur akan masuk tahap review. Silakan review dan setujui jika data sudah sesuai."
+              : "Pastikan seluruh data retur sudah benar. Setelah diajukan, retur akan menunggu verifikasi dari owner sebelum diproses.",
+        },
+        {
+          disableCloseAfterSubmit: true,
+        },
+      );
 
       if (!isConfirm) return;
 
@@ -248,6 +266,15 @@ const useReturBarang = () => {
       console.log(error);
     }
   };
+
+  const isCanSimpanAndAjukan = useMemo(() => {
+    return (
+      fields.length > 0 &&
+      detailsWatch.every(
+        (item) => item.quantityGood > 0 || item.quantityDamaged > 0,
+      )
+    );
+  }, [detailsWatch, fields]);
 
   return {
     handleBack,
@@ -267,6 +294,8 @@ const useReturBarang = () => {
     onSubmit,
     isPendingMutateReturBarang,
     handleSubmit,
+    isCanSimpanAndAjukan,
+    pengguna,
   };
 };
 
