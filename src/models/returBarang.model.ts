@@ -25,7 +25,7 @@ export interface CreateReturnDetailRequestType {
 
 export interface CreateReturBarangForService extends Pick<
   CreateReturnRequestType,
-  "customTotalRefund"
+  "customTotalRefund" | "keterangan"
 > {
   transactionId: number;
   details: Array<
@@ -63,6 +63,7 @@ export interface IReturnDetailType {
 // create
 export interface CreateReturnRequestType {
   customTotalRefund?: number;
+  keterangan?: string;
   details: CreateReturnDetailRequestType[];
 }
 
@@ -189,6 +190,7 @@ export type ResponseReturnForByIdType = Pick<
         | "diskon"
         | "quantity"
         | "subtotal"
+        | "totalHarga"
       >
     >;
     pelanggan: Pick<IPelangganType, "id" | "noWa" | "nama" | "isActive">;
@@ -201,3 +203,13 @@ export interface ResponseUpdateStatusReturnTransactionType extends Pick<
 > {
   tanggalDiAjukan: Date;
 }
+
+export interface ResponseDataReturBarangDetailType extends Pick<
+  IReturnDetailType,
+  | "id"
+  | "quantityDamaged"
+  | "quantityGood"
+  | "quantityReturn"
+  | "totalRefund"
+  | "transactionDetailId"
+> {}

@@ -2,9 +2,11 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useToastAnimation } from "../../../hooks/useToast";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useFilter } from "../../../hooks/useFilter";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { parseId } from "../../../helpers/helpers";
 import { ReturBarangServices } from "../../../services/returBarang.service";
+import { useAuthStore } from "../../../stores/authStore";
+import useModal from "../../../hooks/useModal";
 
 const useDaftarReturBarang = () => {
   const navigate = useNavigate();
@@ -12,8 +14,14 @@ const useDaftarReturBarang = () => {
   // get current pathname
   const currentPathname = useLocation().pathname;
 
+  // get pengguna
+  const pengguna = useAuthStore((state) => state.pengguna);
+
+  // query client
+  const queryClient = useQueryClient();
+
   // handle toast
-  const { toast } = useToastAnimation();
+  const { toast, handleSetToast } = useToastAnimation();
 
   // get transaction id from params
   const { transactionId } = useParams<{ transactionId: string }>();
@@ -43,11 +51,21 @@ const useDaftarReturBarang = () => {
     isNumber: true,
   });
 
+  // use modal delete
+  const {
+    modalRef: modalDeleteRef,
+    handleShowModal: handleShowModalDelete,
+    handleCloseModal: handleCloseModalDelete,
+    idModal: idModalDelete,
+    dataModal: dataDelete,
+  } = useModal<{ kodeReferensi?: string }>();
+
   // filter status
   const { filter: status, setFilter: handleStatus } = useFilter({
     paramName: "status",
-    allowQuery: ["unpaid", "paid", "overdue", "partial", "semua"],
+    allowQuery: ["approved", "pending", "rejected", "semua"],
     defaultValueCustom: "semua",
+    resetPage: true,
   });
 
   // use query
@@ -92,6 +110,31 @@ const useDaftarReturBarang = () => {
     return navigate(`${currentPathname}/detail/${id}`);
   };
 
+  // mutate delete
+  const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(
+    {
+      mutationFn: (id: number) => ReturBarangServices.delete({ id }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["daftar-retur-barang"] });
+
+        handleSetToast("deleted_retur_barang");
+      },
+      onError: (error: any) => {
+        console.log(error);
+      },
+    },
+  );
+
+  // handle delete
+  const handleDelete = async () => {
+    try {
+      await mutateDelete(idModalDelete!);
+      return handleCloseModalDelete();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     toast,
     handleBack,
@@ -106,6 +149,16 @@ const useDaftarReturBarang = () => {
     isLoadingReturBarang,
     isExistingDaftarReturBarang,
     handleRedirectDetail,
+    pengguna,
+
+    // delete
+    modalDeleteRef,
+    idModalDelete,
+    handleShowModalDelete,
+    handleCloseModalDelete,
+    handleDelete,
+    isPendingDelete,
+    dataDelete,
   };
 };
 

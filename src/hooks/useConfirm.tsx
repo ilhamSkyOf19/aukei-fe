@@ -64,7 +64,7 @@ const useConfirm = <T = undefined,>() => {
     resolverRef.current?.(false);
     resolverRef.current = null;
 
-    handleCloseModal();
+    closeModal();
     clearData();
   };
 

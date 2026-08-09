@@ -1,9 +1,12 @@
 import {
+  AlertTriangle,
   Calendar,
   Check,
+  ChevronsRightIcon,
   CircleAlert,
   PackageCheck,
   PackageX,
+  Pencil,
   Phone,
   ReceiptText,
   Trash2,
@@ -31,6 +34,10 @@ import {
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_RETUR_BARANG_DETAIL } from "../../../types/toast.type";
 import SideBarRiwayatPengajuanReturBarang from "../../../components/SideBarRiwayatPengajuanReturBarang";
+import ModalAlert from "../../../components/modals/ModalAlert";
+import CardProdukTransaksi from "../../../components/ui/cards/CardProdukTransaksi";
+import DataEmpty from "../../../components/messages/DataEmpty";
+import CardProdukRetur from "../../../components/ui/cards/CardProdukRetur";
 
 const ReturBarangDetail = () => {
   const {
@@ -48,6 +55,14 @@ const ReturBarangDetail = () => {
     handleSetAlert,
     pengguna,
     toast,
+    dataModalKonfirmasiVerifikasi,
+    handleCancelModalKonfirmasiVerifikasi,
+    handleKonfirmasiModalKonfirmasiVerifikasi,
+    handleSetuju,
+    isPendingVerifikasiPengajuanReturBarang,
+    modalKonfirmasiVerifikasiRef,
+    isSomeStokNotEnough,
+    handleRedirectUbahData,
   } = useReturBarangDetail();
 
   return (
@@ -60,10 +75,9 @@ const ReturBarangDetail = () => {
           color={TOAST_CONFIG_RETUR_BARANG_DETAIL[toast.type].color}
         />
       )}
-
       <div className="w-full flex flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5">
         <ButtonBackText handleClick={() => handleBack()} />
-        <div className="w-full bg-base-100 rounded-2xl md:rounded-xl grid grid-cols-3 p-2.5 gap-2.5 flex-wrap border border-transparent dark:border-base-content/10 shadow-sm">
+        <div className="w-full bg-base-100 rounded-2xl md:rounded-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2.5 gap-2.5 flex-wrap border border-transparent dark:border-base-content/10 shadow-sm">
           {/* nomor transaksi */}
           <CardStatistikLarge
             icon={{
@@ -140,7 +154,19 @@ const ReturBarangDetail = () => {
             isActive={dataReturBarang?.data?.transaction.pelanggan?.isActive}
           />
 
-          <div className="col-span-2 flex flex-row justify-end items-end">
+          <div className="col-span-1 border border-base-content/10 rounded-2xl md:rounded-xl flex flex-col justify-start items-start gap-0.5 p-2.5">
+            {/* label */}
+            <span className="text-base-content/70 font-medium text-[0.7rem]">
+              Keterangan
+            </span>
+
+            {/* keterangan */}
+            <span className="text-base-content font-medium text-[0.7rem]">
+              {dataReturBarang?.data?.keterangan ?? "-"}
+            </span>
+          </div>
+
+          <div className="col-span-1 flex flex-row justify-end items-end">
             <SideBarRiwayatPengajuanReturBarang />
           </div>
         </div>
@@ -148,10 +174,10 @@ const ReturBarangDetail = () => {
         {/* data */}
         <div
           className={cn(
-            "w-full flex flex-col justify-start items-start rounded-xl border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm overflow-hidden p-2.5",
+            "w-full flex flex-col justify-start items-start rounded-xl border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm overflow-hidden",
           )}
         >
-          <div className="w-full flex flex-col justify-start items-start gap-0.5">
+          <div className="w-full flex flex-col justify-start items-start gap-0.5 pt-2.5 px-2.5">
             <h2 className="text-sm font-semibold text-base-content">
               Data produk yang sudah dipesan saat transaksi
             </h2>
@@ -159,7 +185,39 @@ const ReturBarangDetail = () => {
               Berisi daftar produk yang sebelumnya dipesan dalam transaksi.
             </span>
           </div>
-          <div className="w-full flex flex-col justify-start items-start mt-2.5">
+
+          {/* FOR DEVICE MOBILE */}
+          <div className="w-full flex flex-row justify-start items-start gap-2.5 md:hidden mt-2.5 overflow-x-auto snap-x snap-mandatory scroll-smooth p-2.5">
+            {isLoadingReturBarang ? (
+              <>
+                <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+                <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+                <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+              </>
+            ) : dataReturBarang?.data &&
+              dataReturBarang?.data?.transaction.details.length > 0 ? (
+              dataReturBarang?.data?.transaction?.details?.map((item) => (
+                <CardProdukTransaksi key={item.id} data={item} />
+              ))
+            ) : (
+              <div className="w-full h-full flex flex-col justify-center items-center">
+                <DataEmpty
+                  title="Data Detail Transaksi Tidak Tersedia"
+                  description="Belum ada data detail transaksi yang dapat ditampilkan saat ini."
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="md:hidden flex my-4 flex-row justify-center items-center w-full gap-1.5">
+            <span className="text-xs text-base-content">
+              Silahkan Geser ke kanan
+            </span>
+            <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
+          </div>
+
+          {/* FOR DEVICE MD & LG */}
+          <div className="w-full md:flex flex-col justify-start items-start hidden p-2.5">
             <div className="overflow-x-auto w-full">
               <table className="table table-xs">
                 {/* head */}
@@ -275,11 +333,11 @@ const ReturBarangDetail = () => {
         <div className="w-full flex flex-col justify-start items-start gap-2.5">
           <div
             className={cn(
-              "w-full flex flex-col justify-start items-start rounded-xl border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm p-2.5",
+              "w-full flex flex-col justify-start items-start rounded-xl border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm",
             )}
           >
             {/* title */}
-            <div className="w-full flex flex-col justify-start items-start gap-0.5">
+            <div className="w-full flex flex-col justify-start items-start gap-0.5 pt-2.5 px-2.5">
               <h2 className="text-sm font-semibold text-base-content">
                 Data retur barang
               </h2>
@@ -289,8 +347,37 @@ const ReturBarangDetail = () => {
               </span>
             </div>
 
-            {/* card formulir */}
-            <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
+            {/* FOR DEVICE MOBILE */}
+            <div className="w-full flex flex-row justify-start items-start gap-2.5 md:hidden mt-2.5  overflow-x-auto snap-x snap-mandatory scroll-smooth p-2.5">
+              {isLoadingReturBarang ? (
+                <>
+                  <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+                  <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+                  <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+                </>
+              ) : finalReturDetails && finalReturDetails.length > 0 ? (
+                finalReturDetails.map((item) => (
+                  <CardProdukRetur key={item.id} data={item} />
+                ))
+              ) : (
+                <div className="w-full h-full flex flex-col justify-center items-center">
+                  <DataEmpty
+                    title="Data Detail Transaksi Tidak Tersedia"
+                    description="Belum ada data detail transaksi yang dapat ditampilkan saat ini."
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="md:hidden flex my-4 flex-row justify-center items-center w-full gap-1.5">
+              <span className="text-xs text-base-content">
+                Silahkan Geser ke kanan
+              </span>
+              <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
+            </div>
+
+            {/* FOR DEVICE MB & LG */}
+            <div className="w-full md:flex flex-col justify-start items-start gap-2.5 hidden p-2.5">
               <table className="table table-xs">
                 {/* head */}
                 <thead>
@@ -303,6 +390,11 @@ const ReturBarangDetail = () => {
                     <th>Qty. Barang Rusak</th>
                     <th>Qty. Total</th>
                     <th>Total Refund</th>
+                    <th>
+                      <div className="flex flex-row justify-center items-center">
+                        <span>Status</span>
+                      </div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -371,6 +463,16 @@ const ReturBarangDetail = () => {
                                 {formatRupiah(item.totalRefund ?? 0)}
                               </span>
                             </td>
+                            <td>
+                              <div className="flex flex-row justify-center items-center">
+                                {item.quantity <=
+                                (item.quantityReturn ?? 0) + item.totalRetur ? (
+                                  <span className="status status-error status-lg" />
+                                ) : (
+                                  <span className="status status-success status-lg" />
+                                )}
+                              </div>
+                            </td>
                           </tr>
                         );
                       })}
@@ -391,6 +493,9 @@ const ReturBarangDetail = () => {
             </div>
           </div>
 
+          {/* label status */}
+          <AlertLabelStatus />
+
           {/* preview */}
           <div
             className={cn(
@@ -406,7 +511,7 @@ const ReturBarangDetail = () => {
               </span>
             </div>
 
-            <div className="w-full gap-2.5 grid grid-cols-3 mt-4">
+            <div className="w-full gap-2.5 grid grid-cols-1 md:grid-cols-3 mt-4">
               <CardStatistikLarge
                 icon={{
                   largeIcon: PackageCheck,
@@ -472,7 +577,12 @@ const ReturBarangDetail = () => {
                     />
 
                     {/* simpan dan ajukan */}
-                    <ButtonWithIcon icon={Check} label="Setuju" />
+                    <ButtonWithIcon
+                      disabled={isSomeStokNotEnough}
+                      icon={Check}
+                      label="Setuju"
+                      handleBtn={() => handleSetuju()}
+                    />
                   </>
                 )}
 
@@ -518,6 +628,20 @@ const ReturBarangDetail = () => {
                     handleBtn={() => {}}
                   />
 
+                  {/* status rejected */}
+                  {/* ajukan */}
+                  {dataReturBarang?.data?.createdBy?.id === pengguna?.id &&
+                    dataReturBarang?.data?.status ===
+                      RETURN_STATUS.REJECTED && (
+                      <ButtonWithIcon
+                        icon={Pencil}
+                        bgColor="bg-info"
+                        textColor="text-primary-white"
+                        label={"Ubah Data"}
+                        handleBtn={() => handleRedirectUbahData()}
+                      />
+                    )}
+
                   {/* ajukan */}
                   <ButtonWithIcon
                     icon={Check}
@@ -538,18 +662,28 @@ const ReturBarangDetail = () => {
           </div>
         </div>
       </div>
-
+      {/* modal alert */}
+      <ModalAlert
+        icon={AlertTriangle}
+        iconColor="text-warning"
+        modalRef={modalKonfirmasiVerifikasiRef}
+        bigTitle={dataModalKonfirmasiVerifikasi?.bigTitle ?? ""}
+        smallTitle={dataModalKonfirmasiVerifikasi?.smallTitle ?? ""}
+        handleCloseModal={handleCancelModalKonfirmasiVerifikasi}
+        handleConfirm={handleKonfirmasiModalKonfirmasiVerifikasi}
+        labelNext="Lanjutkan"
+        isLoading={isPendingVerifikasiPengajuanReturBarang}
+      />
       {/* modal verifikasi */}
       <ModalFormulirVerifikasiOrPengajuanReturBarang
         modalRef={modalFormulirVerifikasiOrPengajuan}
         handleCloseModal={handleCloseModalFormulirVerifikasiOrPengajuan}
         handleSetAlert={handleSetAlert}
-        returId={validatedReturBarangId ?? 0}
         kodeReferensi={dataReturBarang?.data?.kodeReferensi ?? ""}
+        returId={validatedReturBarangId ?? 0}
         role={pengguna?.role}
         type={dataModalFormulirVerifikasiOrPengajuan?.type}
       />
-
       {/* modal */}
       {/* <ModalAlert
         icon={AlertTriangle}
@@ -562,6 +696,50 @@ const ReturBarangDetail = () => {
         labelNext="Lanjutkan"
         isLoading={isPendingMutateReturBarang}
       /> */}
+    </div>
+  );
+};
+
+// alert label status
+const AlertLabelStatus = () => {
+  return (
+    <div
+      className={cn(
+        "w-full gap-2.5 flex flex-row justify-start items-center p-2.5 rounded-2xl md:rounded-xl border ",
+        "border-blue-600 bg-blue-600/5",
+      )}
+    >
+      <div className="w-full flex flex-col justify-start items-start gap-1.5">
+        <div className="flex flex-row justify-start items-center gap-1.5">
+          <span className="status status-error status-md" />
+
+          <span className="text-[0.7rem] text-base-content hidden md:block">
+            Status Merah: jumlah yang diretur melebihi jumlah barang yang
+            dibeli.
+          </span>
+          <span className="text-[0.7rem] text-base-content md:hidden">
+            Merah: Melebihi jumlah beli.
+          </span>
+        </div>
+        <div className="flex flex-row justify-start items-center gap-1.5">
+          <span className="status status-success status-md" />
+
+          <span className="text-[0.7rem] text-base-content hidden md:block">
+            Status Hijau: jumlah yang diretur masih sesuai dengan jumlah barang
+            yang dibeli.
+          </span>
+
+          <span className="text-[0.7rem] text-base-content md:hidden">
+            Hijau: Sesuai jumlah beli.
+          </span>
+        </div>
+        <span className="text-[0.7rem] text-base-content hidden md:block">
+          Catatan: Retur sebelumnya ikut dihitung dalam pengecekan jumlah retur.
+        </span>
+        <span className="text-[0.7rem] text-base-content md:hidden">
+          Catatan: Retur sebelumnya ikut dihitung.
+        </span>
+      </div>
     </div>
   );
 };

@@ -83,7 +83,7 @@ const InformasiPembayaran: FC<Props> = ({
   });
 
   return (
-    <div className="flex-1 flex flex-col justify-start items-start gap-2.5">
+    <div className="w-full md:w-1/2 flex-1 flex flex-col justify-start items-start gap-2.5">
       {/* informasi booking */}
       <div className="w-full flex flex-col justify-start items-start p-4 rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm">
         {/* header */}

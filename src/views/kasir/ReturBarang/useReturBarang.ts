@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
 import {
   useController,
@@ -21,6 +21,7 @@ import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import { useAuthStore } from "../../../stores/authStore";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
+import useSizeWindows from "../../../hooks/useSizeWindows";
 
 const useReturBarang = () => {
   const pengguna = useAuthStore((state) => state.pengguna);
@@ -31,23 +32,50 @@ const useReturBarang = () => {
   const currentPathname = useLocation().pathname;
 
   //   get transaction id from params
-  const { transactionId } = useParams<{ transactionId: string }>();
+  const { transactionId, returBarangId } = useParams<{
+    transactionId: string;
+    returBarangId: string;
+  }>();
+
+  // window size
+  const windowSize = useSizeWindows();
 
   // validate
   const validateTransactionId = parseId(transactionId);
 
+  // validated retur barang id
+  const validateReturBarangId = parseId(returBarangId);
+
   // use query
-  const { data: dataForReturBarang, isLoading: isLoadingForReturBarang } =
-    useQuery({
-      queryKey: ["transaction-for-retur-barang", validateTransactionId],
-      queryFn: () =>
-        TransactionServices.findTransaksiForReturBarang({
-          id: validateTransactionId!,
-        }),
-      enabled: !!validateTransactionId,
-      retry: false,
-      refetchOnWindowFocus: false,
-    });
+  const data = useQueries({
+    queries: [
+      {
+        queryKey: ["transaction-for-retur-barang", validateTransactionId],
+        queryFn: () =>
+          TransactionServices.findTransaksiForReturBarang({
+            id: validateTransactionId!,
+          }),
+        enabled: !!validateTransactionId,
+        retry: false,
+        refetchOnWindowFocus: false,
+      },
+      {
+        queryKey: ["return-details", validateReturBarangId],
+        queryFn: () =>
+          ReturBarangServices.findAllByReturnTransactionId({
+            id: validateReturBarangId!,
+          }),
+        enabled: !!validateReturBarangId,
+        retry: false,
+        refetchOnWindowFocus: false,
+      },
+    ],
+  });
+
+  const [
+    { data: dataForReturBarang, isLoading: isLoadingForReturBarang },
+    { data: dataReturDetails, isLoading: isLoadingReturDetails },
+  ] = data;
 
   // use modal confirm
   const {
@@ -63,13 +91,59 @@ const useReturBarang = () => {
   }>();
 
   // use form
-  const { control, reset, setError, clearErrors, handleSubmit } =
-    useForm<CreateReturnRequestType>({
-      resolver: zodResolver(ReturBarangValidations.CREATE),
-      defaultValues: {
-        details: [],
-      },
+  const {
+    control,
+    reset,
+    setError,
+    clearErrors,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<CreateReturnRequestType>({
+    resolver: zodResolver(ReturBarangValidations.CREATE),
+    defaultValues: {
+      details: [],
+    },
+  });
+
+  // set default value
+  useEffect(() => {
+    if (!dataForReturBarang?.data || !dataReturDetails?.data) {
+      return;
+    }
+
+    const transactionDetails = dataForReturBarang.data.details;
+
+    const transactionDetailMap = new Map(
+      transactionDetails.map((item) => [item.id, item]),
+    );
+
+    reset({
+      details: dataReturDetails.data.map((returDetail) => {
+        const transactionDetail = transactionDetailMap.get(
+          returDetail.transactionDetailId,
+        );
+
+        return {
+          transactionDetailId: returDetail.transactionDetailId,
+
+          quantityGood: returDetail.quantityGood,
+          quantityDamaged: returDetail.quantityDamaged,
+          quantityReturn: returDetail.quantityReturn,
+          totalRefund: returDetail.totalRefund,
+
+          // data dari transaksi
+          hargaJual: transactionDetail?.hargaJual ?? 0,
+          img: transactionDetail?.produk.img ?? "",
+          kode: transactionDetail?.produk.kode ?? "",
+          maxQuantity:
+            (transactionDetail?.quantity ?? 0) -
+            (transactionDetail?.totalRetur ?? 0),
+          nama: transactionDetail?.produk.nama ?? "",
+        };
+      }),
     });
+  }, [dataForReturBarang, dataReturDetails, reset]);
 
   //   custom total refund controller
   const customTotalRefundController = useController({
@@ -91,6 +165,7 @@ const useReturBarang = () => {
     img: string;
     hargaJual: number;
     maxQuantity: number;
+    quantityWasRetur: number;
   }) => {
     append({
       transactionDetailId: params.detailId,
@@ -100,7 +175,7 @@ const useReturBarang = () => {
       hargaJual: params.hargaJual,
       quantityGood: 0,
       quantityDamaged: 0,
-      maxQuantity: params.maxQuantity,
+      maxQuantity: params.maxQuantity - params.quantityWasRetur,
     });
   };
 
@@ -208,7 +283,10 @@ const useReturBarang = () => {
           `${currentPathname.split("/").slice(0, -1).join("/")}/daftar-retur-barang/detail/${data.data?.id}`,
           {
             state: {
-              toast: "created_retur_barang",
+              toast:
+                pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+                  ? "created_retur_barang_owner"
+                  : "created_retur_barang_kasir",
             },
           },
         );
@@ -231,7 +309,7 @@ const useReturBarang = () => {
   });
 
   // on submit
-  const onSubmit = async () => {
+  const onSubmit = async (data: { keterangan?: string }) => {
     try {
       // check validated id
       if (!validateTransactionId) return;
@@ -256,6 +334,7 @@ const useReturBarang = () => {
       await mutateReturBarang({
         transactionId: validateTransactionId!,
         customTotalRefund: customTotalRefundWatch,
+        keterangan: data.keterangan,
         details: detailsWatch.map((item) => ({
           quantityDamaged: item.quantityDamaged,
           quantityGood: item.quantityGood,
@@ -271,7 +350,10 @@ const useReturBarang = () => {
     return (
       fields.length > 0 &&
       detailsWatch.every(
-        (item) => item.quantityGood > 0 || item.quantityDamaged > 0,
+        (item) =>
+          item.quantityGood > 0 ||
+          item.quantityDamaged > 0 ||
+          item.maxQuantity <= item.quantityDamaged + item.quantityGood,
       )
     );
   }, [detailsWatch, fields]);
@@ -296,6 +378,12 @@ const useReturBarang = () => {
     handleSubmit,
     isCanSimpanAndAjukan,
     pengguna,
+    windowSize,
+    register,
+    errors,
+
+    validateReturBarangId,
+    isLoadingReturDetails,
   };
 };
 

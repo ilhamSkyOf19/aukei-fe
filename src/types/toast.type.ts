@@ -339,6 +339,10 @@ export const TOAST_CONFIG_RETUR_BARANG: Record<
     color: "success",
     message: "Data retur berhasil disimpan dan diajukan ke owner.",
   },
+  deleted_retur_barang: {
+    color: "error",
+    message: "Data retur berhasil dihapus",
+  },
 };
 
 // toast daftar retur barang detail
@@ -349,8 +353,24 @@ export const TOAST_CONFIG_RETUR_BARANG_DETAIL: Record<
     color: "success" | "error" | "info" | "warning" | "neutral";
   }
 > = {
-  created_retur_barang: {
+  created_retur_barang_kasir: {
     color: "success",
     message: "Data retur berhasil disimpan dan diajukan ke owner.",
+  },
+  created_retur_barang_owner: {
+    color: "success",
+    message: "Data retur berhasil disimpan, silahkan verifikasi ulang.",
+  },
+  rejected_verifikasi: {
+    color: "error",
+    message: "Verifikasi berhasil ditolak",
+  },
+  approved_pengajuan: {
+    color: "success",
+    message: "Verifikasi berhasil disetujui",
+  },
+  deleted_retur_barang: {
+    color: "error",
+    message: "Data retur berhasil dihapus",
   },
 };

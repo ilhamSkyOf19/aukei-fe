@@ -21,7 +21,7 @@ const useSideBarRiwayatPengajuan = () => {
     data: dataRiwayatReturBarang,
     isLoading: isLoadingRiwayatReturBarang,
   } = useQuery({
-    queryKey: [validatedId, page],
+    queryKey: ["riwayat-pengajuan-retur-barang", validatedId, { page }],
     queryFn: () =>
       RiwayatPengajuanReturBarangService.findAllByReturBarang({
         id: validatedId!,

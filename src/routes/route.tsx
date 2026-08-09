@@ -283,7 +283,13 @@ const route = createBrowserRouter([
                       },
                       {
                         path: "detail/:returBarangId",
-                        element: <ReturBarangDetailPage />,
+                        children: [
+                          { index: true, element: <ReturBarangDetailPage /> },
+                          {
+                            path: "ubah-data",
+                            element: <ReturBarangPage ubahData />,
+                          },
+                        ],
                       },
                     ],
                   },

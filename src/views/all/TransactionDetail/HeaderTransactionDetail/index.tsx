@@ -40,7 +40,7 @@ const HeaderTransactionDetail: FC<Props> = ({
   statusTempo,
 }) => {
   return (
-    <div className="w-full bg-base-100 rounded-2xl md:rounded-xl grid grid-cols-4 p-2.5 gap-2.5 flex-wrap border border-transparent dark:border-base-content/10 shadow-sm">
+    <div className="w-full bg-base-100 rounded-2xl md:rounded-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 p-2.5 gap-2.5 flex-wrap border border-transparent dark:border-base-content/10 shadow-sm">
       {/* nomor transaksi */}
       <CardStatistikLarge
         icon={{

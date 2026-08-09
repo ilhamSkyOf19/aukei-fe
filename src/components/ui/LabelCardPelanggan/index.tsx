@@ -47,11 +47,11 @@ const LabelCardPelanggan: FC<Props> = ({
                 <>
                   {valueSting && valueSting}
                   {value && formatNumber(value)}
-                  {valuePrice && formatNumber(valuePrice)}
+                  {valuePrice && formatRupiah(valuePrice)}
                 </>
               ) : (
                 <span className="text-base-content/50 text-xs italic font-light">
-                  Kosong
+                  -
                 </span>
               )}
             </span>
@@ -69,8 +69,8 @@ const LabelCardPelanggan: FC<Props> = ({
               {valuePrice && formatRupiah(valuePrice)}
             </>
           ) : (
-            <span className="text-base-content/50 text-xs italic font-light">
-              Kosong
+            <span className="text-base-content text-xs italic font-light">
+              -
             </span>
           )}
         </span>

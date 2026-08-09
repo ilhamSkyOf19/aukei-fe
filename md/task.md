@@ -174,11 +174,12 @@
   - [✅] Buat informasi pending jika sudah di ajukan
   - [✅] Buat fitur redirect dari halam retur barang ke detail retur barang jika sudah membuat data
   - [✅] Buat riwayat pengajuan return barang
-  - [ ] Buat fitur toast saat setelah mengajukan untuk kasir dan setelah verifikasi untuk owner
-  - [ ] Buat invalidated notifikasi ketika setelah verifikasi dan mengajukan
-  - [ ] Buat sidebar riwayat pengajuan
-  - [ ] Buat halaman pengajuan return untuk owner
-
+  - [✅] Buat fitur toast saat setelah mengajukan untuk kasir dan setelah verifikasi untuk owner
+  - [✅] Buat invalidated notifikasi ketika setelah verifikasi dan mengajukan
+  - [✅] Buat sidebar riwayat pengajuan
+  - [✅] Buat halaman pengajuan return untuk owner
+  - [✅] Design mobile untuk owner
+  - [ ] Buat fitur delete retur barang masuk
 - [ ] Tambahkan state current pahtname untuk query infinity
 
 - [ ] Sesuaikan data

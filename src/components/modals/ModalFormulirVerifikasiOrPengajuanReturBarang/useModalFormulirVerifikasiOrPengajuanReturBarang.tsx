@@ -68,6 +68,10 @@ const useModalFormulirVerifikasiOrPengajuanReturBarang = (params: {
           queryKey: ["retur-barang-detail", returId],
         });
 
+        queryClient.invalidateQueries({
+          queryKey: ["riwayat-pengajuan-retur-barang", returId],
+        });
+
         handleCloseModal();
 
         navigate(currentPathname, {
@@ -94,6 +98,10 @@ const useModalFormulirVerifikasiOrPengajuanReturBarang = (params: {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["retur-barang-detail", returId],
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: ["riwayat-pengajuan-retur-barang", returId],
         });
 
         handleCloseModal();

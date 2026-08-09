@@ -2,6 +2,7 @@ import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
   CreateReturBarangForService,
+  ResponseDataReturBarangDetailType,
   ResponseRegularReturnTransactionType,
   ResponseRegularReturnTransactionWithMetaType,
   ResponseReturnDetailType,
@@ -76,6 +77,28 @@ export class ReturBarangServices {
     const result = await instanceAxios.post<
       ResponseStructure<ResponseUpdateStatusReturnTransactionType | null>
     >("/return/pengajuan", params);
+
+    return result.data;
+  }
+
+  // delete
+  static async findAllByReturnTransactionId(params: {
+    id: number;
+  }): Promise<ResponseStructure<ResponseDataReturBarangDetailType[] | null>> {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseDataReturBarangDetailType[] | null>
+    >(`/return/${params.id}/return-details`);
+
+    return result.data;
+  }
+
+  // delete
+  static async delete(params: {
+    id: number;
+  }): Promise<ResponseStructure<null>> {
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/return/${params.id}`,
+    );
 
     return result.data;
   }

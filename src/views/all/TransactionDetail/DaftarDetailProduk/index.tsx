@@ -17,6 +17,8 @@ import { TRANSACTION_STATUS_TYPE } from "../../../../types/constant.type";
 import AlertLabel from "../../../../components/messages/AlertLabel";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import { Eye, Undo } from "lucide-react";
+import CardProdukTransaksi from "../../../../components/ui/cards/CardProdukTransaksi";
+import DataEmpty from "../../../../components/messages/DataEmpty";
 
 type Props = {
   isLoadingTransaction: boolean;
@@ -57,11 +59,36 @@ const DaftarDetailProduk: FC<Props> = ({
   });
 
   return (
-    <div className="flex-2 flex flex-col justify-start items-start gap-2.5">
-      {/* detail produk */}
+    <div className="w-full flex-2 flex flex-col justify-start items-start gap-2.5">
+      {/* for SM */}
       <div
         className={cn(
-          "w-full flex flex-col justify-start items-start rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm",
+          "w-full flex flex-col justify-start items-start md:hidden",
+        )}
+      >
+        {isLoadingTransaction ? (
+          <>
+            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
+          </>
+        ) : isExistingDataTransaction ? (
+          dataTransaction?.data?.details?.map((item) => (
+            <CardProdukTransaksi key={item.id} data={item} />
+          ))
+        ) : (
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            <DataEmpty
+              title="Data Detail Transaksi Tidak Tersedia"
+              description="Belum ada data detail transaksi yang dapat ditampilkan saat ini."
+            />
+          </div>
+        )}
+      </div>
+      {/* data for MD & LG  */}
+      <div
+        className={cn(
+          "w-full md:flex flex-col justify-start items-start rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm hidden",
         )}
       >
         {/* data */}
@@ -341,8 +368,10 @@ const DaftarDetailProduk: FC<Props> = ({
           </div>
         </div>
       </div>
+
       {/* alert label */}
       <AlertLabel message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur." />
+
       {/* button retur */}
       <div className="w-full flex flex-row justify-end items-end gap-2.5">
         <ButtonWithIcon
@@ -351,15 +380,19 @@ const DaftarDetailProduk: FC<Props> = ({
           bgColor="bg-info"
           textColor="text-primary-white"
           handleBtn={() => handleDaftarReturBarang()}
+          customWidth="flex-3 md:flex-none"
         />
+
         <ButtonWithIcon
           label="Retur Barang"
           icon={Undo}
           bgColor="bg-error"
           textColor="text-primary-white"
           handleBtn={() => handleToRetur()}
+          customWidth="flex-2 md:flex-none"
         />
       </div>
+
       {isExistDataKebutuhanBarang &&
         !isLoadingKebutuhanBarang &&
         !siapKirim && (
@@ -379,6 +412,7 @@ const DaftarDetailProduk: FC<Props> = ({
           ]}
         />
       )}
+
       {/* ringkasan kredit */}
       <RingkasanKredit
         dataTransaction={dataTransaction}

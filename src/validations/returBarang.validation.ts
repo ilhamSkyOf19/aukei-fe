@@ -9,6 +9,8 @@ export class ReturBarangValidations {
         .int()
         .min(0)
         .optional(),
+
+      keterangan: z.string("keterangan wajib diisi").min(1).max(300).optional(),
       details: z
         .array(
           z
@@ -41,8 +43,12 @@ export class ReturBarangValidations {
                 ctx.addIssue({
                   code: "custom",
                   path: ["quantityGood"],
-                  message:
-                    "Jumlah return harus lebih dari 0 (quantityGood + quantityDamaged).",
+                  message: "harap diisi.",
+                });
+                ctx.addIssue({
+                  code: "custom",
+                  path: ["quantityDamaged"],
+                  message: "harap diisi.",
                 });
               }
             }),

@@ -53,7 +53,7 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
       />
 
       {/* data */}
-      <div className="flex w-full flex-row justify-start items-start gap-2.5">
+      <div className="flex w-full flex-col lg:flex-row justify-start md:items-end items-start lg:items-start gap-2.5">
         {/* daftar produk and kredit detail */}
         <DaftarDetailProduk
           dataTransaction={dataTransaction}
