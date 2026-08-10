@@ -165,28 +165,11 @@ const ReturBarang = () => {
             ) : dataForReturBarang?.data &&
               dataForReturBarang?.data?.details.length > 0 ? (
               dataForReturBarang?.data?.details?.map((item) => (
-                <>
-                  <CardProdukTransaksi
-                    key={item.id}
-                    data={item}
-                    handleAppend={handleAppend}
-                  />
-                  <CardProdukTransaksi
-                    key={item.id}
-                    data={item}
-                    handleAppend={handleAppend}
-                  />
-                  <CardProdukTransaksi
-                    key={item.id}
-                    data={item}
-                    handleAppend={handleAppend}
-                  />
-                  <CardProdukTransaksi
-                    key={item.id}
-                    data={item}
-                    handleAppend={handleAppend}
-                  />
-                </>
+                <CardProdukTransaksi
+                  key={item.id}
+                  data={item}
+                  handleAppend={handleAppend}
+                />
               ))
             ) : (
               <div className="w-full h-full flex flex-col justify-center items-center">
@@ -303,7 +286,13 @@ const ReturBarang = () => {
                                 </td>
                                 <td>
                                   <button
-                                    disabled={item.quantity <= item.totalRetur}
+                                    disabled={
+                                      item.quantity <= item.totalRetur ||
+                                      fields.some(
+                                        (field) =>
+                                          field.transactionDetailId === item.id,
+                                      )
+                                    }
                                     type="button"
                                     className="text-[0.625rem] font-medium px-2 py-1 border border-rose-600 rounded-md flex flex-row justify-start items-center gap-1 not-disabled:hover:text-primary-white not-disabled:transition-all not-disabled:duration-150 not-disabled:ease-in-out not-disabled:hover:bg-rose-600"
                                     onClick={() =>

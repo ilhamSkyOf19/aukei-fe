@@ -179,7 +179,9 @@
   - [✅] Buat sidebar riwayat pengajuan
   - [✅] Buat halaman pengajuan return untuk owner
   - [✅] Design mobile untuk owner
-  - [ ] Buat fitur delete retur barang masuk
+  - [✅] Buat fitur delete retur barang
+  - [❗] Buat fitur update retur barang
+
 - [ ] Tambahkan state current pahtname untuk query infinity
 
 - [ ] Sesuaikan data

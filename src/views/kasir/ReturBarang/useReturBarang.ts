@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type {
   CreateReturBarangForService,
   CreateReturnRequestType,
+  UpdateReturnForServiceType,
 } from "../../../models/returBarang.model";
 import { ReturBarangValidations } from "../../../validations/returBarang.validation";
 import { useEffect, useMemo } from "react";
@@ -119,7 +120,9 @@ const useReturBarang = () => {
     );
 
     reset({
-      details: dataReturDetails.data.map((returDetail) => {
+      customTotalRefund: dataReturDetails.data.customTotalRefund,
+      keterangan: dataReturDetails.data.keterangan ?? undefined,
+      details: dataReturDetails.data.details.map((returDetail) => {
         const transactionDetail = transactionDetailMap.get(
           returDetail.transactionDetailId,
         );
@@ -129,8 +132,6 @@ const useReturBarang = () => {
 
           quantityGood: returDetail.quantityGood,
           quantityDamaged: returDetail.quantityDamaged,
-          quantityReturn: returDetail.quantityReturn,
-          totalRefund: returDetail.totalRefund,
 
           // data dari transaksi
           hargaJual: transactionDetail?.hargaJual ?? 0,
@@ -272,21 +273,37 @@ const useReturBarang = () => {
     mutateAsync: mutateReturBarang,
     isPending: isPendingMutateReturBarang,
   } = useMutation({
-    mutationFn: (data: CreateReturBarangForService) =>
-      ReturBarangServices.create(data),
+    mutationFn: (
+      data: CreateReturBarangForService | UpdateReturnForServiceType,
+    ) => {
+      if (validateReturBarangId) {
+        return ReturBarangServices.update({
+          returnTransactionId: validateReturBarangId,
+          req: data as UpdateReturnForServiceType,
+        });
+      } else {
+        return ReturBarangServices.create(data as CreateReturBarangForService);
+      }
+    },
     onSuccess: (data) => {
       // reset
       reset();
 
       if (data) {
         navigate(
-          `${currentPathname.split("/").slice(0, -1).join("/")}/daftar-retur-barang/detail/${data.data?.id}`,
+          validateReturBarangId
+            ? currentPathname.split("/").slice(0, -1).join("/")
+            : `${currentPathname.split("/").slice(0, -1).join("/")}/daftar-retur-barang/detail/${data.data?.id}`,
           {
             state: {
               toast:
                 pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-                  ? "created_retur_barang_owner"
-                  : "created_retur_barang_kasir",
+                  ? validateReturBarangId
+                    ? "updated_retur_barang_owner"
+                    : "created_retur_barang_owner"
+                  : validateReturBarangId
+                    ? "updated_retur_barang_kasir"
+                    : "created_retur_barang_kasir",
             },
           },
         );
@@ -307,6 +324,8 @@ const useReturBarang = () => {
       }
     },
   });
+
+  console.log(errors);
 
   // on submit
   const onSubmit = async (data: { keterangan?: string }) => {

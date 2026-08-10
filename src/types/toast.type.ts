@@ -357,9 +357,17 @@ export const TOAST_CONFIG_RETUR_BARANG_DETAIL: Record<
     color: "success",
     message: "Data retur berhasil disimpan dan diajukan ke owner.",
   },
+  updated_retur_barang_kasir: {
+    color: "success",
+    message: "Data retur berhasil disimpan dan diajukan ke owner.",
+  },
   created_retur_barang_owner: {
     color: "success",
     message: "Data retur berhasil disimpan, silahkan verifikasi ulang.",
+  },
+  updated_retur_barang_owner: {
+    color: "info",
+    message: "Data retur berhasil diperbarui, silahkan verifikasi ulang.",
   },
   rejected_verifikasi: {
     color: "error",

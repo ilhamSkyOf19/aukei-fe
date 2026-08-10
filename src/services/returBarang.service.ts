@@ -8,6 +8,7 @@ import type {
   ResponseReturnDetailType,
   ResponseReturnForByIdType,
   ResponseUpdateStatusReturnTransactionType,
+  UpdateReturnForServiceType,
 } from "../models/returBarang.model";
 import type { StatusInventoriType } from "../types/constant.type";
 import type { ResponseStructure } from "../types/response.type";
@@ -84,9 +85,9 @@ export class ReturBarangServices {
   // delete
   static async findAllByReturnTransactionId(params: {
     id: number;
-  }): Promise<ResponseStructure<ResponseDataReturBarangDetailType[] | null>> {
+  }): Promise<ResponseStructure<ResponseDataReturBarangDetailType | null>> {
     const result = await instanceAxios.get<
-      ResponseStructure<ResponseDataReturBarangDetailType[] | null>
+      ResponseStructure<ResponseDataReturBarangDetailType | null>
     >(`/return/${params.id}/return-details`);
 
     return result.data;
@@ -99,6 +100,19 @@ export class ReturBarangServices {
     const result = await instanceAxios.delete<ResponseStructure<null>>(
       `/return/${params.id}`,
     );
+
+    return result.data;
+  }
+
+  // update
+  static async update(params: {
+    returnTransactionId: number;
+    req: UpdateReturnForServiceType;
+  }): Promise<ResponseStructure<ResponseReturnDetailType | null>> {
+    const { req, returnTransactionId } = params;
+    const result = await instanceAxios.put<
+      ResponseStructure<ResponseReturnDetailType | null>
+    >(`/return/${returnTransactionId}`, req);
 
     return result.data;
   }

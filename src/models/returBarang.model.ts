@@ -204,12 +204,21 @@ export interface ResponseUpdateStatusReturnTransactionType extends Pick<
   tanggalDiAjukan: Date;
 }
 
-export interface ResponseDataReturBarangDetailType extends Pick<
-  IReturnDetailType,
-  | "id"
-  | "quantityDamaged"
-  | "quantityGood"
-  | "quantityReturn"
-  | "totalRefund"
-  | "transactionDetailId"
-> {}
+export interface ResponseDataReturBarangDetailType {
+  customTotalRefund: number;
+  keterangan: string | null;
+  details: Array<
+    Pick<
+      IReturnDetailType,
+      | "id"
+      | "quantityDamaged"
+      | "quantityGood"
+      | "quantityReturn"
+      | "totalRefund"
+      | "transactionDetailId"
+    >
+  >;
+}
+
+// update
+export interface UpdateReturnForServiceType extends CreateReturBarangForService {}

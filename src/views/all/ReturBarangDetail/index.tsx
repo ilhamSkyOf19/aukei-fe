@@ -641,21 +641,6 @@ const ReturBarangDetail = () => {
                         handleBtn={() => handleRedirectUbahData()}
                       />
                     )}
-
-                  {/* ajukan */}
-                  <ButtonWithIcon
-                    icon={Check}
-                    label={
-                      pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-                        ? "Simpan dan Review"
-                        : "Ajukan Kembali"
-                    }
-                    handleBtn={() =>
-                      handleShowModalFormulirVerifikasiOrPengajuan(undefined, {
-                        type: "pengajuan",
-                      })
-                    }
-                  />
                 </>
               )}
             </div>
