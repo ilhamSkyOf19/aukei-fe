@@ -106,6 +106,17 @@ const useModalFormulirVerifikasiOrPengajuan = (params: {
         ],
       });
 
+      if (barangMasukId) {
+        queryClient.invalidateQueries({
+          queryKey: ["riwayat-pengajuan-barang-masuk", barangMasukId],
+        });
+      }
+
+      if (barangKeluarId) {
+        queryClient.invalidateQueries({
+          queryKey: ["riwayat-pengajuan-barang-keluar", barangKeluarId],
+        });
+      }
       // close modal
       handleCloseModal();
 

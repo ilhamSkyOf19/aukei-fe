@@ -110,7 +110,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
         ) : (
           <div className="w-full flex flex-col lg:flex-row justify-start items-start lg:items-center">
             {/* kode and status */}
-            <div className="flex lg:flex-2 flex-col justify-start items-start">
+            <div className="flex lg:flex-3 flex-col justify-start items-start">
               <div className="w-full px-2 flex flex-row justify-start items-start gap-2 mt-4">
                 <h2 className="text-base-content text-lg lg:text-xl font-semibold">
                   {dataBarangKeluarDetail?.data?.kodeReferensi}
@@ -137,28 +137,32 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                 </p>
 
                 {/* caption */}
-                {isStatusPosted && (
-                  <div className="hidden lg:flex flex-row justify-start items-center gap-2">
-                    <div className="status status-success status-sm" />
+                {isStatusPosted &&
+                  !dataBarangKeluarDetail?.data?.kodeReferensi.includes(
+                    "RT",
+                  ) && (
+                    <div className="hidden lg:flex flex-row justify-start items-center gap-2">
+                      <div className="status status-success status-sm" />
 
-                    <span className="text-xs text-base-content">
-                      {isExpired
-                        ? pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
-                          "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
-                        : pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-                          ? `Anda dapat membatalkan postingan sebelum waktu habis : `
-                          : "Status masih dapat berubah sebelum waktu habis :"}
-                    </span>
-                    {!isExpired && (
-                      <CountDown
-                        expiredAt={subtractMinutes(
-                          dataBarangKeluarDetail?.data?.postedAt ?? new Date(),
-                          2,
-                        )}
-                      />
-                    )}
-                  </div>
-                )}
+                      <span className="text-xs text-base-content">
+                        {isExpired
+                          ? pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
+                            "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
+                          : pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+                            ? `Anda dapat membatalkan postingan sebelum waktu habis : `
+                            : "Status masih dapat berubah sebelum waktu habis :"}
+                      </span>
+                      {!isExpired && (
+                        <CountDown
+                          expiredAt={subtractMinutes(
+                            dataBarangKeluarDetail?.data?.postedAt ??
+                              new Date(),
+                            1,
+                          )}
+                        />
+                      )}
+                    </div>
+                  )}
               </div>
             </div>
 

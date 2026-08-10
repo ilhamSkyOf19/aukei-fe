@@ -182,11 +182,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
             {/* head */}
             <thead>
               <tr className="h-12 bg-base-200 text-[0.7rem]">
-                <th>
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
-                </th>
+                <th>Pilih</th>
                 <th>Foto</th>
                 <th>Kode</th>
                 <th>Nama</th>
@@ -203,7 +199,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
               {isLoadingProduk ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={10}>
+                    <td colSpan={11}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>
@@ -319,7 +315,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={10}>
+                  <td colSpan={11}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
                         title="Data Produk Tidak Tersedia"

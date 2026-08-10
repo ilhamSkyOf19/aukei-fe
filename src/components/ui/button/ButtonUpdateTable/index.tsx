@@ -5,14 +5,12 @@ import { cn } from "../../../../utils/cn";
 type Props = {
   handleShowModalFormulir?: () => void;
   customDataTip?: string;
-  xs?: boolean;
   noTip?: boolean;
   handleClick?: () => void;
 };
 const ButtonUpdateTable: FC<Props> = ({
   handleShowModalFormulir,
   customDataTip,
-  xs,
   noTip,
   handleClick,
 }) => {
@@ -24,8 +22,7 @@ const ButtonUpdateTable: FC<Props> = ({
       <button
         type="button"
         className={cn(
-          "bg-info rounded-md flex flex-row justify-center items-center hover-overlay",
-          xs ? "w-6 h-6" : "w-6 h-6",
+          "bg-info w-6 h-6 rounded-md flex flex-row justify-center items-center hover-overlay",
         )}
         onClick={() => {
           handleShowModalFormulir?.();

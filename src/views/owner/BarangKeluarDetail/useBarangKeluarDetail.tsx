@@ -95,6 +95,11 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     queryClient.invalidateQueries({
       queryKey: ["notifikasi-produk"],
     });
+
+    // invalidated riwayat
+    queryClient.invalidateQueries({
+      queryKey: ["riwayat-pengajuan-barang-keluar", validatedId],
+    });
   };
 
   // use alert

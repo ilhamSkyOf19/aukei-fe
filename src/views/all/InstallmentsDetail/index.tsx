@@ -121,6 +121,33 @@ const InstallmentsDetail = () => {
                 isLoading={isLoadingDataInstallments}
                 customColSpan="col-span-2 md:col-span-1"
               />
+              <CardStatistik
+                icon={{
+                  icon: ReceiptText,
+                  bgColor: "bg-blue-50",
+                  iconColor: "text-blue-400",
+                }}
+                label="Total Transaksi"
+                value={formatRupiah(
+                  (dataInstallments?.data?.totalTagihan ?? 0) +
+                    (dataInstallments?.data?.uangMuka ?? 0),
+                )}
+                caption="Total nilai transaksi."
+                isLoading={isLoadingDataInstallments}
+              />
+
+              <CardStatistik
+                icon={{
+                  icon: ReceiptText,
+                  bgColor: "bg-blue-50",
+                  iconColor: "text-blue-400",
+                }}
+                label="Total Tagihan"
+                value={formatRupiah(dataInstallments?.data?.totalTagihan ?? 0)}
+                caption="Total tagihan keseluruhan."
+                isLoading={isLoadingDataInstallments}
+                withAlert="Total tagihan setelah DP"
+              />
 
               <CardStatistik
                 icon={{

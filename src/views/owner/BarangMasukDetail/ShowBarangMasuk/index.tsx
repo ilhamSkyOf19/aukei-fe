@@ -281,7 +281,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
               {isLoadingBarangMasukDetail ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={10}>
+                    <td colSpan={11}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>
@@ -463,7 +463,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                 )
               ) : (
                 <tr>
-                  <td colSpan={10}>
+                  <td colSpan={11}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
                         title="Data Produk Tidak Tersedia"

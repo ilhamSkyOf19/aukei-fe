@@ -71,17 +71,19 @@ const DataPelanggan = () => {
         )}
       </div>
 
-      <div className="w-full flex-1 flex flex-row justify-center items-center">
-        {/* buat pagination pelanggan */}
-        <Pagination
-          currentPage={dataPelanggan?.data?.meta?.currentPage || 1}
-          goTo={goTo}
-          isNext={isNext}
-          isPrev={isPrev}
-          pages={pages}
-          xs
-        />
-      </div>
+      {dataPelanggan?.data && dataPelanggan?.data?.meta?.totalPage > 1 && (
+        <div className="w-full flex-1 flex flex-row justify-center items-center">
+          {/* buat pagination pelanggan */}
+          <Pagination
+            currentPage={dataPelanggan?.data?.meta?.currentPage || 1}
+            goTo={goTo}
+            isNext={isNext}
+            isPrev={isPrev}
+            pages={pages}
+            xs
+          />
+        </div>
+      )}
     </div>
   );
 };

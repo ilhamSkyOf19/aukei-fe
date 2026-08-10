@@ -180,7 +180,20 @@
   - [✅] Buat halaman pengajuan return untuk owner
   - [✅] Design mobile untuk owner
   - [✅] Buat fitur delete retur barang
-  - [❗] Buat fitur update retur barang
+  - [✅] Buat fitur update retur barang
+
+  - [ ] Cek Loading
+
+  - [ ] Struk booking
+
+  - [ ] Struk Barang Masuk atau Keluar
+
+  - [✅] Riwayat transaksi filter berdasarkan pelanggan
+  - [✅] Tambahkan data total transaksi di kredit detail
+
+  - [✅] struk dari transaksi booking itu payment nya di jumlahkan dan juga kembalian nya di jumlahkan
+
+  - [ ] Buat page notifikasi retur
 
 - [ ] Tambahkan state current pahtname untuk query infinity
 
@@ -188,24 +201,24 @@
 
 - [ ] Isi Data Dabase
 
-- [ ] Buat Card Notifkasi Tempo
+- [✅] Buat Card Notifkasi Tempo
 
-- [ ] Lakukan invalidated setelah :
+- [✅] Lakukan invalidated setelah :
   - Selesai Transaksi -> notifikasi produk
   - Posted Barang Masuk -> notifikasi produk
   - Posted Barang Keluar -> notifikasi produk
   - Pelunasan installment -> hapus notifikasi di backend + invalidated notifikasi tempo
   - Cek backend
 
-- [ ] Perbaiki UI notifikasi
+- [✅] Perbaiki UI notifikasi
 
-- [ ] dan membuat design mobile
+- [✅] dan membuat design mobile
 
-- [ ] Membuat navigasi untuk kasir, dan memperbaiki notifikasi stok
+- [✅] Membuat navigasi untuk kasir, dan memperbaiki notifikasi stok
 
-- [ ] perbaiki halaman data pelanggan
+- [✅] perbaiki halaman data pelanggan
 
-- [ ] Sesuaikan flow transaksi yang saat ini (lihat BE)
+- [✅] Sesuaikan flow transaksi yang saat ini (lihat BE)
   - [✅] Sesuaikan pada halaman booking , berikan pesan atau peringatan jika stok tidak mencukupi untuk melakukan pelunasan
   - [✅] Invalidate query jika success
   - [✅] Kirim handle toast ke props informasi pembayaran
@@ -220,19 +233,19 @@
 
   - [ ] cek loading di contant table, sesuaikan cols nya dan juga cols data empty nya
 
-  - [ ] Membuat detail transaksi yang berisi data dan cetak struk dan tambahkan response status di model nya
+  - [✅] Membuat detail transaksi yang berisi data dan cetak struk dan tambahkan response status di model nya
 
   - [✅] Perbaiki tampilan riwayat pengajuan
 
 - [✅] Membuat daftar riwayat transaksi berdasarkan pelanggan
 
-- [ ] Membuat ui tombol tombol pada preview after transaksi
+- [✅] Membuat ui tombol tombol pada preview after transaksi
 
 - [✅] Membuat fitur update pelanggan di keranjang
 
 - [✅] Membuat formulir update pelanggan (Owner)
 
-- [ ] Membuat fitur struk pembayaran
+- [✅] Membuat fitur struk pembayaran
 
 - [ ] berikan pesan alert ketika handlesubmit jika error, agar tidak return saja
 

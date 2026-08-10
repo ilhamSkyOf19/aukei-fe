@@ -386,7 +386,7 @@ const ReturBarang = () => {
                         <div className="flex flex-col justify-start items-start gap-0.5 border-r border-base-content/30 pr-2.5 md:border-none">
                           {/* nama */}
                           <span className="text-xs font-semibold text-base-content">
-                            {field.nama} MARYTON
+                            {field.nama}
                           </span>
                           <span className="text-[0.625rem] font-medium text-base-content/70">
                             {field.kode}

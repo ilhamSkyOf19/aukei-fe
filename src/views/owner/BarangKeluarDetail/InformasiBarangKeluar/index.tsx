@@ -198,11 +198,10 @@ const InformasiBarangKeluar: FC<Props> = ({
                       disabled={isLoadingJenisKeluar}
                       showForSm
                       hAuto
-                      btnAksiPosition="top"
-                      customFlex="flex-col items-end lg:flex-row lg:items-center lg:gap-3"
+                      customFlex="flex-col items-end lg:flex-row lg:items-start lg:gap-3"
                     >
                       {/* input choose */}
-                      <div className="w-55 lg:w-80">
+                      <div className="w-55 lg:w-30">
                         {isLoadingJenisKeluar ? (
                           <div className="w-full h-8 skeleton mb-3" />
                         ) : (

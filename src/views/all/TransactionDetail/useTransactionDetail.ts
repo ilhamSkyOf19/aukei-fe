@@ -26,6 +26,9 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
   // current pathname
   const currentPathname = useLocation().pathname;
 
+  // is kasir page
+  const isKasirPage = currentPathname.includes("kasir");
+
   // navigate
   const navigate = useNavigate();
 
@@ -83,10 +86,8 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
       return {
         totalQuantity: 0,
         totalPembayaran: 0,
-
         totalDiBayar: 0,
         totalKembalian: 0,
-
         sisaTagihan: 0,
       };
     }
@@ -94,29 +95,32 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     let totalQuantity = 0;
     let totalPembayaran = 0;
 
-    const totalDiBayar = dataTransaction.data.paymentTransactions?.reduce(
-      (total, item) => total + item.diBayar,
-      0,
-    );
-
-    const totalKembalian = dataTransaction.data.paymentTransactions?.reduce(
-      (total, item) => total + item.kembalian,
-      0,
-    );
-
     for (const item of dataTransaction.data.details) {
       totalQuantity += item.quantity;
+
       totalPembayaran += item.quantity * item.hargaJual - item.diskon;
     }
 
+    const totalDiBayar =
+      dataTransaction.data.paymentTransactions?.reduce(
+        (total, item) => total + item.diBayar,
+        0,
+      ) ?? 0;
+
+    const totalKembalian =
+      dataTransaction.data.paymentTransactions?.reduce(
+        (total, item) => total + item.kembalian,
+        0,
+      ) ?? 0;
+
+    const sisaTagihan = totalPembayaran - (totalDiBayar - totalKembalian);
+
     return {
       totalQuantity,
-      totalPembayaran,
-
+      totalPembayaran: sisaTagihan,
       totalDiBayar,
       totalKembalian,
-
-      sisaTagihan: Math.abs(totalPembayaran - (totalDiBayar ?? 0)),
+      sisaTagihan,
     };
   }, [dataTransaction?.data]);
 
@@ -137,6 +141,7 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     setIsUbahData,
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
+    isKasirPage,
   };
 };
 

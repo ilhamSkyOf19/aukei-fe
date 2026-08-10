@@ -100,13 +100,17 @@ const useNotifikasi = () => {
 
         if (barangMasukId) {
           if (pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) {
-            navigate(`/dashboard/inventori/barang-masuk/${barangMasukId}`);
+            navigate(
+              `/dashboard/inventori/pengajuan-barang-masuk/${barangMasukId}`,
+            );
           } else {
-            navigate(`/dashboard/pengajuan-barang-masuk/${barangKeluarId}`);
+            navigate(`/dashboard/pengajuan-barang-masuk/${barangMasukId}`);
           }
         } else {
           if (pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) {
-            navigate(`/dashboard/inventori/barang-keluar/${barangKeluarId}`);
+            navigate(
+              `/dashboard/inventori/pengajuan-barang-keluar/${barangKeluarId}`,
+            );
           } else {
             navigate(`/dashboard/pengajuan-barang-keluar/${barangKeluarId}`);
           }

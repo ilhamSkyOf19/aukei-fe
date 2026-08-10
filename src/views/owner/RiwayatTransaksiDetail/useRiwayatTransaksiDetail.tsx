@@ -49,7 +49,7 @@ const useRiwayatTransaksiDetail = () => {
   const { filter: sort, setFilter: setSort } = useFilter({
     paramName: "sort",
     allowQuery: ["asc", "desc"],
-    defaultValueCustom: "asc",
+    defaultValueCustom: "desc",
   });
 
   // filter date

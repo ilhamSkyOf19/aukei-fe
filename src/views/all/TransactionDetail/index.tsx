@@ -24,12 +24,14 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
     setIsUbahData,
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
+    isKasirPage,
   } = useTransactionDetail({ transactionId });
 
   return (
     <div
       className={cn(
-        "w-full flex flex-col justify-start items-start gap-2.5 pt-2.5 px-2.5",
+        "w-full flex flex-col justify-start items-start gap-2.5",
+        isKasirPage ? "pb-2.5" : "pt-2.5 px-2.5",
       )}
     >
       {/* back */}

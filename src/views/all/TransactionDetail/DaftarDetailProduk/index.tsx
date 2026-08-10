@@ -373,25 +373,27 @@ const DaftarDetailProduk: FC<Props> = ({
       <AlertLabel message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur." />
 
       {/* button retur */}
-      <div className="w-full flex flex-row justify-end items-end gap-2.5">
-        <ButtonWithIcon
-          label="Lihat Daftar Retur Barang"
-          icon={Eye}
-          bgColor="bg-info"
-          textColor="text-primary-white"
-          handleBtn={() => handleDaftarReturBarang()}
-          customWidth="flex-3 md:flex-none"
-        />
+      {dataTransaction?.data?.status !== TRANSACTION_STATUS_TYPE.BOOKING && (
+        <div className="w-full flex flex-row justify-end items-end gap-2.5">
+          <ButtonWithIcon
+            label="Lihat Daftar Retur Barang"
+            icon={Eye}
+            bgColor="bg-info"
+            textColor="text-primary-white"
+            handleBtn={() => handleDaftarReturBarang()}
+            customWidth="flex-3 md:flex-none"
+          />
 
-        <ButtonWithIcon
-          label="Retur Barang"
-          icon={Undo}
-          bgColor="bg-error"
-          textColor="text-primary-white"
-          handleBtn={() => handleToRetur()}
-          customWidth="flex-2 md:flex-none"
-        />
-      </div>
+          <ButtonWithIcon
+            label="Retur Barang"
+            icon={Undo}
+            bgColor="bg-error"
+            textColor="text-primary-white"
+            handleBtn={() => handleToRetur()}
+            customWidth="flex-2 md:flex-none"
+          />
+        </div>
+      )}
 
       {isExistDataKebutuhanBarang &&
         !isLoadingKebutuhanBarang &&

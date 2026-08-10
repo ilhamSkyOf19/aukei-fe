@@ -4,12 +4,11 @@ import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_KERANJANG } from "../../../types/toast.type";
 import DaftarKeranjang from "./DaftarKeranjang";
 import { cn } from "../../../utils/cn";
-import HeaderKasir from "../../../components/ui/HeaderKasir";
 import NotCompatible from "../../../components/messages/NotCompatible";
 
 const Keranjang = () => {
   // use call
-  const { toast, isModeKasir } = useKeranjang();
+  const { toast } = useKeranjang();
 
   return (
     <div

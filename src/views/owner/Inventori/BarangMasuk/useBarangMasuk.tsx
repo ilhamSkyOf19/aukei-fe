@@ -10,6 +10,7 @@ import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
 import useSizeWindows from "../../../../hooks/useSizeWindows";
 import { PengajuanBarangMasukServices } from "../../../../services/pengajuanBarangMasuk.service";
+import { useAuthStore } from "../../../../stores/authStore";
 
 const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
   const { fromPengajuanBarang } = params;
@@ -19,6 +20,9 @@ const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
   const navigate = useNavigate();
   // current pathname
   const currentPathname = useLocation().pathname;
+
+  // get pengguna
+  const pengguna = useAuthStore((state) => state.pengguna);
 
   // query client
   const queryClient = useQueryClient();
@@ -240,6 +244,7 @@ const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
     isPendingDeleteMany,
     windowSize,
     sort,
+    pengguna,
   };
 };
 

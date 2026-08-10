@@ -132,7 +132,7 @@ export const STATUS_PERGERAKAN = {
 export type StatusPergerakan =
   (typeof STATUS_PERGERAKAN)[keyof typeof STATUS_PERGERAKAN];
 
-export const BATAS_WAKTU_BATALKAN_POSTING_MS = 2 * 60 * 1000;
+export const BATAS_WAKTU_BATALKAN_POSTING_MS = 1 * 60 * 1000;
 
 export const inventoryNotification: Record<
   StatusInventoriType,

@@ -18,6 +18,12 @@ export interface ResponseRingkasanStatistikType {
   totalUangKembalian: number;
   totalKasMasuk: number;
   totalPiutangKasMasuk: number;
+  // ===========================
+  // REFUND
+  // ===========================
+  totalRefund: number;
+
+  totalItemDiretur: number;
 }
 
 export interface StatistikTrendType {
@@ -97,6 +103,9 @@ export interface ResponseStatistikWithPersentaseType {
 
   /** Total barang hilang */
   totalBarangHilang: StatistikTrendType;
+
+  /** Total refund */
+  totalRefund: StatistikTrendType;
 }
 
 export interface ResponseChartType {

@@ -22,10 +22,12 @@ import useRowJadwal from "./useRowJadwal";
 
 type Props = {
   aksi?: boolean;
-  dataTempo?: Pick<
-    ITempoInstallmentType,
-    "nominal" | "jatuhTempo" | "status" | "id" | "cicilanKe"
-  >[];
+  dataTempo?: Array<
+    Pick<
+      ITempoInstallmentType,
+      "nominal" | "jatuhTempo" | "status" | "cicilanKe"
+    > & { id?: number }
+  >;
   maxHeight?: string;
   customEmptyMessage?: string;
   handleCustomTanggal?: () => void;
@@ -201,7 +203,9 @@ const RowJadwaTempo: FC<Props> = ({
                 jatuhTempo={item.jatuhTempo}
                 lastIndex={item.cicilanKe === dataTempo.length}
                 aksi={aksi}
-                invoice={() => handlePrintAll({ tempoPaymentId: item.id })}
+                {...(item.id !== undefined && {
+                  invoice: () => handlePrintAll({ tempoPaymentId: item.id! }),
+                })}
                 layout={layout}
               />
             ))
@@ -313,7 +317,8 @@ const Rows: FC<RowsType> = ({
       {invoice && (
         <div className={cn("flex justify-end items-center", layout.invoice)}>
           {/* BUAT FLAG PARTIAL */}
-          {status !== TEMPO_STATUS_TYPE.UNPAID ? (
+          {status !== TEMPO_STATUS_TYPE.UNPAID &&
+          status !== TEMPO_STATUS_TYPE.OVERDUE ? (
             <button
               type="button"
               className="text-[0.625rem] font-medium px-2 py-1 border border-emerald-600 rounded-md flex flex-row justify-start items-center gap-1 group hover:text-primary-white transition-all duration-150 ease-in-out hover:bg-emerald-600"

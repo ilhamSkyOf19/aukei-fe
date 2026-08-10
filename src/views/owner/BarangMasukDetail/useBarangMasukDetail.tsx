@@ -46,6 +46,11 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     queryClient.invalidateQueries({
       queryKey: ["notifikasi-produk"],
     });
+
+    // invalidated riwayat
+    queryClient.invalidateQueries({
+      queryKey: ["riwayat-pengajuan-barang-keluar", validatedId],
+    });
   };
 
   // Modal konfirmasi untuk aksi posting/cancel posting/cancel verifikasi/setuju

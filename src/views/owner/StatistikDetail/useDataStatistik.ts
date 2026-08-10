@@ -11,6 +11,7 @@ import {
   ShoppingBag,
   TrendingDown,
   TrendingUp,
+  Undo2,
   type LucideIcon,
 } from "lucide-react";
 import type { ResponseStructure } from "../../../types/response.type";
@@ -70,6 +71,33 @@ const useDataStatistik = (params: {
         }),
         ...(statistik?.data?.totalKasMasuk?.trend === "same" && {
           same: statistik?.data?.totalKasMasuk?.persentase,
+        }),
+      },
+    },
+
+    {
+      key: "totalRefund",
+      category: "penjualan",
+      icon: {
+        icon: Undo2,
+        bgColor: "bg-rose-100",
+        iconColor: "text-rose-400",
+      },
+      label: windowSize === "sm" ? "Refund" : "Total Refund",
+      value:
+        windowSize === "sm"
+          ? formatRupiahShort(statistik?.data?.totalRefund.total ?? 0) || "0"
+          : formatRupiah(statistik?.data?.totalRefund.total ?? 0) || "0",
+      caption: "Jumlah refund berdasarkan tanggal",
+      detail: {
+        ...(statistik?.data?.totalRefund?.trend === "down" && {
+          down: statistik?.data?.totalRefund?.persentase,
+        }),
+        ...(statistik?.data?.totalRefund?.trend === "up" && {
+          up: statistik?.data?.totalRefund?.persentase,
+        }),
+        ...(statistik?.data?.totalRefund?.trend === "same" && {
+          same: statistik?.data?.totalRefund?.persentase,
         }),
       },
     },

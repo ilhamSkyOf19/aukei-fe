@@ -4,7 +4,6 @@ import {
   Clock,
   Coins,
   HandCoins,
-  Receipt,
   ReceiptText,
   UsersRound,
 } from "lucide-react";
@@ -251,7 +250,7 @@ const Kredit = () => {
             <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
               {/* head */}
               <thead>
-                <tr className="h-12 bg-base-200 text-xs">
+                <tr className="h-12 bg-base-200 text-[0.7rem]">
                   <th>Pelanggan</th>
                   <th>Total Transaksi</th>
                   <th>Belum Lunas</th>
@@ -265,7 +264,7 @@ const Kredit = () => {
                 {isLoadingDataTempo ? (
                   Array.from({ length: 4 }).map((_, index) => (
                     <tr key={index}>
-                      <td colSpan={8}>
+                      <td colSpan={7}>
                         <div className="skeleton h-12 w-full py-1" />
                       </td>
                     </tr>
@@ -276,7 +275,6 @@ const Kredit = () => {
                       key={item.id}
                       className={cn(
                         "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
-                        // false === true && "bg-base-200",
                       )}
                     >
                       {/* pelanggan */}
@@ -352,12 +350,13 @@ const Kredit = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={10}>
+                    <td colSpan={7}>
                       <div className="w-full h-full flex flex-col justify-center items-center">
                         <DataEmpty
-                          iconData={Receipt}
+                          iconData={ReceiptText}
                           title="Data Transaksi Tempo Tidak Tersedia"
                           description="Belum ada data transaksi tempo yang dapat ditampilkan saat ini."
+                          xs
                         />
                       </div>
                     </td>

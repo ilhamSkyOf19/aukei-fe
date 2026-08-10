@@ -10,7 +10,7 @@ export class ReturBarangValidations {
         .min(0)
         .optional(),
 
-      keterangan: z.string("keterangan wajib diisi").min(1).max(300).optional(),
+      keterangan: z.string("keterangan wajib diisi").max(300).optional(),
       details: z
         .array(
           z

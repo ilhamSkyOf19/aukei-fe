@@ -14,7 +14,6 @@ import { cn } from "../../../../utils/cn";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import StatusInventori from "../../../../components/ui/StatusInventori";
-import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import {
   ROLE_INTERNAL_TYPE,
   type StatusInventoriType,
@@ -39,7 +38,6 @@ const PengajuanBarangMasuk = () => {
     toast,
     isExistDataPengajuanBarangMasuk,
     handleRedirectDetail,
-    windowSize,
     sort,
     pengguna,
   } = usePengajuanBarangMasuk();
@@ -56,7 +54,11 @@ const PengajuanBarangMasuk = () => {
         />
       )}
 
-      <div className="flex flex-col justify-start items-start p-2.5 md:px-2.5 md:p-0">
+      <div
+        className={cn(
+          "flex-col justify-start items-start p-2.5 md:px-2.5 md:p-0",
+        )}
+      >
         {/* filter */}
         <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start border border-transparent dark:border-base-content/10 bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm">
           <div className="w-full md:flex-1 flex flex-row justify-start items-center">

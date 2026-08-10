@@ -415,7 +415,8 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
             {/* button transaksi */}
             <div
               className={cn(
-                "flex-1 flex flex-row h-full justify-end items-center gap-2",
+                " flex flex-row h-full justify-end items-center gap-2",
+                isUpdateTransaction ? "flex-2" : "flex-1",
               )}
             >
               {isUpdateTransaction && (
@@ -440,8 +441,9 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
                 type="button"
                 disabled={produkDetails?.length === 0 || !pelanggan}
                 className={cn(
-                  "flex flex-row justify-center items-center gap-4 h-full border border-custom-primary flex-1 rounded-xl bg-custom-primary disabled:opacity-50",
+                  "flex flex-row justify-center items-center h-full border border-custom-primary flex-1 rounded-xl bg-custom-primary disabled:opacity-50",
                   (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
+                  isUpdateTransaction ? "gap-2.5" : "gap-4",
                 )}
                 style={{
                   cursor:

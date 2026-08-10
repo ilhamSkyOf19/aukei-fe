@@ -465,7 +465,7 @@ const ReturBarangDetail = () => {
                             </td>
                             <td>
                               <div className="flex flex-row justify-center items-center">
-                                {item.quantity <=
+                                {item.quantity <
                                 (item.quantityReturn ?? 0) + item.totalRetur ? (
                                   <span className="status status-error status-lg" />
                                 ) : (

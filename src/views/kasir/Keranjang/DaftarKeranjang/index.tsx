@@ -2,11 +2,8 @@ import {
   ChevronRight,
   Minus,
   MoveLeft,
-  Package,
   Pencil,
-  ShoppingBasketIcon,
   ShoppingCart,
-  Tag,
   Trash2,
   UserRound,
 } from "lucide-react";
@@ -257,7 +254,7 @@ const DaftarKeranjang = () => {
             </div>
 
             {/* button transaction */}
-            <div className="w-full flex flex-row justify-end items-center gap-2.5">
+            <div className="w-full flex flex-row md:flex-col justify-end items-center gap-2.5">
               <ButtonWithIcon
                 icon={Trash2}
                 bgColor="bg-error"

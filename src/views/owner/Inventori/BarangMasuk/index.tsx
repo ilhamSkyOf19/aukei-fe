@@ -17,6 +17,7 @@ import PaginationAndLimit from "../../../../components/filters/PaginationAndLimi
 import StatusInventori from "../../../../components/ui/StatusInventori";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import {
+  ROLE_INTERNAL_TYPE,
   STATUS_INVENTORI_TYPE,
   type StatusInventoriType,
 } from "../../../../types/constant.type";
@@ -28,6 +29,7 @@ import { formatNumber } from "../../../../helpers/helpers";
 import DropDownInventori from "../../../../components/ui/DropDownInventori";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
+import NotCompatible from "../../../../components/messages/NotCompatible";
 type Props = {
   fromPengajuanBarang?: boolean;
 };
@@ -62,6 +64,7 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
     modalDeleteManyRef,
     windowSize,
     sort,
+    pengguna,
   } = useBarangMasuk({ fromPengajuanBarang });
 
   return (
@@ -80,6 +83,9 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
         className={cn(
           "flex flex-col justify-start items-start px-2.5 pt-2.5",
           !fromPengajuanBarang && "pt-0",
+          pengguna?.role === ROLE_INTERNAL_TYPE.KASIR
+            ? "hidden md:flex"
+            : "flex",
         )}
       >
         {/* filter */}
@@ -365,6 +371,13 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
           emptyData={!isExistDataBarangMasuk}
         />
       </div>
+
+      {/* not compatible */}
+      {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+        <div className="w-full h-[80vh] flex justify-center items-center lg:hidden">
+          <NotCompatible />
+        </div>
+      )}
 
       {/* modal formulir barang masuk */}
       <FormulirBarangMasuk

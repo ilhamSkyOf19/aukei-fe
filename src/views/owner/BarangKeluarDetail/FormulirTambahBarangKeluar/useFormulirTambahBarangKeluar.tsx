@@ -75,6 +75,8 @@ const useFormulirTambahBarangKeluar = (params: {
     resolver: zodResolver(BarangKeluarDetailValidation.CREATE),
   });
 
+  console.log(errors);
+
   // jumlah stok controller
   const jumlahStokController = useController({
     control,

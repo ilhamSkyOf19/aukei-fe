@@ -183,7 +183,7 @@ const useReturBarangDetail = () => {
   // is can verifikasi
   const isSomeStokNotEnough = useMemo(() => {
     return finalReturDetails.some(
-      (item) => item.totalRetur + (item.quantityReturn ?? 0) >= item.quantity,
+      (item) => item.totalRetur + (item.quantityReturn ?? 0) > item.quantity,
     );
   }, [finalReturDetails]);
 

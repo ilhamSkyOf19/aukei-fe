@@ -7,6 +7,19 @@ const instanceAxios = axios.create({
   withCredentials: true,
 });
 
+instanceAxios.interceptors.request.use(
+  async (config) => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
 const clearLocalStorage = () => {
   localStorage.removeItem("pelanggan");
   localStorage.removeItem("details");

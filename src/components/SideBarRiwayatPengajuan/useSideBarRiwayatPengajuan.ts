@@ -15,10 +15,10 @@ const useSideBarRiwayatPengajuan = () => {
   const currentPathname = useLocation().pathname;
 
   // is barang masuk
-  const isBarangMasuk = currentPathname.includes("pengajuan-barang-masuk");
+  const isBarangMasuk = currentPathname.includes("barang-masuk");
 
   // is barang kelaur
-  const isBarangKeluar = currentPathname.includes("pengajuan-barang-keluar");
+  const isBarangKeluar = currentPathname.includes("barang-keluar");
 
   //   filter page
   const { filter: page, setFilter: setPage } = useFilter({
@@ -35,7 +35,7 @@ const useSideBarRiwayatPengajuan = () => {
       validatedId,
       isBarangMasuk,
       isBarangKeluar,
-      page,
+      { page },
     ],
     queryFn: () => {
       if (validatedId) {

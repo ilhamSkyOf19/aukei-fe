@@ -174,23 +174,23 @@ const InformasiPembayaran: FC<Props> = ({
               )}
             </div>
             {/* kembalian */}
-            {dataTransaction?.data?.metodePembayaran === "CASH" ||
-              (dataTransaction?.data?.paymentTransactions?.some(
+            {(dataTransaction?.data?.metodePembayaran === "CASH" ||
+              dataTransaction?.data?.paymentTransactions?.some(
                 (item) => item.metodePembayaran === "CASH",
-              ) && (
-                <div className="w-full flex flex-row justify-between items-center">
-                  <span className="text-xs text-base-content/70 font-medium">
-                    Kembalian
+              )) && (
+              <div className="w-full flex flex-row justify-between items-center">
+                <span className="text-xs text-base-content/70 font-medium">
+                  Kembalian
+                </span>
+                {isLoadingTransaction ? (
+                  <div className="w-30 h-4 skeleton" />
+                ) : (
+                  <span className="text-xs text-emerald-600 font-semibold">
+                    {formatRupiah(transactionSummary.totalKembalian ?? 0)}
                   </span>
-                  {isLoadingTransaction ? (
-                    <div className="w-30 h-4 skeleton" />
-                  ) : (
-                    <span className="text-xs text-emerald-600 font-semibold">
-                      {formatRupiah(transactionSummary.totalKembalian ?? 0)}
-                    </span>
-                  )}
-                </div>
-              ))}
+                )}
+              </div>
+            )}
             {dataTransaction?.data?.status === "BOOKING" && (
               <div className="w-full flex flex-row justify-between items-center">
                 <span className="text-xs text-base-content/70 font-medium">
@@ -200,12 +200,7 @@ const InformasiPembayaran: FC<Props> = ({
                   <div className="w-30 h-4 skeleton" />
                 ) : (
                   <span className="text-xs text-error font-semibold">
-                    {formatRupiah(
-                      Math.abs(
-                        (dataTransaction?.data?.totalBayar ?? 0) -
-                          (dataTransaction?.data?.totalDiBayar ?? 0),
-                      ),
-                    )}
+                    {formatRupiah(transactionSummary.sisaTagihan ?? 0)}
                   </span>
                 )}
               </div>
@@ -583,7 +578,7 @@ const InformasiPembayaran: FC<Props> = ({
                   icon={X}
                   bgColor="bg-error"
                   textColor="text-primary-white"
-                  customWidth="w-full"
+                  customWidth="w-full md:flex-1"
                   label="Tutup"
                   handleBtn={() => setIsUbahData(false)}
                 />
@@ -592,7 +587,7 @@ const InformasiPembayaran: FC<Props> = ({
                   icon={Pencil}
                   bgColor="bg-info"
                   textColor="text-primary-white"
-                  customWidth="w-full"
+                  customWidth="w-full md:flex-1"
                   label="Ubah Harga / Diskon"
                   handleBtn={() => setIsUbahData(true)}
                 />
@@ -602,7 +597,7 @@ const InformasiPembayaran: FC<Props> = ({
               <ButtonWithIcon
                 disabled={!siapKirim}
                 icon={CreditCard}
-                customWidth="w-full"
+                customWidth="w-full md:flex-1"
                 label="Selesaikan"
                 isLoading={isPendingTransaction}
                 handleBtn={() => handleTransaction()}

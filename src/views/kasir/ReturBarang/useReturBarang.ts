@@ -325,8 +325,6 @@ const useReturBarang = () => {
     },
   });
 
-  console.log(errors);
-
   // on submit
   const onSubmit = async (data: { keterangan?: string }) => {
     try {
@@ -352,7 +350,10 @@ const useReturBarang = () => {
       // call mutation
       await mutateReturBarang({
         transactionId: validateTransactionId!,
-        customTotalRefund: customTotalRefundWatch,
+        customTotalRefund:
+          customTotalRefundWatch === 0 || customTotalRefundWatch === undefined
+            ? undefined
+            : customTotalRefundWatch,
         keterangan: data.keterangan,
         details: detailsWatch.map((item) => ({
           quantityDamaged: item.quantityDamaged,
