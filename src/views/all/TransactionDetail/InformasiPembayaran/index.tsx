@@ -76,6 +76,7 @@ const InformasiPembayaran: FC<Props> = ({
     buttonAturTempoRef,
     handleTransaction,
     isPendingTransaction,
+    handleDownloadPdf,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
@@ -639,6 +640,9 @@ const InformasiPembayaran: FC<Props> = ({
                 label="Download Struk"
                 textColor="text-primary-white"
                 skeleton={isLoadingTransaction}
+                handleBtn={() =>
+                  handleDownloadPdf(dataTransaction?.data?.id ?? 0)
+                }
               />
             </>
           )}

@@ -18,6 +18,7 @@ import triggerAnimation from "../../../../hooks/triggerAnimation";
 import type { ResponseStructure } from "../../../../types/response.type";
 import { useAuthStore } from "../../../../stores/authStore";
 import { useNavigate } from "react-router-dom";
+import { InvoiceServices } from "../../../../services/invoice.service";
 
 const LOCAL_STORAGE_DI_BAYAR_KEY = "di-bayar";
 
@@ -194,6 +195,30 @@ const useInformasiPembayaran = ({
     setMetodePembayaran(metode);
   };
 
+  // handle download
+  const handleDownloadPdf = async (id: number) => {
+    try {
+      const blob = await InvoiceServices.downloadBarangMasukPdf(id);
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = `barang-masuk-${id}.pdf`;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Gagal download PDF:", error);
+    }
+  };
+
   return {
     isOpenHistory,
     setIsOpenHistory,
@@ -214,6 +239,7 @@ const useInformasiPembayaran = ({
     buttonAturTempoRef,
     handleTransaction,
     isPendingTransaction,
+    handleDownloadPdf,
   };
 };
 

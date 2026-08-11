@@ -1,3 +1,5 @@
+import instanceAxios from "../libs/axios";
+
 export class InvoiceServices {
   static printInvoice(params: { id: number }) {
     const iframe = document.createElement("iframe");
@@ -101,5 +103,15 @@ export class InvoiceServices {
         iframe.remove();
       });
     };
+  }
+
+  // DOWNLOAD
+  // download pdf
+  static async downloadBarangMasukPdf(id: number): Promise<Blob> {
+    const response = await instanceAxios.get(`/invoice/${id}/transaksi-pdf`, {
+      responseType: "blob",
+    });
+
+    return response.data;
   }
 }
