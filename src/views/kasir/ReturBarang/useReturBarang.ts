@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueries } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
 import {
   useController,
@@ -402,7 +402,6 @@ const useReturBarang = () => {
     register,
     errors,
 
-    validateReturBarangId,
     isLoadingReturDetails,
   };
 };

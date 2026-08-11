@@ -4,15 +4,9 @@ import { useFilter } from "../../../../hooks/useFilter";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import { useLocation, useNavigate } from "react-router-dom";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
-import useSizeWindows from "../../../../hooks/useSizeWindows";
-import { useAuthStore } from "../../../../stores/authStore";
 import { PengajuanBarangKeluarServices } from "../../../../services/pengajuanBarangkeluar.service";
 
 const usePengajuanBarangKeluar = () => {
-  // get pengguna
-  const pengguna = useAuthStore((state) => state.pengguna);
-  // get window size
-  const windowSize = useSizeWindows();
   // navigate
   const navigate = useNavigate();
   // current pathname
@@ -95,9 +89,7 @@ const usePengajuanBarangKeluar = () => {
     toast,
     isExistDataPengajuanBarangKeluar,
     handleRedirectDetail,
-    windowSize,
     sort,
-    pengguna,
   };
 };
 

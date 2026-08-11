@@ -29,6 +29,7 @@ type Props = {
   tanggalTransaksi?: Date | null;
   statusTransaction?: TransactionStatusType | null;
   statusTempo?: TempoStatusType | null;
+  isLoadingTransaction?: boolean;
 };
 const HeaderTransactionDetail: FC<Props> = ({
   kasir,
@@ -38,11 +39,13 @@ const HeaderTransactionDetail: FC<Props> = ({
   tanggalTransaksi,
   statusTransaction,
   statusTempo,
+  isLoadingTransaction,
 }) => {
   return (
     <div className="w-full bg-base-100 rounded-2xl md:rounded-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 p-2.5 gap-2.5 flex-wrap border border-transparent dark:border-base-content/10 shadow-sm">
       {/* nomor transaksi */}
       <CardStatistikLarge
+        isLoading={isLoadingTransaction}
         icon={{
           largeIcon: ReceiptText,
           bgColor: "bg-emerald-50 dark:bg-emerald-100",
@@ -62,6 +65,7 @@ const HeaderTransactionDetail: FC<Props> = ({
 
       {/* data kasir */}
       <CardStatistikLarge
+        isLoading={isLoadingTransaction}
         icon={{
           largeIcon: UserRound,
           bgColor: "bg-purple-50 dark:bg-purple-100",
@@ -79,6 +83,7 @@ const HeaderTransactionDetail: FC<Props> = ({
 
       {/* data pelanggan */}
       <CardStatistikLarge
+        isLoading={isLoadingTransaction}
         icon={{
           largeIcon: UserRound,
           bgColor: "bg-blue-50 dark:bg-blue-100",
@@ -96,6 +101,7 @@ const HeaderTransactionDetail: FC<Props> = ({
 
       {/* metode pembayaran*/}
       <CardStatistikLarge
+        isLoading={isLoadingTransaction}
         icon={{
           metodePembayaran: metodePembayaran,
           smallIcon: CreditCard,

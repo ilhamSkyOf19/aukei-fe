@@ -31,7 +31,7 @@ const DataEmpty: FC<Props> = ({
       <div className="relative mb-6">
         <div
           className={cn(
-            " rounded-full border-2 border-dashed border-custom-secondary flex items-center justify-center",
+            " rounded-full border border-dashed border-custom-secondary flex items-center justify-center",
             xs ? "w-20 h-20" : "w-24 h-24",
             !white && "bg-base-200",
           )}

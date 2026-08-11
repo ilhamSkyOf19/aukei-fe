@@ -156,6 +156,7 @@ const ModalFormulirVerifikasiOrPengajuan: FC<Props> = ({
                 handleClose={() => {
                   handleCloseModal();
                 }}
+                disabled={isPendingVerifikasiOrPengajuan}
               />
               {/* button submit */}
               <ButtonSubmit

@@ -94,6 +94,7 @@ const ModalFormulirPelanggan: FC<Props> = ({
                 handleClose={() => {
                   handleCloseModal();
                 }}
+                disabled={isPendingMutatePelanggan}
               />
               {/* button submit */}
               <ButtonText

@@ -44,6 +44,7 @@ const useNotifikasiPengajuanBarang = (params: {
     dataNotifikasiPengajuanBarang,
     handleRefresh,
     isExistDataNotifikasiPengajuanBarang,
+    isLoadingNotifikasiPengajuanBarang,
   };
 };
 

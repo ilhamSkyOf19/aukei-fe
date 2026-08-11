@@ -30,6 +30,7 @@ import DropDownInventori from "../../../../components/ui/DropDownInventori";
 import { formatNumber } from "../../../../helpers/helpers";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -133,11 +134,7 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
         {/* SHOW DATA FOR SM */}
         <div className="flex w-full flex-col justify-start items-center gap-2.5 mt-2.5 md:hidden">
           {isLoadingBarangKeluar ? (
-            <>
-              <div className="w-full h-20 skeleton border border-base-content/10" />
-              <div className="w-full h-20 skeleton border border-base-content/10" />
-              <div className="w-full h-20 skeleton border border-base-content/10" />
-            </>
+            <LoadingFetch />
           ) : isExistDataBarangKeluar ? (
             dataBarangKeluar?.data?.data?.map((barang, _) => (
               <CardBarangKeluar

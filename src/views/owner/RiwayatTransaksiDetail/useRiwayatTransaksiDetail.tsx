@@ -6,6 +6,9 @@ import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
+import { useEffect, useState } from "react";
+import type { IPelangganType } from "../../../models/pelanggan.model";
+import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 
 const useRiwayatTransaksiDetail = () => {
   // window size
@@ -89,14 +92,64 @@ const useRiwayatTransaksiDetail = () => {
       enabled: !!startDate && !!endDate && !!validatedId,
     });
 
+  const [dataPelanggan, setDataPelanggan] = useState<Pick<
+    IPelangganType,
+    "id" | "nama" | "noWa" | "isActive"
+  > | null>(null);
+
+  useEffect(() => {
+    const data = dataRiwayatTransaksi?.data?.data;
+
+    // Query belum memiliki data pelanggan
+    // Jangan ubah state dan localStorage
+    if (!data?.pelanggan || !validatedId) {
+      return;
+    }
+
+    const pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive"> =
+      {
+        id: validatedId,
+        nama: data.pelanggan.nama,
+        noWa: data.pelanggan.noWa,
+        isActive: data.pelanggan.isActive,
+      };
+
+    const storageKey = LOCAL_STORAGE_KEYS.DATA_PELANGGAN_FOR_RIWAYAT;
+
+    const stored = localStorage.getItem(storageKey);
+
+    if (stored) {
+      try {
+        const parsed: Pick<
+          IPelangganType,
+          "id" | "nama" | "noWa" | "isActive"
+        > = JSON.parse(stored);
+
+        // Data pelanggan dengan ID yang sama
+        // tidak perlu disimpan ulang.
+        if (parsed.id === validatedId) {
+          setDataPelanggan(parsed);
+          return;
+        }
+      } catch {
+        // Jika data localStorage rusak,
+        // hapus agar bisa dibuat ulang dari query.
+        localStorage.removeItem(storageKey);
+      }
+    }
+
+    // Belum ada data atau ID pelanggan berbeda.
+    localStorage.setItem(storageKey, JSON.stringify(pelanggan));
+
+    // Gunakan data hasil query sebagai state.
+    setDataPelanggan(pelanggan);
+  }, [dataRiwayatTransaksi, validatedId]);
+
   // is existing data riwayat transaksi
   const isExistDataRiwayatTransaksi: boolean =
     !isLoadingRiwayatTransaksi && dataRiwayatTransaksi?.data?.data
       ? true
       : false;
-
-  // data pelanggan
-  const pelanggan = dataRiwayatTransaksi?.data?.data?.pelanggan;
 
   // handle detail
   const handleRedirectDetail = (id: number) => {
@@ -120,9 +173,9 @@ const useRiwayatTransaksiDetail = () => {
     setLimit,
     setSort,
     sort,
-    pelanggan,
     handleRedirectDetail,
     handleBack,
+    dataPelanggan,
   };
 };
 

@@ -20,6 +20,7 @@ import type { ResponseRegularReturnTransactionType } from "../../../models/retur
 import type { FC } from "react";
 import { RETURN_STATUS } from "../../../types/constant.type";
 import ModalDelete from "../../../components/modals/ModalDelete";
+import LoadingFetch from "../../../components/ui/LoadingFetch";
 
 const DaftarReturBarang = () => {
   const {
@@ -41,7 +42,6 @@ const DaftarReturBarang = () => {
     handleCloseModalDelete,
     handleDelete,
     handleShowModalDelete,
-    idModalDelete,
     isPendingDelete,
     modalDeleteRef,
     dataDelete,
@@ -93,11 +93,7 @@ const DaftarReturBarang = () => {
         {/* data for sm */}
         <div className="w-full flex flex-col justify-start items-start gap-2.5 md:hidden mt-2.5">
           {isLoadingReturBarang ? (
-            <>
-              <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-              <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-              <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-            </>
+            <LoadingFetch />
           ) : daftarReturBarang?.data &&
             daftarReturBarang?.data?.data.length > 0 ? (
             daftarReturBarang?.data?.data?.map((item) => (
@@ -150,7 +146,7 @@ const DaftarReturBarang = () => {
                   {isLoadingReturBarang ? (
                     Array.from({ length: 4 }, (_, i) => i).map((item) => (
                       <tr key={item} className="h-18">
-                        <td colSpan={8}>
+                        <td colSpan={9}>
                           <div className="w-full skeleton h-12" />
                         </td>
                       </tr>
@@ -252,7 +248,7 @@ const DaftarReturBarang = () => {
                     </>
                   ) : (
                     <tr>
-                      <td colSpan={8}>
+                      <td colSpan={9}>
                         <DataEmpty
                           xs
                           title="Data Retur Tidak Tersedia"

@@ -11,6 +11,7 @@ import ModalDelete from "../../../../../components/modals/ModalDelete";
 import ButtonWithIcon from "../../../../../components/ui/button/ButtonWithIcon";
 import LabelButtonDropDownWithIcon from "../../../../../components/ui/button/LabelButtonDropDownWithIcon";
 import ButtonText from "../../../../../components/ui/button/ButtonText";
+import LoadingFetch from "../../../../../components/ui/LoadingFetch";
 
 type Props = {
   handleSetAlert: (alert: string) => void;
@@ -77,9 +78,7 @@ const ShowData: FC<Props> = ({ handleSetAlert, handleSetToast }) => {
       {/* content */}
       <div className="w-full flex flex-col justify-start items-center gap-2 lg:overflow-y-auto lg:py-2.5 lg:px-2.5 scrollbar-thumb-custom-secondary scrollbar-thin mt-2.5">
         {isLoadingKategoriProduk ? (
-          Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="w-full h-18 skeleton" />
-          ))
+          <LoadingFetch />
         ) : isExistDataKategoriProduk ? (
           dataKategoriProduk?.data?.data.map((item) => (
             <CardKategoriProduk
@@ -95,6 +94,7 @@ const ShowData: FC<Props> = ({ handleSetAlert, handleSetToast }) => {
           <DataEmpty
             iconData={Tag}
             title="Data Kategori Produk Tidak Tersedia"
+            xs
           />
         )}
       </div>

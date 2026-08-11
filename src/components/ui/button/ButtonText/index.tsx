@@ -26,11 +26,11 @@ const ButtonText: FC<Props> = ({
     <button
       type={typeButton ? "button" : "submit"}
       className={cn(
-        "h-10.5 md:h-9 text-xs px-4 font-semibold  disabled:opacity-50 rounded-xl shadow-sm",
+        " h-10.5 md:h-9 text-xs px-4 font-semibold  disabled:opacity-50 rounded-xl shadow-sm",
         customWidth ?? "w-auto",
         bgColor ?? " bg-custom-primary",
         textColor ?? "text-custom-secondary ",
-        !disable && "hover-overlay",
+        (!isLoading || !disable) && "hover-overlay",
       )}
       disabled={disable || isLoading}
       onClick={() => handleClick?.()}

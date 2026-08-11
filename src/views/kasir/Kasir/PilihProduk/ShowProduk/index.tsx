@@ -94,11 +94,12 @@ const ShowProduk: FC<Props> = ({
 
           {/* card */}
           {isLoadingProduk ? (
-            Array.from({ length: 10 }, (_, i) => i).map((item) => (
-              <div key={item} className="col-span-1 h-48">
-                <div className=" skeleton w-full h-full border border-base-content/10" />
-              </div>
-            ))
+            <div className="col-span-4 h-120 w-full flex flex-col gap-2.5 justify-center items-center">
+              <div className="loading loading-md" />
+              <span className="text-xs skeleton skeleton-text">
+                Sedang memuat produk
+              </span>
+            </div>
           ) : isExistDataProduk ? (
             dataProduk?.data?.data.map((item, index) => (
               <button

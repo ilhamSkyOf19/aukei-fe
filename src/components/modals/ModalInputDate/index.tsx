@@ -61,6 +61,7 @@ const ModalInputDate = <T extends FieldValues>({
                 handleClose={() => {
                   handleCloseModal();
                 }}
+                disabled={isPending}
               />
               {/* button submit */}
               <ButtonText label={`Simpan`} isLoading={isPending} />

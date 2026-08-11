@@ -20,6 +20,7 @@ import {
   PackageSearchIcon,
 } from "lucide-react";
 import type { StatistikKebutuhanBarangType } from "../../../../models/transaction.model";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 type Props = {
   pilihan: string;
@@ -137,11 +138,7 @@ const DataBooking: FC<Props> = ({ pilihan }) => {
       <div className="flex w-full flex-col justify-start items-center gap-2 mt-2.5 lg:hidden">
         {/* card */}
         {isLoadingDaftarKebutuhanBarang ? (
-          <>
-            <div className="w-full h-20 skeleton border border-base-content/10" />
-            <div className="w-full h-20 skeleton border border-base-content/10" />
-            <div className="w-full h-20 skeleton border border-base-content/10" />
-          </>
+          <LoadingFetch />
         ) : isExistDataKebutuhanBarang ? (
           daftarKebutuhanBarang?.data?.data?.map((produk, _) => (
             <CardProdukBooking key={produk.id} produk={produk} />

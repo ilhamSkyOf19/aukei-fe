@@ -19,6 +19,7 @@ import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import { Eye, Undo } from "lucide-react";
 import CardProdukTransaksi from "../../../../components/ui/cards/CardProdukTransaksi";
 import DataEmpty from "../../../../components/messages/DataEmpty";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 type Props = {
   isLoadingTransaction: boolean;
@@ -67,11 +68,7 @@ const DaftarDetailProduk: FC<Props> = ({
         )}
       >
         {isLoadingTransaction ? (
-          <>
-            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-          </>
+          <LoadingFetch />
         ) : isExistingDataTransaction ? (
           dataTransaction?.data?.details?.map((item) => (
             <CardProdukTransaksi key={item.id} data={item} />
@@ -124,7 +121,14 @@ const DaftarDetailProduk: FC<Props> = ({
                 {isLoadingTransaction ? (
                   Array.from({ length: 4 }, (_, i) => i).map((item) => (
                     <tr key={item} className="h-18">
-                      <td colSpan={7}>
+                      <td
+                        colSpan={
+                          dataTransaction?.data?.status ===
+                          TRANSACTION_STATUS_TYPE.BOOKING
+                            ? 10
+                            : 8
+                        }
+                      >
                         <div className="w-full skeleton h-12" />
                       </td>
                     </tr>
@@ -269,19 +273,24 @@ const DaftarDetailProduk: FC<Props> = ({
                             TRANSACTION_STATUS_TYPE.BOOKING && (
                             <>
                               <td>
-                                {" "}
-                                <span className="xl:text-[0.7rem] text-base-content">
-                                  {/* stok tersedia */}
-                                  {formatNumber(
-                                    kebutuhanBarang?.produk.stokTersedia ?? 0,
-                                  )}{" "}
-                                  Pcs
-                                </span>
+                                {isLoadingKebutuhanBarang ? (
+                                  <span className="loading loading-xs" />
+                                ) : (
+                                  <span className="xl:text-[0.7rem] text-base-content">
+                                    {/* stok tersedia */}
+                                    {formatNumber(
+                                      kebutuhanBarang?.produk.stokTersedia ?? 0,
+                                    )}{" "}
+                                    Pcs
+                                  </span>
+                                )}
                               </td>
 
                               {/* status */}
                               <td>
-                                {kebutuhanBarang?.siapKirim ? (
+                                {isLoadingKebutuhanBarang ? (
+                                  <span className="loading loading-xs" />
+                                ) : kebutuhanBarang?.siapKirim ? (
                                   <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-emerald-500 ">
                                     Cukup
                                   </span>
@@ -354,7 +363,14 @@ const DaftarDetailProduk: FC<Props> = ({
                   </>
                 ) : (
                   <tr>
-                    <td colSpan={7}>
+                    <td
+                      colSpan={
+                        dataTransaction?.data?.status ===
+                        TRANSACTION_STATUS_TYPE.BOOKING
+                          ? 10
+                          : 8
+                      }
+                    >
                       <div className="w-full flex flex-row justify-center items-center pt-10">
                         <span className="text-sm text-base-content/70">
                           Produk tidak tersedia
@@ -370,35 +386,40 @@ const DaftarDetailProduk: FC<Props> = ({
       </div>
 
       {/* alert label */}
-      <AlertLabel message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur." />
+      <AlertLabel
+        isLoading={isLoadingTransaction}
+        message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur."
+      />
 
       {/* button retur */}
-      {dataTransaction?.data?.status !== TRANSACTION_STATUS_TYPE.BOOKING && (
-        <div className="w-full flex flex-row justify-end items-end gap-2.5">
-          <ButtonWithIcon
-            label="Lihat Daftar Retur Barang"
-            icon={Eye}
-            bgColor="bg-info"
-            textColor="text-primary-white"
-            handleBtn={() => handleDaftarReturBarang()}
-            customWidth="flex-3 md:flex-none"
-          />
+      {dataTransaction?.data?.status !== TRANSACTION_STATUS_TYPE.BOOKING &&
+        !isLoadingTransaction && (
+          <div className="w-full flex flex-row justify-end items-end gap-2.5">
+            <ButtonWithIcon
+              label="Lihat Daftar Retur Barang"
+              icon={Eye}
+              bgColor="bg-info"
+              textColor="text-primary-white"
+              handleBtn={() => handleDaftarReturBarang()}
+              customWidth="flex-3 md:flex-none"
+            />
 
-          <ButtonWithIcon
-            label="Retur Barang"
-            icon={Undo}
-            bgColor="bg-error"
-            textColor="text-primary-white"
-            handleBtn={() => handleToRetur()}
-            customWidth="flex-2 md:flex-none"
-          />
-        </div>
-      )}
+            <ButtonWithIcon
+              label="Retur Barang"
+              icon={Undo}
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              handleBtn={() => handleToRetur()}
+              customWidth="flex-2 md:flex-none"
+            />
+          </div>
+        )}
 
       {isExistDataKebutuhanBarang &&
         !isLoadingKebutuhanBarang &&
         !siapKirim && (
           <AlertLabel
+            isLoading={isLoadingTransaction}
             warning
             message="Masih terdapat barang yang kekurangan stok. Lengkapi stok terlebih dahulu sebelum menyelesaikan booking."
           />
@@ -406,6 +427,7 @@ const DaftarDetailProduk: FC<Props> = ({
       {/* transaksi booking */}
       {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
         <AlertLabelList
+          isLoading={isLoadingTransaction}
           message={[
             "Uang Muka merupakan pembayaran awal saat booking dibuat.",
             "Dibayar adalah total pembayaran yang telah diterima dari pelanggan.",

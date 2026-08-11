@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import { cn } from "../../../../utils/cn";
 
 type Props = {
   handleClose: () => void;
@@ -10,7 +11,10 @@ const ButtonCloseText: FC<Props> = ({ handleClose, disabled, label }) => {
     <button
       type="button"
       disabled={disabled}
-      className="h-10.5 md:h-9 rounded-xl hover-overlay border border-base-content/10 bg-base-100 shadow-xs px-4 text-xs md:text-[0.7rem] font-medium text-base-content"
+      className={cn(
+        "h-10.5 md:h-9 rounded-xl border border-base-content/10 bg-base-100 shadow-xs px-4 text-xs md:text-[0.7rem] font-medium text-base-content",
+        !disabled && "hover-overlay",
+      )}
       onClick={() => handleClose()}
     >
       {label || "Tutup"}

@@ -3,9 +3,12 @@ import type { FC } from "react";
 
 type Props = {
   message: string[];
+  isLoading?: boolean;
 };
-const AlertLabelList: FC<Props> = ({ message }) => {
-  return (
+const AlertLabelList: FC<Props> = ({ message, isLoading }) => {
+  return isLoading ? (
+    <div className="w-full h-12 skeleton bg-base-200 rounded-2xl md:rounded-xl border border-base-content/10" />
+  ) : (
     <div className="w-full gap-2.5 flex flex-col justify-start items-start px-4 py-3 rounded-2xl md:rounded-xl bg-blue-600/5 border border-blue-600">
       <div className="flex flex-row justify-start items-center gap-2">
         <AlertCircle className="md:size-6 lg:size-4 shrink-0 text-blue-600" />

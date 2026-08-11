@@ -120,8 +120,6 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
             <>
               <div className="w-80 h-8 skeleton mt-4" />
               <div className="w-50 h-4 skeleton mt-2" />
-              <div className="w-30 h-7 skeleton mt-2" />
-              <div className="w-full h-7 skeleton mt-2" />
             </>
           ) : (
             <div className="w-full flex flex-col lg:flex-row justify-start items-start lg:items-end">
@@ -236,6 +234,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                         STATUS_INVENTORI_TYPE.PENDING &&
                       pengguna?.role === ROLE_INTERNAL_TYPE.KASIR)) && (
                     <ButtonWithIcon
+                      disabled={isPendingPosting}
                       textColor="text-primary-white"
                       label="Hapus"
                       icon={Trash2}
@@ -350,6 +349,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           <FormulirTambahBarangMasuk
             handleSetToast={handleSetToast}
             handleSetAlert={handleSetAlert}
+            isGlobalLoading={isPendingPosting}
           />
         )}
 
@@ -386,16 +386,14 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
         )}
 
         {/* modal delete */}
-        {fromPengajuanBarang && (
-          <ModalDelete
-            modalRef={modalDeleteRef}
-            handleCloseModal={handleCloseModalDelete}
-            handleDelete={handleDelete}
-            bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
-            highlightData={dataDelete?.kodeReferensi}
-            isLoadingDelete={isPendingDelete}
-          />
-        )}
+        <ModalDelete
+          modalRef={modalDeleteRef}
+          handleCloseModal={handleCloseModalDelete}
+          handleDelete={handleDelete}
+          bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
+          highlightData={dataDelete?.kodeReferensi}
+          isLoadingDelete={isPendingDelete}
+        />
       </div>
 
       {/* not compatible */}

@@ -16,6 +16,7 @@ import ButtonDeleteTable from "../../../components/ui/button/ButtonDeleteTable";
 import ButtonUpdateTable from "../../../components/ui/button/ButtonUpdateTable";
 import ModalAlert from "../../../components/modals/ModalAlert";
 import AlertLabel from "../../../components/messages/AlertLabel";
+import LoadingFetch from "../../../components/ui/LoadingFetch";
 
 const Pegawai = () => {
   // call use
@@ -114,9 +115,11 @@ const Pegawai = () => {
         {/* CONTENT SM */}
         <div className="w-full flex flex-col justify-start items-center gap-2.5 mt-2.5 md:hidden">
           {/* card */}
-          {isExistDataPegawai &&
-          dataPegawai?.data &&
-          dataPegawai?.data?.data?.length > 0 ? (
+          {isLoadingPegawai ? (
+            <LoadingFetch />
+          ) : isExistDataPegawai &&
+            dataPegawai?.data &&
+            dataPegawai?.data?.data?.length > 0 ? (
             dataPegawai.data.data.map((pegawai, _) => (
               <div
                 key={pegawai.id}
@@ -257,8 +260,8 @@ const Pegawai = () => {
                     <td>{pegawai.username}</td>
                     {/* role */}
                     <td>
-                      <div className="flex flex-row justify-center w-18 items-center bg-custom-primary dark:bg-custom-primary rounded-full">
-                        <p className="text-xs py-1.5 px-3 font-semibold text-custom-secondary">
+                      <div className="flex flex-row justify-center w-14 items-center bg-blue-50 border border-blue-500 dark:bg-blue-500 rounded-full">
+                        <p className="text-[0.7rem] py-1 font-medium text-blue-500">
                           {pegawai.role.toLowerCase()}
                         </p>
                       </div>

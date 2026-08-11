@@ -31,6 +31,7 @@ import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTabl
 import useDaftarProduk from "./useDaftarProduk";
 import ButtonGenerateHargaJual from "../../../../components/ui/button/ButtonGenerateHargaJual";
 import ModalGenerateHargaJual from "../../../../components/modals/ModalGenerateHargaJual";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 type Props = {
   handleSetToast: (toast: string) => void;
@@ -121,11 +122,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
         <div className="flex w-full flex-col justify-start items-center gap-2 mt-2.5 lg:hidden">
           {/* card */}
           {isLoadingProduk ? (
-            <>
-              <div className="w-full h-20 skeleton border border-base-content/10" />
-              <div className="w-full h-20 skeleton border border-base-content/10" />
-              <div className="w-full h-20 skeleton border border-base-content/10" />
-            </>
+            <LoadingFetch />
           ) : isExistDataProduk ? (
             dataProduk?.data?.data?.map((produk, _) => (
               <CardProduk

@@ -13,6 +13,7 @@ import RankStar from "../../../../components/ui/RankStar";
 import RangeDate from "../../../../components/filters/RangeDate";
 import useStatistikTopPelanggan from "../../../../hooks/useStatistikTopPelanggan";
 import CardPelanggan from "../../../../components/ui/cards/CardPelanggan";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 const TopPelanggan = () => {
   const {
@@ -76,11 +77,7 @@ const TopPelanggan = () => {
       <div className="w-full lg:hidden flex flex-col justify-start items-center gap-2.5 pt-3 pb-2">
         {/* card */}
         {isLoading ? (
-          <>
-            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-            <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-          </>
+          <LoadingFetch />
         ) : isExistData ? (
           dataTopPelanggan?.data.map((pelanggan) => (
             <CardPelanggan

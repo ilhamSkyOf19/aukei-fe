@@ -224,6 +224,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                     pengguna?.role === ROLE_INTERNAL_TYPE.KASIR)) && (
                   <ButtonWithIcon
                     textColor="text-primary-white"
+                    disabled={isPendingPosting}
                     label="Hapus"
                     icon={Trash2}
                     bgColor="bg-error"
@@ -338,6 +339,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           }
           handleSetToast={handleSetToast}
           handleSetAlert={handleSetAlert}
+          isGlobalLoading={isPendingPosting}
         />
       )}
 
@@ -376,16 +378,14 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       )}
 
       {/* modal delete */}
-      {fromPengajuanBarang && (
-        <ModalDelete
-          modalRef={modalDeleteRef}
-          handleCloseModal={handleCloseModalDelete}
-          handleDelete={handleDelete}
-          bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
-          highlightData={dataDelete?.kodeReferensi}
-          isLoadingDelete={isPendingDelete}
-        />
-      )}
+      <ModalDelete
+        modalRef={modalDeleteRef}
+        handleCloseModal={handleCloseModalDelete}
+        handleDelete={handleDelete}
+        bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
+        highlightData={dataDelete?.kodeReferensi}
+        isLoadingDelete={isPendingDelete}
+      />
     </main>
   );
 };

@@ -31,6 +31,7 @@ import {
   ROLE_INTERNAL_TYPE,
 } from "../../../types/constant.type";
 import CardData from "../../../components/ui/cards/CardData";
+import LoadingFetch from "../../../components/ui/LoadingFetch";
 
 const Kredit = () => {
   const {
@@ -160,6 +161,7 @@ const Kredit = () => {
                 value={formatRupiah(
                   dataStatistikTempo?.data?.totalTagihanSelesai ?? 0,
                 )}
+                isLoading={isLoadingStatistikTempo}
               />
               <CardStatistik
                 icon={{
@@ -181,6 +183,7 @@ const Kredit = () => {
                       )
                     : "0"
                 }
+                isLoading={isLoadingStatistikTempo}
               />
             </div>
           )}
@@ -215,9 +218,7 @@ const Kredit = () => {
           {/* DATA SM */}
           <div className="w-full mt-2.5 flex flex-col justify-start items-start gap-2.5 md:hidden">
             {isLoadingDataTempo ? (
-              Array.from({ length: 4 }, (_, i) => (
-                <div key={i} className="w-full h-14 skeleton" />
-              ))
+              <LoadingFetch />
             ) : isExistDataTempo && !isLoadingDataTempo ? (
               dataTempo?.data?.data.map((item) => (
                 <CardData

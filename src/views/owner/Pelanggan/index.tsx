@@ -17,6 +17,7 @@ import ButtonUpdateTable from "../../../components/ui/button/ButtonUpdateTable";
 import ButtonDeleteTable from "../../../components/ui/button/ButtonDeleteTable";
 import ButtonDetailTable from "../../../components/ui/button/ButtonDetailTable";
 import CardPelanggan from "../../../components/ui/cards/CardPelanggan";
+import LoadingFetch from "../../../components/ui/LoadingFetch";
 
 const Pelanggan = () => {
   // call use
@@ -117,11 +118,7 @@ const Pelanggan = () => {
         <div className="w-full lg:hidden flex flex-col justify-start items-center gap-2.5 pt-3 pb-2">
           {/* card */}
           {isLoadingPelanggan ? (
-            <>
-              <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-              <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-              <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-            </>
+            <LoadingFetch />
           ) : isExistDataPelanggan ? (
             dataPelanggan?.data?.data.map((pelanggan) => (
               <CardPelanggan

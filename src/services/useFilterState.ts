@@ -11,8 +11,8 @@ const useFilterState = () => {
   // filter page
   const [page, setPage] = useState<string | undefined>(undefined);
 
-  // search
-  const [search, setSearch] = useState<string | undefined>(undefined);
+  // useFilterState
+  const [search, setSearch] = useState<string>("");
 
   // sort qty
   const [sortQty, setSortQty] = useState<string | undefined>(undefined);

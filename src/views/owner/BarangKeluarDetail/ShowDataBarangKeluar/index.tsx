@@ -27,6 +27,7 @@ import {
 import InputNumber from "../../../../components/inputs/InputNumber";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 type Props = {
   isLoadingBarangKeluarDetail?: boolean;
@@ -95,12 +96,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
       <div className="w-full flex flex-col justify-start items-center gap-3 lg:hidden">
         {/* data empty */}
         {isLoadingBarangKeluarDetail ? (
-          Array.from({ length: 3 }).map((_, index) => (
-            <div
-              key={index}
-              className="w-full h-20 skeleton shadow-xs border border-base-content/10"
-            />
-          ))
+          <LoadingFetch />
         ) : isExistData ? (
           dataBarangKeluarDetail?.data?.detailBarangKeluars?.map((item) => (
             <div

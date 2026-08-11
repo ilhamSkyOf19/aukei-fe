@@ -153,7 +153,6 @@ const useDaftarReturBarang = () => {
 
     // delete
     modalDeleteRef,
-    idModalDelete,
     handleShowModalDelete,
     handleCloseModalDelete,
     handleDelete,

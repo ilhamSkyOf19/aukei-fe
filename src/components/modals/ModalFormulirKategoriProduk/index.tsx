@@ -6,8 +6,8 @@ import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import InputTextNonIcon from "../../inputs/InputTextNonIcon";
 import InputTextAreaNonIcon from "../../inputs/InputTextAreaNonIcon";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import ButtonSubmit from "../../ui/button/ButtonSubmit";
 import { Tag } from "lucide-react";
+import ButtonText from "../../ui/button/ButtonText";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
@@ -77,13 +77,14 @@ const ModalFormulirKategoriProduk: FC<Props> = ({
             <div className="w-full mt-6 flex flex-row justify-end items-center gap-4">
               {/* button close */}
               <ButtonCloseText
+                disabled={isPendingMutateKategoriProduk}
                 handleClose={() => {
                   handleCloseModal();
                   reset();
                 }}
               />
               {/* button submit */}
-              <ButtonSubmit
+              <ButtonText
                 label={`Simpan`}
                 isLoading={isPendingMutateKategoriProduk}
               />

@@ -4,6 +4,7 @@ import useNotifikasiProduk from "./useNotifikasiProduk";
 import CardNotifikasiProduk from "../../../../components/ui/cards/CardNotifikasiProduk";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import { BellOff } from "lucide-react";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 type Props = {
   search?: string;
@@ -16,8 +17,12 @@ type Props = {
 
 const NotifikasiProduk = forwardRef<ChildRef, Props>(
   ({ windowSize, ...props }, ref) => {
-    const { dataNotifikasiProduk, handleRefresh, isExistDataNotifikasiProduk } =
-      useNotifikasiProduk({ ...props });
+    const {
+      dataNotifikasiProduk,
+      handleRefresh,
+      isExistDataNotifikasiProduk,
+      isLoadingNotifikasiProduk,
+    } = useNotifikasiProduk({ ...props });
 
     useImperativeHandle(ref, () => ({
       refetchActive: handleRefresh,
@@ -25,7 +30,9 @@ const NotifikasiProduk = forwardRef<ChildRef, Props>(
 
     return (
       <div className="w-full flex flex-col justify-start items-start gap-2.5">
-        {isExistDataNotifikasiProduk ? (
+        {isLoadingNotifikasiProduk ? (
+          <LoadingFetch />
+        ) : isExistDataNotifikasiProduk ? (
           dataNotifikasiProduk?.data?.data.map((item) => (
             <CardNotifikasiProduk
               key={item.id}

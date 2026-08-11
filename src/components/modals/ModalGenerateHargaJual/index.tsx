@@ -194,7 +194,7 @@ const ModalGenerateHargaJual: FC<Props> = ({
               <div className="w-full mt-6 flex flex-row justify-end items-center gap-4">
                 {/* button close */}
                 <ButtonCloseText
-                  disabled={isPendingGetHargaModal}
+                  disabled={isPendingGetHargaModal || isPendingUpdateHargaJual}
                   handleClose={() => {
                     handleBatal();
                   }}

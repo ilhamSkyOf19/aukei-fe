@@ -35,6 +35,7 @@ import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import CardData from "../../../components/ui/cards/CardData";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import { InvoiceServices } from "../../../services/invoice.service";
+import LoadingFetch from "../../../components/ui/LoadingFetch";
 
 const InstallmentsDetail = () => {
   const {
@@ -65,45 +66,54 @@ const InstallmentsDetail = () => {
           <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5 mt-2.5">
             <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-2.5">
               {/* pelanggan */}
-              <div className="col-span-2 md:col-span-1 relative flex flex-row justify-start items-center gap-4 border p-2 rounded-2xl md:rounded-xl border-base-content/10">
-                <div className="absolute top-2 right-2">
-                  {/* status */}
-                  <p
-                    className={cn(
-                      "px-2 py-0.5  font-medium text-[0.625rem] rounded-md flex justify-center items-center",
-                      dataInstallments?.data?.pelanggan?.isActive
-                        ? "bg-emerald-100 text-emerald-400"
-                        : "bg-rose-100 text-rose-400",
-                    )}
-                  >
-                    {dataInstallments?.data?.pelanggan?.isActive
-                      ? "Aktif"
-                      : "Tidak Aktif"}
-                  </p>
-                </div>
+              <div
+                className={cn(
+                  "col-span-2 md:col-span-1 relative flex flex-row justify-start items-center gap-4 border p-2 rounded-2xl md:rounded-xl border-base-content/10",
+                  isLoadingDataInstallments && "skeleton h-24",
+                )}
+              >
+                {!isLoadingDataInstallments && (
+                  <>
+                    <div className="absolute top-2 right-2">
+                      {/* status */}
+                      <p
+                        className={cn(
+                          "px-2 py-0.5  font-medium text-[0.625rem] rounded-md flex justify-center items-center",
+                          dataInstallments?.data?.pelanggan?.isActive
+                            ? "bg-emerald-100 text-emerald-400"
+                            : "bg-rose-100 text-rose-400",
+                        )}
+                      >
+                        {dataInstallments?.data?.pelanggan?.isActive
+                          ? "Aktif"
+                          : "Tidak Aktif"}
+                      </p>
+                    </div>
 
-                <Avatar
-                  nama={dataInstallments?.data?.pelanggan?.nama ?? ""}
-                  index={dataInstallments?.data?.pelanggan?.id}
-                />
-                <div className="w-full flex flex-col justify-start items-start gap-1">
-                  <div className="w-full flex flex-row justify-between items-center md:gap-12">
-                    <p className="text-base-content text-sm font-semibold">
-                      {dataInstallments?.data?.pelanggan?.nama}
-                    </p>
-                  </div>
-                  <span className="text-[0.625rem]  md:text-xs text-base-content ">
-                    {formatNumberPhone(
-                      dataInstallments?.data?.pelanggan?.noWa ?? "",
-                    )}
-                  </span>
+                    <Avatar
+                      nama={dataInstallments?.data?.pelanggan?.nama ?? ""}
+                      index={dataInstallments?.data?.pelanggan?.id}
+                    />
+                    <div className="w-full flex flex-col justify-start items-start gap-1">
+                      <div className="w-full flex flex-row justify-between items-center md:gap-12">
+                        <p className="text-base-content text-sm font-semibold">
+                          {dataInstallments?.data?.pelanggan?.nama}
+                        </p>
+                      </div>
+                      <span className="text-[0.625rem]  md:text-xs text-base-content ">
+                        {formatNumberPhone(
+                          dataInstallments?.data?.pelanggan?.noWa ?? "",
+                        )}
+                      </span>
 
-                  <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
-                    <span className="text-[0.625rem] font-medium text-base-content/70">
-                      Informasi pelanggan
-                    </span>
-                  </div>
-                </div>
+                      <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
+                        <span className="text-[0.625rem] font-medium text-base-content/70">
+                          Informasi pelanggan
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* informasi transaksi */}
@@ -183,6 +193,7 @@ const InstallmentsDetail = () => {
                 label="Total Tagihan"
                 value={formatRupiah(dataInstallments?.data?.sisaTagihan ?? 0)}
                 caption="Belum lunas."
+                isLoading={isLoadingDataInstallments}
               />
 
               <CardStatistik
@@ -196,6 +207,7 @@ const InstallmentsDetail = () => {
                   dataInstallments?.data?.totalTagihanLunas ?? 0,
                 )}
                 caption="Sudah lunas."
+                isLoading={isLoadingDataInstallments}
               />
 
               <CardStatistik
@@ -207,6 +219,7 @@ const InstallmentsDetail = () => {
                 label="Tenor"
                 value={`${(dataInstallments?.data?.periode ?? 0) * (dataInstallments?.data?.jumlahCicilan ?? 0)} Hari / ${getWeekFromPeriod((dataInstallments?.data?.periode ?? 0) * (dataInstallments?.data?.jumlahCicilan ?? 0))} Minggu`}
                 caption="Jumlah Tenor."
+                isLoading={isLoadingDataInstallments}
               />
 
               <CardStatistik
@@ -218,6 +231,7 @@ const InstallmentsDetail = () => {
                 label="Cicilan"
                 value={`${dataInstallments?.data?.sisaCicilanBelumSelesai} / ${dataInstallments?.data?.jumlahCicilan} Cicilan`}
                 caption="Progres Cicilan."
+                isLoading={isLoadingDataInstallments}
               />
             </div>
           </div>
@@ -229,9 +243,7 @@ const InstallmentsDetail = () => {
               Jadwal Cicilan
             </h3>
             {isLoadingDataInstallments ? (
-              Array.from({ length: 4 }, (_, i) => (
-                <div key={i} className="w-full h-14 skeleton" />
-              ))
+              <LoadingFetch />
             ) : isExistDataInstallments ? (
               dataInstallments?.data?.installments.map((item) => (
                 <CardData
@@ -290,7 +302,13 @@ const InstallmentsDetail = () => {
                     {isLoadingDataInstallments ? (
                       Array.from({ length: 4 }).map((_, index) => (
                         <tr key={index}>
-                          <td colSpan={6}>
+                          <td
+                            colSpan={
+                              pengguna?.role === ROLE_INTERNAL_TYPE.KASIR
+                                ? 7
+                                : 6
+                            }
+                          >
                             <div className="skeleton h-12 w-full py-1" />
                           </td>
                         </tr>
@@ -382,12 +400,17 @@ const InstallmentsDetail = () => {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={6}>
+                        <td
+                          colSpan={
+                            pengguna?.role === ROLE_INTERNAL_TYPE.KASIR ? 7 : 6
+                          }
+                        >
                           <div className="w-full h-full flex flex-col justify-center items-center">
                             <DataEmpty
                               iconData={CalendarDays}
                               title="Jadwal Cicilan Tidak Tersedia"
                               description="Belum ada jadwal cicilan yang dapat ditampilkan saat ini."
+                              xs
                             />
                           </div>
                         </td>

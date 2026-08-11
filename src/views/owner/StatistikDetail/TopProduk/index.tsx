@@ -18,6 +18,7 @@ import useStatistikTopProduk from "../../../../hooks/useStatistikTopProduk";
 import type { DataStatistikTopProdukType } from "../../../../models/statistik.model";
 import type { FC } from "react";
 import { ArrowUpRight, Trophy } from "lucide-react";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 const TopProduk = () => {
   const {
@@ -89,11 +90,7 @@ const TopProduk = () => {
       <div className="flex w-full flex-col justify-start items-center gap-2 mt-2.5 lg:hidden">
         {/* card */}
         {isLoading ? (
-          <>
-            <div className="w-full h-20 skeleton border border-base-content/10" />
-            <div className="w-full h-20 skeleton border border-base-content/10" />
-            <div className="w-full h-20 skeleton border border-base-content/10" />
-          </>
+          <LoadingFetch />
         ) : isExistData ? (
           dataTopProduk?.data?.map((produk, _) => (
             <CardTopProduk key={produk.id} produk={produk} />

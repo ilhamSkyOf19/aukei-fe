@@ -41,6 +41,7 @@ import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import NotCompatible from "../../../components/messages/NotCompatible";
 import CardProdukTransaksi from "../../../components/ui/cards/CardProdukTransaksi";
 import InputTextAreaNonIcon from "../../../components/inputs/InputTextAreaNonIcon";
+import LoadingFetch from "../../../components/ui/LoadingFetch";
 
 const ReturBarang = () => {
   const {
@@ -67,7 +68,6 @@ const ReturBarang = () => {
     errors,
     register,
     isLoadingReturDetails,
-    validateReturBarangId,
   } = useReturBarang();
 
   return (
@@ -100,6 +100,7 @@ const ReturBarang = () => {
             )}
             customWidth="col-span-1"
             statusTransaction={dataForReturBarang?.data?.status}
+            isLoading={isLoadingForReturBarang}
           />
 
           {/* data kasir */}
@@ -117,6 +118,7 @@ const ReturBarang = () => {
             smallValue={dataForReturBarang?.data?.kasir?.username}
             customWidth="col-span-1"
             isActive={dataForReturBarang?.data?.kasir?.isActive}
+            isLoading={isLoadingForReturBarang}
           />
 
           {/* data pelanggan */}
@@ -136,6 +138,7 @@ const ReturBarang = () => {
             )}
             customWidth="col-span-1"
             isActive={dataForReturBarang?.data?.pelanggan?.isActive}
+            isLoading={isLoadingForReturBarang}
           />
         </div>
 
@@ -157,11 +160,7 @@ const ReturBarang = () => {
           {/* DATA FOR SM */}
           <div className="w-full flex flex-row justify-start items-start gap-2.5 md:hidden mt-2.5 overflow-x-auto snap-x snap-mandatory scroll-smooth p-2.5">
             {isLoadingForReturBarang ? (
-              <>
-                <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-                <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-                <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-              </>
+              <LoadingFetch />
             ) : dataForReturBarang?.data &&
               dataForReturBarang?.data?.details.length > 0 ? (
               dataForReturBarang?.data?.details?.map((item) => (
@@ -181,12 +180,14 @@ const ReturBarang = () => {
             )}
           </div>
 
-          <div className="md:hidden flex my-4 flex-row justify-center items-center w-full gap-1.5">
-            <span className="text-xs text-base-content">
-              Silahkan Geser ke kanan
-            </span>
-            <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
-          </div>
+          {!isLoadingForReturBarang && (
+            <div className="md:hidden flex my-4 flex-row justify-center items-center w-full gap-1.5">
+              <span className="text-xs text-base-content">
+                Silahkan Geser ke kanan
+              </span>
+              <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
+            </div>
+          )}
 
           {/* DATA FOR MD & LG */}
           <div
@@ -216,7 +217,7 @@ const ReturBarang = () => {
                     {isLoadingForReturBarang ? (
                       Array.from({ length: 4 }, (_, i) => i).map((item) => (
                         <tr key={item} className="h-18">
-                          <td colSpan={7}>
+                          <td colSpan={9}>
                             <div className="w-full skeleton h-12" />
                           </td>
                         </tr>
@@ -319,7 +320,7 @@ const ReturBarang = () => {
                       </>
                     ) : (
                       <tr>
-                        <td colSpan={7}>
+                        <td colSpan={9}>
                           <div className="w-full flex flex-row justify-center items-center pt-10">
                             <span className="text-sm text-base-content/70">
                               Produk tidak tersedia
@@ -336,7 +337,10 @@ const ReturBarang = () => {
         </div>
 
         {/* alert label */}
-        <AlertLabel message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur." />
+        <AlertLabel
+          isLoading={isLoadingForReturBarang}
+          message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur."
+        />
         {/* form retur */}
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -355,7 +359,7 @@ const ReturBarang = () => {
             {/* title */}
             <div className="w-full flex flex-col justify-start items-start gap-0.5">
               <h2 className="text-sm font-semibold text-base-content">
-                Fomulir retur barang
+                Formulir retur barang
               </h2>
               <span className="text-base-content text-xs">
                 Isi data retur barang yang sudah dipilih
@@ -364,7 +368,11 @@ const ReturBarang = () => {
 
             {/* card formulir */}
             <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
-              {fields.length > 0 ? (
+              {isLoadingReturDetails ? (
+                <>
+                  <div className="w-full h-12 skeleton border border-base-content/10 rounded-2xl md:rounded-xl" />
+                </>
+              ) : fields.length > 0 ? (
                 fields.map((field, index) => (
                   <div
                     key={field.id}
@@ -495,6 +503,7 @@ const ReturBarang = () => {
                 }}
                 smallValue={"Barang yang dapat dijual kembali"}
                 customWidth="col-span-1"
+                isLoading={isLoadingReturDetails}
               />
 
               <CardStatistikLarge
@@ -509,6 +518,7 @@ const ReturBarang = () => {
                 }}
                 smallValue={"Barang yang tidak dapat dijual kembali"}
                 customWidth="col-span-1"
+                isLoading={isLoadingReturDetails}
               />
 
               <CardStatistikLarge
@@ -523,6 +533,7 @@ const ReturBarang = () => {
                 }}
                 smallValue={"Total uang refund / uang kembali"}
                 customWidth="col-span-1"
+                isLoading={isLoadingReturDetails}
               />
             </div>
 
@@ -573,6 +584,7 @@ const ReturBarang = () => {
                       : "Simpan dan Ajukan"
                   }
                   customWidth="col-span-1"
+                  skeleton={isLoadingForReturBarang}
                 />
               </div>
             </div>

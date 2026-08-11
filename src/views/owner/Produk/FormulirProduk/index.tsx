@@ -211,7 +211,7 @@ const FormulirProduk = () => {
                   {/* button cancel */}
                   <ButtonCloseText
                     label="Kembali"
-                    disabled={isLoadingKategori}
+                    disabled={isLoadingKategori || isPendingMutateProduk}
                     handleClose={() => handleBack()}
                   />
 

@@ -182,7 +182,9 @@
   - [✅] Buat fitur delete retur barang
   - [✅] Buat fitur update retur barang
 
-  - [ ] Cek Loading
+  - [✅] Cek Loading
+
+  - [ ] Delete retur barang
 
   - [ ] Struk booking
 
@@ -193,7 +195,7 @@
 
   - [✅] struk dari transaksi booking itu payment nya di jumlahkan dan juga kembalian nya di jumlahkan
 
-  - [ ] Buat page notifikasi retur
+  - [ ] Buat halaman notifikasi retur
 
 - [ ] Tambahkan state current pahtname untuk query infinity
 
@@ -231,7 +233,7 @@
 
   - [✅] Buat halaman booking untuk owner
 
-  - [ ] cek loading di contant table, sesuaikan cols nya dan juga cols data empty nya
+  - [✅] cek loading di contant table, sesuaikan cols nya dan juga cols data empty nya
 
   - [✅] Membuat detail transaksi yang berisi data dan cetak struk dan tambahkan response status di model nya
 

@@ -46,9 +46,9 @@ const RiwayatTransaksiDetail = () => {
     setPage,
     setSort,
     sort,
-    pelanggan,
     handleRedirectDetail,
     handleBack,
+    dataPelanggan,
   } = useRiwayatTransaksiDetail();
 
   return (
@@ -71,32 +71,39 @@ const RiwayatTransaksiDetail = () => {
         <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
           <div className="w-full flex flex-row justify-between items-start">
             {/* pelanggan */}
-            <div className="w-full md:w-auto flex flex-row justify-start items-center gap-4 border p-2 rounded-lg border-base-content/10">
-              <Avatar nama={pelanggan?.nama ?? ""} index={pelanggan?.id} />
-              <div className="w-full md:w-auto flex flex-col justify-start items-start gap-1">
-                <div className="w-full md:w-auto flex flex-row justify-between md:justify-start items-center md:gap-12">
-                  <p className="text-base-content text-sm font-semibold">
-                    {pelanggan?.nama}
-                  </p>
+            {isLoadingRiwayatTransaksi ? (
+              <div className="w-full h-18 md:w-80 flex flex-row justify-start items-center gap-4 border p-2 rounded-2xl md:rounded-xl border-base-content/10 skeleton" />
+            ) : (
+              <div className="w-full md:w-auto flex flex-row justify-start items-center gap-4 border p-2 rounded-2xl md:rounded-xl border-base-content/10">
+                <Avatar
+                  nama={dataPelanggan?.nama ?? ""}
+                  index={dataPelanggan?.id}
+                />
+                <div className="w-full md:w-auto flex flex-col justify-start items-start gap-1">
+                  <div className="w-full md:w-auto flex flex-row justify-between md:justify-start items-center md:gap-12">
+                    <p className="text-base-content text-sm font-semibold">
+                      {dataPelanggan?.nama}
+                    </p>
 
-                  {/* status */}
-                  <p
-                    className={cn(
-                      "px-2 py-0.5  font-medium text-[0.625rem] rounded-md flex justify-center items-center",
-                      pelanggan?.isActive
-                        ? "bg-emerald-100 text-emerald-400"
-                        : "bg-rose-100 text-rose-400",
-                    )}
-                  >
-                    {pelanggan?.isActive ? "Aktif" : "Tidak Aktif"}
-                  </p>
+                    {/* status */}
+                    <p
+                      className={cn(
+                        "px-2 py-0.5  font-medium text-[0.625rem] rounded-md flex justify-center items-center",
+                        dataPelanggan?.isActive
+                          ? "bg-emerald-100 text-emerald-400"
+                          : "bg-rose-100 text-rose-400",
+                      )}
+                    >
+                      {dataPelanggan?.isActive ? "Aktif" : "Tidak Aktif"}
+                    </p>
+                  </div>
+
+                  <span className="text-[0.625rem]  md:text-xs text-base-content ">
+                    {formatNumberPhone(dataPelanggan?.noWa ?? "")}
+                  </span>
                 </div>
-
-                <span className="text-[0.625rem]  md:text-xs text-base-content ">
-                  {formatNumberPhone(pelanggan?.noWa ?? "")}
-                </span>
               </div>
-            </div>
+            )}
 
             {/* aksi */}
             <div className="flex flex-row justify-end items-center gap-2">
@@ -281,7 +288,7 @@ const RiwayatTransaksiDetail = () => {
               </tr>
             </thead>
             <tbody>
-              {false ? (
+              {isLoadingRiwayatTransaksi ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
                     <td colSpan={7}>

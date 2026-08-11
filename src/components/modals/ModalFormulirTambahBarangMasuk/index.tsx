@@ -173,7 +173,11 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
 
             {/* button submit */}
             <div className="w-full flex flex-row justify-end items-end gap-4 mt-2">
-              <ButtonCloseText handleClose={handleCloseModal} label="Batal" />
+              <ButtonCloseText
+                handleClose={handleCloseModal}
+                label="Batal"
+                disabled={isPendingBarangMasukDetail}
+              />
 
               <ButtonWithIcon
                 typeButton="submit"

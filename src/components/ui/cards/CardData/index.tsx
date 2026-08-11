@@ -131,7 +131,10 @@ const CardData: FC<Props> = ({
         !disabled &&
           "hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out",
       )}
-      style={{ cursor: disabled ? "default" : "pointer" }}
+      style={{
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 1 : 1,
+      }}
       onClick={handleRedirectDetail}
     >
       <div className="flex flex-row justify-start items-center gap-2.5">
@@ -304,7 +307,6 @@ const CardData: FC<Props> = ({
           </div>
         </div>
       </div>
-
       {/* total */}
       <div
         className={cn(

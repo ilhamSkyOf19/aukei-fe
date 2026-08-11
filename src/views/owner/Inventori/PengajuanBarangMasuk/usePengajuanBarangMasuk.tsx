@@ -5,12 +5,8 @@ import { useToastAnimation } from "../../../../hooks/useToast";
 import { useLocation, useNavigate } from "react-router-dom";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
 import { PengajuanBarangMasukServices } from "../../../../services/pengajuanBarangMasuk.service";
-import { useAuthStore } from "../../../../stores/authStore";
 
 const usePengajuanBarangMasuk = () => {
-  // get pengguna
-  const pengguna = useAuthStore((state) => state.pengguna);
-
   // navigate
   const navigate = useNavigate();
   // current pathname
@@ -94,7 +90,6 @@ const usePengajuanBarangMasuk = () => {
     isExistDataPengajuanBarangMasuk,
     handleRedirectDetail,
     sort,
-    pengguna,
   };
 };
 

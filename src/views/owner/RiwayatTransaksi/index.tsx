@@ -4,6 +4,7 @@ import {
   History,
   Landmark,
   QrCode,
+  ReceiptText,
 } from "lucide-react";
 import type { FC } from "react";
 import { cn } from "../../../utils/cn";
@@ -103,10 +104,10 @@ const RiwayatTransaksi = () => {
               </tr>
             </thead>
             <tbody>
-              {false ? (
+              {isLoadingRiwayatTransaksi ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={8}>
+                    <td colSpan={9}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>
@@ -199,11 +200,13 @@ const RiwayatTransaksi = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={10}>
+                  <td colSpan={9}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
+                        iconData={ReceiptText}
                         title="Data Riwayat Transaksi Tidak Tersedia"
                         description="Belum ada data riwayat transaksi yang dapat ditampilkan saat ini."
+                        xs
                       />
                     </div>
                   </td>

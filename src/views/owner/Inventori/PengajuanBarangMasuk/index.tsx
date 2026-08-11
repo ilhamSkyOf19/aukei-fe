@@ -1,10 +1,4 @@
-import {
-  CircleAlert,
-  EllipsisVertical,
-  Package,
-  PackagePlus,
-  Truck,
-} from "lucide-react";
+import { CircleAlert, EllipsisVertical, Package, Truck } from "lucide-react";
 import FilterSort from "../../../../components/filters/Sort";
 import InputSearch from "../../../../components/inputs/InputSearch";
 import Toast from "../../../../components/messages/Toast";
@@ -14,10 +8,7 @@ import { cn } from "../../../../utils/cn";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import StatusInventori from "../../../../components/ui/StatusInventori";
-import {
-  ROLE_INTERNAL_TYPE,
-  type StatusInventoriType,
-} from "../../../../types/constant.type";
+import { type StatusInventoriType } from "../../../../types/constant.type";
 import RangeDate from "../../../../components/filters/RangeDate";
 import type { FC } from "react";
 import { formatNumber } from "../../../../helpers/helpers";
@@ -25,6 +16,7 @@ import DropDownInventori from "../../../../components/ui/DropDownInventori";
 import usePengajuanBarangMasuk from "./usePengajuanBarangMasuk";
 import Avatar from "../../../../components/ui/Avatar";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 const PengajuanBarangMasuk = () => {
   // call use barang masuk
@@ -39,7 +31,6 @@ const PengajuanBarangMasuk = () => {
     isExistDataPengajuanBarangMasuk,
     handleRedirectDetail,
     sort,
-    pengguna,
   } = usePengajuanBarangMasuk();
 
   return (
@@ -85,11 +76,7 @@ const PengajuanBarangMasuk = () => {
         {/* SHOW DATA FOR SM */}
         <div className="flex w-full flex-col justify-start items-center gap-2 mt-2.5 md:hidden">
           {isLoadingPengajuanBarangMasuk ? (
-            <>
-              <div className="w-full h-20 skeleton border border-base-content/10" />
-              <div className="w-full h-20 skeleton border border-base-content/10" />
-              <div className="w-full h-20 skeleton border border-base-content/10" />
-            </>
+            <LoadingFetch />
           ) : isExistDataPengajuanBarangMasuk ? (
             dataPengajuanBarangMasuk?.data?.data?.map((item, _) => (
               <CardPengajuanBarangMasuk

@@ -522,55 +522,59 @@ const InformasiPembayaran: FC<Props> = ({
         )}
 
         {/* riwayat pembayaran */}
-        {dataTransaction?.data?.paymentTransactions && (
-          <div className="w-full flex flex-col justify-start items-start mt-2.5 gap-2.5">
-            <div className="w-full flex flex-row justify-between items-center">
-              <span className="text-xs font-medium text-base-content">
-                Riwayat Pembayaran
-              </span>
-
-              <button
-                type="button"
-                onClick={() => setIsOpenHistory((prev) => !prev)}
-                className="text-xs text-base-content flex flex-row justify-center items-center gap-1.5 hover:underline"
-              >
-                <span>
-                  {isOpenHistory ? "Sembunyikan Riwayat" : "Lihat Riwayat"}
+        {isLoadingTransaction ? (
+          <div className="w-full mt-2.5 h-24 skeleton rounded-2xl md:rounded-xl" />
+        ) : (
+          dataTransaction?.data?.paymentTransactions && (
+            <div className="w-full flex flex-col justify-start items-start mt-2.5 gap-2.5">
+              <div className="w-full flex flex-row justify-between items-center">
+                <span className="text-xs font-medium text-base-content">
+                  Riwayat Pembayaran
                 </span>
 
-                <ChevronDown
-                  className={cn(
-                    "w-4 h-4 transition-transform duration-200",
-                    isOpenHistory && "rotate-180",
-                  )}
-                />
-              </button>
-            </div>
-            <div
-              className={cn(
-                "w-full grid transition-all duration-300 ease-in-out",
-                isOpenHistory
-                  ? "grid-rows-[1fr] opacity-100"
-                  : "grid-rows-[0fr] opacity-0",
-              )}
-            >
-              <div className="overflow-hidden">
-                <div className="flex flex-col gap-2.5 pt-2.5">
-                  {/* card */}
-                  {dataTransaction.data.paymentTransactions.map((item) => (
-                    <CardPaymentTransaction
-                      key={item.id}
-                      paymentTransactions={item}
-                    />
-                  ))}
+                <button
+                  type="button"
+                  onClick={() => setIsOpenHistory((prev) => !prev)}
+                  className="text-xs text-base-content flex flex-row justify-center items-center gap-1.5 hover:underline"
+                >
+                  <span>
+                    {isOpenHistory ? "Sembunyikan Riwayat" : "Lihat Riwayat"}
+                  </span>
+
+                  <ChevronDown
+                    className={cn(
+                      "w-4 h-4 transition-transform duration-200",
+                      isOpenHistory && "rotate-180",
+                    )}
+                  />
+                </button>
+              </div>
+              <div
+                className={cn(
+                  "w-full grid transition-all duration-300 ease-in-out",
+                  isOpenHistory
+                    ? "grid-rows-[1fr] opacity-100"
+                    : "grid-rows-[0fr] opacity-0",
+                )}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col gap-2.5 pt-2.5">
+                    {/* card */}
+                    {dataTransaction.data.paymentTransactions.map((item) => (
+                      <CardPaymentTransaction
+                        key={item.id}
+                        paymentTransactions={item}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )
         )}
         {/* aksi */}
         <div className="w-full flex flex-row justify-between items-start gap-2 mt-4">
-          {isPageBookingKasir ? (
+          {!isPageBookingKasir ? (
             <>
               {/* update */}
               {isUbahData ? (
@@ -581,15 +585,17 @@ const InformasiPembayaran: FC<Props> = ({
                   customWidth="w-full md:flex-1"
                   label="Tutup"
                   handleBtn={() => setIsUbahData(false)}
+                  skeleton={isLoadingTransaction}
                 />
               ) : (
                 <ButtonWithIcon
                   icon={Pencil}
                   bgColor="bg-info"
                   textColor="text-primary-white"
-                  customWidth="w-full md:flex-1"
+                  customWidth="flex-1"
                   label="Ubah Harga / Diskon"
                   handleBtn={() => setIsUbahData(true)}
+                  skeleton={isLoadingTransaction}
                 />
               )}
 
@@ -597,10 +603,11 @@ const InformasiPembayaran: FC<Props> = ({
               <ButtonWithIcon
                 disabled={!siapKirim}
                 icon={CreditCard}
-                customWidth="w-full md:flex-1"
+                customWidth="flex-1"
                 label="Selesaikan"
                 isLoading={isPendingTransaction}
                 handleBtn={() => handleTransaction()}
+                skeleton={isLoadingTransaction}
               />
             </>
           ) : (
@@ -615,6 +622,7 @@ const InformasiPembayaran: FC<Props> = ({
                     id: dataTransaction?.data?.id ?? 0,
                   })
                 }
+                skeleton={isLoadingTransaction}
               />
 
               {/* download struk */}
@@ -624,6 +632,7 @@ const InformasiPembayaran: FC<Props> = ({
                 bgColor="bg-gray-400"
                 label="Download PDF"
                 textColor="text-primary-white"
+                skeleton={isLoadingTransaction}
               />
             </>
           )}

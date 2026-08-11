@@ -43,6 +43,7 @@ const useNotifikasiProduk = (params: {
     dataNotifikasiProduk,
     handleRefresh,
     isExistDataNotifikasiProduk,
+    isLoadingNotifikasiProduk,
   };
 };
 

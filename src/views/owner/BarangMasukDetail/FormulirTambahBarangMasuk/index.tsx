@@ -4,19 +4,21 @@ import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import { cn } from "../../../../utils/cn";
 import InputNumber from "../../../../components/inputs/InputNumber";
 import type { CreateBarangMasukDetailType } from "../../../../models/barangMasukDetail.model";
-import ButtonSubmitWithIcon from "../../../../components/ui/button/ButtonSubmitWithIcon";
 import ModalFormulirTambahBarangMasuk from "../../../../components/modals/ModalFormulirTambahBarangMasuk";
 import InputPrice from "../../../../components/inputs/InputPrice";
 import FormCariProdukInventori from "../../../../components/forms/FormCariProdukInventori";
 import CardProdukForAfterChooseInventori from "../../../../components/ui/cards/CardProdukForAfterChooseInventori";
+import { PackagePlus } from "lucide-react";
 
 type Props = {
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
+  isGlobalLoading?: boolean;
 };
 const FormulirTambahBarangMasuk: FC<Props> = ({
   handleSetToast,
   handleSetAlert,
+  isGlobalLoading,
 }) => {
   const {
     dataProdukForChoose,
@@ -109,7 +111,10 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
           </div>
           {/* button submit */}
           <div className="flex-1 flex flex-row justify-end items-end h-18">
-            <ButtonSubmitWithIcon
+            <ButtonWithIcon
+              icon={PackagePlus}
+              disabled={isGlobalLoading}
+              typeButton="submit"
               label="Tambah Barang Masuk"
               isLoading={isPendingBarangMasukDetail}
             />

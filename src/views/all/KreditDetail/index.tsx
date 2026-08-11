@@ -31,6 +31,7 @@ import NotCompatible from "../../../components/messages/NotCompatible";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import CardData from "../../../components/ui/cards/CardData";
+import LoadingFetch from "../../../components/ui/LoadingFetch";
 
 const filterStatus: { label: string; value: string }[] = [
   {
@@ -76,44 +77,53 @@ const KreditDetail = () => {
       {/* statistik */}
       <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5 mt-2.5">
         <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-2.5">
-          <div className="col-span-1 flex flex-row justify-start items-center gap-4 border p-2 rounded-lg border-base-content/10">
-            <Avatar
-              nama={dataStatistikTempo?.data?.pelanggan?.nama ?? ""}
-              index={dataStatistikTempo?.data?.pelanggan?.id}
-            />
-            <div className="w-full flex flex-col justify-start items-start gap-1">
-              <div className="w-full flex flex-row justify-between items-center md:gap-12">
-                <p className="text-base-content text-sm font-semibold">
-                  {dataStatistikTempo?.data?.pelanggan?.nama}
-                </p>
+          <div
+            className={cn(
+              "col-span-1 flex flex-row justify-start items-center gap-4 border p-2 rounded-lg border-base-content/10",
+              isLoadingStatistikTempo && "skeleton h-24",
+            )}
+          >
+            {!isLoadingStatistikTempo && (
+              <>
+                <Avatar
+                  nama={dataStatistikTempo?.data?.pelanggan?.nama ?? ""}
+                  index={dataStatistikTempo?.data?.pelanggan?.id}
+                />
+                <div className="w-full flex flex-col justify-start items-start gap-1">
+                  <div className="w-full flex flex-row justify-between items-center md:gap-12">
+                    <p className="text-base-content text-sm font-semibold">
+                      {dataStatistikTempo?.data?.pelanggan?.nama}
+                    </p>
 
-                {/* status */}
-                <p
-                  className={cn(
-                    "px-2 py-0.5  font-medium text-[0.625rem] rounded-md flex justify-center items-center",
-                    dataStatistikTempo?.data?.pelanggan?.isActive
-                      ? "bg-emerald-100 text-emerald-400"
-                      : "bg-rose-100 text-rose-400",
-                  )}
-                >
-                  {dataStatistikTempo?.data?.pelanggan?.isActive
-                    ? "Aktif"
-                    : "Tidak Aktif"}
-                </p>
-              </div>
-              <span className="text-[0.625rem]  md:text-xs text-base-content ">
-                {formatNumberPhone(
-                  dataStatistikTempo?.data?.pelanggan?.noWa ?? "",
-                )}
-              </span>
+                    {/* status */}
+                    <p
+                      className={cn(
+                        "px-2 py-0.5  font-medium text-[0.625rem] rounded-md flex justify-center items-center",
+                        dataStatistikTempo?.data?.pelanggan?.isActive
+                          ? "bg-emerald-100 text-emerald-400"
+                          : "bg-rose-100 text-rose-400",
+                      )}
+                    >
+                      {dataStatistikTempo?.data?.pelanggan?.isActive
+                        ? "Aktif"
+                        : "Tidak Aktif"}
+                    </p>
+                  </div>
+                  <span className="text-[0.625rem]  md:text-xs text-base-content ">
+                    {formatNumberPhone(
+                      dataStatistikTempo?.data?.pelanggan?.noWa ?? "",
+                    )}
+                  </span>
 
-              {/* caption */}
-              <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
-                <span className="text-[0.625rem] font-medium text-base-content/70">
-                  Informasi pelanggan
-                </span>
-              </div>
-            </div>
+                  {/* caption */}
+                  <div className="flex flex-row gap-1 justify-start items-center mt-1.5">
+                    <span className="text-[0.625rem] font-medium text-base-content/70">
+                      Informasi pelanggan
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           <CardStatistik
@@ -160,6 +170,7 @@ const KreditDetail = () => {
               dataStatistikTempo?.data?.totalTagihanBelumSelesai ?? 0,
             )}
             caption="Belum lunas"
+            isLoading={isLoadingStatistikTempo}
           />
 
           <CardStatistik
@@ -173,6 +184,7 @@ const KreditDetail = () => {
               dataStatistikTempo?.data?.totalTagihanSelesai ?? 0,
             )}
             caption="Sudah lunas"
+            isLoading={isLoadingStatistikTempo}
           />
 
           <CardStatistik
@@ -191,6 +203,7 @@ const KreditDetail = () => {
                 : "0"
             }
             caption="Jatuh Tempo"
+            isLoading={isLoadingStatistikTempo}
           />
         </div>
       </div>
@@ -235,9 +248,7 @@ const KreditDetail = () => {
       {/* DATA SM */}
       <div className="w-full mt-2.5 flex flex-col justify-start items-start gap-2.5 md:hidden">
         {isLoadingDataTempo ? (
-          Array.from({ length: 4 }, (_, i) => (
-            <div key={i} className="w-full h-14 skeleton" />
-          ))
+          <LoadingFetch />
         ) : isExistDataTempo && !isLoadingDataTempo ? (
           dataTempo?.data?.data.map((item) => (
             <CardData

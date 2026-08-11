@@ -68,43 +68,58 @@ const BookingByPelanggan = () => {
           {/* statistik */}
           <div className="w-full flex flex-col justify-start items-start gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5 mt-2.5">
             <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-2.5">
-              <div className="col-span-1 flex flex-row justify-start items-center gap-4 border p-2 rounded-lg border-base-content/10">
-                <Avatar
-                  nama={
-                    dataStatistikBookingByPelanggan?.data?.pelanggan?.nama ?? ""
-                  }
-                  index={dataStatistikBookingByPelanggan?.data?.pelanggan?.id}
-                />
-                <div className="w-full flex flex-col justify-start items-start gap-1">
-                  <div className="w-full flex flex-row justify-between items-center md:gap-12">
-                    <p className="text-base-content text-sm font-semibold">
-                      {dataStatistikBookingByPelanggan?.data?.pelanggan?.nama}
-                    </p>
-
-                    {/* status */}
-                    <p
-                      className={cn(
-                        "px-2 py-0.5  font-medium text-[0.625rem] rounded-md flex justify-center items-center",
+              <div
+                className={cn(
+                  "col-span-1 flex flex-row justify-start items-center gap-4 border p-2 rounded-lg border-base-content/10",
+                  isLoadingStatistikBookingByPelanggan && "skeleton h-24",
+                )}
+              >
+                {!isLoadingStatistikBookingByPelanggan && (
+                  <>
+                    <Avatar
+                      nama={
                         dataStatistikBookingByPelanggan?.data?.pelanggan
-                          ?.isActive
-                          ? "bg-emerald-100 text-emerald-400"
-                          : "bg-rose-100 text-rose-400",
-                      )}
-                    >
-                      {dataStatistikBookingByPelanggan?.data?.pelanggan
-                        ?.isActive
-                        ? "Aktif"
-                        : "Tidak Aktif"}
-                    </p>
-                  </div>
+                          ?.nama ?? ""
+                      }
+                      index={
+                        dataStatistikBookingByPelanggan?.data?.pelanggan?.id
+                      }
+                    />
+                    <div className="w-full flex flex-col justify-start items-start gap-1">
+                      <div className="w-full flex flex-row justify-between items-center md:gap-12">
+                        <p className="text-base-content text-sm font-semibold">
+                          {
+                            dataStatistikBookingByPelanggan?.data?.pelanggan
+                              ?.nama
+                          }
+                        </p>
 
-                  <span className="text-[0.625rem]  md:text-xs text-base-content ">
-                    {formatNumberPhone(
-                      dataStatistikBookingByPelanggan?.data?.pelanggan?.noWa ??
-                        "",
-                    )}
-                  </span>
-                </div>
+                        {/* status */}
+                        <p
+                          className={cn(
+                            "px-2 py-0.5  font-medium text-[0.625rem] rounded-md flex justify-center items-center",
+                            dataStatistikBookingByPelanggan?.data?.pelanggan
+                              ?.isActive
+                              ? "bg-emerald-100 text-emerald-400"
+                              : "bg-rose-100 text-rose-400",
+                          )}
+                        >
+                          {dataStatistikBookingByPelanggan?.data?.pelanggan
+                            ?.isActive
+                            ? "Aktif"
+                            : "Tidak Aktif"}
+                        </p>
+                      </div>
+
+                      <span className="text-[0.625rem]  md:text-xs text-base-content ">
+                        {formatNumberPhone(
+                          dataStatistikBookingByPelanggan?.data?.pelanggan
+                            ?.noWa ?? "",
+                        )}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
 
               <CardStatistik

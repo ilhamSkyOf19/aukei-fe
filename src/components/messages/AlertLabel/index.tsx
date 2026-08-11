@@ -5,9 +5,12 @@ import { cn } from "../../../utils/cn";
 type Props = {
   message: string;
   warning?: boolean;
+  isLoading?: boolean;
 };
-const AlertLabel: FC<Props> = ({ message, warning }) => {
-  return (
+const AlertLabel: FC<Props> = ({ message, warning, isLoading }) => {
+  return isLoading ? (
+    <div className="w-full h-12 skeleton bg-base-200 rounded-2xl md:rounded-xl border border-base-content/10" />
+  ) : (
     <div
       className={cn(
         "w-full gap-2.5 flex flex-row justify-start items-center p-2.5 rounded-2xl md:rounded-xl border ",

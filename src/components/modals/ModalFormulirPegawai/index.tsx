@@ -11,8 +11,8 @@ import InputChoose from "../../inputs/InputChoose";
 import useModalFormulirPegawai from "./useModalFormulirPegawai";
 import InputPasswordNonIcon from "../../inputs/InputPasswordNonIcon";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import ButtonSubmit from "../../ui/button/ButtonSubmit";
 import { UserRound } from "lucide-react";
+import ButtonText from "../../ui/button/ButtonText";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -125,9 +125,10 @@ const ModalFormulirPegawai: FC<Props> = ({
                 handleClose={() => {
                   handleCloseModal();
                 }}
+                disabled={isPendingMutatePegawai}
               />
               {/* button submit */}
-              <ButtonSubmit
+              <ButtonText
                 label={`Simpan`}
                 isLoading={isPendingMutatePegawai}
                 disable={id ? !isDirty : false}

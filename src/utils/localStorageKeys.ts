@@ -11,4 +11,5 @@ export const LOCAL_STORAGE_KEYS = {
   FROM_BOOKING: "from-booking",
   ACTIVE_CLUSTER: "active-cluster",
   FROM_PENGAJUAN_BARANG: "from-pengajuan-barang",
+  DATA_PELANGGAN_FOR_RIWAYAT: "data-pelanggan-for-riwayat",
 } as const;

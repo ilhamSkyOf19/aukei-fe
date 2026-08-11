@@ -43,8 +43,8 @@ const DaftarKeranjang = () => {
         <div className="w-full h-full flex flex-row justify-start items-start gap-2.5">
           <div className="flex-2 h-full flex flex-col justify-start items-start gap-2.5">
             {/* data pelanggan yang di pilih */}
-            <div className="h-14 flex flex-row justify-start items-center w-full rounded-xl bg-base-100 border border-transparent dark:border-base-content/10 gap-2.5 shadow-sm p-2.5">
-              <div className="w-full flex flex-row justify-start items-center gap-2.5">
+            <div className="h-14 flex flex-row justify-between items-center w-full rounded-xl bg-base-100 border border-transparent dark:border-base-content/10 gap-2.5 shadow-sm p-2.5">
+              <div className="w-auto flex flex-row justify-start items-center gap-2.5">
                 {/* avatar */}
                 <Avatar nama={dataKeranjang?.data?.pelanggan?.nama ?? ""} xs />
 
@@ -63,7 +63,7 @@ const DaftarKeranjang = () => {
               {/* kasir */}
               <div
                 className={cn(
-                  "flex flex-row justify-start items-center gap-2 h-10 min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10",
+                  "w-auto flex flex-row justify-start items-center gap-2 h-10 min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10",
                 )}
               >
                 <div
@@ -81,7 +81,7 @@ const DaftarKeranjang = () => {
                   >
                     Kasir
                   </span>
-                  <span className={cn("text-xs font-mediumtext-base-content")}>
+                  <span className={cn("text-xs font-medium text-base-content")}>
                     {dataKeranjang?.data?.kasir?.nama ?? ""}
                   </span>
                 </div>

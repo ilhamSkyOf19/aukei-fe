@@ -44,6 +44,7 @@ const useNotifikasiTempo = (params: {
     dataNotifikasiTempo,
     handleRefresh,
     isExistDataNotifikasiTempo,
+    isLoadingNotifikasiTempo,
   };
 };
 

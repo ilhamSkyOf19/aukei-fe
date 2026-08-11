@@ -116,6 +116,7 @@ const ModalFormulirBarangMasukOrKeluar = <T extends FieldValues>({
                     handleClose={() => {
                       handleCloseModalWithReset();
                     }}
+                    disabled={isPending}
                   />
                   {/* button submit */}
                   <ButtonText label={`Simpan`} isLoading={isPending} />

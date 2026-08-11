@@ -27,14 +27,15 @@ const useDataBooking = (params: { pilihan: string }) => {
           "daftar-kebutuhan-barang-booking",
           { sort, limit, page, search, kategori },
         ],
-        queryFn: () =>
-          StatistikServices.kebutuhanBarangBooking({
+        queryFn: () => {
+          return StatistikServices.kebutuhanBarangBooking({
             ...(sort && { sort }),
             ...(limit && { limit }),
             ...(page && { page }),
             ...(search && { search }),
             ...(kategori && { kategori }),
-          }),
+          });
+        },
         staleTime: Infinity,
         gcTime: Infinity,
         retry: false,

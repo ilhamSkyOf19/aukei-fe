@@ -5,6 +5,7 @@ import useNotifikasiTempo from "./useNotifikasiTempo";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import { BellOff } from "lucide-react";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 type Props = {
   search?: string;
@@ -22,8 +23,12 @@ type Props = {
 
 const NotifikasiTempo = forwardRef<ChildRef, Props>(
   ({ setLimit, setPage, windowSize, ...props }, ref) => {
-    const { dataNotifikasiTempo, handleRefresh, isExistDataNotifikasiTempo } =
-      useNotifikasiTempo({ ...props });
+    const {
+      dataNotifikasiTempo,
+      handleRefresh,
+      isExistDataNotifikasiTempo,
+      isLoadingNotifikasiTempo,
+    } = useNotifikasiTempo({ ...props });
 
     useImperativeHandle(ref, () => ({
       refetchActive: handleRefresh,
@@ -32,7 +37,9 @@ const NotifikasiTempo = forwardRef<ChildRef, Props>(
     return (
       <>
         <div className="w-full flex flex-col justify-start items-start gap-2.5">
-          {isExistDataNotifikasiTempo ? (
+          {isLoadingNotifikasiTempo ? (
+            <LoadingFetch />
+          ) : isExistDataNotifikasiTempo ? (
             dataNotifikasiTempo?.data?.data.map((item, index) => (
               <CardNotifikasiTempo
                 key={index}

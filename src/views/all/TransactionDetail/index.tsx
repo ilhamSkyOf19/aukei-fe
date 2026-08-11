@@ -52,6 +52,7 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
         }
         kasir={dataTransaction?.data?.kasir}
         statusTempo={dataTransaction?.data?.tempo?.status}
+        isLoadingTransaction={isLoadingTransaction}
       />
 
       {/* data */}

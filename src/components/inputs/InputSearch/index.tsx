@@ -15,12 +15,14 @@ type Props = {
   errorMessage?: string;
   withLabel?: boolean;
   customHeight?: string;
+  isLoading?: boolean;
 };
 
 const InputSearch = forwardRef<InputSearchRef, Props>(
   (
     {
       value,
+      isLoading,
       handleSearch,
       handleOnFocus,
       handleClear,
@@ -35,35 +37,56 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
 
     const defaultValueSearch = searchParams.get("search") ?? "";
 
-    const [inputValue, setInputValue] = useState(defaultValueSearch);
-
-    // apakah controlled
+    // Apakah component digunakan sebagai controlled component
     const isControlled = value !== undefined;
 
-    // nilai yang ditampilkan
-    const displayValue = isControlled ? value : inputValue;
+    // State lokal untuk input.
+    // State ini tetap diperlukan walaupun controlled agar debounce bekerja.
+    const [inputValue, setInputValue] = useState(
+      isControlled ? value : defaultValueSearch,
+    );
 
-    // hanya sinkronkan state internal jika uncontrolled
+    /**
+     * Sinkronkan state lokal ketika value dari parent berubah
+     * pada mode controlled.
+     */
+    useEffect(() => {
+      if (isControlled) {
+        setInputValue(value ?? "");
+      }
+    }, [isControlled, value]);
+
+    /**
+     * Sinkronkan dengan query parameter ketika uncontrolled.
+     */
     useEffect(() => {
       if (!isControlled) {
         setInputValue(defaultValueSearch);
       }
     }, [defaultValueSearch, isControlled]);
 
-    // debounce search
+    /**
+     * Debounce search.
+     *
+     * Baik controlled maupun uncontrolled akan melewati
+     * debounce yang sama.
+     */
     useEffect(() => {
       const timer = setTimeout(() => {
-        handleSearch(displayValue);
+        handleSearch(inputValue);
       }, 500);
 
-      return () => clearTimeout(timer);
-    }, [displayValue, handleSearch]);
+      return () => {
+        clearTimeout(timer);
+      };
+    }, [inputValue, handleSearch]);
+
+    const handleInputChange = (value: string) => {
+      setInputValue(value);
+    };
 
     const handleReset = () => {
-      if (!isControlled) {
-        setInputValue("");
-      }
-
+      setInputValue("");
       handleSearch("");
       handleClear?.();
     };
@@ -77,62 +100,63 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
         className={cn(
           "w-full flex flex-col justify-start items-start gap-1.5",
           errorMessage && "mb-3",
+          isLoading && "skeleton h-10.5 md:h-9",
         )}
       >
-        {withLabel && (
-          <span className="text-xs text-base-content/80 font-medium hidden md:block">
-            Cari
-          </span>
-        )}
-
-        <div
-          className={cn(
-            "w-full flex flex-row justify-start items-center",
-            customHeight ? customHeight : "h-10.5 md:h-9",
-          )}
-        >
-          <div
-            className={cn(
-              "h-full px-2.5 flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out",
-              errorMessage && "border-error",
+        {!isLoading && (
+          <>
+            {withLabel && (
+              <span className="text-xs text-base-content/80 font-medium hidden md:block">
+                Cari
+              </span>
             )}
-          >
-            <label htmlFor="search">
-              <Search className="size-4 md:size-3.5 text-base-content" />
-            </label>
 
-            <input
-              type="text"
-              id="search"
-              placeholder={placeholder ?? "Search"}
-              className="w-full h-full text-base-content bg-transparent outline-none text-xs placeholder:text-[0.7rem] placeholder:text-base-content/50 placeholder:font-normal lg:text-sm"
-              autoComplete="off"
-              minLength={1}
-              maxLength={100}
-              value={displayValue}
-              onChange={(e) => {
-                if (!isControlled) {
-                  setInputValue(e.target.value);
-                } else {
-                  handleSearch(e.target.value);
-                }
-              }}
-              onFocus={handleOnFocus}
-            />
-
-            {displayValue !== "" && (
-              <button
-                type="button"
-                className="h-full rounded-tr-md rounded-br-md flex justify-center items-center"
-                onClick={handleReset}
+            <div
+              className={cn(
+                "w-full flex flex-row justify-start items-center",
+                customHeight ? customHeight : "h-10.5 md:h-9",
+              )}
+            >
+              <div
+                className={cn(
+                  "h-full px-2.5 flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out",
+                  errorMessage && "border-error",
+                )}
               >
-                <X className="size-4 text-base-content" />
-              </button>
-            )}
-          </div>
-        </div>
+                <label htmlFor="search">
+                  <Search className="size-4 md:size-3.5 text-base-content" />
+                </label>
 
-        {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
+                <input
+                  type="text"
+                  id="search"
+                  placeholder={placeholder ?? "Search"}
+                  className="w-full h-full text-base-content bg-transparent outline-none text-xs placeholder:text-[0.7rem] placeholder:text-base-content/50 placeholder:font-normal lg:text-sm"
+                  autoComplete="off"
+                  minLength={1}
+                  maxLength={100}
+                  value={inputValue}
+                  onChange={(e) => {
+                    handleInputChange(e.target.value);
+                  }}
+                  onFocus={handleOnFocus}
+                />
+
+                {inputValue !== "" && (
+                  <button
+                    type="button"
+                    className="h-full rounded-tr-md rounded-br-md flex justify-center items-center"
+                    onClick={handleReset}
+                  >
+                    <X className="size-4 text-base-content" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
+          </>
+        )}
       </div>
     );
   },

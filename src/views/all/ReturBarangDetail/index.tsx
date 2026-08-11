@@ -38,6 +38,8 @@ import ModalAlert from "../../../components/modals/ModalAlert";
 import CardProdukTransaksi from "../../../components/ui/cards/CardProdukTransaksi";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import CardProdukRetur from "../../../components/ui/cards/CardProdukRetur";
+import type { FC } from "react";
+import LoadingFetch from "../../../components/ui/LoadingFetch";
 
 const ReturBarangDetail = () => {
   const {
@@ -51,7 +53,6 @@ const ReturBarangDetail = () => {
     modalFormulirVerifikasiOrPengajuan,
     handleShowModalFormulirVerifikasiOrPengajuan,
     validatedReturBarangId,
-    alert,
     handleSetAlert,
     pengguna,
     toast,
@@ -80,6 +81,7 @@ const ReturBarangDetail = () => {
         <div className="w-full bg-base-100 rounded-2xl md:rounded-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2.5 gap-2.5 flex-wrap border border-transparent dark:border-base-content/10 shadow-sm">
           {/* nomor transaksi */}
           <CardStatistikLarge
+            isLoading={isLoadingReturBarang}
             icon={{
               largeIcon: Undo2,
               bgColor: "bg-emerald-50 dark:bg-emerald-100",
@@ -100,6 +102,7 @@ const ReturBarangDetail = () => {
 
           {/* nomor transaksi */}
           <CardStatistikLarge
+            isLoading={isLoadingReturBarang}
             icon={{
               largeIcon: ReceiptText,
               bgColor: "bg-emerald-50 dark:bg-emerald-100",
@@ -120,6 +123,7 @@ const ReturBarangDetail = () => {
 
           {/* data created by */}
           <CardStatistikLarge
+            isLoading={isLoadingReturBarang}
             icon={{
               largeIcon: UserRound,
               bgColor: "bg-purple-50 dark:bg-purple-100",
@@ -137,6 +141,7 @@ const ReturBarangDetail = () => {
 
           {/* data pelanggan */}
           <CardStatistikLarge
+            isLoading={isLoadingReturBarang}
             icon={{
               largeIcon: UserRound,
               bgColor: "bg-blue-50 dark:bg-blue-100",
@@ -154,16 +159,28 @@ const ReturBarangDetail = () => {
             isActive={dataReturBarang?.data?.transaction.pelanggan?.isActive}
           />
 
-          <div className="col-span-1 border border-base-content/10 rounded-2xl md:rounded-xl flex flex-col justify-start items-start gap-0.5 p-2.5">
-            {/* label */}
-            <span className="text-base-content/70 font-medium text-[0.7rem]">
-              Keterangan
-            </span>
+          <div
+            className={cn(
+              "col-span-1 border border-base-content/10 rounded-2xl md:rounded-xl flex flex-col justify-start items-start gap-0.5 p-2.5",
+              isLoadingReturBarang && "skeleton h-20",
+            )}
+          >
+            {!isLoadingReturBarang && (
+              <>
+                {/* label */}
+                <span className="text-base-content/70 font-medium text-[0.7rem]">
+                  Keterangan
+                </span>
 
-            {/* keterangan */}
-            <span className="text-base-content font-medium text-[0.7rem]">
-              {dataReturBarang?.data?.keterangan ?? "-"}
-            </span>
+                {/* keterangan */}
+                <span className="text-base-content font-medium text-[0.7rem]">
+                  {dataReturBarang?.data?.keterangan ||
+                  dataReturBarang?.data?.keterangan !== ""
+                    ? dataReturBarang?.data?.keterangan
+                    : "-"}
+                </span>
+              </>
+            )}
           </div>
 
           <div className="col-span-1 flex flex-row justify-end items-end">
@@ -189,11 +206,7 @@ const ReturBarangDetail = () => {
           {/* FOR DEVICE MOBILE */}
           <div className="w-full flex flex-row justify-start items-start gap-2.5 md:hidden mt-2.5 overflow-x-auto snap-x snap-mandatory scroll-smooth p-2.5">
             {isLoadingReturBarang ? (
-              <>
-                <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-                <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-                <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-              </>
+              <LoadingFetch />
             ) : dataReturBarang?.data &&
               dataReturBarang?.data?.transaction.details.length > 0 ? (
               dataReturBarang?.data?.transaction?.details?.map((item) => (
@@ -209,12 +222,14 @@ const ReturBarangDetail = () => {
             )}
           </div>
 
-          <div className="md:hidden flex my-4 flex-row justify-center items-center w-full gap-1.5">
-            <span className="text-xs text-base-content">
-              Silahkan Geser ke kanan
-            </span>
-            <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
-          </div>
+          {!isLoadingReturBarang && (
+            <div className="md:hidden flex my-4 flex-row justify-center items-center w-full gap-1.5">
+              <span className="text-xs text-base-content">
+                Silahkan Geser ke kanan
+              </span>
+              <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
+            </div>
+          )}
 
           {/* FOR DEVICE MD & LG */}
           <div className="w-full md:flex flex-col justify-start items-start hidden p-2.5">
@@ -328,7 +343,10 @@ const ReturBarangDetail = () => {
           </div>
         </div>
         {/* alert label */}
-        <AlertLabel message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur." />
+        <AlertLabel
+          isLoading={isLoadingReturBarang}
+          message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur."
+        />
         {/* form retur */}
         <div className="w-full flex flex-col justify-start items-start gap-2.5">
           <div
@@ -350,11 +368,7 @@ const ReturBarangDetail = () => {
             {/* FOR DEVICE MOBILE */}
             <div className="w-full flex flex-row justify-start items-start gap-2.5 md:hidden mt-2.5  overflow-x-auto snap-x snap-mandatory scroll-smooth p-2.5">
               {isLoadingReturBarang ? (
-                <>
-                  <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-                  <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-                  <div className="w-full h-20 skeleton bg-base-200 border border-base-content/10" />
-                </>
+                <LoadingFetch />
               ) : finalReturDetails && finalReturDetails.length > 0 ? (
                 finalReturDetails.map((item) => (
                   <CardProdukRetur key={item.id} data={item} />
@@ -369,12 +383,14 @@ const ReturBarangDetail = () => {
               )}
             </div>
 
-            <div className="md:hidden flex my-4 flex-row justify-center items-center w-full gap-1.5">
-              <span className="text-xs text-base-content">
-                Silahkan Geser ke kanan
-              </span>
-              <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
-            </div>
+            {!isLoadingReturBarang && (
+              <div className="md:hidden flex my-4 flex-row justify-center items-center w-full gap-1.5">
+                <span className="text-xs text-base-content">
+                  Silahkan Geser ke kanan
+                </span>
+                <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
+              </div>
+            )}
 
             {/* FOR DEVICE MB & LG */}
             <div className="w-full md:flex flex-col justify-start items-start gap-2.5 hidden p-2.5">
@@ -402,7 +418,7 @@ const ReturBarangDetail = () => {
                   {isLoadingReturBarang ? (
                     Array.from({ length: 4 }, (_, i) => i).map((item) => (
                       <tr key={item} className="h-18">
-                        <td colSpan={7}>
+                        <td colSpan={9}>
                           <div className="w-full skeleton h-12" />
                         </td>
                       </tr>
@@ -479,7 +495,7 @@ const ReturBarangDetail = () => {
                     </>
                   ) : (
                     <tr>
-                      <td colSpan={8}>
+                      <td colSpan={9}>
                         <div className="w-full flex flex-row justify-center items-center pt-10">
                           <span className="text-sm text-base-content/70">
                             Produk tidak tersedia
@@ -494,7 +510,7 @@ const ReturBarangDetail = () => {
           </div>
 
           {/* label status */}
-          <AlertLabelStatus />
+          <AlertLabelStatus isLoading={isLoadingReturBarang} />
 
           {/* preview */}
           <div
@@ -513,6 +529,7 @@ const ReturBarangDetail = () => {
 
             <div className="w-full gap-2.5 grid grid-cols-1 md:grid-cols-3 mt-4">
               <CardStatistikLarge
+                isLoading={isLoadingReturBarang}
                 icon={{
                   largeIcon: PackageCheck,
                   bgColor: "bg-emerald-50 dark:bg-emerald-100",
@@ -527,6 +544,7 @@ const ReturBarangDetail = () => {
               />
 
               <CardStatistikLarge
+                isLoading={isLoadingReturBarang}
                 icon={{
                   largeIcon: PackageX,
                   bgColor: "bg-rose-50 dark:bg-rose-100",
@@ -541,6 +559,7 @@ const ReturBarangDetail = () => {
               />
 
               <CardStatistikLarge
+                isLoading={isLoadingReturBarang}
                 icon={{
                   largeIcon: Undo2,
                   bgColor: "bg-blue-50 dark:bg-blue-100",
@@ -574,14 +593,16 @@ const ReturBarangDetail = () => {
                           },
                         )
                       }
+                      skeleton={isLoadingReturBarang}
                     />
 
                     {/* simpan dan ajukan */}
                     <ButtonWithIcon
-                      disabled={isSomeStokNotEnough}
+                      disabled={isSomeStokNotEnough || isLoadingReturBarang}
                       icon={Check}
                       label="Setuju"
                       handleBtn={() => handleSetuju()}
+                      skeleton={isLoadingReturBarang}
                     />
                   </>
                 )}
@@ -625,6 +646,7 @@ const ReturBarangDetail = () => {
                     label="Hapus"
                     bgColor="bg-error"
                     textColor="text-primary-white"
+                    skeleton={isLoadingReturBarang}
                     handleBtn={() => {}}
                   />
 
@@ -639,6 +661,7 @@ const ReturBarangDetail = () => {
                         textColor="text-primary-white"
                         label={"Ubah Data"}
                         handleBtn={() => handleRedirectUbahData()}
+                        skeleton={isLoadingReturBarang}
                       />
                     )}
                 </>
@@ -686,8 +709,13 @@ const ReturBarangDetail = () => {
 };
 
 // alert label status
-const AlertLabelStatus = () => {
-  return (
+type AlertLabelStatusProps = {
+  isLoading?: boolean;
+};
+const AlertLabelStatus: FC<AlertLabelStatusProps> = ({ isLoading }) => {
+  return isLoading ? (
+    <div className="w-full h-12 skeleton bg-base-200 rounded-2xl md:rounded-xl border border-base-content/10" />
+  ) : (
     <div
       className={cn(
         "w-full gap-2.5 flex flex-row justify-start items-center p-2.5 rounded-2xl md:rounded-xl border ",

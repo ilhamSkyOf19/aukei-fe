@@ -20,6 +20,7 @@ import AlertLabel from "../../../../components/messages/AlertLabel";
 import CardStatistik from "../../../../components/ui/cards/CardStatistik";
 import { ChartLine, CircleAlert, Package } from "lucide-react";
 import type { ProdukResponseType } from "../../../../models/produk.model";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
 
 type Props = {
   pilihan: string;
@@ -110,11 +111,7 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
       <div className="flex w-full flex-col justify-start items-center gap-2 mt-2.5 lg:hidden">
         {/* card */}
         {isLoadingDataProduk ? (
-          <>
-            <div className="w-full h-20 skeleton border border-base-content/10" />
-            <div className="w-full h-20 skeleton border border-base-content/10" />
-            <div className="w-full h-20 skeleton border border-base-content/10" />
-          </>
+          <LoadingFetch />
         ) : isExistDataProduk ? (
           dataProduk?.data?.data?.map((produk, _) => (
             <CardProdukStok key={produk.id} produk={produk} />

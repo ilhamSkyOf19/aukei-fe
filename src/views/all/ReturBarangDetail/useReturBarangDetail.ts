@@ -39,7 +39,7 @@ const useReturBarangDetail = () => {
   const validatedReturBarangId = parseId(returBarangId);
 
   //   alert
-  const { alert, handleSetAlert } = useAlertAnimation();
+  const { handleSetAlert } = useAlertAnimation();
 
   const {
     modalRef: modalFormulirVerifikasiOrPengajuan,
@@ -203,7 +203,6 @@ const useReturBarangDetail = () => {
     dataModalFormulirVerifikasiOrPengajuan,
     modalFormulirVerifikasiOrPengajuan,
     validatedReturBarangId,
-    alert,
     handleSetAlert,
     pengguna,
     toast,
