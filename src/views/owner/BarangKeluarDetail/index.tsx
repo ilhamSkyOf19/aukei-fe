@@ -21,6 +21,7 @@ import type { FC } from "react";
 import CountDown from "../../../components/ui/CountDown";
 import ModalFormulirVerifikasiOrPengajuan from "../../../components/modals/ModalFormulirVerifikasiOrPengajuan";
 import { ALERT_CONFIG_BARANG_KELUAR_DETAIL } from "../../../types/alert.types";
+import { InvoiceServices } from "../../../services/invoice.service";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -176,6 +177,11 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                     label="Cetak"
                     icon={Printer}
                     bgColor="bg-info"
+                    handleBtn={() =>
+                      InvoiceServices.printInvoiceBarangKeluar({
+                        id: dataBarangKeluarDetail?.data?.id ?? 0,
+                      })
+                    }
                   />
                 )}
 

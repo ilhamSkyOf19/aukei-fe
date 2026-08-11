@@ -29,7 +29,7 @@ const useRiwayatTransaksiDetail = () => {
   const { filter: metodePembayaran, setFilter: handleSetMetodePembayaran } =
     useFilter({
       paramName: "metode-pembayaran",
-      allowQuery: ["semua", "cash", "transfer", "qris"],
+      allowQuery: ["semua", "cash", "transfer", "qris", "tempo"],
       defaultValueCustom: "semua",
     });
 

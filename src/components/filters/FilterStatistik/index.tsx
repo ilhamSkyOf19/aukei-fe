@@ -71,17 +71,16 @@ const FilterStatistik: FC<Props> = ({
               setMetode={filterMetodePembayaran.handleMetodePembayaran}
               customWidth="w-full"
               value={filterMetodePembayaran.value}
-              notTempo={filterTempo === undefined}
             />
 
-            {filterMetodePembayaran.value === "tempo" && filterTempo && (
+            {/* {filterMetodePembayaran.value === "tempo" && filterTempo && (
               <div className="hidden md:flex">
                 <StatusTempo
                   setStatusTempo={filterTempo.handleTempo}
                   value={filterTempo.value}
                 />
               </div>
-            )}
+            )} */}
           </div>
         )}
 

@@ -258,6 +258,7 @@ const RiwayatTransaksiDetail = () => {
                 totalItem={item.totalItem}
                 totalTransaksi={item.totalBayar}
                 status={item.status}
+                statusTempo={item.statusTempo}
                 handleRedirectDetail={() => handleRedirectDetail(item.id)}
               />
             ))
@@ -322,7 +323,10 @@ const RiwayatTransaksiDetail = () => {
                       />
                     </td>
                     <td>
-                      <StatusTransaction status={item.status} />
+                      <StatusTransaction
+                        status={item.status}
+                        statusTempo={item.statusTempo}
+                      />
                     </td>
                     <td>
                       <button

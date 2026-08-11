@@ -1,9 +1,11 @@
 import {
   CalendarDaysIcon,
   CircleDollarSign,
-  CreditCard,
+  Download,
+  HandCoins,
   Printer,
   Trash2,
+  WalletIcon,
 } from "lucide-react";
 import { formatRupiah, getStatusDueToday } from "../../../helpers/helpers";
 import { formatTanggalPanjang } from "../../../helpers/formatDate";
@@ -19,6 +21,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ButtonWithIcon from "../button/ButtonWithIcon";
 import { InvoiceServices } from "../../../services/invoice.service";
 import useRowJadwal from "./useRowJadwal";
+import DataEmpty from "../../messages/DataEmpty";
+import CardData from "../cards/CardData";
+import LoadingFetch from "../LoadingFetch";
 
 type Props = {
   aksi?: boolean;
@@ -36,6 +41,7 @@ type Props = {
   tempoId?: number;
   transactionId?: number;
   withInvoice?: boolean;
+  isLoading?: boolean;
 };
 const RowJadwaTempo: FC<Props> = ({
   aksi,
@@ -48,13 +54,9 @@ const RowJadwaTempo: FC<Props> = ({
   tempoId,
   transactionId,
   withInvoice,
+  isLoading,
 }) => {
-  const {
-    handlePrintAll,
-    handlePrintSelected,
-    handleSelectTempoPayment,
-    selectedTempoPaymentIds,
-  } = useRowJadwal();
+  const { handlePrintAll } = useRowJadwal();
 
   const currentPathname = useLocation().pathname;
   const navigate = useNavigate();
@@ -117,9 +119,9 @@ const RowJadwaTempo: FC<Props> = ({
                 `/dashboard/kredit/pelanggan/${pelangganId}/tempo/${tempoId}`,
               )
             }
-            className="flex flex-row justify-start items-center gap-1.5 hover:underline transition-all duration-150 ease-in-out"
+            className="hidden md:flex flex-row justify-start items-center gap-1.5 hover:underline transition-all duration-150 ease-in-out"
           >
-            <CreditCard className="size-3.5 text-info" />
+            <WalletIcon className="size-3.5 text-info" />
             <span className="text-[0.7rem] text-info">
               Lihat Detail Pembayaran
             </span>
@@ -138,7 +140,40 @@ const RowJadwaTempo: FC<Props> = ({
         )}
       </div>
 
-      <div className="w-full flex flex-col justify-start items-start border overflow-hidden border-base-content/10 rounded-xl">
+      {/* FOR SM */}
+      <div className="w-full flex flex-col justify-start items-start gap-2.5 md:hidden">
+        {isLoading ? (
+          <LoadingFetch />
+        ) : dataTempo && dataTempo.length > 0 ? (
+          dataTempo?.map((item) => (
+            <CardData
+              key={item.id}
+              statusTempo={item.status}
+              titleTanggal={item.jatuhTempo}
+              tagihan={item.nominal}
+              statusAbsolute
+              disabled
+              tempoIcon
+              withBg
+              {...(item.id !== undefined && {
+                handleDownloadStruk: () => {},
+              })}
+              customHeight={"h-20"}
+            />
+          ))
+        ) : (
+          <div className="w-full flex flex-col justify-center items-center">
+            <DataEmpty
+              iconData={HandCoins}
+              title="Data Transaksi Kredit Tidak Tersedia"
+              description="Belum ada data transaksi kredit yang dapat ditampilkan saat ini"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* FOR MD & LG */}
+      <div className="w-full flex-col justify-start items-start border overflow-hidden border-base-content/10 rounded-xl hidden md:flex">
         {/* header */}
         <div className="w-full grid grid-cols-10 gap-2 px-4 py-3 bg-gray-200 sticky top-0 z-10">
           <div className="col-span-1 flex items-center">
@@ -222,13 +257,37 @@ const RowJadwaTempo: FC<Props> = ({
 
       {/* button print */}
       {transactionId && (
-        <div className="w-full flex flex-row justify-end items-end">
+        <div className="w-full flex flex-row justify-end items-end gap-2.5 mt-2.5">
+          <div className="w-auto block md:hidden">
+            <ButtonWithIcon
+              icon={WalletIcon}
+              bgColor={"bg-info"}
+              textColor="text-primary-white"
+              label="Lihat Pembayaran"
+              handleBtn={() =>
+                navigate(
+                  `/dashboard/kredit/pelanggan/${pelangganId}/tempo/${tempoId}`,
+                )
+              }
+            />
+          </div>
+
           <ButtonWithIcon
             icon={Printer}
             label="Cetak Struk Kredit"
             handleBtn={() =>
               InvoiceServices.printInvoiceKredit({ id: transactionId })
             }
+            classHidden="hidden lg:flex"
+          />
+
+          <ButtonWithIcon
+            icon={Download}
+            bgColor="bg-gray-400"
+            textColor="text-primary-white"
+            label="Download Struk Kredit"
+            handleBtn={() => {}}
+            classHidden="flex lg:hidden"
           />
         </div>
       )}

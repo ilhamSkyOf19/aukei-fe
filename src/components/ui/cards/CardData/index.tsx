@@ -13,6 +13,7 @@ import {
   CircleAlert,
   CircleCheck,
   Dot,
+  Download,
   Landmark,
   PackageOpen,
   QrCode,
@@ -59,6 +60,8 @@ type Props = {
   withBg?: boolean;
   disabled?: boolean;
   statusAbsolute?: boolean;
+  handleDownloadStruk?: () => void;
+  customHeight?: string;
 };
 const CardData: FC<Props> = ({
   nomorReferensi,
@@ -83,6 +86,8 @@ const CardData: FC<Props> = ({
   withBg,
   disabled,
   statusAbsolute,
+  handleDownloadStruk,
+  customHeight,
 }) => {
   const isTempo = metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO;
 
@@ -130,6 +135,7 @@ const CardData: FC<Props> = ({
           "bg-base-100 shadow-sm border border-transparent dark:border-base-content/10",
         !disabled &&
           "hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out",
+        customHeight,
       )}
       style={{
         cursor: disabled ? "default" : "pointer",
@@ -324,6 +330,22 @@ const CardData: FC<Props> = ({
           {/* status */}
           <StatusTransaction status={status} statusTempo={statusTempo} />
 
+          {handleDownloadStruk &&
+            (statusTempo !== TEMPO_STATUS_TYPE.UNPAID &&
+            statusTempo !== TEMPO_STATUS_TYPE.OVERDUE ? (
+              <button
+                type="button"
+                className="flex flex-row justify-start bg-info px-2.5 py-1.5 items-start gap-1.5 rounded-lg mt-1"
+                onClick={handleDownloadStruk}
+              >
+                <Download className="size-3 text-primary-white" />
+                <span className="text-[0.625rem] font-medium text-primary-white">
+                  Stuk
+                </span>
+              </button>
+            ) : (
+              <span>-</span>
+            ))}
           {progresCicilan && (
             <span className="text-[0.625rem] text-base-content font-medium">
               {(progresCicilan.jumlahCicilan ?? 0) -

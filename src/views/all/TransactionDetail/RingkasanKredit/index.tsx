@@ -26,7 +26,7 @@ const RingkasanKredit: FC<Props> = ({
           </h3>
           <div className="w-full h-auto flex flex-col justify-evenly items-start pt-6">
             {/* header */}
-            <div className="w-full flex flex-row justify-evenly items-start pb-4 border-b gap-2.5 border-base-content/10">
+            <div className="w-full flex flex-col md:flex-row justify-evenly items-start pb-4 border-b gap-2.5 border-base-content/10">
               {isLoadingTransaction ? (
                 Array.from({ length: 4 }, (_, i) => i).map((item) => (
                   <div
@@ -38,29 +38,32 @@ const RingkasanKredit: FC<Props> = ({
                 ))
               ) : (
                 <>
-                  <CardInformasiTransaksi
-                    label="Periode"
-                    value={`${dataTransaction?.data?.tempo?.periode ?? 0} Hari / ${getWeekFromPeriod(dataTransaction?.data?.tempo?.periode ?? 0)} Minggu`}
-                    border
-                  />
+                  <div className="w-full md:w-full flex flex-row justify-evenly items-start gap-2.5">
+                    <CardInformasiTransaksi
+                      label="Periode"
+                      value={`${dataTransaction?.data?.tempo?.periode ?? 0} Hari / ${getWeekFromPeriod(dataTransaction?.data?.tempo?.periode ?? 0)} Minggu`}
+                      border
+                    />
 
-                  <CardInformasiTransaksi
-                    label="Jumlah Cicilan"
-                    value={`${dataTransaction?.data?.tempo?.jumlahCicilan ?? 0} Kali`}
-                    border
-                  />
+                    <CardInformasiTransaksi
+                      label="Jumlah Cicilan"
+                      value={`${dataTransaction?.data?.tempo?.jumlahCicilan ?? 0} Kali`}
+                    />
+                  </div>
 
-                  <CardInformasiTransaksi
-                    label="Tenor"
-                    value={`${(dataTransaction?.data?.tempo?.periode ?? 0) * (dataTransaction?.data?.tempo?.jumlahCicilan ?? 0)} Hari / ${getWeekFromPeriod((dataTransaction?.data?.tempo?.periode ?? 0) * (dataTransaction?.data?.tempo?.jumlahCicilan ?? 0))} Minggu`}
-                    border
-                  />
+                  <div className="w-full md:w-full flex flex-row justify-evenly items-start gap-2.5">
+                    <CardInformasiTransaksi
+                      label="Tenor"
+                      value={`${(dataTransaction?.data?.tempo?.periode ?? 0) * (dataTransaction?.data?.tempo?.jumlahCicilan ?? 0)} Hari / ${getWeekFromPeriod((dataTransaction?.data?.tempo?.periode ?? 0) * (dataTransaction?.data?.tempo?.jumlahCicilan ?? 0))} Minggu`}
+                      border
+                    />
 
-                  <CardInformasiTransaksi
-                    label="Sisa Tagihan"
-                    value={`${formatRupiah(dataTransaction?.data?.tempo?.totalTagihan ?? 0)}`}
-                    fontWeight="font-semibold"
-                  />
+                    <CardInformasiTransaksi
+                      label="Sisa Tagihan"
+                      value={`${formatRupiah(dataTransaction?.data?.tempo?.totalTagihan ?? 0)}`}
+                      fontWeight="font-semibold"
+                    />
+                  </div>
                 </>
               )}
             </div>
@@ -80,6 +83,7 @@ const RingkasanKredit: FC<Props> = ({
                 }
                 transactionId={dataTransaction?.data?.id}
                 withInvoice
+                isLoading={isLoadingTransaction}
               />
             </div>
           </div>

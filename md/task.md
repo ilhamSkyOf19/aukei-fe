@@ -184,9 +184,9 @@
 
   - [✅] Cek Loading
 
-  - [ ] Delete retur barang
+  - [✅] Delete retur barang
 
-  - [ ] Struk booking
+  - [✅] Struk booking
 
   - [ ] Struk Barang Masuk atau Keluar
 

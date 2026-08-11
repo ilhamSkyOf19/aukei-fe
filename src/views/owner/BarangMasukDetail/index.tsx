@@ -23,6 +23,7 @@ import type { FC } from "react";
 import ModalFormulirVerifikasiOrPengajuan from "../../../components/modals/ModalFormulirVerifikasiOrPengajuan";
 import { cn } from "../../../utils/cn";
 import NotCompatible from "../../../components/messages/NotCompatible";
+import { InvoiceServices } from "../../../services/invoice.service";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -124,7 +125,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           ) : (
             <div className="w-full flex flex-col lg:flex-row justify-start items-start lg:items-end">
               {/* kode and status */}
-              <div className="flex lg:flex-2 flex-col justify-start items-start">
+              <div className="flex lg:flex-3 flex-col justify-start items-start">
                 <div className="w-full px-2 flex flex-row justify-start items-start gap-2 mt-4">
                   <h2 className="text-base-content text-lg lg:text-xl font-semibold">
                     {dataBarangMasukDetail?.data?.kodeReferensi}
@@ -188,6 +189,11 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                       label="Cetak"
                       icon={Printer}
                       bgColor="bg-info"
+                      handleBtn={() =>
+                        InvoiceServices.printInvoiceBarangMasuk({
+                          id: dataBarangMasukDetail?.data?.id ?? 0,
+                        })
+                      }
                     />
                   )}
 

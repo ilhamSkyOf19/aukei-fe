@@ -147,6 +147,7 @@ export interface ResponseRiwayatTransaksiPelangganType {
     > & {
       pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
       status: TransactionStatusType;
+      statusTempo?: TempoStatusType;
     })[];
   };
   meta?: MetaType;

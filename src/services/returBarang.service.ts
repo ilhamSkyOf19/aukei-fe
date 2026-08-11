@@ -82,7 +82,6 @@ export class ReturBarangServices {
     return result.data;
   }
 
-  // delete
   static async findAllByReturnTransactionId(params: {
     id: number;
   }): Promise<ResponseStructure<ResponseDataReturBarangDetailType | null>> {

@@ -16,7 +16,7 @@ import AlertLabelList from "../../../../components/messages/AlertLabelList";
 import { TRANSACTION_STATUS_TYPE } from "../../../../types/constant.type";
 import AlertLabel from "../../../../components/messages/AlertLabel";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import { Eye, Undo } from "lucide-react";
+import { ChevronsRightIcon, Eye, Undo } from "lucide-react";
 import CardProdukTransaksi from "../../../../components/ui/cards/CardProdukTransaksi";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
@@ -64,7 +64,7 @@ const DaftarDetailProduk: FC<Props> = ({
       {/* for SM */}
       <div
         className={cn(
-          "w-full flex flex-col justify-start items-start md:hidden",
+          "w-full flex flex-row overflow-x-auto snap-x snap-mandatory scroll-smooth gap-2.5 pb-2.5 justify-start items-start md:hidden",
         )}
       >
         {isLoadingTransaction ? (
@@ -82,6 +82,15 @@ const DaftarDetailProduk: FC<Props> = ({
           </div>
         )}
       </div>
+
+      {!isLoadingTransaction && (
+        <div className="md:hidden flex mb-4 flex-row justify-center items-center w-full gap-1.5">
+          <span className="text-xs text-base-content">
+            Silahkan Geser ke kanan
+          </span>
+          <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
+        </div>
+      )}
       {/* data for MD & LG  */}
       <div
         className={cn(
@@ -384,13 +393,11 @@ const DaftarDetailProduk: FC<Props> = ({
           </div>
         </div>
       </div>
-
       {/* alert label */}
       <AlertLabel
         isLoading={isLoadingTransaction}
         message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur."
       />
-
       {/* button retur */}
       {dataTransaction?.data?.status !== TRANSACTION_STATUS_TYPE.BOOKING &&
         !isLoadingTransaction && (
@@ -414,7 +421,6 @@ const DaftarDetailProduk: FC<Props> = ({
             />
           </div>
         )}
-
       {isExistDataKebutuhanBarang &&
         !isLoadingKebutuhanBarang &&
         !siapKirim && (
@@ -436,7 +442,6 @@ const DaftarDetailProduk: FC<Props> = ({
           ]}
         />
       )}
-
       {/* ringkasan kredit */}
       <RingkasanKredit
         dataTransaction={dataTransaction}

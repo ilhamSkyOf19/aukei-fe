@@ -40,6 +40,7 @@ import DataEmpty from "../../../components/messages/DataEmpty";
 import CardProdukRetur from "../../../components/ui/cards/CardProdukRetur";
 import type { FC } from "react";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
+import ModalDelete from "../../../components/modals/ModalDelete";
 
 const ReturBarangDetail = () => {
   const {
@@ -64,6 +65,12 @@ const ReturBarangDetail = () => {
     modalKonfirmasiVerifikasiRef,
     isSomeStokNotEnough,
     handleRedirectUbahData,
+    dataDelete,
+    handleCloseModalDelete,
+    handleDelete,
+    handleShowModalDelete,
+    isPendingDelete,
+    modalDeleteRef,
   } = useReturBarangDetail();
 
   return (
@@ -607,33 +614,6 @@ const ReturBarangDetail = () => {
                   </>
                 )}
 
-              {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
-                dataReturBarang?.data?.status === RETURN_STATUS.DRAFT && (
-                  <>
-                    <ButtonWithIcon
-                      icon={Trash2}
-                      label="Hapus"
-                      bgColor="bg-error"
-                      textColor="text-primary-white"
-                      handleBtn={() => {}}
-                    />
-
-                    {/* ajukan */}
-                    <ButtonWithIcon
-                      icon={Check}
-                      label="Ajukan"
-                      handleBtn={() =>
-                        handleShowModalFormulirVerifikasiOrPengajuan(
-                          undefined,
-                          {
-                            type: "pengajuan",
-                          },
-                        )
-                      }
-                    />
-                  </>
-                )}
-
               {((pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
                 dataReturBarang?.data?.status === RETURN_STATUS.REJECTED &&
                 dataReturBarang?.data?.createdBy?.id === pengguna?.id) ||
@@ -647,11 +627,10 @@ const ReturBarangDetail = () => {
                     bgColor="bg-error"
                     textColor="text-primary-white"
                     skeleton={isLoadingReturBarang}
-                    handleBtn={() => {}}
+                    handleBtn={() => handleShowModalDelete()}
                   />
 
-                  {/* status rejected */}
-                  {/* ajukan */}
+                  {/* ubah data */}
                   {dataReturBarang?.data?.createdBy?.id === pengguna?.id &&
                     dataReturBarang?.data?.status ===
                       RETURN_STATUS.REJECTED && (
@@ -692,18 +671,16 @@ const ReturBarangDetail = () => {
         role={pengguna?.role}
         type={dataModalFormulirVerifikasiOrPengajuan?.type}
       />
-      {/* modal */}
-      {/* <ModalAlert
-        icon={AlertTriangle}
-        iconColor="text-warning"
-        modalRef={modalConfirmRef}
-        bigTitle={dataConfirm?.bigTitle ?? ""}
-        smallTitle={dataConfirm?.smallTitle ?? ""}
-        handleCloseModal={handleCancelConfirm}
-        handleConfirm={handleConfirm}
-        labelNext="Lanjutkan"
-        isLoading={isPendingMutateReturBarang}
-      /> */}
+
+      {/* modal delete */}
+      <ModalDelete
+        modalRef={modalDeleteRef}
+        handleCloseModal={handleCloseModalDelete}
+        handleDelete={handleDelete}
+        bigTitle="Apakah anda yakin ingin menghapus data retur barang dengan kode referensi dibawah ini?"
+        highlightData={dataDelete?.kodeReferensi}
+        isLoadingDelete={isPendingDelete}
+      />
     </div>
   );
 };

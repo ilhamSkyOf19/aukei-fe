@@ -192,6 +192,51 @@ const useReturBarangDetail = () => {
     return navigate(`${currentPathname}/ubah-data`);
   };
 
+  // modal delete
+
+  const {
+    modalRef: modalDeleteRef,
+    handleShowModal: showModalDelete,
+    handleCloseModal: handleCloseModalDelete,
+    idModal: idModalDelete,
+    dataModal: dataDelete,
+  } = useModal<{ kodeReferensi?: string }>();
+
+  // mutate delete
+  const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(
+    {
+      mutationFn: (id: number) => ReturBarangServices.delete({ id }),
+      onSuccess: () => {
+        // redirect
+        navigate(currentPathname.split("/").slice(0, -2).join("/"), {
+          state: {
+            toast: "deleted_retur_barang",
+          },
+        });
+      },
+      onError: (error: any) => {
+        console.log(error);
+      },
+    },
+  );
+
+  // handle delete
+  const handleDelete = async () => {
+    try {
+      await mutateDelete(idModalDelete!);
+      return handleCloseModalDelete();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // handle show modal delete
+  const handleShowModalDelete = () => {
+    showModalDelete(dataReturBarang?.data?.id, {
+      kodeReferensi: dataReturBarang?.data?.kodeReferensi,
+    });
+  };
+
   return {
     dataReturBarang,
     isLoadingReturBarang,
@@ -214,6 +259,14 @@ const useReturBarangDetail = () => {
     isPendingVerifikasiPengajuanReturBarang,
     isSomeStokNotEnough,
     handleRedirectUbahData,
+
+    // delete
+    modalDeleteRef,
+    handleShowModalDelete,
+    handleCloseModalDelete,
+    handleDelete,
+    isPendingDelete,
+    dataDelete,
   };
 };
 

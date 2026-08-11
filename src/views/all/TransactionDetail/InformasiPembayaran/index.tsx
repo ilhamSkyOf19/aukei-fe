@@ -574,7 +574,10 @@ const InformasiPembayaran: FC<Props> = ({
         )}
         {/* aksi */}
         <div className="w-full flex flex-row justify-between items-start gap-2 mt-4">
-          {!isPageBookingKasir ? (
+          {!isPageBookingKasir &&
+          dataTransaction?.data?.metodePembayaran !==
+            PAYMENT_METHOD_TYPE.TEMPO &&
+          dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING ? (
             <>
               {/* update */}
               {isUbahData ? (
@@ -603,6 +606,8 @@ const InformasiPembayaran: FC<Props> = ({
               <ButtonWithIcon
                 disabled={!siapKirim}
                 icon={CreditCard}
+                bgColor="bg-success"
+                textColor="text-primary-white"
                 customWidth="flex-1"
                 label="Selesaikan"
                 isLoading={isPendingTransaction}
@@ -623,6 +628,7 @@ const InformasiPembayaran: FC<Props> = ({
                   })
                 }
                 skeleton={isLoadingTransaction}
+                classHidden="hidden md:flex"
               />
 
               {/* download struk */}
@@ -630,7 +636,7 @@ const InformasiPembayaran: FC<Props> = ({
                 icon={FileDown}
                 customWidth="flex-1"
                 bgColor="bg-gray-400"
-                label="Download PDF"
+                label="Download Struk"
                 textColor="text-primary-white"
                 skeleton={isLoadingTransaction}
               />
@@ -638,6 +644,33 @@ const InformasiPembayaran: FC<Props> = ({
           )}
         </div>
       </div>
+
+      {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
+        <div className="w-full flex flex-row justify-start items-center gap-2.5">
+          {/* cetak struk */}
+          <ButtonWithIcon
+            icon={Printer}
+            customWidth="flex-1"
+            label="Cetak Struk"
+            handleBtn={() =>
+              InvoiceServices.printInvoice({
+                id: dataTransaction?.data?.id ?? 0,
+              })
+            }
+            skeleton={isLoadingTransaction}
+          />
+
+          {/* download struk */}
+          <ButtonWithIcon
+            icon={FileDown}
+            customWidth="flex-1"
+            bgColor="bg-gray-400"
+            label="Download PDF"
+            textColor="text-primary-white"
+            skeleton={isLoadingTransaction}
+          />
+        </div>
+      )}
 
       {/* tempo payment */}
       {dataTransaction?.data?.metodePembayaran === "TEMPO" &&
@@ -649,7 +682,6 @@ const InformasiPembayaran: FC<Props> = ({
             ]}
           />
         )}
-
       {/* modal cash payment */}
       <ModalCashPayment
         modalRef={modalCalculatorRef}
@@ -660,7 +692,6 @@ const InformasiPembayaran: FC<Props> = ({
             (dataTransaction?.data?.totalDiBayar ?? 0),
         )}
       />
-
       {/* modal formulir tempo */}
       <ModalTempoPayment
         data={{
