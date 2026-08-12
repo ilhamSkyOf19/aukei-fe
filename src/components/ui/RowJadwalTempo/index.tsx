@@ -24,6 +24,8 @@ import useRowJadwal from "./useRowJadwal";
 import DataEmpty from "../../messages/DataEmpty";
 import CardData from "../cards/CardData";
 import LoadingFetch from "../LoadingFetch";
+import ButtonCetakTable from "../button/ButtonCetakTable";
+import ButtonDownloadTable from "../button/ButtonDownloadTable";
 
 type Props = {
   aksi?: boolean;
@@ -43,6 +45,7 @@ type Props = {
   nomorTransaksi?: string;
   withInvoice?: boolean;
   isLoading?: boolean;
+  noAksi?: boolean;
 };
 const RowJadwaTempo: FC<Props> = ({
   aksi,
@@ -57,11 +60,14 @@ const RowJadwaTempo: FC<Props> = ({
   withInvoice,
   isLoading,
   nomorTransaksi,
+  noAksi,
 }) => {
   const {
     handlePrintAll,
     handleDownloadInvoiceKreditPdf,
     isLoadingDownloadInvoiceKreditPdf,
+    handleDownloadInvoiceKreditPaymentPdf,
+    isLoadingDownloadInvoiceKreditPaymentPdf,
   } = useRowJadwal();
 
   const currentPathname = useLocation().pathname;
@@ -145,7 +151,6 @@ const RowJadwaTempo: FC<Props> = ({
           </button>
         )}
       </div>
-
       {/* FOR SM */}
       <div className="w-full flex flex-col justify-start items-start gap-2.5 md:hidden">
         {isLoading ? (
@@ -162,7 +167,14 @@ const RowJadwaTempo: FC<Props> = ({
               tempoIcon
               withBg
               {...(item.id !== undefined && {
-                handleDownloadStruk: () => {},
+                downloadInvoiceKreditPaymentPdf: {
+                  handleDownloadInvoiceKreditPaymentPdf: () =>
+                    handleDownloadInvoiceKreditPaymentPdf({
+                      id: item.id ?? 0,
+                      cicilanKe: item.cicilanKe,
+                    }),
+                  isLoading: isLoadingDownloadInvoiceKreditPaymentPdf,
+                },
               })}
               customHeight={"h-20"}
             />
@@ -177,7 +189,6 @@ const RowJadwaTempo: FC<Props> = ({
           </div>
         )}
       </div>
-
       {/* FOR MD & LG */}
       <div className="w-full flex-col justify-start items-start border overflow-hidden border-base-content/10 rounded-xl hidden md:flex">
         {/* header */}
@@ -248,6 +259,16 @@ const RowJadwaTempo: FC<Props> = ({
                   invoice: () => handlePrintAll({ tempoPaymentId: item.id! }),
                 })}
                 layout={layout}
+                {...(!noAksi && {
+                  downloadInvoiceKreditPaymentPdf: {
+                    handleDownloadInvoiceKreditPaymentPdf: () =>
+                      handleDownloadInvoiceKreditPaymentPdf({
+                        id: item.id ?? 0,
+                        cicilanKe: item.cicilanKe,
+                      }),
+                    isLoading: isLoadingDownloadInvoiceKreditPaymentPdf,
+                  },
+                })}
               />
             ))
           ) : (
@@ -260,7 +281,6 @@ const RowJadwaTempo: FC<Props> = ({
           )}
         </div>
       </div>
-
       {/* button print */}
       {transactionId && (
         <div className="w-full flex flex-row justify-end items-end gap-2.5 mt-2.5">
@@ -333,6 +353,10 @@ type RowsType = {
     action: string;
     invoice: string;
   };
+  downloadInvoiceKreditPaymentPdf?: {
+    handleDownloadInvoiceKreditPaymentPdf: () => Promise<void>;
+    isLoading?: boolean;
+  };
 };
 const Rows: FC<RowsType> = ({
   nominal,
@@ -343,6 +367,7 @@ const Rows: FC<RowsType> = ({
   status,
   invoice,
   layout,
+  downloadInvoiceKreditPaymentPdf,
 }) => {
   return (
     <div
@@ -398,20 +423,32 @@ const Rows: FC<RowsType> = ({
       )}
 
       {/* Struk */}
-      {invoice && (
-        <div className={cn("flex justify-end items-center", layout.invoice)}>
+      {(invoice || downloadInvoiceKreditPaymentPdf) && (
+        <div
+          className={cn(
+            "flex justify-end items-center gap-1.5 overflow-hidden",
+            layout.invoice,
+          )}
+        >
           {/* BUAT FLAG PARTIAL */}
           {status !== TEMPO_STATUS_TYPE.UNPAID &&
           status !== TEMPO_STATUS_TYPE.OVERDUE ? (
-            <button
-              type="button"
-              className="text-[0.625rem] font-medium px-2 py-1 border border-emerald-600 rounded-md flex flex-row justify-start items-center gap-1 group hover:text-primary-white transition-all duration-150 ease-in-out hover:bg-emerald-600"
-              onClick={() => invoice()}
-            >
-              <Printer className="size-3" />
-
-              <span>Cetak</span>
-            </button>
+            <>
+              {invoice && (
+                <ButtonCetakTable
+                  handleCetak={() => invoice()}
+                  classHidden="hidden lg:flex"
+                />
+              )}
+              {downloadInvoiceKreditPaymentPdf && (
+                <ButtonDownloadTable
+                  handleDownload={() =>
+                    downloadInvoiceKreditPaymentPdf.handleDownloadInvoiceKreditPaymentPdf
+                  }
+                  isLoading={downloadInvoiceKreditPaymentPdf.isLoading}
+                />
+              )}
+            </>
           ) : (
             <span>-</span>
           )}

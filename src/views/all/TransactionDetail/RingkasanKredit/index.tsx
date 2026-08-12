@@ -67,7 +67,6 @@ const RingkasanKredit: FC<Props> = ({
                 </>
               )}
             </div>
-
             {/* jadwal cicilan */}
             <div className="w-full mt-4">
               <RowJadwaTempo

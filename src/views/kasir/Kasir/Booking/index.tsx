@@ -11,7 +11,14 @@ import {
   unformatRupiah,
 } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import { ArrowLeftRight, Banknote, Landmark, QrCode, X } from "lucide-react";
+import {
+  ArrowLeftRight,
+  Banknote,
+  Check,
+  Landmark,
+  QrCode,
+  X,
+} from "lucide-react";
 import CardMetodePembayaran from "../../../../components/ui/cards/CardMetodePembayaran";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
@@ -434,21 +441,13 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
               )}
 
               <div className="w-full flex flex-col justify-start items-start gap-1">
-                <button
-                  type="button"
-                  className={cn(
-                    "w-full h-10 bg-custom-primary rounded-xl flex flex-row hover-overlay justify-center items-center",
-                  )}
-                  onClick={() => handleTransaction()}
-                >
-                  {isPendingTransaction ? (
-                    <div className="loading loading-xs text-custom-secondary" />
-                  ) : (
-                    <span className="text-xs font-medium text-custom-secondary">
-                      Selesaikan Transaksi
-                    </span>
-                  )}
-                </button>
+                <ButtonWithIcon
+                  label="Selesaikan Transaksi"
+                  customWidth="w-full"
+                  icon={Check}
+                  isLoading={isPendingTransaction}
+                  handleBtn={() => handleTransaction()}
+                />
               </div>
             </div>
           </div>

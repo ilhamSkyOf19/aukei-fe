@@ -7,6 +7,7 @@ import { useState } from "react";
 import type { ITempoInstallmentType } from "../../../models/tempoInstallment.model";
 import { useAuthStore } from "../../../stores/authStore";
 import useDownloadInvoiceKredit from "../../../hooks/useDownloadInvoiceKredit";
+import useDownloadInvoiceKreditPayment from "../../../hooks/useDownloadInvoiceKreditPaymentPdf";
 
 const useInstallmentsDetail = () => {
   // get id from params
@@ -59,7 +60,15 @@ const useInstallmentsDetail = () => {
   };
 
   // handle download invoice
-  const { handleDownloadInvoiceKreditPdf } = useDownloadInvoiceKredit();
+  const { handleDownloadInvoiceKreditPdf, isLoadingDownloadInvoiceKreditPdf } =
+    useDownloadInvoiceKredit();
+
+  // handle download invoice cicilan
+  const {
+    handleDownloadInvoiceKreditPaymentPdf,
+    isLoadingDownloadInvoiceKreditPaymentPdf,
+    variables,
+  } = useDownloadInvoiceKreditPayment();
 
   return {
     windowSize,
@@ -74,6 +83,11 @@ const useInstallmentsDetail = () => {
     validatedId,
     pengguna,
     handleDownloadInvoiceKreditPdf,
+    isLoadingDownloadInvoiceKreditPaymentPdf,
+
+    handleDownloadInvoiceKreditPaymentPdf,
+    isLoadingDownloadInvoiceKreditPdf,
+    variables,
   };
 };
 

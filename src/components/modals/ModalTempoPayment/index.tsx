@@ -349,6 +349,7 @@ const ModalTempoPayment: FC<Props> = ({
               handleShowModalInputTanggal();
             }}
             startDateWatch={startDateWatch}
+            noAksi={true}
           />
         </div>
 

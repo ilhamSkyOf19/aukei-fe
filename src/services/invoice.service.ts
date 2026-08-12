@@ -37,26 +37,13 @@ export class InvoiceServices {
     };
   }
 
-  static printTempoPayment(params: {
-    installmentId: number;
-    tempoPaymentIds?: number[];
-  }) {
+  static printTempoPayment(params: { installmentId: number }) {
     const iframe = document.createElement("iframe");
 
     iframe.style.position = "absolute";
     iframe.style.left = "-9999px";
 
-    const query = new URLSearchParams();
-
-    query.set("installmentId", params.installmentId.toString());
-
-    if (params.tempoPaymentIds?.length) {
-      params.tempoPaymentIds.forEach((id) => {
-        query.append("tempoPaymentIds", id.toString());
-      });
-    }
-
-    iframe.src = `/api/invoice/print-kredit-payment?${query.toString()}`;
+    iframe.src = `/api/invoice/print-kredit-payment/${params.installmentId}`;
 
     document.body.appendChild(iframe);
 
@@ -140,6 +127,18 @@ export class InvoiceServices {
   static async downloadInvoiceBarangKeluarPdf(id: number): Promise<Blob> {
     const response = await instanceAxios.get(
       `/invoice/barang-keluar/${id}/pdf`,
+      {
+        responseType: "blob",
+      },
+    );
+
+    return response.data;
+  }
+
+  // download invoice kredit payment
+  static async downloadInvoiceKreditPaymentPdf(id: number): Promise<Blob> {
+    const response = await instanceAxios.get(
+      `/invoice/kredit-payment/${id}/pdf`,
       {
         responseType: "blob",
       },

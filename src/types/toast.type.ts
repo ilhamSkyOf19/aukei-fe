@@ -382,3 +382,17 @@ export const TOAST_CONFIG_RETUR_BARANG_DETAIL: Record<
     message: "Data retur berhasil dihapus",
   },
 };
+
+// toast daftar transaction detail detail
+export const TOAST_CONFIG_TRANSACTION_DETAIL: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  created_transaction_booking_success: {
+    color: "success",
+    message: "Transaksi berhasil disimpan",
+  },
+};

@@ -6,6 +6,8 @@ import HeaderTransactionDetail from "./HeaderTransactionDetail";
 import DaftarDetailProduk from "./DaftarDetailProduk";
 import { PAYMENT_METHOD_TYPE } from "../../../types/constant.type";
 import InformasiPembayaran from "./InformasiPembayaran";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_TRANSACTION_DETAIL } from "../../../types/toast.type";
 
 type Props = {
   transactionId?: number;
@@ -23,6 +25,7 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
     isKasirPage,
+    toast,
   } = useTransactionDetail({ transactionId });
 
   return (
@@ -34,6 +37,17 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
     >
       {/* back */}
       <ButtonBackText handleClick={() => handleBackTransaksi()} />
+
+      {/* toast */}
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_TRANSACTION_DETAIL[toast.type].message}
+          color={TOAST_CONFIG_TRANSACTION_DETAIL[toast.type].color}
+        />
+      )}
+
       {/* header */}
       <HeaderTransactionDetail
         nomorTransaksi={dataTransaction?.data?.nomorTransaksi}

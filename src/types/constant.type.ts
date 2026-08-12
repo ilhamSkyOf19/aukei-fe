@@ -76,6 +76,7 @@ export const INSTALLMENT_STATUS_TYPE = {
   UNPAID: "UNPAID",
   PAID: "PAID",
   OVERDUE: "OVERDUE",
+  PARTIAL: "PARTIAL",
 } as const;
 
 export type InstallmentStatusType =

@@ -9,6 +9,7 @@ import type { ResponseStructure } from "../../../../types/response.type";
 import { formatRupiah, getWeekFromPeriod } from "../../../../helpers/helpers";
 import useInformasiPembayaran from "./useInformasiPembayaran";
 import {
+  AlertTriangle,
   Banknote,
   CalendarClock,
   ChevronDown,
@@ -27,6 +28,7 @@ import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ModalTempoPayment from "../../../../components/modals/ModalTempoPayment";
 import { formatTanggalPanjang } from "../../../../helpers/formatDate";
 import { InvoiceServices } from "../../../../services/invoice.service";
+import ModalAlert from "../../../../components/modals/ModalAlert";
 
 type Props = {
   dataTransaction?: ResponseStructure<ResponseTransactionType | null>;
@@ -73,6 +75,11 @@ const InformasiPembayaran: FC<Props> = ({
     isPendingTransaction,
     handleDownloadPdf,
     isLoadingDownloadInvoicePdf,
+
+    dataConfirm,
+    handleCancelModalConfirm,
+    handleConfirm,
+    modalConfirmRef,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
@@ -583,16 +590,15 @@ const InformasiPembayaran: FC<Props> = ({
               })
             }
             skeleton={isLoadingTransaction}
-            classHidden="hidden md:flex"
+            classHidden="hidden lg:flex"
           />
-          {!isPageBookingKasir &&
-          dataTransaction?.data?.metodePembayaran !==
-            PAYMENT_METHOD_TYPE.TEMPO &&
-          dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING ? (
+          {isPageBookingKasir ? (
             <>
               {/* selesaikan */}
               <ButtonWithIcon
-                disabled={!siapKirim}
+                disabled={
+                  !siapKirim || isPendingTransaction || isLoadingTransaction
+                }
                 icon={CreditCard}
                 bgColor="bg-success"
                 textColor="text-primary-white"
@@ -679,6 +685,17 @@ const InformasiPembayaran: FC<Props> = ({
         handleCloseModal={handleCloseModalTempo}
         handleShowModal={handleShowModalTempo}
         handleSetDataTempo={setDataTempo}
+      />
+
+      {/* modal alert */}
+      <ModalAlert
+        icon={AlertTriangle}
+        bigTitle={dataConfirm?.bigTitle ?? ""}
+        smallTitle={dataConfirm?.smallTitle ?? ""}
+        modalRef={modalConfirmRef}
+        handleCloseModal={handleCancelModalConfirm}
+        handleConfirm={handleConfirm}
+        iconColor={"text-warning"}
       />
     </div>
   );

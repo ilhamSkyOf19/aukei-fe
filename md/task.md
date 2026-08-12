@@ -190,12 +190,14 @@
 
   - [✅] Struk Barang Masuk atau Keluar
 
-  - [ ] Integrasi download struk kredit
+  - [✅] Integrasi download struk kredit
 
   - [✅] Riwayat transaksi filter berdasarkan pelanggan
   - [✅] Tambahkan data total transaksi di kredit detail
 
   - [✅] struk dari transaksi booking itu payment nya di jumlahkan dan juga kembalian nya di jumlahkan
+
+  - [✅] Integrasi Payment download
 
   - [ ] Buat halaman notifikasi retur
 

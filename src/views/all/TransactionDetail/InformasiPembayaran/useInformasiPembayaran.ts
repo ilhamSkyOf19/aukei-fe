@@ -19,6 +19,7 @@ import type { ResponseStructure } from "../../../../types/response.type";
 import { useAuthStore } from "../../../../stores/authStore";
 import { useNavigate } from "react-router-dom";
 import useDownloadInvoice from "../../../../hooks/useDownloadInvoice";
+import useConfirm from "../../../../hooks/useConfirm";
 
 const LOCAL_STORAGE_DI_BAYAR_KEY = "di-bayar";
 
@@ -63,6 +64,15 @@ const useInformasiPembayaran = ({
     modalCalculatorRef,
   } = useModalCalculator({ setIsErrors });
 
+  // modal confirm
+  const {
+    modalRef: modalConfirmRef,
+    confirm,
+    data: dataConfirm,
+    handleCancel: handleCancelModalConfirm,
+    handleConfirm,
+  } = useConfirm<{ bigTitle: string; smallTitle: string }>();
+
   const { handleCloseModalTempo, handleShowModalTempo, modalTempoRef } =
     useModalTempo({ setIsErrors });
 
@@ -78,7 +88,14 @@ const useInformasiPembayaran = ({
           });
         }
 
-        navigate("/dashboard");
+        navigate(
+          `/dashboard/riwayat-transaksi/pelanggan/${data?.data?.pelanggan?.id}/transaksi/${data?.data?.id}`,
+          {
+            state: {
+              toast: "created_transaction_booking_success",
+            },
+          },
+        );
       },
       onError: (err) => {
         console.log(err);
@@ -181,6 +198,15 @@ const useInformasiPembayaran = ({
       if (!dataTransaction?.data || !kasir) return;
 
       const payload = buildTransactionPayload(dataTransaction.data, kasir.id);
+
+      // confirm
+      const isConfirm = await confirm({
+        bigTitle: "Apakah Anda yakin ingin menyelesaikan transaksi ini?",
+        smallTitle: "Data transaksi tidak dapat diubah setelah selesai.",
+      });
+
+      if (!isConfirm) return;
+
       await mutateTransaction(payload);
     } catch (error) {
       console.log(error);
@@ -221,6 +247,12 @@ const useInformasiPembayaran = ({
     isPendingTransaction,
     handleDownloadPdf,
     isLoadingDownloadInvoicePdf,
+
+    // confirm
+    handleCancelModalConfirm,
+    handleConfirm,
+    dataConfirm,
+    modalConfirmRef,
   };
 };
 

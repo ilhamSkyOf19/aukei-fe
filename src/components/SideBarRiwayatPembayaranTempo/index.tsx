@@ -28,12 +28,14 @@ type Props = {
     | "kembalian"
   >[];
   customBtnWidth?: string;
+  classHidden?: string;
 };
 
 const SideBarRiwayatPembayaranTempo: FC<Props> = ({
   jumlahCicilan,
   paymentTransactions,
   customBtnWidth,
+  classHidden,
 }) => {
   // call use
   const {
@@ -48,7 +50,7 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
   const { drawerRef, handleClose, handleOpen } = useContentSideBar();
 
   return (
-    <div className="drawer drawer-end">
+    <div className={cn("drawer drawer-end", classHidden)}>
       <input
         ref={drawerRef}
         id="my-drawer-5"
@@ -61,12 +63,12 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
           type="button"
           onClick={handleOpen}
           className={cn(
-            "drawer-button h-10 md:h-10.5 rounded-xl bg-custom-primary shadow-xs flex flex-row justify-center items-center gap-2 px-3 hover-overlay",
+            "drawer-button h-10.5 md:h-9 rounded-xl bg-custom-primary shadow-xs flex flex-row justify-center items-center gap-2 px-3 hover-overlay",
             customBtnWidth ?? "w-auto",
           )}
         >
           <History className="size-4 text-custom-secondary" />
-          <span className="text-xs font-medium text-custom-secondary">
+          <span className="text-xs md:text-[0.7rem] font-medium text-custom-secondary">
             Lihat Riwayat Pembayaran Cicilan
           </span>
         </button>

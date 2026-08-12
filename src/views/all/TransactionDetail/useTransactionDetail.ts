@@ -10,12 +10,16 @@ import { parseId } from "../../../helpers/helpers";
 import { useAuthStore } from "../../../stores/authStore";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 import { useStepStore } from "../../../stores/stepStore";
+import { useToastAnimation } from "../../../hooks/useToast";
 
 const useTransactionDetail = (params: { transactionId?: number }) => {
   const { transactionId: transactionIdProps } = params;
 
   // handle steps
   const { setStep: handleSteps } = useStepStore((state) => state);
+
+  // toast
+  const { toast } = useToastAnimation();
 
   // get pengguna
   const pengguna = useAuthStore((state) => state.pengguna);
@@ -137,6 +141,7 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
     isKasirPage,
+    toast,
   };
 };
 

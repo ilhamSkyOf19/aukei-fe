@@ -13,7 +13,6 @@ import {
   CircleAlert,
   CircleCheck,
   Dot,
-  Download,
   Landmark,
   PackageOpen,
   QrCode,
@@ -33,6 +32,7 @@ import {
 } from "../../../../helpers/helpers";
 import StatusTransaction from "../../StatusTransaction";
 import type { IPelangganType } from "../../../../models/pelanggan.model";
+import ButtonDownloadTable from "../../button/ButtonDownloadTable";
 
 type Props = {
   nomorReferensi?: string;
@@ -60,8 +60,11 @@ type Props = {
   withBg?: boolean;
   disabled?: boolean;
   statusAbsolute?: boolean;
-  handleDownloadStruk?: () => void;
   customHeight?: string;
+  downloadInvoiceKreditPaymentPdf?: {
+    handleDownloadInvoiceKreditPaymentPdf: () => Promise<void>;
+    isLoading?: boolean;
+  };
 };
 const CardData: FC<Props> = ({
   nomorReferensi,
@@ -86,8 +89,8 @@ const CardData: FC<Props> = ({
   withBg,
   disabled,
   statusAbsolute,
-  handleDownloadStruk,
   customHeight,
+  downloadInvoiceKreditPaymentPdf,
 }) => {
   const isTempo = metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO;
 
@@ -328,24 +331,21 @@ const CardData: FC<Props> = ({
             </span>
           )}
           {/* status */}
-          <StatusTransaction status={status} statusTempo={statusTempo} />
-
-          {handleDownloadStruk &&
-            (statusTempo !== TEMPO_STATUS_TYPE.UNPAID &&
-            statusTempo !== TEMPO_STATUS_TYPE.OVERDUE ? (
-              <button
-                type="button"
-                className="flex flex-row justify-start bg-info px-2.5 py-1.5 items-start gap-1.5 rounded-lg mt-1"
-                onClick={handleDownloadStruk}
-              >
-                <Download className="size-3 text-primary-white" />
-                <span className="text-[0.625rem] font-medium text-primary-white">
-                  Stuk
-                </span>
-              </button>
-            ) : (
-              <span>-</span>
-            ))}
+          <div className="flex flex-row justify-start items-start gap-1.5">
+            {statusTempo &&
+              (statusTempo === TEMPO_STATUS_TYPE.PAID ||
+                statusTempo === TEMPO_STATUS_TYPE.PARTIAL) &&
+              downloadInvoiceKreditPaymentPdf && (
+                <ButtonDownloadTable
+                  label="Struk"
+                  isLoading={downloadInvoiceKreditPaymentPdf.isLoading}
+                  handleDownload={() =>
+                    downloadInvoiceKreditPaymentPdf.handleDownloadInvoiceKreditPaymentPdf()
+                  }
+                />
+              )}
+            <StatusTransaction status={status} statusTempo={statusTempo} />
+          </div>
           {progresCicilan && (
             <span className="text-[0.625rem] text-base-content font-medium">
               {(progresCicilan.jumlahCicilan ?? 0) -

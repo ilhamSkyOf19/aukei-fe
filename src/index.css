@@ -256,6 +256,12 @@ input:-webkit-autofill:active {
   }
 }
 
+.loading-super-xs {
+  @layer daisyui.l1.l2 {
+    width: calc(var(--size-selector, 0.25rem /* 4px */) * 3);
+  }
+}
+
 .progress-custom-primary {
   @layer daisyui.l1.l2 {
     color: var(--color-custom-primary);
