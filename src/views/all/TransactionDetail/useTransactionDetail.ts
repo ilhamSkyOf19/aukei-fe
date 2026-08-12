@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   ROLE_INTERNAL_TYPE,
   TRANSACTION_STATUS_TYPE,
@@ -16,9 +16,6 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
 
   // handle steps
   const { setStep: handleSteps } = useStepStore((state) => state);
-
-  // state is ubah data
-  const [isUbahData, setIsUbahData] = useState<boolean>(false);
 
   // get pengguna
   const pengguna = useAuthStore((state) => state.pengguna);
@@ -137,8 +134,6 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     transactionSummary,
     isStatusBooking,
     isPageBookingKasir,
-    isUbahData,
-    setIsUbahData,
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
     isKasirPage,

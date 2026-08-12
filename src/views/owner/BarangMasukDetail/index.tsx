@@ -1,4 +1,12 @@
-import { AlertTriangle, Check, Printer, Send, Trash2, X } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  Download,
+  Printer,
+  Send,
+  Trash2,
+  X,
+} from "lucide-react";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import StatusInventori from "../../../components/ui/StatusInventori";
@@ -73,6 +81,8 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     idModalFormulirVerifikasiOrPengajuan,
     isCanUpdate,
     isCanBatalkanPosting,
+    handleDownloadInvoiceBarangMasukPdf,
+    isLoadingDownloadInvoiceBarangMasukPdf,
 
     handleBack,
   } = useBarangMasukDetail({ fromPengajuanBarang });
@@ -184,17 +194,35 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                 <div className="w-full lg:w-auto flex flex-row justify-start items-start gap-2  mt-6 lg:mt-0">
                   {dataBarangMasukDetail?.data?.status ===
                     STATUS_INVENTORI_TYPE.POSTED && (
-                    <ButtonWithIcon
-                      textColor="text-primary-white"
-                      label="Cetak"
-                      icon={Printer}
-                      bgColor="bg-info"
-                      handleBtn={() =>
-                        InvoiceServices.printInvoiceBarangMasuk({
-                          id: dataBarangMasukDetail?.data?.id ?? 0,
-                        })
-                      }
-                    />
+                    <div className="flex flex-row justify-start items-start gap-2.5">
+                      <ButtonWithIcon
+                        textColor="text-primary-white"
+                        label="Cetak"
+                        icon={Printer}
+                        bgColor="bg-info"
+                        handleBtn={() =>
+                          InvoiceServices.printInvoiceBarangMasuk({
+                            id: dataBarangMasukDetail?.data?.id ?? 0,
+                          })
+                        }
+                      />
+
+                      {/* download */}
+                      <ButtonWithIcon
+                        label="Download"
+                        icon={Download}
+                        bgColor="bg-gray-400"
+                        textColor="text-primary-white"
+                        isLoading={isLoadingDownloadInvoiceBarangMasukPdf}
+                        handleBtn={() =>
+                          handleDownloadInvoiceBarangMasukPdf({
+                            id: dataBarangMasukDetail?.data?.id ?? 0,
+                            kodeReferensi:
+                              dataBarangMasukDetail?.data?.kodeReferensi ?? "",
+                          })
+                        }
+                      />
+                    </div>
                   )}
 
                   {/* button verifikasi */}

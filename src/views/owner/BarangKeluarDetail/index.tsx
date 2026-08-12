@@ -71,6 +71,8 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     isCanBatalkanPosting,
     handleBack,
     fromPengajuanBarangNotifikasi,
+    handleDownloadInvoiceBarangKeluarPdf,
+    isPendingDownloadInvoiceBarangKeluar,
   } = useBarangKeluarDetail({ fromPengajuanBarang });
 
   return (
@@ -109,7 +111,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
             <div className="w-full h-7 skeleton mt-2" />
           </>
         ) : (
-          <div className="w-full flex flex-col lg:flex-row justify-start items-start lg:items-center">
+          <div className="w-full flex flex-col lg:flex-row justify-start items-start lg:items-end">
             {/* kode and status */}
             <div className="flex lg:flex-3 flex-col justify-start items-start">
               <div className="w-full px-2 flex flex-row justify-start items-start gap-2 mt-4">
@@ -172,17 +174,35 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
               <div className="w-full lg:w-auto flex flex-row justify-start items-start gap-2  mt-6 lg:mt-0">
                 {dataBarangKeluarDetail?.data?.status ===
                   STATUS_INVENTORI_TYPE.POSTED && (
-                  <ButtonWithIcon
-                    textColor="text-primary-white"
-                    label="Cetak"
-                    icon={Printer}
-                    bgColor="bg-info"
-                    handleBtn={() =>
-                      InvoiceServices.printInvoiceBarangKeluar({
-                        id: dataBarangKeluarDetail?.data?.id ?? 0,
-                      })
-                    }
-                  />
+                  <div className="flex flex-row justify-start items-center gap-2.5">
+                    <ButtonWithIcon
+                      textColor="text-primary-white"
+                      label="Cetak"
+                      icon={Printer}
+                      bgColor="bg-info"
+                      handleBtn={() =>
+                        InvoiceServices.printInvoiceBarangKeluar({
+                          id: dataBarangKeluarDetail?.data?.id ?? 0,
+                        })
+                      }
+                    />
+
+                    {/* download */}
+                    <ButtonWithIcon
+                      textColor="text-primary-white"
+                      label="Download"
+                      icon={Printer}
+                      bgColor="bg-gray-400"
+                      isLoading={isPendingDownloadInvoiceBarangKeluar}
+                      handleBtn={() =>
+                        handleDownloadInvoiceBarangKeluarPdf({
+                          id: dataBarangKeluarDetail?.data?.id ?? 0,
+                          kodeReferensi:
+                            dataBarangKeluarDetail?.data?.kodeReferensi ?? "",
+                        })
+                      }
+                    />
+                  </div>
                 )}
 
                 {/* button verifikasi */}

@@ -1,4 +1,4 @@
-import { type Dispatch, type FC, type SetStateAction } from "react";
+import { type FC } from "react";
 import AlertLabelList from "../../../../components/messages/AlertLabelList";
 import {
   PAYMENT_METHOD_TYPE,
@@ -15,10 +15,8 @@ import {
   CreditCard,
   FileDown,
   Landmark,
-  Pencil,
   Printer,
   QrCode,
-  X,
 } from "lucide-react";
 import { cn } from "../../../../utils/cn";
 import CardPaymentTransaction from "../../../../components/ui/cards/CardPaymentTransaction";
@@ -42,8 +40,6 @@ type Props = {
     sisaTagihan: number | undefined;
   };
   isPageBookingKasir?: boolean;
-  isUbahData?: boolean;
-  setIsUbahData: Dispatch<SetStateAction<boolean>>;
   siapKirim?: boolean;
 };
 const InformasiPembayaran: FC<Props> = ({
@@ -52,8 +48,7 @@ const InformasiPembayaran: FC<Props> = ({
   isLoadingTransaction,
   transactionSummary,
   isPageBookingKasir,
-  isUbahData,
-  setIsUbahData,
+
   siapKirim,
 }) => {
   const {
@@ -77,6 +72,7 @@ const InformasiPembayaran: FC<Props> = ({
     handleTransaction,
     isPendingTransaction,
     handleDownloadPdf,
+    isLoadingDownloadInvoicePdf,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
@@ -575,34 +571,25 @@ const InformasiPembayaran: FC<Props> = ({
         )}
         {/* aksi */}
         <div className="w-full flex flex-row justify-between items-start gap-2 mt-4">
+          <ButtonWithIcon
+            icon={Printer}
+            customWidth="flex-1"
+            bgColor="bg-info"
+            textColor="text-primary-white"
+            label="Cetak Struk"
+            handleBtn={() =>
+              InvoiceServices.printInvoice({
+                id: dataTransaction?.data?.id ?? 0,
+              })
+            }
+            skeleton={isLoadingTransaction}
+            classHidden="hidden md:flex"
+          />
           {!isPageBookingKasir &&
           dataTransaction?.data?.metodePembayaran !==
             PAYMENT_METHOD_TYPE.TEMPO &&
           dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING ? (
             <>
-              {/* update */}
-              {isUbahData ? (
-                <ButtonWithIcon
-                  icon={X}
-                  bgColor="bg-error"
-                  textColor="text-primary-white"
-                  customWidth="w-full md:flex-1"
-                  label="Tutup"
-                  handleBtn={() => setIsUbahData(false)}
-                  skeleton={isLoadingTransaction}
-                />
-              ) : (
-                <ButtonWithIcon
-                  icon={Pencil}
-                  bgColor="bg-info"
-                  textColor="text-primary-white"
-                  customWidth="flex-1"
-                  label="Ubah Harga / Diskon"
-                  handleBtn={() => setIsUbahData(true)}
-                  skeleton={isLoadingTransaction}
-                />
-              )}
-
               {/* selesaikan */}
               <ButtonWithIcon
                 disabled={!siapKirim}
@@ -618,20 +605,6 @@ const InformasiPembayaran: FC<Props> = ({
             </>
           ) : (
             <>
-              {/* cetak struk */}
-              <ButtonWithIcon
-                icon={Printer}
-                customWidth="flex-1"
-                label="Cetak Struk"
-                handleBtn={() =>
-                  InvoiceServices.printInvoice({
-                    id: dataTransaction?.data?.id ?? 0,
-                  })
-                }
-                skeleton={isLoadingTransaction}
-                classHidden="hidden md:flex"
-              />
-
               {/* download struk */}
               <ButtonWithIcon
                 icon={FileDown}
@@ -640,8 +613,12 @@ const InformasiPembayaran: FC<Props> = ({
                 label="Download Struk"
                 textColor="text-primary-white"
                 skeleton={isLoadingTransaction}
+                isLoading={isLoadingDownloadInvoicePdf}
                 handleBtn={() =>
-                  handleDownloadPdf(dataTransaction?.data?.id ?? 0)
+                  handleDownloadPdf({
+                    id: dataTransaction?.data?.id ?? 0,
+                    nomorTransaksi: dataTransaction?.data?.nomorTransaksi ?? "",
+                  })
                 }
               />
             </>
@@ -651,19 +628,6 @@ const InformasiPembayaran: FC<Props> = ({
 
       {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
         <div className="w-full flex flex-row justify-start items-center gap-2.5">
-          {/* cetak struk */}
-          <ButtonWithIcon
-            icon={Printer}
-            customWidth="flex-1"
-            label="Cetak Struk"
-            handleBtn={() =>
-              InvoiceServices.printInvoice({
-                id: dataTransaction?.data?.id ?? 0,
-              })
-            }
-            skeleton={isLoadingTransaction}
-          />
-
           {/* download struk */}
           <ButtonWithIcon
             icon={FileDown}
@@ -672,6 +636,13 @@ const InformasiPembayaran: FC<Props> = ({
             label="Download PDF"
             textColor="text-primary-white"
             skeleton={isLoadingTransaction}
+            isLoading={isLoadingDownloadInvoicePdf}
+            handleBtn={() =>
+              handleDownloadPdf({
+                id: dataTransaction?.data?.id ?? 0,
+                nomorTransaksi: dataTransaction?.data?.nomorTransaksi ?? "",
+              })
+            }
           />
         </div>
       )}

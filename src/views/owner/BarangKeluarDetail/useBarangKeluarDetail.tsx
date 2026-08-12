@@ -19,6 +19,7 @@ import useModal from "../../../hooks/useModal";
 import { PengajuanBarangKeluarServices } from "../../../services/pengajuanBarangkeluar.service";
 import { useMemo } from "react";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
+import useDownloadInvoiceBarangKeluar from "../../../hooks/useDownloadInvoiceBarangKeluar";
 
 const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { fromPengajuanBarang } = params;
@@ -418,6 +419,12 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     }
   }, []);
 
+  // download invoice barang keluar
+  const {
+    handleDownloadInvoiceBarangKeluarPdf,
+    isPendingDownloadInvoiceBarangKeluar,
+  } = useDownloadInvoiceBarangKeluar();
+
   return {
     dataBarangKeluarDetail,
     isLoadingBarangKeluarDetail,
@@ -465,6 +472,8 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
     handleBack,
     fromPengajuanBarangNotifikasi,
+    handleDownloadInvoiceBarangKeluarPdf,
+    isPendingDownloadInvoiceBarangKeluar,
   };
 };
 

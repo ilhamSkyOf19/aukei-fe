@@ -18,11 +18,16 @@ import useDeleteBarangMasuk from "../../../hooks/useDeleteBarangMasuk";
 import { useAuthStore } from "../../../stores/authStore";
 import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangMasuk.service";
 import useModal from "../../../hooks/useModal";
+import useDownloadInvoiceBarangMasuk from "../../../hooks/useDownloadInvoiceBarangMasuk";
 
 // Batas waktu (ms) setelah posting sebelum dianggap expired dan tidak bisa dibatalkan
 
 const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { fromPengajuanBarang } = params;
+
+  // Ambil dan validasi id barang masuk dari URL params
+  const { id } = useParams<{ id: string }>();
+  const validatedId = parseId(id);
 
   const pengguna = useAuthStore((state) => state.pengguna);
 
@@ -93,10 +98,6 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
   // Toast notifikasi hasil aksi (posting, cancel, verifikasi, dsb)
   const { toast, handleSetToast } = useToastAnimation();
-
-  // Ambil dan validasi id barang masuk dari URL params
-  const { id } = useParams<{ id: string }>();
-  const validatedId = parseId(id);
 
   // Ambil detail data barang masuk dari server
   const { data: dataBarangMasukDetail, isLoading: isLoadingBarangMasukDetail } =
@@ -367,6 +368,12 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     );
   };
 
+  // use download invoice barang masuk
+  const {
+    handleDownloadInvoiceBarangMasukPdf,
+    isLoadingDownloadInvoiceBarangMasukPdf,
+  } = useDownloadInvoiceBarangMasuk();
+
   // Ekspos state & handler yang dibutuhkan oleh komponen UI detail barang masuk
   return {
     dataBarangMasukDetail,
@@ -418,6 +425,8 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isCanBatalkanPosting,
 
     handleBack,
+    handleDownloadInvoiceBarangMasukPdf,
+    isLoadingDownloadInvoiceBarangMasukPdf,
   };
 };
 

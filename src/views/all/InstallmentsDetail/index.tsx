@@ -3,6 +3,7 @@ import {
   CircleCheck,
   Clock,
   CreditCard,
+  Download,
   HandCoins,
   ListOrdered,
   Printer,
@@ -50,6 +51,7 @@ const InstallmentsDetail = () => {
     handleResetDataPembayaran,
     validatedId,
     pengguna,
+    handleDownloadInvoiceKreditPdf,
   } = useInstallmentsDetail();
 
   return (
@@ -275,6 +277,21 @@ const InstallmentsDetail = () => {
               paymentTransactions={dataInstallments?.data?.paymentTransactions}
               customBtnWidth="w-full"
             />
+
+            <ButtonWithIcon
+              icon={Download}
+              bgColor="bg-gray-400"
+              textColor="text-primary-white"
+              label="Download Struk Kredit"
+              handleBtn={() =>
+                handleDownloadInvoiceKreditPdf({
+                  id: dataInstallments?.data?.transactionId ?? 0,
+                  nomorTransaksi: dataInstallments?.data?.nomorTransaksi ?? "",
+                })
+              }
+              customWidth="w-full"
+              classHidden="flex md:hidden"
+            />
           </div>
 
           {/* for lg */}
@@ -418,9 +435,10 @@ const InstallmentsDetail = () => {
                     )}
                   </tbody>
                 </table>
-                {windowSize !== "sm" && (
-                  <div className="w-full flex flex-row justify-end items-end p-2.5 border-t border-base-content/10">
-                    {dataInstallments?.data?.transactionId && (
+
+                <div className="w-full flex-row justify-end items-end p-2.5 border-t border-base-content/10 hidden md:flex">
+                  {dataInstallments?.data?.transactionId && (
+                    <div className="flex flex-row justify-start items-start gap-2.5">
                       <ButtonWithIcon
                         icon={Printer}
                         bgColor="bg-info"
@@ -431,10 +449,27 @@ const InstallmentsDetail = () => {
                             id: dataInstallments?.data?.transactionId ?? 0,
                           })
                         }
+                        classHidden="hidden lg:flex"
                       />
-                    )}
 
-                    {/* button */}
+                      <ButtonWithIcon
+                        icon={Download}
+                        bgColor="bg-gray-400"
+                        textColor="text-primary-white"
+                        label="Download Struk Kredit"
+                        handleBtn={() =>
+                          handleDownloadInvoiceKreditPdf({
+                            id: dataInstallments?.data?.transactionId ?? 0,
+                            nomorTransaksi:
+                              dataInstallments?.data?.nomorTransaksi ?? "",
+                          })
+                        }
+                      />
+                    </div>
+                  )}
+
+                  {/* button */}
+                  <div className="w-full hidden md:flex">
                     <SideBarRiwayatPembayaranTempo
                       jumlahCicilan={dataInstallments?.data?.jumlahCicilan ?? 0}
                       paymentTransactions={
@@ -442,7 +477,7 @@ const InstallmentsDetail = () => {
                       }
                     />
                   </div>
-                )}
+                </div>
               </div>
 
               {/* peringatan */}

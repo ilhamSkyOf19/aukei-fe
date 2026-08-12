@@ -27,6 +27,9 @@ const useDaftarDetailProduk = (params: {
   // current pathname
   const currentPathname = useLocation().pathname;
 
+  // state is ubah data
+  const [isUbahData, setIsUbahData] = useState<boolean>(false);
+
   // state is active
   const [isFromActive, setIsFromActive] = useState<{
     detailId: number;
@@ -157,6 +160,9 @@ const useDaftarDetailProduk = (params: {
     siapKirim,
     handleToRetur,
     handleDaftarReturBarang,
+
+    isUbahData,
+    setIsUbahData,
   };
 };
 

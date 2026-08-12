@@ -188,7 +188,9 @@
 
   - [✅] Struk booking
 
-  - [ ] Struk Barang Masuk atau Keluar
+  - [✅] Struk Barang Masuk atau Keluar
+
+  - [ ] Integrasi download struk kredit
 
   - [✅] Riwayat transaksi filter berdasarkan pelanggan
   - [✅] Tambahkan data total transaksi di kredit detail

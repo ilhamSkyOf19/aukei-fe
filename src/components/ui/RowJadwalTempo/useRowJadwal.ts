@@ -1,3 +1,4 @@
+import useDownloadInvoiceKredit from "../../../hooks/useDownloadInvoiceKredit";
 import { InvoiceServices } from "../../../services/invoice.service";
 
 const useRowJadwal = () => {
@@ -7,8 +8,14 @@ const useRowJadwal = () => {
     });
   };
 
+  // handle download struk kredit
+  const { handleDownloadInvoiceKreditPdf, isLoadingDownloadInvoiceKreditPdf } =
+    useDownloadInvoiceKredit();
+
   return {
     handlePrintAll,
+    handleDownloadInvoiceKreditPdf,
+    isLoadingDownloadInvoiceKreditPdf,
   };
 };
 

@@ -40,6 +40,7 @@ type Props = {
   pelangganId?: number;
   tempoId?: number;
   transactionId?: number;
+  nomorTransaksi?: string;
   withInvoice?: boolean;
   isLoading?: boolean;
 };
@@ -55,8 +56,13 @@ const RowJadwaTempo: FC<Props> = ({
   transactionId,
   withInvoice,
   isLoading,
+  nomorTransaksi,
 }) => {
-  const { handlePrintAll } = useRowJadwal();
+  const {
+    handlePrintAll,
+    handleDownloadInvoiceKreditPdf,
+    isLoadingDownloadInvoiceKreditPdf,
+  } = useRowJadwal();
 
   const currentPathname = useLocation().pathname;
   const navigate = useNavigate();
@@ -272,14 +278,33 @@ const RowJadwaTempo: FC<Props> = ({
             />
           </div>
 
-          <ButtonWithIcon
-            icon={Printer}
-            label="Cetak Struk Kredit"
-            handleBtn={() =>
-              InvoiceServices.printInvoiceKredit({ id: transactionId })
-            }
-            classHidden="hidden lg:flex"
-          />
+          <div className="flex flex-row justify-start items-start gap-2.5">
+            <ButtonWithIcon
+              icon={Printer}
+              label="Cetak Struk Kredit"
+              bgColor={"bg-info"}
+              textColor="text-primary-white"
+              handleBtn={() =>
+                InvoiceServices.printInvoiceKredit({ id: transactionId })
+              }
+              classHidden="hidden lg:flex"
+            />
+
+            <ButtonWithIcon
+              icon={Download}
+              label="Download Struk Kredit"
+              bgColor="bg-gray-400"
+              textColor="text-primary-white"
+              isLoading={isLoadingDownloadInvoiceKreditPdf}
+              handleBtn={() =>
+                handleDownloadInvoiceKreditPdf({
+                  id: transactionId,
+                  nomorTransaksi: nomorTransaksi ?? "",
+                })
+              }
+              classHidden="hidden lg:flex"
+            />
+          </div>
 
           <ButtonWithIcon
             icon={Download}

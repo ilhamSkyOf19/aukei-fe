@@ -6,6 +6,7 @@ import useSizeWindows from "../../../hooks/useSizeWindows";
 import { useState } from "react";
 import type { ITempoInstallmentType } from "../../../models/tempoInstallment.model";
 import { useAuthStore } from "../../../stores/authStore";
+import useDownloadInvoiceKredit from "../../../hooks/useDownloadInvoiceKredit";
 
 const useInstallmentsDetail = () => {
   // get id from params
@@ -57,6 +58,9 @@ const useInstallmentsDetail = () => {
     setDataPembayaran(null);
   };
 
+  // handle download invoice
+  const { handleDownloadInvoiceKreditPdf } = useDownloadInvoiceKredit();
+
   return {
     windowSize,
     navigate,
@@ -69,6 +73,7 @@ const useInstallmentsDetail = () => {
     handleResetDataPembayaran,
     validatedId,
     pengguna,
+    handleDownloadInvoiceKreditPdf,
   };
 };
 

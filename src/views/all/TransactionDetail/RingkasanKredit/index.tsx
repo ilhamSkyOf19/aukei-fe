@@ -82,6 +82,7 @@ const RingkasanKredit: FC<Props> = ({
                     : undefined
                 }
                 transactionId={dataTransaction?.data?.id}
+                nomorTransaksi={dataTransaction?.data?.nomorTransaksi ?? ""}
                 withInvoice
                 isLoading={isLoadingTransaction}
               />

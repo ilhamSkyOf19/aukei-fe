@@ -13,10 +13,13 @@ import InputPrice from "../../../../components/inputs/InputPrice";
 import type { UpdateHargaAndDiskonForRequestType } from "../../../../models/transactionDetail.model";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import AlertLabelList from "../../../../components/messages/AlertLabelList";
-import { TRANSACTION_STATUS_TYPE } from "../../../../types/constant.type";
+import {
+  PAYMENT_METHOD_TYPE,
+  TRANSACTION_STATUS_TYPE,
+} from "../../../../types/constant.type";
 import AlertLabel from "../../../../components/messages/AlertLabel";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import { ChevronsRightIcon, Eye, Undo } from "lucide-react";
+import { ChevronsRightIcon, Eye, Pencil, Undo, X } from "lucide-react";
 import CardProdukTransaksi from "../../../../components/ui/cards/CardProdukTransaksi";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
@@ -26,7 +29,6 @@ type Props = {
   isExistingDataTransaction: boolean;
   dataTransaction?: ResponseStructure<ResponseTransactionType | null>;
   isPageBookingKasir: boolean;
-  isUbahData: boolean;
   dataKebutuhanBarang?: ResponseStructure<
     ResponseStatistikKebutuhanBarang[] | null
   >;
@@ -36,7 +38,6 @@ const DaftarDetailProduk: FC<Props> = ({
   dataTransaction,
   isExistingDataTransaction,
   isLoadingTransaction,
-  isUbahData,
   dataKebutuhanBarang,
   isPageBookingKasir,
   isLoadingKebutuhanBarang,
@@ -53,6 +54,9 @@ const DaftarDetailProduk: FC<Props> = ({
     isExistDataKebutuhanBarang,
     handleToRetur,
     handleDaftarReturBarang,
+
+    isUbahData,
+    setIsUbahData,
   } = useDaftarDetailProduk({
     transactionId: dataTransaction?.data?.id,
     dataKebutuhanBarang,
@@ -82,7 +86,6 @@ const DaftarDetailProduk: FC<Props> = ({
           </div>
         )}
       </div>
-
       {!isLoadingTransaction && (
         <div className="md:hidden flex mb-4 flex-row justify-center items-center w-full gap-1.5">
           <span className="text-xs text-base-content">
@@ -393,6 +396,33 @@ const DaftarDetailProduk: FC<Props> = ({
           </div>
         </div>
       </div>
+      {isPageBookingKasir &&
+        dataTransaction?.data?.metodePembayaran !== PAYMENT_METHOD_TYPE.TEMPO &&
+        dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
+          <div className="w-full flex flex-row justify-end items-end">
+            {isUbahData ? (
+              <ButtonWithIcon
+                icon={X}
+                bgColor="bg-error"
+                textColor="text-primary-white"
+                customWidth="w-full md:flex-1"
+                label="Tutup"
+                handleBtn={() => setIsUbahData(false)}
+                skeleton={isLoadingTransaction}
+              />
+            ) : (
+              <ButtonWithIcon
+                icon={Pencil}
+                bgColor="bg-info"
+                textColor="text-primary-white"
+                customWidth="flex-1"
+                label="Ubah Harga / Diskon"
+                handleBtn={() => setIsUbahData(true)}
+                skeleton={isLoadingTransaction}
+              />
+            )}
+          </div>
+        )}
       {/* alert label */}
       <AlertLabel
         isLoading={isLoadingTransaction}

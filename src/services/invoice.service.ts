@@ -107,10 +107,43 @@ export class InvoiceServices {
 
   // DOWNLOAD
   // download pdf
-  static async downloadBarangMasukPdf(id: number): Promise<Blob> {
+  static async downloadInvoiceTransaksiPdf(id: number): Promise<Blob> {
     const response = await instanceAxios.get(`/invoice/${id}/transaksi-pdf`, {
       responseType: "blob",
     });
+
+    return response.data;
+  }
+
+  // download invoice kredit
+  static async downloadInvoiceKreditPdf(id: number): Promise<Blob> {
+    const response = await instanceAxios.get(`/invoice/kredit/${id}/pdf`, {
+      responseType: "blob",
+    });
+
+    return response.data;
+  }
+
+  // download invoice barang masuk
+  static async downloadInvoiceBarangMasukPdf(id: number): Promise<Blob> {
+    const response = await instanceAxios.get(
+      `/invoice/barang-masuk/${id}/pdf`,
+      {
+        responseType: "blob",
+      },
+    );
+
+    return response.data;
+  }
+
+  // download invoice barang keluar
+  static async downloadInvoiceBarangKeluarPdf(id: number): Promise<Blob> {
+    const response = await instanceAxios.get(
+      `/invoice/barang-keluar/${id}/pdf`,
+      {
+        responseType: "blob",
+      },
+    );
 
     return response.data;
   }

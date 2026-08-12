@@ -20,8 +20,6 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
     transactionSummary,
     isStatusBooking,
     isPageBookingKasir,
-    isUbahData,
-    setIsUbahData,
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
     isKasirPage,
@@ -63,18 +61,15 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
           isExistingDataTransaction={isExistingDataTransaction}
           isLoadingTransaction={isLoadingTransaction}
           isPageBookingKasir={isPageBookingKasir}
-          isUbahData={isUbahData}
           dataKebutuhanBarang={dataKebutuhanBarang}
           isLoadingKebutuhanBarang={isLoadingKebutuhanBarang}
         />
         <InformasiPembayaran
           dataTransaction={dataTransaction}
-          setIsUbahData={setIsUbahData}
           transactionSummary={transactionSummary}
           isLoadingTransaction={isLoadingTransaction}
           isStatusBooking={isStatusBooking}
           isPageBookingKasir={isPageBookingKasir}
-          isUbahData={isUbahData}
           siapKirim={dataKebutuhanBarang?.data?.some((item) => item.siapKirim)}
         />
       </div>
