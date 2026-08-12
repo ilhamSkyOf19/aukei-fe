@@ -9,6 +9,8 @@ import { parseId } from "../../../helpers/helpers";
 import { useEffect, useState } from "react";
 import type { IPelangganType } from "../../../models/pelanggan.model";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
+import useDownloadRiwayatTransaksiByPelangganPdf from "../../../hooks/useDownloadRiwayatTransaksiByPelangganPdf";
+import useDownloadRiwayatTransaksiByPelangganExcel from "../../../hooks/useDownloadRiwayatTransaksiByPelangganExcel";
 
 const useRiwayatTransaksiDetail = () => {
   // window size
@@ -161,6 +163,18 @@ const useRiwayatTransaksiDetail = () => {
     return navigate(currentPathname.split("/").slice(0, -2).join("/"));
   };
 
+  // use download export riwayat pdf
+  const {
+    handleDownloadRiwayatTransaksiByPelangganPdf,
+    isLoadingDownloadRiwayatTransaksiByPelangganPdf,
+  } = useDownloadRiwayatTransaksiByPelangganPdf();
+
+  // use download export riwayat excel
+  const {
+    handleDownloadRiwayatTransaksiByPelangganExcel,
+    isLoadingDownloadRiwayatTransaksiByPelangganExcel,
+  } = useDownloadRiwayatTransaksiByPelangganExcel();
+
   return {
     metodePembayaran,
     handleSetMetodePembayaran,
@@ -176,6 +190,12 @@ const useRiwayatTransaksiDetail = () => {
     handleRedirectDetail,
     handleBack,
     dataPelanggan,
+
+    handleDownloadRiwayatTransaksiByPelangganPdf,
+    isLoadingDownloadRiwayatTransaksiByPelangganPdf,
+
+    handleDownloadRiwayatTransaksiByPelangganExcel,
+    isLoadingDownloadRiwayatTransaksiByPelangganExcel,
   };
 };
 

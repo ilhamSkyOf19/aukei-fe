@@ -32,6 +32,7 @@ import StatusTransaction from "../../../components/ui/StatusTransaction";
 import Avatar from "../../../components/ui/Avatar";
 import useRiwayatTransaksiDetail from "./useRiwayatTransaksiDetail";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
+import AlertLabel from "../../../components/messages/AlertLabel";
 
 const RiwayatTransaksiDetail = () => {
   const {
@@ -49,6 +50,12 @@ const RiwayatTransaksiDetail = () => {
     handleRedirectDetail,
     handleBack,
     dataPelanggan,
+
+    handleDownloadRiwayatTransaksiByPelangganPdf,
+    isLoadingDownloadRiwayatTransaksiByPelangganPdf,
+
+    handleDownloadRiwayatTransaksiByPelangganExcel,
+    isLoadingDownloadRiwayatTransaksiByPelangganExcel,
   } = useRiwayatTransaksiDetail();
 
   return (
@@ -66,6 +73,9 @@ const RiwayatTransaksiDetail = () => {
             value: metodePembayaran,
           }}
         />
+
+        {/* alert  */}
+        <AlertLabel message="Export PDF menampilkan seluruh data sesuai filter tanggal yang dipilih." />
 
         {/* data */}
         <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
@@ -114,12 +124,26 @@ const RiwayatTransaksiDetail = () => {
                   label="Export PDF"
                   bgColor="bg-error"
                   textColor="text-primary-white"
+                  isLoading={isLoadingDownloadRiwayatTransaksiByPelangganPdf}
+                  handleBtn={() =>
+                    handleDownloadRiwayatTransaksiByPelangganPdf({
+                      id: dataPelanggan?.id,
+                      namaPelanggan: dataPelanggan?.nama,
+                    })
+                  }
                 />
                 <ButtonWithIcon
                   icon={Sheet}
                   label="Export Excel"
                   bgColor="bg-success"
                   textColor="text-primary-white"
+                  isLoading={isLoadingDownloadRiwayatTransaksiByPelangganExcel}
+                  handleBtn={() =>
+                    handleDownloadRiwayatTransaksiByPelangganExcel({
+                      id: dataPelanggan?.id,
+                      namaPelanggan: dataPelanggan?.nama,
+                    })
+                  }
                 />
               </div>
             </div>
