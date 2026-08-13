@@ -14,6 +14,9 @@ import RangeDate from "../../../../components/filters/RangeDate";
 import useStatistikTopPelanggan from "../../../../hooks/useStatistikTopPelanggan";
 import CardPelanggan from "../../../../components/ui/cards/CardPelanggan";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import { FileText, RefreshCcw } from "lucide-react";
+import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
+import ButtonRefresh from "../../../../components/ui/button/ButtonRefresh";
 
 const TopPelanggan = () => {
   const {
@@ -29,12 +32,17 @@ const TopPelanggan = () => {
     handleTotalNilaiTransaksi,
     sortTotalNilaiTransaksi,
     sortTotalTransaksi,
+
+    handleDownloadLaporanTopPelangganPdf,
+    isLoadingDownloadLaporanTopPelangganPdf,
+
+    refetchTopPelanggan,
   } = useStatistikTopPelanggan({});
 
   return (
     <div className="w-full flex flex-col justify-start items-start">
       {/* filter */}
-      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-end lg:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
+      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start lg:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
         <div className="w-full md:flex-1 flex flex-col justify-start items-start gap-1.5">
           <InputSearch
             handleSearch={handleSearch}
@@ -43,24 +51,55 @@ const TopPelanggan = () => {
           />
         </div>
 
-        <div className="w-full md:flex-wrap md:flex-2 flex flex-col md:flex-row justify-start md:justify-end items-center gap-3 md:gap-2.5 mt-3 md:mt-0">
+        <div className="w-full md:flex-wrap md:flex-3 flex flex-col md:flex-row justify-start md:justify-end items-center gap-3 md:gap-2.5 mt-3 md:mt-0">
           {/* filter sort total transaksi */}
-          <FilterSort
-            setSort={handleSortTotalTransaksi}
-            customWidth="w-full md:w-30 lg:w-40"
-            value={sortTotalTransaksi}
-            customLabel={["Tersedikit", "Terbanyak"]}
-            customTitle="Urutkan Total Transaksi"
-          />
+          <div className="w-full flex flex-col md:flex-row justify-end items-end gap-2.5">
+            <FilterSort
+              setSort={handleSortTotalTransaksi}
+              customWidth="w-full md:w-30 lg:w-40"
+              value={sortTotalTransaksi}
+              customLabel={["Tersedikit", "Terbanyak"]}
+              customTitle="Urutkan Total Transaksi"
+            />
 
-          {/* filter sort total nilai */}
-          <FilterSort
-            setSort={handleTotalNilaiTransaksi}
-            customWidth="w-full md:w-30 lg:w-40"
-            value={sortTotalNilaiTransaksi}
-            customLabel={["Tersedikit", "Terbanyak"]}
-            customTitle="Urutkan Nilai Transaksi"
-          />
+            {/* filter sort total nilai */}
+            <FilterSort
+              setSort={handleTotalNilaiTransaksi}
+              customWidth="w-full md:w-30 lg:w-40"
+              value={sortTotalNilaiTransaksi}
+              customLabel={["Tersedikit", "Terbanyak"]}
+              customTitle="Urutkan Nilai Transaksi"
+            />
+
+            {/* button download pdf */}
+            <div className="w-full md:w-auto flex-row justify-start items-start gap-2.5 hidden md:flex">
+              <ButtonWithIcon
+                customWidth="flex-1 md:w-auto"
+                label="PDF"
+                bgColor="bg-error"
+                textColor="text-primary-white"
+                icon={FileText}
+                isLoading={isLoadingDownloadLaporanTopPelangganPdf}
+                disabled={
+                  dataTopPelanggan?.data === undefined ||
+                  dataTopPelanggan?.data?.length === 0
+                }
+                handleBtn={() =>
+                  handleDownloadLaporanTopPelangganPdf({
+                    startDate: startDateEndDate.startDate,
+                    endDate: startDateEndDate.endDate,
+                  })
+                }
+              />
+
+              {/* button refresh */}
+              <ButtonRefresh
+                handleRefresh={async () => {
+                  await refetchTopPelanggan();
+                }}
+              />
+            </div>
+          </div>
 
           {/* filter range */}
           <RangeDate
@@ -68,9 +107,46 @@ const TopPelanggan = () => {
               value: startDateEndDate,
               onChange: setStartDateEndDate,
             }}
-            customWidth="w-full md:w-50 lg:w-62"
+            customWidth="w-full md:w-50 lg:w-80"
           />
+
+          {/* button download pdf */}
+          <div className="w-full flex flex-row justify-start items-start gap-2.5 md:hidden">
+            <ButtonWithIcon
+              customWidth="flex-1"
+              label="Export PDF"
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              icon={FileText}
+              isLoading={isLoadingDownloadLaporanTopPelangganPdf}
+              disabled={
+                dataTopPelanggan?.data === undefined ||
+                dataTopPelanggan?.data?.length === 0
+              }
+              handleBtn={() =>
+                handleDownloadLaporanTopPelangganPdf({
+                  startDate: startDateEndDate.startDate,
+                  endDate: startDateEndDate.endDate,
+                })
+              }
+            />
+
+            {/* button refresh */}
+            <ButtonWithIcon
+              customWidth="flex-1"
+              label="Refresh"
+              bgColor="bg-info"
+              textColor="text-primary-white"
+              icon={RefreshCcw}
+              handleBtn={() => {}}
+            />
+          </div>
         </div>
+      </div>
+
+      {/* alert label */}
+      <div className="w-full mt-2.5">
+        <AlertLabel message="PDF hanya akan memuat data yang sesuai dengan rentang tanggal yang diterapkan pada filter." />
       </div>
 
       {/* data SM & MD */}

@@ -2,6 +2,7 @@ import { useQueries } from "@tanstack/react-query";
 import { ProdukServices } from "../../../../services/produk.service";
 import useFilterState from "../../../../services/useFilterState";
 import { StatistikServices } from "../../../../services/statistik.service";
+import useDownloadLaporanStok from "../../../../hooks/useDownloadLaporanStok";
 
 const usePantauStok = (params: { pilihan: string }) => {
   const { pilihan } = params;
@@ -54,13 +55,40 @@ const usePantauStok = (params: { pilihan: string }) => {
   });
 
   const [
-    { data: dataProduk, isLoading: isLoadingDataProduk },
-    { data: dataStatistik, isLoading: isLoadingStatistik },
+    {
+      data: dataProduk,
+      isLoading: isLoadingDataProduk,
+      refetch: refetchDataProduk,
+      isRefetching: isRefetchingDataProduk,
+    },
+    {
+      data: dataStatistik,
+      isLoading: isLoadingStatistik,
+      refetch: refetchStatistik,
+      isRefetching: isRefetchingStatistik,
+    },
   ] = data;
 
   //   is existing data
   const isExistDataProduk: boolean =
     !isLoadingDataProduk && !!dataProduk?.data?.data?.length;
+
+  // download laporan stok
+  const { handleDownloadLaporanStokPdf, isLoadingDownloadLaporanStokPdf } =
+    useDownloadLaporanStok();
+
+  // handle refetch
+  const handleRefresh = async () => {
+    await refetchDataProduk();
+    await refetchStatistik();
+  };
+
+  // is loading
+  const isLoading =
+    isLoadingDataProduk ||
+    isLoadingStatistik ||
+    isRefetchingDataProduk ||
+    isRefetchingStatistik;
 
   return {
     isExistDataProduk,
@@ -75,6 +103,13 @@ const usePantauStok = (params: { pilihan: string }) => {
     kategori,
     dataStatistik,
     isLoadingStatistik,
+
+    handleDownloadLaporanStokPdf,
+    isLoadingDownloadLaporanStokPdf,
+
+    handleRefresh,
+
+    isLoading,
   };
 };
 

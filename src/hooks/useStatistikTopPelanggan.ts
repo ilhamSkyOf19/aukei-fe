@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { StatistikServices } from "../services/statistik.service";
 import useFilterState from "../services/useFilterState";
 import { useLaporanStore } from "../stores/laporanStore";
+import useDownloadLaporanTopPelanggan from "./useDownloadLaporanTopPelanggan";
 
 const useStatistikTopPelanggan = (params: {
   customLimit?: number;
@@ -46,6 +47,7 @@ const useStatistikTopPelanggan = (params: {
     data: topPelanggan,
     isLoading: isLoadingTopPelanggan,
     isFetching: isFetchingTopPelanggan,
+    refetch: refetchTopPelanggan,
   } = useQuery({
     queryKey: [
       "top-pelanggan",
@@ -104,6 +106,12 @@ const useStatistikTopPelanggan = (params: {
 
   const isExistData = !isLoading && !!dataTopPelanggan?.data?.length;
 
+  // download
+  const {
+    handleDownloadLaporanTopPelangganPdf,
+    isLoadingDownloadLaporanTopPelangganPdf,
+  } = useDownloadLaporanTopPelanggan();
+
   return {
     startDateEndDate: {
       startDate: finalStartDate,
@@ -131,6 +139,11 @@ const useStatistikTopPelanggan = (params: {
     sortTotalTransaksi,
 
     handleSelectedLaporan,
+
+    handleDownloadLaporanTopPelangganPdf,
+    isLoadingDownloadLaporanTopPelangganPdf,
+
+    refetchTopPelanggan,
   };
 };
 

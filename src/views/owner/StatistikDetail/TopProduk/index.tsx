@@ -17,8 +17,10 @@ import RangeDate from "../../../../components/filters/RangeDate";
 import useStatistikTopProduk from "../../../../hooks/useStatistikTopProduk";
 import type { DataStatistikTopProdukType } from "../../../../models/statistik.model";
 import type { FC } from "react";
-import { ArrowUpRight, Trophy } from "lucide-react";
+import { ArrowUpRight, FileText, Trophy } from "lucide-react";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
+import ButtonRefresh from "../../../../components/ui/button/ButtonRefresh";
 
 const TopProduk = () => {
   const {
@@ -36,12 +38,16 @@ const TopProduk = () => {
     sortQty,
     setStartDateEndDate,
     startDateEndDate,
+    handleDownloadLaporanTopProdukPdf,
+    isLoadingDownloadLaporanTopProdukPdf,
+
+    refetchTopProduk,
   } = useStatistikTopProduk({});
 
   return (
     <div className="w-full flex flex-col justify-start items-start">
       {/* filter */}
-      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
+      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 gap-2.5">
         <div className="w-full md:flex-1 flex flex-col justify-start items-start gap-1.5">
           <InputSearch
             handleSearch={handleSearch}
@@ -50,40 +56,100 @@ const TopProduk = () => {
           />
         </div>
 
-        <div className="w-full md:flex-wrap md:flex-2 flex flex-col md:flex-row justify-start md:justify-end items-center gap-3 md:gap-2.5 mt-3 md:mt-0">
-          {/* filter kategori */}
-          <FilterKategori
-            setKategori={handleKategori}
-            customWidth="w-full md:w-40"
-            value={kategori}
-          />
-          {/* filter sort omzet */}
-          <FilterSort
-            setSort={handleSortOmzet}
-            customWidth="w-full md:w-30"
-            value={sortOmzet}
-            customLabel={["Tersedikit", "Terbanyak"]}
-            customTitle="Urutkan Omzet"
-          />
+        <div className="w-full md:flex-wrap md:flex-2 flex flex-col justify-start items-center md:justify-end gap-3 md:gap-2.5 mt-3 md:mt-0">
+          <div className="w-full flex flex-row justify-end items-end gap-2.5">
+            {/* filter kategori */}
+            <FilterKategori
+              setKategori={handleKategori}
+              customWidth="w-full md:w-40"
+              value={kategori}
+            />
+            {/* filter sort omzet */}
+            <FilterSort
+              setSort={handleSortOmzet}
+              customWidth="w-full md:w-30"
+              value={sortOmzet}
+              customLabel={["Tersedikit", "Terbanyak"]}
+              customTitle="Urutkan Omzet"
+            />
 
-          {/* filter sort qty */}
-          <FilterSort
-            setSort={handleSortQty}
-            customWidth="w-full md:w-30"
-            value={sortQty}
-            customLabel={["Tersedikit", "Terbanyak"]}
-            customTitle="Urutkan Qty"
-          />
+            {/* filter sort qty */}
+            <FilterSort
+              setSort={handleSortQty}
+              customWidth="w-full md:w-30"
+              value={sortQty}
+              customLabel={["Tersedikit", "Terbanyak"]}
+              customTitle="Urutkan Qty"
+            />
 
-          {/* filter range */}
-          <RangeDate
-            state={{
-              value: startDateEndDate,
-              onChange: setStartDateEndDate,
-            }}
-            customWidth="w-full md:w-62"
-          />
+            <ButtonWithIcon
+              label="PDF"
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              icon={FileText}
+              isLoading={isLoadingDownloadLaporanTopProdukPdf}
+              disabled={
+                dataTopProduk?.data === undefined ||
+                dataTopProduk?.data === null ||
+                dataTopProduk?.data?.length === 0
+              }
+              handleBtn={() =>
+                handleDownloadLaporanTopProdukPdf({
+                  startDate: startDateEndDate.startDate,
+                  endDate: startDateEndDate.endDate,
+                })
+              }
+              classHidden="lg:flex hidden"
+            />
+
+            {/* button refresh */}
+            <ButtonRefresh
+              handleRefresh={async () => {
+                await refetchTopProduk();
+              }}
+            />
+          </div>
+
+          <div className="w-full grid grid-cols-5 md:grid-cols-4 lg:flex lg:flex-row items-end gap-2.5 justify-end">
+            <div className="col-span-1 hidden md:flex" />
+            {/* filter range */}
+            <RangeDate
+              state={{
+                value: startDateEndDate,
+                onChange: setStartDateEndDate,
+              }}
+              customWidth="col-span-3 md:col-span-2"
+            />
+
+            <div className="col-span-2 md:col-span-1 lg:hidden">
+              <ButtonWithIcon
+                customWidth="w-full"
+                label="PDF"
+                bgColor="bg-error"
+                textColor="text-primary-white"
+                icon={FileText}
+                isLoading={isLoadingDownloadLaporanTopProdukPdf}
+                disabled={
+                  dataTopProduk?.data === undefined ||
+                  dataTopProduk?.data === null ||
+                  dataTopProduk?.data?.length === 0
+                }
+                handleBtn={() =>
+                  handleDownloadLaporanTopProdukPdf({
+                    startDate: startDateEndDate.startDate,
+                    endDate: startDateEndDate.endDate,
+                  })
+                }
+                classHidden="flex lg:hidden"
+              />
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* alert label */}
+      <div className="w-full mt-2.5">
+        <AlertLabel message="PDF hanya akan memuat data yang sesuai dengan rentang tanggal yang diterapkan pada filter." />
       </div>
 
       {/* buat untuk mobile  */}

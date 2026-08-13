@@ -1,4 +1,4 @@
-import { FileText, Sheet } from "lucide-react";
+import { FileText } from "lucide-react";
 
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import RangeDate from "../../../components/filters/RangeDate";
@@ -16,6 +16,7 @@ import PantauStok from "./PantauStok";
 import TopProduk from "./TopProduk";
 import TopPelanggan from "./TopPelanggan";
 import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
+import AlertLabel from "../../../components/messages/AlertLabel";
 
 const StatistikDetail = () => {
   const {
@@ -29,6 +30,9 @@ const StatistikDetail = () => {
     grafikLineRef,
     endDate,
     startDate,
+    handleExportPdf,
+    isLoadingDownloadStatistikBookingPdf,
+    isLoadingDownloadStatistikAllPdf,
   } = useStatistikDetail();
 
   return (
@@ -100,12 +104,11 @@ const StatistikDetail = () => {
                         label="Export PDF"
                         bgColor="bg-error"
                         textColor="text-primary-white"
-                      />
-                      <ButtonWithIcon
-                        icon={Sheet}
-                        label="Export Excel"
-                        bgColor="bg-success"
-                        textColor="text-primary-white"
+                        isLoading={
+                          isLoadingDownloadStatistikAllPdf ||
+                          isLoadingDownloadStatistikBookingPdf
+                        }
+                        handleBtn={() => handleExportPdf()}
                       />
 
                       {/* refresh */}
@@ -148,6 +151,9 @@ const StatistikDetail = () => {
                     )}
                   </div>
                 </div>
+
+                {/* alert label */}
+                <AlertLabel message="PDF hanya akan memuat data yang sesuai dengan rentang tanggal yang diterapkan pada filter." />
 
                 {/* grafik */}
                 <div className="w-full gap-2.5 flex flex-col justify-between items-start md:gap-2.5">

@@ -76,9 +76,10 @@ const DataBooking: FC<Props> = ({ pilihan }) => {
               Ringkasan Data Booking
             </span>
             <span className="w-full text-[0.7rem] md:w-[70%] text-base-content/70">
-              Ringkasan data booking di bawah ini dihitung berdasarkan filter
-              yang sedang diterapkan, seperti pencarian, kategori, jumlah data
-              per halaman (limit), serta urutan data.
+              Ringkasan data booking tidak dipengaruhi oleh filter tanggal.
+              Ringkasan dihitung berdasarkan parameter yang sedang diterapkan,
+              meliputi pencarian, kategori, jumlah data per halaman, dan urutan
+              data.
             </span>
           </div>
           <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2.5">

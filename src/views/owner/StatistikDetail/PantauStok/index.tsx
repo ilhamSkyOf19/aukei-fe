@@ -18,9 +18,11 @@ import {
 } from "../../../../types/constant.type";
 import AlertLabel from "../../../../components/messages/AlertLabel";
 import CardStatistik from "../../../../components/ui/cards/CardStatistik";
-import { ChartLine, CircleAlert, Package } from "lucide-react";
+import { ChartLine, CircleAlert, FileText, Package } from "lucide-react";
 import type { ProdukResponseType } from "../../../../models/produk.model";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
+import ButtonRefresh from "../../../../components/ui/button/ButtonRefresh";
 
 type Props = {
   pilihan: string;
@@ -29,7 +31,6 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
   const {
     dataProduk,
     isExistDataProduk,
-    isLoadingDataProduk,
     handleKategori,
     handleLimit,
     handlePage,
@@ -38,7 +39,13 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
     sort,
     kategori,
     dataStatistik,
-    isLoadingStatistik,
+
+    handleDownloadLaporanStokPdf,
+    isLoadingDownloadLaporanStokPdf,
+
+    handleRefresh,
+
+    isLoading,
   } = usePantauStok({ pilihan });
   return (
     <div className="w-full flex flex-col justify-start items-start">
@@ -52,7 +59,7 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
           />
         </div>
 
-        <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center gap-3 md:gap-4 mt-3 md:mt-0">
+        <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end md:items-end items-center gap-3 md:gap-2.5 mt-3 md:mt-0">
           {/* filter kategori */}
           <FilterKategori
             setKategori={handleKategori}
@@ -66,6 +73,19 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
             customWidth="w-full md:w-30"
             value={sort}
           />
+
+          <ButtonWithIcon
+            icon={FileText}
+            label="Export PDF"
+            bgColor="bg-error"
+            textColor="text-primary-white"
+            customWidth="w-full md:w-auto"
+            isLoading={isLoadingDownloadLaporanStokPdf}
+            handleBtn={() => handleDownloadLaporanStokPdf()}
+          />
+
+          {/* handle refetch */}
+          <ButtonRefresh handleRefresh={handleRefresh} />
         </div>
       </div>
 
@@ -83,7 +103,7 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
         {/* statistik */}
         <div className="w-full grid grid-cols-2 gap-2.5">
           <CardStatistik
-            isLoading={isLoadingStatistik}
+            isLoading={isLoading}
             icon={{
               icon: Package,
               bgColor: "bg-amber-100",
@@ -94,7 +114,7 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
             caption="Total produk yang perlu direstock"
           />
           <CardStatistik
-            isLoading={isLoadingStatistik}
+            isLoading={isLoading}
             icon={{
               icon: Package,
               bgColor: "bg-blue-100",
@@ -110,7 +130,7 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
       {/* buat untuk mobile  */}
       <div className="flex w-full flex-col justify-start items-center gap-2 mt-2.5 lg:hidden">
         {/* card */}
-        {isLoadingDataProduk ? (
+        {isLoading ? (
           <LoadingFetch />
         ) : isExistDataProduk ? (
           dataProduk?.data?.data?.map((produk, _) => (
@@ -145,7 +165,7 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
             </tr>
           </thead>
           <tbody>
-            {isLoadingDataProduk ? (
+            {isLoading ? (
               Array.from({ length: 4 }).map((_, index) => (
                 <tr key={index}>
                   <td colSpan={10}>
@@ -274,7 +294,7 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
         setPage={handlePage}
         setLimit={handleLimit}
         limit={dataProduk?.data?.meta?.limit ?? 8}
-        isLoading={isLoadingDataProduk}
+        isLoading={isLoading}
         emptyData={!isExistDataProduk}
       />
     </div>

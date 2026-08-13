@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { StatistikServices } from "../services/statistik.service";
 import useFilterState from "../services/useFilterState";
 import { useLaporanStore } from "../stores/laporanStore";
+import useDownloadLaporanTopProduk from "./useDownloadLaporanTopProduk";
 
 const useStatistikTopProduk = (params: {
   customLimit?: number;
@@ -48,6 +49,7 @@ const useStatistikTopProduk = (params: {
     data: topProduk,
     isLoading: isLoadingTopProduk,
     isFetching: isFetchingTopProduk,
+    refetch: refetchTopProduk,
   } = useQuery({
     queryKey: [
       "top-produk",
@@ -112,6 +114,12 @@ const useStatistikTopProduk = (params: {
 
   const isExistData = !isLoading && !!dataTopProduk?.data?.length;
 
+  // downlaod pdf
+  const {
+    handleDownloadLaporanTopProdukPdf,
+    isLoadingDownloadLaporanTopProdukPdf,
+  } = useDownloadLaporanTopProduk();
+
   return {
     startDateEndDate: {
       startDate: finalStartDate,
@@ -143,6 +151,12 @@ const useStatistikTopProduk = (params: {
     isExistData,
 
     handleSelectedLaporan,
+
+    handleDownloadLaporanTopProdukPdf,
+
+    isLoadingDownloadLaporanTopProdukPdf,
+
+    refetchTopProduk,
   };
 };
 

@@ -18,6 +18,8 @@ import {
   useLaporanStore,
   type LaporanPilihanType,
 } from "../../../stores/laporanStore";
+import useDownloadStatistikAll from "../../../hooks/useDownloadStatistikAll";
+import useDownloadStatistikBooking from "../../../hooks/useDownloadStatistikBooking";
 
 const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
   [
@@ -62,8 +64,6 @@ const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
 const useStatistikDetail = () => {
   // window size
   const windowSize = useSizeWindows();
-
-  // buat use query client
 
   // grafik line
   const grafikLineRef = useRef<ChildRef | null>(null);
@@ -113,6 +113,26 @@ const useStatistikDetail = () => {
     // await grafikLineRef.current?.refetchActive();
   };
 
+  // all
+  const { handleDownloadStatistikAllPdf, isLoadingDownloadStatistikAllPdf } =
+    useDownloadStatistikAll();
+
+  // download pdf booking
+  const {
+    handleDownloadStatistikBookingPdf,
+    isLoadingDownloadStatistikBookingPdf,
+  } = useDownloadStatistikBooking();
+
+  // handle download pdf
+  const handleExportPdf = async () => {
+    switch (selectedLaporan) {
+      case "semua":
+        return await handleDownloadStatistikAllPdf({ startDate, endDate });
+      case "booking":
+        return await handleDownloadStatistikBookingPdf({ startDate, endDate });
+    }
+  };
+
   return {
     windowSize,
     isLoadingStatistik,
@@ -125,6 +145,12 @@ const useStatistikDetail = () => {
 
     startDate,
     endDate,
+
+    isLoadingDownloadStatistikAllPdf,
+
+    isLoadingDownloadStatistikBookingPdf,
+
+    handleExportPdf,
   };
 };
 

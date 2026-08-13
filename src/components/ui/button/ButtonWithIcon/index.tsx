@@ -44,12 +44,12 @@ const ButtonWithIcon: FC<Props> = ({
     <button
       ref={ref}
       type={typeButton ?? "button"}
-      disabled={disabled ?? isLoading ?? skeleton}
+      disabled={disabled || isLoading || skeleton}
       className={cn(
         "flex-row shrink-0 justify-center items-center rounded-xl px-3 gap-2 h-10.5 md:h-9",
         classHidden ?? "flex",
         customWidth ?? "w-auto",
-        (disabled ?? isLoading) ? "opacity-50" : "hover-overlay",
+        disabled || isLoading || skeleton ? "opacity-50" : "hover-overlay",
         skeleton ? "skeleton w-20" : (bgColor ?? "bg-custom-primary"),
       )}
       onKeyDown={(e) => {
@@ -81,7 +81,7 @@ const ButtonWithIcon: FC<Props> = ({
               {Icon && (
                 <Icon
                   className={cn(
-                    "size-4.5 md:size-3.5",
+                    "size-4.5 md:size-3.5 shrink-0",
                     textColor ?? "text-custom-secondary",
                     reverse && "order-2",
                   )}
