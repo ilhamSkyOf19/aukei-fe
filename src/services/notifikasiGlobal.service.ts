@@ -2,11 +2,12 @@ import instanceAxios from "../libs/axios";
 import type { ResponseNotifikasiGlobalType } from "../models/notifikasiGlobal.model";
 import type { INotifikasiPengajuanBarangWithMetaType } from "../models/notifikasiPengajuanBarang.model";
 import type { ResponseNotifikasiProdukWithMetaType } from "../models/notifikasiProduk.model";
-import type {
-  INotifikasiTempo,
-  ResponseNotifikasiTempoWithMetaType,
-} from "../models/notifikasiTempo.model";
+import type { ResponseNotifikasiTempoWithMetaType } from "../models/notifikasiTempo.model";
 import type { PaginationType } from "../models/pagination.model";
+import type {
+  ResponseRiwayatPengajuanReturnForNotifikasiWithMetaType,
+  ResponseRiwayatPengajuanReturnWithMetaType,
+} from "../models/riwayatPengajuanReturBarang.model";
 import type { ResponseStructure } from "../types/response.type";
 
 export class NotifikasiGlobalServices {
@@ -55,6 +56,20 @@ export class NotifikasiGlobalServices {
     const result = await instanceAxios.get<
       ResponseStructure<INotifikasiPengajuanBarangWithMetaType | null>
     >("/notifikasi-global/notifikasi-pengajuan-barang", { params: query });
+
+    return result.data;
+  }
+
+  //   find notifikasi return
+  static async findNotifikasiReturn(
+    query: PaginationType,
+  ): Promise<
+    ResponseStructure<ResponseRiwayatPengajuanReturnForNotifikasiWithMetaType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseRiwayatPengajuanReturnForNotifikasiWithMetaType | null>
+    >("/notifikasi-global/notifikasi-return", { params: query });
 
     return result.data;
   }

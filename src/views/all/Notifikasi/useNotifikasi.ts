@@ -33,6 +33,12 @@ const pilihan: {
     label: "Notifikasi Pengajuan Barang",
     icon: Package,
   },
+
+  {
+    key: "pengajuanReturBarang",
+    label: "Notifikasi Pengajuan Retur Barang",
+    icon: Package,
+  },
 ];
 
 const useNotifikasi = () => {
@@ -77,6 +83,8 @@ const useNotifikasi = () => {
     id?: number;
     barangMasukId?: number;
     barangKeluarId?: number;
+    transactionId?: number;
+    returBarangId?: number;
   }) => {
     const { id, pelangganId, barangKeluarId, barangMasukId } = params;
 
@@ -115,6 +123,13 @@ const useNotifikasi = () => {
             navigate(`/dashboard/pengajuan-barang-keluar/${barangKeluarId}`);
           }
         }
+
+        break;
+
+      case "pengajuanReturBarang":
+        navigate(
+          `/dashboard/riwayat-transaksi/pelanggan/${params.pelangganId}/transaksi/${params.transactionId}/daftar-retur-barang/detail/${params.returBarangId}`,
+        );
         break;
     }
   };

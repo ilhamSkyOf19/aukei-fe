@@ -143,7 +143,7 @@
 
 - [✅] Integrasi Notifkasi pengajuan barang
 
-- [50%] Tampilkan informasi stok di barang masuk / keluar
+- [✅] Tampilkan informasi stok di barang masuk / keluar
   - [✅] Tampilkan informasi stok di modal formulir barang masuk
   - [✅] Tampilkan informasi stok di modal formulir barang keluar
   - [✅] Tampilkan informasi stok di modal formulir update barang masuk
@@ -162,12 +162,12 @@
 
 - [✅] Fitur generate harga otomatis
 
-- [80%] Buat fitur struk
+- [✅] Buat fitur struk
   - Buat flag untuk status kredit payment
 
-- [❗] Sebelum membuat halaman return barang , perbaiki dulu halaman riwayat transaksi booking, kredit dan riwayat completed, mulai sekarang jangan di campur campur , dan perbaiki juga di bagian backend nya.
+- [✅] Sebelum membuat halaman return barang , perbaiki dulu halaman riwayat transaksi booking, kredit dan riwayat completed, mulai sekarang jangan di campur campur , dan perbaiki juga di bagian backend nya.
 
-- [❗] Buat fitur return barang
+- [✅] Buat fitur return barang
   - [✅] Testing create
   - [✅] Buat pesan create
   - [✅] Buat halaman daftar retur barang berdasarkan role nya
@@ -199,11 +199,11 @@
 
   - [✅] Integrasi Payment download
 
-  - [ ] Buat halaman notifikasi retur
+  - [❗] Buat halaman notifikasi retur
 
-- [ ] Tambahkan state current pahtname untuk query infinity
+- [✅] Tambahkan state current pahtname untuk query infinity
 
-- [ ] Sesuaikan data
+- [✅] Sesuaikan data
 
 - [ ] Isi Data Dabase
 
@@ -229,7 +229,7 @@
   - [✅] Invalidate query jika success
   - [✅] Kirim handle toast ke props informasi pembayaran
   - [✅] status lunas tidak boleh akses selesaikan dan buat kondisi di handle transaction nya
-  - [ ] Refactor Kode
+  - [✅] Refactor Kode
 
 - [✅] Membuat fitur booking
   - [✅] Metode pembayaran tempo
@@ -253,6 +253,6 @@
 
 - [✅] Membuat fitur struk pembayaran
 
-- [ ] berikan pesan alert ketika handlesubmit jika error, agar tidak return saja
+- [✅] berikan pesan alert ketika handlesubmit jika error, agar tidak return saja
 
-- [ ] Cek data yang belum di berikan loading
+- [✅] Cek data yang belum di berikan loading

@@ -15,6 +15,7 @@ type Props = {
   noLabel?: boolean;
   disabled?: boolean;
   customWidth?: string;
+  customHeight?: string;
   ref?: RefObject<HTMLButtonElement | null>;
   classHidden?: string;
   typeButton?: "submit";
@@ -37,6 +38,7 @@ const ButtonWithIcon: FC<Props> = ({
   classHidden,
   typeButton,
   skeleton,
+  customHeight,
 }) => {
   const navigate = useNavigate();
 
@@ -46,11 +48,12 @@ const ButtonWithIcon: FC<Props> = ({
       type={typeButton ?? "button"}
       disabled={disabled || isLoading || skeleton}
       className={cn(
-        "flex-row shrink-0 justify-center items-center rounded-xl px-3 gap-2 h-10.5 md:h-9",
+        "flex-row shrink-0 justify-center items-center rounded-xl px-3 gap-2",
         classHidden ?? "flex",
         customWidth ?? "w-auto",
         disabled || isLoading || skeleton ? "opacity-50" : "hover-overlay",
         skeleton ? "skeleton w-20" : (bgColor ?? "bg-custom-primary"),
+        customHeight ?? "h-10.5 md:h-9",
       )}
       onKeyDown={(e) => {
         if (e.key === "Enter") {

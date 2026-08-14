@@ -30,7 +30,7 @@ const InputTextWithIcon: FC<Props> = ({
     >
       <div
         className={cn(
-          "h-10.5 px-3 flex flex-row justify-start items-center gap-2 border border-base-content/40 rounded-md w-full focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out",
+          "h-10.5 px-3 flex flex-row justify-start items-center gap-2 border border-base-content/40 rounded-2xl md:rounded-xl w-full focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out",
           errorMessage && "border-error",
         )}
       >

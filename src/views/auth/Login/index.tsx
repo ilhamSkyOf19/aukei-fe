@@ -5,6 +5,7 @@ import useLogin from "./useLogin";
 import InputTextWithIcon from "../../../components/inputs/InputTextWithIcon";
 import InputPasswordWithIcon from "../../../components/inputs/InputPasswordWithIcon";
 import ButtonTheme from "../../../components/ui/button/ButtonTheme";
+import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 
 const Login: FC = () => {
   // call use
@@ -88,21 +89,16 @@ const Login: FC = () => {
               >
                 Lupa Password?
               </Link>
-              <button
-                className={cn(
-                  "w-full btn btn-md bg-custom-secondary relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-base-content/20 before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-300 before:ease-in-out",
-                )}
-                type="submit"
-              >
-                {/* is pending */}
-                {isPendingLogin ? (
-                  <span className="loading loading-spinner loading-sm text-custom-primary" />
-                ) : (
-                  <span className="text-custom-primary font-medium">
-                    Log in
-                  </span>
-                )}
-              </button>
+
+              <ButtonWithIcon
+                typeButton="submit"
+                customWidth="w-full"
+                customHeight="h-10.5 md:h-10"
+                bgColor="bg-custom-secondary"
+                textColor="text-custom-primary"
+                label="Log In"
+                isLoading={isPendingLogin}
+              />
             </div>
           </form>
         </div>

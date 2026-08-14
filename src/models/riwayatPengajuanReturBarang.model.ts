@@ -29,3 +29,8 @@ export interface ResponseRiwayatPengajuanReturnForHighlightType extends Response
   pelangganId: number;
   transactionId: number;
 }
+
+export interface ResponseRiwayatPengajuanReturnForNotifikasiWithMetaType {
+  data: Array<ResponseRiwayatPengajuanReturnForHighlightType>;
+  meta: MetaType;
+}

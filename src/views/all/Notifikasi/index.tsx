@@ -5,6 +5,7 @@ import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import { cn } from "../../../utils/cn";
 import NotifikasiPengajuanBarang from "./NotifikasiPengajuanBarang";
 import NotifikasiProduk from "./NotifikasiProduk";
+import NotifikasiReturBarang from "./NotifikasiReturBarang";
 import NotifikasiTempo from "./NotifikasiTempo";
 import useNotifikasi from "./useNotifikasi";
 
@@ -155,6 +156,29 @@ const Notifikasi = () => {
                 handleRedirectDetail({
                   barangMasukId: params.barangMasukId,
                   barangKeluarId: params.barangKeluarId,
+                })
+              }
+              windowSize={windowSize}
+            />
+          )}
+
+          {/* data retur barang */}
+          {selectedNotifikasi === "pengajuanReturBarang" && (
+            <NotifikasiReturBarang
+              ref={notifikasiProdukRef}
+              limit={limit}
+              page={page}
+              search={search}
+              sort={sort}
+              handleRedirectReturBarangDetail={(params: {
+                pelangganId?: number;
+                transactionId?: number;
+                returBarangId?: number;
+              }) =>
+                handleRedirectDetail({
+                  pelangganId: params.pelangganId,
+                  transactionId: params.transactionId,
+                  returBarangId: params.returBarangId,
                 })
               }
               windowSize={windowSize}
