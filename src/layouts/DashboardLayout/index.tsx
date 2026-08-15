@@ -54,7 +54,7 @@ const DashboardLayout: FC = () => {
         {/* toast offline */}
         <div
           className={cn(
-            "toast toast-start transition-all duration-200 ease-in-out",
+            "toast toast-start transition-all duration-200 ease-in-out z-50",
             isClose ? "lg:ml-75" : "lg:ml-16",
             isOnline
               ? "pointer-events-none opacity-0"

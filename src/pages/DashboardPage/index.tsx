@@ -1,5 +1,6 @@
 import useTitle from "../../hooks/useTitle";
 import HeaderPage from "../../layouts/HeaderPage";
+import Dashboard from "../../views/all/Dashboard";
 
 const DashboardPage = () => {
   // use title
@@ -9,6 +10,8 @@ const DashboardPage = () => {
     <>
       {/* header */}
       <HeaderPage title="Dashboard | AUKEI" />
+
+      <Dashboard />
     </>
   );
 };

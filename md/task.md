@@ -199,7 +199,7 @@
 
   - [✅] Integrasi Payment download
 
-  - [❗] Buat halaman notifikasi retur
+  - [✅] Buat halaman notifikasi retur
 
 - [✅] Tambahkan state current pahtname untuk query infinity
 
