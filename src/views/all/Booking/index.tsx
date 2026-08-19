@@ -1,7 +1,6 @@
 import {
   BanknoteArrowDown,
   CalendarClock,
-  PackageMinus,
   PackageSearch,
   Receipt,
   TrendingUp,
@@ -41,7 +40,6 @@ const RiwayatTransaksi = () => {
     dataStatistikBooking,
     isLoadingStatistikBooking,
     dataKebutuhanBarang,
-    isExistDataKebutuhanBarang,
     isLoadingKebutuhanBarang,
   } = useBooking();
 

@@ -19,6 +19,7 @@ import {
   getJatuhTempoTextColor,
   getStatusDueToday,
   getWeekFromPeriod,
+  isReminderNeeded,
 } from "../../../helpers/helpers";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
 import DataEmpty from "../../../components/messages/DataEmpty";
@@ -42,6 +43,8 @@ import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_INSTALLMENT_DETAIL } from "../../../types/toast.type";
 import Alert from "../../../components/messages/Alert";
 import { ALERT_CONFIG_INSTALLMENT_DETAIL } from "../../../types/alert.types";
+import ButtonSendMessageTable from "../../../components/ui/button/ButtonSendMessageTable";
+import { kirimWA } from "../../../utils/sendMessage";
 
 const InstallmentsDetail = () => {
   const {
@@ -293,6 +296,18 @@ const InstallmentsDetail = () => {
                       }),
                     isLoading: isLoadingDownloadInvoiceKreditPaymentPdf,
                   }}
+                  {...(isReminderNeeded({
+                    tanggalJatuhTempo: item.jatuhTempo,
+                  }) <= 3 && {
+                    handleSendMessage: () =>
+                      kirimWA({
+                        nama: dataInstallments?.data?.pelanggan.nama ?? "",
+                        noWa: dataInstallments?.data?.pelanggan.noWa ?? "",
+                        nominal: item.nominal,
+                        status: item.status,
+                        tglJatuhTempo: item.jatuhTempo,
+                      }),
+                  })}
                 />
               ))
             ) : (
@@ -343,6 +358,7 @@ const InstallmentsDetail = () => {
                       <th>Sisa</th>
                       <th>Status</th>
                       <th className="text-center">Aksi</th>
+                      <th className="text-center">Pesan</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -355,122 +371,149 @@ const InstallmentsDetail = () => {
                         </tr>
                       ))
                     ) : isExistDataInstallments ? (
-                      dataInstallments?.data?.installments?.map((item, _) => (
-                        <tr
-                          key={item.id}
-                          className={cn(
-                            "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
-                            // false === true && "bg-base-200",
-                          )}
-                        >
-                          <td>
-                            <span className="font-medium">
-                              {item.cicilanKe}
-                            </span>
-                          </td>
-                          <td>
-                            <div className="flex flex-col justify-start items-start gap-1">
+                      dataInstallments?.data?.installments?.map((item, _) => {
+                        const selisihDate = isReminderNeeded({
+                          tanggalJatuhTempo: item.jatuhTempo,
+                        });
+                        return (
+                          <tr
+                            key={item.id}
+                            className={cn(
+                              "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
+                              // false === true && "bg-base-200",
+                            )}
+                          >
+                            <td>
                               <span className="font-medium">
-                                {formatTanggalLengkap(item.jatuhTempo)}
+                                {item.cicilanKe}
                               </span>
-                              <span
-                                className={cn(
-                                  "text-[0.625rem] font-medium",
-                                  getJatuhTempoTextColor(
+                            </td>
+                            <td>
+                              <div className="flex flex-col justify-start items-start gap-1">
+                                <span className="font-medium">
+                                  {formatTanggalLengkap(item.jatuhTempo)}
+                                </span>
+                                <span
+                                  className={cn(
+                                    "text-[0.625rem] font-medium",
+                                    getJatuhTempoTextColor(
+                                      item.jatuhTempo,
+                                      item.tanggalLunas,
+                                    ),
+                                  )}
+                                >
+                                  {getJatuhTempoText(
                                     item.jatuhTempo,
                                     item.tanggalLunas,
-                                  ),
-                                )}
-                              >
-                                {getJatuhTempoText(
-                                  item.jatuhTempo,
-                                  item.tanggalLunas,
-                                )}
+                                  )}
+                                </span>
+                              </div>
+                            </td>
+                            <td>
+                              <span className="font-medium">
+                                {formatRupiah(item.nominal)}
                               </span>
-                            </div>
-                          </td>
-                          <td>
-                            <span className="font-medium">
-                              {formatRupiah(item.nominal)}
-                            </span>
-                          </td>
+                            </td>
 
-                          <td>
-                            <span className="text-success font-medium">
-                              {formatRupiah(item.diBayar)}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="font-medium text-error">
-                              {formatRupiah(item.nominal - item.diBayar)}
-                            </span>
-                          </td>
-                          <td>
-                            <StatusInstallment
-                              {...(getStatusDueToday({
-                                status: item.status,
-                                jatuhTempo: item.jatuhTempo,
-                              })
-                                ? { statusDueToday: true }
-                                : { status: item.status })}
-                            />
-                          </td>
+                            <td>
+                              <span className="text-success font-medium">
+                                {formatRupiah(item.diBayar)}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="font-medium text-error">
+                                {formatRupiah(item.nominal - item.diBayar)}
+                              </span>
+                            </td>
+                            <td>
+                              <StatusInstallment
+                                {...(getStatusDueToday({
+                                  status: item.status,
+                                  jatuhTempo: item.jatuhTempo,
+                                })
+                                  ? { statusDueToday: true }
+                                  : { status: item.status })}
+                              />
+                            </td>
 
-                          <td>
-                            <div className="flex w-full flex-col justify-start items-center gap-1.5">
-                              {item.status !== INSTALLMENT_STATUS_TYPE.PAID &&
-                                (pengguna?.role === ROLE_INTERNAL_TYPE.KASIR ? (
-                                  <button
-                                    type="button"
-                                    className="text-[0.625rem] font-medium px-2 py-1 border border-emerald-600 rounded-md flex flex-row justify-start items-center gap-1 group hover:text-primary-white transition-all duration-150 ease-in-out hover:bg-emerald-600"
-                                    onClick={() => setDataPembayaran(item)}
-                                  >
-                                    <CreditCard className="size-3" />
+                            <td>
+                              <div className="flex w-full flex-col justify-start items-center gap-1.5">
+                                {item.status !== INSTALLMENT_STATUS_TYPE.PAID &&
+                                  (pengguna?.role ===
+                                  ROLE_INTERNAL_TYPE.KASIR ? (
+                                    <button
+                                      type="button"
+                                      className="text-[0.625rem] font-medium px-2 py-1 border border-emerald-600 rounded-md flex flex-row justify-start items-center gap-1 group hover:text-primary-white transition-all duration-150 ease-in-out hover:bg-emerald-600"
+                                      onClick={() => setDataPembayaran(item)}
+                                    >
+                                      <CreditCard className="size-3" />
 
-                                    <span>Bayar</span>
-                                  </button>
-                                ) : item.status ===
-                                    INSTALLMENT_STATUS_TYPE.PARTIAL &&
-                                  pengguna?.role ===
-                                    ROLE_INTERNAL_TYPE.OWNER ? null : (
-                                  <span>-</span>
-                                ))}{" "}
-                              {(item.status === INSTALLMENT_STATUS_TYPE.PAID ||
-                                item.status ===
-                                  INSTALLMENT_STATUS_TYPE.PARTIAL) && (
-                                <div className="flex flex-row justify-center items-center gap-1.5">
-                                  {/* button cetak */}
-                                  <ButtonCetakTable
-                                    tooltipPosition="left"
-                                    isLoading={isLoadingPrintTempoPayment}
-                                    handleCetak={() =>
-                                      handlePrintTempoPayment({
-                                        installmentId: item.id,
-                                      })
-                                    }
-                                    classHidden="hidden lg:flex"
-                                  />
+                                      <span>Bayar</span>
+                                    </button>
+                                  ) : item.status ===
+                                      INSTALLMENT_STATUS_TYPE.PARTIAL &&
+                                    pengguna?.role ===
+                                      ROLE_INTERNAL_TYPE.OWNER ? null : (
+                                    <span>-</span>
+                                  ))}{" "}
+                                {(item.status ===
+                                  INSTALLMENT_STATUS_TYPE.PAID ||
+                                  item.status ===
+                                    INSTALLMENT_STATUS_TYPE.PARTIAL) && (
+                                  <div className="flex flex-row justify-center items-center gap-1.5">
+                                    {/* button cetak */}
+                                    <ButtonCetakTable
+                                      tooltipPosition="left"
+                                      isLoading={isLoadingPrintTempoPayment}
+                                      handleCetak={() =>
+                                        handlePrintTempoPayment({
+                                          installmentId: item.id,
+                                        })
+                                      }
+                                      classHidden="hidden lg:flex"
+                                    />
 
-                                  {/* buttonw download */}
-                                  <ButtonDownloadTable
-                                    tooltipPosition="left"
-                                    isLoading={
-                                      isLoadingDownloadInvoiceKreditPaymentPdf &&
-                                      variables?.id === item.id
-                                    }
-                                    handleDownload={() =>
-                                      handleDownloadInvoiceKreditPaymentPdf({
-                                        id: item.id,
-                                        cicilanKe: item.cicilanKe,
-                                      })
-                                    }
-                                  />
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
+                                    {/* buttonw download */}
+                                    <ButtonDownloadTable
+                                      tooltipPosition="left"
+                                      isLoading={
+                                        isLoadingDownloadInvoiceKreditPaymentPdf &&
+                                        variables?.id === item.id
+                                      }
+                                      handleDownload={() =>
+                                        handleDownloadInvoiceKreditPaymentPdf({
+                                          id: item.id,
+                                          cicilanKe: item.cicilanKe,
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+
+                            <td align="center">
+                              <ButtonSendMessageTable
+                                tooltipPosition="left"
+                                disabled={selisihDate > 3}
+                                handleSend={() =>
+                                  kirimWA({
+                                    nama:
+                                      dataInstallments?.data?.pelanggan?.nama ??
+                                      "",
+                                    noWa:
+                                      dataInstallments?.data?.pelanggan?.noWa ??
+                                      "",
+                                    nominal: item.nominal,
+                                    status: item.status,
+                                    tglJatuhTempo: item.jatuhTempo,
+                                  })
+                                }
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })
                     ) : (
                       <tr>
                         <td

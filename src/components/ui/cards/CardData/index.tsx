@@ -16,6 +16,7 @@ import {
   Landmark,
   PackageOpen,
   QrCode,
+  SendHorizonal,
 } from "lucide-react";
 import { cn } from "../../../../utils/cn";
 import {
@@ -65,6 +66,7 @@ type Props = {
     handleDownloadInvoiceKreditPaymentPdf: () => Promise<void>;
     isLoading?: boolean;
   };
+  handleSendMessage?: () => void;
 };
 const CardData: FC<Props> = ({
   nomorReferensi,
@@ -91,6 +93,7 @@ const CardData: FC<Props> = ({
   statusAbsolute,
   customHeight,
   downloadInvoiceKreditPaymentPdf,
+  handleSendMessage,
 }) => {
   const isTempo = metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO;
 
@@ -129,9 +132,7 @@ const CardData: FC<Props> = ({
   );
 
   return (
-    <button
-      type="button"
-      disabled={disabled}
+    <div
       className={cn(
         "w-full flex flex-row justify-between items-center p-2 rounded-2xl border border-base-content/10 relative",
         withBg &&
@@ -140,10 +141,6 @@ const CardData: FC<Props> = ({
           "hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out",
         customHeight,
       )}
-      style={{
-        cursor: disabled ? "default" : "pointer",
-        opacity: disabled ? 1 : 1,
-      }}
       onClick={handleRedirectDetail}
     >
       <div className="flex flex-row justify-start items-center gap-2.5">
@@ -354,12 +351,25 @@ const CardData: FC<Props> = ({
               {progresCicilan.jumlahCicilan}
             </span>
           )}
+
+          {/* button kirim pesan */}
+          {handleSendMessage && (
+            <button
+              type="button"
+              onClick={() => handleSendMessage()}
+              className="flex flex-row justify-start items-center gap-1.5 text-primary-white bg-emerald-600 hover-overlay py-1.5 px-2.5 rounded-lg mt-2.5"
+            >
+              {/* icon */}
+              <SendHorizonal className="size-3" />
+              <span className="text-[0.625rem]">Pesan</span>
+            </button>
+          )}
         </div>
 
         {/* icon chevron */}
         {!disabled && <ChevronRight className="size-4 text-base-content" />}
       </div>
-    </button>
+    </div>
   );
 };
 

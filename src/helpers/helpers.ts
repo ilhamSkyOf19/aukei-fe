@@ -394,3 +394,34 @@ export const getStatusDueToday = (params: {
     compareAsc(startOfDay(params.jatuhTempo), startOfDay(new Date())) === 0
   );
 };
+
+export const isReminderNeeded = (params: {
+  tanggalJatuhTempo: Date;
+}): number => {
+  // Normalisasi ke jam 00:00:00 supaya perbandingan akurat per hari
+  const due = new Date(params.tanggalJatuhTempo);
+  due.setHours(0, 0, 0, 0);
+
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  const selisihHari = Math.round(
+    (due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  // selisihHari negatif = sudah lewat (overdue)
+  // selisihHari 0-3 = H-3 s/d hari-H
+  return selisihHari;
+};
+
+export const normalizeNoHp = (noHp: string) => {
+  // hapus spasi, strip, kurung, dll
+  let cleaned = noHp.replace(/[^0-9]/g, "");
+
+  // ganti awalan 0 jadi 62
+  if (cleaned.startsWith("0")) {
+    cleaned = "62" + cleaned.slice(1);
+  }
+
+  return cleaned;
+};

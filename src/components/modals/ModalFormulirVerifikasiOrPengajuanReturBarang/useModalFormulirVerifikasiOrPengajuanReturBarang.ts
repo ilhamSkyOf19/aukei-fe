@@ -19,8 +19,7 @@ const useModalFormulirVerifikasiOrPengajuanReturBarang = (params: {
   handleSetAlert?: (data: string) => void;
 }) => {
   // get params
-  const { kodeReferensi, handleCloseModal, role, handleSetAlert, returId } =
-    params;
+  const { kodeReferensi, handleCloseModal, role, returId } = params;
 
   // query client
   const queryClient = useQueryClient();

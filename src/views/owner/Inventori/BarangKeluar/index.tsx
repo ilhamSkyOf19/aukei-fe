@@ -154,99 +154,106 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
         </div>
 
         {/* jenis keluar */}
-        <div className="w-full flex flex-col justify-end items-start my-2.5">
-          {/* label */}
-          <div className="w-full flex flex-row justify-between items-center px-2.5">
-            <span className="text-xs font-medium text-base-content">
-              Daftar Jenis Keluar:
-            </span>
+        {!fromPengajuanBarang && (
+          <>
+            <div className="w-full flex flex-col justify-end items-start my-2.5">
+              {/* label */}
+              <div className="w-full flex flex-row justify-between items-center px-2.5">
+                <span className="text-xs font-medium text-base-content">
+                  Daftar Jenis Keluar:
+                </span>
 
-            <ButtonWithIcon
-              noLabel
-              icon={Plus}
-              handleBtn={() => handleShowModalFormulirJenisKeluar()}
-              classHidden="flex md:hidden"
-            />
-          </div>
+                <ButtonWithIcon
+                  noLabel
+                  icon={Plus}
+                  handleBtn={() => handleShowModalFormulirJenisKeluar()}
+                  classHidden="flex md:hidden"
+                />
+              </div>
 
-          <div className="w-full flex flex-row justify-between items-center gap-2.5">
-            {/* daftar */}
-            {/* BUAT FILTER */}
-            <div className="w-full lg:flex-6 md:flex-3 flex flex-row justify-start items-center gap-2.5 overflow-x-auto py-2.5 px-1.5 scrollbar-thin">
-              {isLoadingJenisKeluar ? (
-                Array.from({ length: 8 }, (_, index) => (
-                  <div key={index} className="w-20 h-8 skeleton bg-base-200" />
-                ))
-              ) : isExistDataJenisKeluar ? (
-                dataJenisKeluar?.data?.map((item) => (
-                  <div
-                    key={item.id}
-                    className="text-xs flex flex-row justify-start items-center text-base-content h-10 bg-base-100 shadow-sm rounded-xl shrink-0 gap-2.5 pr-2.5 overflow-hidden"
-                  >
-                    <button
-                      type="button"
-                      className="hover-overlay pr-2.5 border-r border-base-content/30 pl-2.5 h-full"
-                    >
-                      {item.nama}
-                    </button>
-
-                    {/* aksi */}
-                    <div className="flex flex-row justify-start items-center gap-1.5">
-                      {/* button update */}
-                      <ButtonUpdateTable
-                        handleClick={() =>
-                          handleShowModalFormulirJenisKeluar(item.id, {
-                            nama: item.nama,
-                          })
-                        }
-                        noTip
+              <div className="w-full flex flex-row justify-between items-center gap-2.5">
+                {/* daftar */}
+                {/* BUAT FILTER */}
+                <div className="w-full lg:flex-6 md:flex-3 flex flex-row justify-start items-center gap-2.5 overflow-x-auto py-2.5 px-1.5 scrollbar-thin">
+                  {isLoadingJenisKeluar ? (
+                    Array.from({ length: 8 }, (_, index) => (
+                      <div
+                        key={index}
+                        className="w-20 h-8 skeleton bg-base-200"
                       />
-                      {/* button delete */}
-                      <ButtonDeleteTable
-                        disabled={dataBarangKeluar?.data?.data.some(
-                          (barangKeluar) =>
-                            barangKeluar.jenisKeluar.id === item.id,
-                        )}
-                        handleShowModalDelete={() =>
-                          handleShowModalDeleteJenisKeluar(undefined, {
-                            data: {
-                              id: item.id,
-                              nama: item.nama,
-                            },
-                          })
-                        }
-                        noTip
-                      />
+                    ))
+                  ) : isExistDataJenisKeluar ? (
+                    dataJenisKeluar?.data?.map((item) => (
+                      <div
+                        key={item.id}
+                        className="text-xs flex flex-row justify-start items-center text-base-content h-10 bg-base-100 shadow-sm rounded-xl shrink-0 gap-2.5 pr-2.5 overflow-hidden"
+                      >
+                        <button
+                          type="button"
+                          className="hover-overlay pr-2.5 border-r border-base-content/30 pl-2.5 h-full"
+                        >
+                          {item.nama}
+                        </button>
+
+                        {/* aksi */}
+                        <div className="flex flex-row justify-start items-center gap-1.5">
+                          {/* button update */}
+                          <ButtonUpdateTable
+                            handleClick={() =>
+                              handleShowModalFormulirJenisKeluar(item.id, {
+                                nama: item.nama,
+                              })
+                            }
+                            noTip
+                          />
+                          {/* button delete */}
+                          <ButtonDeleteTable
+                            disabled={dataBarangKeluar?.data?.data.some(
+                              (barangKeluar) =>
+                                barangKeluar.jenisKeluar.id === item.id,
+                            )}
+                            handleShowModalDelete={() =>
+                              handleShowModalDeleteJenisKeluar(undefined, {
+                                data: {
+                                  id: item.id,
+                                  nama: item.nama,
+                                },
+                              })
+                            }
+                            noTip
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="w-full flex flex-row justify-center items-center">
+                      <span className="text-xs text-base-content/50">
+                        Tidak ada Jenis Keluar
+                      </span>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <div className="w-full flex flex-row justify-center items-center">
-                  <span className="text-xs text-base-content/50">
-                    Tidak ada Jenis Keluar
-                  </span>
+                  )}
                 </div>
-              )}
+
+                {/* button add jenis keluar */}
+                <div className="flex-1 flex flex-row justify-end items-center">
+                  <ButtonWithIcon
+                    label="Tambah Jenis Keluar"
+                    bgColor="bg-emerald-500"
+                    textColor="text-primary-white"
+                    icon={Plus}
+                    handleBtn={() => handleShowModalFormulirJenisKeluar()}
+                    classHidden="hidden md:flex"
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* button add jenis keluar */}
-            <div className="flex-1 flex flex-row justify-end items-center">
-              <ButtonWithIcon
-                label="Tambah Jenis Keluar"
-                bgColor="bg-emerald-500"
-                textColor="text-primary-white"
-                icon={Plus}
-                handleBtn={() => handleShowModalFormulirJenisKeluar()}
-                classHidden="hidden md:flex"
-              />
+            {/* alert */}
+            <div className="flex flex-col justify-start items-start gap-2.5 w-full">
+              <AlertLabel message="Jenis keluar tidak dapat dihapus jika sudah digunakan pada data barang keluar." />
             </div>
-          </div>
-        </div>
-
-        {/* alert */}
-        <div className="flex flex-col justify-start items-start gap-2.5 w-full">
-          <AlertLabel message="Jenis keluar tidak dapat dihapus jika sudah digunakan pada data barang keluar." />
-        </div>
+          </>
+        )}
 
         {/* SHOW DATA FOR SM */}
         <div className="flex w-full flex-col justify-start items-center gap-2.5 mt-2.5 md:hidden">

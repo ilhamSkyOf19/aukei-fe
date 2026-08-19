@@ -1,20 +1,34 @@
-import { ChartColumn, ChevronRight, Mail, Phone, Store } from "lucide-react";
+import {
+  Bell,
+  Boxes,
+  CalendarClock,
+  ChartLine,
+  HandCoins,
+  Mail,
+  Package,
+  Phone,
+  ReceiptText,
+  ShoppingCart,
+  SquareArrowLeft,
+  SquareArrowRight,
+  Store,
+  UsersRound,
+  type LucideIcon,
+} from "lucide-react";
 import { useAuthStore } from "../../../stores/authStore";
 import blob from "../../../assets/blob.svg";
 import { formatNumberPhone } from "../../../helpers/helpers";
 import { Link } from "react-router-dom";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import { cn } from "../../../utils/cn";
+import type { FC } from "react";
 const Dashboard = () => {
   // get pengguna
   const pengguna = useAuthStore((state) => state.pengguna);
   return (
     <div
       className={cn(
-        "w-full pt-4 px-4 pb-2.5 flex flex-col justify-center items-center",
-        pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-          ? "md:h-[90vh]"
-          : "lg:h-full",
+        "w-full h-full pt-4 px-4 pb-2.5 flex flex-col justify-center items-center",
       )}
     >
       <div className="w-full h-full bg-base-100 rounded-2xl md:rounded-xl border border-base-content/10 shadow-xl flex flex-col justify-between items-center pt-8 px-4 pb-4 mb:pb-0 relative overflow-hidden">
@@ -50,31 +64,143 @@ const Dashboard = () => {
             <div className="w-30 h-0.5 bg-custom-primary rounded-full mt-4" />
           </div>
 
+          {/* label */}
+          <span className="text-xs font-medium text-base-content mt-1.5">
+            Fitur yang tersedia
+          </span>
+
           {/* button redirect statistik */}
-          <Link
-            to={
-              pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-                ? "/dashboard/statistik"
-                : "/dashboard/kasir"
-            }
-            type="button"
-            className="flex flex-row justify-start items-center gap-2.5 mt-8 px-4 h-10.5 md:h-9 hover-overlay bg-custom-primary rounded-2xl md:rounded-xl text-custom-secondary shadow-md shrink-0"
-          >
-            {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? (
-              <ChartColumn className="size-5" />
-            ) : (
-              <Store className="size-5" />
-            )}
+          <div className="flex flex-row justify-center items-center mt-4 z-2 w-full">
+            <div className="flex flex-row justify-center items-center gap-4 w-2/3 flex-wrap">
+              {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+                <>
+                  {/* kasir */}
+                  <ButtonFeature
+                    icon={Store}
+                    label="Kasir"
+                    link="/dashboard/kasir"
+                  />
 
-            {/* label */}
-            <span className="text-xs font-medium pr-6">
-              {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-                ? "Lihat Statistik"
-                : "Kasir"}
-            </span>
+                  {/* keranjang */}
+                  <ButtonFeature
+                    icon={ShoppingCart}
+                    label="Keranjang"
+                    link="/dashboard/keranjang"
+                  />
 
-            <ChevronRight className="size-5" />
-          </Link>
+                  {/* kredit */}
+                  <ButtonFeature
+                    icon={HandCoins}
+                    label="Kredit"
+                    link="/dashboard/kredit"
+                  />
+
+                  {/* BOOKING */}
+                  <ButtonFeature
+                    icon={CalendarClock}
+                    label="Booking"
+                    link="/dashboard/booking"
+                  />
+
+                  {/* riwayat transaksi */}
+                  <ButtonFeature
+                    icon={ReceiptText}
+                    label="Riwayat Transaksi"
+                    link="/dashboard/riwayat-transaksi"
+                  />
+
+                  {/* pengajuan barang masuk */}
+                  <ButtonFeature
+                    icon={SquareArrowRight}
+                    label="Pengajuan Barang Masuk"
+                    link="/dashboard/pengajuan-barang-masuk"
+                  />
+
+                  {/* pengajuan barang keluar */}
+                  <ButtonFeature
+                    icon={SquareArrowLeft}
+                    label="Pengajuan Barang Keluar"
+                    link="/dashboard/pengajuan-barang-keluar"
+                  />
+
+                  {/* notifikasi */}
+                  <ButtonFeature
+                    icon={Bell}
+                    label="Notifikasi"
+                    link="/dashboard/notifikasi"
+                  />
+                </>
+              )}
+
+              {/* owner */}
+              {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
+                <>
+                  {/* produk */}
+                  <ButtonFeature
+                    icon={Boxes}
+                    label="Produk"
+                    link="/dashboard/produk"
+                  />
+
+                  {/* inventori */}
+                  <ButtonFeature
+                    icon={Package}
+                    label="Inventori"
+                    link="/dashboard/inventori"
+                  />
+
+                  {/* pegawai */}
+                  <ButtonFeature
+                    icon={UsersRound}
+                    label="Pegawai"
+                    link="/dashboard/pegawai"
+                  />
+
+                  {/* statistik */}
+                  <ButtonFeature
+                    icon={ChartLine}
+                    label="Statistik"
+                    link="/dashboard/statistik"
+                  />
+
+                  {/* pelanggan */}
+                  <ButtonFeature
+                    icon={UsersRound}
+                    label="Pelanggan"
+                    link="/dashboard/pelanggan"
+                  />
+
+                  {/* hand coins */}
+                  <ButtonFeature
+                    icon={HandCoins}
+                    label="Kredit"
+                    link="/dashboard/kredit"
+                  />
+
+                  {/* booking */}
+                  <ButtonFeature
+                    icon={CalendarClock}
+                    label="Booking"
+                    link="/dashboard/booking"
+                  />
+
+                  {/* riwayat transaksi */}
+                  <ButtonFeature
+                    icon={ReceiptText}
+                    label="Riwayat Transaksi"
+                    link="/dashboard/riwayat-transaksi"
+                  />
+
+                  {/* notifikasi */}
+                  <ButtonFeature
+                    icon={Bell}
+                    label="Notifikasi"
+                    link="/dashboard/notifikasi"
+                  />
+                </>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* footer */}
@@ -131,6 +257,27 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+// button fitur
+type ButtonFeatureProps = {
+  label: string;
+  link: string;
+  icon: LucideIcon;
+};
+
+const ButtonFeature: FC<ButtonFeatureProps> = ({ icon: Icon, label, link }) => {
+  return (
+    <Link
+      type={"button"}
+      to={link}
+      className="flex w-auto flex-row shrink-0 justify-center items-center rounded-xl px-3 gap-2 bg-base-100 shadow-md border border-transparent hover:border-custom-secondary transition-all duration-150 ease-in-out text-base-content h-10.5 md:h-9 cursor-pointer"
+    >
+      <Icon className="size-4.5 md:size-3.5 shrink-0" />
+
+      <span className="font-medium text-xs md:text-[0.7rem]">{label}</span>
+    </Link>
   );
 };
 

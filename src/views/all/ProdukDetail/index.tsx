@@ -35,6 +35,7 @@ import useProdukDetail from "./useProdukDetail";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import ButtonText from "../../../components/ui/button/ButtonText";
 import ModalGenerateHargaJual from "../../../components/modals/ModalGenerateHargaJual";
+import ModalAlert from "../../../components/modals/ModalAlert";
 
 const ProdukDetail = () => {
   // call use
@@ -72,6 +73,10 @@ const ProdukDetail = () => {
     handleShowModalGenerateHargaJual,
     modalGenerateHargaJualRef,
     handleSetToast,
+
+    dataModalFailedDelete,
+    handleCloseModalFailedDelete,
+    modalFailedDeleteRef,
   } = useProdukDetail();
 
   return (
@@ -784,6 +789,14 @@ const ProdukDetail = () => {
         handleSetToast={handleSetToast}
         data={{ id: dataModalGenerateHargaJual?.produk.id }}
         noInfo
+      />
+
+      {/* modal alert */}
+      <ModalAlert
+        modalRef={modalFailedDeleteRef}
+        handleCloseModal={handleCloseModalFailedDelete}
+        bigTitle={dataModalFailedDelete?.titleMessage ?? ""}
+        smallTitle={dataModalFailedDelete?.description ?? ""}
       />
     </main>
   );

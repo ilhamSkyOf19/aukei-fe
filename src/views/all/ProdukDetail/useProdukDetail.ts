@@ -60,6 +60,13 @@ const useProdukDetail = () => {
     navigate(`${currentPathname}/ubah`);
   };
 
+  const {
+    modalRef: modalFailedDeleteRef,
+    handleShowModal: showModalFailedDelete,
+    handleCloseModal: handleCloseModalFailedDelete,
+    dataModal: dataModalFailedDelete,
+  } = useModal<{ titleMessage: string; description: string }>();
+
   // use form
   const {
     register,
@@ -253,8 +260,18 @@ const useProdukDetail = () => {
     handleCloseModal: handleCloseModalDelete,
   } = useModal();
 
+  // handle show modal failed delete
+  const handleShowModalFailedDelete = () => {
+    showModalFailedDelete(undefined, {
+      titleMessage: `Produk "${dataProduk?.data?.nama}" tidak dapat dihapus`,
+      description:
+        "Produk masih digunakan oleh data lain. Nonaktifkan produk jika tidak lagi digunakan.",
+    });
+  };
+
   // mutate delete
   const { handleDeleteProduk, isPendingDeleteProduk } = useDeleteProduk({
+    handleShowModalFailedDelete,
     handleCloseModal: handleCloseModalDelete,
     validatedIdParams,
     redirectPathname: currentPathname.split("/").slice(0, -1).join("/"),
@@ -304,6 +321,10 @@ const useProdukDetail = () => {
     modalGenerateHargaJualRef,
     dataModalGenerateHargaJual,
     handleSetToast,
+
+    modalFailedDeleteRef,
+    handleCloseModalFailedDelete,
+    dataModalFailedDelete,
   };
 };
 
