@@ -20,6 +20,8 @@ import {
 } from "../../../stores/laporanStore";
 import useDownloadStatistikAll from "../../../hooks/useDownloadStatistikAll";
 import useDownloadStatistikBooking from "../../../hooks/useDownloadStatistikBooking";
+import { useToastAnimation } from "../../../hooks/useToast";
+import { useAlertAnimation } from "../../../hooks/useAlert";
 
 const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
   [
@@ -68,7 +70,11 @@ const useStatistikDetail = () => {
   // grafik line
   const grafikLineRef = useRef<ChildRef | null>(null);
 
-  // tambahkan grafik batang
+  // handle set toast
+  const { handleSetToast, toast } = useToastAnimation();
+
+  // handle set alert
+  const { handleSetAlert, alert } = useAlertAnimation();
 
   // laporan pilihan store
   const { selectedLaporan, setSelectedLaporan } = useLaporanStore(
@@ -115,13 +121,16 @@ const useStatistikDetail = () => {
 
   // all
   const { handleDownloadStatistikAllPdf, isLoadingDownloadStatistikAllPdf } =
-    useDownloadStatistikAll();
+    useDownloadStatistikAll({
+      handleSetAlert,
+      handleSetToast,
+    });
 
   // download pdf booking
   const {
     handleDownloadStatistikBookingPdf,
     isLoadingDownloadStatistikBookingPdf,
-  } = useDownloadStatistikBooking();
+  } = useDownloadStatistikBooking({ handleSetAlert, handleSetToast });
 
   // handle download pdf
   const handleExportPdf = async () => {
@@ -151,6 +160,11 @@ const useStatistikDetail = () => {
     isLoadingDownloadStatistikBookingPdf,
 
     handleExportPdf,
+
+    handleSetToast,
+    handleSetAlert,
+    toast,
+    alert,
   };
 };
 

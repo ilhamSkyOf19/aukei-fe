@@ -35,10 +35,13 @@ import SideBarRiwayatPembayaranTempo from "../../../components/SideBarRiwayatPem
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import CardData from "../../../components/ui/cards/CardData";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
-import { InvoiceServices } from "../../../services/invoice.service";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
 import ButtonCetakTable from "../../../components/ui/button/ButtonCetakTable";
 import ButtonDownloadTable from "../../../components/ui/button/ButtonDownloadTable";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_INSTALLMENT_DETAIL } from "../../../types/toast.type";
+import Alert from "../../../components/messages/Alert";
+import { ALERT_CONFIG_INSTALLMENT_DETAIL } from "../../../types/alert.types";
 
 const InstallmentsDetail = () => {
   const {
@@ -58,10 +61,36 @@ const InstallmentsDetail = () => {
     isLoadingDownloadInvoiceKreditPaymentPdf,
     isLoadingDownloadInvoiceKreditPdf,
     variables,
+
+    alert,
+    toast,
+    handlePrintInvoiceKredit,
+    handlePrintTempoPayment,
+    isLoadingPrintInvoiceKredit,
+    isLoadingPrintTempoPayment,
   } = useInstallmentsDetail();
 
   return (
     <div className="w-full">
+      {/* toast */}
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          color={TOAST_CONFIG_INSTALLMENT_DETAIL[toast.type].color}
+          label={TOAST_CONFIG_INSTALLMENT_DETAIL[toast.type].message}
+          isAnimationOut={toast?.isAnimationOut || false}
+        />
+      )}
+
+      {/* alert */}
+      {alert && (
+        <Alert
+          alert={alert?.id !== null}
+          isAnimationOut={alert?.isAnimationOut || false}
+          label={ALERT_CONFIG_INSTALLMENT_DETAIL[alert.type].message}
+        />
+      )}
+
       {(windowSize === "lg" && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR) ||
       pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? (
         <div className="w-full px-2.5 pt-2.5 flex flex-col justify-start items-start">
@@ -400,7 +429,10 @@ const InstallmentsDetail = () => {
 
                                     <span>Bayar</span>
                                   </button>
-                                ) : (
+                                ) : item.status ===
+                                    INSTALLMENT_STATUS_TYPE.PARTIAL &&
+                                  pengguna?.role ===
+                                    ROLE_INTERNAL_TYPE.OWNER ? null : (
                                   <span>-</span>
                                 ))}{" "}
                               {(item.status === INSTALLMENT_STATUS_TYPE.PAID ||
@@ -410,8 +442,9 @@ const InstallmentsDetail = () => {
                                   {/* button cetak */}
                                   <ButtonCetakTable
                                     tooltipPosition="left"
+                                    isLoading={isLoadingPrintTempoPayment}
                                     handleCetak={() =>
-                                      InvoiceServices.printTempoPayment({
+                                      handlePrintTempoPayment({
                                         installmentId: item.id,
                                       })
                                     }
@@ -467,8 +500,9 @@ const InstallmentsDetail = () => {
                         bgColor="bg-info"
                         textColor="text-primary-white"
                         label="Cetak Struk Kredit"
+                        isLoading={isLoadingPrintInvoiceKredit}
                         handleBtn={() =>
-                          InvoiceServices.printInvoiceKredit({
+                          handlePrintInvoiceKredit({
                             id: dataInstallments?.data?.transactionId ?? 0,
                           })
                         }

@@ -97,12 +97,6 @@ export interface ResponseTransactionType extends Omit<
   tempo: ResponseFieldTempo | null;
 }
 
-// response with meta
-export interface ResponseTransactionWithMetaType {
-  meta: MetaType;
-  data: ResponseTransactionType[];
-}
-
 export interface ResponseRiwayatTransactionType {
   data: (Pick<
     ITransactionType,
@@ -246,13 +240,6 @@ export interface StatistikKebutuhanBarangType {
 export interface ResponseStatistikKebutuhanBarangWithMetaType {
   data: StatistikKebutuhanBarangType[];
   meta: MetaType;
-}
-
-export interface ResponseStatistikKebutuhanBarangBookingType {
-  totalProdukBooking: number;
-  totalItemBooking: number;
-  totalProdukPerluRestock: number;
-  totalKebutuhanStok: number;
 }
 
 export interface ResponseForReturBarang extends Pick<

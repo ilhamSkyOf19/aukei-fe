@@ -17,9 +17,12 @@ import { TransactionServices } from "../../../../services/transaction.service";
 import triggerAnimation from "../../../../hooks/triggerAnimation";
 import type { ResponseStructure } from "../../../../types/response.type";
 import { useAuthStore } from "../../../../stores/authStore";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useDownloadInvoice from "../../../../hooks/useDownloadInvoice";
 import useConfirm from "../../../../hooks/useConfirm";
+import { useAlertAnimation } from "../../../../hooks/useAlert";
+import usePrintInvoiceTransaksi from "../../../../hooks/usePrintInvoiceTransaksi";
+import { useToastAnimation } from "../../../../hooks/useToast";
 
 const LOCAL_STORAGE_DI_BAYAR_KEY = "di-bayar";
 
@@ -42,7 +45,13 @@ const useInformasiPembayaran = ({
   transactionSummary,
   siapKirim,
 }: UseInformasiPembayaranParams) => {
-  const kasir = useAuthStore((state) => state.pengguna);
+  const pengguna = useAuthStore((state) => state.pengguna);
+
+  // alert
+  const { alert, handleSetAlert } = useAlertAnimation();
+
+  // toast
+  const { handleSetToast, toast } = useToastAnimation();
 
   const [isOpenHistory, setIsOpenHistory] = useState<boolean>(false);
   const [isErrors, setIsErrors] = useState<ErrorType[]>([]);
@@ -57,6 +66,10 @@ const useInformasiPembayaran = ({
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
+
+  const currentPathname = useLocation().pathname;
+
+  const isPageTransaction = currentPathname.includes("kasir");
 
   const {
     handleCloseModalCalculator,
@@ -195,9 +208,12 @@ const useInformasiPembayaran = ({
   const handleTransaction = async () => {
     try {
       if (!validateTransactionForm()) return;
-      if (!dataTransaction?.data || !kasir) return;
+      if (!dataTransaction?.data || !pengguna) return;
 
-      const payload = buildTransactionPayload(dataTransaction.data, kasir.id);
+      const payload = buildTransactionPayload(
+        dataTransaction.data,
+        pengguna.id,
+      );
 
       // confirm
       const isConfirm = await confirm({
@@ -222,8 +238,23 @@ const useInformasiPembayaran = ({
   };
 
   // handle download
-  const { handleDownloadPdf, isLoadingDownloadInvoicePdf } =
-    useDownloadInvoice();
+  const { handleDownloadPdf, isLoadingDownloadInvoicePdf } = useDownloadInvoice(
+    { handleSetAlert, handleSetToast },
+  );
+
+  // handle print
+  const { handlePrintInvoiceTransaksi, isLoadingPrintInvoiceTransaksi } =
+    usePrintInvoiceTransaksi({ handleSetAlert });
+
+  // handle redirect detail booking
+  const handleRedirectDetailBooking = (params: {
+    transactionId?: number;
+    pelangganId?: number;
+  }) => {
+    return navigate(
+      `/dashboard/booking/pelanggan/${params.pelangganId}/detail/${params.transactionId}`,
+    );
+  };
 
   return {
     isOpenHistory,
@@ -253,6 +284,19 @@ const useInformasiPembayaran = ({
     handleConfirm,
     dataConfirm,
     modalConfirmRef,
+
+    alert,
+    toast,
+
+    // print
+    handlePrintInvoiceTransaksi,
+    isLoadingPrintInvoiceTransaksi,
+
+    handleRedirectDetailBooking,
+
+    pengguna,
+
+    isPageTransaction,
   };
 };
 

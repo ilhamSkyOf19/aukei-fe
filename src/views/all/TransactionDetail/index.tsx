@@ -8,6 +8,8 @@ import { PAYMENT_METHOD_TYPE } from "../../../types/constant.type";
 import InformasiPembayaran from "./InformasiPembayaran";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_TRANSACTION_DETAIL } from "../../../types/toast.type";
+import Alert from "../../../components/messages/Alert";
+import { ALERT_CONFIG_TRANSACTION_DETAIL } from "../../../types/alert.types";
 
 type Props = {
   transactionId?: number;
@@ -26,6 +28,10 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
     isLoadingKebutuhanBarang,
     isKasirPage,
     toast,
+
+    alert,
+    handleSetAlert,
+    handleSetToast,
   } = useTransactionDetail({ transactionId });
 
   return (
@@ -45,6 +51,15 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
           isAnimationOut={toast?.isAnimationOut || false}
           label={TOAST_CONFIG_TRANSACTION_DETAIL[toast.type].message}
           color={TOAST_CONFIG_TRANSACTION_DETAIL[toast.type].color}
+        />
+      )}
+
+      {/* alert */}
+      {alert && (
+        <Alert
+          alert={alert?.id !== null}
+          isAnimationOut={alert?.isAnimationOut || false}
+          label={ALERT_CONFIG_TRANSACTION_DETAIL[alert.type].message}
         />
       )}
 
@@ -77,6 +92,8 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
           isPageBookingKasir={isPageBookingKasir}
           dataKebutuhanBarang={dataKebutuhanBarang}
           isLoadingKebutuhanBarang={isLoadingKebutuhanBarang}
+          handleSetAlert={handleSetAlert}
+          handleSetToast={handleSetToast}
         />
         <InformasiPembayaran
           dataTransaction={dataTransaction}

@@ -17,8 +17,13 @@ import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import { FileText, RefreshCcw } from "lucide-react";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import ButtonRefresh from "../../../../components/ui/button/ButtonRefresh";
+import type { FC } from "react";
 
-const TopPelanggan = () => {
+type Props = {
+  handleSetAlert: (value: string) => void;
+  handleSetToast: (value: string) => void;
+};
+const TopPelanggan: FC<Props> = ({ handleSetAlert, handleSetToast }) => {
   const {
     isLoading,
     handleLimit,
@@ -37,7 +42,7 @@ const TopPelanggan = () => {
     isLoadingDownloadLaporanTopPelangganPdf,
 
     refetchTopPelanggan,
-  } = useStatistikTopPelanggan({});
+  } = useStatistikTopPelanggan({ handleSetAlert, handleSetToast });
 
   return (
     <div className="w-full flex flex-col justify-start items-start">

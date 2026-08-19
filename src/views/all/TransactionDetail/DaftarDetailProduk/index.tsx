@@ -33,6 +33,9 @@ type Props = {
     ResponseStatistikKebutuhanBarang[] | null
   >;
   isLoadingKebutuhanBarang?: boolean;
+
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
 };
 const DaftarDetailProduk: FC<Props> = ({
   dataTransaction,
@@ -41,6 +44,8 @@ const DaftarDetailProduk: FC<Props> = ({
   dataKebutuhanBarang,
   isPageBookingKasir,
   isLoadingKebutuhanBarang,
+  handleSetAlert,
+  handleSetToast,
 }) => {
   const {
     isPendingUpdate,
@@ -476,6 +481,8 @@ const DaftarDetailProduk: FC<Props> = ({
       <RingkasanKredit
         dataTransaction={dataTransaction}
         isLoadingTransaction={isLoadingTransaction}
+        handleSetToast={handleSetToast}
+        handleSetAlert={handleSetAlert}
       />
     </div>
   );

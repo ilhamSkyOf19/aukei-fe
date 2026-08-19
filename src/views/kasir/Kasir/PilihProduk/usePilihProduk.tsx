@@ -18,7 +18,6 @@ import type {
 } from "../../../../models/keranjang.model";
 import { KeranjangServices } from "../../../../services/keranjang.service";
 import { parseId } from "../../../../helpers/helpers";
-import useIsModeKasirStore from "../../../../stores/iseModaKasirStore";
 import { useAuthStore } from "../../../../stores/authStore";
 import useConfirm from "../../../../hooks/useConfirm";
 import { useStepStore } from "../../../../stores/stepStore";
@@ -42,9 +41,6 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
   const { setStep: handleSteps, step } = useStepStore((state) => state);
 
   const pengguna = useAuthStore((state) => state.pengguna);
-
-  // Mode kasir aktif atau tidak
-  const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
 
   // Ambil keranjangId dari search params
   const { keranjangId } = useParams<{ keranjangId: string }>();
@@ -549,7 +545,6 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     idModalUpdateTransaksi,
     removeDetails,
     handleShowModalFormulirTransaksiForUpdate,
-    isModeKasir,
     pengguna,
 
     modalConfirmRef,

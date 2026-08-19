@@ -8,8 +8,18 @@ import type { ITempoInstallmentType } from "../../../models/tempoInstallment.mod
 import { useAuthStore } from "../../../stores/authStore";
 import useDownloadInvoiceKredit from "../../../hooks/useDownloadInvoiceKredit";
 import useDownloadInvoiceKreditPayment from "../../../hooks/useDownloadInvoiceKreditPaymentPdf";
+import usePrintInvoiceKredit from "../../../hooks/usePrintInvoiceKredit";
+import usePrintTempoPayment from "../../../hooks/usePrintInvoiceTempoPayment";
+import { useAlertAnimation } from "../../../hooks/useAlert";
+import { useToastAnimation } from "../../../hooks/useToast";
 
 const useInstallmentsDetail = () => {
+  // alert
+  const { alert, handleSetAlert } = useAlertAnimation();
+
+  // toast
+  const { toast, handleSetToast } = useToastAnimation();
+
   // get id from params
   const { tempoId } = useParams<{ tempoId: string }>();
 
@@ -61,14 +71,22 @@ const useInstallmentsDetail = () => {
 
   // handle download invoice
   const { handleDownloadInvoiceKreditPdf, isLoadingDownloadInvoiceKreditPdf } =
-    useDownloadInvoiceKredit();
+    useDownloadInvoiceKredit({ handleSetAlert, handleSetToast });
 
   // handle download invoice cicilan
   const {
     handleDownloadInvoiceKreditPaymentPdf,
     isLoadingDownloadInvoiceKreditPaymentPdf,
     variables,
-  } = useDownloadInvoiceKreditPayment();
+  } = useDownloadInvoiceKreditPayment({ handleSetAlert, handleSetToast });
+
+  // use print invoice kredit
+  const { handlePrintInvoiceKredit, isLoadingPrintInvoiceKredit } =
+    usePrintInvoiceKredit({ handleSetAlert });
+
+  // use print invoice kredit payment
+  const { handlePrintTempoPayment, isLoadingPrintTempoPayment } =
+    usePrintTempoPayment({ handleSetAlert });
 
   return {
     windowSize,
@@ -88,6 +106,16 @@ const useInstallmentsDetail = () => {
     handleDownloadInvoiceKreditPaymentPdf,
     isLoadingDownloadInvoiceKreditPdf,
     variables,
+
+    handlePrintInvoiceKredit,
+    isLoadingPrintInvoiceKredit,
+    handlePrintTempoPayment,
+    isLoadingPrintTempoPayment,
+
+    alert,
+    toast,
+    handleSetAlert,
+    handleSetToast,
   };
 };
 

@@ -6,7 +6,10 @@ type DownloadInvoiceParams = {
   cicilanKe: number;
 };
 
-const useDownloadInvoiceKreditPayment = () => {
+const useDownloadInvoiceKreditPayment = (params: {
+  handleSetToast?: (value: string) => void;
+  handleSetAlert?: (value: string) => void;
+}) => {
   const {
     mutateAsync: downloadInvoicePdf,
     isPending: isLoadingDownloadInvoiceKreditPaymentPdf,
@@ -30,6 +33,8 @@ const useDownloadInvoiceKreditPayment = () => {
 
       window.URL.revokeObjectURL(url);
     },
+    onSuccess: () => params?.handleSetToast?.("download_success"),
+    onError: () => params?.handleSetAlert?.("gagal_download"),
   });
 
   const handleDownloadInvoiceKreditPaymentPdf = async (

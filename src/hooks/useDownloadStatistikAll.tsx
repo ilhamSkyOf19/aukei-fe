@@ -6,7 +6,10 @@ type Params = {
   endDate?: string;
 };
 
-const useDownloadStatistikAll = () => {
+const useDownloadStatistikAll = (params: {
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
+}) => {
   const {
     mutateAsync: downloadStatistikAllPdf,
     isPending: isLoadingDownloadStatistikAllPdf,
@@ -32,6 +35,8 @@ const useDownloadStatistikAll = () => {
 
       window.URL.revokeObjectURL(url);
     },
+    onSuccess: () => params.handleSetToast("download_success"),
+    onError: () => params.handleSetAlert("gagal_download"),
   });
 
   const handleDownloadStatistikAllPdf = async (params: Params) => {

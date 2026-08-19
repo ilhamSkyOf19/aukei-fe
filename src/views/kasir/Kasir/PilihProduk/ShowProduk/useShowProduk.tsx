@@ -6,7 +6,6 @@ import type { DetailsLocalStorageType } from "../../../../../models/transaction.
 import type { ResponseProdukForKasirType } from "../../../../../models/produk.model";
 import { useEffect } from "react";
 import { handlePagination } from "../../../../../helpers/helpers";
-import useIsModeKasirStore from "../../../../../stores/iseModaKasirStore";
 
 const useShowProduk = (params: {
   pelangganId?: number;
@@ -25,9 +24,6 @@ const useShowProduk = (params: {
   ) => void;
 }) => {
   const { pelangganId, step, onAppendMany } = params;
-
-  // get is mode kasir from store
-  const isModeKasir = useIsModeKasirStore((state) => state.isModeKasir);
 
   // search filter
   const { search, setSearch } = useFilterSearch("search", "page");
@@ -146,7 +142,6 @@ const useShowProduk = (params: {
     isNext,
     isPrev,
     pages,
-    isModeKasir,
     kategori,
   };
 };

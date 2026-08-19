@@ -256,3 +256,5 @@
 - [✅] berikan pesan alert ketika handlesubmit jika error, agar tidak return saja
 
 - [✅] Cek data yang belum di berikan loading
+
+- [ ] Memperbaiki alur bisnis dari aksi invoice print maupun pdf , agar menambahkan loading dan menangkap error pakai alert dan handle succes pakai toast

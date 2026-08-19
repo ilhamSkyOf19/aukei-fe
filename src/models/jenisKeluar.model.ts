@@ -8,5 +8,10 @@ export interface IJenisKeluarType {
 // create
 export interface CreateJenisKeluarType extends Pick<IJenisKeluarType, "nama"> {}
 
+// update
+export interface UpdateJenisKeluarType extends Partial<CreateJenisKeluarType> {
+  id?: number;
+}
+
 // response
 export interface ResponseJenisKeluarType extends IJenisKeluarType {}

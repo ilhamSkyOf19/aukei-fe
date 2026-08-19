@@ -96,7 +96,11 @@ const useDaftarProduk = (params: {
   });
 
   // Ambil data produk dari server sesuai filter search/sort/kategori/page/limit
-  const { data: dataProduk, isLoading: isLoadingProduk } = useQuery({
+  const {
+    data: dataProduk,
+    isLoading: isLoadingProduk,
+    isRefetching: isRefetchingProduk,
+  } = useQuery({
     queryKey: ["produk", { search, sort, kategori, limit, page }],
     queryFn: () =>
       ProdukServices.findAll({
@@ -140,7 +144,7 @@ const useDaftarProduk = (params: {
     handleLimit,
     handlePage,
     dataProduk,
-    isLoadingProduk,
+    isLoadingProduk: isLoadingProduk || isRefetchingProduk,
     isExistDataProduk,
     handleShowModalDelete,
     modalDeleteRef,

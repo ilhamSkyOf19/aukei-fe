@@ -11,6 +11,8 @@ import type { IPelangganType } from "../../../models/pelanggan.model";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 import useDownloadRiwayatTransaksiByPelangganPdf from "../../../hooks/useDownloadRiwayatTransaksiByPelangganPdf";
 import useDownloadRiwayatTransaksiByPelangganExcel from "../../../hooks/useDownloadRiwayatTransaksiByPelangganExcel";
+import { useToastAnimation } from "../../../hooks/useToast";
+import { useAlertAnimation } from "../../../hooks/useAlert";
 
 const useRiwayatTransaksiDetail = () => {
   // window size
@@ -26,6 +28,12 @@ const useRiwayatTransaksiDetail = () => {
 
   // parse
   const validatedId = parseId(pelangganId);
+
+  // toast
+  const { toast, handleSetToast } = useToastAnimation();
+
+  // alert
+  const { alert, handleSetAlert } = useAlertAnimation();
 
   // filter metode pembayaran
   const { filter: metodePembayaran, setFilter: handleSetMetodePembayaran } =
@@ -167,13 +175,19 @@ const useRiwayatTransaksiDetail = () => {
   const {
     handleDownloadRiwayatTransaksiByPelangganPdf,
     isLoadingDownloadRiwayatTransaksiByPelangganPdf,
-  } = useDownloadRiwayatTransaksiByPelangganPdf();
+  } = useDownloadRiwayatTransaksiByPelangganPdf({
+    handleSetAlert,
+    handleSetToast,
+  });
 
   // use download export riwayat excel
   const {
     handleDownloadRiwayatTransaksiByPelangganExcel,
     isLoadingDownloadRiwayatTransaksiByPelangganExcel,
-  } = useDownloadRiwayatTransaksiByPelangganExcel();
+  } = useDownloadRiwayatTransaksiByPelangganExcel({
+    handleSetAlert,
+    handleSetToast,
+  });
 
   return {
     metodePembayaran,
@@ -196,6 +210,9 @@ const useRiwayatTransaksiDetail = () => {
 
     handleDownloadRiwayatTransaksiByPelangganExcel,
     isLoadingDownloadRiwayatTransaksiByPelangganExcel,
+
+    toast,
+    alert,
   };
 };
 

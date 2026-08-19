@@ -102,6 +102,14 @@ export const TOAST_CONFIG_BARANG_KELUAR: Record<
     color: "error",
     message: "Barang masuk berhasil dihapus",
   },
+  created_jenis_keluar: {
+    color: "success",
+    message: "Jenis keluar berhasil ditambahkan",
+  },
+  updated_jenis_keluar: {
+    color: "info",
+    message: "Jenis keluar berhasil diperbarui",
+  },
 };
 
 // toast barang masuk detaik
@@ -112,6 +120,10 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
     color: "success" | "error" | "info" | "warning" | "neutral";
   }
 > = {
+  download_invoice: {
+    color: "success",
+    message: "Berhasil download invoice",
+  },
   created_barang_masuk: {
     color: "success",
     message: "Barang masuk berhasil ditambahkan",
@@ -169,6 +181,10 @@ export const TOAST_CONFIG_BARANG_KELUAR_DETAIL: Record<
     color: "success" | "error" | "info" | "warning" | "neutral";
   }
 > = {
+  download_invoice: {
+    color: "success",
+    message: "Berhasil download invoice",
+  },
   created_barang_keluar: {
     color: "success",
     message: "Barang keluar berhasil ditambahkan",
@@ -307,6 +323,10 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     color: "error",
     message: "transaksi berhasil dibatalkan",
   },
+  download_invoice: {
+    color: "success",
+    message: "Berhasil download laporan",
+  },
 };
 
 // toast keranjang
@@ -394,5 +414,51 @@ export const TOAST_CONFIG_TRANSACTION_DETAIL: Record<
   created_transaction_booking_success: {
     color: "success",
     message: "Transaksi berhasil disimpan",
+  },
+  download_success: {
+    color: "success",
+    message: "Berhasil download file",
+  },
+};
+
+// toast statistik
+export const TOAST_CONFIG_STATISTIK: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  download_success: {
+    color: "success",
+    message: "Berhasil download laporan",
+  },
+};
+
+// transaction pelanggan
+export const TOAST_CONFIG_TRANSACTION_PELANGGAN: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  download_success: {
+    color: "success",
+    message: "Berhasil download file",
+  },
+};
+
+// transaction pelanggan
+export const TOAST_CONFIG_INSTALLMENT_DETAIL: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  download_success: {
+    color: "success",
+    message: "Berhasil download file",
   },
 };

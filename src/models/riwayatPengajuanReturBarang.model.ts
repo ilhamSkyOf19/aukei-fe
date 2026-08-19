@@ -1,13 +1,6 @@
 import type { MetaType, ReturnStatus } from "../types/constant.type";
 import type { IPenggunaInternalType } from "./penggunaInternal.model";
 
-export interface CreateRiwayatPengajuanReturnType {
-  keterangan: string;
-  authorId: number;
-  returnTransactionId: number;
-  status: ReturnStatus;
-}
-
 // response
 export interface ResponseRiwayatPengajuanReturnType {
   id: number;

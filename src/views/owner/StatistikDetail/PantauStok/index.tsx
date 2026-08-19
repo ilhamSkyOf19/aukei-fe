@@ -26,8 +26,11 @@ import ButtonRefresh from "../../../../components/ui/button/ButtonRefresh";
 
 type Props = {
   pilihan: string;
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
 };
-const PantauStok: FC<Props> = ({ pilihan }) => {
+
+const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
   const {
     dataProduk,
     isExistDataProduk,
@@ -46,7 +49,7 @@ const PantauStok: FC<Props> = ({ pilihan }) => {
     handleRefresh,
 
     isLoading,
-  } = usePantauStok({ pilihan });
+  } = usePantauStok({ pilihan, handleSetAlert, handleSetToast });
   return (
     <div className="w-full flex flex-col justify-start items-start">
       {/* filter */}

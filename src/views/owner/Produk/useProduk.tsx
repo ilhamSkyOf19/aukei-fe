@@ -9,7 +9,7 @@ const LOCAL_STORAGE_KEYS = {
 } as const;
 
 // Cluster inventori yang tersedia pada halaman produk
-type InventoriCluster = "produk" | "kategori" | "spesifikasi" | "";
+type InventoriCluster = "produk" | "kategori" | "";
 
 const useProduk = () => {
   const [_searchParams, setSearchParams] = useSearchParams();

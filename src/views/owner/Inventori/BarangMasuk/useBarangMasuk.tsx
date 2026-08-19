@@ -94,7 +94,11 @@ const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
   const { toast, handleSetToast } = useToastAnimation();
 
   // query
-  const { data: dataBarangMasuk, isLoading: isLoadingBarangMasuk } = useQuery({
+  const {
+    data: dataBarangMasuk,
+    isLoading: isLoadingBarangMasuk,
+    isFetching: isFetchingBarangMasuk,
+  } = useQuery({
     queryKey: [
       fromPengajuanBarang ? "barang-masuk-by-author" : "barang-masuk",
       search,
@@ -217,7 +221,7 @@ const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
 
   return {
     dataBarangMasuk,
-    isLoadingBarangMasuk,
+    isLoadingBarangMasuk: isLoadingBarangMasuk || isFetchingBarangMasuk,
     handleSearch,
     handleSort,
     handleLimit,

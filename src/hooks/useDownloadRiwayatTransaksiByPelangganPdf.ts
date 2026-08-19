@@ -6,7 +6,10 @@ type DownloadInvoiceParams = {
   namaPelanggan: string;
 };
 
-const useDownloadRiwayatTransaksiByPelangganPdf = () => {
+const useDownloadRiwayatTransaksiByPelangganPdf = (params: {
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
+}) => {
   const {
     mutateAsync: downloadRiwayatTransaksiByPelangganPdf,
     isPending: isLoadingDownloadRiwayatTransaksiByPelangganPdf,
@@ -32,6 +35,9 @@ const useDownloadRiwayatTransaksiByPelangganPdf = () => {
 
       window.URL.revokeObjectURL(url);
     },
+
+    onSuccess: () => params.handleSetToast("download_success"),
+    onError: () => params.handleSetAlert("gagal_download"),
   });
 
   const handleDownloadRiwayatTransaksiByPelangganPdf = async (

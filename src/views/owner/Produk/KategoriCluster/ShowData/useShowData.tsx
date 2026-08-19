@@ -43,19 +43,22 @@ const useShowData = (params: {
   });
 
   // use query
-  const { data: dataKategoriProduk, isLoading: isLoadingKategoriProduk } =
-    useQuery({
-      queryKey: ["kategori-produk", { search, sort, limit, page }],
-      queryFn: () =>
-        KategoriProdukServices.findAll({
-          ...(search && { search }),
-          ...(sort && { sort }),
-          ...(limit && { limit }),
-          ...(page && { page }),
-        }),
-      refetchOnWindowFocus: false,
-      retry: false,
-    });
+  const {
+    data: dataKategoriProduk,
+    isLoading: isLoadingKategoriProduk,
+    isRefetching: isRefetchingKategoriProduk,
+  } = useQuery({
+    queryKey: ["kategori-produk", { search, sort, limit, page }],
+    queryFn: () =>
+      KategoriProdukServices.findAll({
+        ...(search && { search }),
+        ...(sort && { sort }),
+        ...(limit && { limit }),
+        ...(page && { page }),
+      }),
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
 
   // is exist data
   const isExistDataKategoriProduk =
@@ -151,7 +154,8 @@ const useShowData = (params: {
     handleLimit,
     handlePage,
     dataKategoriProduk,
-    isLoadingKategoriProduk,
+    isLoadingKategoriProduk:
+      isLoadingKategoriProduk || isRefetchingKategoriProduk,
     isExistDataKategoriProduk,
     modalFormulirKategoriRef,
     handleCloseModalFormulirKategori,

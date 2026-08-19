@@ -11,8 +11,15 @@ const useStatistikTopPelanggan = (params: {
     startDate?: string;
     endDate?: string;
   };
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
 }) => {
-  const { customLimit, customStartDateEndDate } = params;
+  const {
+    customLimit,
+    customStartDateEndDate,
+    handleSetAlert,
+    handleSetToast,
+  } = params;
 
   // use filter state
   const {
@@ -110,7 +117,10 @@ const useStatistikTopPelanggan = (params: {
   const {
     handleDownloadLaporanTopPelangganPdf,
     isLoadingDownloadLaporanTopPelangganPdf,
-  } = useDownloadLaporanTopPelanggan();
+  } = useDownloadLaporanTopPelanggan({
+    handleSetAlert,
+    handleSetToast,
+  });
 
   return {
     startDateEndDate: {

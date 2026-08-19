@@ -19,6 +19,7 @@ import { useAuthStore } from "../../../stores/authStore";
 import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangMasuk.service";
 import useModal from "../../../hooks/useModal";
 import useDownloadInvoiceBarangMasuk from "../../../hooks/useDownloadInvoiceBarangMasuk";
+import usePrintInvoiceBarangMasuk from "../../../hooks/usePrintInvoiceBarangMasuk";
 
 // Batas waktu (ms) setelah posting sebelum dianggap expired dan tidak bisa dibatalkan
 
@@ -100,14 +101,17 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { toast, handleSetToast } = useToastAnimation();
 
   // Ambil detail data barang masuk dari server
-  const { data: dataBarangMasukDetail, isLoading: isLoadingBarangMasukDetail } =
-    useQuery({
-      queryKey: ["barang-masuk-detail", validatedId],
-      queryFn: () => BarangMasukServices.detail({ id: validatedId! }),
-      enabled: !!validatedId,
-      retry: false,
-      refetchOnWindowFocus: false,
-    });
+  const {
+    data: dataBarangMasukDetail,
+    isLoading: isLoadingBarangMasukDetail,
+    isFetching: isFetchingBarangMasukDetail,
+  } = useQuery({
+    queryKey: ["barang-masuk-detail", validatedId],
+    queryFn: () => BarangMasukServices.detail({ id: validatedId! }),
+    enabled: !!validatedId,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
 
   // Mutation untuk memposting barang masuk (stok diperbarui)
   const { mutateAsync: mutatePosting, isPending: isPendingPosting } =
@@ -372,12 +376,17 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const {
     handleDownloadInvoiceBarangMasukPdf,
     isLoadingDownloadInvoiceBarangMasukPdf,
-  } = useDownloadInvoiceBarangMasuk();
+  } = useDownloadInvoiceBarangMasuk({ handleSetAlert, handleSetToast });
+
+  // handle print
+  const { handlePrintInvoiceBarangMasuk, isLoadingPrintInvoiceBarangMasuk } =
+    usePrintInvoiceBarangMasuk({ handleSetAlert: handleSetAlert });
 
   // Ekspos state & handler yang dibutuhkan oleh komponen UI detail barang masuk
   return {
     dataBarangMasukDetail,
-    isLoadingBarangMasukDetail,
+    isLoadingBarangMasukDetail:
+      isLoadingBarangMasukDetail || isFetchingBarangMasukDetail,
 
     alert,
 
@@ -427,6 +436,8 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     handleBack,
     handleDownloadInvoiceBarangMasukPdf,
     isLoadingDownloadInvoiceBarangMasukPdf,
+    isLoadingPrintInvoiceBarangMasuk,
+    handlePrintInvoiceBarangMasuk,
   };
 };
 

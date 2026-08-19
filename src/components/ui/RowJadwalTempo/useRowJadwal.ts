@@ -1,30 +1,42 @@
 import useDownloadInvoiceKredit from "../../../hooks/useDownloadInvoiceKredit";
 import useDownloadInvoiceKreditPayment from "../../../hooks/useDownloadInvoiceKreditPaymentPdf";
-import { InvoiceServices } from "../../../services/invoice.service";
+import usePrintInvoiceKredit from "../../../hooks/usePrintInvoiceKredit";
+import usePrintTempoPayment from "../../../hooks/usePrintInvoiceTempoPayment";
 
-const useRowJadwal = () => {
-  const handlePrintAll = (params: { tempoPaymentId: number }) => {
-    InvoiceServices.printTempoPayment({
-      installmentId: params.tempoPaymentId,
-    });
-  };
+const useRowJadwal = (params: {
+  handleSetToast?: (value: string) => void;
+  handleSetAlert?: (value: string) => void;
+}) => {
+  const { handleSetAlert, handleSetToast } = params;
+
+  const { handlePrintTempoPayment, isLoadingPrintTempoPayment } =
+    usePrintTempoPayment({ handleSetAlert });
 
   // handle download struk kredit
   const { handleDownloadInvoiceKreditPdf, isLoadingDownloadInvoiceKreditPdf } =
-    useDownloadInvoiceKredit();
+    useDownloadInvoiceKredit({ handleSetAlert, handleSetToast });
 
   // handle download struk installment
   const {
     handleDownloadInvoiceKreditPaymentPdf,
     isLoadingDownloadInvoiceKreditPaymentPdf,
-  } = useDownloadInvoiceKreditPayment();
+  } = useDownloadInvoiceKreditPayment({ handleSetAlert, handleSetToast });
+
+  // handle print kredit
+  const { handlePrintInvoiceKredit, isLoadingPrintInvoiceKredit } =
+    usePrintInvoiceKredit({ handleSetAlert });
 
   return {
-    handlePrintAll,
     handleDownloadInvoiceKreditPdf,
     isLoadingDownloadInvoiceKreditPdf,
     handleDownloadInvoiceKreditPaymentPdf,
     isLoadingDownloadInvoiceKreditPaymentPdf,
+
+    handlePrintInvoiceKredit,
+    isLoadingPrintInvoiceKredit,
+
+    handlePrintTempoPayment,
+    isLoadingPrintTempoPayment,
   };
 };
 

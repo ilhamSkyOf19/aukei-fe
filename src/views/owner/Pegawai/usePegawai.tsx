@@ -83,7 +83,11 @@ const usePegawai = () => {
   });
 
   // Ambil data pegawai dari server sesuai filter search/sort/page/limit
-  const { data: dataPegawai, isLoading: isLoadingPegawai } = useQuery({
+  const {
+    data: dataPegawai,
+    isLoading: isLoadingPegawai,
+    isFetching: isFetchingPegawai,
+  } = useQuery({
     queryKey: ["pegawai", search, sort, page, limit],
     queryFn: () =>
       PegawaiServices.findAll({
@@ -229,7 +233,7 @@ const usePegawai = () => {
   return {
     toast,
     dataPegawai,
-    isLoadingPegawai,
+    isLoadingPegawai: isLoadingPegawai || isFetchingPegawai,
     handleSearch,
     handleSort,
     handlePage,

@@ -33,6 +33,10 @@ import Avatar from "../../../components/ui/Avatar";
 import useRiwayatTransaksiDetail from "./useRiwayatTransaksiDetail";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import AlertLabel from "../../../components/messages/AlertLabel";
+import Alert from "../../../components/messages/Alert";
+import { TOAST_CONFIG_TRANSACTION_PELANGGAN } from "../../../types/toast.type";
+import { ALERT_CONFIG_TRANSACTION_PELANGGAN } from "../../../types/alert.types";
+import Toast from "../../../components/messages/Toast";
 
 const RiwayatTransaksiDetail = () => {
   const {
@@ -56,10 +60,32 @@ const RiwayatTransaksiDetail = () => {
 
     handleDownloadRiwayatTransaksiByPelangganExcel,
     isLoadingDownloadRiwayatTransaksiByPelangganExcel,
+
+    alert,
+    toast,
   } = useRiwayatTransaksiDetail();
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
+      {/* toast */}
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_TRANSACTION_PELANGGAN[toast.type].message}
+          color={TOAST_CONFIG_TRANSACTION_PELANGGAN[toast.type].color}
+        />
+      )}
+
+      {/* alert */}
+      {alert && (
+        <Alert
+          alert={alert?.id !== null}
+          isAnimationOut={alert?.isAnimationOut || false}
+          label={ALERT_CONFIG_TRANSACTION_PELANGGAN[alert.type].message}
+        />
+      )}
+
       <div className="w-full flex flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5">
         <ButtonBackText handleClick={() => handleBack()} />
         <FilterStatistik

@@ -2,6 +2,7 @@ import { type FC } from "react";
 import AlertLabelList from "../../../../components/messages/AlertLabelList";
 import {
   PAYMENT_METHOD_TYPE,
+  ROLE_INTERNAL_TYPE,
   TRANSACTION_STATUS_TYPE,
 } from "../../../../types/constant.type";
 import type { ResponseTransactionType } from "../../../../models/transaction.model";
@@ -14,6 +15,7 @@ import {
   CalendarClock,
   ChevronDown,
   CreditCard,
+  Eye,
   FileDown,
   Landmark,
   Printer,
@@ -27,8 +29,11 @@ import ErrorMessage from "../../../../components/messages/ErrorMessage";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ModalTempoPayment from "../../../../components/modals/ModalTempoPayment";
 import { formatTanggalPanjang } from "../../../../helpers/formatDate";
-import { InvoiceServices } from "../../../../services/invoice.service";
 import ModalAlert from "../../../../components/modals/ModalAlert";
+import Alert from "../../../../components/messages/Alert";
+import { ALERT_CONFIG_TRANSACTION } from "../../../../types/alert.types";
+import Toast from "../../../../components/messages/Toast";
+import { TOAST_CONFIG_TRANSACTION } from "../../../../types/toast.type";
 
 type Props = {
   dataTransaction?: ResponseStructure<ResponseTransactionType | null>;
@@ -80,6 +85,18 @@ const InformasiPembayaran: FC<Props> = ({
     handleCancelModalConfirm,
     handleConfirm,
     modalConfirmRef,
+
+    handlePrintInvoiceTransaksi,
+    isLoadingPrintInvoiceTransaksi,
+
+    alert,
+    toast,
+
+    handleRedirectDetailBooking,
+
+    pengguna,
+
+    isPageTransaction,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
@@ -88,6 +105,24 @@ const InformasiPembayaran: FC<Props> = ({
 
   return (
     <div className="w-full md:w-1/2 flex-1 flex flex-col justify-start items-start gap-2.5">
+      {/* toast */}
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_TRANSACTION[toast.type].message}
+          color={TOAST_CONFIG_TRANSACTION[toast.type].color}
+        />
+      )}
+
+      {/* alert */}
+      {alert && (
+        <Alert
+          alert={alert?.id !== null}
+          isAnimationOut={alert?.isAnimationOut || false}
+          label={ALERT_CONFIG_TRANSACTION[alert.type].message}
+        />
+      )}
       {/* informasi booking */}
       <div className="w-full flex flex-col justify-start items-start p-4 rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm">
         {/* header */}
@@ -584,8 +619,9 @@ const InformasiPembayaran: FC<Props> = ({
             bgColor="bg-info"
             textColor="text-primary-white"
             label="Cetak Struk"
+            isLoading={isLoadingPrintInvoiceTransaksi}
             handleBtn={() =>
-              InvoiceServices.printInvoice({
+              handlePrintInvoiceTransaksi({
                 id: dataTransaction?.data?.id ?? 0,
               })
             }
@@ -634,22 +670,40 @@ const InformasiPembayaran: FC<Props> = ({
 
       {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
         <div className="w-full flex flex-row justify-start items-center gap-2.5">
+          {/* BUGSSS */}
           {/* download struk */}
-          <ButtonWithIcon
-            icon={FileDown}
-            customWidth="flex-1"
-            bgColor="bg-gray-400"
-            label="Download PDF"
-            textColor="text-primary-white"
-            skeleton={isLoadingTransaction}
-            isLoading={isLoadingDownloadInvoicePdf}
-            handleBtn={() =>
-              handleDownloadPdf({
-                id: dataTransaction?.data?.id ?? 0,
-                nomorTransaksi: dataTransaction?.data?.nomorTransaksi ?? "",
-              })
-            }
-          />
+          {isPageTransaction ? (
+            <ButtonWithIcon
+              icon={Eye}
+              customWidth="w-full"
+              label="Lihat Detail"
+              skeleton={isLoadingTransaction}
+              handleBtn={() =>
+                handleRedirectDetailBooking({
+                  pelangganId: dataTransaction?.data?.pelanggan?.id,
+                  transactionId: dataTransaction?.data?.id,
+                })
+              }
+            />
+          ) : (
+            pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+              <ButtonWithIcon
+                icon={FileDown}
+                customWidth="w-full"
+                bgColor="bg-gray-400"
+                label="Download PDF"
+                textColor="text-primary-white"
+                skeleton={isLoadingTransaction}
+                isLoading={isLoadingDownloadInvoicePdf}
+                handleBtn={() =>
+                  handleDownloadPdf({
+                    id: dataTransaction?.data?.id ?? 0,
+                    nomorTransaksi: dataTransaction?.data?.nomorTransaksi ?? "",
+                  })
+                }
+              />
+            )
+          )}
         </div>
       )}
 

@@ -17,6 +17,10 @@ import TopProduk from "./TopProduk";
 import TopPelanggan from "./TopPelanggan";
 import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
 import AlertLabel from "../../../components/messages/AlertLabel";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_STATISTIK } from "../../../types/toast.type";
+import Alert from "../../../components/messages/Alert";
+import { ALERT_CONFIG_STATISTIK } from "../../../types/alert.types";
 
 const StatistikDetail = () => {
   const {
@@ -33,10 +37,34 @@ const StatistikDetail = () => {
     handleExportPdf,
     isLoadingDownloadStatistikBookingPdf,
     isLoadingDownloadStatistikAllPdf,
+
+    alert,
+    toast,
+    handleSetAlert,
+    handleSetToast,
   } = useStatistikDetail();
 
   return (
     <div className="w-full">
+      {/* toast */}
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_STATISTIK[toast.type].message}
+          color={TOAST_CONFIG_STATISTIK[toast.type].color}
+        />
+      )}
+
+      {/* alert */}
+      {alert && (
+        <Alert
+          alert={alert?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={ALERT_CONFIG_STATISTIK[alert.type].message}
+        />
+      )}
+
       <div className="w-full flex lg:flex-row flex-col justify-start items-stretch gap-2.5 px-2 pt-2.5">
         {/* pilihan */}
         <div className="flex-1 w-full flex flex-col justify-start items-start">
@@ -224,10 +252,19 @@ const StatistikDetail = () => {
           )}
 
           {selectedLaporan === "pantauanStok" && (
-            <PantauStok pilihan={selectedLaporan} />
+            <PantauStok
+              pilihan={selectedLaporan}
+              handleSetToast={handleSetToast}
+              handleSetAlert={handleSetAlert}
+            />
           )}
 
-          {selectedLaporan === "topProduk" && <TopProduk />}
+          {selectedLaporan === "topProduk" && (
+            <TopProduk
+              handleSetAlert={handleSetAlert}
+              handleSetToast={handleSetToast}
+            />
+          )}
 
           {selectedLaporan === "topPelanggan" && <TopPelanggan />}
         </div>

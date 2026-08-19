@@ -20,6 +20,7 @@ import { PengajuanBarangKeluarServices } from "../../../services/pengajuanBarang
 import { useMemo } from "react";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 import useDownloadInvoiceBarangKeluar from "../../../hooks/useDownloadInvoiceBarangKeluar";
+import usePrintInvoiceBarangKeluar from "../../../hooks/usePrintInvoiceBarangKeluar";
 
 const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { fromPengajuanBarang } = params;
@@ -118,6 +119,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const {
     data: dataBarangKeluarDetail,
     isLoading: isLoadingBarangKeluarDetail,
+    isFetching: isFetchingBarangKeluarDetail,
   } = useQuery({
     queryKey: ["barang-keluar-detail", validatedId],
     queryFn: () => BarangKeluarServices.detail({ id: validatedId! }),
@@ -423,11 +425,16 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const {
     handleDownloadInvoiceBarangKeluarPdf,
     isPendingDownloadInvoiceBarangKeluar,
-  } = useDownloadInvoiceBarangKeluar();
+  } = useDownloadInvoiceBarangKeluar({ handleSetAlert, handleSetToast });
+
+  // get use print
+  const { handlePrintInvoiceBarangKeluar, isLoadingPrintInvoiceBarangKeluar } =
+    usePrintInvoiceBarangKeluar({ handleSetAlert });
 
   return {
     dataBarangKeluarDetail,
-    isLoadingBarangKeluarDetail,
+    isLoadingBarangKeluarDetail:
+      isLoadingBarangKeluarDetail || isFetchingBarangKeluarDetail,
     alert,
     toast,
     handlePosting,
@@ -458,6 +465,9 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
     handleCancelVerifikasi,
     isPendingCancelVerifikasi,
+
+    handlePrintInvoiceBarangKeluar,
+    isLoadingPrintInvoiceBarangKeluar,
 
     modalFormulirVerifikasiOrPengajuan,
     handleShowModalFormulirVerifikasiOrPengajuan,

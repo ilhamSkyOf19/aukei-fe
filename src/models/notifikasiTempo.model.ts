@@ -11,11 +11,6 @@ export interface INotifikasiTempo extends Pick<
   tempoId: number;
 }
 
-export interface PushNotifikasiTempoType {
-  tempoId: number;
-  installmentId: number;
-}
-
 export interface ResponseNotifikasiTempoWithMetaType {
   data: INotifikasiTempo[];
   meta: MetaType;

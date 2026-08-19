@@ -5,7 +5,10 @@ type Params = {
   startDate?: string;
   endDate?: string;
 };
-const useDownloadLaporanTopProduk = () => {
+const useDownloadLaporanTopProduk = (params: {
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
+}) => {
   const {
     mutateAsync: downloadLaporanTopProdukPdf,
     isPending: isLoadingDownloadLaporanTopProdukPdf,
@@ -31,6 +34,9 @@ const useDownloadLaporanTopProduk = () => {
 
       window.URL.revokeObjectURL(url);
     },
+
+    onSuccess: () => params.handleSetToast("download_success"),
+    onError: () => params.handleSetAlert("gagal_download"),
   });
 
   const handleDownloadLaporanTopProdukPdf = async (params: Params) => {

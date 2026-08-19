@@ -11,23 +11,8 @@ export interface IPenggunaInternalType {
   createdAt: Date;
   updatedAt: Date;
 }
-
-// create pengguna
-export interface CreatePenggunaInternalType extends Omit<
-  IPenggunaInternalType,
-  "id" | "createdAt" | "updatedAt" | "role" | "isActive"
-> {
-  role: RoleInternalType;
-}
-
 // payload pengguna
 export interface PayloadPenggunaInternalType extends Omit<
-  IPenggunaInternalType,
-  "password" | "createdAt" | "updatedAt"
-> {}
-
-// response pengguna
-export interface ResponsePenggunaInternalType extends Omit<
   IPenggunaInternalType,
   "password" | "createdAt" | "updatedAt"
 > {}

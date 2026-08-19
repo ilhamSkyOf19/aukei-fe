@@ -1,7 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { StatistikPdfServices } from "../services/statistikPdf.service";
 
-const useDownloadLaporanStok = () => {
+const useDownloadLaporanStok = (params: {
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
+}) => {
+  const { handleSetAlert, handleSetToast } = params;
+
   const {
     mutateAsync: downloadLaporanStokPdf,
     isPending: isLoadingDownloadLaporanStokPdf,
@@ -24,6 +29,8 @@ const useDownloadLaporanStok = () => {
 
       window.URL.revokeObjectURL(url);
     },
+    onSuccess: () => handleSetToast("download_success"),
+    onError: () => handleSetAlert("gagal_download"),
   });
 
   const handleDownloadLaporanStokPdf = async () => {

@@ -191,7 +191,6 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
             />
           )}
         </div>
-
         {/* SHOW DATA FOR MD, LG, XL */}
         <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm mt-2.5 hidden md:flex">
           <table className="w-full table table-xs mb-2 table-zebra">
@@ -358,7 +357,6 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
             </tfoot>
           </table>
         </div>
-
         {/* pagination and limits */}
         <PaginationAndLimit
           currentPage={dataBarangMasuk?.data?.meta.currentPage || null}

@@ -3,6 +3,7 @@ import {
   Package,
   PackagePlus,
   PackageX,
+  Plus,
   Trash2,
   Truck,
 } from "lucide-react";
@@ -31,6 +32,9 @@ import { formatNumber } from "../../../../helpers/helpers";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import ModalFormulirJenisKeluar from "../../../../components/modals/ModalFormulirJenisKeluar";
+import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
+import AlertLabel from "../../../../components/messages/AlertLabel";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -66,6 +70,24 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
     modalDeleteManyRef,
     sort,
     windowSize,
+
+    dataJenisKeluar,
+    isExistDataJenisKeluar,
+    isLoadingJenisKeluar,
+
+    dataUpdateJenisKeluar,
+    handleCloseModalFormulirJenisKeluar,
+    handleShowModalFormulirJenisKeluar,
+    idUpdateJenisKeluar,
+    modalFormulirJenisKeluarRef,
+    handleSetToast,
+
+    dataDeleteJenisKeluar,
+    handleCloseModalDeleteJenisKeluar,
+    handleDeleteJenisKeluar,
+    handleShowModalDeleteJenisKeluar,
+    isPendingDeleteJenisKeluar,
+    modalDeleteJenisKeluarRef,
   } = useBarangKeluar({ fromPengajuanBarang });
 
   return (
@@ -131,6 +153,101 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
           </div>
         </div>
 
+        {/* jenis keluar */}
+        <div className="w-full flex flex-col justify-end items-start my-2.5">
+          {/* label */}
+          <div className="w-full flex flex-row justify-between items-center px-2.5">
+            <span className="text-xs font-medium text-base-content">
+              Daftar Jenis Keluar:
+            </span>
+
+            <ButtonWithIcon
+              noLabel
+              icon={Plus}
+              handleBtn={() => handleShowModalFormulirJenisKeluar()}
+              classHidden="flex md:hidden"
+            />
+          </div>
+
+          <div className="w-full flex flex-row justify-between items-center gap-2.5">
+            {/* daftar */}
+            {/* BUAT FILTER */}
+            <div className="w-full lg:flex-6 md:flex-3 flex flex-row justify-start items-center gap-2.5 overflow-x-auto py-2.5 px-1.5 scrollbar-thin">
+              {isLoadingJenisKeluar ? (
+                Array.from({ length: 8 }, (_, index) => (
+                  <div key={index} className="w-20 h-8 skeleton bg-base-200" />
+                ))
+              ) : isExistDataJenisKeluar ? (
+                dataJenisKeluar?.data?.map((item) => (
+                  <div
+                    key={item.id}
+                    className="text-xs flex flex-row justify-start items-center text-base-content h-10 bg-base-100 shadow-sm rounded-xl shrink-0 gap-2.5 pr-2.5 overflow-hidden"
+                  >
+                    <button
+                      type="button"
+                      className="hover-overlay pr-2.5 border-r border-base-content/30 pl-2.5 h-full"
+                    >
+                      {item.nama}
+                    </button>
+
+                    {/* aksi */}
+                    <div className="flex flex-row justify-start items-center gap-1.5">
+                      {/* button update */}
+                      <ButtonUpdateTable
+                        handleClick={() =>
+                          handleShowModalFormulirJenisKeluar(item.id, {
+                            nama: item.nama,
+                          })
+                        }
+                        noTip
+                      />
+                      {/* button delete */}
+                      <ButtonDeleteTable
+                        disabled={dataBarangKeluar?.data?.data.some(
+                          (barangKeluar) =>
+                            barangKeluar.jenisKeluar.id === item.id,
+                        )}
+                        handleShowModalDelete={() =>
+                          handleShowModalDeleteJenisKeluar(undefined, {
+                            data: {
+                              id: item.id,
+                              nama: item.nama,
+                            },
+                          })
+                        }
+                        noTip
+                      />
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="w-full flex flex-row justify-center items-center">
+                  <span className="text-xs text-base-content/50">
+                    Tidak ada Jenis Keluar
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* button add jenis keluar */}
+            <div className="flex-1 flex flex-row justify-end items-center">
+              <ButtonWithIcon
+                label="Tambah Jenis Keluar"
+                bgColor="bg-emerald-500"
+                textColor="text-primary-white"
+                icon={Plus}
+                handleBtn={() => handleShowModalFormulirJenisKeluar()}
+                classHidden="hidden md:flex"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* alert */}
+        <div className="flex flex-col justify-start items-start gap-2.5 w-full">
+          <AlertLabel message="Jenis keluar tidak dapat dihapus jika sudah digunakan pada data barang keluar." />
+        </div>
+
         {/* SHOW DATA FOR SM */}
         <div className="flex w-full flex-col justify-start items-center gap-2.5 mt-2.5 md:hidden">
           {isLoadingBarangKeluar ? (
@@ -188,7 +305,6 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
             />
           )}
         </div>
-
         {/* SHOW DATA FOR MD, LG, XL */}
         <div className="overflow-x-auto w-full bg-base-100 rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-2.5 hidden md:flex">
           <table className="w-full table table-xs mb-2 table-zebra">
@@ -355,7 +471,6 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
             </tfoot>
           </table>
         </div>
-
         {/* pagination and limits */}
         <PaginationAndLimit
           currentPage={dataBarangKeluar?.data?.meta.currentPage || null}
@@ -372,6 +487,17 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
         handleCloseModal={handleCloseModalFormulirBarangKeluar}
       />
 
+      {/* modal formulir jenis keluar */}
+      <ModalFormulirJenisKeluar
+        modalRef={modalFormulirJenisKeluarRef}
+        handleCloseModal={handleCloseModalFormulirJenisKeluar}
+        dataUpdate={{
+          nama: dataUpdateJenisKeluar?.nama,
+          id: idUpdateJenisKeluar,
+        }}
+        handleSetToast={handleSetToast}
+      />
+
       {/* modal delete */}
       <ModalDelete
         modalRef={modalDeleteRef}
@@ -380,6 +506,16 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
         bigTitle={`Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?`}
         highlightData={dataDelete?.kodeReferensi}
         isLoadingDelete={isPendingDelete}
+      />
+
+      {/* modal delete jenis keluar */}
+      <ModalDelete
+        modalRef={modalDeleteJenisKeluarRef}
+        handleCloseModal={handleCloseModalDeleteJenisKeluar}
+        handleDelete={handleDeleteJenisKeluar}
+        bigTitle={`Apakah anda yakin ingin menghapus data dengan nama dibawah ini?`}
+        highlightData={dataDeleteJenisKeluar?.data.nama}
+        isLoadingDelete={isPendingDeleteJenisKeluar}
       />
 
       {/* modal delete many */}

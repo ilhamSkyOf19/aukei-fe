@@ -34,6 +34,14 @@ export const ALERT_CONFIG_BARANG_MASUK_DETAIL: Record<
   expired: {
     message: "Mohon maaf, barang masuk sudah tidak dapat dibatalkan.",
   },
+  gagal_cetak_invoice: {
+    message:
+      "Mohon maaf, gagal mencetak invoice. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+  gagal_download_invoice: {
+    message:
+      "Mohon maaf, gagal mendownload invoice. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
 };
 
 export const ALERT_CONFIG_BARANG_KELUAR_DETAIL: Record<
@@ -58,6 +66,14 @@ export const ALERT_CONFIG_BARANG_KELUAR_DETAIL: Record<
   stok_not_enough: {
     message: "Mohon maaf, stok tidak mencukupi.",
   },
+  gagal_cetak_invoice: {
+    message:
+      "Mohon maaf, gagal mencetak invoice. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+  gagal_download_invoice: {
+    message:
+      "Mohon maaf, gagal mendownload invoice. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
 };
 
 export const ALERT_CONFIG_TRANSACTION: Record<
@@ -75,5 +91,75 @@ export const ALERT_CONFIG_TRANSACTION: Record<
   existing_keranjang: {
     message:
       "Pelanggan sudah memiliki keranjang, silahkan pilih pelanggan lain.",
+  },
+  gagal_cetak_invoice: {
+    message:
+      "Mohon maaf, gagal mencetak invoice transaksi. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+  gagal_download_invoice: {
+    message:
+      "Mohon maaf, gagal mendownload invoice transaksi. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+};
+
+export const ALERT_CONFIG_STATISTIK: Record<
+  string,
+  {
+    message: string;
+  }
+> = {
+  gagal_download: {
+    message:
+      "Mohon maaf, gagal mendownload laporan. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+};
+
+export const ALERT_CONFIG_TRANSACTION_DETAIL: Record<
+  string,
+  {
+    message: string;
+  }
+> = {
+  gagal_download: {
+    message:
+      "Mohon maaf, gagal mendownload invoice. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+  gagal_cetak_invoice: {
+    message:
+      "Mohon maaf, gagal mencetak invoice. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+};
+
+// transaksi pelanggan
+export const ALERT_CONFIG_TRANSACTION_PELANGGAN: Record<
+  string,
+  {
+    message: string;
+  }
+> = {
+  gagal_download: {
+    message:
+      "Mohon maaf, gagal mendownload file. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+  gagal_cetak_invoice: {
+    message:
+      "Mohon maaf, gagal mencetak file. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+};
+
+// alert installment detail
+export const ALERT_CONFIG_INSTALLMENT_DETAIL: Record<
+  string,
+  {
+    message: string;
+  }
+> = {
+  gagal_download: {
+    message:
+      "Mohon maaf, gagal mendownload file. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+  gagal_cetak_invoice: {
+    message:
+      "Mohon maaf, gagal mencetak file. Silahkan tunggu beberapa saat atau hubungi developer.",
   },
 };

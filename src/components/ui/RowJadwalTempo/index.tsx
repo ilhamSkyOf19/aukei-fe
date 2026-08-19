@@ -19,7 +19,6 @@ import {
 import StatusInstallment from "../StatusInstallment";
 import { useLocation, useNavigate } from "react-router-dom";
 import ButtonWithIcon from "../button/ButtonWithIcon";
-import { InvoiceServices } from "../../../services/invoice.service";
 import useRowJadwal from "./useRowJadwal";
 import DataEmpty from "../../messages/DataEmpty";
 import CardData from "../cards/CardData";
@@ -46,6 +45,9 @@ type Props = {
   withInvoice?: boolean;
   isLoading?: boolean;
   noAksi?: boolean;
+
+  handleSetToast?: (value: string) => void;
+  handleSetAlert?: (value: string) => void;
 };
 const RowJadwaTempo: FC<Props> = ({
   aksi,
@@ -61,14 +63,23 @@ const RowJadwaTempo: FC<Props> = ({
   isLoading,
   nomorTransaksi,
   noAksi,
+  handleSetAlert,
+  handleSetToast,
 }) => {
   const {
-    handlePrintAll,
     handleDownloadInvoiceKreditPdf,
     isLoadingDownloadInvoiceKreditPdf,
     handleDownloadInvoiceKreditPaymentPdf,
     isLoadingDownloadInvoiceKreditPaymentPdf,
-  } = useRowJadwal();
+
+    handlePrintInvoiceKredit,
+    isLoadingPrintInvoiceKredit,
+    handlePrintTempoPayment,
+    isLoadingPrintTempoPayment,
+  } = useRowJadwal({
+    handleSetAlert,
+    handleSetToast,
+  });
 
   const currentPathname = useLocation().pathname;
   const navigate = useNavigate();
@@ -256,7 +267,13 @@ const RowJadwaTempo: FC<Props> = ({
                 lastIndex={item.cicilanKe === dataTempo.length}
                 aksi={aksi}
                 {...(item.id !== undefined && {
-                  invoice: () => handlePrintAll({ tempoPaymentId: item.id! }),
+                  invoice: {
+                    handlePrintTempoPayment: () =>
+                      handlePrintTempoPayment({
+                        installmentId: item.id ?? 0,
+                      }),
+                    isLoading: isLoadingPrintTempoPayment,
+                  },
                 })}
                 layout={layout}
                 {...(!noAksi && {
@@ -304,8 +321,11 @@ const RowJadwaTempo: FC<Props> = ({
               label="Cetak Struk Kredit"
               bgColor={"bg-info"}
               textColor="text-primary-white"
+              isLoading={isLoadingPrintInvoiceKredit}
               handleBtn={() =>
-                InvoiceServices.printInvoiceKredit({ id: transactionId })
+                handlePrintInvoiceKredit({
+                  id: transactionId,
+                })
               }
               classHidden="hidden lg:flex"
             />
@@ -331,7 +351,13 @@ const RowJadwaTempo: FC<Props> = ({
             bgColor="bg-gray-400"
             textColor="text-primary-white"
             label="Download Struk Kredit"
-            handleBtn={() => {}}
+            isLoading={isLoadingDownloadInvoiceKreditPdf}
+            handleBtn={() =>
+              handleDownloadInvoiceKreditPdf({
+                id: transactionId,
+                nomorTransaksi: nomorTransaksi ?? "",
+              })
+            }
             classHidden="flex lg:hidden"
           />
         </div>
@@ -347,7 +373,10 @@ type RowsType = {
   lastIndex?: boolean;
   aksi?: boolean;
   status: InstallmentStatusType;
-  invoice?: () => void;
+  invoice?: {
+    handlePrintTempoPayment: () => Promise<void>;
+    isLoading?: boolean;
+  };
   layout: {
     status: string;
     action: string;
@@ -436,14 +465,15 @@ const Rows: FC<RowsType> = ({
             <>
               {invoice && (
                 <ButtonCetakTable
-                  handleCetak={() => invoice()}
+                  isLoading={invoice.isLoading}
+                  handleCetak={() => invoice.handlePrintTempoPayment()}
                   classHidden="hidden lg:flex"
                 />
               )}
               {downloadInvoiceKreditPaymentPdf && (
                 <ButtonDownloadTable
                   handleDownload={() =>
-                    downloadInvoiceKreditPaymentPdf.handleDownloadInvoiceKreditPaymentPdf
+                    downloadInvoiceKreditPaymentPdf.handleDownloadInvoiceKreditPaymentPdf()
                   }
                   isLoading={downloadInvoiceKreditPaymentPdf.isLoading}
                 />

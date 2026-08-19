@@ -65,7 +65,6 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
     idModalUpdateTransaksi,
     dataModalFormulirTransaksi,
     handleShowModalFormulirTransaksiForUpdate,
-    isModeKasir,
     pengguna,
     handleCancelConfirm,
     dataConfirm,
@@ -150,32 +149,22 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
               <div
                 className={cn(
                   "w-7 h-7 dark:border-base-content/10 rounded-lg flex justify-center items-center",
-                  isModeKasir
-                    ? "border border-primary-white"
-                    : "bg-base-300 border border-transparent ",
+                  "bg-base-300 border border-transparent",
                 )}
               >
-                <UserRound
-                  className={cn(
-                    "size-4",
-                    isModeKasir ? "text-primary-white" : "text-base-content",
-                  )}
-                />
+                <UserRound className={cn("size-4", "text-base-content")} />
               </div>
               <div className="flex flex-col justify-start items-start">
                 <span
                   className={cn(
                     "text-[0.625rem] font-medium",
-                    isModeKasir ? "text-primary-white" : "text-base-content/50",
+                    "text-base-content/50",
                   )}
                 >
                   Kasir
                 </span>
                 <span
-                  className={cn(
-                    "text-xs font-medium",
-                    isModeKasir ? "text-primary-white" : "text-base-content",
-                  )}
+                  className={cn("text-xs font-medium", "text-base-content")}
                 >
                   {pengguna?.nama}
                 </span>

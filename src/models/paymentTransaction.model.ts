@@ -4,17 +4,6 @@ import type {
 } from "../types/constant.type";
 import type { IPenggunaInternalType } from "./penggunaInternal.model";
 
-export interface CreateTransactionPaymentRequestType {
-  transactionId: number;
-  kasirId: number;
-  metodePembayaran: PaymentMethodType;
-  nominal: number;
-  jenis: TransactionPaymentStatusType;
-  keterangan?: string;
-  diBayar: number;
-  kembalian: number;
-}
-
 export interface ResponseTransactionPaymentType {
   id: number;
 

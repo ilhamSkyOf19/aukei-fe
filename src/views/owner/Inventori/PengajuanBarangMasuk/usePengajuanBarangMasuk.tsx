@@ -43,6 +43,7 @@ const usePengajuanBarangMasuk = () => {
   const {
     data: dataPengajuanBarangMasuk,
     isLoading: isLoadingPengajuanBarangMasuk,
+    isFetching: isFetchingPengajuanBarangMasuk,
   } = useQuery({
     queryKey: [
       "pengajuan-barang-masuk",
@@ -81,7 +82,8 @@ const usePengajuanBarangMasuk = () => {
 
   return {
     dataPengajuanBarangMasuk,
-    isLoadingPengajuanBarangMasuk,
+    isLoadingPengajuanBarangMasuk:
+      isLoadingPengajuanBarangMasuk || isFetchingPengajuanBarangMasuk,
     handleSearch,
     handleSort,
     handleLimit,

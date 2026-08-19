@@ -31,7 +31,6 @@ import type { FC } from "react";
 import ModalFormulirVerifikasiOrPengajuan from "../../../components/modals/ModalFormulirVerifikasiOrPengajuan";
 import { cn } from "../../../utils/cn";
 import NotCompatible from "../../../components/messages/NotCompatible";
-import { InvoiceServices } from "../../../services/invoice.service";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -85,6 +84,8 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     isLoadingDownloadInvoiceBarangMasukPdf,
 
     handleBack,
+    handlePrintInvoiceBarangMasuk,
+    isLoadingPrintInvoiceBarangMasuk,
   } = useBarangMasukDetail({ fromPengajuanBarang });
 
   return (
@@ -200,8 +201,9 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                         label="Cetak"
                         icon={Printer}
                         bgColor="bg-info"
+                        isLoading={isLoadingPrintInvoiceBarangMasuk}
                         handleBtn={() =>
-                          InvoiceServices.printInvoiceBarangMasuk({
+                          handlePrintInvoiceBarangMasuk({
                             id: dataBarangMasukDetail?.data?.id ?? 0,
                           })
                         }

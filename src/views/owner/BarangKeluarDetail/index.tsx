@@ -21,7 +21,6 @@ import type { FC } from "react";
 import CountDown from "../../../components/ui/CountDown";
 import ModalFormulirVerifikasiOrPengajuan from "../../../components/modals/ModalFormulirVerifikasiOrPengajuan";
 import { ALERT_CONFIG_BARANG_KELUAR_DETAIL } from "../../../types/alert.types";
-import { InvoiceServices } from "../../../services/invoice.service";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -73,6 +72,8 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     fromPengajuanBarangNotifikasi,
     handleDownloadInvoiceBarangKeluarPdf,
     isPendingDownloadInvoiceBarangKeluar,
+    handlePrintInvoiceBarangKeluar,
+    isLoadingPrintInvoiceBarangKeluar,
   } = useBarangKeluarDetail({ fromPengajuanBarang });
 
   return (
@@ -180,9 +181,10 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                       label="Cetak"
                       icon={Printer}
                       bgColor="bg-info"
+                      isLoading={isLoadingPrintInvoiceBarangKeluar}
                       handleBtn={() =>
-                        InvoiceServices.printInvoiceBarangKeluar({
-                          id: dataBarangKeluarDetail?.data?.id ?? 0,
+                        handlePrintInvoiceBarangKeluar({
+                          id: dataBarangKeluarDetail.data?.id ?? 0,
                         })
                       }
                     />

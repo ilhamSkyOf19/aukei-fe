@@ -199,7 +199,11 @@ const ModalUbahProdukKeluar: FC<Props> = ({
 
             {/* button submit */}
             <div className="w-full flex flex-row justify-end items-end gap-4 mt-2">
-              <ButtonCloseText handleClose={handleCloseModal} label="Batal" />
+              <ButtonCloseText
+                disabled={isPendingBarangKeluarDetail}
+                handleClose={handleCloseModal}
+                label="Batal"
+              />
 
               <ButtonWithIcon
                 icon={Save}

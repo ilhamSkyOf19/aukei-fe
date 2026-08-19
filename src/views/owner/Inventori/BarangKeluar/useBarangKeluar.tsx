@@ -10,6 +10,7 @@ import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
 import { PengajuanBarangKeluarServices } from "../../../../services/pengajuanBarangkeluar.service";
 import useSizeWindows from "../../../../hooks/useSizeWindows";
+import { JenisKeluarServices } from "../../../../services/jenisKeluar.service";
 
 const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
   // params
@@ -56,6 +57,15 @@ const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
     handleShowModal: handleShowModalFormulirBarangKeluar,
   } = useModal();
 
+  // use modal formulir jenis keluar
+  const {
+    modalRef: modalFormulirJenisKeluarRef,
+    handleCloseModal: handleCloseModalFormulirJenisKeluar,
+    handleShowModal: handleShowModalFormulirJenisKeluar,
+    idModal: idUpdateJenisKeluar,
+    dataModal: dataUpdateJenisKeluar,
+  } = useModal<{ nama: string }>();
+
   // use modal delete
   const {
     modalRef: modalDeleteManyRef,
@@ -67,6 +77,19 @@ const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
       id: number;
       kodeReferensi: string;
     }[];
+  }>();
+
+  // use modal delete jenis keluar
+  const {
+    modalRef: modalDeleteJenisKeluarRef,
+    handleCloseModal: handleCloseModalDeleteJenisKeluar,
+    handleShowModal: handleShowModalDeleteJenisKeluar,
+    dataModal: dataDeleteJenisKeluar,
+  } = useModal<{
+    data: {
+      id: number;
+      nama: string;
+    };
   }>();
 
   // filter sort
@@ -94,42 +117,44 @@ const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
   const { toast, handleSetToast } = useToastAnimation();
 
   // query
-  const { data: dataBarangKeluar, isLoading: isLoadingBarangKeluar } = useQuery(
-    {
-      queryKey: [
-        fromPengajuanBarang ? "barang-keluar-by-author" : "barang-keluar",
-        search,
-        sort,
-        limit,
-        page,
-        startDate,
-        endDate,
-      ],
-      queryFn: () => {
-        if (fromPengajuanBarang) {
-          return PengajuanBarangKeluarServices.allByAuthor({
-            ...(search && { search }),
-            ...(sort && { sort }),
-            ...(limit && { limit }),
-            ...(page && { page }),
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-          });
-        } else {
-          return BarangKeluarServices.all({
-            ...(search && { search }),
-            ...(sort && { sort }),
-            ...(limit && { limit }),
-            ...(page && { page }),
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-          });
-        }
-      },
-      retry: false,
-      refetchOnWindowFocus: false,
+  const {
+    data: dataBarangKeluar,
+    isLoading: isLoadingBarangKeluar,
+    isFetching: isFetchingBarangKeluar,
+  } = useQuery({
+    queryKey: [
+      fromPengajuanBarang ? "barang-keluar-by-author" : "barang-keluar",
+      search,
+      sort,
+      limit,
+      page,
+      startDate,
+      endDate,
+    ],
+    queryFn: () => {
+      if (fromPengajuanBarang) {
+        return PengajuanBarangKeluarServices.allByAuthor({
+          ...(search && { search }),
+          ...(sort && { sort }),
+          ...(limit && { limit }),
+          ...(page && { page }),
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+        });
+      } else {
+        return BarangKeluarServices.all({
+          ...(search && { search }),
+          ...(sort && { sort }),
+          ...(limit && { limit }),
+          ...(page && { page }),
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+        });
+      }
     },
-  );
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
 
   //   is exist data
   const isExistDataBarangKeluar: boolean =
@@ -217,9 +242,54 @@ const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
     handleToast: handleSetToast,
   });
 
+  // use query jenis keluar
+  const {
+    data: dataJenisKeluar,
+    isLoading: isLoadingJenisKeluar,
+    isFetching: isFetchingJenisKeluar,
+  } = useQuery({
+    queryKey: ["jenis-keluar"],
+    queryFn: () => JenisKeluarServices.findAll(),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  // is existing jenis keluar
+  const isExistDataJenisKeluar: boolean =
+    !isLoadingJenisKeluar && dataJenisKeluar?.data
+      ? dataJenisKeluar?.data?.length > 0
+        ? true
+        : false
+      : false;
+
+  // mutate delete jenis keluar
+  const {
+    mutateAsync: mutateDeleteJenisKeluar,
+    isPending: isPendingDeleteJenisKeluar,
+  } = useMutation({
+    mutationFn: (id: number) => JenisKeluarServices.delete({ id }),
+    onSuccess: () => {},
+
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // handle mutate delete
+  const handleDeleteJenisKeluar = async () => {
+    try {
+      if (!dataDeleteJenisKeluar?.data.id && !dataDeleteJenisKeluar?.data.nama)
+        return;
+
+      await mutateDeleteJenisKeluar(dataDeleteJenisKeluar?.data.id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     dataBarangKeluar,
-    isLoadingBarangKeluar,
+    isLoadingBarangKeluar: isLoadingBarangKeluar || isFetchingBarangKeluar,
     handleSearch,
     handleSort,
     handleLimit,
@@ -246,6 +316,25 @@ const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
     handleSetChooseBarangKeluar,
     sort,
     windowSize,
+
+    dataJenisKeluar,
+    isExistDataJenisKeluar,
+    isLoadingJenisKeluar: isLoadingJenisKeluar || isFetchingJenisKeluar,
+
+    modalFormulirJenisKeluarRef,
+    handleShowModalFormulirJenisKeluar,
+    handleCloseModalFormulirJenisKeluar,
+    idUpdateJenisKeluar,
+    dataUpdateJenisKeluar,
+
+    handleSetToast,
+
+    modalDeleteJenisKeluarRef,
+    handleShowModalDeleteJenisKeluar,
+    handleCloseModalDeleteJenisKeluar,
+    dataDeleteJenisKeluar,
+    handleDeleteJenisKeluar,
+    isPendingDeleteJenisKeluar,
   };
 };
 

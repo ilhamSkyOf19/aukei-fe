@@ -48,12 +48,3 @@ export interface ResponseBarangMasukWithDetailType extends ResponseBarangMasukTy
   detailBarangMasuks: Omit<IBarangMasukDetailType, "barangMasukId">[];
   tanggalDiajukan?: Date | null;
 }
-
-// posted for service
-export interface PostedBarangMasukForServiceType {
-  barangMasukId: number;
-  produks: {
-    id: number;
-    stok: number;
-  }[];
-}

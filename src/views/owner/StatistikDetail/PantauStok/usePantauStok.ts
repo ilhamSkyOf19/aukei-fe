@@ -4,8 +4,12 @@ import useFilterState from "../../../../services/useFilterState";
 import { StatistikServices } from "../../../../services/statistik.service";
 import useDownloadLaporanStok from "../../../../hooks/useDownloadLaporanStok";
 
-const usePantauStok = (params: { pilihan: string }) => {
-  const { pilihan } = params;
+const usePantauStok = (params: {
+  pilihan: string;
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
+}) => {
+  const { pilihan, handleSetAlert, handleSetToast } = params;
 
   const {
     limit,
@@ -75,7 +79,7 @@ const usePantauStok = (params: { pilihan: string }) => {
 
   // download laporan stok
   const { handleDownloadLaporanStokPdf, isLoadingDownloadLaporanStokPdf } =
-    useDownloadLaporanStok();
+    useDownloadLaporanStok({ handleSetAlert, handleSetToast });
 
   // handle refetch
   const handleRefresh = async () => {

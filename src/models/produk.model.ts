@@ -32,11 +32,6 @@ export interface UpdateProdukType extends Partial<CreateProdukType> {}
 // response
 export interface ProdukResponseType extends IProduk {}
 
-// to response
-export const toProdukResponse = (
-  produk: ProdukResponseType,
-): ProdukResponseType => produk;
-
 // response with meta
 export interface ResponseProdukWithMetaType {
   meta: MetaType;

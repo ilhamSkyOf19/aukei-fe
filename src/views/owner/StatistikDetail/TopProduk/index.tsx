@@ -22,7 +22,11 @@ import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import ButtonRefresh from "../../../../components/ui/button/ButtonRefresh";
 
-const TopProduk = () => {
+type Props = {
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
+};
+const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
   const {
     dataTopProduk,
     isLoading,
@@ -42,7 +46,7 @@ const TopProduk = () => {
     isLoadingDownloadLaporanTopProdukPdf,
 
     refetchTopProduk,
-  } = useStatistikTopProduk({});
+  } = useStatistikTopProduk({ handleSetAlert, handleSetToast });
 
   return (
     <div className="w-full flex flex-col justify-start items-start">

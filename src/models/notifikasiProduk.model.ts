@@ -12,13 +12,6 @@ export interface INotifikasiProdukType {
   updatedAt: Date;
 }
 
-// create notifikasi
-export interface PushNotifikasiProdukType {
-  produkId: number;
-  stokCurrent: number;
-  stokMinimum: number;
-}
-
 // response
 export interface ResponseNotifikasiProdukWithMetaType {
   data: INotifikasiProdukType[];

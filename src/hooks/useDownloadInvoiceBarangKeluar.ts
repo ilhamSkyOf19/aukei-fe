@@ -6,7 +6,10 @@ type DownloadInvoiceBarangKeluarParams = {
   kodeReferensi: string;
 };
 
-const useDownloadInvoiceBarangKeluar = () => {
+const useDownloadInvoiceBarangKeluar = (params: {
+  handleSetAlert: (value: string) => void;
+  handleSetToast: (value: string) => void;
+}) => {
   const {
     mutateAsync: downloadInvoice,
     isPending: isPendingDownloadInvoiceBarangKeluar,
@@ -30,6 +33,8 @@ const useDownloadInvoiceBarangKeluar = () => {
 
       window.URL.revokeObjectURL(url);
     },
+    onSuccess: () => params.handleSetToast("download_invoice"),
+    onError: () => params.handleSetAlert("gagal_download_invoice"),
   });
 
   const handleDownloadInvoiceBarangKeluarPdf = async (

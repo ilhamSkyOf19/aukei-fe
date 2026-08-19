@@ -11,8 +11,15 @@ const useStatistikTopProduk = (params: {
     startDate?: string;
     endDate?: string;
   };
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
 }) => {
-  const { customLimit, customStartDateEndDate } = params;
+  const {
+    customLimit,
+    customStartDateEndDate,
+    handleSetAlert,
+    handleSetToast,
+  } = params;
 
   // use filter state
   const {
@@ -118,7 +125,7 @@ const useStatistikTopProduk = (params: {
   const {
     handleDownloadLaporanTopProdukPdf,
     isLoadingDownloadLaporanTopProdukPdf,
-  } = useDownloadLaporanTopProduk();
+  } = useDownloadLaporanTopProduk({ handleSetAlert, handleSetToast });
 
   return {
     startDateEndDate: {

@@ -6,7 +6,10 @@ type Params = {
   endDate?: string;
 };
 
-const useDownloadStatistikBooking = () => {
+const useDownloadStatistikBooking = (params: {
+  handleSetAlert: (value: string) => void;
+  handleSetToast: (value: string) => void;
+}) => {
   const {
     mutateAsync: downloadStatistikBookingPdf,
     isPending: isLoadingDownloadStatistikBookingPdf,
@@ -32,6 +35,8 @@ const useDownloadStatistikBooking = () => {
 
       window.URL.revokeObjectURL(url);
     },
+    onSuccess: () => params.handleSetToast("download_success"),
+    onError: () => params.handleSetAlert("gagal_download"),
   });
 
   const handleDownloadStatistikBookingPdf = async (params: Params) => {

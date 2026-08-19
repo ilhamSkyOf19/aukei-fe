@@ -87,7 +87,11 @@ const usePelanggan = () => {
   });
 
   // Ambil data pelanggan beserta riwayat transaksi dari server sesuai filter
-  const { data: dataPelanggan, isLoading: isLoadingPelanggan } = useQuery({
+  const {
+    data: dataPelanggan,
+    isLoading: isLoadingPelanggan,
+    isFetching: isFetchingPelanggan,
+  } = useQuery({
     queryKey: ["pelanggan", search, sort, page, limit],
     queryFn: () =>
       PelangganServices.findAllWithRiwayat({
@@ -234,7 +238,7 @@ const usePelanggan = () => {
   return {
     toast,
     dataPelanggan,
-    isLoadingPelanggan,
+    isLoadingPelanggan: isLoadingPelanggan || isFetchingPelanggan,
     handleSearch,
     handleSort,
     handlePage,

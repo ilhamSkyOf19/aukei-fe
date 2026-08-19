@@ -11,6 +11,7 @@ import { useAuthStore } from "../../../stores/authStore";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 import { useStepStore } from "../../../stores/stepStore";
 import { useToastAnimation } from "../../../hooks/useToast";
+import { useAlertAnimation } from "../../../hooks/useAlert";
 
 const useTransactionDetail = (params: { transactionId?: number }) => {
   const { transactionId: transactionIdProps } = params;
@@ -19,8 +20,10 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
   const { setStep: handleSteps } = useStepStore((state) => state);
 
   // toast
-  const { toast } = useToastAnimation();
+  const { toast, handleSetToast } = useToastAnimation();
 
+  // alert
+  const { alert, handleSetAlert } = useAlertAnimation();
   // get pengguna
   const pengguna = useAuthStore((state) => state.pengguna);
 
@@ -142,6 +145,10 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     isLoadingKebutuhanBarang,
     isKasirPage,
     toast,
+
+    alert,
+    handleSetToast,
+    handleSetAlert,
   };
 };
 

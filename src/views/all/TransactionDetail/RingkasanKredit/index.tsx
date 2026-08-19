@@ -10,10 +10,15 @@ import { TRANSACTION_STATUS_TYPE } from "../../../../types/constant.type";
 type Props = {
   dataTransaction?: ResponseStructure<ResponseTransactionType | null>;
   isLoadingTransaction: boolean;
+
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
 };
 const RingkasanKredit: FC<Props> = ({
   dataTransaction,
   isLoadingTransaction,
+  handleSetAlert,
+  handleSetToast,
 }) => {
   return (
     <>
@@ -84,6 +89,8 @@ const RingkasanKredit: FC<Props> = ({
                 nomorTransaksi={dataTransaction?.data?.nomorTransaksi ?? ""}
                 withInvoice
                 isLoading={isLoadingTransaction}
+                handleSetToast={handleSetToast}
+                handleSetAlert={handleSetAlert}
               />
             </div>
           </div>

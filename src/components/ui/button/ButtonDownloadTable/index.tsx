@@ -25,6 +25,7 @@ const ButtonDownloadTable: FC<Props> = ({
     >
       <button
         type="button"
+        disabled={isLoading}
         className="text-[0.625rem] font-medium px-2 py-1.5 bg-gray-400 rounded-md flex flex-row justify-start items-center gap-1 hover-overlay text-primary-white"
         onClick={() => handleDownload()}
       >

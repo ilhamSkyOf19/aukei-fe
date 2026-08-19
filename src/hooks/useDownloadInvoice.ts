@@ -6,7 +6,10 @@ type DownloadInvoiceParams = {
   nomorTransaksi: string;
 };
 
-const useDownloadInvoice = () => {
+const useDownloadInvoice = (params: {
+  handleSetToast: (value: string) => void;
+  handleSetAlert: (value: string) => void;
+}) => {
   const {
     mutateAsync: downloadInvoicePdf,
     isPending: isLoadingDownloadInvoicePdf,
@@ -29,6 +32,9 @@ const useDownloadInvoice = () => {
 
       window.URL.revokeObjectURL(url);
     },
+
+    onSuccess: () => params.handleSetToast("download_invoice"),
+    onError: () => params.handleSetAlert("gagal_download_invoice"),
   });
 
   const handleDownloadPdf = async (params: DownloadInvoiceParams) => {

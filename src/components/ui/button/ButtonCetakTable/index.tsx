@@ -6,11 +6,13 @@ type Props = {
   handleCetak: () => void;
   tooltipPosition?: "left" | "right";
   classHidden?: string;
+  isLoading?: boolean;
 };
 const ButtonCetakTable: FC<Props> = ({
   handleCetak,
   tooltipPosition,
   classHidden,
+  isLoading,
 }) => {
   return (
     <div
@@ -24,10 +26,15 @@ const ButtonCetakTable: FC<Props> = ({
     >
       <button
         type="button"
+        disabled={isLoading}
         className="text-[0.625rem] font-medium px-2 py-1.5 bg-info rounded-md flex flex-row justify-start items-center gap-1 hover-overlay text-primary-white"
         onClick={() => handleCetak()}
       >
-        <Printer className="size-3" />
+        {isLoading ? (
+          <div className="loading loading-super-xs" />
+        ) : (
+          <Printer className="size-3" />
+        )}
       </button>
     </div>
   );

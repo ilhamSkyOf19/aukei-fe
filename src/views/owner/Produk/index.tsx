@@ -55,12 +55,6 @@ const Produk = () => {
               label="Kategori"
               handleActive={() => handleActiveCluster("kategori")}
             />
-            {/* spesifikasi */}
-            <ButtonCluster
-              isActive={isActiveCluster === "spesifikasi"}
-              label="Spesifikasi"
-              handleActive={() => handleActiveCluster("spesifikasi")}
-            />
           </div>
         </div>
 
