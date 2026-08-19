@@ -11,14 +11,23 @@ type Props = {
     endDate: string;
   };
   customHeight?: string;
+  handleSetAlert: (data: string) => void;
+  handleSetToast: (data: string) => void;
 };
-const StatistikTopPelanggan: FC<Props> = ({ rangeDate, customHeight }) => {
+const StatistikTopPelanggan: FC<Props> = ({
+  rangeDate,
+  customHeight,
+  handleSetAlert,
+  handleSetToast,
+}) => {
   const {
     dataTopPelanggan,
     isLoading,
     startDateEndDate: { endDate, startDate },
     handleSelectedLaporan,
   } = useStatistikTopPelanggan({
+    handleSetAlert,
+    handleSetToast,
     customLimit: 5,
     customStartDateEndDate: rangeDate,
   });

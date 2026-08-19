@@ -4,7 +4,7 @@ import type { IPenggunaInternalType } from "./penggunaInternal.model";
 //  register for request
 export interface RegisterType extends Omit<
   IPenggunaInternalType,
-  "id" | "createdAt" | "updatedAt" | "role"
+  "id" | "createdAt" | "updatedAt" | "role" | "isActive"
 > {
   role: Exclude<RoleInternalType, "OWNER">;
   confirmPassword: string;

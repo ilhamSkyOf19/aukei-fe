@@ -2,12 +2,12 @@ import type { FC, RefObject } from "react";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import { cn } from "../../../utils/cn";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import ButtonSubmit from "../../ui/button/ButtonSubmit";
 import useModalFormulirVerifikasiOrPengajuan from "./useModalFormulirVerifikasiOrPengajuan";
 import { CircleX, Hash, Send } from "lucide-react";
 import InputTextAreaNonIcon from "../../inputs/InputTextAreaNonIcon";
 import AlertLabel from "../../messages/AlertLabel";
 import type { RoleInternalType } from "../../../types/constant.type";
+import ButtonText from "../../ui/button/ButtonText";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -159,7 +159,7 @@ const ModalFormulirVerifikasiOrPengajuan: FC<Props> = ({
                 disabled={isPendingVerifikasiOrPengajuan}
               />
               {/* button submit */}
-              <ButtonSubmit
+              <ButtonText
                 label={type === "tolak" ? `Verifikasi` : "Ajukan"}
                 isLoading={isPendingVerifikasiOrPengajuan}
               />

@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import useStruk from "./useStruk";
 import TransactionDetail from "../../../all/TransactionDetail";
 

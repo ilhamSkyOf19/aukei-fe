@@ -4,10 +4,7 @@ import type { INotifikasiPengajuanBarangWithMetaType } from "../models/notifikas
 import type { ResponseNotifikasiProdukWithMetaType } from "../models/notifikasiProduk.model";
 import type { ResponseNotifikasiTempoWithMetaType } from "../models/notifikasiTempo.model";
 import type { PaginationType } from "../models/pagination.model";
-import type {
-  ResponseRiwayatPengajuanReturnForNotifikasiWithMetaType,
-  ResponseRiwayatPengajuanReturnWithMetaType,
-} from "../models/riwayatPengajuanReturBarang.model";
+import type { ResponseRiwayatPengajuanReturnForNotifikasiWithMetaType } from "../models/riwayatPengajuanReturBarang.model";
 import type { ResponseStructure } from "../types/response.type";
 
 export class NotifikasiGlobalServices {

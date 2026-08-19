@@ -25,7 +25,7 @@ const KasirPage: FC<Props> = ({ isUpdateKeranjang }) => {
       />
 
       {/* view toko */}
-      <Kasir key={location.pathname} isUpdateKeranjang={isUpdateKeranjang} />
+      <Kasir key={location.pathname} />
     </>
   );
 };

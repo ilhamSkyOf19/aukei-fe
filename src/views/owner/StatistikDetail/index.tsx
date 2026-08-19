@@ -209,6 +209,8 @@ const StatistikDetail = () => {
                           <div className="w-full lg:flex-1 flex flex-row items-stretch justify-start gap-2.5">
                             {selectedLaporan === "semua" && (
                               <StatistikTopProduk
+                                handleSetAlert={handleSetAlert}
+                                handleSetToast={handleSetToast}
                                 rangeDate={{
                                   startDate,
                                   endDate,
@@ -221,6 +223,8 @@ const StatistikDetail = () => {
                               selectedLaporan === "semua" && (
                                 <>
                                   <StatistikTopPelanggan
+                                    handleSetAlert={handleSetAlert}
+                                    handleSetToast={handleSetToast}
                                     rangeDate={{ startDate, endDate }}
                                     customHeight="h-full"
                                   />
@@ -234,6 +238,8 @@ const StatistikDetail = () => {
                             {selectedLaporan === "semua" && (
                               <>
                                 <StatistikTopPelanggan
+                                  handleSetAlert={handleSetAlert}
+                                  handleSetToast={handleSetToast}
                                   rangeDate={{ startDate, endDate }}
                                 />
                               </>
@@ -266,7 +272,12 @@ const StatistikDetail = () => {
             />
           )}
 
-          {selectedLaporan === "topPelanggan" && <TopPelanggan />}
+          {selectedLaporan === "topPelanggan" && (
+            <TopPelanggan
+              handleSetAlert={handleSetAlert}
+              handleSetToast={handleSetToast}
+            />
+          )}
         </div>
       </div>
     </div>

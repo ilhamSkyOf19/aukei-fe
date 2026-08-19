@@ -11,14 +11,23 @@ type Props = {
     endDate: string;
   };
   customHeight?: string;
+  handleSetAlert: (value: string) => void;
+  handleSetToast: (value: string) => void;
 };
-const StatistikTopProduk: FC<Props> = ({ rangeDate, customHeight }) => {
+const StatistikTopProduk: FC<Props> = ({
+  rangeDate,
+  customHeight,
+  handleSetAlert,
+  handleSetToast,
+}) => {
   const {
     dataTopProduk,
     isLoading,
     startDateEndDate: { endDate, startDate },
     handleSelectedLaporan,
   } = useStatistikTopProduk({
+    handleSetAlert,
+    handleSetToast,
     customLimit: 5,
     customStartDateEndDate: rangeDate,
   });

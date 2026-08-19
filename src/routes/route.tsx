@@ -102,32 +102,10 @@ const route = createBrowserRouter([
   },
 
   //   // ── 404 ─────────────────────────────────────────────────
-  // {
-  //   path: "/404",
-  //   element: <NotFoundPage />,
-  // },
   {
     path: "*",
     element: <NotFoundPage />,
   },
-
-  //   //  ─── Forget Password───────────────────────────────────────────────────────────
-  //   {
-  //     path: "/forget-password",
-  //     element: <ForgetPasswordPage />,
-  //   },
-
-  //   // activation code
-  //   {
-  //     path: "/activation-code",
-  //     element: <ActivationCodePage />,
-  //   },
-
-  //   // reset the password
-  //   {
-  //     path: "/reset-password",
-  //     element: <ResetPasswordPage />,
-  //   },
 
   // ── Dashboard (protected) ────────────────────────────────
   {

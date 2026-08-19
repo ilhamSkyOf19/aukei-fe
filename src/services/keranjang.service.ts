@@ -14,7 +14,7 @@ export class KeranjangServices {
   ): Promise<ResponseStructure<ResponseKeranjangType | null>> {
     // call api
     const result = await instanceAxios.post<
-      ResponseStructure<ResponseTransactionType | null>
+      ResponseStructure<ResponseKeranjangType | null>
     >("/keranjang", req);
 
     return result.data;
@@ -27,7 +27,7 @@ export class KeranjangServices {
   }): Promise<ResponseStructure<ResponseKeranjangType | null>> {
     // call api
     const result = await instanceAxios.patch<
-      ResponseStructure<ResponseTransactionType | null>
+      ResponseStructure<ResponseKeranjangType | null>
     >(`/keranjang/${params.id}`, params.req);
 
     return result.data;
