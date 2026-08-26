@@ -5,10 +5,10 @@ import {
   type PaymentMethodType,
 } from "../../../../types/constant.type";
 import type { IPelangganType } from "../../../../models/pelanggan.model";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   CreateTransactionForRequestType,
-  DetailsLocalStorageType,
+  DetailsType,
 } from "../../../../models/transaction.model";
 import { TransactionServices } from "../../../../services/transaction.service";
 import useConfirm from "../../../../hooks/useConfirm";
@@ -45,56 +45,33 @@ const buildTransactionPayload = ({
   dataDetails,
   dataDiBayar,
   dataFromKeranjang,
-  dataTempo,
   kasir,
   metodePembayaran,
   pelanggan,
   totalAfterDiskon,
 }: {
-  dataDetails: DetailsLocalStorageType[];
+  dataDetails: DetailsType[];
   dataDiBayar: number;
   dataFromKeranjang: { transactionId: number } | null;
-  dataTempo: DataTempoType | null;
   kasir: PayloadPenggunaInternalType;
   metodePembayaran: PaymentMethodType;
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa">;
   totalAfterDiskon: number;
 }): CreateTransactionForRequestType => {
-  // Jika metode TEMPO, nominal dibayar diambil dari uang muka, bukan dataDiBayar
-  const diBayar =
-    metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO
-      ? dataTempo?.metodePembayaranUangDp === PAYMENT_METHOD_TYPE.CASH
-        ? dataTempo?.diBayar
-        : (dataTempo?.uangMuka ?? 0)
-      : dataDiBayar;
-
   // kembalian
-  const kembalian =
-    metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO &&
-    dataTempo?.metodePembayaranUangDp === PAYMENT_METHOD_TYPE.CASH
-      ? dataTempo.kembalian
-      : dataDiBayar - totalAfterDiskon;
+  const kembalian = dataDiBayar - totalAfterDiskon;
 
   return {
     // Sertakan id transaksi jika transaksi berasal dari keranjang (update transaksi)
     ...(dataFromKeranjang && { id: dataFromKeranjang.transactionId }),
     // Sertakan detail tempo jika metode pembayaran menggunakan tempo/cicilan
-    ...(dataTempo && {
-      tempo: {
-        jumlahCicilan: dataTempo.jumlahCicilan,
-        periode: dataTempo.periode,
-        uangMuka: dataTempo.uangMuka,
-        installments: dataTempo.installments,
-      },
-      metodePembayaranUangDp: dataTempo.metodePembayaranUangDp,
-    }),
     details: dataDetails.map((item) => ({
       diskon: item.diskon,
       hargaJual: item.hargaJual,
       produkId: item.produkId,
       quantity: item.quantity,
     })),
-    diBayar: diBayar ?? 0,
+    diBayar: dataDiBayar ?? 0,
     kembalian: kembalian ?? 0,
     metodePembayaran,
     pelangganId: pelanggan.id,
@@ -107,6 +84,20 @@ const usePembayaran = (params: {
   kasir?: PayloadPenggunaInternalType | null;
 }) => {
   const { handleToast, kasir } = params;
+
+  // query client
+  const queryClient = useQueryClient();
+
+  const {
+    data: dataTransaksi,
+    isLoading: isLoadingTransaksi,
+    isRefetching: isRefetchingTransaksi,
+  } = useQuery({
+    queryKey: ["transaksi-draft"],
+    queryFn: () => TransactionServices.findTransaksiDraft(),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
 
   const { setStep: handleSteps } = useStepStore((state) => state);
 
@@ -121,38 +112,27 @@ const usePembayaran = (params: {
   const buttonAturTempoRef = useRef<HTMLButtonElement>(null);
 
   // Metode pembayaran terpilih, diinisialisasi dari localStorage
-  const [metodePembayaran, setMetodePembayaran] =
-    useState<PaymentMethodType | null>(() =>
-      getLocalStorageJSON<PaymentMethodType>(
-        LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN,
-      ),
-    );
+  const metodePembayaran = useMemo(() => {
+    return dataTransaksi?.data?.metodePembayaran ?? PAYMENT_METHOD_TYPE.CASH;
+  }, [dataTransaksi]);
 
   // Detail item transaksi (produk, harga, qty, diskon) yang diambil sekali dari localStorage
-  const dataDetails = useMemo<DetailsLocalStorageType[] | null>(
-    () =>
-      getLocalStorageJSON<DetailsLocalStorageType[]>(
-        LOCAL_STORAGE_KEYS.DETAILS,
-      ),
-    [],
-  );
+  const dataDetails = useMemo(() => {
+    return dataTransaksi?.data?.details;
+  }, [dataTransaksi]);
 
   // Data tempo (cicilan) jika pelanggan memilih metode pembayaran TEMPO
-  const [dataTempo, setDataTempo] = useState<DataTempoType | null>(() =>
-    getLocalStorageJSON<DataTempoType>(LOCAL_STORAGE_KEYS.TEMPO),
-  );
+  const dataTempo = useMemo(() => {
+    return dataTransaksi?.data?.tempo;
+  }, [dataTransaksi]);
 
   // Data pelanggan yang sedang bertransaksi, diambil sekali dari localStorage
   const pelanggan = useMemo<Pick<
     IPelangganType,
     "id" | "nama" | "noWa"
-  > | null>(
-    () =>
-      getLocalStorageJSON<Pick<IPelangganType, "id" | "nama" | "noWa">>(
-        LOCAL_STORAGE_KEYS.PELANGGAN,
-      ),
-    [],
-  );
+  > | null>(() => {
+    return dataTransaksi?.data?.pelanggan ?? null;
+  }, [dataTransaksi]);
 
   // Info transaksi asal (jika pembayaran ini lanjutan dari keranjang), diambil sekali
   const dataFromKeranjang = useMemo<{
@@ -176,23 +156,46 @@ const usePembayaran = (params: {
   const totalAfterDiskon =
     dataDetails?.reduce(
       (a, b) => a + (b.hargaJual * b.quantity - b.diskon),
-      0,
+      dataTransaksi?.data?.ongkir ?? 0,
     ) ?? 0;
 
+  // mutate update metode pembayaran
+  const {
+    mutateAsync: updateMetodePembayaran,
+    isPending: isPendingUpdateMetodePembayaran,
+  } = useMutation({
+    mutationFn: (data: {
+      transactionId: number;
+      metodePembayaran: PaymentMethodType;
+    }) =>
+      TransactionServices.updateMetodePembayaran({
+        transactionId: data.transactionId,
+        data: { metodePembayaran: data.metodePembayaran },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   // Ubah metode pembayaran, sinkronkan ke localStorage, dan bersihkan data terkait metode lama
-  const handleMetodePembayaran = (metode: PaymentMethodType) => {
-    if (metodePembayaran === metode) return;
-    setMetodePembayaran(metode);
+  const handleMetodePembayaran = async (metode: PaymentMethodType) => {
+    if (metodePembayaran === metode || !dataTransaksi?.data?.id) return;
 
-    setLocalStorageJSON(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN, metode);
+    await updateMetodePembayaran({
+      transactionId: dataTransaksi?.data?.id,
+      metodePembayaran: metode,
+    });
 
-    // Hapus nominal dibayar jika metode bukan CASH
-    if (metode !== "CASH") localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
-    // Hapus data tempo jika metode bukan TEMPO
-    if (metode !== "TEMPO") {
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.TEMPO);
-      setDataTempo(null);
-    }
+    // // Hapus nominal dibayar jika metode bukan CASH
+    // if (metode !== "CASH") localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
+    // // Hapus data tempo jika metode bukan TEMPO
+    // if (metode !== "TEMPO") {
+    //   localStorage.removeItem(LOCAL_STORAGE_KEYS.TEMPO);
+    //   setDataTempo(null);
+    // }
     // Bersihkan error "metode pembayaran kosong" karena sudah dipilih
     setIsErrors((prev) =>
       prev.filter((item) => item !== "METODE_PEMBAYARAN_KOSONG"),
@@ -244,7 +247,7 @@ const usePembayaran = (params: {
     }, METODE_PEMBAYARAN_SYNC_DEBOUNCE_MS);
 
     return () => clearTimeout(debounce);
-  }, [metodePembayaran]);
+  }, [metodePembayaran, totalAfterDiskon]);
 
   // Mutation untuk membuat transaksi baru ke server
   const { mutateAsync: mutateTransaction, isPending: isPendingTransaction } =
@@ -278,7 +281,10 @@ const usePembayaran = (params: {
     }
 
     // Nominal dibayar wajib diisi untuk metode selain TEMPO
-    if (dataDiBayar === 0 && metodePembayaran !== "TEMPO") {
+    if (
+      (dataDiBayar === 0 && metodePembayaran !== "TEMPO") ||
+      dataDiBayar < totalAfterDiskon
+    ) {
       triggerAnimation(buttonBayarRef);
       setIsErrors((prev) => [...prev, "DATA_DI_BAYAR_KOSONG"]);
       return false;
@@ -300,11 +306,19 @@ const usePembayaran = (params: {
       if (!validateBeforeTransaction()) return;
       if (!dataDetails || !pelanggan || !kasir || !metodePembayaran) return;
 
-      const dataTransaction = buildTransactionPayload({
-        dataDetails,
+      const data = buildTransactionPayload({
+        dataDetails: dataDetails.map((item) => ({
+          diskon: item.diskon,
+          hargaJual: item.hargaJual,
+          img: item.produk.img,
+          nama: item.produk.nama,
+          produkId: item.produk.id,
+          quantity: item.quantity,
+          kode: item.produk.kode,
+          stokTersedia: item.stokTersisa,
+        })),
         dataDiBayar,
         dataFromKeranjang,
-        dataTempo,
         kasir,
         metodePembayaran,
         pelanggan,
@@ -315,27 +329,17 @@ const usePembayaran = (params: {
       const isConfirm = await confirm();
       if (!isConfirm) return;
 
-      await mutateTransaction(dataTransaction);
+      await mutateTransaction({
+        ...data,
+        id: dataTransaksi?.data?.id,
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Tandai transaksi sedang diubah (edit) dan kembali ke step 1
-  const handleUbahTransaction = () => {
-    localStorage.setItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION, "true");
-    handleSteps(1);
-  };
-
-  // Batalkan transaksi: bersihkan data pembayaran di localStorage dan kembali ke step 1
-  const handleBatalTransaction = () => {
-    clearTransactionLocalStorage();
-    handleSteps(1);
-  };
-
   // Ekspos state & handler yang dibutuhkan oleh komponen UI pembayaran
   return {
-    handleUbahTransaction,
     metodePembayaran,
     handleMetodePembayaran,
     dataDetails,
@@ -355,13 +359,19 @@ const usePembayaran = (params: {
     handleConfirm,
     handleCancel,
     buttonBayarRef,
-    handleBatalTransaction,
     dataTempo,
     buttonAturTempoRef,
     modalTempoRef,
     handleShowModalTempo,
     handleCloseModalTempo,
-    handleSetDataTempo: setDataTempo,
+
+    dataTransaksi,
+    isLoadingTransaksi,
+    isRefetchingTransaksi,
+
+    handleSteps,
+
+    isPendingUpdateMetodePembayaran,
   };
 };
 

@@ -27,7 +27,6 @@ import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import CardMetodePembayaran from "../../../../components/ui/cards/CardMetodePembayaran";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
-import ModalTempoPayment from "../../../../components/modals/ModalTempoPayment";
 import { formatTanggalPanjang } from "../../../../helpers/formatDate";
 import ModalAlert from "../../../../components/modals/ModalAlert";
 import Alert from "../../../../components/messages/Alert";
@@ -97,6 +96,9 @@ const InformasiPembayaran: FC<Props> = ({
     pengguna,
 
     isPageTransaction,
+
+    handlePrintInvoiceKirimBarang,
+    isLoadingPrintInvoiceKirimBarang,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
@@ -157,6 +159,18 @@ const InformasiPembayaran: FC<Props> = ({
               ) : (
                 <span className="text-xs text-error font-semibold">
                   - {formatRupiah(dataTransaction?.data?.totalDiskon ?? 0)}
+                </span>
+              )}
+            </div>
+            <div className="w-full flex flex-row justify-between items-center">
+              <span className="text-xs text-base-content/70 font-medium">
+                Ongkir
+              </span>
+              {isLoadingTransaction ? (
+                <div className="w-30 h-4 skeleton" />
+              ) : (
+                <span className="text-xs text-base-content font-semibold">
+                  {formatRupiah(dataTransaction?.data?.ongkir ?? 0)}
                 </span>
               )}
             </div>
@@ -246,7 +260,6 @@ const InformasiPembayaran: FC<Props> = ({
             )}
           </div>
         </div>
-
         {/* ringkasan pembayaran tempo */}
         {/* tempo */}
         {metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && (
@@ -376,7 +389,6 @@ const InformasiPembayaran: FC<Props> = ({
             </div>
           </div>
         )}
-
         {/* ringkasan pembayaran cash */}
         {metodePembayaran === PAYMENT_METHOD_TYPE.CASH && (
           <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5 border-b border-base-content/10 pb-2.5">
@@ -407,7 +419,6 @@ const InformasiPembayaran: FC<Props> = ({
             </div>
           </div>
         )}
-
         {/* metode pembayaran pelunasan */}
         {isPageBookingKasir && (
           <div className="flex flex-col justify-start items-start gap-2.5 w-full mt-4">
@@ -559,7 +570,6 @@ const InformasiPembayaran: FC<Props> = ({
             </div>
           </div>
         )}
-
         {/* riwayat pembayaran */}
         {isLoadingTransaction ? (
           <div className="w-full mt-2.5 h-24 skeleton rounded-2xl md:rounded-xl" />
@@ -659,13 +669,31 @@ const InformasiPembayaran: FC<Props> = ({
                 handleBtn={() =>
                   handleDownloadPdf({
                     id: dataTransaction?.data?.id ?? 0,
-                    nomorTransaksi: dataTransaction?.data?.nomorTransaksi ?? "",
+                    namaPelanggan: dataTransaction?.data?.pelanggan?.nama ?? "",
+                    tanggal: dataTransaction?.data?.completedAt ?? new Date(),
                   })
                 }
               />
             </>
           )}
         </div>
+
+        {/* cetak sturuk */}
+        <ButtonWithIcon
+          icon={Printer}
+          customWidth="w-full mt-2"
+          bgColor="bg-emerald-500"
+          textColor="text-primary-white"
+          label="Cetak Struk Kirim Barang"
+          isLoading={isLoadingPrintInvoiceKirimBarang}
+          handleBtn={() =>
+            handlePrintInvoiceKirimBarang({
+              id: dataTransaction?.data?.id ?? 0,
+            })
+          }
+          skeleton={isLoadingTransaction}
+          classHidden="hidden lg:flex"
+        />
       </div>
 
       {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
@@ -698,7 +726,8 @@ const InformasiPembayaran: FC<Props> = ({
                 handleBtn={() =>
                   handleDownloadPdf({
                     id: dataTransaction?.data?.id ?? 0,
-                    nomorTransaksi: dataTransaction?.data?.nomorTransaksi ?? "",
+                    namaPelanggan: dataTransaction?.data?.pelanggan?.nama ?? "",
+                    tanggal: dataTransaction?.data?.completedAt ?? new Date(),
                   })
                 }
               />
@@ -728,7 +757,7 @@ const InformasiPembayaran: FC<Props> = ({
         )}
       />
       {/* modal formulir tempo */}
-      <ModalTempoPayment
+      {/* <ModalTempoPayment
         data={{
           total: Math.abs(
             (dataTransaction?.data?.totalBayar ?? 0) -
@@ -739,7 +768,7 @@ const InformasiPembayaran: FC<Props> = ({
         handleCloseModal={handleCloseModalTempo}
         handleShowModal={handleShowModalTempo}
         handleSetDataTempo={setDataTempo}
-      />
+      /> */}
 
       {/* modal alert */}
       <ModalAlert

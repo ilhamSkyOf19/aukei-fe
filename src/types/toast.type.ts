@@ -363,6 +363,10 @@ export const TOAST_CONFIG_RETUR_BARANG: Record<
     color: "error",
     message: "Data retur berhasil dihapus",
   },
+  updated_data: {
+    color: "info",
+    message: "Data berhasil diperbarui",
+  },
 };
 
 // toast daftar retur barang detail
@@ -400,6 +404,10 @@ export const TOAST_CONFIG_RETUR_BARANG_DETAIL: Record<
   deleted_retur_barang: {
     color: "error",
     message: "Data retur berhasil dihapus",
+  },
+  send_pengajuan: {
+    color: "success",
+    message: "Data retur berhasil diajukan",
   },
 };
 

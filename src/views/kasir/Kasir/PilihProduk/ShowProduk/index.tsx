@@ -22,28 +22,19 @@ type Props = {
   pelangganId?: number;
   handleShowModalFormulirTransaksi: (
     produk: Pick<DetailsForCreate, "hargaJual" | "produkId" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id" | "kategori"> & { diskon?: number },
+      Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
+        diskon?: number;
+        detailId?: number;
+        hargaModalRataRata: number;
+      },
   ) => void;
   step: number;
-  onAppendMany: (
-    produkList: (Pick<
-      ResponseProdukForKasirType,
-      | "nama"
-      | "img"
-      | "hargaJual"
-      | "kode"
-      | "hargaJualTerakhirTransaksi"
-      | "id"
-      | "stok"
-    > & { subTotal: number; diskon: number; quantity: number })[],
-  ) => void;
   dataChooseProduk?: ProdukDetailItem[];
 };
 
 const ShowProduk: FC<Props> = ({
   pelangganId,
   step,
-  onAppendMany,
   handleShowModalFormulirTransaksi,
   dataChooseProduk,
 }) => {
@@ -60,7 +51,7 @@ const ShowProduk: FC<Props> = ({
     isPrev,
     pages,
     kategori,
-  } = useShowProduk({ pelangganId, step, onAppendMany });
+  } = useShowProduk({ pelangganId, step });
 
   return (
     <div className="flex-5 max-h-full grid grid-rows-2">
@@ -96,9 +87,6 @@ const ShowProduk: FC<Props> = ({
           {isLoadingProduk ? (
             <div className="col-span-4 h-120 w-full flex flex-col gap-2.5 justify-center items-center">
               <div className="loading loading-md" />
-              <span className="text-xs skeleton skeleton-text">
-                Sedang memuat produk
-              </span>
             </div>
           ) : isExistDataProduk ? (
             dataProduk?.data?.data.map((item, index) => (
@@ -106,6 +94,8 @@ const ShowProduk: FC<Props> = ({
                 type="button"
                 key={index}
                 className="col-span-1 h-60 flex flex-row justify-start items-start group"
+                disabled={!pelangganId}
+                style={{ opacity: 1 }}
                 onClick={() =>
                   handleShowModalFormulirTransaksi({
                     produkId: item.id,
@@ -117,6 +107,7 @@ const ShowProduk: FC<Props> = ({
                     diskon: 0,
                     quantity: 1,
                     stok: item.stok,
+                    hargaModalRataRata: item.hargaModalRataRata,
                   })
                 }
               >
@@ -125,7 +116,7 @@ const ShowProduk: FC<Props> = ({
                     "w-full h-full flex flex-col justify-start items-start border rounded-xl shadow-sm overflow-hidden gap-2 group-hover:shadow-sm transition-all duration-300 ease-in-out bg-base-100 p-1.5",
                     dataChooseProduk?.some((produk) => produk.id === item.id)
                       ? "border-custom-secondary border-2"
-                      : "border-transparent dark:border-base-content/10 group-hover:border-custom-secondary ",
+                      : "border-transparent dark:border-base-content/10 ",
                   )}
                 >
                   <div className="w-full h-120 shadow-md rounded-xl flex flex-row justify-center items-center overflow-hidden relative">
@@ -162,7 +153,7 @@ const ShowProduk: FC<Props> = ({
                           Kode :
                         </span>
                         <span className="text-[0.625rem] font-medium text-base-content/80">
-                          {item.kode}
+                          {item.kode ?? "-"}
                         </span>
                       </div>
                     </div>
@@ -182,7 +173,7 @@ const ShowProduk: FC<Props> = ({
                             (produk) => produk.id === item.id,
                           )
                             ? "bg-custom-primary w-auto px-2"
-                            : "bg-base-content group-hover:bg-custom-primary text-base-100 w-5 ",
+                            : "bg-base-content  text-base-100 w-5 ",
                         )}
                       >
                         {dataChooseProduk?.some(
@@ -196,7 +187,7 @@ const ShowProduk: FC<Props> = ({
                             }
                           </span>
                         ) : (
-                          <Plus className="group-hover:text-custom-secondary size-3" />
+                          <Plus className=" size-3" />
                         )}
                       </div>
                     </div>

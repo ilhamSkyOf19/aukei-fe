@@ -1,12 +1,11 @@
 import {
+  ArrowRight,
   Banknote,
-  EllipsisVertical,
   Package,
   PackagePlus,
-  RefreshCcw,
+  RefreshCcwIcon,
   ShoppingBag,
-  Trash,
-  View,
+  Trash2,
 } from "lucide-react";
 import FilterKategori from "../../../../components/filters/Kategori";
 import FilterSort from "../../../../components/filters/Sort";
@@ -21,7 +20,6 @@ import {
   generateColorForStok,
 } from "../../../../helpers/helpers";
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
-import LabelButtonDropDownWithIcon from "../../../../components/ui/button/LabelButtonDropDownWithIcon";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import ModalDelete from "../../../../components/modals/ModalDelete";
 import type { FC } from "react";
@@ -32,6 +30,7 @@ import useDaftarProduk from "./useDaftarProduk";
 import ButtonGenerateHargaJual from "../../../../components/ui/button/ButtonGenerateHargaJual";
 import ModalGenerateHargaJual from "../../../../components/modals/ModalGenerateHargaJual";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 
 type Props = {
   handleSetToast: (toast: string) => void;
@@ -179,24 +178,24 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
             {/* head */}
             <thead>
               <tr className="h-12 bg-base-200 text-[0.7rem]">
-                <th>Pilih</th>
                 <th>Foto</th>
                 <th>Kode</th>
                 <th>Nama</th>
                 <th>Kategori</th>
-                <th>Harga Beli</th>
+                <th>Hrg. Beli Terakhir</th>
+                <th>Modal Rata Rata</th>
                 <th>Harga Jual</th>
                 <th>Stok</th>
                 <th>Isi PerBox</th>
                 <th>Aktif</th>
-                <th>Aksi</th>
+                <th align="center">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {isLoadingProduk ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={11}>
+                    <td colSpan={10}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>
@@ -209,11 +208,6 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                       "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                     )}
                   >
-                    <th>
-                      <label>
-                        <input type="checkbox" className="checkbox" />
-                      </label>
-                    </th>
                     {/* foto */}
                     <td>
                       <div className="flex items-center gap-3">
@@ -229,13 +223,15 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                       </div>
                     </td>
                     {/* kode */}
-                    <td className="font-medium text-info">{produk.kode}</td>
+                    <td className="font-medium">{produk.kode ?? "-"}</td>
                     {/* nama */}
                     <td>{produk.nama}</td>
                     {/* kategori */}
                     <td>{produk.kategori.nama}</td>
                     {/* harga beli */}
                     <td>{formatRupiah(produk.hargaBeli)}</td>
+                    {/* harga modal rata rata */}
+                    <td>{formatRupiah(produk.hargaModalRataRata)}</td>
                     {/* harga jual */}
                     <td>{formatRupiah(produk.hargaJual)}</td>
                     {/* stok */}
@@ -276,7 +272,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
 
                     {/* detail */}
                     <td>
-                      <div className="flex flex-row justify-start items-center gap-2">
+                      <div className="flex flex-row justify-center items-center gap-2">
                         {/* button generate harga jual */}
                         <ButtonGenerateHargaJual
                           disabled={produk.stok <= 0}
@@ -305,6 +301,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                               nama: produk.nama,
                             })
                           }
+                          customSize="w-7 h-7"
                         />
                       </div>
                     </td>
@@ -363,57 +360,10 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
   );
 };
 
-// drop down
-type DropDownProps = {
-  handleRedirectDetail: () => void;
-  handleShowModalDelete: () => void;
-  handleShowModalGenerateHargaJual?: () => void;
-  disableGenerateHargaJual?: boolean;
-};
-const DropDown: FC<DropDownProps> = ({
-  handleRedirectDetail,
-  handleShowModalDelete,
-  handleShowModalGenerateHargaJual,
-  disableGenerateHargaJual,
-}) => {
-  return (
-    <ul
-      tabIndex={-1}
-      className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
-    >
-      {handleShowModalGenerateHargaJual && (
-        <li>
-          <LabelButtonDropDownWithIcon
-            label="Kalkulasi"
-            icon={RefreshCcw}
-            handleClick={() => handleShowModalGenerateHargaJual()}
-            disabled={disableGenerateHargaJual}
-          />
-        </li>
-      )}
-      <li>
-        <LabelButtonDropDownWithIcon
-          label="Detail"
-          icon={View}
-          handleClick={() => handleRedirectDetail()}
-        />
-      </li>
-      <li>
-        <LabelButtonDropDownWithIcon
-          color="text-error"
-          label="Hapus"
-          icon={Trash}
-          handleClick={() => handleShowModalDelete()}
-        />
-      </li>
-    </ul>
-  );
-};
-
 type CardProdukProps = {
   produk: {
     id: number;
-    kode: string;
+    kode?: string | null;
     nama: string;
     kategori: string;
     hargaBeli: number;
@@ -452,9 +402,6 @@ const CardProduk: FC<CardProdukProps> = ({
         {/* content 1 */}
         <div className="flex-8 flex flex-row justify-start items-start gap-4">
           <div className="flex flex-row justify-start items-start gap-3">
-            {/* checkbox */}
-            <input type="checkbox" className="checkbox" />
-
             {/* foto */}
             <div className="w-16 h-16 overflow-hidden rounded-2xl">
               <img src={produk.img} alt="foto produk" loading="lazy" />
@@ -464,43 +411,21 @@ const CardProduk: FC<CardProdukProps> = ({
           {/* deskripsi */}
           <div className="flex flex-col justify-start items-start gap-1.5">
             {/* kode produk */}
-            <span className="text-[0.7rem] font-medium text-base-content/70 dark:text-base-content">
-              {produk.kode}
+            <span className="text-[0.7rem] font-medium text-base-content dark:text-base-content">
+              {produk.nama}
             </span>
             {/* nama produk */}
             <span className="text-sm font-medium text-base-content">
-              {produk.nama}
+              {produk.kode ?? "-"}
             </span>
 
             {/* kategori produk */}
-            <span className="text-xs text-base-content/70">
-              {produk.kategori}
-            </span>
+            <span className="text-xs text-base-content">{produk.kategori}</span>
           </div>
         </div>
 
         {/* aksi */}
-        <div className="flex-1 flex flex-col justify-between items-end">
-          <div className={cn("dropdown dropdown-left dropdown-end")}>
-            <button
-              type="button"
-              role="button"
-              tabIndex={0}
-              className="px-1 py-1.5 border border-base-content/10 rounded-lg"
-            >
-              <EllipsisVertical className="size-4 text-base-content" />
-            </button>
-
-            <DropDown
-              handleRedirectDetail={() => handleRedirectDetail(produk.id)}
-              handleShowModalDelete={() => handleShowModalDelete()}
-              handleShowModalGenerateHargaJual={() =>
-                handleShowModalGenerateHargaJual()
-              }
-              disableGenerateHargaJual={disableGenerateHargaJual}
-            />
-          </div>
-
+        <div className="flex-1 flex flex-col justify-end gap-2 items-end">
           <div>
             {isPendingUpdateIsActive &&
             variablesUpdateIsActive?.id == produk.id ? (
@@ -511,7 +436,7 @@ const CardProduk: FC<CardProdukProps> = ({
               <input
                 type="checkbox"
                 checked={produk.isActive}
-                className="toggle toggle-success toggle-xs"
+                className="toggle toggle-success toggle-md"
                 onChange={() =>
                   handelUpdateIsActive?.({
                     id: produk.id,
@@ -609,6 +534,42 @@ const CardProduk: FC<CardProdukProps> = ({
               : formatNumber(produk.isiPerBox ?? 0)}
           </span>
         </div>
+      </div>
+
+      {/* content 3 */}
+      <div className="w-full flex flex-row justify-start items-end gap-2.5 pt-2.5 border-t border-base-content/30">
+        {/* button kalkulasi harga jual */}
+        <ButtonWithIcon
+          icon={RefreshCcwIcon}
+          label="Hrg. Jual"
+          bgColor="bg-emerald-500"
+          textColor="text-primary-white"
+          customHeight="h-9"
+          customWidth="flex-1"
+          disabled={disableGenerateHargaJual}
+          handleBtn={() => handleShowModalGenerateHargaJual()}
+        />
+
+        {/* button hapus */}
+        <ButtonWithIcon
+          icon={Trash2}
+          label="Hapus"
+          bgColor="bg-error"
+          textColor="text-primary-white"
+          customHeight="h-9"
+          customWidth="flex-1"
+          handleBtn={() => handleShowModalDelete()}
+        />
+
+        {/* detail */}
+        <ButtonWithIcon
+          icon={ArrowRight}
+          label="Detail"
+          customHeight="h-9"
+          reverse
+          handleBtn={() => handleRedirectDetail(produk.id)}
+          customWidth="flex-1"
+        />
       </div>
     </div>
   );

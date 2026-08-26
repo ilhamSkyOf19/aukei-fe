@@ -1,9 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { InvoiceServices } from "../services/invoice.service";
+import { formatTanggalPanjang } from "../helpers/formatDate";
+import { formatTanggalLine } from "../helpers/helpers";
 
 type DownloadInvoiceParams = {
   id: number;
-  nomorTransaksi: string;
+  namaPelanggan: string;
+  tanggal: Date;
 };
 
 const useDownloadInvoice = (params: {
@@ -14,7 +17,11 @@ const useDownloadInvoice = (params: {
     mutateAsync: downloadInvoicePdf,
     isPending: isLoadingDownloadInvoicePdf,
   } = useMutation({
-    mutationFn: async ({ id, nomorTransaksi }: DownloadInvoiceParams) => {
+    mutationFn: async ({
+      id,
+      namaPelanggan,
+      tanggal,
+    }: DownloadInvoiceParams) => {
       const blob = await InvoiceServices.downloadInvoiceTransaksiPdf(id);
 
       const url = window.URL.createObjectURL(blob);
@@ -22,7 +29,7 @@ const useDownloadInvoice = (params: {
       const link = document.createElement("a");
 
       link.href = url;
-      link.download = `invoice-${nomorTransaksi}.pdf`;
+      link.download = `${namaPelanggan}-${formatTanggalLine(tanggal)}.pdf`;
 
       document.body.appendChild(link);
 

@@ -20,6 +20,7 @@ type Props = {
   classHidden?: string;
   typeButton?: "submit";
   skeleton?: boolean;
+  customIconSize?: string;
 };
 
 const ButtonWithIcon: FC<Props> = ({
@@ -39,6 +40,7 @@ const ButtonWithIcon: FC<Props> = ({
   typeButton,
   skeleton,
   customHeight,
+  customIconSize,
 }) => {
   const navigate = useNavigate();
 
@@ -84,9 +86,10 @@ const ButtonWithIcon: FC<Props> = ({
               {Icon && (
                 <Icon
                   className={cn(
-                    "size-4.5 md:size-3.5 shrink-0",
+                    " shrink-0",
                     textColor ?? "text-custom-secondary",
                     reverse && "order-2",
+                    customIconSize ?? "size-4.5 md:size-3.5",
                   )}
                 />
               )}

@@ -75,6 +75,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
         >
           {/* produk */}
           <FormCariProdukInventori
+            hargaBeli
             wrapperRef={wrapperRef}
             handleSearch={handleSearch}
             handleCloseActiveComponentChooseProduk={
@@ -89,7 +90,6 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
             dataProdukForChoose={dataProdukForChoose}
             error={errors.produkId?.message}
             isLoadingProdukForChoose={isLoadingProdukForChoose}
-            isLoadingDataProdukForChoose={isLoadingProdukForChoose}
           />
 
           {/* input jumlah perbox */}
@@ -131,6 +131,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
             <div className="w-full grid grid-cols-4 gap-2.5">
               {produkChoose.map((item) => (
                 <CardProdukForAfterChooseInventori
+                  hargaBeli
                   key={item.id}
                   data={item}
                   handleDeleteValueProdukId={handleDeleteValueProdukId}

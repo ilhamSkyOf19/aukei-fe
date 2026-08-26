@@ -37,20 +37,11 @@ const useSideBar = () => {
     handleCancel,
   } = useConfirm();
 
-  const resetStep = useStepStore((state) => state.resetStep);
-
   // get method in notifikasi store
   const resetNotifikasi = useNotifikasiStore((state) => state.resetNotifikasi);
 
   const clearTransactionStorage = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
     localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.DATA_FROM_KERANJANG);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.TEMPO);
   };
 
   const canLeaveTransaction = async (): Promise<boolean> => {
@@ -78,9 +69,6 @@ const useSideBar = () => {
 
     // hapus data transaksi
     clearTransactionStorage();
-
-    // reset steps
-    resetStep();
 
     return true;
   };
@@ -133,8 +121,6 @@ const useSideBar = () => {
     }
 
     // clear transaction and steps
-    resetStep();
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.TRANSACTION);
 
     // clear cluster
     // handleClearDataActiveCluster();

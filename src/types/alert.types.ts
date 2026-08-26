@@ -42,6 +42,9 @@ export const ALERT_CONFIG_BARANG_MASUK_DETAIL: Record<
     message:
       "Mohon maaf, gagal mendownload invoice. Silahkan tunggu beberapa saat atau hubungi developer.",
   },
+  stok_not_enough: {
+    message: "Mohon maaf, stok produk tidak mencukupi.",
+  },
 };
 
 export const ALERT_CONFIG_BARANG_KELUAR_DETAIL: Record<

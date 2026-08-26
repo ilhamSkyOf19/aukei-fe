@@ -1,8 +1,16 @@
+// models/barangMasukDetail.model.ts
+
 import type { IProduk } from "./produk.model";
+
+// ============================================================
+// BARANG MASUK DETAIL
+// ============================================================
 
 export interface IBarangMasukDetailType {
   id: number;
+
   barangMasukId: number;
+
   produk: Pick<
     IProduk,
     | "nama"
@@ -13,30 +21,60 @@ export interface IBarangMasukDetailType {
     | "isiPerBox"
     | "id"
     | "stok"
+    | "hargaModalRataRata"
   >;
+
   jumlahBox: number;
+
+  // Quantity dihitung dari:
+  // jumlahBox × isiPerBox
+  //
+  // Field ini bukan lagi field database.
+  // Jika masih diperlukan untuk response/frontend,
+  // jadikan computed value di mapping response.
   jumlahStok: number;
-  sisaStok: number;
+
+  hargaBeli: number;
+
+  isiPerBox: number;
+
   createdAt: Date;
   updatedAt: Date;
 }
 
-// create
+// ============================================================
+// CREATE
+// ============================================================
+
 export interface CreateBarangMasukDetailType extends Pick<
   IBarangMasukDetailType,
   "barangMasukId" | "jumlahBox"
 > {
   hargaBeli?: number;
+
   produkId: number[];
 }
 
-// update
+// ============================================================
+// UPDATE
+// ============================================================
+
 export interface UpdateBarangMasukDetailType extends Partial<
   Omit<CreateBarangMasukDetailType, "barangMasukId" | "produkId">
 > {
-  hargaBeli?: number;
   produkId?: number;
 }
 
-// response
+// ============================================================
+// RESPONSE
+// ============================================================
+
 export interface ResponseBarangMasukDetailType extends IBarangMasukDetailType {}
+
+// ============================================================
+// TO RESPONSE
+// ============================================================
+
+export const toResponseBarangMasukDetail = (
+  barangMasukDetail: ResponseBarangMasukDetailType,
+): ResponseBarangMasukDetailType => barangMasukDetail;

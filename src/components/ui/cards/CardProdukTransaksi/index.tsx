@@ -13,11 +13,11 @@ import { cn } from "../../../../utils/cn";
 import ButtonWithIcon from "../../button/ButtonWithIcon";
 
 type Props = {
-  data: Omit<ITransactionDetailType, "createdAt" | "updatedAt">;
+  data: Omit<ITransactionDetailType, "createdAt" | "updatedAt" | "laba">;
   handleAppend?: (params: {
     detailId: number;
     nama: string;
-    kode: string;
+    kode?: string | null;
     img: string;
     hargaJual: number;
     maxQuantity: number;

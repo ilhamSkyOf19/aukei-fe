@@ -18,9 +18,15 @@ const clearLocalStorage = () => {
   localStorage.removeItem("data-tempo");
 };
 
+const delay = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
+
 instanceAxios.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  async (response) => {
+    // await delay(1000);
+    return response;
+  },
+  async (error) => {
     // timeout
     if (error.code === "ECONNABORTED") {
       clearLocalStorage();
@@ -31,8 +37,8 @@ instanceAxios.interceptors.response.use(
     // network error
     if (!error.response) {
       clearLocalStorage();
-      window.location.href = "/error-network";
-      return;
+      // window.location.href = "/error-network";
+      return Promise.reject(error);
     }
 
     // unauthorized
@@ -45,7 +51,6 @@ instanceAxios.interceptors.response.use(
       return;
     }
 
-    // error lain serahkan ke caller
     return Promise.reject(error);
   },
 );

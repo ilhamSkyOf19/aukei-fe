@@ -73,7 +73,7 @@ const InputQty = <T extends FieldValues = any>({
       )}
       <div
         className={clsx(
-          "flex flex-row justify-between items-center gap-2 border border-base-content/20 rounded-md w-40 focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100  h-full mt-2 overflow-hidden",
+          "flex flex-row justify-between items-center gap-2 border border-base-content/20 rounded-md w-30 focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100  h-full mt-2 overflow-hidden",
           fieldState.error && "border-error",
         )}
       >

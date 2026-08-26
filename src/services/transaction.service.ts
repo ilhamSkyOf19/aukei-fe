@@ -3,6 +3,7 @@ import type { PaginationType } from "../models/pagination.model";
 import type {
   CreateTransactionForRequestType,
   ResponseForReturBarang,
+  ResponseProdukDetailType,
   ResponseRiwayatTransactionType,
   ResponseRiwayatTransaksiPelangganType,
   ResponseStatistikBookingType,
@@ -10,7 +11,11 @@ import type {
   ResponseTransactionType,
   ResponseTransaksiBookingByPelangganType,
   ResponseTransaksiBookingWithPelangganWithMetaType,
+  ResponseTransaksiDraftType,
+  TambahProdukDetailForReqeustType,
+  UpdateProdukDetail,
 } from "../models/transaction.model";
+import type { PaymentMethodType } from "../types/constant.type";
 import type { ResponseStructure } from "../types/response.type";
 
 export class TransactionServices {
@@ -154,6 +159,122 @@ export class TransactionServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseForReturBarang | null>
     >(`/transaction/${params.id}/for-retur-barang`);
+
+    return result.data;
+  }
+
+  // find transaksi draft
+  static async findTransaksiDraft(): Promise<
+    ResponseStructure<ResponseTransaksiDraftType | null>
+  > {
+    // call api
+    const result =
+      await instanceAxios.get<
+        ResponseStructure<ResponseTransaksiDraftType | null>
+      >(`/transaction/draft`);
+
+    return result.data;
+  }
+
+  // pilih pelanggan
+  static async pilihPelanggan(data: {
+    pelangganId: number;
+  }): Promise<ResponseStructure<ResponseForReturBarang | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponseForReturBarang | null>
+    >(`/transaction/pilih-pelanggan`, data);
+
+    return result.data;
+  }
+
+  // tambah produk
+  static async tambahProduk(
+    data: TambahProdukDetailForReqeustType,
+  ): Promise<ResponseStructure<ResponseTransaksiDraftType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponseTransaksiDraftType | null>
+    >(`/transaction/tambah-produk`, data);
+
+    return result.data;
+  }
+
+  // update produk
+  static async updateProduk(params: {
+    detailId: number;
+    data: UpdateProdukDetail;
+  }): Promise<ResponseStructure<ResponseTransaksiDraftType | null>> {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponseTransaksiDraftType | null>
+    >(`/transaction/detail/${params.detailId}`, params.data);
+
+    return result.data;
+  }
+
+  // update metode pembayaran
+  static async updateMetodePembayaran(params: {
+    transactionId: number;
+    data: { metodePembayaran: PaymentMethodType };
+  }): Promise<
+    ResponseStructure<{
+      transactionId: number;
+      metodePembayaran: PaymentMethodType;
+    } | null>
+  > {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<{
+        transactionId: number;
+        metodePembayaran: PaymentMethodType;
+      } | null>
+    >(`/transaction/${params.transactionId}/metode-pembayaran`, params.data);
+
+    return result.data;
+  }
+
+  // update ongkir
+  static async updateOngkir(params: {
+    transactionId: number;
+    data: { ongkir: number };
+  }): Promise<
+    ResponseStructure<{
+      transactionId: number;
+      ongkir: number;
+    } | null>
+  > {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<{
+        transactionId: number;
+        ongkir: number;
+      } | null>
+    >(`/transaction/${params.transactionId}/ongkir`, params.data);
+
+    return result.data;
+  }
+
+  // remove produk details
+  static async removeProdukDetails(params: {
+    detailId: number;
+  }): Promise<ResponseStructure<ResponseProdukDetailType | null>> {
+    // call api
+    const result = await instanceAxios.delete<
+      ResponseStructure<ResponseProdukDetailType | null>
+    >(`/transaction/detail/${params.detailId}`);
+
+    return result.data;
+  }
+
+  // remove all
+  static async removeAllProdukDetails(params: {
+    transactionId: number;
+  }): Promise<ResponseStructure<null>> {
+    // call api
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/transaction/${params.transactionId}/all-detail`,
+    );
 
     return result.data;
   }

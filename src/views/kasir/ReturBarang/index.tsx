@@ -4,11 +4,9 @@ import {
   Check,
   ChevronsRightIcon,
   IdCard,
-  PackageCheck,
-  PackageX,
+  PackageMinus,
   Phone,
   ReceiptText,
-  Trash2,
   Undo2,
   UserRound,
   X,
@@ -23,60 +21,68 @@ import {
   formatRupiah,
 } from "../../../helpers/helpers";
 import { cn } from "../../../utils/cn";
-import InputNumber from "../../../components/inputs/InputNumber";
-import {
-  useController,
-  useWatch,
-  type Control,
-  type FieldPath,
-} from "react-hook-form";
-import type { CreateReturnRequestType } from "../../../models/returBarang.model";
-import InputNumberReadOnly from "../../../components/inputs/InputNumberReadOnly";
-import InputPrice from "../../../components/inputs/InputPrice";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import ModalAlert from "../../../components/modals/ModalAlert";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import AlertLabel from "../../../components/messages/AlertLabel";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
-import NotCompatible from "../../../components/messages/NotCompatible";
 import CardProdukTransaksi from "../../../components/ui/cards/CardProdukTransaksi";
-import InputTextAreaNonIcon from "../../../components/inputs/InputTextAreaNonIcon";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
+import FormData from "./FormData/FormData";
+import ModalFormulirVerifikasiOrPengajuanReturBarang from "../../../components/modals/ModalFormulirVerifikasiOrPengajuanReturBarang";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_RETUR_BARANG } from "../../../types/toast.type";
 
 const ReturBarang = () => {
   const {
     handleBack,
     dataForReturBarang,
     isLoadingForReturBarang,
-    fields,
     handleAppend,
-    remove,
-    control,
     summary,
-    customTotalRefundController,
     dataConfirm,
     handleCancelConfirm,
     handleConfirm,
     modalConfirmRef,
     handleBatalRetur,
-    handleSubmit,
-    isPendingMutateReturBarang,
-    onSubmit,
     isCanSimpanAndAjukan,
     pengguna,
     windowSize,
-    errors,
-    register,
+    handleRemove,
+    isLoadingReturDraftDetail,
+    isPendingAddReturnDetail,
+    isPendingDeleteReturnDetail,
+    returnDetailMap,
+    returnDetails,
+    transactionDetailMap,
+    combinedReturnDetails,
+    handleCloseModalPengajuanOrVerifikasi,
+    handleShowModalPengajuanOrVerifikasi,
+    modalPengajuanOrVerifikasiRef,
+
+    dataReturDraftDetail,
+
     isLoadingReturDetails,
+    validateReturBarangId,
+
+    handleSetToast,
+    toast,
   } = useReturBarang();
 
   return (
     <div className="w-full">
+      {/* toast */}
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_RETUR_BARANG[toast.type].message}
+          color={TOAST_CONFIG_RETUR_BARANG[toast.type].color}
+        />
+      )}
       <div
         className={cn(
-          "w-full flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5",
-          pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && "hidden lg:flex",
-          pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && "flex",
+          "flex w-full flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5",
         )}
       >
         <ButtonBackText handleClick={() => handleBack()} />
@@ -289,21 +295,16 @@ const ReturBarang = () => {
                                   <button
                                     disabled={
                                       item.quantity <= item.totalRetur ||
-                                      fields.some(
-                                        (field) =>
-                                          field.transactionDetailId === item.id,
-                                      )
+                                      returnDetails?.some((item) => item.id)
                                     }
                                     type="button"
                                     className="text-[0.625rem] font-medium px-2 py-1 border border-rose-600 rounded-md flex flex-row justify-start items-center gap-1 not-disabled:hover:text-primary-white not-disabled:transition-all not-disabled:duration-150 not-disabled:ease-in-out not-disabled:hover:bg-rose-600"
                                     onClick={() =>
                                       handleAppend({
                                         detailId: item.id,
-                                        nama: item.produk.nama,
-                                        kode: item.produk.kode,
-                                        img: item.produk.img,
                                         hargaJual: item.hargaJual,
-                                        maxQuantity: item.quantity,
+                                        maxQuantity:
+                                          item.quantity - item.totalRetur,
                                         quantityWasRetur: item.totalRetur,
                                       })
                                     }
@@ -342,8 +343,7 @@ const ReturBarang = () => {
           message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur."
         />
         {/* form retur */}
-        <form
-          onSubmit={handleSubmit(onSubmit)}
+        <div
           className="w-full flex flex-col justify-start items-start gap-2.5"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -368,22 +368,22 @@ const ReturBarang = () => {
 
             {/* card formulir */}
             <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
-              {isLoadingReturDetails ? (
+              {isLoadingReturDraftDetail || isLoadingReturDetails ? (
                 <>
                   <div className="w-full h-12 skeleton border border-base-content/10 rounded-2xl md:rounded-xl" />
                 </>
-              ) : fields.length > 0 ? (
-                fields.map((field, index) => (
+              ) : combinedReturnDetails.length > 0 ? (
+                combinedReturnDetails.map((item, _) => (
                   <div
-                    key={field.id}
-                    className="w-full p-2.5 flex flex-col justify-start md:grid md:grid-cols-11 lg:grid-cols-9 md:gap-2.5 items-stretch border border-base-content/10 rounded-xl"
+                    key={item.id}
+                    className="w-full p-2.5 flex flex-col justify-start md:grid md:grid-cols-11 lg:grid-cols-4 md:gap-2.5 items-stretch border border-base-content/10 rounded-xl"
                   >
                     {/* info */}
-                    <div className="md:col-span-3 lg:col-span-2 flex flex-row justify-start items-start gap-4">
+                    <div className="md:col-span-3 lg:col-span-1 flex flex-row justify-start items-start gap-4">
                       {/* img */}
                       <div className="w-12 h-12 md:w-13 md:h-13 shrink-0 lg:w-16 lg:h-16 rounded-xl overflow-hidden">
                         <img
-                          src={field.img}
+                          src={item.produk?.img}
                           alt="foto produk"
                           className="w-full h-full object-cover"
                         />
@@ -394,10 +394,10 @@ const ReturBarang = () => {
                         <div className="flex flex-col justify-start items-start gap-0.5 border-r border-base-content/30 pr-2.5 md:border-none">
                           {/* nama */}
                           <span className="text-xs font-semibold text-base-content">
-                            {field.nama}
+                            {item?.produk?.nama}
                           </span>
                           <span className="text-[0.625rem] font-medium text-base-content/70">
-                            {field.kode}
+                            {item?.produk?.kode ?? "-"}
                           </span>
                         </div>
                         <div className="flex flex-col justify-start items-start gap-0.5">
@@ -406,61 +406,26 @@ const ReturBarang = () => {
                             Harga Jual
                           </span>
                           <span className="text-[0.625rem] font-semibold text-base-content">
-                            {formatRupiah(field.hargaJual)}
+                            {formatRupiah(item?.hargaJual)}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    {/* barang bagus */}
-                    <div className="col-span-4 mt-2.5 md:mt-0 grid grid-cols-4 justify-start items-center gap-2.5">
-                      <div className="col-span-2">
-                        <QtyInput
-                          key={field.id}
-                          control={control}
-                          name={`details.${index}.quantityGood`}
-                          label="Qty Barang Bagus"
-                          max={field.maxQuantity}
-                        />
-                      </div>
-
-                      <div className="col-span-2">
-                        {/* barang rusak */}
-                        <QtyInput
-                          key={field.id}
-                          control={control}
-                          name={`details.${index}.quantityDamaged`}
-                          label="Qty Barang Rusak"
-                          max={field.maxQuantity}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="lg:col-span-2 md:col-span-3">
-                      {/* sub total otomatis  */}
-                      <ReturnSubtotal
-                        control={control}
-                        index={index}
-                        hargaJual={field.hargaJual}
-                      />
-                    </div>
-
-                    <div className="col-span-1 flex flex-row justify-center mt-2.5 md:pt-1.5 lg:pt-4.5 items-center">
-                      <ButtonWithIcon
-                        icon={Trash2}
-                        {...(windowSize === "md" && {
-                          noLabel: true,
-                        })}
-                        {...(windowSize !== "md" && {
-                          noLabel: false,
-                          label: "Hapus",
-                        })}
-                        bgColor="bg-error"
-                        textColor="text-primary-white"
-                        handleBtn={() => remove(index)}
-                        customWidth="w-full md:w-auto"
-                      />
-                    </div>
+                    <FormData
+                      hargaBeliRetur={item.hargaBeliRetur ?? item.hargaJual}
+                      maxQuantity={
+                        item.quantityTransaction === 1
+                          ? 1
+                          : item.quantityTransaction - item.totalRetur
+                      }
+                      quantityReturn={item.quantityReturn}
+                      returnDetailId={item.id}
+                      returnTransactionId={item.returnTransactionId ?? 0}
+                      totalRefund={item.totalRefund}
+                      transactionId={dataForReturBarang?.data?.id ?? 0}
+                      handleSetToast={handleSetToast}
+                    />
                   </div>
                 ))
               ) : (
@@ -493,32 +458,17 @@ const ReturBarang = () => {
             <div className="w-full gap-2.5 grid grid-cols-1 md:grid-cols-3 mt-4">
               <CardStatistikLarge
                 icon={{
-                  largeIcon: PackageCheck,
-                  bgColor: "bg-emerald-50 dark:bg-emerald-100",
-                  textColor: "text-emerald-600",
-                }}
-                label="Total Barang Bagus"
-                largeValue={{
-                  value: `${formatNumber(summary.totalBarangBagus)}`,
-                }}
-                smallValue={"Barang yang dapat dijual kembali"}
-                customWidth="col-span-1"
-                isLoading={isLoadingReturDetails}
-              />
-
-              <CardStatistikLarge
-                icon={{
-                  largeIcon: PackageX,
+                  largeIcon: PackageMinus,
                   bgColor: "bg-rose-50 dark:bg-rose-100",
                   textColor: "text-rose-600",
                 }}
-                label="Total Barang Rusak"
+                label="Total Item Retur Barang"
                 largeValue={{
-                  value: `${formatNumber(summary.totalBarangRusak)}`,
+                  value: `${formatNumber(summary.totalQuantity)}`,
                 }}
-                smallValue={"Barang yang tidak dapat dijual kembali"}
+                smallValue={"Total barang yang diretur"}
                 customWidth="col-span-1"
-                isLoading={isLoadingReturDetails}
+                isLoading={isLoadingReturDraftDetail}
               />
 
               <CardStatistikLarge
@@ -533,12 +483,12 @@ const ReturBarang = () => {
                 }}
                 smallValue={"Total uang refund / uang kembali"}
                 customWidth="col-span-1"
-                isLoading={isLoadingReturDetails}
+                isLoading={isLoadingReturDraftDetail}
               />
             </div>
 
             <div className="w-full md:gap-2.5 grid grid-cols-4 md:grid-cols-3 mt-4">
-              <div className="col-span-4 md:col-span-1">
+              {/* <div className="col-span-4 md:col-span-1">
                 <InputTextAreaNonIcon
                   register={register("keterangan")}
                   name="keterangan"
@@ -558,24 +508,13 @@ const ReturBarang = () => {
                   caption="Silahkan isi jika ingin mengubah total refund"
                   disabled={!isCanSimpanAndAjukan}
                 />
-              </div>
+              </div> */}
 
               {/* aksi */}
               <div className="col-span-4 md:col-span-1 flex-row justify-start items-center gap-2.5 pb-2 grid grid-cols-2">
-                {/* batal */}
-                <ButtonWithIcon
-                  icon={X}
-                  label="Batal Retur"
-                  bgColor="bg-error"
-                  textColor="text-primary-white"
-                  handleBtn={() => handleBatalRetur()}
-                  customWidth="col-span-1"
-                />
-
                 {/* simpan dan ajukan */}
                 <ButtonWithIcon
                   disabled={!isCanSimpanAndAjukan}
-                  typeButton="submit"
                   icon={Check}
                   // tambahkan response created by agar saya mudah melacak nya
                   label={
@@ -583,21 +522,15 @@ const ReturBarang = () => {
                       ? "Simpan dan Review"
                       : "Simpan dan Ajukan"
                   }
+                  handleBtn={() => handleShowModalPengajuanOrVerifikasi()}
                   customWidth="col-span-1"
                   skeleton={isLoadingForReturBarang}
                 />
               </div>
             </div>
           </div>
-        </form>
-      </div>
-
-      {/* not compatible */}
-      {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
-        <div className="w-full h-[80vh] lg:hidden flex justify-center items-center">
-          <NotCompatible />
         </div>
-      )}
+      </div>
 
       {/* modal */}
       <ModalAlert
@@ -609,58 +542,19 @@ const ReturBarang = () => {
         handleCloseModal={handleCancelConfirm}
         handleConfirm={handleConfirm}
         labelNext="Lanjutkan"
-        isLoading={isPendingMutateReturBarang}
+        // isLoading={isPendingMutateReturBarang}
+      />
+
+      {/* modal pengajuan  */}
+      <ModalFormulirVerifikasiOrPengajuanReturBarang
+        modalRef={modalPengajuanOrVerifikasiRef}
+        handleCloseModal={handleCloseModalPengajuanOrVerifikasi}
+        kodeReferensi={dataForReturBarang?.data?.nomorTransaksi ?? ""}
+        returId={dataReturDraftDetail?.data?.id ?? validateReturBarangId ?? 0}
+        role={pengguna?.role}
+        transactionId={dataForReturBarang?.data?.id}
       />
     </div>
-  );
-};
-
-// quantity good input
-type QtyInputProps = {
-  control: Control<CreateReturnRequestType>;
-  name: FieldPath<CreateReturnRequestType>;
-  label: string;
-  max: number;
-};
-
-const QtyInput = ({ control, name, label, max }: QtyInputProps) => {
-  const controller = useController({
-    control,
-    name,
-  });
-
-  return (
-    <InputNumber
-      label={label}
-      placeholder="Contoh: 5"
-      controller={controller}
-      name={name}
-      max={max}
-    />
-  );
-};
-
-type ReturnSubtotalProps = {
-  control: Control<CreateReturnRequestType>;
-  index: number;
-  hargaJual: number;
-};
-
-const ReturnSubtotal = ({ control, index, hargaJual }: ReturnSubtotalProps) => {
-  const detail = useWatch({
-    control,
-    name: `details.${index}`,
-  });
-
-  const subtotal =
-    ((detail?.quantityGood ?? 0) + (detail?.quantityDamaged ?? 0)) * hargaJual;
-
-  return (
-    <InputNumberReadOnly
-      label="Subtotal Refund (otomatis)"
-      placeholder="Silahkan isi qty"
-      value={subtotal}
-    />
   );
 };
 

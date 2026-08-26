@@ -19,7 +19,6 @@ type Props = {
   handleCloseModal: () => void;
   jumlahStok?: number;
   dataUpdate: {
-    hargaModalSatuan?: number;
     jumlahStok?: number;
     produkId?: number;
   };
@@ -32,7 +31,7 @@ const ModalUbahProdukKeluar: FC<Props> = ({
   handleCloseModal,
   status,
   idBarangKeluar,
-  dataUpdate: { hargaModalSatuan, jumlahStok, produkId },
+  dataUpdate: { jumlahStok, produkId },
 }) => {
   const {
     handleSubmit,
@@ -61,13 +60,11 @@ const ModalUbahProdukKeluar: FC<Props> = ({
     isPendingBarangKeluarDetail,
 
     alert,
-    hargaModalSatuanController,
     jumlahStokController,
   } = useModalUbahProdukKeluar({
     idBarangKeluar,
     status,
     dataUpdate: {
-      hargaModalSatuan,
       jumlahStok,
       produkId,
     },
@@ -146,6 +143,7 @@ const ModalUbahProdukKeluar: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
+                            hargaModal
                             key={item.id}
                             data={item}
                             handleSetValueProdukId={handleSetValueProdukId}
@@ -168,22 +166,13 @@ const ModalUbahProdukKeluar: FC<Props> = ({
                 <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
                   <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
                   <CardProdukForAfterChooseInventori
+                    hargaModal
                     data={produkChoose}
                     handleDeleteValueProdukId={handleDeleteValueProdukId}
                     customWidth="w-full"
                   />
                 </div>
               )}
-            </div>
-
-            {/* harga modal satuan */}
-            <div className="w-full lg:hidden">
-              <InputPrice<UpdateBarangKeluarDetailType>
-                controller={hargaModalSatuanController}
-                label="Harga Modal Satuan"
-                placeholder="Harga Modal Satuan"
-                required
-              />
             </div>
 
             {/* jumlah stok */}

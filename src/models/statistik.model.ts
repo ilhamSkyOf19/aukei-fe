@@ -167,3 +167,42 @@ export interface ResponseStatistikPantauanStokType {
   produkRestock: number;
   totalItemRestock: number;
 }
+
+export type ResponseStatistikKategoriStokType = {
+  kategoriId: number;
+  namaKategori: string;
+  totalProduk: number;
+  totalStok: number;
+  totalEstimasiOmzet: number;
+};
+
+export type ResponseStatistikStokModalType = {
+  totalStok: number;
+  totalModal: number;
+  totalEstimasiOmzet: number;
+
+  kategori: ResponseStatistikKategoriStokType[];
+};
+
+export type ResponseStatistikStokDetailProdukType = {
+  id: number;
+  nama: string;
+  kode: string | null;
+  img: string;
+
+  hargaModalRataRata: number;
+  hargaJual: number;
+
+  totalStok: number;
+  totalModal: number;
+  totalOmzet: number;
+  totalLaba: number;
+};
+
+export type ResponseStatistikStokDetailKategoriType = {
+  totalStok: number;
+  totalModal: number;
+  totalEstimasiOmzet: number;
+
+  produk: ResponseStatistikStokDetailProdukType[];
+};

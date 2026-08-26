@@ -1,7 +1,9 @@
 import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
+  CreateTempoForRequestType,
   ResponseStatistikTempo,
+  ResponseTempoType,
   ResponseTempoWithInstallment,
   ResponseTempoWithPelangganDetailWithMetaType,
   ResponseTempoWithPelangganWithMetaType,
@@ -10,6 +12,18 @@ import type { ResponseHistoryPaymentWithMetaType } from "../models/tempoInstallm
 import type { ResponseStructure } from "../types/response.type";
 
 export class TempoService {
+  // create
+  static async create(
+    data: CreateTempoForRequestType,
+  ): Promise<ResponseStructure<ResponseTempoType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponseTempoType | null>
+    >(`/tempo`, data);
+
+    return result.data;
+  }
+
   // find all
   static async findAll(
     query: PaginationType & {

@@ -25,10 +25,8 @@ import PengajuanBarangMasukPage from "../pages/PengajuanBarangMasukPage";
 import PengajuanBarangKeluarPage from "../pages/PengajuanBarangKeluarPage";
 import KreditPage from "../pages/KreditPage";
 import BookingPage from "../pages/BookingPage";
-import KreditDetailPage from "../pages/KreditDetailPage";
 import InstallmentsDetailPage from "../pages/InstallmentsDetailPage";
 import TransactionDetailPage from "../pages/TransactionDetailPage";
-import BookingByPelangganPage from "../pages/BookingByPelangganPage";
 import NotFoundPage from "../pages/404";
 import NotifikasiPage from "../pages/NotifikasiPage";
 import ReturBarangPage from "../pages/ReturBarangPage";
@@ -229,6 +227,14 @@ const route = createBrowserRouter([
               </RoleGuard>
             ),
           },
+          {
+            path: "kategori/:kategoriId",
+            element: (
+              <RoleGuard allowedRoles={[ROLE_INTERNAL_TYPE.OWNER]}>
+                <StatistikDetailPage />
+              </RoleGuard>
+            ),
+          },
         ],
       },
       {
@@ -239,43 +245,34 @@ const route = createBrowserRouter([
             element: <RiwayatTransaksiPage />,
           },
           {
-            path: "pelanggan/:pelangganId",
+            path: ":transactionId",
             children: [
               {
                 index: true,
-                element: <RiwayatTransaksiDetailPage />,
+                element: <TransactionDetailPage />,
               },
               {
-                path: "transaksi/:transactionId",
+                path: "daftar-retur-barang",
                 children: [
                   {
                     index: true,
-                    element: <TransactionDetailPage />,
+                    element: <DaftarReturBarangPage />,
                   },
                   {
-                    path: "daftar-retur-barang",
+                    path: "detail/:returBarangId",
                     children: [
+                      { index: true, element: <ReturBarangDetailPage /> },
                       {
-                        index: true,
-                        element: <DaftarReturBarangPage />,
-                      },
-                      {
-                        path: "detail/:returBarangId",
-                        children: [
-                          { index: true, element: <ReturBarangDetailPage /> },
-                          {
-                            path: "ubah-data",
-                            element: <ReturBarangPage ubahData />,
-                          },
-                        ],
+                        path: "ubah-data",
+                        element: <ReturBarangPage ubahData />,
                       },
                     ],
                   },
-                  {
-                    path: "retur-barang",
-                    element: <ReturBarangPage />,
-                  },
                 ],
+              },
+              {
+                path: "retur-barang",
+                element: <ReturBarangPage />,
               },
             ],
           },
@@ -292,6 +289,16 @@ const route = createBrowserRouter([
                 <PelangganPage />
               </RoleGuard>
             ),
+          },
+          // RIWAYAT TRANSAKSI BY PELANGGAN
+          {
+            path: ":pelangganId",
+            children: [
+              {
+                index: true,
+                element: <RiwayatTransaksiDetailPage />,
+              },
+            ],
           },
         ],
       },
@@ -327,18 +334,21 @@ const route = createBrowserRouter([
             element: <KreditPage />,
           },
           {
-            path: "pelanggan/:id",
-            children: [
-              {
-                index: true,
-                element: <KreditDetailPage />,
-              },
-              {
-                path: "tempo/:tempoId",
-                element: <InstallmentsDetailPage />,
-              },
-            ],
+            path: ":tempoId",
+            element: <InstallmentsDetailPage />,
           },
+
+          // BY PELANGGAN
+          // {
+          //   path: "pelanggan/:id",
+          //   children: [
+          //     {
+          //       index: true,
+          //       element: <KreditDetailPage />,
+          //     },
+
+          //   ],
+          // },
         ],
       },
       {
@@ -349,18 +359,21 @@ const route = createBrowserRouter([
             element: <BookingPage />,
           },
           {
-            path: "pelanggan/:pelangganId",
-            children: [
-              {
-                index: true,
-                element: <BookingByPelangganPage />,
-              },
-              {
-                path: "detail/:transactionId",
-                element: <TransactionDetailPage />,
-              },
-            ],
+            path: ":transactionId",
+            element: <TransactionDetailPage />,
           },
+
+          // GROUPED BY PELANGGAN
+          // {
+          //   path: "pelanggan/:pelangganId",
+          //   children: [
+          //     {
+          //       index: true,
+          //       element: <BookingByPelangganPage />,
+          //     },
+
+          //   ],
+          // },
         ],
       },
       {

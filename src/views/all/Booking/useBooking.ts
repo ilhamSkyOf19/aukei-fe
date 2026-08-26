@@ -91,8 +91,8 @@ const useBooking = () => {
       : false;
 
   //   handle redirect
-  const handleRedirect = (pelangganId: number) => {
-    return navigate(`${currentPathname}/pelanggan/${pelangganId}`);
+  const handleRedirect = (transactionId: number) => {
+    return navigate(`${currentPathname}/${transactionId}`);
   };
 
   const { data: dataKebutuhanBarang, isLoading: isLoadingKebutuhanBarang } =

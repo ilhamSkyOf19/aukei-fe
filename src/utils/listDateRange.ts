@@ -4,6 +4,19 @@ const now = new Date();
 
 const listDateRange: { label: string; value: string }[] = [
   {
+    label: "Hari Ini",
+    value: JSON.stringify({
+      startDate: format(
+        new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+        "yyyy-MM-dd",
+      ),
+      endDate: format(
+        new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+        "yyyy-MM-dd",
+      ),
+    }),
+  },
+  {
     label: "Kemarin",
     value: JSON.stringify({
       startDate: format(

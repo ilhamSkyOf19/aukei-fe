@@ -8,7 +8,9 @@ import { useAlertAnimation } from "../../../hooks/useAlert";
 import { useAuthStore } from "../../../stores/authStore";
 import { useToastAnimation } from "../../../hooks/useToast";
 import {
+  RETURN_STATUS,
   STATUS_INVENTORI_TYPE,
+  type ReturnStatus,
   type StatusInventoriType,
 } from "../../../types/constant.type";
 import useConfirm from "../../../hooks/useConfirm";
@@ -62,7 +64,7 @@ const useReturBarangDetail = () => {
   const { data: dataReturBarang, isLoading: isLoadingReturBarang } = useQuery({
     queryKey: ["retur-barang-detail", validatedReturBarangId],
     queryFn: () =>
-      ReturBarangServices.findById({ id: validatedReturBarangId! }),
+      ReturBarangServices.findById({ returId: validatedReturBarangId! }),
     enabled: !!validatedReturBarangId,
     retry: false,
     refetchOnWindowFocus: false,
@@ -91,15 +93,13 @@ const useReturBarangDetail = () => {
     return finalReturDetails?.reduce(
       (acc, detail) => {
         // total
-        acc.totalBarangRusak += detail.quantityDamaged ?? 0;
-        acc.totalBarangBagus += detail.quantityGood ?? 0;
         acc.totalRefund = dataReturBarang?.data?.totalRefundAll ?? 0;
+        acc.totalQuantity = detail.quantityReturn ?? 0;
 
         return acc;
       },
       {
-        totalBarangRusak: 0,
-        totalBarangBagus: 0,
+        totalQuantity: 0,
         totalRefund: 0,
       },
     );
@@ -119,10 +119,6 @@ const useReturBarangDetail = () => {
     });
 
     queryClient.invalidateQueries({
-      queryKey: ["notifikasi-pengajuan-retur-barang"],
-    });
-
-    queryClient.invalidateQueries({
       queryKey: ["riwayat-pengajuan-retur-barang", validatedReturBarangId],
     });
   };
@@ -135,7 +131,7 @@ const useReturBarangDetail = () => {
     mutationFn: (data: {
       kodeReferensi: string;
       keterangan?: string;
-      status: Exclude<StatusInventoriType, "DRAFT" | "PENDING">;
+      status: Extract<ReturnStatus, "APPROVED" | "REJECTED">;
     }) => ReturBarangServices.verifikasi(data),
     onSuccess: () => {
       handleSetToast("approved_pengajuan");
@@ -173,7 +169,7 @@ const useReturBarangDetail = () => {
 
       await mutateVerifikasiPengajuanReturBarang({
         kodeReferensi: dataReturBarang?.data?.kodeReferensi,
-        status: STATUS_INVENTORI_TYPE.POSTED,
+        status: RETURN_STATUS.APPROVED,
       });
     } catch (error) {
       console.log(error);
@@ -205,7 +201,7 @@ const useReturBarangDetail = () => {
   // mutate delete
   const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(
     {
-      mutationFn: (id: number) => ReturBarangServices.delete({ id }),
+      mutationFn: (id: number) => ReturBarangServices.delete({ returId: id }),
       onSuccess: () => {
         // redirect
         navigate(currentPathname.split("/").slice(0, -2).join("/"), {

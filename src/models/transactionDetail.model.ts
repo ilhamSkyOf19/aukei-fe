@@ -2,12 +2,14 @@ import type { IProduk } from "./produk.model";
 
 export interface ITransactionDetailType {
   id: number;
-  produk: Pick<IProduk, "id" | "nama" | "kode" | "img">;
+  produk: Pick<IProduk, "id" | "nama" | "kode" | "img" | "hargaModalRataRata">;
   quantity: number;
   totalHarga: number;
   hargaJual: number;
   diskon: number;
   subtotal: number;
+  hpp: number | null;
+  laba: number | null;
   totalRetur: number;
   createdAt: Date;
   updatedAt: Date;

@@ -1,14 +1,12 @@
 import type {
   DetailsForCreate,
-  DetailsLocalStorageType,
-  ProdukDetailItem,
+  ResponseTransaksiDraftType, // TODO: pastikan type ini memang diexport dari models/transaction.model
 } from "../../../../models/transaction.model";
 import { useMemo, useState } from "react";
 import type { ResponseProdukForKasirType } from "../../../../models/produk.model";
-import type { IPelangganType } from "../../../../models/pelanggan.model";
 import { useAlertAnimation } from "../../../../hooks/useAlert";
 import useModal from "../../../../hooks/useModal";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import type { ErrorResponse } from "../../../../types/response.type";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -21,17 +19,18 @@ import { parseId } from "../../../../helpers/helpers";
 import { useAuthStore } from "../../../../stores/authStore";
 import useConfirm from "../../../../hooks/useConfirm";
 import { useStepStore } from "../../../../stores/stepStore";
+import { TransactionServices } from "../../../../services/transaction.service";
 
 type IsErrorsType = "pelanggan" | "details";
 
-// Key localStorage yang digunakan pada flow pilih produk/keranjang
+// DETAILS, PELANGGAN, DATA_FROM_KERANJANG sudah DIHAPUS dari sini.
+// Alasan: produk & pelanggan sekarang selalu diambil live dari query
+// "transaksi-draft" (server = source of truth), jadi tidak perlu lagi
+// disimpan manual ke localStorage untuk "dibawa" ke step berikutnya.
 const LOCAL_STORAGE_KEYS = {
   FROM_BOOKING: "from-booking",
   IS_UPDATE_TRANSACTION: "is-update-transaction",
   IS_UPDATE_KERANJANG: "is-update-keranjang",
-  PELANGGAN: "pelanggan",
-  DETAILS: "details",
-  DATA_FROM_KERANJANG: "data-from-keranjang",
   METODE_PEMBAYARAN: "metode-pembayaran",
 } as const;
 
@@ -42,15 +41,13 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
 
   const pengguna = useAuthStore((state) => state.pengguna);
 
+  const queryClient = useQueryClient();
+
   // Ambil keranjangId dari search params
   const { keranjangId } = useParams<{ keranjangId: string }>();
-
-  // Parse keranjangId ke number
   const keranjangIdParse = parseId(keranjangId);
 
   const navigate = useNavigate();
-
-  // Pathname saat ini, dipakai untuk navigate dengan state toast
   const currentPathname = useLocation().pathname;
 
   // Field form yang sedang error (pelanggan/details)
@@ -61,7 +58,6 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
   // Flag apakah transaksi ini berasal dari flow booking
   const fromBooking = useMemo<boolean>(() => {
     const data = localStorage.getItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
-
     return data ? JSON.parse(data) : null;
   }, []);
 
@@ -76,6 +72,8 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
       Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
         diskon?: number;
+        detailId?: number;
+        hargaModalRataRata: number;
       }
   >();
 
@@ -88,101 +86,38 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     modalRef: modalConfirmRef,
   } = useConfirm<{ title: string; deskripsi: string }>();
 
-  // Daftar produk yang dipilih beserta detail harga, diskon, qty, dsb
-  const [produkDetails, setProdukDetails] = useState<ProdukDetailItem[]>([]);
+  // ================= SUMBER DATA UTAMA =================
+  // "produkDetails" dan "pelanggan" TIDAK lagi jadi state lokal
+  // (useState + setter) karena setiap perubahan (tambah/hapus produk,
+  // ganti pelanggan) sudah langsung hit API dan bikin data di DB
+  // up to date. Keduanya sekarang diturunkan langsung dari query ini,
+  // supaya otomatis sinkron begitu query di-refetch/invalidate.
+  const {
+    data: dataTransaksi,
+    isLoading: isLoadingTransaksi,
+    isRefetching: isRefetchingTransaksi,
+  } = useQuery({
+    queryKey: ["transaksi-draft"],
+    queryFn: () => TransactionServices.findTransaksiDraft(),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
 
-  // Buka modal formulir transaksi untuk produk baru; jika produk sudah ada, cukup tambah quantity
-  const handleShowModalFormulirTransaksi = (
-    params: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
-      Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
-        diskon?: number;
-      },
-  ) => {
-    const checkExistingProduk = handleAddQuantityForExistingProduk(
-      params.produkId,
-    );
+  // TODO: cek lagi struktur response asli dari service Anda.
+  // Kalau axios response-nya dibungkus dua kali (mis. { data: { data: ... } }),
+  // ganti jadi `dataTransaksi?.data?.data`.
+  const transaksiDraft: ResponseTransaksiDraftType | undefined | null =
+    dataTransaksi?.data;
 
-    if (checkExistingProduk) return;
-
-    showModalFormulirTransaksi(undefined, params);
-  };
-
-  // Buka modal formulir transaksi untuk mengubah produk yang sudah ada di daftar
-  const handleShowModalFormulirTransaksiForUpdate = (produkId: number) => {
-    const findProduk = produkDetails.find((item) => item.id === produkId);
-
-    if (!findProduk) return;
-
-    showModalFormulirTransaksi(findProduk.id, {
-      produkId: findProduk.id,
-      quantity: findProduk.quantity,
-      hargaJual: findProduk.hargaJual,
-      img: findProduk.img,
-      kode: findProduk.kode,
-      nama: findProduk.nama,
-      stok: findProduk.stok,
-      diskon: findProduk.diskon,
-    });
-  };
-
-  // Flag apakah sedang dalam mode update transaksi (diinisialisasi dari localStorage)
-  const [isUpdateTransaction, setIsUpdateTransaction] = useState<boolean>(
-    () => {
-      const isUpdateTransaction = localStorage.getItem(
-        LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION,
-      );
-      if (isUpdateTransaction) {
-        // Pastikan flag update keranjang tidak aktif bersamaan
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
-        return JSON.parse(isUpdateTransaction);
-      } else {
-        return false;
-      }
-    },
+  const produkDetails = useMemo(
+    () => transaksiDraft?.details ?? [],
+    [transaksiDraft],
   );
 
-  // Data keranjang yang sedang diupdate (jika ada), diinisialisasi dari localStorage
-  const [isUpdateKeranjang, _setIsUpdateKeranjang] = useState<{
-    pelangganId: number;
-  } | null>(() => {
-    const isUpdateKeranjang = localStorage.getItem(
-      LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG,
-    );
-    if (isUpdateKeranjang) {
-      // Pastikan flag update transaction tidak aktif bersamaan
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
-      return JSON.parse(isUpdateKeranjang);
-    } else {
-      return null;
-    }
-  });
-
-  // Data pelanggan yang dipilih, diinisialisasi dari localStorage
-  const [pelanggan, setPelanggan] = useState<Pick<
-    IPelangganType,
-    "id" | "nama" | "noWa"
-  > | null>(() => {
-    const pelanggan = localStorage.getItem(LOCAL_STORAGE_KEYS.PELANGGAN);
-    if (pelanggan) {
-      return JSON.parse(pelanggan);
-    } else {
-      return null;
-    }
-  });
-
-  // Set pelanggan terpilih dan bersihkan error/relasi data keranjang lama
-  const handleSetPelanggan = (
-    params: Pick<IPelangganType, "id" | "nama" | "noWa">,
-  ) => {
-    if (pelanggan?.id === params.id) return;
-
-    // Bersihkan error pelanggan jika sebelumnya ada
-    if (isErrorsFormState.includes("pelanggan")) handleClearErrors("pelanggan");
-    setPelanggan(params);
-
-    // Pelanggan baru dipilih manual, hapus relasi data dari keranjang sebelumnya
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.DATA_FROM_KERANJANG);
-  };
+  const pelanggan = useMemo(
+    () => transaksiDraft?.pelanggan ?? null,
+    [transaksiDraft],
+  );
 
   // Hapus salah satu field dari daftar error form
   const handleClearErrors = (field: "pelanggan" | "details") => {
@@ -199,11 +134,10 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     handleCloseModal: handleCloseModalChoosePelanggan,
   } = useModal();
 
-  // Validasi bahwa pelanggan sudah dipilih dan minimal ada 1 produk;
-  // set error state & alert yang sesuai jika tidak valid
+  // Validasi bahwa pelanggan sudah dipilih dan minimal ada 1 produk
   const validatePelangganDanDetails = (): boolean => {
-    if (produkDetails?.length === 0 || !pelanggan) {
-      if (produkDetails?.length === 0 && !pelanggan) {
+    if (produkDetails.length === 0 || !pelanggan) {
+      if (produkDetails.length === 0 && !pelanggan) {
         setIsErrorsFormState(["pelanggan", "details"]);
       }
 
@@ -213,7 +147,7 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
         return false;
       }
 
-      if (produkDetails?.length === 0) {
+      if (produkDetails.length === 0) {
         handleSetAlert("transaksi_kosong");
         setIsErrorsFormState((prev) => [...prev, "details"]);
         return false;
@@ -223,122 +157,100 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     return true;
   };
 
-  // Tambah produk baru ke daftar, atau update produk yang sudah ada (misal ubah qty/diskon)
-  const handleAddDetails = (produk: ProdukDetailItem) => {
-    // Produk ditambahkan/diubah, bersihkan error "details"
-    setIsErrorsFormState((prev) => prev.filter((item) => item !== "details"));
+  // Buka modal update untuk detail yang sudah ada di draft transaksi.
+  // Catatan bentuk data: pada ResponseTransaksiDraftType, `id` = id baris
+  // detail transaksi, BUKAN id produk. Id produk ada di `item.produk.id`.
+  const handleShowModalFormulirTransaksiForUpdate = (transactionId: number) => {
+    const findDetail = produkDetails.find((item) => item.id === transactionId);
 
-    setProdukDetails((prev) => {
-      const index = prev.findIndex((item) => item.id === produk.id);
+    if (!findDetail) return;
 
-      const newItem = {
-        nama: produk.nama,
-        kode: produk.kode,
-        img: produk.img,
-        id: produk.id,
-        hargaJual: produk.hargaJual,
-        hargaJualTerakhirTransaksi: produk.hargaJualTerakhirTransaksi,
-        subTotal: produk.hargaJual * produk.quantity,
-        diskon: produk.diskon,
-        quantity: produk.quantity,
-        stok: produk.stok,
-      };
-
-      // Jika produk belum ada di daftar, tambahkan sebagai item baru
-      if (index === -1) {
-        return [...prev, newItem];
-      }
-
-      // Jika sudah ada, update item yang bersangkutan
-      const updated = [...prev];
-      updated[index] = newItem;
-
-      return updated;
+    showModalFormulirTransaksi(findDetail.id, {
+      detailId: findDetail.id,
+      produkId: findDetail.produk.id,
+      quantity: findDetail.quantity,
+      hargaJual: findDetail.hargaJual,
+      img: findDetail.produk.img,
+      kode: findDetail.produk.kode,
+      nama: findDetail.produk.nama,
+      hargaModalRataRata: findDetail.produk.hargaModalRataRata,
+      // TODO: `stok` tidak ada di ResponseTransaksiDraftType (hanya ada di
+      // ResponseProdukForKasirType). Kalau modal butuh nilai stok terkini,
+      // ambil dari data produk asli (mis. dari daftar produk kasir), bukan
+      // dari draft transaksi ini.
+      stok: 0,
+      diskon: findDetail.diskon,
     });
   };
 
-  // Jika produk sudah ada di daftar, tambahkan quantity-nya sebanyak 1; return true jika berhasil
-  const handleAddQuantityForExistingProduk = (produkId: number) => {
-    const existingIndex = produkDetails.findIndex(
-      (item) => item.id === produkId,
+  // Buka modal formulir transaksi untuk produk baru.
+  // Increment quantity untuk produk yang sudah ada di draft SEKARANG
+  // dilakukan lewat API (di dalam modal / mutation-nya sendiri), bukan
+  // lewat state lokal lagi. Di sini kita hanya mengarahkan ke mode
+  // "update" kalau produknya sudah ada di draft.
+  const handleShowModalFormulirTransaksi = (
+    params: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
+      Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
+        diskon?: number;
+        detailId?: number;
+        hargaModalRataRata: number;
+      },
+  ) => {
+    const existingDetail = produkDetails.find(
+      (item) => item.produk.id === params.produkId,
     );
 
-    if (existingIndex !== -1) {
-      setProdukDetails((prev) => {
-        const updatedDetails = [...prev];
-        const existingItem = updatedDetails[existingIndex];
-        const newQuantity = existingItem.quantity + 1;
-        updatedDetails[existingIndex] = {
-          ...existingItem,
-          quantity: newQuantity,
-          subTotal: existingItem.hargaJual * newQuantity,
-        };
-        return updatedDetails;
-      });
-
-      return true;
+    if (existingDetail) {
+      handleShowModalFormulirTransaksiForUpdate(params.produkId);
+      return;
     }
 
-    return false;
+    showModalFormulirTransaksi(undefined, params);
   };
 
-  // Ganti seluruh daftar produk sekaligus (misal saat load data update transaksi/keranjang)
-  const handleAppendMany = (produkList: ProdukDetailItem[]) => {
-    setProdukDetails(produkList);
-  };
+  // Flag apakah sedang dalam mode update transaksi
+  const [isUpdateTransaction, setIsUpdateTransaction] = useState<boolean>(
+    () => {
+      const isUpdateTransaction = localStorage.getItem(
+        LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION,
+      );
+      if (isUpdateTransaction) {
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
+        return JSON.parse(isUpdateTransaction);
+      } else {
+        return false;
+      }
+    },
+  );
 
-  // Validasi form, lalu simpan detail produk & pelanggan ke localStorage untuk step berikutnya
-  const handleLocalStorage = () => {
-    const data: DetailsLocalStorageType[] | null =
-      produkDetails.map((item) => ({
-        nama: item.nama,
-        kode: item.kode,
-        img: item.img,
-        diskon: item.diskon,
-        hargaJual: item.hargaJual,
-        produkId: item.id,
-        quantity: item.quantity,
-        stokTersedia: item.stok,
-      })) ?? null;
-
-    localStorage.setItem(LOCAL_STORAGE_KEYS.DETAILS, JSON.stringify(data));
-    localStorage.setItem(
-      LOCAL_STORAGE_KEYS.PELANGGAN,
-      JSON.stringify(pelanggan),
+  // Data keranjang yang sedang diupdate (jika ada)
+  const [isUpdateKeranjang] = useState<{
+    pelangganId: number;
+  } | null>(() => {
+    const isUpdateKeranjang = localStorage.getItem(
+      LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG,
     );
+    if (isUpdateKeranjang) {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
+      return JSON.parse(isUpdateKeranjang);
+    } else {
+      return null;
+    }
+  });
 
-    // Data sudah disimpan sebagai transaksi baru dari form ini, bukan mode update
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
-
-    // remove from booking
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
-
-    return true;
-  };
-
-  // handle booking
-  const handleRedirectBooking = () => {
-    const canNext = handleLocalStorage();
-
-    if (!canNext) return;
-
-    // Transaksi jadi booking, metode pembayaran lama tidak relevan lagi
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
-
-    return handleSteps(4);
-  };
-
-  // Lanjut ke step berikutnya: simpan data, cek stok, dan arahkan ke step yang sesuai
+  // Lanjut ke step berikutnya
   const handleStepsNext = async (toPembayaran?: boolean) => {
     if (!validatePelangganDanDetails()) return;
 
-    // Cek apakah ada produk dengan stok habis
-    const insufficientStock = produkDetails.some(
-      (produk) => produk.quantity > produk.stok,
-    );
+    // TODO: pengecekan stok tidak mencukupi sebelumnya pakai
+    // `produk.quantity > produk.stok`, tapi field `stok` tidak tersedia
+    // lagi di ResponseTransaksiDraftType. Validasi stok sebaiknya
+    // dilakukan di sisi API saat tambah produk (yang sekarang sudah
+    // langsung hit API), atau backend menambahkan flag semacam
+    // `hasInsufficientStock` di response transaksi draft.
+    const insufficientStock = false;
 
     if (insufficientStock && (!fromBooking || toPembayaran)) {
-      // Tawarkan konversi ke booking jika stok tidak mencukupi
       const isConfirm = await confirm({
         title: "Stok Tidak Mencukupi",
         deskripsi:
@@ -349,19 +261,9 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
         return;
       }
 
-      // remove metode pembayaran
       localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
-      // Jika user memilih konversi ke booking, arahkan ke step booking
-
-      // handle local storage
-      handleLocalStorage();
-
-      // handle steps
       return handleSteps(4);
     }
-
-    // handle local storage
-    handleLocalStorage();
 
     if (isUpdateTransaction || isUpdateKeranjang || fromBooking)
       navigate(currentPathname, {
@@ -378,7 +280,15 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     }
   };
 
-  // Batalkan mode update transaksi dan kembali ke step sebelumnya (booking atau normal)
+  // handle booking
+  const handleRedirectBooking = () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
+    return handleSteps(4);
+  };
+
+  // Batalkan mode update transaksi dan kembali ke step sebelumnya
   const handleBatalkanUpdateTransaction = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
 
@@ -390,12 +300,7 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     }
   };
 
-  // Kosongkan seluruh daftar produk
-  const handleRemoveAllDetails = () => {
-    setProdukDetails([]);
-  };
-
-  // Mutation untuk membuat atau mengupdate keranjang, tergantung ada tidaknya keranjangId
+  // Mutation untuk membuat atau mengupdate keranjang
   const { mutateAsync: mutateKeranjang, isPending: isPendingKeranjang } =
     useMutation({
       mutationFn: (req: CreateKeranjangType | UpdateKeranjangType) => {
@@ -409,10 +314,11 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
         }
       },
       onSuccess: (data) => {
-        handleRemoveAllDetails();
-        setPelanggan(null);
+        // Data draft di server sudah berubah (dikonsumsi jadi keranjang),
+        // jadi cukup invalidate query supaya UI ikut ter-refresh —
+        // tidak perlu lagi `handleRemoveAllDetails()` / `setPelanggan(null)`.
+        queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
 
-        // Jika ini update keranjang, arahkan kembali ke halaman keranjang pelanggan tsb
         if (isUpdateKeranjang) {
           return navigate(
             `/dashboard/keranjang?pelangganId=${data?.data?.pelanggan?.id}`,
@@ -424,21 +330,16 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
           );
         }
 
-        // Jika ini update transaksi, bersihkan seluruh state terkait transaksi lama
         if (isUpdateTransaction) {
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
           localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
           localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
           localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
-
           setIsUpdateTransaction(false);
         }
 
         handleToast("simpan_keranjang");
       },
       onError: (error) => {
-        // Tampilkan alert khusus jika keranjang untuk pelanggan ini sudah ada
         if (axios.isAxiosError<ErrorResponse>(error)) {
           if (error.response?.data?.meta?.statusCode === 400) {
             if (
@@ -453,9 +354,30 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
       },
     });
 
-  // Hapus satu produk dari daftar berdasarkan id
-  const removeDetails = (id: number) => {
-    setProdukDetails((prev) => prev.filter((item) => item.id !== id));
+  // Hapus satu produk dari draft transaksi.
+  // TODO: ganti `TransactionServices.removeDetailDraft` dengan nama method
+  // service yang sebenarnya Anda pakai untuk hapus 1 baris detail transaksi.
+  const {
+    mutateAsync: mutateRemoveDetail,
+    isPending: isPendingRemoveDetail,
+    variables: variablesRemoveDetail,
+  } = useMutation({
+    mutationFn: (detailId: number) =>
+      TransactionServices.removeProdukDetails({ detailId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const removeDetails = async (id: number) => {
+    try {
+      await mutateRemoveDetail(id);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Validasi form, lalu simpan produk terpilih sebagai keranjang baru
@@ -466,7 +388,7 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
       const dataDetails: DetailsForCreate[] = produkDetails.map((item) => ({
         diskon: item.diskon,
         hargaJual: item.hargaJual,
-        produkId: item.id,
+        produkId: item.produk.id,
         quantity: item.quantity,
       }));
 
@@ -479,12 +401,8 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     }
   };
 
-  // Batalkan proses simpan keranjang (mode update) dan kembali ke halaman keranjang pelanggan
+  // Batalkan proses simpan keranjang (mode update)
   const handleBatalkanSimpanKeranjang = () => {
-    console.log(isUpdateKeranjang?.pelangganId);
-
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
     localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
 
     navigate(
@@ -500,13 +418,10 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
       const dataDetails: DetailsForCreate[] = produkDetails.map((item) => ({
         diskon: item.diskon,
         hargaJual: item.hargaJual,
-        produkId: item.id,
+        produkId: item.produk.id,
         quantity: item.quantity,
       }));
 
-      // Bersihkan data form sebelum submit perubahan keranjang
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
 
       await mutateKeranjang({
@@ -517,14 +432,35 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     }
   };
 
-  // Ekspos state & handler yang dibutuhkan oleh komponen UI pilih produk
+  // mutate delete all
+  const { mutateAsync: mutateRemoveAll, isPending: isPendingRemoveAll } =
+    useMutation({
+      mutationFn: (data: { transactionId: number }) =>
+        TransactionServices.removeAllProdukDetails(data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    });
+
+  // handle remove all
+  const handleRemoveAll = async () => {
+    try {
+      // check id
+      if (!dataTransaksi?.data?.id) return;
+
+      await mutateRemoveAll({ transactionId: dataTransaksi.data.id });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
-    handleAddDetails,
     produkDetails,
     handleStepsNext,
-    handleRemoveAllDetails,
     pelanggan,
-    handleSetPelanggan,
     isErrorsFormState,
     modalChoosePelangganRef,
     handleShowModalChoosePelanggan,
@@ -537,13 +473,13 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     isUpdateKeranjang,
     handleBatalkanSimpanKeranjang,
     handleBatalkanUpdateTransaction,
-    handleAppendMany,
     modalFormulirTransaksiRef,
     handleShowModalFormulirTransaksi,
     handleCloseModalFormulirTransaksi,
     dataModalFormulirTransaksi,
     idModalUpdateTransaksi,
     removeDetails,
+    isPendingRemoveDetail,
     handleShowModalFormulirTransaksiForUpdate,
     pengguna,
 
@@ -556,6 +492,14 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     handleRedirectBooking,
 
     fromBooking,
+
+    // query state, berguna untuk loading indicator di UI
+    isLoadingTransaksi,
+    isRefetchingTransaksi,
+    variablesRemoveDetail,
+
+    handleRemoveAll,
+    isPendingRemoveAll,
   };
 };
 

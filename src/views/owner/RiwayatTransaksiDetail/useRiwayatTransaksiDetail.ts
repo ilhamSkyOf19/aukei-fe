@@ -163,12 +163,12 @@ const useRiwayatTransaksiDetail = () => {
 
   // handle detail
   const handleRedirectDetail = (id: number) => {
-    navigate(`${currentPathname}/transaksi/${id}`);
+    navigate(`/dashboard/riwayat-transaksi/${id}`);
   };
 
   // handle back
   const handleBack = () => {
-    return navigate(currentPathname.split("/").slice(0, -2).join("/"));
+    return navigate(-1);
   };
 
   // use download export riwayat pdf

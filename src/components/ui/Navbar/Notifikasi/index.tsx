@@ -101,7 +101,7 @@ const Notifikasi: FC<Props> = ({ pengguna }) => {
       </button>
       <ul
         ref={ulRef}
-        className="dropdown-content overflow-hidden menu bg-base-100 rounded-box w-80 border border-base-content/10 md:w-130 shadow-2xl rounded-2xl md:rounded-xl mt-1.5"
+        className="dropdown-content overflow-hidden menu bg-base-100 rounded-box w-80 border border-base-content/10 md:w-130 shadow-2xl rounded-2xl md:rounded-xl mt-1.5 -mr-8 lg:mr-0"
       >
         <li>
           <div className="w-full flex flex-row justify-between items-center hover:bg-transparent active:bg-transparent cursor-default h-full overflow-y-auto scrollbar-thumb-custom-secondary">

@@ -28,7 +28,7 @@ const Dashboard = () => {
   return (
     <div
       className={cn(
-        "w-full h-full pt-4 px-4 pb-2.5 flex flex-col justify-center items-center",
+        "w-full pt-4 px-4 pb-2.5 flex flex-col justify-center items-center",
       )}
     >
       <div className="w-full h-full bg-base-100 rounded-2xl md:rounded-xl border border-base-content/10 shadow-xl flex flex-col justify-between items-center pt-8 px-4 pb-4 mb:pb-0 relative overflow-hidden">
@@ -71,7 +71,7 @@ const Dashboard = () => {
 
           {/* button redirect statistik */}
           <div className="flex flex-row justify-center items-center mt-4 z-2 w-full">
-            <div className="flex flex-row justify-center items-center gap-4 w-2/3 flex-wrap">
+            <div className="flex flex-row justify-center items-center gap-4 w-full lg:w-2/3 flex-wrap">
               {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
                 <>
                   {/* kasir */}
@@ -204,7 +204,7 @@ const Dashboard = () => {
         </div>
 
         {/* footer */}
-        <div className="w-full flex flex-col lg:flex-row justify-between items-center h-auto lg:h-22 border border-base-content/10 rounded-2xl md:rounded-xl mt-12 bg-base-100 shadow-md z-10 p-4">
+        <div className="w-full flex flex-col lg:flex-row justify-between items-center h-auto lg:h-22 border border-base-content/10 rounded-2xl md:rounded-xl mt-12 bg-base-100 shadow-md z-2 p-4">
           {/* label */}
           <div className="flex-1 flex flex-col justify-start items-start gap-1">
             <span className="text-sm font-semibold text-base-content">
@@ -218,10 +218,10 @@ const Dashboard = () => {
           </div>
 
           {/* email */}
-          <div className="flex-2 mt-6 lg:mt-0 flex flex-col md:flex-row justify-start items-start md:justify-between md:items-center gap-2.5 md:gap-8">
-            <div className="flex-1 flex flex-row justify-start items-center gap-4 md:border-r border-b md:border-b-0 pb-2.5 md:pb-0 border-base-content/10 md:pr-4 lg:pr-0">
+          <div className="w-full lg:flex-2 mt-6 lg:mt-0 flex flex-col md:flex-row justify-start items-start md:justify-between md:items-center gap-2.5 md:gap-8">
+            <div className="md:flex-1 flex flex-row justify-start items-center gap-4 md:border-r border-b md:border-b-0 pb-2.5 md:pb-0 border-base-content/10 md:pr-4 lg:pr-0">
               {/* icon */}
-              <div className="w-12 h-12 rounded-xl flex justify-center items-center border border-base-content/10">
+              <div className="w-12 h-12 hidden shrink-0 rounded-xl md:flex justify-center items-center border border-base-content/10">
                 <Mail className="size-6 text-base-content" />
               </div>
 
@@ -239,7 +239,7 @@ const Dashboard = () => {
             {/* wa */}
             <div className="flex-1 flex flex-row justify-start items-center gap-4">
               {/* icon */}
-              <div className="w-12 h-12 rounded-xl flex justify-center items-center border border-base-content/10">
+              <div className="w-12 h-12 hidden rounded-xl md:flex justify-center items-center border border-base-content/10">
                 <Phone className="size-6 text-base-content" />
               </div>
 

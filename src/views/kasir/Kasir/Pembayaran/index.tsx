@@ -4,13 +4,12 @@ import {
   CircleCheck,
   Landmark,
   Minus,
-  Pencil,
+  PackageX,
   QrCode,
-  X,
 } from "lucide-react";
 import TitleModalFormulir from "../../../../components/ui/TitleModalFormulir";
 import usePembayaran from "./usePembayaran";
-import type { FC } from "react";
+import { type FC } from "react";
 import { cn } from "../../../../utils/cn";
 import { formatRupiah, getWeekFromPeriod } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
@@ -23,6 +22,12 @@ import { PAYMENT_METHOD_TYPE } from "../../../../types/constant.type";
 import HeaderPelangganForKasir from "../../../../components/ui/HeaderPelangganForKasir";
 import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import CardMetodePembayaran from "../../../../components/ui/cards/CardMetodePembayaran";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import ButtonBackText from "../../../../components/ui/button/ButtonBackText";
+import DataEmpty from "../../../../components/messages/DataEmpty";
+import FormOngkir from "./FormOngkir";
+
+// SESUAIKAN DENGAN PILIH PRODUK
 
 type Props = {
   handleToast: (value: string) => void;
@@ -51,14 +56,17 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
     modalConfirmRef,
     buttonBayarRef,
     handleConfirm,
-    handleUbahTransaction,
-    handleBatalTransaction,
     buttonAturTempoRef,
     dataTempo,
     handleCloseModalTempo,
     handleShowModalTempo,
     modalTempoRef,
-    handleSetDataTempo,
+    dataTransaksi,
+    isLoadingTransaksi,
+    isRefetchingTransaksi,
+
+    handleSteps,
+    isPendingUpdateMetodePembayaran,
   } = usePembayaran({
     handleToast,
     kasir,
@@ -67,7 +75,17 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
   // perbaiki design nya
 
   return (
-    <div className="w-full h-full grid grid-rows-9 gap-4">
+    <div className="w-full h-full grid grid-rows-9 gap-4 relative">
+      {/* loading */}
+      {(isLoadingTransaksi ||
+        isRefetchingTransaksi ||
+        isPendingUpdateMetodePembayaran) && (
+        <div className="absolute w-full h-full flex flex-row justify-center items-center z-20">
+          <div className="w-full h-full bg-base-100 opacity-70 absolute" />
+          <LoadingFetch />
+        </div>
+      )}
+
       <div
         className={cn(
           "row-span-1 grid h-full gap-2.5 transition-all duration-300 ease-in-out grid-cols-7",
@@ -76,7 +94,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
         {/* header */}
         <div
           className={cn(
-            "w-full h-15 flex flex-row justify-between items-center bg-base-100 p-4 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm  transition-all duration-300 ease-in-out col-span-5",
+            "w-full h-15 flex flex-row justify-center items-center bg-base-100 p-4 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm  transition-all duration-300 ease-in-out col-span-5 relative",
             // metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO
             // ? "col-span-5"
             // : "col-span-3",
@@ -87,23 +105,9 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
             Pembayaran
           </h3>
 
-          <div className="flex flex-row justify-end items-center gap-4">
+          <div className="flex flex-row justify-end items-center gap-4 absolute left-4">
             {/* button update transaksi */}
-            <ButtonWithIcon
-              handleBtn={() => handleBatalTransaction()}
-              icon={X}
-              bgColor="bg-error"
-              textColor="text-primary-white"
-              label="Batalkan Transaksi"
-            />
-            {/* button update transaksi */}
-            <ButtonWithIcon
-              handleBtn={() => handleUbahTransaction()}
-              icon={Pencil}
-              bgColor="bg-info"
-              textColor="text-primary-white"
-              label="Ubah Transaksi"
-            />
+            <ButtonBackText handleClick={() => handleSteps(1)} />
           </div>
         </div>
 
@@ -134,31 +138,33 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                   <th>Harga (Rp)</th>
                   <th>Diskon (Rp)</th>
                   <th>Jumlah</th>
+                  <th>Total Diskon (Rp)</th>
                   <th>Subtotal</th>
                 </tr>
               </thead>
               <tbody>
                 {/* row 1 */}
-                {dataDetails && dataDetails.length > 0 ? (
-                  dataDetails.map((item) => (
+                {dataTransaksi?.data &&
+                dataTransaksi?.data?.details.length > 0 ? (
+                  dataTransaksi?.data?.details.map((item) => (
                     <tr
-                      key={item.produkId}
+                      key={item.id}
                       className="text-[0.7rem] text-base-content"
                     >
                       <td>
                         <div className="avatar">
                           <div className="mask mask-squircle h-10 w-10">
-                            <img src={item.img} alt="gambar produk" />
+                            <img src={item.produk.img} alt="gambar produk" />
                           </div>
                         </div>
                       </td>
                       <td>
                         <div className="flex flex-col justify-start items-start gap-px">
                           <p className="xl:text-[0.7rem] font-medium">
-                            {item.nama}
+                            {item.produk.nama}
                           </p>
                           <span className="xl:text-[0.625rem] font-medium text-base-content/70">
-                            {item.kode}
+                            {item.produk.kode}
                           </span>
                         </div>
                       </td>
@@ -169,15 +175,20 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                         </span>
                       </td>
                       <td>
-                        {" "}
                         <span className="xl:text-[0.7rem] text-base-content">
                           {formatRupiah(item.diskon)}
                         </span>
                       </td>
+
                       <td>
                         <span className="xl:text-[0.7rem] text-base-content">
                           {/* qty */}
                           {item.quantity} x
+                        </span>
+                      </td>
+                      <td>
+                        <span className="xl:text-[0.7rem] text-base-content">
+                          {formatRupiah(item.diskon)}
                         </span>
                       </td>
                       <td>
@@ -191,7 +202,14 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8}></td>
+                    <td colSpan={7} align="center">
+                      <DataEmpty
+                        iconData={PackageX}
+                        title="Silahkan Pilih Produk"
+                        description="Silahkan pilih produk untuk melakukan pembayaran"
+                        xs
+                      />
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -247,15 +265,35 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                           </span>
                         </div>
                       </div>
+
+                      {/* ongkir */}
+                      <div className="w-full flex flex-row justify-between items-center">
+                        <span className="text-xs text-base-content/80">
+                          Ongkir
+                        </span>
+                        <span className="text-xs font-medium text-base-content">
+                          {formatRupiah(dataTransaksi?.data?.ongkir || 0)}
+                        </span>
+                      </div>
                     </div>
 
                     {/* total */}
                     <div className="w-full flex flex-col justify-start items-start gap-2.5">
                       <div className="w-full flex flex-row justify-between items-center border-b border-base-content/30 border-dashed pb-2.5">
                         <span className="text-xs font-medium text-base-content">
-                          Total Pembayaran
+                          {metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO &&
+                            "Total Tagihan"}
+                          {metodePembayaran !== PAYMENT_METHOD_TYPE.TEMPO &&
+                            "Total Pembayaran"}
                         </span>
-                        <span className="text-sm font-semibold text-blue-400">
+                        <span
+                          className={cn(
+                            "text-sm font-semibold",
+                            totalAfterDiskon < 0
+                              ? "text-error"
+                              : "text-emerald-500",
+                          )}
+                        >
                           {formatRupiah(totalAfterDiskon)}
                         </span>
                       </div>
@@ -281,9 +319,18 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                           {/* kembalian */}
                           <div className="w-full flex flex-row justify-between items-center">
                             <span className="text-xs text-base-content/80">
-                              Kembalian
+                              {dataDiBayar >= totalAfterDiskon && "Kembalian"}
+                              {dataDiBayar < totalAfterDiskon && "Kekurangan"}
                             </span>
-                            <span className="text-xs font-medium text-emerald-600">
+                            <span
+                              className={cn(
+                                "text-xs font-medium",
+                                dataDiBayar >= totalAfterDiskon &&
+                                  "text-emerald-600",
+                                dataDiBayar < totalAfterDiskon &&
+                                  "text-rose-600",
+                              )}
+                            >
                               {formatRupiah(
                                 dataDiBayar === 0
                                   ? 0
@@ -298,13 +345,14 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                       {metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && (
                         <div className="w-full flex flex-col justify-start items-start">
                           <div className="w-full flex flex-col justify-start items-start gap-2 pb-2.5 border-b border-dashed border-base-content/30">
-                            <div className="w-full flex flex-col justify-start items-start gap-2.5 border-b border-dashed border-base-content/30 pb-2.5">
+                            <div className="w-full flex flex-col justify-start items-start gap-2.5 border-b border-dashed border-base-content/30">
                               {/* uang muka */}
                               <div className="w-full flex flex-row justify-between items-center">
                                 <span className="text-xs text-base-content/70 font-medium">
                                   Uang Muka
                                 </span>
-                                <span className="text-[0.7rem] font-medium text-base-content">
+                                <span className="text-[0.7rem] font-medium text-error">
+                                  -{" "}
                                   {dataTempo?.uangMuka
                                     ? formatRupiah(dataTempo.uangMuka)
                                     : "-"}
@@ -317,19 +365,37 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                                   Metode Pembayaran Uang Muka
                                 </span>
                                 <span className="text-[0.7rem] font-medium text-base-content">
-                                  {dataTempo?.metodePembayaranUangDp}
+                                  {
+                                    dataTempo?.paymentTransactions?.[0]
+                                      .metodePembayaran
+                                  }
+                                </span>
+                              </div>
+
+                              <div className="w-full flex flex-row justify-between items-center border-t border-dashed border-base-content/30 py-2.5">
+                                <span className="text-xs text-base-content font-medium">
+                                  Sisa Tagihan
+                                </span>
+                                <span className="text-sm font-medium text-info">
+                                  {dataTempo?.sisaTagihan
+                                    ? formatRupiah(dataTempo.sisaTagihan)
+                                    : "-"}
                                 </span>
                               </div>
 
                               {/* metode pmebayaran uang muka cash */}
-                              {dataTempo?.metodePembayaranUangDp === "CASH" && (
+                              {dataTempo?.paymentTransactions?.[0]
+                                .metodePembayaran === "CASH" && (
                                 <>
                                   <div className="w-full flex flex-row justify-between items-center">
                                     <span className="text-xs text-base-content/70 font-medium">
                                       Dibayar
                                     </span>
                                     <span className="text-[0.7rem] font-medium text-base-content">
-                                      {formatRupiah(dataTempo?.diBayar ?? 0)}
+                                      {formatRupiah(
+                                        dataTempo?.paymentTransactions?.[0]
+                                          .diBayar ?? 0,
+                                      )}
                                     </span>
                                   </div>
                                   <div className="w-full flex flex-row justify-between items-center">
@@ -337,7 +403,23 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                                       Kembalian
                                     </span>
                                     <span className="text-[0.7rem] font-medium text-base-content">
-                                      {formatRupiah(dataTempo?.kembalian ?? 0)}
+                                      {formatRupiah(
+                                        dataTempo?.paymentTransactions?.[0]
+                                          .kembalian ?? 0,
+                                      )}
+                                    </span>
+                                  </div>
+
+                                  {/* sisa tagihan */}
+                                  <div className="w-full flex flex-row justify-between items-center">
+                                    <span className="text-xs text-base-content/80">
+                                      Sisa Tagihan
+                                    </span>
+                                    <span className="text-xs font-medium">
+                                      {formatRupiah(
+                                        totalAfterDiskon -
+                                          (dataTempo?.uangMuka ?? 0),
+                                      )}
                                     </span>
                                   </div>
                                 </>
@@ -433,6 +515,18 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                     </div>
                   </>
                 )}
+              </div>
+
+              {/* uang ongkir */}
+              <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
+                <span className="text-sm font-medium text-base-content">
+                  Ongkir (Opsional)
+                </span>
+
+                <div className="w-full flex flex-col justify-start items-start gap-1">
+                  {/* form uang dp */}
+                  <FormOngkir transactionId={dataTransaksi?.data?.id ?? 0} />
+                </div>
               </div>
 
               {/* metode pembayaran */}
@@ -625,7 +719,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
         modalRef={modalTempoRef}
         handleCloseModal={handleCloseModalTempo}
         handleShowModal={handleShowModalTempo}
-        handleSetDataTempo={handleSetDataTempo}
+        transactionId={dataTransaksi?.data?.id ?? 0}
       />
     </div>
   );

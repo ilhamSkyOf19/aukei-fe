@@ -5,8 +5,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   ROLE_INTERNAL_TYPE,
   STATUS_INVENTORI_TYPE,
+  type ReturnStatus,
   type RoleInternalType,
-  type StatusInventoriType,
 } from "../../../types/constant.type";
 import { ReturBarangValidations } from "../../../validations/returBarang.validation";
 import { ReturBarangServices } from "../../../services/returBarang.service";
@@ -17,9 +17,11 @@ const useModalFormulirVerifikasiOrPengajuanReturBarang = (params: {
   handleCloseModal: () => void;
   role?: RoleInternalType;
   handleSetAlert?: (data: string) => void;
+  transactionId?: number;
 }) => {
   // get params
-  const { kodeReferensi, handleCloseModal, role, returId } = params;
+  const { kodeReferensi, handleCloseModal, role, returId, transactionId } =
+    params;
 
   // query client
   const queryClient = useQueryClient();
@@ -50,10 +52,7 @@ const useModalFormulirVerifikasiOrPengajuanReturBarang = (params: {
     useMutation({
       mutationFn: (data: {
         kodeReferensi: string;
-        status: Exclude<
-          StatusInventoriType,
-          "DRAFT" | "PENDING" | "CANCELLED" | "POSTED"
-        >;
+        status: Extract<ReturnStatus, "APPROVED" | "REJECTED">;
         keterangan?: string;
       }) =>
         ReturBarangServices.verifikasi({
@@ -94,22 +93,28 @@ const useModalFormulirVerifikasiOrPengajuanReturBarang = (params: {
           keterangan: data.keterangan,
         }),
 
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["retur-barang-detail", returId],
-        });
+      onSuccess: (response) => {
+        // query
+        Promise.allSettled([
+          queryClient.invalidateQueries({
+            queryKey: ["retur-barang-detail", returId],
+          }),
 
-        queryClient.invalidateQueries({
-          queryKey: ["riwayat-pengajuan-retur-barang", returId],
-        });
+          queryClient.invalidateQueries({
+            queryKey: ["riwayat-pengajuan-retur-barang", returId],
+          }),
+        ]);
 
         handleCloseModal();
 
-        navigate(currentPathname, {
-          state: {
-            toast: "send_pengajuan",
+        navigate(
+          `/dashboard/riwayat-transaksi/${transactionId}/daftar-retur-barang/detail/${response.data?.id}`,
+          {
+            state: {
+              toast: "send_pengajuan",
+            },
           },
-        });
+        );
       },
 
       onError: (err) => {

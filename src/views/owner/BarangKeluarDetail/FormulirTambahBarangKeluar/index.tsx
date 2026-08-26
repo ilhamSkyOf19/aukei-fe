@@ -42,7 +42,6 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
     handleCloseModalFormulirTambahBarangKeluar,
     handleShowModalFormulirTambahBarangKeluar,
     modalFormulirTambahBarangKeluarRef,
-    hargaModalSatuanController,
   } = useFormulirTambahBarangKeluar({
     handleSetToast,
     handleSetAlert,
@@ -84,6 +83,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
         >
           {/* produk */}
           <FormCariProdukInventori
+            hargaModal
             wrapperRef={wrapperRef}
             handleSearch={handleSearch}
             handleCloseActiveComponentChooseProduk={
@@ -98,18 +98,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
             dataProdukForChoose={dataProdukForChoose}
             error={errors.produkId?.message}
             isLoadingProdukForChoose={isLoadingProdukForChoose}
-            isLoadingDataProdukForChoose={isLoadingProdukForChoose}
           />
-
-          {/* input harga modal satuan */}
-          <div className="flex-1 flex flex-row justify-start items-center">
-            <InputPrice<CreateBarangKeluarDetailType>
-              controller={hargaModalSatuanController}
-              label="Harga Modal Satuan"
-              placeholder="Harga Modal Satuan"
-              required
-            />
-          </div>
 
           {/* input jumlah stok */}
           <div className="flex-1 flex flex-row justify-start items-center">
@@ -123,7 +112,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
           </div>
 
           {/* button submit */}
-          <div className="flex-1 flex flex-row justify-end items-end h-18">
+          <div className="flex-1 flex flex-row justify-end items-end h-18 pb-2">
             <ButtonWithIcon
               typeButton="submit"
               disabled={isGlobalLoading}
@@ -143,6 +132,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
 
             <div className="w-full grid grid-cols-4 gap-2.5">
               <CardProdukForAfterChooseInventori
+                hargaModal
                 data={produkChoose}
                 handleDeleteValueProdukId={handleDeleteValueProdukId}
               />

@@ -26,7 +26,7 @@ const ButtonGenerateHargaJual: FC<Props> = ({
         type="button"
         disabled={disabled}
         className={cn(
-          "bg-info rounded-md flex flex-row justify-center items-center disabled:opacity-50",
+          "bg-emerald-500 rounded-md flex flex-row justify-center items-center disabled:opacity-50",
           !disabled && "hover-overlay",
           xs ? "w-6 h-6" : "w-7 h-7",
         )}

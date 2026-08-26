@@ -23,6 +23,7 @@ import useConfirm from "../../../../hooks/useConfirm";
 import { useAlertAnimation } from "../../../../hooks/useAlert";
 import usePrintInvoiceTransaksi from "../../../../hooks/usePrintInvoiceTransaksi";
 import { useToastAnimation } from "../../../../hooks/useToast";
+import usePrintInvoiceKirimBarang from "../../../../hooks/usePrintInvoiceKirimBarang";
 
 const LOCAL_STORAGE_DI_BAYAR_KEY = "di-bayar";
 
@@ -246,6 +247,10 @@ const useInformasiPembayaran = ({
   const { handlePrintInvoiceTransaksi, isLoadingPrintInvoiceTransaksi } =
     usePrintInvoiceTransaksi({ handleSetAlert });
 
+  // handle print invoice kirim barang
+  const { handlePrintInvoiceKirimBarang, isLoadingPrintInvoiceKirimBarang } =
+    usePrintInvoiceKirimBarang({ handleSetAlert });
+
   // handle redirect detail booking
   const handleRedirectDetailBooking = (params: {
     transactionId?: number;
@@ -297,6 +302,9 @@ const useInformasiPembayaran = ({
     pengguna,
 
     isPageTransaction,
+
+    handlePrintInvoiceKirimBarang,
+    isLoadingPrintInvoiceKirimBarang,
   };
 };
 

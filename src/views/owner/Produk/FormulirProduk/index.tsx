@@ -111,9 +111,8 @@ const FormulirProduk = () => {
                     <InputTextNonIcon
                       register={register("kode")}
                       name="kode"
+                      label="Kode Produk (Opsional)"
                       placeholder="Kode Produk"
-                      label="Kode Produk"
-                      required
                       max={50}
                       errorMessage={errors?.kode?.message}
                     />

@@ -408,10 +408,8 @@ const ReturBarangDetail = () => {
                     <th>No</th>
                     <th>Gambar</th>
                     <th>Nama Produk</th>
-                    <th>Harga (Rp)</th>
-                    <th>Qty. Barang Bagus</th>
-                    <th>Qty. Barang Rusak</th>
-                    <th>Qty. Total</th>
+                    <th>Harga Beli Retur(Rp)</th>
+                    <th>Quantity</th>
                     <th>Total Refund</th>
                     <th>
                       <div className="flex flex-row justify-center items-center">
@@ -458,23 +456,11 @@ const ReturBarangDetail = () => {
                             </td>
                             <td>
                               <span className="xl:text-[0.7rem] text-base-content">
-                                {/* harga jual */}
-                                {formatRupiah(item.hargaJual)}
+                                {/* harga beli retur */}
+                                {formatRupiah(item.hargaBeliRetur ?? 0)}
                               </span>
                             </td>
 
-                            <td>
-                              <span className="xl:text-[0.7rem] text-base-content">
-                                {/* qty */}
-                                {formatNumber(item.quantityGood ?? 0)} Pcs
-                              </span>
-                            </td>
-                            <td>
-                              <span className="xl:text-[0.7rem] text-base-content">
-                                {/* qty */}
-                                {formatNumber(item.quantityDamaged ?? 0)} Pcs
-                              </span>
-                            </td>
                             <td>
                               <span className="xl:text-[0.7rem] text-base-content">
                                 {/* qty */}
@@ -538,36 +524,6 @@ const ReturBarangDetail = () => {
               <CardStatistikLarge
                 isLoading={isLoadingReturBarang}
                 icon={{
-                  largeIcon: PackageCheck,
-                  bgColor: "bg-emerald-50 dark:bg-emerald-100",
-                  textColor: "text-emerald-600",
-                }}
-                label="Total Barang Bagus"
-                largeValue={{
-                  value: `${formatNumber(summary.totalBarangBagus)}`,
-                }}
-                smallValue={"Barang yang dapat dijual kembali"}
-                customWidth="col-span-1"
-              />
-
-              <CardStatistikLarge
-                isLoading={isLoadingReturBarang}
-                icon={{
-                  largeIcon: PackageX,
-                  bgColor: "bg-rose-50 dark:bg-rose-100",
-                  textColor: "text-rose-600",
-                }}
-                label="Total Barang Rusak"
-                largeValue={{
-                  value: `${formatNumber(summary.totalBarangRusak)}`,
-                }}
-                smallValue={"Barang yang tidak dapat dijual kembali"}
-                customWidth="col-span-1"
-              />
-
-              <CardStatistikLarge
-                isLoading={isLoadingReturBarang}
-                icon={{
                   largeIcon: Undo2,
                   bgColor: "bg-blue-50 dark:bg-blue-100",
                   textColor: "text-blue-600",
@@ -614,26 +570,21 @@ const ReturBarangDetail = () => {
                   </>
                 )}
 
-              {((pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
-                dataReturBarang?.data?.status === RETURN_STATUS.REJECTED &&
-                dataReturBarang?.data?.createdBy?.id === pengguna?.id) ||
-                (pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
-                  dataReturBarang?.data?.status ===
-                    RETURN_STATUS.REJECTED)) && (
-                <>
-                  <ButtonWithIcon
-                    icon={Trash2}
-                    label="Hapus"
-                    bgColor="bg-error"
-                    textColor="text-primary-white"
-                    skeleton={isLoadingReturBarang}
-                    handleBtn={() => handleShowModalDelete()}
-                  />
+              {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
+                dataReturBarang?.data?.status !== RETURN_STATUS.APPROVED &&
+                dataReturBarang?.data?.status !== RETURN_STATUS.PENDING && (
+                  <>
+                    <ButtonWithIcon
+                      icon={Trash2}
+                      label="Hapus"
+                      bgColor="bg-error"
+                      textColor="text-primary-white"
+                      skeleton={isLoadingReturBarang}
+                      handleBtn={() => handleShowModalDelete()}
+                    />
 
-                  {/* ubah data */}
-                  {dataReturBarang?.data?.createdBy?.id === pengguna?.id &&
-                    dataReturBarang?.data?.status ===
-                      RETURN_STATUS.REJECTED && (
+                    {/* ubah data */}
+                    {dataReturBarang?.data?.createdBy?.id === pengguna?.id && (
                       <ButtonWithIcon
                         icon={Pencil}
                         bgColor="bg-info"
@@ -643,8 +594,8 @@ const ReturBarangDetail = () => {
                         skeleton={isLoadingReturBarang}
                       />
                     )}
-                </>
-              )}
+                  </>
+                )}
             </div>
           </div>
         </div>
@@ -669,7 +620,6 @@ const ReturBarangDetail = () => {
         kodeReferensi={dataReturBarang?.data?.kodeReferensi ?? ""}
         returId={validatedReturBarangId ?? 0}
         role={pengguna?.role}
-        type={dataModalFormulirVerifikasiOrPengajuan?.type}
       />
 
       {/* modal delete */}

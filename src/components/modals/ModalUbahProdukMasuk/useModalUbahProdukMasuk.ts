@@ -23,9 +23,10 @@ const useModalUbahProdukMasuk = (params: {
     produk?: {
       id: number;
       nama: string;
-      kode: string;
+      kode?: string | null;
       img: string;
       stok: number;
+      hargaModalRataRata: number;
     };
     jumlahBox: number;
     hargaBeli: number;
@@ -252,6 +253,7 @@ const useModalUbahProdukMasuk = (params: {
       img: produk.img,
       kode: produk.kode,
       stok: produk.stok,
+      hargaModalRataRata: produk.hargaModalRataRata,
     });
   }, [produk]);
 

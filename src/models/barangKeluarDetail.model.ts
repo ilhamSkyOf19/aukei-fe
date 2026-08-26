@@ -1,35 +1,68 @@
+// ============================================================
+// BARANG KELUAR DETAIL
+// ============================================================
+
 import type { IProduk } from "./produk.model";
 
 export interface IBarangKeluarDetailType {
   id: number;
+
   barangKeluarId: number;
-  produk: Omit<
+
+  produk: Pick<
     IProduk,
-    | "createdAt"
-    | "updatedAt"
-    | "stokMinimum"
-    | "hargaJual"
-    | "hargaBeli"
+    | "id"
+    | "nama"
+    | "kode"
+    | "kategori"
+    | "img"
+    | "stok"
+    | "isActive"
     | "isiPerBox"
+    | "hargaModalRataRata"
   >;
+
   jumlahStok: number;
+
+  /**
+   * Snapshot modal rata-rata produk
+   * ketika barang keluar diposting.
+   */
   hargaModalSatuan: number;
+
   createdAt: Date;
   updatedAt: Date;
 }
 
-// create
+// ============================================================
+// CREATE
+// ============================================================
+
 export interface CreateBarangKeluarDetailType extends Pick<
   IBarangKeluarDetailType,
-  "barangKeluarId" | "jumlahStok" | "hargaModalSatuan"
+  "barangKeluarId" | "jumlahStok"
 > {
   produkId: number;
 }
 
-// update
+// ============================================================
+// UPDATE
+// ============================================================
+
 export interface UpdateBarangKeluarDetailType extends Partial<
   Omit<CreateBarangKeluarDetailType, "barangKeluarId">
 > {}
 
-// response
+// ============================================================
+// RESPONSE
+// ============================================================
+
 export interface ResponseBarangKeluarDetailType extends IBarangKeluarDetailType {}
+
+// ============================================================
+// TO RESPONSE
+// ============================================================
+
+export const toResponseBarangKeluarDetail = (
+  barangKeluarDetail: ResponseBarangKeluarDetailType,
+): ResponseBarangKeluarDetailType => barangKeluarDetail;

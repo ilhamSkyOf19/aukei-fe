@@ -2,28 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useFilterSearch } from "../../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../../hooks/useFilter";
 import { ProdukServices } from "../../../../../services/produk.service";
-import type { DetailsLocalStorageType } from "../../../../../models/transaction.model";
-import type { ResponseProdukForKasirType } from "../../../../../models/produk.model";
-import { useEffect } from "react";
 import { handlePagination } from "../../../../../helpers/helpers";
 
-const useShowProduk = (params: {
-  pelangganId?: number;
-  step: number;
-  onAppendMany: (
-    produkList: (Pick<
-      ResponseProdukForKasirType,
-      | "nama"
-      | "img"
-      | "hargaJual"
-      | "kode"
-      | "hargaJualTerakhirTransaksi"
-      | "id"
-      | "stok"
-    > & { subTotal: number; diskon: number; quantity: number })[],
-  ) => void;
-}) => {
-  const { pelangganId, step, onAppendMany } = params;
+const useShowProduk = (params: { pelangganId?: number; step: number }) => {
+  const { pelangganId, step } = params;
 
   // search filter
   const { search, setSearch } = useFilterSearch("search", "page");
@@ -61,47 +43,6 @@ const useShowProduk = (params: {
         ? true
         : false
       : false;
-
-  const details = localStorage.getItem("details");
-  const diBayar = localStorage.getItem("di-bayar");
-
-  // check local storage
-
-  useEffect(() => {
-    if (!dataProduk?.data?.data) return;
-
-    // hasRestore.current = true;
-
-    if (!details) {
-      if (diBayar) localStorage.removeItem("di-bayar");
-      return;
-    }
-
-    const detailsParse: DetailsLocalStorageType[] = JSON.parse(details);
-
-    const produkList = detailsParse.map((item) => {
-      const produk = dataProduk?.data?.data.find((p) => p.id === item.produkId);
-      return {
-        produkId: item.produkId,
-        hargaJual: item.hargaJual,
-        img: item.img,
-        kode: item.kode,
-        nama: item.nama,
-        quantity: item.quantity,
-        diskon: item.diskon,
-        stok: produk?.stok ?? 0,
-        subTotal: item.hargaJual * item.quantity,
-        hargaJualTerakhirTransaksi: produk?.hargaJualTerakhirTransaksi ?? 0,
-      };
-    });
-
-    onAppendMany(
-      produkList.map((item) => ({
-        ...item,
-        id: item.produkId,
-      })),
-    );
-  }, [dataProduk]);
 
   const currentPage = dataProduk?.data?.meta?.currentPage ?? 1;
 

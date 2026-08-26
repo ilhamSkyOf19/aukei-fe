@@ -1,33 +1,30 @@
 import { useController, useForm, useWatch } from "react-hook-form";
-import type { DetailsForCreate } from "../../../models/transaction.model";
+import type {
+  DetailsForCreate,
+  TambahProdukDetailForReqeustType,
+} from "../../../models/transaction.model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TransactionValidation } from "../../../validations/transaction.validation";
 import type { ResponseProdukForKasirType } from "../../../models/produk.model";
 import { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TransactionServices } from "../../../services/transaction.service";
 
 const useModalTransaksi = (params: {
-  handleAppend: (
-    data: Pick<
-      ResponseProdukForKasirType,
-      | "nama"
-      | "img"
-      | "stok"
-      | "hargaJual"
-      | "kode"
-      | "hargaJualTerakhirTransaksi"
-      | "id"
-    > & { subTotal: number; diskon: number; quantity: number },
-  ) => void;
   handleCloseModal: () => void;
   data?: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
     Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
       diskon?: number;
+      detailId?: number;
     };
 }) => {
-  const { handleAppend, handleCloseModal, data } = params;
+  const { handleCloseModal, data } = params;
 
   // state sub total
   const [subTotal, setSubTotal] = useState<number>(0);
+
+  // state total diskon
+  const [totalDiskon, setTotalDiskon] = useState<number>(0);
 
   // use form
   const { control, handleSubmit, reset } = useForm<DetailsForCreate>({
@@ -41,7 +38,7 @@ const useModalTransaksi = (params: {
         produkId: data.produkId,
         hargaJual: data.hargaJual,
         quantity: data.quantity,
-        diskon: data.diskon ?? 0,
+        diskon: (data.diskon ?? 0) / data.quantity,
       });
     }
   }, [data]);
@@ -63,13 +60,18 @@ const useModalTransaksi = (params: {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
+      const totalDiskon = (diskon ?? data?.diskon ?? 0) * quantity;
+
       const total =
         (hargaJual ?? data?.hargaJual ?? 0) *
           (quantity ?? data?.quantity ?? 0) -
-        (diskon ?? data?.diskon ?? 0);
+        totalDiskon;
+
+      // set total diskon
+      setTotalDiskon(totalDiskon);
 
       setSubTotal(total);
-    }, 200);
+    }, 100);
 
     return () => clearTimeout(timeout);
   }, [
@@ -99,20 +101,45 @@ const useModalTransaksi = (params: {
     name: "quantity",
   });
 
+  // queyr client
+  const queryClient = useQueryClient();
+
+  // mutate pilih produk
+
+  const { mutateAsync: handleTambahProduk, isPending: isPendingTambahProduk } =
+    useMutation({
+      mutationFn: (req: TambahProdukDetailForReqeustType) => {
+        if (data?.detailId) {
+          return TransactionServices.updateProduk({
+            detailId: data?.detailId ?? 0,
+            data: {
+              diskon: req.detail.diskon,
+              hargaJual: req.detail.hargaJual,
+              qty: req.detail.quantity,
+            },
+          });
+        } else {
+          return TransactionServices.tambahProduk(req);
+        }
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    });
+
   //   on submit
-  const onSubmit = (req: DetailsForCreate) => {
-    if (data) {
-      handleAppend({
-        id: data.produkId,
-        nama: data.nama,
-        img: data.img,
-        kode: data.kode,
-        stok: data.stok,
-        subTotal: req.hargaJual * req.quantity - req.diskon,
-        hargaJualTerakhirTransaksi: data.hargaJualTerakhirTransaksi,
-        hargaJual: req.hargaJual,
-        quantity: req.quantity,
-        diskon: req.diskon,
+  const onSubmit = async (req: DetailsForCreate) => {
+    if (req) {
+      await handleTambahProduk({
+        detail: {
+          produkId: req.produkId,
+          diskon: (req?.diskon ?? 0) * req.quantity,
+          hargaJual: req.hargaJual,
+          quantity: req.quantity,
+        },
       });
     }
     handleCloseModal();
@@ -125,8 +152,9 @@ const useModalTransaksi = (params: {
     handleSubmit,
     onSubmit,
     subTotal,
-    handleAppend,
-    handleCloseModal,
+    totalDiskon,
+    isPendingTambahProduk,
+    hargaJual,
   };
 };
 

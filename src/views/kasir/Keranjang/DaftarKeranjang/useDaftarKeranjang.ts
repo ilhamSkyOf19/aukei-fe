@@ -9,7 +9,7 @@ const useDaftarKeranjang = () => {
   const [searchParams] = useSearchParams();
 
   //   is choose pelanggan
-  const isChoosePelanggan = Number(searchParams.get("pelangganId") ?? 0);
+  const isChoosePelanggan = Number(searchParams.get("keranjangId") ?? 0);
 
   // current pathname
   const currentPathname = useLocation().pathname;

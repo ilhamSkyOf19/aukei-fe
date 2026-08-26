@@ -37,7 +37,6 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
     produkChoose,
     handleDeleteValueProdukId,
     alert,
-    hargaModalSatuanController,
     isPendingBarangKeluarDetail,
     jumlahStokController,
   } = useModalFormulirTambahBarangKeluar({
@@ -118,6 +117,7 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
+                            hargaModal
                             key={item.id}
                             data={item}
                             handleSetValueProdukId={handleSetValueProdukId}
@@ -142,6 +142,7 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                     Daftar Pilihan Barang:
                   </p>
                   <CardProdukForAfterChooseInventori
+                    hargaModal
                     data={produkChoose}
                     handleDeleteValueProdukId={handleDeleteValueProdukId}
                     customWidth="w-full"
@@ -158,16 +159,6 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                 placeholder="Jumlah Stok"
                 required
                 max={9999999999}
-              />
-            </div>
-
-            {/* harga modal satuan */}
-            <div className="w-full flex flex-row justify-start items-center">
-              <InputNumber<CreateBarangKeluarDetailType>
-                controller={hargaModalSatuanController}
-                label="Harga Modal Satuan"
-                placeholder="Harga Modal Satuan"
-                required
               />
             </div>
 

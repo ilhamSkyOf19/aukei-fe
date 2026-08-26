@@ -48,12 +48,14 @@ const Produk = () => {
               isActive={isActiveCluster === "produk"}
               label="Produk"
               handleActive={() => handleActiveCluster("produk")}
+              customWidth="flex-1"
             />
             {/* kategori */}
             <ButtonCluster
               isActive={isActiveCluster === "kategori"}
               label="Kategori"
               handleActive={() => handleActiveCluster("kategori")}
+              customWidth="flex-1"
             />
           </div>
         </div>

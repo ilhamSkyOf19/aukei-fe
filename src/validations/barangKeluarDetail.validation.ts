@@ -39,8 +39,6 @@ export class BarangKeluarDetailValidation {
         .int()
         .positive("Mohon isi jumlah stok")
         .max(2147483647),
-
-      hargaModalSatuan: z.number("Mohon isi harga modal").int().max(2147483647),
     })
     .strict() satisfies z.ZodType<CreateBarangKeluarDetailType>;
 
@@ -58,12 +56,6 @@ export class BarangKeluarDetailValidation {
         .number("Mohon isi jumlah stok")
         .int()
         .positive("Mohon isi jumlah stok")
-        .max(2147483647)
-        .optional(),
-
-      hargaModalSatuan: z
-        .number("Mohon isi harga modal")
-        .int()
         .max(2147483647)
         .optional(),
     })

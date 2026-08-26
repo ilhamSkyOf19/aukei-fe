@@ -90,7 +90,7 @@ const useKredit = () => {
 
   // handle redirect
   const handelRedirectDetail = (id: number) => {
-    return navigate(`${currentPahtname}/pelanggan/${id}`);
+    return navigate(`${currentPahtname}/${id}`);
   };
 
   return {

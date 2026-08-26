@@ -119,6 +119,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
+                            hargaBeli
                             key={item.id}
                             data={item}
                             handleSetValueProdukId={handleSetValueProdukId}
@@ -144,6 +145,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                   </p>
                   {produkChoose.map((item) => (
                     <CardProdukForAfterChooseInventori
+                      hargaBeli
                       key={item.id}
                       data={item}
                       handleDeleteValueProdukId={handleDeleteValueProdukId}

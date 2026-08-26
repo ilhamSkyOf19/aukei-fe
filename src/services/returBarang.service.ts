@@ -1,26 +1,96 @@
 import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
-  CreateReturBarangForService,
+  AddReturnDetailRequestType,
+  AddReturnDetailResponseType,
+  DeleteReturnDetailParamsType,
   ResponseDataReturBarangDetailType,
-  ResponseRegularReturnTransactionType,
-  ResponseRegularReturnTransactionWithMetaType,
-  ResponseReturnDetailType,
+  ResponseFindAllReturnType,
+  ResponsePengajuanReturnType,
   ResponseReturnForByIdType,
-  ResponseUpdateStatusReturnTransactionType,
-  UpdateReturnForServiceType,
+  UpdateReturnDetailRequestType,
+  UpdateReturnDetailResponseType,
 } from "../models/returBarang.model";
-import type { StatusInventoriType } from "../types/constant.type";
+import type { ReturnStatus } from "../types/constant.type";
+
 import type { ResponseStructure } from "../types/response.type";
 
 export class ReturBarangServices {
-  // create
-  static async create(
-    req: CreateReturBarangForService,
-  ): Promise<ResponseStructure<ResponseReturnDetailType | null>> {
+  /**
+   * ============================================================
+   * ADD RETURN DETAIL
+   * ============================================================
+   *
+   * POST /return/detail
+   */
+  static async addReturnDetail(
+    req: AddReturnDetailRequestType,
+  ): Promise<ResponseStructure<AddReturnDetailResponseType | null>> {
     const result = await instanceAxios.post<
-      ResponseStructure<ResponseReturnDetailType | null>
-    >("/return", req);
+      ResponseStructure<AddReturnDetailResponseType | null>
+    >("/return/detail", req);
+
+    return result.data;
+  }
+
+  /**
+   * ============================================================
+   * UPDATE RETURN DETAIL
+   * ============================================================
+   *
+   * PUT /return/:returnTransactionId/detail/:returnDetailId
+   */
+  static async updateReturnDetail(params: {
+    returnTransactionId: number;
+    returnDetailId: number;
+    req: UpdateReturnDetailRequestType;
+  }): Promise<ResponseStructure<UpdateReturnDetailResponseType | null>> {
+    const { returnTransactionId, returnDetailId, req } = params;
+
+    const result = await instanceAxios.put<
+      ResponseStructure<UpdateReturnDetailResponseType | null>
+    >(`/return/${returnTransactionId}/detail/${returnDetailId}`, req);
+
+    return result.data;
+  }
+
+  static async findDraftByReturnTransactionId(params: {
+    transactionId: number;
+  }): Promise<ResponseStructure<ResponseDataReturBarangDetailType | null>> {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseDataReturBarangDetailType | null>
+    >(`/return/draft/transaction/${params.transactionId}`);
+
+    return result.data;
+  }
+
+  /**
+   * ============================================================
+   * DELETE RETURN DETAIL
+   * ============================================================
+   *
+   * DELETE /return/:returnTransactionId/detail/:returnDetailId
+   */
+  static async deleteReturnDetail(
+    params: DeleteReturnDetailParamsType,
+  ): Promise<ResponseStructure<null>> {
+    const { returnTransactionId, returnDetailId } = params;
+
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/return/${returnTransactionId}/detail/${returnDetailId}`,
+    );
+
+    return result.data;
+  }
+
+  // pengajuan
+  static async pengajuan(data: {
+    id: number;
+    keterangan?: string;
+  }): Promise<ResponseStructure<ResponsePengajuanReturnType | null>> {
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponsePengajuanReturnType | null>
+    >(`/return/pengajuan`, data);
 
     return result.data;
   }
@@ -28,90 +98,70 @@ export class ReturBarangServices {
   // find all
   static async findAll(params: {
     transactionId: number;
-    query: PaginationType & {
-      status?: string;
-    };
-  }): Promise<
-    ResponseStructure<ResponseRegularReturnTransactionWithMetaType | null>
-  > {
-    // call api
+    query: PaginationType & { status?: string };
+  }): Promise<ResponseStructure<ResponseFindAllReturnType | null>> {
     const result = await instanceAxios.get<
-      ResponseStructure<ResponseRegularReturnTransactionWithMetaType | null>
-    >(`/return/transaction/${params.transactionId}`, { params: params.query });
+      ResponseStructure<ResponseFindAllReturnType | null>
+    >(`/return/transaction/${params.transactionId}`, {
+      params: params.query,
+    });
+
+    return result.data;
+  }
+
+  // find details by id
+  static async findReturnDetails(params: {
+    returId: number;
+  }): Promise<ResponseStructure<ResponseDataReturBarangDetailType | null>> {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseDataReturBarangDetailType | null>
+    >(`/return/${params.returId}/details`, {});
 
     return result.data;
   }
 
   // find by id
   static async findById(params: {
-    id: number;
+    returId: number;
   }): Promise<ResponseStructure<ResponseReturnForByIdType | null>> {
-    // call api
     const result = await instanceAxios.get<
       ResponseStructure<ResponseReturnForByIdType | null>
-    >(`/return/${params.id}`);
+    >(`/return/${params.returId}`, {});
 
     return result.data;
   }
 
   // verifikasi
-  static async verifikasi(params: {
+  static async verifikasi(data: {
     kodeReferensi: string;
+    status: Extract<ReturnStatus, "APPROVED" | "REJECTED">;
     keterangan?: string;
-    status: Exclude<StatusInventoriType, "DRAFT" | "PENDING">;
-  }): Promise<ResponseStructure<ResponseRegularReturnTransactionType | null>> {
-    // call api
-    const result = await instanceAxios.post<
-      ResponseStructure<ResponseRegularReturnTransactionType | null>
-    >("/return/verifikasi", params);
-
-    return result.data;
-  }
-
-  static async pengajuan(params: {
-    id: number;
-    keterangan?: string;
-  }): Promise<
-    ResponseStructure<ResponseUpdateStatusReturnTransactionType | null>
-  > {
-    // call api
-    const result = await instanceAxios.post<
-      ResponseStructure<ResponseUpdateStatusReturnTransactionType | null>
-    >("/return/pengajuan", params);
-
-    return result.data;
-  }
-
-  static async findAllByReturnTransactionId(params: {
-    id: number;
-  }): Promise<ResponseStructure<ResponseDataReturBarangDetailType | null>> {
-    const result = await instanceAxios.get<
-      ResponseStructure<ResponseDataReturBarangDetailType | null>
-    >(`/return/${params.id}/return-details`);
+  }): Promise<ResponseStructure<ResponseReturnForByIdType | null>> {
+    console.log(data);
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponseReturnForByIdType | null>
+    >(`/return/verifikasi`, data);
 
     return result.data;
   }
 
   // delete
-  static async delete(params: {
-    id: number;
-  }): Promise<ResponseStructure<null>> {
-    const result = await instanceAxios.delete<ResponseStructure<null>>(
-      `/return/${params.id}`,
-    );
+  static async delete(params: { returId: number }): Promise<
+    ResponseStructure<{
+      id: number;
+      kodeReferensi: string;
+      status: ReturnStatus;
+    } | null>
+  > {
+    const { returId } = params;
 
-    return result.data;
-  }
-
-  // update
-  static async update(params: {
-    returnTransactionId: number;
-    req: UpdateReturnForServiceType;
-  }): Promise<ResponseStructure<ResponseReturnDetailType | null>> {
-    const { req, returnTransactionId } = params;
-    const result = await instanceAxios.put<
-      ResponseStructure<ResponseReturnDetailType | null>
-    >(`/return/${returnTransactionId}`, req);
+    const result = await instanceAxios.delete<
+      ResponseStructure<{
+        id: number;
+        kodeReferensi: string;
+        status: ReturnStatus;
+      } | null>
+    >(`/return/${returId}`);
 
     return result.data;
   }

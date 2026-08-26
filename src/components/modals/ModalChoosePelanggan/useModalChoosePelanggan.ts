@@ -2,6 +2,8 @@ import useDataPelanggan from "../../../hooks/useDataPelanggan";
 import { handlePagination } from "../../../helpers/helpers";
 import { useState } from "react";
 import useModal from "../../../hooks/useModal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TransactionServices } from "../../../services/transaction.service";
 
 const useModalChoosePelanggan = (params: {
   handleCloseModalChoosePelanggan: () => void;
@@ -25,6 +27,9 @@ const useModalChoosePelanggan = (params: {
     // show modal formulir pelanggan
     showModalFormulirPelanggan();
   };
+
+  // query client
+  const queryClient = useQueryClient();
 
   // handle close modal formulir pelanggan
   const handleCloseModalFormulirPelanggan = () => {
@@ -62,6 +67,24 @@ const useModalChoosePelanggan = (params: {
         : false
       : false;
 
+  // mutate pilih pelanggan
+  const {
+    mutateAsync: handlePilihPelanggan,
+    isPending: isPendingPilihPelanggan,
+  } = useMutation({
+    mutationFn: (data: { pelangganId: number }) =>
+      TransactionServices.pilihPelanggan(data),
+    onSuccess: () => {
+      handleCloseModalChoosePelanggan();
+
+      // invalidate
+      queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   return {
     dataPelanggan,
     isLoadingPelanggan,
@@ -76,6 +99,9 @@ const useModalChoosePelanggan = (params: {
     modalFormulirPelangganRef,
     handleShowModalFormulirPelanggan,
     handleCloseModalFormulirPelanggan,
+
+    handlePilihPelanggan,
+    isPendingPilihPelanggan,
   };
 };
 

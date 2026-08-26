@@ -53,7 +53,7 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
   return (
     <div className="w-full flex flex-col justify-start items-start">
       {/* filter */}
-      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-2.5">
+      <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10">
         <div className="w-full md:flex-1 flex flex-col justify-start items-start gap-1.5">
           <InputSearch
             handleSearch={handleSearch}

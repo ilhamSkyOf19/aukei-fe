@@ -63,7 +63,7 @@ const useDaftarReturBarang = () => {
   // filter status
   const { filter: status, setFilter: handleStatus } = useFilter({
     paramName: "status",
-    allowQuery: ["approved", "pending", "rejected", "semua"],
+    allowQuery: ["approved", "pending", "rejected", "draft", "semua"],
     defaultValueCustom: "semua",
     resetPage: true,
   });
@@ -113,7 +113,7 @@ const useDaftarReturBarang = () => {
   // mutate delete
   const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(
     {
-      mutationFn: (id: number) => ReturBarangServices.delete({ id }),
+      mutationFn: (id: number) => ReturBarangServices.delete({ returId: id }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["daftar-retur-barang"] });
 

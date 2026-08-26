@@ -27,7 +27,8 @@ type Props = {
   tanggalKeluar?: Date;
   keterangan?: string;
   totalBarangKeluar: number;
-  totalNilai?: string;
+  totalItemKeluar: number;
+  totalNilai?: number;
   idBarangKeluarDetail?: number;
   handleSetToast: (data: string) => void;
   jenisKeluar?: Pick<IJenisKeluarType, "id" | "nama">;
@@ -52,6 +53,7 @@ const InformasiBarangKeluar: FC<Props> = ({
   author,
   tanggalDiajukan,
   isUpdate,
+  totalItemKeluar,
 }) => {
   // call use
   const {
@@ -315,11 +317,11 @@ const InformasiBarangKeluar: FC<Props> = ({
           </>
         ) : (
           <>
-            {/* tanggal barang keluar */}
+            {/* total produk keluar */}
             <div className="w-full flex flex-row justify-between items-start gap-3 mt-8">
               {/* icon */}
               <div className="h-full flex flex-row justify-start items-start">
-                <Package className="size-5 text-emerald-600" />
+                <PackageMinus className="size-5 text-rose-600" />
               </div>
 
               {/* label and value */}
@@ -330,7 +332,7 @@ const InformasiBarangKeluar: FC<Props> = ({
               >
                 {/* label */}
                 <span className="text-xs text-base-content font-medium">
-                  Total Barang Keluar
+                  Total Produk Keluar
                 </span>
 
                 <span className={"text-sm font-medium"}>
@@ -339,7 +341,29 @@ const InformasiBarangKeluar: FC<Props> = ({
               </div>
             </div>
 
-            {/* keterangan barang masuk */}
+            {/* total item keluar */}
+            <div className="w-full flex flex-row justify-between items-start gap-3 mt-8">
+              {/* icon */}
+              <div className="h-full flex flex-row justify-start items-start">
+                <PackageMinus className="size-5 text-rose-600" />
+              </div>
+
+              {/* label and value */}
+              <div
+                className={cn(
+                  "w-full flex flex-row justify-between pb-3 border-b border-base-content/10 items-center",
+                )}
+              >
+                {/* label */}
+                <span className="text-xs text-base-content font-medium">
+                  Total Item Keluar
+                </span>
+
+                <span className={"text-sm font-medium"}>{totalItemKeluar}</span>
+              </div>
+            </div>
+
+            {/* total nilai */}
             <div className="w-full flex flex-row justify-between items-start gap-3 mt-6">
               {/* icon */}
               <div className="h-full flex flex-row justify-start items-start">

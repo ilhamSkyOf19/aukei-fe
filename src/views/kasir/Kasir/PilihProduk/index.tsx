@@ -32,6 +32,8 @@ import DataEmpty from "../../../../components/messages/DataEmpty";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 import ModalAlert from "../../../../components/modals/ModalAlert";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import ProdukDetail from "../../../all/ProdukDetail";
 
 type Props = {
   handleToast: (value: string) => void;
@@ -39,9 +41,6 @@ type Props = {
 const PilihProduk: FC<Props> = ({ handleToast }) => {
   // call use
   const {
-    handleAddDetails,
-    handleRemoveAllDetails,
-    handleSetPelanggan,
     handleStepsNext,
     isErrorsFormState,
     pelanggan,
@@ -58,7 +57,6 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
     handleBatalkanSimpanKeranjang,
     handleBatalkanUpdateTransaction,
     handleSimpanPerubahanKeranjang,
-    handleAppendMany,
     handleCloseModalFormulirTransaksi,
     handleShowModalFormulirTransaksi,
     modalFormulirTransaksiRef,
@@ -74,12 +72,20 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
 
     handleRedirectBooking,
     fromBooking,
+
+    isLoadingTransaksi,
+    isPendingRemoveDetail,
+    variablesRemoveDetail,
+    isRefetchingTransaksi,
+
+    handleRemoveAll,
+    isPendingRemoveAll,
   } = usePilihProduk({
     handleToast,
   });
 
   return (
-    <div className="w-full h-full flex flex-row justify-between items-start gap-3">
+    <div className="w-full h-full flex flex-row justify-between items-start gap-3 relative">
       {alert && (
         <Alert
           alert={alert?.id !== null}
@@ -87,6 +93,14 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
           label={ALERT_CONFIG_TRANSACTION[alert.type].message}
           full
         />
+      )}
+
+      {/* loading */}
+      {(isLoadingTransaksi || isRefetchingTransaksi || isPendingRemoveAll) && (
+        <div className="absolute w-full h-full flex flex-row justify-center items-center z-20">
+          <div className="w-full h-full bg-base-100 opacity-70 absolute" />
+          <LoadingFetch />
+        </div>
       )}
 
       {/* content left */}
@@ -183,7 +197,7 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
             <button
               type="button"
               className="py-1.5 px-2 flex flex-row justify-start items-center gap-2 border border-transparent hover:border-error rounded-xl transition-all duration-150 ease-in-out"
-              onClick={handleRemoveAllDetails}
+              onClick={() => handleRemoveAll()}
             >
               <Trash2 className="lg:size-3.5 text-error" />
               <span className="lg:text-[0.625rem] font-medium text-error">
@@ -194,16 +208,27 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
         </div>
 
         {/* DATA */}
-        <div className="w-full flex-16 px-2.5 overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary flex flex-col justify-start items-start gap-2.5">
+        <div className="w-full flex-16 px-2.5 overflow-y-auto scrollbar-thin scrollbar-thumb-custom-secondary flex flex-col justify-start items-start gap-2.5 mt-1.5">
           {produkDetails.length > 0 ? (
-            produkDetails?.map((produk) => (
+            produkDetails?.map((item) => (
               <CardData
-                key={produk.id}
+                key={item.id}
                 handleShowModalFormulirTransaksiForUpdate={
                   handleShowModalFormulirTransaksiForUpdate
                 }
                 removeDetails={removeDetails}
-                {...produk}
+                diskon={item.diskon}
+                hargaJual={item.hargaJual}
+                id={item.id}
+                img={item.produk.img}
+                nama={item.produk.nama}
+                quantity={item.quantity}
+                stok={item.stokTersisa}
+                subTotal={item.subtotal}
+                kode={item.produk.kode}
+                isLoadingRemove={
+                  isPendingRemoveDetail && variablesRemoveDetail === item.id
+                }
               />
             ))
           ) : (
@@ -227,7 +252,7 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
               <span className="md:text-xs text-base-content/80">Subtotal</span>
               <span className=" md:text-xs font-semibold text-base-content">
                 {formatRupiah(
-                  produkDetails.reduce((a, b) => a + b.subTotal, 0),
+                  produkDetails.reduce((a, b) => a + b.subtotal + b.diskon, 0),
                 )}
               </span>
             </div>
@@ -238,7 +263,8 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
                 Total Diskon
               </span>
               <div className="flex flex-row justify-start items-center gap-1">
-                {produkDetails.reduce((a, b) => a + b.diskon, 0) > 0 && (
+                {produkDetails.reduce((a, b) => a + b.diskon * b.quantity, 0) >
+                  0 && (
                   <span className="md:text-xs font-semibold text-error">
                     <Minus className="size-2" />
                   </span>
@@ -259,9 +285,7 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
               Total
             </span>
             <span className="md:text-base font-semibold text-emerald-600">
-              {formatRupiah(
-                produkDetails.reduce((a, b) => a + (b.subTotal - b.diskon), 0),
-              )}
+              {formatRupiah(produkDetails.reduce((a, b) => a + b.subtotal, 0))}
             </span>
           </div>
         </div>
@@ -460,15 +484,24 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
       {/* content right */}
       <ShowProduk
         handleShowModalFormulirTransaksi={handleShowModalFormulirTransaksi}
-        onAppendMany={handleAppendMany}
         step={step}
         pelangganId={pelanggan?.id}
-        dataChooseProduk={produkDetails}
+        dataChooseProduk={produkDetails.map((item) => ({
+          id: item.id,
+          diskon: item.diskon,
+          hargaJual: item.hargaJual,
+          img: item.produk.img,
+          nama: item.produk.nama,
+          quantity: item.quantity,
+          stok: item.quantity,
+          subTotal: item.subtotal,
+          hargaJualTerakhirTransaksi: item.hargaJualTerakhir,
+          kode: item.produk.kode,
+        }))}
       />
 
       {/* modal choose pelanggan  */}
       <ModalChoosePelanggan
-        handleChoose={handleSetPelanggan}
         handleShowModal={handleShowModalChoosePelanggan}
         modalRef={modalChoosePelangganRef}
         handleCloseModal={handleCloseModalChoosePelanggan}
@@ -479,7 +512,6 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
         modalRef={modalFormulirTransaksiRef}
         data={dataModalFormulirTransaksi}
         index={idModalUpdateTransaksi}
-        handleAppend={handleAddDetails}
         handleCloseModal={handleCloseModalFormulirTransaksi}
       />
 
@@ -501,17 +533,20 @@ type CardDataProps = {
   id: number;
   img: string;
   nama: string;
-  kode: string;
+  kode?: string | null;
   stok: number;
   quantity: number;
   hargaJual: number;
   subTotal: number;
+  diskon: number;
   handleShowModalFormulirTransaksiForUpdate: (id: number) => void;
   removeDetails: (id: number) => void;
+  isLoadingRemove?: boolean;
 };
 const CardData: FC<CardDataProps> = ({
   handleShowModalFormulirTransaksiForUpdate,
   removeDetails,
+  isLoadingRemove,
   ...produk
 }) => {
   return (
@@ -537,7 +572,7 @@ const CardData: FC<CardDataProps> = ({
           </div>
           <div className="flex flex-row justify-start items-center gap-0.5">
             <span className="text-[0.625rem] font-medium text-base-content/50">
-              {produk.kode}
+              {produk.kode ?? "-"}
             </span>
             <span className="text-xs font-medium text-base-content/50">
               <Dot className="size-4" />
@@ -552,28 +587,37 @@ const CardData: FC<CardDataProps> = ({
       {/* content 2 */}
       <div className="flex-1 grid grid-cols-4 gap-0.5 justify-end items-center">
         {/* quantity */}
-        <span className="col-span-1 text-center text-[0.625rem] font-semibold text-base-content">
+        <span className="col-span-1 text-start text-xs font-medium text-base-content">
           {formatNumber(produk.quantity)} x
         </span>
 
         {/* sub total */}
-        <span className="col-span-2 text-xs font-medium text-base-content">
-          {produk.subTotal > 1500000
-            ? formatRupiahShort(produk.subTotal)
-            : formatRupiah(produk.subTotal)}
-        </span>
+        <div className="col-span-2 flex flex-col justify-start items-start">
+          <span className="text-[0.625rem] font-medium text-error">
+            - {formatRupiah(produk.diskon)}
+          </span>
+          <span className="text-xs font-medium text-base-content">
+            {produk.subTotal > 1500000
+              ? formatRupiahShort(produk.subTotal)
+              : formatRupiah(produk.subTotal)}
+          </span>
+        </div>
 
         {/* aksi */}
         <div className="col-span-1 flex flex-row justify-end items-start gap-1">
+          {/* update */}
           <ButtonUpdateTable
             handleShowModalFormulir={() =>
               handleShowModalFormulirTransaksiForUpdate(produk.id)
             }
             noTip
           />
+
+          {/* delete */}
           <ButtonDeleteTable
             handleShowModalDelete={() => removeDetails(produk.id)}
             noTip
+            isLoading={isLoadingRemove}
           />
         </div>
       </div>

@@ -35,6 +35,18 @@ export interface CreateTempoType extends Pick<
   diBayar?: number;
 }
 
+export interface CreateTempoForRequestType extends Pick<
+  ITempo,
+  "periode" | "transactionId" | "uangMuka" | "jumlahCicilan"
+> {
+  paymentUangMuka?: {
+    metodePaymentUangMuka: Exclude<PaymentMethodType, "TEMPO">;
+    dibayar: number;
+    kembalian: number;
+  };
+  installments: CreateInstallmentType[];
+}
+
 // data tempo
 export interface DataTempoType extends CreateTempoType {
   installments?: CreateInstallmentType[];
@@ -95,6 +107,7 @@ export interface ResponseTempoWithInstallment extends Pick<
   transactionId: number;
   nomorTransaksi?: string | null;
   tanggalTransaksi: Date;
+  diskon: number;
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
   statusTempo: TempoStatusType;
   sisaCicilanBelumSelesai: number;
@@ -118,3 +131,5 @@ export interface ResponseTempoWithInstallment extends Pick<
     | "kembalian"
   >[];
 }
+
+export interface ResponseTempoType extends ITempo {}

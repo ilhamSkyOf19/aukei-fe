@@ -7,12 +7,16 @@ type Props = {
   customDataTip?: string;
   disabled?: boolean;
   noTip?: boolean;
+  isLoading?: boolean;
+  customSize?: string;
 };
 const ButtonDeleteTable: FC<Props> = ({
   handleShowModalDelete,
   customDataTip,
   disabled,
   noTip,
+  isLoading,
+  customSize,
 }) => {
   return (
     <div
@@ -22,17 +26,22 @@ const ButtonDeleteTable: FC<Props> = ({
       {/* update */}
       <button
         type="button"
-        disabled={disabled}
+        disabled={disabled || isLoading}
         className={cn(
-          "w-6 h-6 bg-error rounded-md flex flex-row justify-center items-center disabled:opacity-50",
+          "bg-error rounded-md flex flex-row justify-center items-center disabled:opacity-50",
           !disabled && "hover-overlay",
+          customSize ?? "w-6 h-6 ",
         )}
         style={{
           cursor: disabled ? "not-allowed" : "pointer",
         }}
         onClick={() => handleShowModalDelete()}
       >
-        <Trash2 className="size-3 text-primary-white" />
+        {isLoading ? (
+          <div className="loading loading-super-xs text-primary-white" />
+        ) : (
+          <Trash2 className="size-3 text-primary-white" />
+        )}
       </button>
     </div>
   );

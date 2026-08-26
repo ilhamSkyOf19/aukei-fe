@@ -43,7 +43,6 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
     >
       {/* back */}
       <ButtonBackText handleClick={() => handleBackTransaksi()} />
-
       {/* toast */}
       {toast && (
         <Toast
@@ -53,7 +52,6 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
           color={TOAST_CONFIG_TRANSACTION_DETAIL[toast.type].color}
         />
       )}
-
       {/* alert */}
       {alert && (
         <Alert
@@ -62,7 +60,6 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
           label={ALERT_CONFIG_TRANSACTION_DETAIL[alert.type].message}
         />
       )}
-
       {/* header */}
       <HeaderTransactionDetail
         nomorTransaksi={dataTransaction?.data?.nomorTransaksi}
@@ -81,7 +78,6 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
         statusTempo={dataTransaction?.data?.tempo?.status}
         isLoadingTransaction={isLoadingTransaction}
       />
-
       {/* data */}
       <div className="flex w-full flex-col lg:flex-row justify-start md:items-end items-start lg:items-start gap-2.5">
         {/* daftar produk and kredit detail */}

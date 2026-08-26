@@ -9,6 +9,8 @@ import type {
   ResponseStatistikPantauanStokType,
   ResponseStatistikTopProdukWithMetaType,
   ResponseStatistikTopPelangganWithMetaType,
+  ResponseStatistikStokModalType,
+  ResponseStatistikStokDetailKategoriType,
 } from "../models/statistik.model";
 import type {
   QueryRiwayatTransactionType,
@@ -246,6 +248,30 @@ export class StatistikServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseStatistikPantauanStokType | null>
     >("/statistik/statistik-pantauan-stok", { params: query });
+
+    return result.data;
+  }
+
+  // laporan sisa stok
+  static async laporanSisa(): Promise<
+    ResponseStructure<ResponseStatistikStokModalType | null>
+  > {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseStatistikStokModalType | null>
+    >("/statistik/laporan-sisa");
+
+    return result.data;
+  }
+
+  // laporan sisa stok
+  static async daftarSisaStokModalByProduk(params: {
+    kategoriId?: number;
+  }): Promise<
+    ResponseStructure<ResponseStatistikStokDetailKategoriType | null>
+  > {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseStatistikStokDetailKategoriType | null>
+    >(`/statistik/stok-modal/kategori/${params.kategoriId}`);
 
     return result.data;
   }

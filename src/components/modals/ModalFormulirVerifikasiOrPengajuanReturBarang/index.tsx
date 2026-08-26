@@ -5,7 +5,10 @@ import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import { CircleX, Hash, Send } from "lucide-react";
 import InputTextAreaNonIcon from "../../inputs/InputTextAreaNonIcon";
 import AlertLabel from "../../messages/AlertLabel";
-import type { RoleInternalType } from "../../../types/constant.type";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+} from "../../../types/constant.type";
 import useModalFormulirVerifikasiOrPengajuanReturBarang from "./useModalFormulirVerifikasiOrPengajuanReturBarang";
 import ButtonText from "../../ui/button/ButtonText";
 
@@ -13,9 +16,9 @@ type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
   returId?: number;
+  transactionId?: number;
   kodeReferensi?: string;
   role?: RoleInternalType;
-  type?: "tolak" | "pengajuan";
   handleSetAlert?: (data: string) => void;
 };
 
@@ -24,9 +27,9 @@ const ModalFormulirVerifikasiOrPengajuanReturBarang: FC<Props> = ({
   handleCloseModal,
   kodeReferensi,
   role,
-  type,
   handleSetAlert,
   returId,
+  transactionId,
 }) => {
   // call use
   const {
@@ -42,7 +45,11 @@ const ModalFormulirVerifikasiOrPengajuanReturBarang: FC<Props> = ({
     returId,
     role,
     handleSetAlert,
+    transactionId,
   });
+
+  const type: "tolak" | "pengajuan" =
+    role === ROLE_INTERNAL_TYPE.KASIR ? "pengajuan" : "tolak";
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">

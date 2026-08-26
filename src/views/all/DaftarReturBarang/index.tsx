@@ -16,11 +16,11 @@ import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import { CircleAlert, EllipsisVertical, Undo2 } from "lucide-react";
 import DropDownInventori from "../../../components/ui/DropDownInventori";
 import { formatRupiah } from "../../../helpers/helpers";
-import type { ResponseRegularReturnTransactionType } from "../../../models/returBarang.model";
 import type { FC } from "react";
 import { RETURN_STATUS } from "../../../types/constant.type";
 import ModalDelete from "../../../components/modals/ModalDelete";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
+import type { ResponseDataFindAllReturnType } from "../../../models/returBarang.model";
 
 const DaftarReturBarang = () => {
   const {
@@ -290,7 +290,7 @@ const DaftarReturBarang = () => {
 
 type CardReturBarangProps = {
   handleRedirectDetail: (id: number) => void;
-  data: ResponseRegularReturnTransactionType;
+  data: ResponseDataFindAllReturnType;
   handleShowModalDelete: () => void;
 };
 

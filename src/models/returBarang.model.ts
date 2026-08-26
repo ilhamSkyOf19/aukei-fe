@@ -5,68 +5,6 @@ import type { IProduk } from "./produk.model";
 import type { ITransactionType } from "./transaction.model";
 import type { ITransactionDetailType } from "./transactionDetail.model";
 
-export interface CreateReturnDetailRequestType {
-  nama: string;
-
-  kode: string;
-
-  img: string;
-
-  maxQuantity: number;
-
-  hargaJual: number;
-
-  transactionDetailId: number;
-
-  quantityGood: number;
-
-  quantityDamaged: number;
-}
-
-export interface CreateReturBarangForService extends Pick<
-  CreateReturnRequestType,
-  "customTotalRefund" | "keterangan"
-> {
-  transactionId: number;
-  details: Array<
-    Pick<
-      CreateReturnDetailRequestType,
-      "quantityDamaged" | "quantityGood" | "transactionDetailId"
-    >
-  >;
-}
-
-export interface IReturnDetailType {
-  id: number;
-
-  transactionDetailId: number;
-
-  transactionDetail?: Pick<
-    ITransactionDetailType,
-    "id" | "quantity" | "hargaJual" | "subtotal" | "diskon"
-  > & {
-    produkId: number;
-  };
-
-  quantityReturn: number;
-
-  quantityGood: number;
-
-  quantityDamaged: number;
-
-  totalRefund: number;
-
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// create
-export interface CreateReturnRequestType {
-  customTotalRefund?: number;
-  keterangan?: string;
-  details: CreateReturnDetailRequestType[];
-}
-
 export interface IReturnTransactionType {
   id: number;
 
@@ -112,56 +50,183 @@ export interface IReturnTransactionType {
   updatedAt: Date;
 }
 
-export type ResponseReturnDetailType = Pick<
+interface IReturnDetailType {
+  id: number;
+
+  transactionDetailId: number;
+
+  transactionDetail?: Pick<
+    ITransactionDetailType,
+    "id" | "quantity" | "hargaJual" | "subtotal" | "diskon" | "hpp"
+  > & {
+    produkId: number;
+  };
+
+  /**
+   * Snapshot HPP/modal barang pada saat retur.
+   *
+   * Pada sistem non-FIFO, nilai ini diambil dari
+   * TransactionDetail.hpp.
+   */
+  hargaBeliRetur: number;
+
+  quantityReturn: number;
+
+  totalRefund: number;
+
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateReturnDetailRequestType {
+  transactionDetailId: number;
+
+  quantityGood: number;
+
+  quantityDamaged: number;
+}
+
+export interface ResponseDataReturBarangDetailType {
+  id: number;
+
+  customTotalRefund: number;
+
+  keterangan: string | null;
+
+  details: Array<
+    Pick<
+      IReturnDetailType,
+      | "id"
+      | "quantityReturn"
+      | "totalRefund"
+      | "transactionDetailId"
+      | "hargaBeliRetur"
+    >
+  >;
+}
+
+export interface UpdateReturnDetailParamsType {
+  returnTransactionId: number;
+  returnDetailId: number;
+}
+
+export interface UpdateReturnRequestType {
+  keterangan?: string;
+
+  customTotalRefund?: number;
+
+  details: Array<
+    CreateReturnDetailRequestType & {
+      hargaJual: number;
+    }
+  >;
+}
+
+export interface AddReturnDetailRequestType {
+  transactionId: number;
+  transactionDetailId: number;
+}
+
+export interface AddReturnDetailResponseType {
+  returnTransactionId: number;
+  returnDetailId: number;
+  kodeReferensi: string;
+
+  transactionDetail: {
+    id: number;
+    produkId: number;
+    namaProduk: string;
+    kodeProduk?: string | null;
+    quantity: number;
+    quantityAlreadyReturned: number;
+    quantityAvailableToReturn: number;
+    quantityReturn: number;
+    hargaJual: number;
+    totalRefund: number;
+  };
+}
+
+export interface DeleteReturnDetailParamsType {
+  returnTransactionId: number;
+  returnDetailId: number;
+}
+
+export interface UpdateReturnDetailRequestType {
+  hargaBeliRetur: number;
+  quantityReturn: number;
+  totalRefund: number;
+}
+
+export interface UpdateReturnDetailResponseType {
+  returnTransactionId: number;
+  returnDetailId: number;
+
+  hargaBeliRetur: number;
+  quantityReturn: number;
+  totalRefund: number;
+
+  hargaJual: number;
+
+  quantityTransaction: number;
+  quantityAlreadyReturned: number;
+  quantityAvailableToReturn: number;
+}
+
+export type ResponsePengajuanReturnType = {
+  id: number;
+  kodeReferensi: string;
+  status: ReturnStatus;
+};
+
+/**
+ * ============================================================
+ * FIND ALL RETURN
+ * ============================================================
+ */
+
+export interface ResponseFindAllReturnType {
+  data: ResponseDataFindAllReturnType[];
+
+  meta: MetaType;
+}
+
+export type ResponseDataFindAllReturnType = Pick<
   IReturnTransactionType,
   | "id"
   | "kodeReferensi"
   | "transactionId"
   | "status"
-  | "createdById"
-  | "verifiedById"
+  | "totalRefundAll"
+  | "tanggalReturn"
   | "createdAt"
+  | "updatedAt"
 > & {
-  totalRefundAll: number;
-  details: Array<
-    Pick<
-      IReturnDetailType,
-      | "id"
-      | "quantityGood"
-      | "quantityDamaged"
-      | "quantityReturn"
-      | "totalRefund"
-    > & {
-      transactionDetail: Pick<
-        ITransactionDetailType,
-        "id" | "quantity" | "hargaJual" | "subtotal"
-      > & {
-        produk: Pick<IProduk, "id" | "kode" | "nama" | "hargaBeli">;
-      };
-    }
-  >;
+  createdBy: Pick<IPenggunaInternalType, "id" | "nama" | "role">;
+
+  verifiedBy: Pick<IPenggunaInternalType, "id" | "nama" | "role">;
+
+  verifiedAt: Date | null;
+
+  transaction: Pick<ITransactionType, "id" | "nomorTransaksi">;
+
+  details: ResponseDataFindAllReturnDetailType[];
 };
 
-export interface ResponseRegularReturnTransactionType {
-  id: number;
-  kodeReferensi: string;
-  transactionId: number;
-  createdBy: Pick<IPenggunaInternalType, "id" | "nama" | "role">;
-  tanggalReturn: Date;
-  status: ReturnStatus;
-  keterangan?: string | null;
-  totalRefundAll: number;
-  verifiedBy?: Pick<IPenggunaInternalType, "id" | "nama" | "role"> | null;
-  verifiedAt?: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// response with meta
-export interface ResponseRegularReturnTransactionWithMetaType {
-  data: Array<ResponseRegularReturnTransactionType>;
-  meta: MetaType;
-}
+export type ResponseDataFindAllReturnDetailType = Pick<
+  IReturnDetailType,
+  | "id"
+  | "transactionDetailId"
+  | "quantityReturn"
+  | "hargaBeliRetur"
+  | "totalRefund"
+> & {
+  transactionDetail: Pick<
+    ITransactionDetailType,
+    "id" | "quantity" | "hargaJual"
+  > & {
+    produk: Pick<IProduk, "id" | "kode" | "nama">;
+  };
+};
 
 export type ResponseReturnForByIdType = Pick<
   IReturnTransactionType,
@@ -176,6 +241,7 @@ export type ResponseReturnForByIdType = Pick<
   | "totalRefundAll"
 > & {
   returDetails: Omit<IReturnDetailType, "transactionDetail">[];
+
   transaction: Pick<
     ITransactionType,
     "id" | "nomorTransaksi" | "status" | "completedAt"
@@ -191,34 +257,10 @@ export type ResponseReturnForByIdType = Pick<
         | "quantity"
         | "subtotal"
         | "totalHarga"
+        | "hpp"
       >
     >;
+
     pelanggan: Pick<IPelangganType, "id" | "noWa" | "nama" | "isActive">;
   };
 };
-
-export interface ResponseUpdateStatusReturnTransactionType extends Pick<
-  IReturnTransactionType,
-  "id" | "status" | "kodeReferensi"
-> {
-  tanggalDiAjukan: Date;
-}
-
-export interface ResponseDataReturBarangDetailType {
-  customTotalRefund: number;
-  keterangan: string | null;
-  details: Array<
-    Pick<
-      IReturnDetailType,
-      | "id"
-      | "quantityDamaged"
-      | "quantityGood"
-      | "quantityReturn"
-      | "totalRefund"
-      | "transactionDetailId"
-    >
-  >;
-}
-
-// update
-export interface UpdateReturnForServiceType extends CreateReturBarangForService {}

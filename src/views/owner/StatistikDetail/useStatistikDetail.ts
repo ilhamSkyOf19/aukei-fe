@@ -6,6 +6,7 @@ import { useMemo, useRef } from "react";
 import {
   Banknote,
   CalendarClock,
+  ChartArea,
   LineChart,
   LucidePackage,
   PackageSearch,
@@ -22,6 +23,7 @@ import useDownloadStatistikAll from "../../../hooks/useDownloadStatistikAll";
 import useDownloadStatistikBooking from "../../../hooks/useDownloadStatistikBooking";
 import { useToastAnimation } from "../../../hooks/useToast";
 import { useAlertAnimation } from "../../../hooks/useAlert";
+import { useKategoriChooseStore } from "../../../stores/kategoriChooseStore";
 
 const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
   [
@@ -52,6 +54,11 @@ const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
       icon: PackageSearch,
     },
     {
+      key: "laporanSisa",
+      label: "Laporan Sisa",
+      icon: ChartArea,
+    },
+    {
       key: "topProduk",
       label: "Laporan Top Produk",
       icon: Star,
@@ -80,6 +87,13 @@ const useStatistikDetail = () => {
   const { selectedLaporan, setSelectedLaporan } = useLaporanStore(
     (state) => state,
   );
+
+  const resetKategori = useKategoriChooseStore((state) => state.resetKategori);
+
+  const handleSetSelestedLaporan = (value: LaporanPilihanType) => {
+    setSelectedLaporan(value);
+    resetKategori();
+  };
 
   // filter date
   const { startDate, endDate } = useFilterRangeDate();
@@ -147,7 +161,7 @@ const useStatistikDetail = () => {
     isLoadingStatistik,
     pilihan,
     selectedLaporan,
-    setSelectedLaporan,
+    setSelectedLaporan: handleSetSelestedLaporan,
     filteredStatistik,
     handleRefresh,
     grafikLineRef,

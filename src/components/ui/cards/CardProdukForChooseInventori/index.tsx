@@ -9,10 +9,14 @@ import {
 type Props = {
   handleSetValueProdukId: (id: number) => void;
   data: ResponseProdukForChooseType;
+  hargaBeli?: boolean;
+  hargaModal?: boolean;
 };
 const CardProdukForChooseInventori: FC<Props> = ({
   data,
   handleSetValueProdukId,
+  hargaBeli,
+  hargaModal,
 }) => {
   return (
     <button
@@ -20,7 +24,7 @@ const CardProdukForChooseInventori: FC<Props> = ({
       className="w-full flex flex-row justify-between items-center gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border border-base-content/10 rounded-xl"
       onClick={() => handleSetValueProdukId(data.id)}
     >
-      <div className="flex-3 flex flex-row col row justify-start items-start gap-4">
+      <div className="flex-4 flex flex-row col row justify-start items-start gap-4">
         {/* img */}
         <div className="w-11 h-11 rounded-xl overflow-hidden">
           <img
@@ -43,15 +47,27 @@ const CardProdukForChooseInventori: FC<Props> = ({
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col justify-start items-start gap-1">
+      <div className="flex-2 flex flex-col justify-start items-start gap-1">
         {/* label */}
-        <span className="text-[0.625rem] text-base-content/50">Harga Beli</span>
-        {/* value */}
-        <span className="text-[0.625rem] font-medium text-base-content">
-          {data.hargaBeli > 1000000
-            ? formatRupiahShort(data.hargaBeli)
-            : formatRupiah(data.hargaBeli)}
+        <span className="text-[0.625rem] text-base-content/50">
+          {hargaModal ? "Harga Modal" : "Hrg. Beli Terakhir"}
         </span>
+        {/* value */}
+        {hargaBeli && (
+          <span className="text-[0.625rem] font-medium text-base-content">
+            {data.hargaBeli > 1000000
+              ? formatRupiahShort(data.hargaBeli)
+              : formatRupiah(data.hargaBeli)}
+          </span>
+        )}
+
+        {hargaModal && (
+          <span className="text-[0.625rem] font-medium text-base-content">
+            {data.hargaModalRataRata > 1000000
+              ? formatRupiahShort(data.hargaModalRataRata)
+              : formatRupiah(data.hargaModalRataRata)}
+          </span>
+        )}
       </div>
     </button>
   );

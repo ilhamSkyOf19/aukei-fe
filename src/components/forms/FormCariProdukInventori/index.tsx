@@ -15,9 +15,10 @@ type Props = {
   activeComponentChooseProduk?: boolean;
   isLoadingProdukForChoose?: boolean;
   dataProdukForChoose?: ResponseStructure<ResponseProdukForChooseType[] | null>;
-  isLoadingDataProdukForChoose?: boolean;
   handleSetValueProdukId: (id: number) => void;
   wrapperRef: RefObject<HTMLDivElement | null>;
+  hargaBeli?: boolean;
+  hargaModal?: boolean;
 };
 const FormCariProdukInventori: FC<Props> = ({
   inputSearchRef,
@@ -30,6 +31,8 @@ const FormCariProdukInventori: FC<Props> = ({
   isLoadingProdukForChoose,
   wrapperRef,
   handleSetValueProdukId,
+  hargaBeli,
+  hargaModal,
 }) => {
   return (
     <div
@@ -76,6 +79,8 @@ const FormCariProdukInventori: FC<Props> = ({
                 dataProdukForChoose?.data?.map((item, _) => (
                   <CardProdukForChooseInventori
                     key={item.id}
+                    hargaBeli={hargaBeli}
+                    hargaModal={hargaModal}
                     data={item}
                     handleSetValueProdukId={handleSetValueProdukId}
                   />

@@ -216,7 +216,7 @@ const usePelanggan = () => {
 
   // Arahkan ke halaman detail riwayat transaksi pelanggan
   const handleRedirectRiwayatTransaksiDetail = (id: number) => {
-    navigate(`/dashboard/riwayat-transaksi/pelanggan/${id}`);
+    navigate(`/dashboard/pelanggan/${id}`);
   };
 
   // Hapus satu pelanggan (modal konfirmasi, mutation, dsb dikelola oleh useDeletePelanggan)

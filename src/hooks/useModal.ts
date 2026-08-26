@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
-const useModal = <T = undefined,>() => {
+const useModal = <T = undefined>() => {
   // state
   const [idModal, setIdModal] = useState<number | undefined>(undefined);
 
@@ -19,32 +19,14 @@ const useModal = <T = undefined,>() => {
     }
   };
 
-  // close modal
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const handleCloseModal = () => {
     if (!modalRef.current) return;
 
+    setIdModal(undefined);
+    setDataModal(undefined);
+
     modalRef.current.close();
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      setIdModal(undefined);
-      setDataModal(undefined);
-    }, 300);
   };
-
-  // clear timeout
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   return {
     modalRef,

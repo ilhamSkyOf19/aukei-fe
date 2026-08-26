@@ -13,7 +13,7 @@ const LoadingFetch: FC<Props> = ({ customHeight }) => {
       )}
     >
       <div className="loading loading-md" />
-      <span className="text-xs skeleton skeleton-text">Sedang memuat data</span>
+      <span className="text-xs text-base-content">Sedang memuat data</span>
     </div>
   );
 };

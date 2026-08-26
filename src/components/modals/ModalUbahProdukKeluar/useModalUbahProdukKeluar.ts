@@ -21,7 +21,6 @@ const useModalUbahProdukKeluar = (params: {
   status?: StatusInventoriType;
   dataUpdate: {
     jumlahStok?: number;
-    hargaModalSatuan?: number;
     produkId?: number;
   };
   handleCloseModal: () => void;
@@ -31,7 +30,7 @@ const useModalUbahProdukKeluar = (params: {
     idBarangKeluar,
     status,
     handleCloseModal,
-    dataUpdate: { jumlahStok, hargaModalSatuan, produkId },
+    dataUpdate: { jumlahStok, produkId },
   } = params;
 
   // navigate
@@ -41,6 +40,9 @@ const useModalUbahProdukKeluar = (params: {
   const currentPathname = useLocation().pathname;
 
   const queryClient = useQueryClient();
+
+  // alert
+  const { alert, handleSetAlert } = useAlertAnimation();
 
   const [activeComponentChooseProduk, setActiveComponentChooseProduk] =
     useState(false);
@@ -52,8 +54,6 @@ const useModalUbahProdukKeluar = (params: {
 
   const inputSearchRef = useRef<InputSearchRef>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-
-  const { alert, handleSetAlert } = useAlertAnimation();
 
   const { id } = useParams<{ id: string }>();
   const validatedId = parseId(id);
@@ -78,20 +78,13 @@ const useModalUbahProdukKeluar = (params: {
     reset({
       produkId,
       jumlahStok,
-      hargaModalSatuan,
     });
-  }, [reset, jumlahStok, hargaModalSatuan]);
+  }, [reset, jumlahStok]);
 
   // jumlah stok control
   const jumlahStokController = useController({
     control,
     name: "jumlahStok",
-  });
-
-  // harga modal satuan control
-  const hargaModalSatuanController = useController({
-    control,
-    name: "hargaModalSatuan",
   });
 
   const { dataProdukForChoose, isLoadingProdukForChoose } =
@@ -122,7 +115,6 @@ const useModalUbahProdukKeluar = (params: {
         req: {
           produkId: req.produkId,
           jumlahStok: req.jumlahStok,
-          hargaModalSatuan: req.hargaModalSatuan,
         },
         status: status!,
       }),
@@ -136,7 +128,6 @@ const useModalUbahProdukKeluar = (params: {
         reset({
           produkId: data.data.produk.id,
           jumlahStok: data.data.jumlahStok,
-          hargaModalSatuan: data.data.hargaModalSatuan,
         });
       }
 
@@ -173,6 +164,12 @@ const useModalUbahProdukKeluar = (params: {
             handleSetAlert("produk_choose_exist_in_data");
           }
         }
+
+        if (
+          err.response?.data?.meta?.customField?.includes("stok_not_enough")
+        ) {
+          handleSetAlert("stok_not_enough");
+        }
       }
     },
   });
@@ -184,8 +181,6 @@ const useModalUbahProdukKeluar = (params: {
       const isProdukChanged =
         produkChoose === null ? false : data.produkId !== produkId;
       const isJumlahStokChanged = data.jumlahStok !== jumlahStok;
-      const isHargaModalSatuanChanged =
-        data.hargaModalSatuan !== hargaModalSatuan;
 
       if (!isProdukChanged && produkChoose) {
         handleSetAlert("produk_choose_exist_in_data");
@@ -193,20 +188,12 @@ const useModalUbahProdukKeluar = (params: {
       }
 
       // check
-      if (
-        !isProdukChanged &&
-        !isJumlahStokChanged &&
-        !isHargaModalSatuanChanged
-      ) {
+      if (!isProdukChanged && !isJumlahStokChanged) {
         setError("produkId", {
           message: "Minimal ubah produk, jumlah stok atau harga modal satuan",
         });
 
         setError("jumlahStok", {
-          message: "Minimal ubah produk, jumlah stok atau harga modal satuan",
-        });
-
-        setError("hargaModalSatuan", {
           message: "Minimal ubah produk, jumlah stok atau harga modal satuan",
         });
 
@@ -216,9 +203,6 @@ const useModalUbahProdukKeluar = (params: {
       const payload: UpdateBarangKeluarDetailType = {
         produkId: isProdukChanged ? data.produkId : undefined,
         jumlahStok: isJumlahStokChanged ? data.jumlahStok : undefined,
-        hargaModalSatuan: isHargaModalSatuanChanged
-          ? data.hargaModalSatuan
-          : undefined,
       };
 
       console.log(payload);
@@ -285,7 +269,6 @@ const useModalUbahProdukKeluar = (params: {
     alert,
 
     jumlahStokController,
-    hargaModalSatuanController,
   };
 };
 

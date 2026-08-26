@@ -88,7 +88,7 @@ const useRiwayatTransaksi = () => {
 
   // handle detail
   const handleRedirectDetail = (id: number) => {
-    navigate(`/dashboard/riwayat-transaksi/pelanggan/${id}`);
+    navigate(`/dashboard/riwayat-transaksi/${id}`);
   };
 
   return {

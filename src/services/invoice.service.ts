@@ -28,6 +28,36 @@ export class InvoiceServices {
       iframe.remove();
     });
   }
+  // print invoice kirim barang
+  static async printInvoiceKirimBarang(params: { id: number }) {
+    const response = await instanceAxios.get(
+      `/invoice/print-kirim-barang/${params.id}`,
+      {
+        responseType: "text",
+      },
+    );
+
+    const iframe = document.createElement("iframe");
+
+    iframe.style.position = "fixed";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+    iframe.style.left = "-9999px";
+
+    iframe.srcdoc = response.data;
+
+    document.body.appendChild(iframe);
+
+    iframe.onload = () => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+    };
+
+    iframe.contentWindow?.addEventListener("afterprint", () => {
+      iframe.remove();
+    });
+  }
 
   // print invoice kredit
   static async printInvoiceKredit(params: { id: number }) {

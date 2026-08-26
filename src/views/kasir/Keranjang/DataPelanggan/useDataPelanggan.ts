@@ -10,12 +10,12 @@ const useDataPelanggan = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   //   is choose pelanggan
-  const isChoosePelanggan = Number(searchParams.get("pelangganId") ?? 0);
+  const isChoosePelanggan = Number(searchParams.get("keranjangId") ?? 0);
 
-  const handleSetIsChoosePelanggan = (value: number) => {
+  const handleSetIsChoosePelanggan = (keranjangId: number) => {
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
-      params.set("pelangganId", value.toString());
+      params.set("keranjangId", keranjangId.toString());
       return params;
     });
   };

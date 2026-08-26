@@ -12,11 +12,15 @@ type Props = {
   data: ResponseProdukForChooseType;
   handleDeleteValueProdukId: (id: number) => void;
   customWidth?: string;
+  hargaBeli?: boolean;
+  hargaModal?: boolean;
 };
 const CardProdukForAfterChooseInventori: FC<Props> = ({
   data,
   handleDeleteValueProdukId,
   customWidth,
+  hargaBeli,
+  hargaModal,
 }) => {
   return (
     <div
@@ -54,13 +58,20 @@ const CardProdukForAfterChooseInventori: FC<Props> = ({
         <div className="flex-1 flex flex-col justify-start items-start gap-1">
           {/* label */}
           <span className="text-[0.625rem] text-base-content/50">
-            Harga Beli
+            {hargaBeli ? "Hrg.Beli" : "Harga Modal"}
           </span>
           {/* value */}
+
           <span className="text-[0.625rem] font-semibold text-base-content">
-            {data.hargaBeli >= 1000000
-              ? formatRupiahShort(data.hargaBeli)
-              : formatRupiah(data.hargaBeli)}
+            {hargaBeli &&
+              (data.hargaBeli >= 1000000
+                ? formatRupiahShort(data.hargaBeli)
+                : formatRupiah(data.hargaBeli))}
+
+            {hargaModal &&
+              (data.hargaModalRataRata >= 1000000
+                ? formatRupiahShort(data.hargaModalRataRata)
+                : formatRupiah(data.hargaModalRataRata))}
           </span>
         </div>
       </div>

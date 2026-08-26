@@ -16,6 +16,7 @@ type Props<T extends FieldValues = any> = {
   defaultValue?: number;
   xs?: boolean;
   name?: string;
+  onBlur?: () => void;
 };
 
 const InputNumber = <T extends FieldValues = any>({
@@ -28,20 +29,26 @@ const InputNumber = <T extends FieldValues = any>({
   defaultValue,
   xs,
   name,
+  onBlur,
 }: Props<T>) => {
   const { field, fieldState } = controller;
 
   const [displayValue, setDisplayValue] = useState("");
 
+  /**
+   * Sinkronkan tampilan dengan field.value.
+   *
+   * TIDAK ada fallback ke defaultValue di sini,
+   * supaya nilai 0 (hasil pengosongan input) tidak
+   * pernah ditimpa balik oleh nilai lama/default.
+   */
   useEffect(() => {
-    const value = field.value ?? defaultValue;
-
-    if (value !== undefined && value !== null) {
-      setDisplayValue(formatNumber(String(value)));
+    if (field.value !== undefined && field.value !== null) {
+      setDisplayValue(formatNumber(String(field.value)));
     } else {
       setDisplayValue("");
     }
-  }, [field.value, defaultValue]);
+  }, [field.value]);
 
   return (
     <div
@@ -81,30 +88,43 @@ const InputNumber = <T extends FieldValues = any>({
           disabled={disabled}
           autoComplete="off"
           value={displayValue}
-          onBlur={field.onBlur}
+          onBlur={() => onBlur?.()}
           className={cn(
             "font-medium rounded-md w-full h-full outline-none text-base-content placeholder:text-base-content/50 placeholder:font-normal bg-transparent",
             xs ? "lg:text-xs" : "text-xs",
           )}
           onChange={(e) => {
-            const rawValue = unformatNumber(e.target.value);
+            const rawValue = e.target.value.trim();
 
-            if (!rawValue) {
+            /**
+             * Input dikosongkan total.
+             *
+             * Set ke 0 (bukan undefined), supaya:
+             * - Tidak ada celah fallback ke defaultValue di useEffect manapun.
+             * - handleBlur di form tidak menganggap field "belum diisi"
+             *   (guard `typeof !== "number"`), sehingga tetap bisa
+             *   mengirim update ke backend dengan nilai 0.
+             */
+            if (rawValue === "") {
               setDisplayValue("");
-
-              field.onChange(undefined);
-
+              field.onChange(0);
               return;
             }
 
-            let numberValue = Number(rawValue);
+            const unformatted = unformatNumber(rawValue);
+            let numberValue = Number(unformatted);
+
+            if (Number.isNaN(numberValue)) {
+              setDisplayValue("");
+              field.onChange(0);
+              return;
+            }
 
             if (max && numberValue > max) {
               numberValue = max;
             }
 
             setDisplayValue(formatNumber(String(numberValue)));
-
             field.onChange(numberValue);
           }}
         />

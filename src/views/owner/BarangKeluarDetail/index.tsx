@@ -346,6 +346,12 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           dataBarangKeluarDetail?.data?.detailBarangKeluars?.length ?? 0
         }
         tanggalKeluar={dataBarangKeluarDetail?.data?.tanggalKeluar}
+        totalItemKeluar={
+          dataBarangKeluarDetail?.data?.detailBarangKeluars?.reduce(
+            (acc, curr) => acc + curr.jumlahStok,
+            0,
+          ) ?? 0
+        }
         keterangan={dataBarangKeluarDetail?.data?.keterangan ?? undefined}
         totalNilai={dataBarangKeluarDetail?.data?.totalNilai ?? undefined}
         idBarangKeluarDetail={dataBarangKeluarDetail?.data?.id}

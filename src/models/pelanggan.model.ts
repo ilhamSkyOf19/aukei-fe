@@ -32,6 +32,7 @@ export interface ResponsePelangganForKeranjangType extends Pick<
   IPelangganType,
   "id" | "nama" | "noWa"
 > {
+  keranjangId: number;
   totalItem: number;
   updatedAtCart: Date;
 }

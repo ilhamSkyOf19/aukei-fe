@@ -234,7 +234,7 @@ const ProdukDetail = () => {
 
                     {/* value */}
                     <span className="text-sm font-medium text-base-content">
-                      {dataProduk?.data?.kode}
+                      {dataProduk?.data?.kode ?? "-"}
                     </span>
                   </div>
 
@@ -255,7 +255,7 @@ const ProdukDetail = () => {
                       {keyUpdate !== "kode" ? (
                         <>
                           <span className="text-sm font-medium text-base-content">
-                            {dataProduk?.data?.kode}
+                            {dataProduk?.data?.kode ?? "-"}
                           </span>
 
                           {/* button pencil */}
@@ -388,7 +388,7 @@ const ProdukDetail = () => {
                       {/* label */}
                       <div className="w-full flex flex-row justify-between items-center">
                         <span className="text-xs text-base-content">
-                          Harga Jual Satuan
+                          Harga Jual
                         </span>
 
                         {/* button */}
@@ -447,7 +447,7 @@ const ProdukDetail = () => {
                       {/* label */}
                       <div className="w-full flex flex-row justify-between items-center">
                         <span className="text-xs text-base-content">
-                          Harga Beli Satuan
+                          Harga Modal
                         </span>
 
                         {/* button */}
@@ -458,11 +458,24 @@ const ProdukDetail = () => {
 
                       {/* harga */}
                       {keyUpdate !== "hargaBeli" ? (
-                        <>
+                        <div className="flex flex-row justify-start items-center gap-4">
                           <span className="text-lg font-semibold text-indigo-500">
                             {formatRupiah(dataProduk?.data?.hargaBeli ?? 0)}
                           </span>
-                        </>
+
+                          <div
+                            className="tooltip"
+                            data-tip="kalkulasi harga modal"
+                          >
+                            <ButtonWithIcon
+                              icon={RefreshCcw}
+                              bgColor="bg-info"
+                              textColor="text-primary-white"
+                              noLabel
+                              handleBtn={() => {}}
+                            />
+                          </div>
+                        </div>
                       ) : (
                         <CardForm
                           handleResetForm={handleResetForm}
@@ -475,7 +488,7 @@ const ProdukDetail = () => {
                           <div className="w-50">
                             <InputPrice<UpdateProdukType>
                               controller={hargaBeliController}
-                              placeholder="harga beli produk"
+                              placeholder="harga modal produk"
                               xs
                               required
                             />

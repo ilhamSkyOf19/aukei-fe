@@ -98,13 +98,25 @@ const RiwayatTransaksiDetail = () => {
             handleMetodePembayaran: handleSetMetodePembayaran,
             value: metodePembayaran,
           }}
+          handleDownloadPdf={() =>
+            handleDownloadRiwayatTransaksiByPelangganPdf({
+              id: dataPelanggan?.id,
+              namaPelanggan: dataPelanggan?.nama,
+            })
+          }
+          handleDownloadExcel={() =>
+            handleDownloadRiwayatTransaksiByPelangganExcel({
+              id: dataPelanggan?.id,
+              namaPelanggan: dataPelanggan?.nama,
+            })
+          }
         />
 
         {/* alert  */}
         <AlertLabel message="Export PDF menampilkan seluruh data sesuai filter tanggal yang dipilih." />
 
         {/* data */}
-        <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-lg p-2.5 gap-4 flex flex-col justify-start items-start">
+        <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10  rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
           <div className="w-full flex flex-row justify-between items-start">
             {/* pelanggan */}
             {isLoadingRiwayatTransaksi ? (

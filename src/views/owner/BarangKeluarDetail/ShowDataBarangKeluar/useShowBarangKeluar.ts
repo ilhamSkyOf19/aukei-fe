@@ -49,7 +49,6 @@ const useShowBarangKeluar = (params: {
   } = useModal<{
     produkId: number;
     jumlahStok: number;
-    hargaModalSatuan: number;
   }>();
 
   //   use mutation
@@ -119,12 +118,6 @@ const useShowBarangKeluar = (params: {
     name: "jumlahStok",
   });
 
-  // harga modal satuan controller
-  const hargaModalSatuanController = useController({
-    control,
-    name: "hargaModalSatuan",
-  });
-
   // handle set is data update
   const handleSetDataUpdate = (params: {
     data:
@@ -143,14 +136,12 @@ const useShowBarangKeluar = (params: {
         id: data.id,
         produkId: undefined,
         jumlahStok: data.jumlahStok,
-        hargaModalSatuan: data.hargaModalSatuan,
         type: data.type,
       });
 
       // set value
       setValue("produkId", data.produkId);
       setValue("jumlahStok", data.jumlahStok);
-      setValue("hargaModalSatuan", data.hargaModalSatuan);
     }
   };
 
@@ -174,7 +165,6 @@ const useShowBarangKeluar = (params: {
           req: {
             produkId: data.produkId,
             jumlahStok: data.jumlahStok,
-            hargaModalSatuan: data.hargaModalSatuan,
           },
           status: data.status,
         }),
@@ -239,10 +229,6 @@ const useShowBarangKeluar = (params: {
         finalData = {
           jumlahStok: data.jumlahStok,
         };
-      } else if (dataUpdate.type === "hargaModalSatuan") {
-        finalData = {
-          hargaModalSatuan: data.hargaModalSatuan,
-        };
       }
 
       console.log(finalData);
@@ -286,7 +272,6 @@ const useShowBarangKeluar = (params: {
     handleCloseModalUbahProduk,
     handleShowModalUbahProduk,
     idBarangKeluar,
-    hargaModalSatuanController,
     dataUpdateBarangKeluar,
   };
 };

@@ -19,7 +19,7 @@ export const subtractMinutes = (date: Date, minutes: number): Date => {
 
 // format rp
 export const formatRupiah = (value: number | string): string => {
-  if (value === 0 || value === "0") return "Rp 0";
+  if (value === 0 || value === "0" || value === " ") return "Rp 0";
 
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -424,4 +424,14 @@ export const normalizeNoHp = (noHp: string) => {
   }
 
   return cleaned;
+};
+
+export const formatTanggalLine = (date: Date | string): string => {
+  const value = new Date(date);
+
+  const day = String(value.getDate()).padStart(2, "0");
+  const month = String(value.getMonth() + 1).padStart(2, "0");
+  const year = value.getFullYear();
+
+  return `${day}-${month}-${year}`;
 };

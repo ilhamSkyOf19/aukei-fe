@@ -137,11 +137,7 @@ const RowJadwaTempo: FC<Props> = ({
         {currentPathname.includes("transaksi") && (
           <button
             type="button"
-            onClick={() =>
-              navigate(
-                `/dashboard/kredit/pelanggan/${pelangganId}/tempo/${tempoId}`,
-              )
-            }
+            onClick={() => navigate(`/dashboard/kredit/${tempoId}`)}
             className="hidden md:flex flex-row justify-start items-center gap-1.5 hover:underline transition-all duration-150 ease-in-out"
           >
             <WalletIcon className="size-3.5 text-info" />

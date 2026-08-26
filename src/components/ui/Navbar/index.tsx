@@ -64,7 +64,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           <ButtonTheme />
 
           {/* nama & role */}
-          <div className="flex flex-col justify-start items-start border-r border-base-content/30 pr-4">
+          <div className="hidden md:flex flex-col justify-start items-start border-r border-base-content/30 pr-4">
             <span className="text-xs font-semibold">{pengguna?.nama}</span>
             <span className="text-xs capitalize">
               {pengguna?.role.toLowerCase()}

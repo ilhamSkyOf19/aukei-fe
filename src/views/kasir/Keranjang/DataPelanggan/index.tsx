@@ -49,9 +49,9 @@ const DataPelanggan = () => {
         ) : isExistDataProduk ? (
           dataPelanggan?.data?.data?.map((item, index) => (
             <CardPelanggan
-              key={item.id}
-              id={item.id}
-              isChoose={isChoosePelanggan === item.id}
+              key={item.keranjangId}
+              keranjangId={item.keranjangId}
+              isChoose={isChoosePelanggan === item.keranjangId}
               handleChoose={handleSetIsChoosePelanggan}
               index={index}
               nama={item.nama}
@@ -90,7 +90,7 @@ const DataPelanggan = () => {
 
 // card pelanggan
 type CardPelangganProps = {
-  id: number;
+  keranjangId: number;
   nama: string;
   updatedAt: Date;
   index: number;
@@ -103,9 +103,9 @@ const CardPelanggan: FC<CardPelangganProps> = ({
   updatedAt,
   index,
   handleChoose,
-  id,
   isChoose,
   totalItem,
+  keranjangId,
 }) => {
   return (
     <div
@@ -123,7 +123,7 @@ const CardPelanggan: FC<CardPelangganProps> = ({
             : "hover:border-emerald-600 hover:bg-emerald-600/5",
         )}
         disabled={isChoose}
-        onClick={() => handleChoose(id)}
+        onClick={() => handleChoose(keranjangId)}
       >
         <div className="flex-4 flex flex-row justify-start items-center gap-4">
           {/* avatar */}

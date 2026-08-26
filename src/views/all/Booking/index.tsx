@@ -2,7 +2,6 @@ import {
   BanknoteArrowDown,
   CalendarClock,
   PackageSearch,
-  Receipt,
   TrendingUp,
   Truck,
 } from "lucide-react";
@@ -296,7 +295,7 @@ const RiwayatTransaksi = () => {
                       <button
                         type="button"
                         className="text-info hover:underline"
-                        onClick={() => handleRedirect(item.pelanggan.id)}
+                        onClick={() => handleRedirect(item.id)}
                       >
                         detail
                       </button>
@@ -308,9 +307,10 @@ const RiwayatTransaksi = () => {
                   <td colSpan={10}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
-                        iconData={Receipt}
+                        iconData={CalendarClock}
                         title="Data Transaksi Booking Tidak Tersedia"
                         description="Belum ada data transaksi booking yang dapat ditampilkan saat ini."
+                        xs
                       />
                     </div>
                   </td>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useController, useForm, useWatch } from "react-hook-form";
 import type {
+  CreateTempoForRequestType,
   CreateTempoType,
   DataTempoType,
 } from "../../../models/tempo.model";
@@ -15,35 +16,56 @@ import {
   INSTALLMENT_STATUS_TYPE,
   PAYMENT_METHOD_TYPE,
   type ErrorType,
+  type PaymentMethodType,
 } from "../../../types/constant.type";
 import { differenceInCalendarDays } from "date-fns";
 import useModalCalculator from "../../../hooks/useModalCalculator";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TempoService } from "../../../services/tempo.service";
 
 const useModalTempoPayment = (params: {
-  data: { total: number; dp?: number };
+  transactionId: number;
+  data: {
+    total: number;
+    dp?: number;
+  };
   handleCloseModal: () => void;
-  handleSetDataTempo: (data: DataTempoType) => void;
   booking?: boolean;
 }) => {
   const {
+    transactionId,
     data: { total, dp },
     handleCloseModal,
-    handleSetDataTempo,
     booking,
   } = params;
 
-  // navigate
+  // ==========================
+  // NAVIGATE
+  // ==========================
+
   const navigate = useNavigate();
 
-  // current pathname
   const currentPathname = useLocation().pathname;
 
-  // modal input tanggal
+  // ==========================
+  // QUERY CLIENT
+  // ==========================
+
+  const queryClient = useQueryClient();
+
+  // ==========================
+  // MODAL INPUT TANGGAL
+  // ==========================
+
   const {
     modalRef: modalInputTanggalRef,
     handleShowModal: handleShowModalInputTanggal,
     handleCloseModal: handleCLoseModalInputTanggal,
   } = useModal();
+
+  // ==========================
+  // ERROR
+  // ==========================
 
   const [isErrors, setIsErrors] = useState<ErrorType[]>([]);
 
@@ -51,11 +73,17 @@ const useModalTempoPayment = (params: {
     setIsErrors((prev) => [...prev, error]);
   };
 
-  // state uang pembayaran
+  // ==========================
+  // PEMBAYARAN UANG MUKA CASH
+  // ==========================
+
   const [pembayaranUangMukaCash, setPembayaranUangMukaCash] =
     useState<number>(0);
 
-  // use form
+  // ==========================
+  // FORM
+  // ==========================
+
   const {
     control,
     setValue,
@@ -67,92 +95,124 @@ const useModalTempoPayment = (params: {
     resolver: zodResolver(TempoValidations.CREATE),
   });
 
-  // set uang muka
+  // ==========================
+  // SET DP BOOKING
+  // ==========================
+
   useEffect(() => {
     if (!booking) return;
 
     reset({
       uangMuka: dp ?? 0,
     });
-  }, [booking, total, reset]);
+  }, [booking, dp, reset]);
 
-  // metode pembayaran uang dp controller
+  // ==========================
+  // METODE PEMBAYARAN DP
+  // ==========================
+
   const metodePembayaranUangMukaController = useController({
     control,
     name: "metodePembayaranUangDp",
   });
 
-  // uang muka controller
+  // ==========================
+  // UANG MUKA
+  // ==========================
+
   const uangMukaController = useController({
     control,
     name: "uangMuka",
   });
 
-  //   periode controller
+  // ==========================
+  // PERIODE
+  // ==========================
+
   const periodeController = useController({
     control,
     name: "periode",
   });
 
-  // jumlahCicilan cicilan
+  // ==========================
+  // JUMLAH CICILAN
+  // ==========================
+
   const jumlahCicilanController = useController({
     control,
     name: "jumlahCicilan",
   });
 
-  // start date
+  // ==========================
+  // START DATE
+  // ==========================
+
   const startDateController = useController({
     control,
     name: "startDate",
   });
 
-  //   use watch periode
+  // ==========================
+  // WATCH
+  // ==========================
+
   const periodeWatch = useWatch({
     control,
     name: "periode",
   });
 
-  //   use watch start date
   const startDateWatch = useWatch({
     control,
     name: "startDate",
   });
 
-  //   use watch uang muka
   const uangMukaWatch = useWatch({
     control,
     name: "uangMuka",
   });
 
-  // use watch jumlahCicilan
   const jumlahCicilanWatch = useWatch({
     control,
     name: "jumlahCicilan",
   });
 
-  // uang dp watch
   const metodePembayaranUangUangMukaWatch = useWatch({
     control,
     name: "metodePembayaranUangDp",
   });
 
-  // clear error uang muka
+  // ==========================
+  // CLEAR ERROR METODE DP
+  // ==========================
+
   useEffect(() => {
     if (errors.metodePembayaranUangDp) {
       clearErrors("metodePembayaranUangDp");
     }
-  }, [metodePembayaranUangUangMukaWatch]);
+  }, [
+    metodePembayaranUangUangMukaWatch,
+    errors.metodePembayaranUangDp,
+    clearErrors,
+  ]);
 
-  // debounce
+  // ==========================
+  // DEBOUNCE
+  // ==========================
+
   const debouncedUangMuka = useDebounce(uangMukaWatch, 300);
 
   const debouncedjumlahCicilan = useDebounce(jumlahCicilanWatch, 300);
 
-  // total final
-  const finalTotal = useMemo(() => {
-    if (debouncedUangMuka > total) setValue("uangMuka", total);
+  // ==========================
+  // TOTAL FINAL
+  // ==========================
 
-    const sisa = total - (debouncedUangMuka ?? 0);
+  const finalTotal = useMemo(() => {
+    const uangMuka = debouncedUangMuka ?? 0;
+
+    const finalUangMuka = uangMuka > total ? total : uangMuka;
+
+    const sisa = total - finalUangMuka;
 
     return {
       totalTagihan: total,
@@ -160,7 +220,10 @@ const useModalTempoPayment = (params: {
     };
   }, [total, debouncedUangMuka]);
 
-  // data tempo
+  // ==========================
+  // DATA TEMPO
+  // ==========================
+
   const dataTempo: CreateInstallmentType[] = useMemo(() => {
     if (!periodeWatch || finalTotal.sisa <= 0 || !debouncedjumlahCicilan) {
       return [];
@@ -170,41 +233,92 @@ const useModalTempoPayment = (params: {
 
     const sisa = finalTotal.sisa - nominalDasar * debouncedjumlahCicilan;
 
-    return Array.from({ length: debouncedjumlahCicilan }, (_, index) => ({
-      status:
-        differenceInCalendarDays(
-          new Date(),
-          addDaysHandler({
-            days: (index + 1) * periodeWatch,
-            date: new Date(startDateWatch ?? new Date()),
-          }),
-        ) > 0
-          ? INSTALLMENT_STATUS_TYPE.OVERDUE
-          : INSTALLMENT_STATUS_TYPE.UNPAID,
-      cicilanKe: index + 1,
-      jatuhTempo: addDaysHandler({
-        days: (index + 1) * periodeWatch,
-        date: new Date(startDateWatch ?? new Date()),
-      }),
-      nominal:
-        index === debouncedjumlahCicilan - 1
-          ? nominalDasar + sisa
-          : nominalDasar,
-    }));
+    return Array.from(
+      {
+        length: debouncedjumlahCicilan,
+      },
+      (_, index) => {
+        const jatuhTempo = addDaysHandler({
+          days: (index + 1) * periodeWatch,
+          date: new Date(startDateWatch ?? new Date()),
+        });
+
+        return {
+          status:
+            differenceInCalendarDays(new Date(), jatuhTempo) > 0
+              ? INSTALLMENT_STATUS_TYPE.OVERDUE
+              : INSTALLMENT_STATUS_TYPE.UNPAID,
+
+          cicilanKe: index + 1,
+
+          jatuhTempo,
+
+          nominal:
+            index === debouncedjumlahCicilan - 1
+              ? nominalDasar + sisa
+              : nominalDasar,
+        };
+      },
+    );
   }, [finalTotal.sisa, periodeWatch, debouncedjumlahCicilan, startDateWatch]);
 
-  // is empty
-  const isEmpty: boolean = useMemo(() => {
-    if (!dataTempo || !jumlahCicilanWatch || !debouncedjumlahCicilan)
+  // ==========================
+  // CHECK EMPTY
+  // ==========================
+
+  const isEmpty = useMemo(() => {
+    if (!dataTempo || !jumlahCicilanWatch || !debouncedjumlahCicilan) {
       return true;
-    else return false;
+    }
+
+    return false;
   }, [dataTempo, jumlahCicilanWatch, debouncedjumlahCicilan]);
 
-  // handle local storage
-  const handleSimpan = () => {
-    if (isEmpty) return;
+  // ==========================
+  // CREATE TEMPO MUTATION
+  // ==========================
 
-    // check pembayaran
+  const { mutateAsync: mutateCreateTempo, isPending: isPendingCreateTempo } =
+    useMutation({
+      mutationFn: (data: CreateTempoForRequestType) =>
+        TempoService.create(data),
+
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["transaksi-draft"],
+        });
+
+        // ==========================
+        // TOAST
+        // ==========================
+
+        navigate(currentPathname, {
+          state: {
+            toast: "set_tempo",
+          },
+        });
+
+        handleCloseModal();
+      },
+
+      onError: (error) => {
+        console.error("Gagal membuat tempo:", error);
+      },
+    });
+
+  // ==========================
+  // SIMPAN TEMPO
+  // ==========================
+
+  const handleSimpan = async () => {
+    if (isEmpty || isPendingCreateTempo) {
+      return;
+    }
+
+    // ==========================
+    // CHECK PEMBAYARAN CASH
+    // ==========================
+
     if (metodePembayaranUangUangMukaWatch === PAYMENT_METHOD_TYPE.CASH) {
       if (pembayaranUangMukaCash === null || pembayaranUangMukaCash === 0) {
         addError("DATA_DI_BAYAR_KOSONG");
@@ -212,56 +326,93 @@ const useModalTempoPayment = (params: {
       }
     }
 
+    // ==========================
+    // CHECK METODE PEMBAYARAN DP
+    // ==========================
+
     if (debouncedUangMuka > 0 && !metodePembayaranUangUangMukaWatch) {
       setError("metodePembayaranUangDp", {
         message: "Metode pembayaran uang muka harus diisi",
       });
+
       return;
     }
 
-    const finalData: DataTempoType = {
-      jumlahCicilan: debouncedjumlahCicilan,
-      periode: periodeWatch,
-      uangMuka: debouncedUangMuka ?? 0,
-      installments: dataTempo,
-      metodePembayaranUangDp: metodePembayaranUangUangMukaWatch,
-      kembalian: pembayaranUangMukaCash - debouncedUangMuka,
-      diBayar: pembayaranUangMukaCash ?? undefined,
-    };
+    // ==========================
+    // DATA TEMPO UNTUK LOCAL STATE
+    // ==========================
 
-    localStorage.setItem("tempo", JSON.stringify(finalData));
+    try {
+      // ==========================
+      // CREATE / OVERWRITE TEMPO
+      // ==========================
 
-    // handle set data tempo
-    handleSetDataTempo(finalData);
+      await mutateCreateTempo({
+        transactionId,
 
-    // set toast
-    navigate(currentPathname, {
-      state: {
-        toast: "set_tempo",
-      },
-    });
+        periode: periodeWatch,
 
-    // close modal
-    handleCloseModal();
+        jumlahCicilan: debouncedjumlahCicilan,
+
+        uangMuka: debouncedUangMuka ?? 0,
+
+        installments: dataTempo,
+
+        paymentUangMuka: {
+          dibayar:
+            metodePembayaranUangUangMukaWatch === PAYMENT_METHOD_TYPE.CASH
+              ? pembayaranUangMukaCash
+              : debouncedUangMuka,
+          kembalian:
+            metodePembayaranUangUangMukaWatch === PAYMENT_METHOD_TYPE.CASH
+              ? pembayaranUangMukaCash - debouncedUangMuka
+              : 0,
+          metodePaymentUangMuka: metodePembayaranUangUangMukaWatch as Exclude<
+            PaymentMethodType,
+            "TEMPO"
+          >,
+        },
+      });
+    } catch (error) {
+      console.error("Gagal menyimpan tempo:", error);
+    }
   };
 
-  // use modal calculator
+  // ==========================
+  // MODAL CALCULATOR
+  // ==========================
+
   const {
-    handleCloseModalCalculator: handleCloseModalCalculator,
+    handleCloseModalCalculator,
     handleShowModalCalculator: showModalCalculator,
     modalCalculatorRef,
-  } = useModalCalculator({ setIsErrors });
+  } = useModalCalculator({
+    setIsErrors,
+  });
 
-  // show modal calculator
+  // ==========================
+  // SHOW CALCULATOR
+  // ==========================
+
   const handleShowModalCalculator = () => {
     handleCloseModal();
+
     showModalCalculator();
   };
 
+  // ==========================
+  // HANDLE PAY
+  // ==========================
+
   const handlePay = (amount: number) => {
     setPembayaranUangMukaCash(amount);
+
     handleCloseModalCalculator();
   };
+
+  // ==========================
+  // RESET CASH PAYMENT
+  // ==========================
 
   useEffect(() => {
     if (metodePembayaranUangUangMukaWatch !== PAYMENT_METHOD_TYPE.CASH) {
@@ -269,20 +420,35 @@ const useModalTempoPayment = (params: {
     }
   }, [metodePembayaranUangUangMukaWatch]);
 
+  // ==========================
+  // RETURN
+  // ==========================
+
   return {
     dataTempo,
+
     jumlahCicilanController,
+
     uangMukaController,
+
     periodeController,
+
     finalTotal,
+
     handleSimpan,
+
     isEmpty,
+
     startDateController,
+
     setValue,
 
     modalInputTanggalRef,
+
     handleShowModalInputTanggal,
+
     handleCLoseModalInputTanggal,
+
     metodePembayaranUangMukaController,
 
     metodePembayaranUangUangMukaWatch,
@@ -294,13 +460,18 @@ const useModalTempoPayment = (params: {
     startDateWatch,
 
     handleShowModalCalculator,
+
     modalCalculatorRef,
+
     handleCloseModalCalculator,
 
     isErrors,
 
     handlePay,
+
     pembayaranUangMukaCash,
+
+    isPendingCreateTempo,
   };
 };
 

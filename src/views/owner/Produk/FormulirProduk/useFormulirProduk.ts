@@ -57,7 +57,7 @@ const useFormulirProduk = () => {
       reset({
         nama: dataProdukDetail.data.nama,
         kategoriId: dataProdukDetail.data.kategori.id,
-        kode: dataProdukDetail.data.kode,
+        kode: dataProdukDetail.data.kode ?? undefined,
         hargaJual: dataProdukDetail.data.hargaJual,
         hargaBeli: dataProdukDetail.data.hargaBeli,
         isiPerBox: dataProdukDetail.data.isiPerBox,
@@ -142,45 +142,53 @@ const useFormulirProduk = () => {
     try {
       const formData = new FormData();
 
-      // check img
       if (data.img) {
         formData.append("img", data.img);
       }
 
-      // check nama
       if (data.nama) {
         formData.append("nama", data.nama);
       }
 
-      // check kode
-      if (data.kode) {
-        formData.append("kode", data.kode);
-      }
-
-      // check kategori id
       if (data.kategoriId) {
         formData.append("kategoriId", data.kategoriId.toString());
       }
 
-      // check harga beli
       if (data.hargaBeli !== undefined) {
         formData.append("hargaBeli", data.hargaBeli.toString());
       }
 
-      // check harga jual
       if (data.hargaJual !== undefined) {
         formData.append("hargaJual", data.hargaJual.toString());
       }
 
-      // check isi perbox
       if (data.isiPerBox !== undefined) {
         formData.append("isiPerBox", data.isiPerBox.toString());
       }
 
-      // check stok minimum
       if (data.stokMinimum !== undefined) {
         formData.append("stokMinimum", data.stokMinimum.toString());
       }
+
+      /*
+       * CREATE
+       */
+      if (!validatedIdParams) {
+        if (data.kode?.trim()) {
+          formData.append("kode", data.kode.trim());
+        }
+      } else {
+        /*
+         * UPDATE
+         *
+         * Selalu kirim kode.
+         *
+         * "" berarti user sengaja menghapus kode.
+         * "ABC001" berarti user ingin mengganti kode.
+         */
+        formData.append("kode", data.kode?.trim() ?? "");
+      }
+
       await mutateProduk(formData);
     } catch (error) {
       console.log(error);

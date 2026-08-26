@@ -21,6 +21,7 @@ import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_STATISTIK } from "../../../types/toast.type";
 import Alert from "../../../components/messages/Alert";
 import { ALERT_CONFIG_STATISTIK } from "../../../types/alert.types";
+import LaporanSisa from "./LaporanSisa";
 
 const StatistikDetail = () => {
   const {
@@ -112,7 +113,8 @@ const StatistikDetail = () => {
         <div className="flex-4 flex flex-col justify-start items-start gap-2.5">
           {selectedLaporan !== "pantauanStok" &&
             selectedLaporan !== "topProduk" &&
-            selectedLaporan !== "topPelanggan" && (
+            selectedLaporan !== "topPelanggan" &&
+            selectedLaporan !== "laporanSisa" && (
               <>
                 <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
                   {/* aksi */}
@@ -262,6 +264,14 @@ const StatistikDetail = () => {
               pilihan={selectedLaporan}
               handleSetToast={handleSetToast}
               handleSetAlert={handleSetAlert}
+            />
+          )}
+
+          {selectedLaporan === "laporanSisa" && (
+            <LaporanSisa
+              pilihan={selectedLaporan}
+              handleSetAlert={handleSetAlert}
+              handleSetToast={handleSetToast}
             />
           )}
 

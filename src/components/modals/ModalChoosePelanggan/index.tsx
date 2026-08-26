@@ -7,20 +7,18 @@ import { formatNumberPhone } from "../../../helpers/helpers";
 import useModalChoosePelanggan from "./useModalChoosePelanggan";
 import Pagination from "../../ui/Pagination";
 import DataEmpty from "../../messages/DataEmpty";
-import type { IPelangganType } from "../../../models/pelanggan.model";
 import Avatar from "../../ui/Avatar";
 import ModalFormulirPelanggan from "../ModalFormulirPelanggan";
+import { cn } from "../../../utils/cn";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
   handleShowModal: () => void;
-  handleChoose: (data: Pick<IPelangganType, "id" | "nama" | "noWa">) => void;
 };
 const ModalChoosePelanggan: FC<Props> = ({
   modalRef,
   handleCloseModal,
   handleShowModal,
-  handleChoose,
 }) => {
   // call use
   const {
@@ -37,6 +35,9 @@ const ModalChoosePelanggan: FC<Props> = ({
     modalFormulirPelangganRef,
     handleCloseModalFormulirPelanggan,
     handleShowModalFormulirPelanggan,
+
+    handlePilihPelanggan,
+    isPendingPilihPelanggan,
   } = useModalChoosePelanggan({
     handleCloseModalChoosePelanggan: handleCloseModal,
     handleShowModalChoosePelanggan: handleShowModal,
@@ -44,7 +45,22 @@ const ModalChoosePelanggan: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_3" className="modal">
-      <div className="modal-box max-h-[95vh] lg:w-2/4 max-w-5xl rounded-xl bg-base-200 dark:border dark:border-base-content/10">
+      <div
+        className={cn(
+          "modal-box lg:w-2/4 max-w-5xl rounded-xl bg-base-100 dark:border dark:border-base-content/10 relative flex flex-col justify-start items-center",
+          isPendingPilihPelanggan ? "overflow-hidden h-[90vh]" : "max-h-[95vh]",
+        )}
+      >
+        {/* is pending */}
+        {isPendingPilihPelanggan && (
+          <div className="w-full h-full absolute flex flex-col justify-center items-center z-10">
+            <div className="w-full h-full bg-base-100 opacity-50 absolute" />
+
+            {/* loading */}
+            <div className="loading loading-lg" />
+          </div>
+        )}
+
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-between items-start">
@@ -108,12 +124,7 @@ const ModalChoosePelanggan: FC<Props> = ({
                   key={item.id}
                   className="w-full flex flex-row justify-between items-center px-4 py-2.5 border-b border-base-content/10 hover-overlay shrink-0"
                   onClick={() => {
-                    handleChoose({
-                      id: item.id,
-                      nama: item.nama,
-                      noWa: item.noWa,
-                    });
-                    handleCloseModal();
+                    handlePilihPelanggan({ pelangganId: item.id });
                   }}
                 >
                   <div className="flex-2 flex flex-row justify-start items-center gap-4">

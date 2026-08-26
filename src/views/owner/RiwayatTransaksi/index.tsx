@@ -1,8 +1,13 @@
 import {
   Banknote,
+  BanknoteArrowDown,
+  BanknoteArrowUp,
   CalendarClock,
+  ChartLine,
+  ChartNoAxesCombined,
   History,
   Landmark,
+  PackageCheck,
   QrCode,
   ReceiptText,
 } from "lucide-react";
@@ -22,8 +27,9 @@ import FilterStatistik from "../../../components/filters/FilterStatistik";
 import CardData from "../../../components/ui/cards/CardData";
 import StatusTransaction from "../../../components/ui/StatusTransaction";
 import useRiwayatTransaksi from "./useRiwayatTransaksi";
-import AlertLabel from "../../../components/messages/AlertLabel";
+import CardStatistik from "../../../components/ui/cards/CardStatistik";
 
+// PERBAIKI , BERIKAN STATISTIK NYA DAN UNTUK DAFTAR RIWAYAT TIDAK PERLU BERDASARKAN PELANGGAN , JIKA PELANGGAN DOBLE TIDAK APA MEMANG HARI ITU ADA 2 TRANSAKSI, PERBAIKI SERVICE NYA JUGA
 const RiwayatTransaksi = () => {
   const {
     metodePembayaran,
@@ -84,12 +90,152 @@ const RiwayatTransaksi = () => {
             </div>
           )}
         </div>
+
+        {/* statistik */}
+        <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
+          <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-2">
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: ReceiptText,
+                bgColor: "bg-blue-100",
+                iconColor: "text-blue-400",
+              }}
+              label={"Total Transaksi"}
+              value={
+                formatNumber(
+                  dataRiwayatTransaksi?.data?.statistik?.totalTransaksi ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah transaksi"}
+            />
+
+            {/* total produk terjual */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: PackageCheck,
+                bgColor: "bg-emerald-100",
+                iconColor: "text-emerald-400",
+              }}
+              label={"Total Produk Terjual"}
+              value={
+                formatNumber(
+                  dataRiwayatTransaksi?.data?.statistik?.totalProdukTerjual ??
+                    0,
+                ) || "0"
+              }
+              caption={"Jumlah produk terjual"}
+            />
+
+            {/* total item terjual */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: PackageCheck,
+                bgColor: "bg-purple-100",
+                iconColor: "text-purple-400",
+              }}
+              label={"Total Item Terjual"}
+              value={
+                formatNumber(
+                  dataRiwayatTransaksi?.data?.statistik?.totalItemTerjual ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah item terjual"}
+            />
+
+            {/* total omzet */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: ChartLine,
+                bgColor: "bg-indigo-100",
+                iconColor: "text-indigo-400",
+              }}
+              label={"Total Omzet Terjual"}
+              value={
+                formatNumber(
+                  dataRiwayatTransaksi?.data?.statistik?.totalOmzet ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah omzet terjual"}
+            />
+
+            {/* total modal */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: BanknoteArrowUp,
+                bgColor: "bg-amber-100",
+                iconColor: "text-amber-400",
+              }}
+              label={"Total Modal Terjual"}
+              value={
+                formatNumber(
+                  dataRiwayatTransaksi?.data?.statistik?.totalModal ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah modal terjual"}
+            />
+
+            {/* total laba */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: ChartNoAxesCombined,
+                bgColor: "bg-blue-100",
+                iconColor: "text-blue-400",
+              }}
+              label={"Total Laba"}
+              value={
+                formatNumber(
+                  dataRiwayatTransaksi?.data?.statistik?.totalLaba ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah laba"}
+            />
+
+            {/* total kas masuk */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: BanknoteArrowDown,
+                bgColor: "bg-emerald-100",
+                iconColor: "text-emerald-400",
+              }}
+              label={"Total Kas Masuk"}
+              value={
+                formatNumber(
+                  dataRiwayatTransaksi?.data?.statistik?.totalKasMasuk ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah kas masuk"}
+            />
+
+            {/* total piutang */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: CalendarClock,
+                bgColor: "bg-amber-100",
+                iconColor: "text-amber-400",
+              }}
+              label={"Total Piutang"}
+              value={
+                formatNumber(
+                  dataRiwayatTransaksi?.data?.statistik?.totalPiutang ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah piutang"}
+            />
+          </div>
+        </div>
+
         {/* data untuk > mobile */}
         <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex">
           <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
             {/* head */}
-
-            {/* buat loading */}
             <thead>
               <tr className="h-12 bg-base-100 text-xs">
                 <th>No. Transaksi</th>
@@ -191,7 +337,7 @@ const RiwayatTransaksi = () => {
                       <button
                         type="button"
                         className="text-info hover:underline"
-                        onClick={() => handleRedirectDetail(item.pelanggan.id)}
+                        onClick={() => handleRedirectDetail(item.id)}
                       >
                         detail
                       </button>
@@ -216,9 +362,6 @@ const RiwayatTransaksi = () => {
             {/* foot */}
           </table>
         </div>
-
-        {/* alert label */}
-        <AlertLabel message="Data diurutkan berdasarkan pelanggan, dengan transaksi terbaru dari setiap pelanggan ditampilkan" />
         {/* pagination */}
         <div className="w-full -mt-2">
           <PaginationAndLimit

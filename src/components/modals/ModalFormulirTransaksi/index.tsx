@@ -14,22 +14,12 @@ import ButtonText from "../../ui/button/ButtonText";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
-  handleAppend: (
-    data: Pick<
-      ResponseProdukForKasirType,
-      | "nama"
-      | "img"
-      | "hargaJual"
-      | "kode"
-      | "hargaJualTerakhirTransaksi"
-      | "id"
-      | "stok"
-    > & { subTotal: number; diskon: number; quantity: number },
-  ) => void;
   handleCloseModal: () => void;
   data?: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
     Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
       diskon?: number;
+      detailId?: number;
+      hargaModalRataRata: number;
     };
   index?: number;
 };
@@ -38,7 +28,6 @@ const ModalFormulirTransaksi: FC<Props> = ({
   modalRef,
   handleCloseModal,
   data,
-  handleAppend,
   index,
 }) => {
   // call use
@@ -49,7 +38,10 @@ const ModalFormulirTransaksi: FC<Props> = ({
     onSubmit,
     quantityController,
     subTotal,
-  } = useModalTransaksi({ handleAppend, handleCloseModal, data });
+    totalDiskon,
+    hargaJual,
+    isPendingTambahProduk,
+  } = useModalTransaksi({ handleCloseModal, data });
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
@@ -88,7 +80,11 @@ const ModalFormulirTransaksi: FC<Props> = ({
                   <Label label={`Nama Produk`} value={data?.nama || ""} />
 
                   {/* kode produk */}
-                  <Label label={`Kode Produk`} value={data?.kode || ""} small />
+                  <Label
+                    label={`Kode Produk`}
+                    value={data?.kode || "-"}
+                    small
+                  />
                   <Label
                     label={`Stok Produk`}
                     value={data?.stok.toString() || ""}
@@ -96,17 +92,24 @@ const ModalFormulirTransaksi: FC<Props> = ({
                   />
                 </div>
 
-                <div className="w-full flex flex-row justify-around items-start gap-2.5">
+                <div className="w-full flex flex-row justify-around items-stretch gap-2.5">
+                  {/* harga modal */}
+                  <Label
+                    label={`Hrg. Modal`}
+                    value={formatRupiah(data?.hargaModalRataRata ?? "")}
+                    small
+                  />
+
                   {/* harga jual */}
                   <Label
-                    label={`Harga Jual Patokan`}
+                    label={`Hrg. Jual Patokan`}
                     value={formatRupiah(data?.hargaJual ?? "")}
                     small
                   />
 
                   {/* harga terakhir transaksi */}
                   <Label
-                    label={`Harga Jual Terakhir Transaksi`}
+                    label={`Hrg. Terakhir Transaksi`}
                     value={formatRupiah(data?.hargaJualTerakhirTransaksi ?? "")}
                     small
                   />
@@ -128,27 +131,42 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 name="hargaJual"
               />
 
-              {/* diskon */}
-              <InputPrice<DetailsForCreate>
-                label={`Diskon`}
-                controller={diskonController}
-                placeholder={`Masukan diskon`}
-                name="diskon"
-              />
+              <div className="w-full gap-2.5 flex flex-row justify-between items-start">
+                {/* diskon */}
+                <InputPrice<DetailsForCreate>
+                  label={`Diskon`}
+                  controller={diskonController}
+                  placeholder={`Masukan diskon`}
+                  name="diskon"
+                  max={hargaJual}
+                />
 
-              {/* input quantity  */}
-              <InputQty<DetailsForCreate>
-                label={`Jumlah`}
-                required={true}
-                controller={quantityController}
-              />
+                {/* input quantity  */}
+                <InputQty<DetailsForCreate>
+                  label={`Jumlah`}
+                  required={true}
+                  controller={quantityController}
+                />
+              </div>
 
-              {/* sub total */}
-              <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
-                <span className="text-xs text-base-content">Sub Total</span>
-                <span className="text-base font-semibold text-base-content">
-                  {formatRupiah(subTotal)}
-                </span>
+              {/* total diskon */}
+              <div className="w-full flex flex-row gap-2.5">
+                <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
+                  <span className="text-xs text-base-content">
+                    Total Diskon
+                  </span>
+                  <span className="text-base font-semibold text-base-content">
+                    {formatRupiah(totalDiskon)}
+                  </span>
+                </div>
+
+                {/* sub total */}
+                <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
+                  <span className="text-xs text-base-content">Sub Total</span>
+                  <span className="text-base font-semibold text-base-content">
+                    {formatRupiah(subTotal)}
+                  </span>
+                </div>
               </div>
 
               {/* alert */}
@@ -163,10 +181,14 @@ const ModalFormulirTransaksi: FC<Props> = ({
                   handleClose={() => {
                     handleCloseModal();
                   }}
+                  disabled={isPendingTambahProduk}
                   label="Batal"
                 />
                 {/* button submit */}
-                <ButtonText label={`Tambahkan`} />
+                <ButtonText
+                  label={`Tambahkan`}
+                  isLoading={isPendingTambahProduk}
+                />
               </div>
             </form>
           </div>

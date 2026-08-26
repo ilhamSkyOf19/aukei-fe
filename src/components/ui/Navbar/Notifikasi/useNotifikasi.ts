@@ -165,7 +165,7 @@ const useNotifikasi = (params: {
   }) => {
     setIsOpen(false);
     return navigate(
-      `/dashboard/riwayat-transaksi/pelanggan/${params.pelangganId}/transaksi/${params.transactionId}/daftar-retur-barang/detail/${params.returBarangId}`,
+      `/dashboard/riwayat-transaksi/${params.transactionId}/daftar-retur-barang/detail/${params.returBarangId}`,
     );
   };
 

@@ -207,6 +207,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                             id: dataBarangMasukDetail?.data?.id ?? 0,
                           })
                         }
+                        classHidden="hidden lg:flex"
                       />
 
                       {/* download */}

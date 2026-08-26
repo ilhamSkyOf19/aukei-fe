@@ -15,6 +15,19 @@ export class ProdukValidation {
       .max(max, `Maksimal ${max} karakter`);
   }
 
+  private static nullableOptionalStringSchema(
+    fieldName: string,
+    max: number = 100,
+  ) {
+    return z
+      .string()
+      .trim()
+      .max(max, `Maksimal ${max} karakter ${fieldName}`)
+      .transform((value) => (value === "" ? null : value))
+      .nullable()
+      .optional();
+  }
+
   private static numberSchema(fieldName: string) {
     return z.number(`Mohon isi ${fieldName}`).min(0, `Mohon isi ${fieldName}`);
   }
@@ -49,7 +62,7 @@ export class ProdukValidation {
 
       nama: this.stringSchema("nama produk", 150),
 
-      kode: this.stringSchema("kode produk", 50),
+      kode: this.nullableOptionalStringSchema("kode produk", 50),
 
       hargaBeli: this.numberSchema("harga beli"),
 
@@ -69,7 +82,7 @@ export class ProdukValidation {
 
       nama: this.stringSchema("nama produk", 150).optional(),
 
-      kode: this.stringSchema("kode produk", 50).optional(),
+      kode: this.nullableOptionalStringSchema("kode produk", 50),
 
       hargaBeli: z
         .number("Mohon isi harga beli")

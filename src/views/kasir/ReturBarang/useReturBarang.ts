@@ -1,21 +1,8 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
-import { useMutation, useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
-import {
-  useController,
-  useFieldArray,
-  useForm,
-  useWatch,
-} from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type {
-  CreateReturBarangForService,
-  CreateReturnRequestType,
-  UpdateReturnForServiceType,
-} from "../../../models/returBarang.model";
-import { ReturBarangValidations } from "../../../validations/returBarang.validation";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import useConfirm from "../../../hooks/useConfirm";
 import { ReturBarangServices } from "../../../services/returBarang.service";
 import axios from "axios";
@@ -23,62 +10,47 @@ import type { ErrorResponse } from "../../../types/response.type";
 import { useAuthStore } from "../../../stores/authStore";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import useSizeWindows from "../../../hooks/useSizeWindows";
+import useModal from "../../../hooks/useModal";
+import { useToastAnimation } from "../../../hooks/useToast";
 
 const useReturBarang = () => {
   const pengguna = useAuthStore((state) => state.pengguna);
 
-  // navigate
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const currentPathname = useLocation().pathname;
 
-  //   get transaction id from params
+  // alert
+  const { handleSetToast, toast } = useToastAnimation();
+
   const { transactionId, returBarangId } = useParams<{
     transactionId: string;
     returBarangId: string;
   }>();
 
-  // window size
+  /**
+   * ============================================================
+   * WINDOW SIZE
+   * ============================================================
+   */
   const windowSize = useSizeWindows();
 
-  // validate
+  /**
+   * ============================================================
+   * PARSE ID
+   * ============================================================
+   */
   const validateTransactionId = parseId(transactionId);
 
-  // validated retur barang id
   const validateReturBarangId = parseId(returBarangId);
 
-  // use query
-  const data = useQueries({
-    queries: [
-      {
-        queryKey: ["transaction-for-retur-barang", validateTransactionId],
-        queryFn: () =>
-          TransactionServices.findTransaksiForReturBarang({
-            id: validateTransactionId!,
-          }),
-        enabled: !!validateTransactionId,
-        retry: false,
-        refetchOnWindowFocus: false,
-      },
-      {
-        queryKey: ["return-details", validateReturBarangId],
-        queryFn: () =>
-          ReturBarangServices.findAllByReturnTransactionId({
-            id: validateReturBarangId!,
-          }),
-        enabled: !!validateReturBarangId,
-        retry: false,
-        refetchOnWindowFocus: false,
-      },
-    ],
-  });
-
-  const [
-    { data: dataForReturBarang, isLoading: isLoadingForReturBarang },
-    { data: dataReturDetails, isLoading: isLoadingReturDetails },
-  ] = data;
-
-  // use modal confirm
+  /**
+   * ============================================================
+   * CONFIRM MODAL
+   * ============================================================
+   */
   const {
     confirm,
     data: dataConfirm,
@@ -91,318 +63,476 @@ const useReturBarang = () => {
     smallTitle: string;
   }>();
 
-  // use form
+  // use modal pengajuan or verifikasi
   const {
-    control,
-    reset,
-    setError,
-    clearErrors,
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<CreateReturnRequestType>({
-    resolver: zodResolver(ReturBarangValidations.CREATE),
-    defaultValues: {
-      details: [],
+    modalRef: modalPengajuanOrVerifikasiRef,
+    handleCloseModal: handleCloseModalPengajuanOrVerifikasi,
+    handleShowModal: handleShowModalPengajuanOrVerifikasi,
+  } = useModal();
+
+  /**
+   * ============================================================
+   * QUERY
+   * ============================================================
+   *
+   * Query pertama:
+   * mengambil detail transaksi yang bisa diretur.
+   *
+   * Query kedua:
+   * mengambil ReturnDetail dari container return jika
+   * returnTransactionId sudah tersedia.
+   */
+  const data = useQueries({
+    queries: [
+      {
+        queryKey: ["transaction-for-retur-barang", validateTransactionId],
+
+        queryFn: () =>
+          TransactionServices.findTransaksiForReturBarang({
+            id: validateTransactionId!,
+          }),
+
+        enabled: !!validateTransactionId,
+
+        retry: false,
+
+        refetchOnWindowFocus: false,
+      },
+
+      {
+        queryKey: ["return-draft-details", validateTransactionId],
+
+        queryFn: () =>
+          ReturBarangServices.findDraftByReturnTransactionId({
+            transactionId: validateTransactionId!,
+          }),
+
+        enabled: !!validateTransactionId && !validateReturBarangId,
+
+        retry: false,
+
+        refetchOnWindowFocus: false,
+      },
+
+      {
+        queryKey: ["return-details", validateReturBarangId],
+
+        queryFn: () =>
+          ReturBarangServices.findReturnDetails({
+            returId: validateReturBarangId!,
+          }),
+
+        enabled: !!validateReturBarangId,
+
+        retry: false,
+
+        refetchOnWindowFocus: false,
+      },
+    ],
+  });
+
+  const [
+    { data: dataForReturBarang, isLoading: isLoadingForReturBarang },
+
+    { data: dataReturDraftDetail, isLoading: isLoadingReturDraftDetail },
+
+    { data: dataReturDetails, isLoading: isLoadingReturDetails },
+  ] = data;
+
+  /**
+   * ============================================================
+   * RETURN DETAILS
+   * ============================================================
+   *
+   * Data return sekarang sepenuhnya berasal dari API.
+   *
+   * Tidak ada lagi useFieldArray.
+   */
+  const returnDetails =
+    dataReturDraftDetail?.data?.details ??
+    dataReturDetails?.data?.details ??
+    [];
+
+  /**
+   * ============================================================
+   * TRANSACTION DETAIL MAP
+   * ============================================================
+   */
+  const transactionDetailMap = useMemo(() => {
+    return new Map(
+      dataForReturBarang?.data?.details.map((item) => [item.id, item]) ?? [],
+    );
+  }, [dataForReturBarang]);
+
+  /**
+   * ============================================================
+   * RETURN DETAIL MAP
+   * ============================================================
+   */
+  const returnDetailMap = useMemo(() => {
+    return new Map(
+      returnDetails.map((item) => [item.transactionDetailId, item]),
+    );
+  }, [returnDetails]);
+
+  /**
+   * ============================================================
+   * HANDLE APPEND / ADD PRODUCT
+   * ============================================================
+   *
+   * Sekarang tidak menggunakan append().
+   *
+   * Ketika user memilih produk:
+   *
+   * POST /return/detail
+   *
+   * Backend:
+   * - create ReturnTransaction jika belum ada
+   * - create ReturnDetail
+   */
+  const {
+    mutateAsync: mutateAddReturnDetail,
+    isPending: isPendingAddReturnDetail,
+  } = useMutation({
+    mutationFn: ReturBarangServices.addReturnDetail,
+
+    onSuccess: async () => {
+      /**
+       * Jika container sudah ada, cukup refresh detail.
+       */
+      await queryClient.invalidateQueries({
+        queryKey: ["transaction-for-retur-barang", validateTransactionId],
+      });
+
+      /**
+       * Refresh transaksi juga jika diperlukan.
+       */
+      await queryClient.invalidateQueries({
+        queryKey: ["return-draft-details", validateTransactionId],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["return-details", validateReturBarangId],
+      });
+    },
+
+    onError: (err) => {
+      if (axios.isAxiosError<ErrorResponse>(err)) {
+        console.error(err.response?.data);
+      }
     },
   });
 
-  // set default value
-  useEffect(() => {
-    if (!dataForReturBarang?.data || !dataReturDetails?.data) {
-      return;
-    }
-
-    const transactionDetails = dataForReturBarang.data.details;
-
-    const transactionDetailMap = new Map(
-      transactionDetails.map((item) => [item.id, item]),
-    );
-
-    reset({
-      customTotalRefund: dataReturDetails.data.customTotalRefund,
-      keterangan: dataReturDetails.data.keterangan ?? undefined,
-      details: dataReturDetails.data.details.map((returDetail) => {
-        const transactionDetail = transactionDetailMap.get(
-          returDetail.transactionDetailId,
-        );
-
-        return {
-          transactionDetailId: returDetail.transactionDetailId,
-
-          quantityGood: returDetail.quantityGood,
-          quantityDamaged: returDetail.quantityDamaged,
-
-          // data dari transaksi
-          hargaJual: transactionDetail?.hargaJual ?? 0,
-          img: transactionDetail?.produk.img ?? "",
-          kode: transactionDetail?.produk.kode ?? "",
-          maxQuantity:
-            (transactionDetail?.quantity ?? 0) -
-            (transactionDetail?.totalRetur ?? 0),
-          nama: transactionDetail?.produk.nama ?? "",
-        };
-      }),
-    });
-  }, [dataForReturBarang, dataReturDetails, reset]);
-
-  //   custom total refund controller
-  const customTotalRefundController = useController({
-    control,
-    name: "customTotalRefund",
-  });
-
-  //   use field array
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "details",
-  });
-
-  //   handle append
-  const handleAppend = (params: {
+  /**
+   * ============================================================
+   * HANDLE ADD PRODUCT
+   * ============================================================
+   *
+   * Dipanggil ketika user memilih satu produk.
+   */
+  const handleAppend = async (params: {
     detailId: number;
-    nama: string;
-    kode: string;
-    img: string;
     hargaJual: number;
     maxQuantity: number;
     quantityWasRetur: number;
   }) => {
-    append({
+    /**
+     * Jangan tambahkan jika sudah ada di ReturnDetail.
+     */
+    if (returnDetailMap.has(params.detailId)) {
+      return;
+    }
+
+    /**
+     * Default quantity ketika pertama kali
+     * ditambahkan adalah 1.
+     */
+
+    if (params.maxQuantity <= 0) {
+      return;
+    }
+
+    await mutateAddReturnDetail({
+      transactionId: validateTransactionId!,
       transactionDetailId: params.detailId,
-      nama: params.nama,
-      kode: params.kode,
-      img: params.img,
-      hargaJual: params.hargaJual,
-      quantityGood: 0,
-      quantityDamaged: 0,
-      maxQuantity: params.maxQuantity - params.quantityWasRetur,
     });
   };
 
-  const detailsWatch = useWatch({
-    control,
-    name: "details",
+  /**
+   * ============================================================
+   * DELETE RETURN DETAIL
+   * ============================================================
+   */
+  const {
+    mutateAsync: mutateDeleteReturnDetail,
+    isPending: isPendingDeleteReturnDetail,
+  } = useMutation({
+    mutationFn: ReturBarangServices.deleteReturnDetail,
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["return-details", validateReturBarangId],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["transaction-for-retur-barang", validateTransactionId],
+      });
+    },
+
+    onError: (err) => {
+      if (axios.isAxiosError<ErrorResponse>(err)) {
+        console.error(err.response?.data);
+      }
+    },
   });
 
-  // quantity
-  const quantityMap = useMemo(() => {
-    return new Map(
-      dataForReturBarang?.data?.details.map((detail) => [
-        detail.id,
-        detail.quantity,
-      ]),
-    );
-  }, [dataForReturBarang]);
+  /**
+   * ============================================================
+   * HANDLE DELETE
+   * ============================================================
+   */
+  const handleRemove = async (returnDetailId: number) => {
+    if (!validateReturBarangId) {
+      return;
+    }
 
-  // use effect
-  useEffect(() => {
-    detailsWatch.forEach((detail, index) => {
-      const maxQty = quantityMap.get(detail.transactionDetailId) ?? 0;
+    await mutateDeleteReturnDetail({
+      returnTransactionId: validateReturBarangId,
 
-      const totalReturn =
-        (detail.quantityGood ?? 0) + (detail.quantityDamaged ?? 0);
-
-      if (totalReturn > maxQty) {
-        setError(`details.${index}.quantityGood`, {
-          type: "manual",
-          message: `Jumlah return tidak boleh melebihi ${maxQty}.`,
-        });
-        setError(`details.${index}.quantityDamaged`, {
-          type: "manual",
-          message: `Jumlah return tidak boleh melebihi ${maxQty}.`,
-        });
-      } else {
-        clearErrors(`details.${index}.quantityGood`);
-        clearErrors(`details.${index}.quantityDamaged`);
-      }
+      returnDetailId,
     });
-  }, [detailsWatch, quantityMap, setError, clearErrors]);
+  };
 
+  /**
+   * ============================================================
+   * SUMMARY
+   * ============================================================
+   *
+   * Summary sekarang berasal dari data API.
+   */
   const summary = useMemo(() => {
-    return detailsWatch.reduce(
-      (acc, detail, index) => {
-        const hargaJual = fields[index]?.hargaJual ?? 0;
+    return returnDetails.reduce(
+      (acc, detail) => {
+        const transactionDetail = transactionDetailMap.get(
+          detail.transactionDetailId,
+        );
 
-        acc.totalBarangRusak += detail.quantityDamaged ?? 0;
-        acc.totalBarangBagus += detail.quantityGood ?? 0;
-        acc.totalRefund +=
-          ((detail.quantityGood ?? 0) + (detail.quantityDamaged ?? 0)) *
-          hargaJual;
+        const quantity = detail.quantityReturn ?? 0;
+
+        const hargaJual = transactionDetail?.hargaJual ?? 0;
+
+        acc.totalQuantity += quantity;
+
+        acc.totalRefund += detail.totalRefund ?? quantity * hargaJual;
 
         return acc;
       },
       {
-        totalBarangRusak: 0,
-        totalBarangBagus: 0,
+        totalQuantity: 0,
         totalRefund: 0,
       },
     );
-  }, [detailsWatch, fields]);
+  }, [returnDetails, transactionDetailMap]);
 
-  //   handle back
+  /**
+   * ============================================================
+   * HANDLE BACK
+   * ============================================================
+   */
   const handleBack = () => {
     return navigate(currentPathname.split("/").slice(0, -1).join("/"));
   };
 
-  //   handle batal retur
+  const combinedReturnDetails = useMemo(() => {
+    return returnDetails.map((returnDetail) => {
+      const transactionDetail = transactionDetailMap.get(
+        returnDetail.transactionDetailId,
+      );
+
+      return {
+        ...returnDetail,
+
+        returnTransactionId:
+          dataReturDraftDetail?.data?.id ?? dataReturDetails?.data?.id,
+
+        produk: transactionDetail?.produk,
+
+        hargaJual: transactionDetail?.hargaJual ?? 0,
+
+        quantityTransaction: transactionDetail?.quantity ?? 0,
+
+        totalRetur: transactionDetail?.totalRetur ?? 0,
+      };
+    });
+  }, [returnDetails, transactionDetailMap]);
+
+  /**
+   * ============================================================
+   * HANDLE BATAL RETURN
+   * ============================================================
+   *
+   * Karena sekarang delete dilakukan per detail,
+   * tombol batal hanya kembali dari halaman.
+   *
+   * Container tidak otomatis dihapus.
+   */
   const handleBatalRetur = async () => {
-    // confirm
-    const useConfirm = await confirm({
+    const useConfirmResult = await confirm({
       bigTitle: "Apakah Anda yakin ingin membatalkan retur barang?",
-      smallTitle: "Data retur barang yang sudah ditambahkan akan dihapus.",
+
+      smallTitle:
+        "Data produk return yang sudah ditambahkan tidak akan diproses sampai pengajuan dilakukan.",
     });
 
-    if (!useConfirm) return;
+    if (!useConfirmResult) {
+      return;
+    }
 
-    // reset
-    reset();
-
-    // handle back
     handleBack();
   };
 
-  // watch custom total refund
-  const customTotalRefundWatch = useWatch({
-    control,
-    name: "customTotalRefund",
-  });
+  /**
+   * ============================================================
+   * CAN SUBMIT
+   * ============================================================
+   */
+  const isCanSimpanAndAjukan = returnDetails.length > 0;
 
-  // mutation
-  const {
-    mutateAsync: mutateReturBarang,
-    isPending: isPendingMutateReturBarang,
-  } = useMutation({
-    mutationFn: (
-      data: CreateReturBarangForService | UpdateReturnForServiceType,
-    ) => {
-      if (validateReturBarangId) {
-        return ReturBarangServices.update({
-          returnTransactionId: validateReturBarangId,
-          req: data as UpdateReturnForServiceType,
-        });
-      } else {
-        return ReturBarangServices.create(data as CreateReturBarangForService);
-      }
-    },
-    onSuccess: (data) => {
-      // reset
-      reset();
+  /**
+   * ============================================================
+   * SUBMIT / PENGAJUAN
+   * ============================================================
+   *
+   * Sekarang submit tidak lagi mengirim details[].
+   *
+   * Karena semua produk sudah tersimpan di database,
+   * submit hanya perlu menggunakan ReturnTransaction ID.
+   */
+  // const { mutateAsync: mutatePengajuan, isPending: isPendingPengajuan } =
+  //   useMutation({
+  //     mutationFn: ReturBarangServices.pengajuan,
 
-      if (data) {
-        navigate(
-          validateReturBarangId
-            ? currentPathname.split("/").slice(0, -1).join("/")
-            : `${currentPathname.split("/").slice(0, -1).join("/")}/daftar-retur-barang/detail/${data.data?.id}`,
-          {
-            state: {
-              toast:
-                pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-                  ? validateReturBarangId
-                    ? "updated_retur_barang_owner"
-                    : "created_retur_barang_owner"
-                  : validateReturBarangId
-                    ? "updated_retur_barang_kasir"
-                    : "created_retur_barang_kasir",
-            },
-          },
-        );
-      }
+  //     onSuccess: () => {
+  //       handleCloseModalConfirm();
 
-      // close modal confirm
-      handleCloseModalConfirm();
-    },
-    onError: (err) => {
-      if (axios.isAxiosError<ErrorResponse>(err)) {
-        if (err.response?.data.meta.customField?.includes("overload_qty")) {
-          // handle error nya
-          setError(`details`, {
-            type: "manual",
-            message: `Return barang melebihi quantity yang sudah dipesan.`,
-          });
-        }
-      }
-    },
-  });
+  //       const basePath = currentPathname.split("/").slice(0, -1).join("/");
 
-  // on submit
-  const onSubmit = async (data: { keterangan?: string }) => {
-    try {
-      // check validated id
-      if (!validateTransactionId) return;
+  //       navigate(basePath, {
+  //         state: {
+  //           toast:
+  //             pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+  //               ? "created_retur_barang_owner"
+  //               : "created_retur_barang_kasir",
+  //         },
+  //       });
+  //     },
 
-      // confirm
-      const isConfirm = await confirm(
-        {
-          bigTitle: "Apakah Anda yakin ingin memproses retur barang?",
-          smallTitle:
-            pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-              ? "Pastikan seluruh data retur sudah benar. Retur akan masuk tahap review. Silakan review dan setujui jika data sudah sesuai."
-              : "Pastikan seluruh data retur sudah benar. Setelah diajukan, retur akan menunggu verifikasi dari owner sebelum diproses.",
-        },
-        {
-          disableCloseAfterSubmit: true,
-        },
-      );
+  //     onError: (err) => {
+  //       if (axios.isAxiosError<ErrorResponse>(err)) {
+  //         console.error(err.response?.data);
+  //       }
+  //     },
+  //   });
 
-      if (!isConfirm) return;
+  /**
+   * ============================================================
+   * ON SUBMIT
+   * ============================================================
+   */
+  // const onSubmit = async (params?: { keterangan?: string }) => {
+  //   if (!validateReturBarangId) {
+  //     return;
+  //   }
 
-      // call mutation
-      await mutateReturBarang({
-        transactionId: validateTransactionId!,
-        customTotalRefund:
-          customTotalRefundWatch === 0 || customTotalRefundWatch === undefined
-            ? undefined
-            : customTotalRefundWatch,
-        keterangan: data.keterangan,
-        details: detailsWatch.map((item) => ({
-          quantityDamaged: item.quantityDamaged,
-          quantityGood: item.quantityGood,
-          transactionDetailId: item.transactionDetailId,
-        })),
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   if (!isCanSimpanAndAjukan) {
+  //     return;
+  //   }
 
-  const isCanSimpanAndAjukan = useMemo(() => {
-    return (
-      fields.length > 0 &&
-      detailsWatch.every(
-        (item) =>
-          item.quantityGood > 0 ||
-          item.quantityDamaged > 0 ||
-          item.maxQuantity <= item.quantityDamaged + item.quantityGood,
-      )
-    );
-  }, [detailsWatch, fields]);
+  //   const isConfirm = await confirm(
+  //     {
+  //       bigTitle: "Apakah Anda yakin ingin mengajukan retur barang?",
+
+  //       smallTitle:
+  //         pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+  //           ? "Pastikan seluruh data retur sudah benar. Retur akan masuk tahap review."
+  //           : "Pastikan seluruh data retur sudah benar. Setelah diajukan, retur akan menunggu verifikasi dari owner.",
+  //     },
+  //     {
+  //       disableCloseAfterSubmit: true,
+  //     },
+  //   );
+
+  //   if (!isConfirm) {
+  //     return;
+  //   }
+
+  //   await mutatePengajuan({
+  //     id: validateReturBarangId,
+
+  //     keterangan: params?.keterangan,
+  //   });
+  // };
 
   return {
     handleBack,
+
     dataForReturBarang,
+
     isLoadingForReturBarang,
-    fields,
+
+    returnDetails,
+
+    transactionDetailMap,
+
+    returnDetailMap,
+
     handleAppend,
-    remove,
-    control,
+
+    handleRemove,
+
     summary,
-    customTotalRefundController,
+
     handleBatalRetur,
+
     modalConfirmRef,
+
     handleCancelConfirm,
+
     handleConfirm,
+
     dataConfirm,
-    onSubmit,
-    isPendingMutateReturBarang,
-    handleSubmit,
+
+    // onSubmit,
+
+    isPendingAddReturnDetail,
+
+    isPendingDeleteReturnDetail,
+
+    // isPendingPengajuan,
+
     isCanSimpanAndAjukan,
+
     pengguna,
+
     windowSize,
-    register,
-    errors,
+
+    isLoadingReturDraftDetail,
+
+    combinedReturnDetails,
+
+    handleShowModalPengajuanOrVerifikasi,
+    handleCloseModalPengajuanOrVerifikasi,
+    modalPengajuanOrVerifikasiRef,
+
+    dataReturDraftDetail,
 
     isLoadingReturDetails,
+
+    validateReturBarangId,
+
+    toast,
+
+    handleSetToast,
   };
 };
 

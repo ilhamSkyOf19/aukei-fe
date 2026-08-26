@@ -17,7 +17,6 @@ import ButtonInline from "../../../../components/ui/button/ButtonInline";
 import type { ResponseBarangKeluarWithDetailType } from "../../../../models/barangKeluar.model";
 import useShowBarangKeluar from "./useShowBarangKeluar";
 import type { UpdateBarangKeluarDetailType } from "../../../../models/barangKeluarDetail.model";
-import InputPrice from "../../../../components/inputs/InputPrice";
 import ModalUbahProdukKeluar from "../../../../components/modals/ModalUbahProdukKeluar";
 import {
   ROLE_INTERNAL_TYPE,
@@ -66,7 +65,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
     handleShowModalUbahProduk,
     idBarangKeluar,
     modalUbahProdukRef,
-    hargaModalSatuanController,
     dataUpdateBarangKeluar,
   } = useShowBarangKeluar({
     status: dataBarangKeluarDetail?.data?.status,
@@ -164,7 +162,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
                                   handleClick={() =>
                                     handleShowModalUbahProduk(item.id, {
                                       produkId: item.produk.id,
-                                      hargaModalSatuan: item.hargaModalSatuan,
                                       jumlahStok: item.jumlahStok,
                                     })
                                   }
@@ -300,52 +297,10 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       <td>{item.produk.kategori.nama}</td>
 
                       {/* jumlah perbox */}
-                      <td className="font-medium ">
-                        {dataUpdate?.type === "hargaModalSatuan" &&
-                        dataUpdate?.id === item.id ? (
-                          <CardForm<UpdateBarangMasukDetailType>
-                            handleResetForm={handleClearDataUpdate}
-                            handleSubmit={handleSubmit}
-                            onSubmit={onSubmit}
-                            isPending={isPendingUpdate}
-                            btnAksiPosition="top"
-                            isDirty={isDirty}
-                          >
-                            {/* input text */}
-                            <div className="w-50">
-                              <InputPrice<UpdateBarangKeluarDetailType>
-                                controller={hargaModalSatuanController}
-                                placeholder="Harga Modal Satuan"
-                                required
-                                xs
-                              />
-                            </div>
-                          </CardForm>
-                        ) : (
-                          <div className="flex flex-row justify-start items-start gap-2">
-                            <span>
-                              {formatRupiah(item.hargaModalSatuan.toString())}
-                            </span>
-
-                            {/* button update */}
-                            {(isRejectedKasir ||
-                              isDrafOwner ||
-                              dataBarangKeluarDetail?.data?.status ===
-                                STATUS_INVENTORI_TYPE.DRAFT) && (
-                              <ButtonInline
-                                handleKeyUpdate={() =>
-                                  handleSetDataUpdate({
-                                    data: {
-                                      id: item.id,
-                                      hargaModalSatuan: item.hargaModalSatuan,
-                                      type: "hargaModalSatuan",
-                                    },
-                                  })
-                                }
-                              />
-                            )}
-                          </div>
-                        )}
+                      <td>
+                        <span>
+                          {formatRupiah(item.hargaModalSatuan.toString())}
+                        </span>
                       </td>
 
                       {/* stok saat ini */}
@@ -416,7 +371,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
                               handleShowModalFormulir={() =>
                                 handleShowModalUbahProduk(item.id, {
                                   produkId: item.produk.id,
-                                  hargaModalSatuan: item.hargaModalSatuan,
                                   jumlahStok: item.jumlahStok,
                                 })
                               }
@@ -469,7 +423,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
         idBarangKeluar={idBarangKeluar}
         status={dataBarangKeluarDetail?.data?.status}
         dataUpdate={{
-          hargaModalSatuan: dataUpdateBarangKeluar?.hargaModalSatuan,
           jumlahStok: dataUpdateBarangKeluar?.jumlahStok,
           produkId: dataUpdateBarangKeluar?.produkId,
         }}

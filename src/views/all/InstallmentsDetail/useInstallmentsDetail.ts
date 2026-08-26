@@ -2,7 +2,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useQuery } from "@tanstack/react-query";
 import { TempoService } from "../../../services/tempo.service";
-import useSizeWindows from "../../../hooks/useSizeWindows";
 import { useState } from "react";
 import type { ITempoInstallmentType } from "../../../models/tempoInstallment.model";
 import { useAuthStore } from "../../../stores/authStore";
@@ -38,9 +37,6 @@ const useInstallmentsDetail = () => {
       > & { diBayar: number })
     | null
   >(null);
-
-  //   window size
-  const windowSize = useSizeWindows();
 
   const navigate = useNavigate();
 
@@ -89,7 +85,6 @@ const useInstallmentsDetail = () => {
     usePrintTempoPayment({ handleSetAlert });
 
   return {
-    windowSize,
     navigate,
     isExistDataInstallments,
     dataInstallments,

@@ -23,7 +23,7 @@ type Props = {
   tanggalMasuk?: Date;
   keterangan?: string;
   totalBarangMasuk: number;
-  totalNilai?: string;
+  totalNilai?: number;
   idBarangMasukDetail?: number;
   handleSetToast: (data: string) => void;
   status?: StatusInventoriType;

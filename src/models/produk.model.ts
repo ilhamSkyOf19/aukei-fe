@@ -5,13 +5,14 @@ export interface IProduk {
   id: number;
   nama: string;
   kategori: Pick<IKategoriProdukType, "id" | "nama" | "keterangan">;
-  kode: string;
+  kode?: string | null;
   hargaBeli: number;
   hargaJual: number;
   stok: number;
   isiPerBox: number;
   stokMinimum: number;
   isActive: boolean;
+  hargaModalRataRata: number;
   img: string;
   createdAt: Date;
   updatedAt: Date;
@@ -20,8 +21,9 @@ export interface IProduk {
 // create
 export interface CreateProdukType extends Pick<
   IProduk,
-  "nama" | "kode" | "hargaBeli" | "hargaJual" | "isiPerBox" | "stokMinimum"
+  "nama" | "hargaBeli" | "hargaJual" | "isiPerBox" | "stokMinimum"
 > {
+  kode?: string | null;
   kategoriId: number;
   img: File;
 }
@@ -46,8 +48,9 @@ export interface UpdateStatusType {
 export interface ResponseProdukForChooseType {
   id: number;
   nama: string;
-  kode: string;
+  kode?: string | null;
   hargaBeli: number;
+  hargaModalRataRata: number;
   stok: number;
   img: string;
 }
@@ -55,7 +58,14 @@ export interface ResponseProdukForChooseType {
 // response produk for kasir
 export interface ResponseProdukForKasirType extends Pick<
   IProduk,
-  "id" | "nama" | "kode" | "hargaJual" | "stok" | "img" | "kategori"
+  | "id"
+  | "nama"
+  | "kode"
+  | "hargaJual"
+  | "stok"
+  | "img"
+  | "kategori"
+  | "hargaModalRataRata"
 > {
   hargaJualTerakhirTransaksi?: number;
 }

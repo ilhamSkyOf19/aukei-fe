@@ -402,3 +402,10 @@ input:-webkit-autofill:active {
     }
   }
 }
+
+.modal,
+.modal-box {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}

@@ -22,9 +22,10 @@ type Props = {
     produk?: {
       id: number;
       nama: string;
-      kode: string;
+      kode?: string | null;
       img: string;
       stok: number;
+      hargaModalRataRata: number;
     };
     jumlahBox: number;
     hargaBeli: number;
@@ -145,6 +146,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
+                            hargaBeli
                             key={item.id}
                             data={item}
                             handleSetValueProdukId={handleSetValueProdukId}
@@ -167,6 +169,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
                 <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
                   <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
                   <CardProdukForAfterChooseInventori
+                    hargaBeli
                     data={produkChoose}
                     handleDeleteValueProdukId={handleDeleteValueProdukId}
                     customWidth="w-full"

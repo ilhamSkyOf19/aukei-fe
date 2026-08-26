@@ -10,7 +10,11 @@ import type { IPelangganType } from "./pelanggan.model";
 import type { IPenggunaInternalType } from "./penggunaInternal.model";
 import type { ResponseProdukForKasirType } from "./produk.model";
 import type { ResponseRingkasanStatistikType } from "./statistik.model";
-import type { DataTempoType, ITempo } from "./tempo.model";
+import type {
+  DataTempoType,
+  ITempo,
+  ResponseTempoWithInstallment,
+} from "./tempo.model";
 import type { ITempoInstallmentType } from "./tempoInstallment.model";
 import type { ITransactionDetailType } from "./transactionDetail.model";
 
@@ -31,6 +35,7 @@ export interface ITransactionType {
   completedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
+  ongkir: number;
   paymentTransactions?: Pick<
     ResponseTransactionPaymentType,
     | "id"
@@ -112,6 +117,16 @@ export interface ResponseRiwayatTransactionType {
     status: TransactionStatusType;
   })[];
   meta: MetaType;
+  statistik: {
+    totalTransaksi: number;
+    totalProdukTerjual: number;
+    totalItemTerjual: number;
+    totalOmzet: number;
+    totalLaba: number;
+    totalModal: number;
+    totalKasMasuk: number;
+    totalPiutang: number;
+  };
 }
 
 export interface ResponseRiwayatTransaksiPelangganType {
@@ -147,7 +162,7 @@ export interface ResponseRiwayatTransaksiPelangganType {
   meta?: MetaType;
 }
 
-export interface DetailsLocalStorageType {
+export interface DetailsType {
   produkId: number;
   quantity: number;
   hargaJual: number;
@@ -155,7 +170,7 @@ export interface DetailsLocalStorageType {
   diskon: number;
   img: string;
   nama: string;
-  kode: string;
+  kode?: string | null;
 }
 
 export interface DataTransaksiBookingForResponseType {
@@ -248,4 +263,45 @@ export interface ResponseForReturBarang extends Pick<
 > {
   kasir: Pick<IPenggunaInternalType, "id" | "nama" | "username" | "isActive">;
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
+}
+
+// response pilih pelanggan
+export interface ResponsePilihPelangganType extends Pick<
+  ITransactionType,
+  "id" | "status"
+> {
+  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
+}
+
+// tambah produk detail
+export interface TambahProdukDetailForReqeustType {
+  detail: DetailsForCreate;
+}
+
+// response tambah produk detail
+export interface ResponseProdukDetailType {
+  detail: Omit<ITransactionDetailType, "createdAt" | "updatedAt">;
+}
+
+// update produk details
+export interface UpdateProdukDetail {
+  hargaJual?: number;
+  diskon?: number;
+  qty?: number;
+}
+
+export interface ResponseTransaksiDraftType extends Pick<
+  ITransactionType,
+  "id" | "status" | "totalBayar" | "totalDiskon" | "totalItem" | "ongkir"
+> {
+  metodePembayaran: PaymentMethodType;
+  details: Array<
+    Omit<ITransactionDetailType, "createdAt" | "updatedAt" | "hpp" | "laba"> & {
+      hargaJualTerakhir: number;
+      stokTersisa: number;
+    }
+  >;
+  pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa"> | null;
+  kasir: Pick<IPenggunaInternalType, "id" | "nama" | "username">;
+  tempo?: ResponseTempoWithInstallment | null;
 }

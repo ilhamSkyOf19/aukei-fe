@@ -11,10 +11,7 @@ import {
   ReceiptText,
 } from "lucide-react";
 import InputPrice from "../../inputs/InputPrice";
-import type {
-  CreateTempoType,
-  DataTempoType,
-} from "../../../models/tempo.model";
+import type { CreateTempoType } from "../../../models/tempo.model";
 import useModalTempoPayment from "./useModalTempoPayment";
 import InputChoose from "../../inputs/InputChoose";
 import InputNumber from "../../inputs/InputNumber";
@@ -37,17 +34,17 @@ type Props = {
   };
   handleCloseModal: () => void;
   handleShowModal: () => void;
-  handleSetDataTempo: (data: DataTempoType) => void;
   booking?: true;
+  transactionId: number;
 };
 
 const ModalTempoPayment: FC<Props> = ({
   modalRef,
   handleCloseModal,
   data,
-  handleSetDataTempo,
   booking,
   handleShowModal,
+  transactionId,
 }) => {
   // call use
   const {
@@ -74,10 +71,11 @@ const ModalTempoPayment: FC<Props> = ({
     isErrors,
     handlePay,
     pembayaranUangMukaCash,
+    isPendingCreateTempo,
   } = useModalTempoPayment({
     data,
     handleCloseModal,
-    handleSetDataTempo,
+    transactionId,
     booking,
   });
 
@@ -356,7 +354,9 @@ const ModalTempoPayment: FC<Props> = ({
         {/* button batal dan simpan */}
         <div className="w-full flex flex-row justify-end items-center gap-4 mt-4">
           <ButtonCloseText handleClose={handleCloseModal} />
+
           <ButtonText
+            isLoading={isPendingCreateTempo}
             handleClick={handleSimpan}
             label="Simpan"
             disable={isEmpty}

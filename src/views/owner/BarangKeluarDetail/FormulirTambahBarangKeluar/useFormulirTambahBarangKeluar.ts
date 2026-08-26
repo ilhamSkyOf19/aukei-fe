@@ -83,12 +83,6 @@ const useFormulirTambahBarangKeluar = (params: {
     name: "jumlahStok",
   });
 
-  // harga modal satuan controller
-  const hargaModalSatuanController = useController({
-    control,
-    name: "hargaModalSatuan",
-  });
-
   useEffect(() => {
     setValue("barangKeluarId", validatedId!);
   }, [validatedId, setValue]);
@@ -106,7 +100,6 @@ const useFormulirTambahBarangKeluar = (params: {
         barangKeluarId: validatedId!,
         produkId: undefined,
         jumlahStok: undefined,
-        hargaModalSatuan: undefined,
       });
 
       handleSearch("");
@@ -180,11 +173,6 @@ const useFormulirTambahBarangKeluar = (params: {
 
     setValue("produkId", findData.id, { shouldValidate: true });
 
-    // set value harga modal satuan
-    setValue("hargaModalSatuan", findData.hargaBeli, {
-      shouldValidate: true,
-    });
-
     handleCloseActiveComponentChooseProduk();
   };
 
@@ -218,7 +206,6 @@ const useFormulirTambahBarangKeluar = (params: {
     modalFormulirTambahBarangKeluarRef,
     handleShowModalFormulirTambahBarangKeluar,
     handleCloseModalFormulirTambahBarangKeluar,
-    hargaModalSatuanController,
   };
 };
 export default useFormulirTambahBarangKeluar;
