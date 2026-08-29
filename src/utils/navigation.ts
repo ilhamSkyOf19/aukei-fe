@@ -4,6 +4,7 @@ import {
   Boxes,
   CalendarClock,
   ChartLine,
+  ClipboardCheck,
   HandCoins,
   LayoutDashboard,
   LucideArrowLeftSquare,
@@ -34,6 +35,11 @@ export const NAVIGATION_LIST_OWNER: {
     label: "Inventori",
     icon: Package,
     link: "/dashboard/inventori",
+  },
+  {
+    label: "Stok Opname",
+    icon: ClipboardCheck,
+    link: "/dashboard/stok-opname",
   },
   {
     label: "Pegawai",

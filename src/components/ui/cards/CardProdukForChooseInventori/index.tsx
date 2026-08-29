@@ -11,12 +11,14 @@ type Props = {
   data: ResponseProdukForChooseType;
   hargaBeli?: boolean;
   hargaModal?: boolean;
+  kategori: string;
 };
 const CardProdukForChooseInventori: FC<Props> = ({
   data,
   handleSetValueProdukId,
   hargaBeli,
   hargaModal,
+  kategori,
 }) => {
   return (
     <button
@@ -35,8 +37,13 @@ const CardProdukForChooseInventori: FC<Props> = ({
         </div>
 
         {/* nama */}
-        <div className="flex flex-col justify-start items-start gap-1">
-          <p className="text-xs font-medium text-base-content">{data.nama}</p>
+        <div className="flex flex-col justify-start items-start gap-0.5">
+          <div className="flex flex-col justify-start items-start">
+            <p className="text-xs font-medium text-base-content">{data.nama}</p>
+            <p className="text-[0.625rem] font-medium text-base-content/70">
+              {data.kategori}
+            </p>
+          </div>
           <p className="text-[0.625rem] text-base-content/70 font-medium">
             {data.kode}
           </p>

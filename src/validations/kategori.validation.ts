@@ -14,7 +14,7 @@ export class KategoriProdukValidations {
     return z
       .string(`${name} harap diisi`)
       .trim()
-      .min(min, `${name} harap diisi`)
+      .min(min, `${name} harap minimal ${min} karakter`)
       .max(max, `${name} maksimal ${max} karakter`)
       .regex(/^[A-Za-z0-9\s.,&()-]+$/, `${name} tidak valid`);
   }

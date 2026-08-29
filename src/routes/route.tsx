@@ -32,6 +32,8 @@ import NotifikasiPage from "../pages/NotifikasiPage";
 import ReturBarangPage from "../pages/ReturBarangPage";
 import DaftarReturBarangPage from "../pages/DaftarReturBarangPage";
 import ReturBarangDetailPage from "../pages/ReturBarangDetailPage";
+import StockOpnamePage from "../pages/StockOpnamePage";
+import StockOpnameDetailPage from "../pages/StockOpnameDetailPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -200,6 +202,19 @@ const route = createBrowserRouter([
                 <PengajuanBarangKeluarDetailPage />
               </RoleGuard>
             ),
+          },
+        ],
+      },
+      {
+        path: "stok-opname",
+        children: [
+          {
+            index: true,
+            element: <StockOpnamePage />,
+          },
+          {
+            path: ":id",
+            element: <StockOpnameDetailPage />,
           },
         ],
       },

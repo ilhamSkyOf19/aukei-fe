@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../hooks/useFilter";
 import { useToastAnimation } from "../../../../hooks/useToast";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
 import { PengajuanBarangMasukServices } from "../../../../services/pengajuanBarangMasuk.service";
 
@@ -39,6 +39,10 @@ const usePengajuanBarangMasuk = () => {
   //   toast
   const { toast } = useToastAnimation();
 
+  const [searchParams] = useSearchParams();
+
+  const activeCluster = searchParams.get("cluster") ?? "";
+
   // query
   const {
     data: dataPengajuanBarangMasuk,
@@ -63,6 +67,7 @@ const usePengajuanBarangMasuk = () => {
         ...(startDate && { startDate }),
         ...(endDate && { endDate }),
       }),
+    enabled: activeCluster === "pengajuanBarangMasuk",
     retry: false,
     refetchOnWindowFocus: false,
   });

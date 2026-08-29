@@ -248,3 +248,42 @@ export const returBarangNotification: Record<
     icon: Ban,
   },
 } as const;
+
+// ============================================================
+// STATUS STOCK OPNAME
+// ============================================================
+
+export const STATUS_STOCK_OPNAME_TYPE = {
+  DRAFT: "DRAFT",
+  PENDING: "PENDING",
+  REJECTED: "REJECTED",
+  APPROVED: "APPROVED",
+} as const;
+
+export type StatusStockOpnameType =
+  (typeof STATUS_STOCK_OPNAME_TYPE)[keyof typeof STATUS_STOCK_OPNAME_TYPE];
+
+// ============================================================
+// STATUS DETAIL STOCK OPNAME
+// ============================================================
+
+export const STATUS_DETAIL_STOCK_OPNAME_TYPE = {
+  BELUM_DI_HITUNG: "BELUM_DI_HITUNG",
+  SESUAI: "SESUAI",
+  SELISIH: "SELISIH",
+} as const;
+
+export type StatusDetailStockOpnameType =
+  (typeof STATUS_DETAIL_STOCK_OPNAME_TYPE)[keyof typeof STATUS_DETAIL_STOCK_OPNAME_TYPE];
+
+// ============================================================
+// JENIS PENYESUAIAN STOCK OPNAME
+// ============================================================
+
+export const JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE = {
+  MASUK_KERUGIAN: "MASUK_KERUGIAN",
+  TIDAK_MASUK_KERUGIAN: "TIDAK_MASUK_KERUGIAN",
+} as const;
+
+export type JenisPenyesuaianStockOpnameType =
+  (typeof JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE)[keyof typeof JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE];

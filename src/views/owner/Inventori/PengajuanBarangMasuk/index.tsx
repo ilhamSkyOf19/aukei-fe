@@ -47,7 +47,7 @@ const PengajuanBarangMasuk = () => {
 
       <div
         className={cn(
-          "flex-col justify-start items-start p-2.5 md:px-2.5 md:p-0",
+          "flex-col justify-start items-start p-2.5 md:px-2.5 lg:pt-0",
         )}
       >
         {/* filter */}

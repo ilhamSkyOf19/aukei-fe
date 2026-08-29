@@ -166,3 +166,34 @@ export const ALERT_CONFIG_INSTALLMENT_DETAIL: Record<
       "Mohon maaf, gagal mencetak file. Silahkan tunggu beberapa saat atau hubungi developer.",
   },
 };
+
+export const ALERT_CONFIG_STOCK_OPNAME_DETAIL: Record<
+  string,
+  {
+    message: string;
+  }
+> = {
+  produk_choose_exist: {
+    message: "Produk sudah dipilih, silahkan pilih produk lain.",
+  },
+  produk_choose_exist_in_data: {
+    message: "Produk sudah ada dalam data, silahkan pilih produk lain.",
+  },
+  empty_produk: {
+    message: "Data Barang Masuk masih kosong, silahkan tambahkan barang masuk.",
+  },
+  expired: {
+    message: "Mohon maaf, barang masuk sudah tidak dapat dibatalkan.",
+  },
+  gagal_cetak_invoice: {
+    message:
+      "Mohon maaf, gagal mencetak invoice. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+  gagal_download_invoice: {
+    message:
+      "Mohon maaf, gagal mendownload invoice. Silahkan tunggu beberapa saat atau hubungi developer.",
+  },
+  stok_not_enough: {
+    message: "Mohon maaf, stok produk tidak mencukupi.",
+  },
+};

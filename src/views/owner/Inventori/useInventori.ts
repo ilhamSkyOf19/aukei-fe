@@ -1,28 +1,23 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 import { format } from "date-fns";
+import { useSearchParams } from "react-router-dom";
+
+type ClusterType =
+  | "barangMasuk"
+  | "pengajuanBarangMasuk"
+  | "barangKeluar"
+  | "pengajuanBarangKeluar"
+  | "";
 
 const useInventori = () => {
-  //   is active Cluster inventori
-  const [isActiveCluster, setIsActiveCluster] = useState<
-    | "barangMasuk"
-    | "pengajuanBarangMasuk"
-    | "barangKeluar"
-    | "pengajuanBarangKeluar"
-    | ""
-  >("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [_searchParams, setSearchParams] = useSearchParams();
+  // active cluster dari URL
+  const activeCluster =
+    (searchParams.get("cluster") as ClusterType | null) ?? "";
 
-  // handle is active
-  const handleActiveCluster = (
-    Cluster:
-      | "barangMasuk"
-      | "pengajuanBarangMasuk"
-      | "barangKeluar"
-      | "pengajuanBarangKeluar"
-      | "",
-  ) => {
+  // helper default date
+  const getDefaultDate = () => {
     const defaultStartDate = format(
       new Date(
         new Date().getFullYear(),
@@ -34,39 +29,89 @@ const useInventori = () => {
 
     const defaultEndDate = format(new Date(), "yyyy-MM-dd");
 
-    setSearchParams({
-      "start-date": defaultStartDate,
-      "end-date": defaultEndDate,
-    });
-
-    // set state
-    setIsActiveCluster(Cluster);
-
-    //  set localstorage
-    localStorage.setItem("active-cluster", Cluster);
+    return {
+      defaultStartDate,
+      defaultEndDate,
+    };
   };
 
-  useEffect(() => {
-    // get localstorage
-    const datalocalStorage = localStorage.getItem("active-cluster");
+  // handle active cluster
+  const handleActiveCluster = (cluster: ClusterType) => {
+    const { defaultStartDate, defaultEndDate } = getDefaultDate();
 
-    // check
-    if (datalocalStorage) {
-      setIsActiveCluster(
-        datalocalStorage as
-          | "barangMasuk"
-          | "barangKeluar"
-          | "pengajuanBarangMasuk"
-          | "pengajuanBarangKeluar",
-      );
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+
+      // reset cluster
+      params.set("cluster", cluster);
+
+      // reset range date
+      params.set("start-date", defaultStartDate);
+      params.set("end-date", defaultEndDate);
+
+      return params;
+    });
+
+    // local storage
+    if (cluster) {
+      localStorage.setItem("active-cluster", cluster);
     } else {
-      setIsActiveCluster("barangMasuk");
+      localStorage.removeItem("active-cluster");
     }
-  }, []);
+  };
 
-  //   use query
+  // initial setup
+  useEffect(() => {
+    const { defaultStartDate, defaultEndDate } = getDefaultDate();
 
-  return { isActiveCluster, handleActiveCluster };
+    const clusterFromStorage = localStorage.getItem(
+      "active-cluster",
+    ) as ClusterType | null;
+
+    setSearchParams(
+      (prev) => {
+        const params = new URLSearchParams(prev);
+
+        let isChanged = false;
+
+        // set cluster jika belum ada
+        if (!params.get("cluster")) {
+          params.set("cluster", clusterFromStorage || "barangMasuk");
+
+          isChanged = true;
+        }
+
+        // set start date jika belum ada
+        if (!params.get("start-date")) {
+          params.set("start-date", defaultStartDate);
+
+          isChanged = true;
+        }
+
+        // set end date jika belum ada
+        if (!params.get("end-date")) {
+          params.set("end-date", defaultEndDate);
+
+          isChanged = true;
+        }
+
+        // jika tidak ada perubahan
+        if (!isChanged) {
+          return prev;
+        }
+
+        return params;
+      },
+      {
+        replace: true,
+      },
+    );
+  }, [setSearchParams]);
+
+  return {
+    activeCluster,
+    handleActiveCluster,
+  };
 };
 
 export default useInventori;

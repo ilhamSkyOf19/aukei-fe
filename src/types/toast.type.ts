@@ -470,3 +470,82 @@ export const TOAST_CONFIG_INSTALLMENT_DETAIL: Record<
     message: "Berhasil download file",
   },
 };
+
+// toast stock opname
+export const TOAST_CONFIG_STOCK_OPNAME: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  updated_stock_opname: {
+    color: "info",
+    message: "Stok opname berhasil diperbarui",
+  },
+  deleted_stock_opname: {
+    color: "error",
+    message: "Stok opname masuk berhasil dihapus",
+  },
+};
+
+export const TOAST_CONFIG_STOCK_OPNAME_DETAIL: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  download_invoice: {
+    color: "success",
+    message: "Berhasil download invoice",
+  },
+  created_stock_opname: {
+    color: "success",
+    message: "Barang berhasil ditambahkan",
+  },
+  stock_opname_detail_add_success: {
+    color: "success",
+    message: "Barang berhasil ditambahkan",
+  },
+  deleted_stock_opname_detail: {
+    color: "error",
+    message: "Barang berhasil dihapus",
+  },
+  updated_stock_opname_detail: {
+    color: "info",
+    message: "Stok opname berhasil diperbarui",
+  },
+  posted: {
+    color: "success",
+    message: "Stok opname berhasil diposting",
+  },
+  cancel_posted: {
+    color: "error",
+    message: "Barang masuk berhasil dibatalkan",
+  },
+  updated_tanggal: {
+    color: "info",
+    message: "Tanggal berhasil diperbarui",
+  },
+  updated_keterangan: {
+    color: "info",
+    message: "Keterangan barang berhasil diperbarui",
+  },
+  approved_pengajuan: {
+    color: "success",
+    message: "Stok opname berhasil disetujui",
+  },
+  canceled_verifikasi: {
+    color: "error",
+    message: "Verifikasi berhasil dibatalkan",
+  },
+  rejected_verifikasi: {
+    color: "error",
+    message: "Verifikasi berhasil ditolak",
+  },
+  send_pengajuan: {
+    color: "success",
+    message: "Pengajuan berhasil dikirim, silahkan menunggu verifikasi",
+  },
+};

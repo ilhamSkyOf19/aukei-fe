@@ -49,6 +49,7 @@ export interface ResponseProdukForChooseType {
   id: number;
   nama: string;
   kode?: string | null;
+  kategori: string;
   hargaBeli: number;
   hargaModalRataRata: number;
   stok: number;

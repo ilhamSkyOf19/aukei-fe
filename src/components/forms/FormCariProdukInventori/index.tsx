@@ -69,7 +69,7 @@ const FormCariProdukInventori: FC<Props> = ({
           )}
         >
           <div className="overflow-y-auto scrollbar-thin">
-            <div className={cn("w-full flex flex-col h-60  p-2.5 gap-2")}>
+            <div className={cn("w-full flex flex-col h-90  p-2.5 gap-2")}>
               {isLoadingProdukForChoose ? (
                 <div className="w-full h-full flex flex-col justify-center items-center">
                   <div className="loading loading-xl" />
@@ -79,6 +79,7 @@ const FormCariProdukInventori: FC<Props> = ({
                 dataProdukForChoose?.data?.map((item, _) => (
                   <CardProdukForChooseInventori
                     key={item.id}
+                    kategori={item.kategori}
                     hargaBeli={hargaBeli}
                     hargaModal={hargaModal}
                     data={item}

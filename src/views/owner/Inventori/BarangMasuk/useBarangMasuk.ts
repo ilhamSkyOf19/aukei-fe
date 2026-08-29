@@ -4,7 +4,7 @@ import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../hooks/useFilter";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import useModal from "../../../../hooks/useModal";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useDeleteBarangMasuk from "../../../../hooks/useDeleteBarangMasuk";
 import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
@@ -93,6 +93,10 @@ const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
   //   toast
   const { toast, handleSetToast } = useToastAnimation();
 
+  const [searchParams] = useSearchParams();
+
+  const activeCluster = searchParams.get("cluster") ?? "";
+
   // query
   const {
     data: dataBarangMasuk,
@@ -109,6 +113,14 @@ const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
       endDate,
     ],
     queryFn: () => {
+      console.log("QUERY JALAN", {
+        search,
+        sort,
+        limit,
+        page,
+        startDate,
+        endDate,
+      });
       if (fromPengajuanBarang) {
         return PengajuanBarangMasukServices.allByAuthor({
           ...(search && { search }),
@@ -129,6 +141,7 @@ const useBarangMasuk = (params: { fromPengajuanBarang?: boolean }) => {
         });
       }
     },
+    enabled: activeCluster === "barangMasuk" || activeCluster === "",
     retry: false,
     refetchOnWindowFocus: false,
   });

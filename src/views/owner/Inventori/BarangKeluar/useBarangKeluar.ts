@@ -4,7 +4,7 @@ import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../hooks/useFilter";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import useModal from "../../../../hooks/useModal";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useDeleteBarangKeluar from "../../../../hooks/useDeleteBarangKeluar";
 import { useState } from "react";
 import useFilterRangeDate from "../../../../hooks/useFilterRangeDate";
@@ -116,6 +116,10 @@ const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
   //   toast
   const { toast, handleSetToast } = useToastAnimation();
 
+  const [searchParams] = useSearchParams();
+
+  const activeCluster = searchParams.get("cluster") ?? "";
+
   // query
   const {
     data: dataBarangKeluar,
@@ -152,6 +156,7 @@ const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
         });
       }
     },
+    enabled: activeCluster === "barangKeluar",
     retry: false,
     refetchOnWindowFocus: false,
   });
