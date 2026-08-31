@@ -52,8 +52,10 @@ const useModalUbahProdukMasuk = (params: {
   const [activeComponentChooseProduk, setActiveComponentChooseProduk] =
     useState(false);
 
-  const [produkChoose, setProdukChoose] =
-    useState<ResponseProdukForChooseType | null>(null);
+  const [produkChoose, setProdukChoose] = useState<Omit<
+    ResponseProdukForChooseType,
+    "kategori"
+  > | null>(null);
 
   const [search, setSearch] = useState("");
 

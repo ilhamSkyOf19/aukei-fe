@@ -1,10 +1,4 @@
-import {
-  EllipsisVertical,
-  Package,
-  PackagePlus,
-  Trash2,
-  Truck,
-} from "lucide-react";
+import { ArrowRight, Package, PackagePlus, Trash2, Truck } from "lucide-react";
 import FilterSort from "../../../../components/filters/Sort";
 import InputSearch from "../../../../components/inputs/InputSearch";
 import Toast from "../../../../components/messages/Toast";
@@ -17,7 +11,6 @@ import PaginationAndLimit from "../../../../components/filters/PaginationAndLimi
 import StatusInventori from "../../../../components/ui/StatusInventori";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import {
-  ROLE_INTERNAL_TYPE,
   STATUS_INVENTORI_TYPE,
   type StatusInventoriType,
 } from "../../../../types/constant.type";
@@ -26,10 +19,8 @@ import FormulirBarangMasuk from "../../../../components/forms/FormulirBarangMasu
 import RangeDate from "../../../../components/filters/RangeDate";
 import type { FC } from "react";
 import { formatNumber } from "../../../../helpers/helpers";
-import DropDownInventori from "../../../../components/ui/DropDownInventori";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
-import NotCompatible from "../../../../components/messages/NotCompatible";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -65,7 +56,6 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
     modalDeleteManyRef,
     windowSize,
     sort,
-    pengguna,
   } = useBarangMasuk({ fromPengajuanBarang });
 
   return (
@@ -84,9 +74,6 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
         className={cn(
           "flex flex-col justify-start items-start px-2.5 pt-2.5",
           !fromPengajuanBarang && "pt-0",
-          pengguna?.role === ROLE_INTERNAL_TYPE.KASIR
-            ? "hidden md:flex"
-            : "flex",
         )}
       >
         {/* filter */}
@@ -367,13 +354,6 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
         />
       </div>
 
-      {/* not compatible */}
-      {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
-        <div className="w-full h-[80vh] flex justify-center items-center lg:hidden">
-          <NotCompatible />
-        </div>
-      )}
-
       {/* modal formulir barang masuk */}
       <FormulirBarangMasuk
         modalRef={modalFormulirBarangMasukRef}
@@ -471,26 +451,12 @@ const CardBarangMasuk: FC<CardBarangMasuk> = ({
 
         {/* aksi */}
         <div className="flex-1 flex flex-row justify-end items-start">
-          <div className={cn("dropdown dropdown-left dropdown-end")}>
-            <button
-              type="button"
-              role="button"
-              tabIndex={0}
-              className="px-1 py-1.5 border border-base-content/10 rounded-lg"
-            >
-              <EllipsisVertical className="size-4 text-base-content" />
-            </button>
-
-            <DropDownInventori
-              handleRedirectDetail={() => handleRedirectDetail(barang.id)}
-              handleShowModalDelete={handleShowModalDelete}
-            />
-          </div>
+          <StatusInventori status={barang.status} />
         </div>
       </div>
 
       {/* content 2 */}
-      <div className="w-full flex flex-row justify-evenly items-start gap-4 pt-0.5">
+      <div className="w-full flex flex-row justify-evenly items-center gap-4 pt-0.5">
         <div className="flex-1 flex flex-col justify-start items-start gap-1">
           {/* label */}
           <div className="flex flex-row justify-start items-center gap-1">
@@ -507,8 +473,25 @@ const CardBarangMasuk: FC<CardBarangMasuk> = ({
         </div>
 
         {/* status */}
-        <div className="flex-1 flex flex-row justify-end items-center">
-          <StatusInventori status={barang.status} />
+        <div className="flex-1 flex flex-row justify-end items-center gap-2.5">
+          {(barang.status === STATUS_INVENTORI_TYPE.DRAFT ||
+            barang.status === STATUS_INVENTORI_TYPE.REJECTED) && (
+            <ButtonWithIcon
+              customHeight="h-8"
+              icon={Trash2}
+              label="Hapus"
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              handleBtn={handleShowModalDelete}
+            />
+          )}
+          <ButtonWithIcon
+            customHeight="h-8"
+            icon={ArrowRight}
+            label="Detail"
+            handleBtn={() => handleRedirectDetail(barang.id)}
+            reverse
+          />
         </div>
       </div>
     </div>

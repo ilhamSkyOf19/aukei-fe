@@ -245,7 +245,6 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
   const {
     handleSetIsHighlight: handleSetIsActiveAksi,
     isHighlight: isActiveAksi,
-    wrapperRef,
   } = useHighlight();
 
   // status
@@ -254,7 +253,6 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
   return {
     handleSetIsActiveAksi,
     isActiveAksi,
-    wrapperRef,
     handleShowModalDelete,
     handleCloseModalDelete,
     modalDeleteRef,

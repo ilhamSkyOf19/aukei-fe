@@ -18,9 +18,6 @@ const clearLocalStorage = () => {
   localStorage.removeItem("data-tempo");
 };
 
-const delay = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms));
-
 instanceAxios.interceptors.response.use(
   async (response) => {
     // await delay(1000);

@@ -55,6 +55,16 @@ export interface UpdateStockOpnameType {
 export interface ResponseStockOpnameWithMetaType {
   data: ResponseStockOpnameType[];
 
+  statistik: {
+    totalSurplusBersih: number;
+
+    totalKerugianStockOpname: number;
+
+    totalNilaiSurplusStockOpname: number;
+
+    kerugianStockOpnameBersih: number;
+  };
+
   meta: MetaType;
 }
 

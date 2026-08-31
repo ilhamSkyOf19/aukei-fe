@@ -6,7 +6,6 @@ import { cn } from "../../../utils/cn";
 
 type Props<T extends FieldValues = any> = {
   label?: string;
-  required?: boolean;
   controller: UseControllerReturn<T>;
   name: string;
   resetKey?: number;
@@ -16,7 +15,6 @@ type Props<T extends FieldValues = any> = {
 export default function InputImg<T extends FieldValues = any>({
   controller,
   label,
-  required = false,
   resetKey,
   disabled = false,
 }: Props<T>) {
@@ -58,10 +56,6 @@ export default function InputImg<T extends FieldValues = any>({
           <label className="capitalize text-xs lg:text-sm text-base-content">
             {label}
           </label>
-
-          <span className="absolute -top-1 ml-1 text-error">
-            {required && "*"}
-          </span>
         </div>
       )}
 

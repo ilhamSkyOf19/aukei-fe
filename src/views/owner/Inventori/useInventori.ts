@@ -18,20 +18,11 @@ const useInventori = () => {
 
   // helper default date
   const getDefaultDate = () => {
-    const defaultStartDate = format(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() - 1,
-        new Date().getDate(),
-      ),
-      "yyyy-MM-dd",
-    );
-
-    const defaultEndDate = format(new Date(), "yyyy-MM-dd");
+    const today = format(new Date(), "yyyy-MM-dd");
 
     return {
-      defaultStartDate,
-      defaultEndDate,
+      defaultStartDate: today,
+      defaultEndDate: today,
     };
   };
 

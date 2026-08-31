@@ -1,17 +1,18 @@
 import instanceAxios from "../libs/axios";
 
-import type { ResponseStockOpnameWithMetaType } from "../models/stockOpname.model";
+import type {
+  ResponseStockOpnameWithDetailType,
+  ResponseStockOpnameWithMetaType,
+} from "../models/stockOpname.model";
 
 import type { PaginationType } from "../models/pagination.model";
 
-import type {
-  ResponseRiwayatStockOpnameType,
-  ResponseRiwayatStockOpnameWithMetaType,
-} from "../models/riwayatStockOpname.model";
+import type { ResponseRiwayatStockOpnameWithMetaType } from "../models/riwayatStockOpname.model";
 
 import type { StatusStockOpnameType } from "../types/constant.type";
 
 import type { ResponseStructure } from "../types/response.type";
+import type { ResponsePengajuanStockOpnameWithMetaType } from "../models/pengajuanStockOpname.model";
 
 export class PengajuanStockOpnameServices {
   // ============================================================
@@ -63,7 +64,7 @@ export class PengajuanStockOpnameServices {
   ): Promise<ResponseStructure<ResponseRiwayatStockOpnameWithMetaType | null>> {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseRiwayatStockOpnameWithMetaType | null>
-    >("/pengajuan-stock-opname", {
+    >("/pengajuan-stock-opname/riwayat", {
       params: query,
     });
 
@@ -74,13 +75,35 @@ export class PengajuanStockOpnameServices {
   // PENGAJUAN
   // ============================================================
 
-  static async pengajuan(params: {
+  static async findAll(
+    query: PaginationType & {
+      startDate?: string;
+      endDate?: string;
+    },
+  ): Promise<
+    ResponseStructure<ResponsePengajuanStockOpnameWithMetaType | null>
+  > {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponsePengajuanStockOpnameWithMetaType | null>
+    >("/pengajuan-stock-opname", {
+      params: query,
+    });
+
+    return result.data;
+  }
+
+  // ============================================================
+  // AJUKAN
+  // ============================================================
+
+  static async ajukan(params: {
     stockOpnameId: number;
+
     keterangan?: string;
-  }): Promise<ResponseStructure<ResponseRiwayatStockOpnameType | null>> {
+  }): Promise<ResponseStructure<ResponseStockOpnameWithDetailType | null>> {
     const result = await instanceAxios.post<
-      ResponseStructure<ResponseRiwayatStockOpnameType | null>
-    >("/pengajuan-stock-opname", params);
+      ResponseStructure<ResponseStockOpnameWithDetailType | null>
+    >("/pengajuan-stock-opname/ajukan", params);
 
     return result.data;
   }
@@ -92,12 +115,12 @@ export class PengajuanStockOpnameServices {
   static async verifikasi(params: {
     stockOpnameId: number;
 
-    keterangan?: string;
-
     status: Exclude<StatusStockOpnameType, "DRAFT" | "PENDING">;
-  }): Promise<ResponseStructure<ResponseRiwayatStockOpnameType | null>> {
+
+    keterangan?: string;
+  }): Promise<ResponseStructure<ResponseStockOpnameWithDetailType | null>> {
     const result = await instanceAxios.post<
-      ResponseStructure<ResponseRiwayatStockOpnameType | null>
+      ResponseStructure<ResponseStockOpnameWithDetailType | null>
     >("/pengajuan-stock-opname/verifikasi", params);
 
     return result.data;

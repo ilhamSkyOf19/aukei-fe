@@ -4,21 +4,32 @@ import { useOutletContext } from "react-router-dom";
 import type { OutletContextType } from "../../types/constant.type";
 import StockOpnameDetail from "../../views/all/StockOpnameDetail";
 
-const StockOpnameDetailPage: FC = () => {
+type Props = {
+  fromPengajuan?: boolean;
+};
+const StockOpnameDetailPage: FC<Props> = ({ fromPengajuan }) => {
   // get context
   const { handleTitle } = useOutletContext<OutletContextType>();
 
   useEffect(() => {
-    handleTitle("Stok Opname Detail");
+    handleTitle(
+      fromPengajuan ? "Pengajuan Stok Opname Detail" : "Stok Opname Detail",
+    );
   }, [handleTitle]);
 
   return (
     <>
       {/* header page */}
-      <HeaderPage title="Stok Opname Detail | AUKEI" />
+      <HeaderPage
+        title={
+          fromPengajuan
+            ? "Pengajuan Stok Opname Detail | AUKEI"
+            : "Stok Opname Detail | AUKEI"
+        }
+      />
 
       {/* view login */}
-      <StockOpnameDetail />
+      <StockOpnameDetail fromPengajuan={fromPengajuan} />
     </>
   );
 };

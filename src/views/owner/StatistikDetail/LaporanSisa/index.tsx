@@ -1,13 +1,13 @@
 import { type FC } from "react";
 import { cn } from "../../../../utils/cn";
-import { formatNumber, formatNumberK } from "../../../../helpers/helpers";
-import { formatTanggalPanjang } from "../../../../helpers/formatDate";
-import {
-  STATUS_PERGERAKAN,
-  type StatusPergerakan,
-} from "../../../../types/constant.type";
-import { Banknote, ChartLine, CircleAlert, Package } from "lucide-react";
-import type { ProdukResponseType } from "../../../../models/produk.model";
+import { formatNumber } from "../../../../helpers/helpers";
+// import { formatTanggalPanjang } from "../../../../helpers/formatDate";
+// import {
+//   STATUS_PERGERAKAN,
+//   type StatusPergerakan,
+// } from "../../../../types/constant.type";
+// import type { ProdukResponseType } from "../../../../models/produk.model";
+import { Banknote, ChartLine, Package } from "lucide-react";
 import useLaporanSisa from "./useLaporanSisa";
 import CardStatistik from "../../../../components/ui/cards/CardStatistik";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
@@ -32,7 +32,6 @@ const LaporanSisa: FC<Props> = ({}) => {
     dataSisaModalByProduk,
     isLoadingSisaModalByProduk,
     isRefetchingSisaModalByProduk,
-    refetchLaporanSisaModalByProduk,
     resetKategori,
     setKategori,
     kategori,
@@ -292,147 +291,147 @@ const LaporanSisa: FC<Props> = ({}) => {
   );
 };
 
-type CardProdukStokProps = {
-  produk: ProdukResponseType & {
-    restockTerakhir: Date | null;
+// type CardProdukStokProps = {
+//   produk: ProdukResponseType & {
+//     restockTerakhir: Date | null;
 
-    statusPergerakan: StatusPergerakan | null;
-  };
-};
+//     statusPergerakan: StatusPergerakan | null;
+//   };
+// };
 
 // card produk
-const CardProdukStok: FC<CardProdukStokProps> = ({ produk }) => {
-  return (
-    <div className="w-full bg-base-100 rounded-2xl flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
-      {/* content 1 */}
-      <div className="w-full flex flex-row justify-between items-stretch pb-3 border-b border-base-content/10">
-        <div className="flex-2 flex flex-row justify-start items-start gap-4">
-          <div className="flex flex-row justify-start items-start gap-3">
-            {/* foto */}
-            <div className="w-16 h-16 overflow-hidden rounded-2xl">
-              <img src={produk.img} alt="foto produk" loading="lazy" />
-            </div>
-          </div>
+// const CardProdukStok: FC<CardProdukStokProps> = ({ produk }) => {
+//   return (
+//     <div className="w-full bg-base-100 rounded-2xl flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 gap-2">
+//       {/* content 1 */}
+//       <div className="w-full flex flex-row justify-between items-stretch pb-3 border-b border-base-content/10">
+//         <div className="flex-2 flex flex-row justify-start items-start gap-4">
+//           <div className="flex flex-row justify-start items-start gap-3">
+//             {/* foto */}
+//             <div className="w-16 h-16 overflow-hidden rounded-2xl">
+//               <img src={produk.img} alt="foto produk" loading="lazy" />
+//             </div>
+//           </div>
 
-          {/* deskripsi */}
-          <div className="flex flex-col justify-start items-start gap-1.5">
-            {/* kode produk */}
-            <span className="text-[0.7rem] font-medium text-base-content/70 dark:text-base-content">
-              {produk.kode}
-            </span>
-            {/* nama produk */}
-            <span className="text-sm font-medium text-base-content">
-              {produk.nama}
-            </span>
+//           {/* deskripsi */}
+//           <div className="flex flex-col justify-start items-start gap-1.5">
+//             {/* kode produk */}
+//             <span className="text-[0.7rem] font-medium text-base-content/70 dark:text-base-content">
+//               {produk.kode}
+//             </span>
+//             {/* nama produk */}
+//             <span className="text-sm font-medium text-base-content">
+//               {produk.nama}
+//             </span>
 
-            {/* kategori produk */}
-            <span className="text-xs text-base-content/70">
-              {produk.kategori.nama}
-            </span>
-          </div>
-        </div>
+//             {/* kategori produk */}
+//             <span className="text-xs text-base-content/70">
+//               {produk.kategori.nama}
+//             </span>
+//           </div>
+//         </div>
 
-        <div className="flex-1 flex flex-col justify-between items-end">
-          {produk?.stok > produk.stokMinimum ? (
-            <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-emerald-500 ">
-              Cukup
-            </span>
-          ) : produk?.stok < produk.stokMinimum && produk?.stok !== 0 ? (
-            <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-amber-500 ">
-              Menipis
-            </span>
-          ) : (
-            <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-rose-500 ">
-              Habis
-            </span>
-          )}
+//         <div className="flex-1 flex flex-col justify-between items-end">
+//           {produk?.stok > produk.stokMinimum ? (
+//             <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-emerald-500 ">
+//               Cukup
+//             </span>
+//           ) : produk?.stok < produk.stokMinimum && produk?.stok !== 0 ? (
+//             <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-amber-500 ">
+//               Menipis
+//             </span>
+//           ) : (
+//             <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-rose-500 ">
+//               Habis
+//             </span>
+//           )}
 
-          <div className="flex flex-col justify-start items-start gap-0.5">
-            {/* label */}
-            <span className="text-[0.625rem] text-base-content/70">
-              Restock:
-            </span>
-            <span className="text-[0.625rem] text-base-content font-medium">
-              {produk.restockTerakhir
-                ? formatTanggalPanjang(produk.restockTerakhir)
-                : "-"}
-            </span>
-          </div>
-        </div>
-      </div>
+//           <div className="flex flex-col justify-start items-start gap-0.5">
+//             {/* label */}
+//             <span className="text-[0.625rem] text-base-content/70">
+//               Restock:
+//             </span>
+//             <span className="text-[0.625rem] text-base-content font-medium">
+//               {produk.restockTerakhir
+//                 ? formatTanggalPanjang(produk.restockTerakhir)
+//                 : "-"}
+//             </span>
+//           </div>
+//         </div>
+//       </div>
 
-      {/* content 2 */}
-      <div className="w-full flex flex-row justify-evenly items-start gap-4 pt-1">
-        <div className="flex-1 flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
-          {/* label */}
-          <div className="flex flex-row justify-start items-center gap-1">
-            {/* icon */}
-            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-purple-100">
-              <Package className="text-purple-400 size-2.5" />
-            </div>
+//       {/* content 2 */}
+//       <div className="w-full flex flex-row justify-evenly items-start gap-4 pt-1">
+//         <div className="flex-1 flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
+//           {/* label */}
+//           <div className="flex flex-row justify-start items-center gap-1">
+//             {/* icon */}
+//             <div className="w-5 h-5 rounded-full flex justify-center items-center bg-purple-100">
+//               <Package className="text-purple-400 size-2.5" />
+//             </div>
 
-            {/* label */}
-            <span className="text-[0.625rem] text-base-content">Stok</span>
-          </div>
+//             {/* label */}
+//             <span className="text-[0.625rem] text-base-content">Stok</span>
+//           </div>
 
-          {/* value */}
-          <span className="text-[0.7rem] font-medium text-base-content">
-            {formatNumberK(produk.stok)}
-          </span>
-        </div>
-        <div className="flex-1 flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
-          {/* label */}
-          <div className="flex flex-row justify-start items-center gap-1">
-            {/* icon */}
-            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-emerald-100">
-              <CircleAlert className="text-emerald-400 size-2.5" />
-            </div>
+//           {/* value */}
+//           <span className="text-[0.7rem] font-medium text-base-content">
+//             {formatNumberK(produk.stok)}
+//           </span>
+//         </div>
+//         <div className="flex-1 flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
+//           {/* label */}
+//           <div className="flex flex-row justify-start items-center gap-1">
+//             {/* icon */}
+//             <div className="w-5 h-5 rounded-full flex justify-center items-center bg-emerald-100">
+//               <CircleAlert className="text-emerald-400 size-2.5" />
+//             </div>
 
-            {/* label */}
-            <span className="text-[0.625rem] text-base-content">Min.</span>
-          </div>
+//             {/* label */}
+//             <span className="text-[0.625rem] text-base-content">Min.</span>
+//           </div>
 
-          {/* value */}
-          <span className="text-[0.7rem] font-medium text-base-content">
-            {formatNumberK(produk.stokMinimum)}
-          </span>
-        </div>
-        <div className="flex-1 flex flex-col justify-start items-start gap-1">
-          {/* label */}
-          <div className="flex flex-row justify-start items-center gap-1">
-            {/* icon */}
-            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-amber-100">
-              <ChartLine className="text-amber-600 size-2.5" />
-            </div>
+//           {/* value */}
+//           <span className="text-[0.7rem] font-medium text-base-content">
+//             {formatNumberK(produk.stokMinimum)}
+//           </span>
+//         </div>
+//         <div className="flex-1 flex flex-col justify-start items-start gap-1">
+//           {/* label */}
+//           <div className="flex flex-row justify-start items-center gap-1">
+//             {/* icon */}
+//             <div className="w-5 h-5 rounded-full flex justify-center items-center bg-amber-100">
+//               <ChartLine className="text-amber-600 size-2.5" />
+//             </div>
 
-            {/* label */}
-            <span className="text-[0.625rem] text-base-content">
-              Pergerakan
-            </span>
-          </div>
+//             {/* label */}
+//             <span className="text-[0.625rem] text-base-content">
+//               Pergerakan
+//             </span>
+//           </div>
 
-          {/* value */}
-          {produk.statusPergerakan !== null ? (
-            <span
-              className={cn(
-                "text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full capitalize",
-                produk.statusPergerakan === STATUS_PERGERAKAN.CEPAT &&
-                  "bg-emerald-500",
-                produk.statusPergerakan === STATUS_PERGERAKAN.LAMBAT &&
-                  "bg-amber-500",
-                produk.statusPergerakan === STATUS_PERGERAKAN.NORMAL &&
-                  "bg-blue-500",
-              )}
-            >
-              {produk?.statusPergerakan?.toLowerCase()}
-            </span>
-          ) : (
-            "-"
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+//           {/* value */}
+//           {produk.statusPergerakan !== null ? (
+//             <span
+//               className={cn(
+//                 "text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full capitalize",
+//                 produk.statusPergerakan === STATUS_PERGERAKAN.CEPAT &&
+//                   "bg-emerald-500",
+//                 produk.statusPergerakan === STATUS_PERGERAKAN.LAMBAT &&
+//                   "bg-amber-500",
+//                 produk.statusPergerakan === STATUS_PERGERAKAN.NORMAL &&
+//                   "bg-blue-500",
+//               )}
+//             >
+//               {produk?.statusPergerakan?.toLowerCase()}
+//             </span>
+//           ) : (
+//             "-"
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 export default LaporanSisa;

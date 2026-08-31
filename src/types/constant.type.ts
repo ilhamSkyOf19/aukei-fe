@@ -287,3 +287,51 @@ export const JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE = {
 
 export type JenisPenyesuaianStockOpnameType =
   (typeof JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE)[keyof typeof JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE];
+
+export const stockOpnameNotification: Record<
+  StatusStockOpnameType,
+  {
+    title: string;
+    description: string;
+    color: string;
+    bg: string;
+    bullet: string;
+    icon: LucideIcon;
+  }
+> = {
+  DRAFT: {
+    title: "Pengajuan Draft",
+    description: "Pengajuan masih berupa draft.",
+    color: "text-blue-500",
+    bg: "bg-blue-50",
+    bullet: "status-custom-blue",
+    icon: FilePenLine,
+  },
+
+  PENDING: {
+    title: "Menunggu Persetujuan",
+    description: "Pengajuan barang menunggu persetujuan.",
+    color: "text-amber-500",
+    bg: "bg-amber-50",
+    bullet: "status-custom-yellow",
+    icon: Clock3,
+  },
+
+  APPROVED: {
+    title: "Pengajuan Disetujui",
+    description: "Pengajuan berhasil diproses.",
+    color: "text-emerald-500",
+    bg: "bg-emerald-50",
+    bullet: "status-custom-green",
+    icon: CircleCheckBig,
+  },
+
+  REJECTED: {
+    title: "Pengajuan Ditolak",
+    description: "Pengajuan barang ditolak.",
+    color: "text-rose-500",
+    bg: "bg-rose-50",
+    bullet: "status-custom-red",
+    icon: CircleX,
+  },
+} as const;

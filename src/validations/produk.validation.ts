@@ -72,7 +72,7 @@ export class ProdukValidation {
 
       stokMinimum: this.numberSchema("stok minimum"),
 
-      img: this.imgSchema,
+      img: this.imgSchema.optional(),
     })
     .strict() satisfies z.ZodType<CreateProdukType>;
 

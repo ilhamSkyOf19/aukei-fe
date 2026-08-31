@@ -74,7 +74,7 @@ const FormulirProduk = () => {
                 ) : (
                   <InputImg<CreateProdukType | UpdateProdukType>
                     controller={fileController}
-                    label="Foto Produk"
+                    label="Foto Produk (Opsional)"
                     name="img"
                     {...(dataProdukDetail?.data?.img
                       ? {

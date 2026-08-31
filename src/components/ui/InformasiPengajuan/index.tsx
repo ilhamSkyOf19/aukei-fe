@@ -3,7 +3,7 @@ import type { IPenggunaInternalType } from "../../../models/penggunaInternal.mod
 import { CalendarDays, History, UserRound } from "lucide-react";
 import { cn } from "../../../utils/cn";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import SideBarRiwayatPengajuan from "../../SideBarRiwayatPengajuan";
+import SideBarRiwayatPengajuanStockOpname from "../../SideBarRiwayatPengajuanStockOpname";
 
 type Props = {
   isLoading?: boolean;
@@ -140,7 +140,7 @@ const InformasiPengajuan: FC<Props> = ({
 
               {/* value */}
               <div className="flex flex-row justify-end items-center">
-                <SideBarRiwayatPengajuan />
+                <SideBarRiwayatPengajuanStockOpname />
               </div>
             </div>
           </div>

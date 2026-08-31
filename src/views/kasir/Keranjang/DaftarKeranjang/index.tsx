@@ -35,23 +35,26 @@ const DaftarKeranjang = () => {
   } = useDaftarKeranjang();
 
   return (
-    <div className="w-full flex-6 h-full">
-      {/* buat loading */}
+    <div className="w-full md:flex-6 h-full">
+      {/* loading */}
       {isLoadingKeranjang ? (
         <div></div>
       ) : isExistDataProduk ? (
-        <div className="w-full h-full flex flex-row justify-start items-start gap-2.5">
-          <div className="flex-2 h-full flex flex-col justify-start items-start gap-2.5">
-            {/* data pelanggan yang di pilih */}
-            <div className="h-14 flex flex-row justify-between items-center w-full rounded-xl bg-base-100 border border-transparent dark:border-base-content/10 gap-2.5 shadow-sm p-2.5">
-              <div className="w-auto flex flex-row justify-start items-center gap-2.5">
+        <div className="w-full h-full flex flex-col lg:flex-row justify-start items-start gap-2.5">
+          {/* ==================== BAGIAN KIRI ==================== */}
+          <div className="w-full lg:flex-2 h-full flex flex-col justify-start items-start gap-2.5">
+            {/* ==================== DATA PELANGGAN ==================== */}
+            <div className="min-h-14 flex flex-row justify-between items-center w-full rounded-xl bg-base-100 border border-transparent dark:border-base-content/10 gap-2.5 shadow-sm p-2.5">
+              {/* pelanggan */}
+              <div className="min-w-0 flex flex-row justify-start items-center gap-2.5">
                 {/* avatar */}
                 <Avatar nama={dataKeranjang?.data?.pelanggan?.nama ?? ""} xs />
 
-                <div className="flex flex-col justify-start items-start gap-0.5">
-                  <span className="text-base-content text-xs font-medium">
+                <div className="min-w-0 flex flex-col justify-start items-start gap-0.5">
+                  <span className="w-full truncate text-base-content text-xs font-medium">
                     {dataKeranjang?.data?.pelanggan?.nama ?? ""}
                   </span>
+
                   <span className="text-base-content/50 text-[0.625rem] font-medium">
                     {formatNumberPhone(
                       dataKeranjang?.data?.pelanggan?.noWa ?? "",
@@ -63,17 +66,18 @@ const DaftarKeranjang = () => {
               {/* kasir */}
               <div
                 className={cn(
-                  "w-auto flex flex-row justify-start items-center gap-2 h-10 min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10",
+                  "shrink-0 w-auto flex flex-row justify-start items-center gap-2 h-10 min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10",
                 )}
               >
                 <div
                   className={cn(
-                    "w-7 h-7 bg-base-300 border border-transparent  dark:border-base-content/10 rounded-xl flex justify-center items-center",
+                    "w-7 h-7 bg-base-300 border border-transparent dark:border-base-content/10 rounded-xl flex justify-center items-center",
                   )}
                 >
                   <UserRound className={cn("size-4 text-base-content")} />
                 </div>
-                <div className="flex flex-col justify-start items-start">
+
+                <div className="md:hidden flex flex-col justify-start items-start">
                   <span
                     className={cn(
                       "text-[0.625rem] text-base-content/50 font-medium",
@@ -81,6 +85,7 @@ const DaftarKeranjang = () => {
                   >
                     Kasir
                   </span>
+
                   <span className={cn("text-xs font-medium text-base-content")}>
                     {dataKeranjang?.data?.kasir?.nama ?? ""}
                   </span>
@@ -88,10 +93,11 @@ const DaftarKeranjang = () => {
               </div>
             </div>
 
-            {/* details */}
-            <div className="w-full h-[80vh] flex-3 flex flex-col justify-start items-start bg-base-100 border border-transparent dark:border-base-content/10 rounded-xl shadow-sm overflow-hidden">
-              <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-custom-secondary w-full pb-2">
-                <table className="table table-xs">
+            {/* ==================== DETAILS ==================== */}
+            <div className="w-full lg:h-[90vh] flex flex-col justify-start items-start bg-base-100 border border-transparent dark:border-base-content/10 rounded-xl shadow-sm overflow-hidden">
+              {/* table */}
+              <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-custom-secondary w-full">
+                <table className="table table-xs min-w-100">
                   {/* head */}
                   <thead>
                     <tr className="text-[0.7rem] bg-base-200 h-10">
@@ -105,16 +111,18 @@ const DaftarKeranjang = () => {
                       <th>Aksi</th>
                     </tr>
                   </thead>
+
                   <tbody>
-                    {/* row 1 */}
                     {dataKeranjang?.data?.details &&
                     dataKeranjang?.data?.details.length > 0 ? (
                       dataKeranjang?.data?.details.map((item, index) => (
                         <tr
-                          key={index}
+                          key={item.id}
                           className="h-15 text-base-content text-[0.7rem]"
                         >
                           <th>{index + 1}</th>
+
+                          {/* gambar */}
                           <td>
                             <div className="avatar">
                               <div className="mask mask-squircle h-10 w-10">
@@ -125,17 +133,28 @@ const DaftarKeranjang = () => {
                               </div>
                             </div>
                           </td>
+
+                          {/* nama produk */}
                           <td>
                             <div className="flex flex-col justify-start items-start gap-px">
                               <p>{item.produk.nama}</p>
+
                               <span className="font-medium text-base-content/70">
                                 {item.produk.kode}
                               </span>
                             </div>
                           </td>
+
+                          {/* harga */}
                           <td>{formatRupiah(item.hargaJual)}</td>
+
+                          {/* diskon */}
                           <td>{formatRupiah(item.diskon)}</td>
+
+                          {/* quantity */}
                           <td>{item.quantity}</td>
+
+                          {/* subtotal */}
                           <td>
                             <span className="font-medium text-base-content">
                               {formatRupiah(
@@ -143,6 +162,8 @@ const DaftarKeranjang = () => {
                               )}
                             </span>
                           </td>
+
+                          {/* aksi */}
                           <td>
                             <button
                               type="button"
@@ -154,9 +175,9 @@ const DaftarKeranjang = () => {
                               }
                             >
                               {isPendingDeleteProdukInKeranjang ? (
-                                <div className="loading-xs" />
+                                <div className="loading loading-xs" />
                               ) : (
-                                <Trash2 className="size-4 group-hover:text-error transition-color duration-200 ease-in-out" />
+                                <Trash2 className="size-4 group-hover:text-error transition-colors duration-200 ease-in-out" />
                               )}
                             </button>
                           </td>
@@ -171,7 +192,7 @@ const DaftarKeranjang = () => {
                 </table>
               </div>
 
-              {/* button ubah keranjang */}
+              {/* ==================== BUTTON UBAH KERANJANG ==================== */}
               <div className="w-full flex flex-row justify-end items-start border-t border-base-content/10 p-2.5">
                 <ButtonWithIcon
                   icon={Pencil}
@@ -184,18 +205,22 @@ const DaftarKeranjang = () => {
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col justify-start items-end gap-2.5">
+          {/* ==================== BAGIAN KANAN ==================== */}
+          <div className="w-full lg:flex-1 flex flex-col justify-start items-end gap-2.5">
+            {/* ==================== RINGKASAN ==================== */}
             <div className="w-full flex flex-col justify-start items-start gap-4 bg-base-100 border border-transparent dark:border-base-content/10 rounded-lg shadow-sm p-4">
               {/* sub total & total diskon */}
               <div className="w-full flex flex-col justify-start items-start gap-2.5 pb-2.5 border-b border-base-content/30 border-dashed">
                 {/* total produk */}
                 <div className="w-full flex flex-col justify-start items-start gap-2.5 pb-2.5 border-b border-dashed border-base-content/30">
+                  {/* total produk */}
                   <div className="w-full flex flex-row justify-between items-center">
                     <span className="text-xs text-base-content/80">
                       Total Produk
                     </span>
+
                     <span className="text-xs font-semibold text-base-content">
-                      {dataKeranjang?.data?.details.length}
+                      {dataKeranjang?.data?.details.length ?? 0}
                     </span>
                   </div>
 
@@ -204,18 +229,20 @@ const DaftarKeranjang = () => {
                     <span className="text-xs text-base-content/80">
                       Total Item
                     </span>
+
                     <span className="text-xs font-semibold text-base-content">
                       {dataKeranjang?.data?.details.reduce(
                         (total, item) => total + item.quantity,
                         0,
-                      )}
+                      ) ?? 0}
                     </span>
                   </div>
                 </div>
 
-                {/* sub total */}
+                {/* subtotal */}
                 <div className="w-full flex flex-row justify-between items-center">
                   <span className="text-xs text-base-content/80">Subtotal</span>
+
                   <span className="text-xs font-semibold text-base-content">
                     {formatRupiah(subTotalBeforeDiskon)}
                   </span>
@@ -226,6 +253,7 @@ const DaftarKeranjang = () => {
                   <span className="text-xs text-base-content/80">
                     Total Diskon
                   </span>
+
                   <div className="flex flex-row justify-start items-center gap-1">
                     {totalDiskon > 0 && (
                       <span className="text-xs font-medium text-error">
@@ -240,12 +268,13 @@ const DaftarKeranjang = () => {
                 </div>
               </div>
 
-              {/* total */}
+              {/* ==================== TOTAL ==================== */}
               <div className="w-full flex flex-col justify-start items-start gap-3">
                 <div className="w-full flex flex-row justify-between items-center">
                   <span className="text-sm font-semibold text-base-content">
                     Total
                   </span>
+
                   <span className="text-sm font-semibold text-blue-500">
                     {formatRupiah(totalAfterDiskon)}
                   </span>
@@ -253,8 +282,9 @@ const DaftarKeranjang = () => {
               </div>
             </div>
 
-            {/* button transaction */}
-            <div className="w-full flex flex-row md:flex-col justify-end items-center gap-2.5">
+            {/* ==================== BUTTON TRANSACTION ==================== */}
+            <div className="w-full flex flex-col justify-end items-center gap-2.5">
+              {/* hapus */}
               <ButtonWithIcon
                 icon={Trash2}
                 bgColor="bg-error"
@@ -272,6 +302,8 @@ const DaftarKeranjang = () => {
                   })
                 }
               />
+
+              {/* transaksi */}
               <ButtonWithIcon
                 icon={ChevronRight}
                 label="Transaksi"
@@ -283,36 +315,37 @@ const DaftarKeranjang = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full h-[80vh] flex gap-2 flex-col justify-center items-center">
+        /* ==================== EMPTY STATE ==================== */
+        <div className="w-full h-[60vh] lg:h-[80vh] flex gap-2 flex-col justify-center items-center">
           <div className="flex flex-col justify-start items-center gap-4">
             {/* icon */}
-            <div className="w-40 h-40 bg-base-200 flex flex-col justify-center items-center relative rounded-full">
-              {/* icon */}
-              <UserRound className="size-25 text-base-content" />
-              {/* icon cart */}
-              <div className="w-10 h-10 absolute bottom-6 right-4 bg-base-100 shadow-sm rounded-full flex flex-col justify-center items-center">
+            <div className="w-32 h-32 sm:w-40 sm:h-40 bg-base-200 flex flex-col justify-center items-center relative rounded-full">
+              <UserRound className="size-20 sm:size-25 text-base-content" />
+
+              <div className="w-10 h-10 absolute bottom-4 sm:bottom-6 right-2 sm:right-4 bg-base-100 shadow-sm rounded-full flex flex-col justify-center items-center">
                 <ShoppingCart className="size-4 text-base-content" />
               </div>
             </div>
 
             {/* text */}
-            <div className="flex flex-col justify-center items-center gap-4">
-              <span className="font-medium text-base text-base-content">
+            <div className="flex flex-col justify-center items-center gap-4 px-4">
+              <span className="font-medium text-base text-base-content text-center">
                 Silahkan pilih pelanggan
               </span>
+
               <span className="text-sm text-base-content/50 text-center">
-                Pilih pelanggan dari daftar di samping <br /> untuk melihat
-                keranjang
+                Pilih pelanggan dari daftar di samping
+                <br className="hidden sm:block" /> untuk melihat keranjang
               </span>
             </div>
 
             {/* arrow */}
-            <MoveLeft className="size-8" />
+            <MoveLeft className="hidden lg:block size-8" />
           </div>
         </div>
       )}
 
-      {/* use modal delete */}
+      {/* ==================== MODAL DELETE ==================== */}
       <ModalDelete
         modalRef={modalDeleteKeranjangRef}
         handleCloseModal={handleCloseModalDeleteKeranjang}

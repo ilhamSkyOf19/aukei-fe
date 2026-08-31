@@ -26,7 +26,6 @@ const InputNumber = <T extends FieldValues = any>({
   controller,
   disabled,
   max,
-  defaultValue,
   xs,
   name,
   onBlur,

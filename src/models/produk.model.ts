@@ -25,7 +25,7 @@ export interface CreateProdukType extends Pick<
 > {
   kode?: string | null;
   kategoriId: number;
-  img: File;
+  img?: File;
 }
 
 // update

@@ -13,7 +13,6 @@ import type {
 import { TransactionServices } from "../../../../services/transaction.service";
 import useConfirm from "../../../../hooks/useConfirm";
 import triggerAnimation from "../../../../hooks/triggerAnimation";
-import type { DataTempoType } from "../../../../models/tempo.model";
 import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import useModalCalculator from "../../../../hooks/useModalCalculator";
 import useModalTempo from "../../../../hooks/useModalTempo";

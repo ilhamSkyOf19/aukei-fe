@@ -4,7 +4,6 @@ import { cn } from "../../../../utils/cn";
 import {
   BanknoteArrowUp,
   CalendarDays,
-  Package,
   PackageMinus,
   TextAlignStart,
 } from "lucide-react";

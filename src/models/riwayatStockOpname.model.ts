@@ -74,3 +74,57 @@ export interface ResponseRiwayatStockOpnameWithMetaType {
 
   meta: MetaType;
 }
+
+// ============================================================
+// RESPONSE RIWAYAT STOCK OPNAME FOR NOTIFIKASI
+// ============================================================
+
+export interface ResponseRiwayatStockOpnameForNotifikasiType {
+  id: number;
+
+  stockOpnameId: number;
+
+  kodeReferensi: string;
+
+  status: StatusStockOpnameType;
+
+  keterangan: string;
+
+  createdAt: Date;
+
+  updatedAt: Date;
+
+  author: Pick<IPenggunaInternalType, "id" | "nama" | "role">;
+}
+
+// ============================================================
+// RESPONSE RIWAYAT STOCK OPNAME FOR HIGHLIGHT
+// ============================================================
+
+export interface ResponseRiwayatStockOpnameForHighlightType {
+  id: number;
+
+  stockOpnameId: number;
+
+  kodeReferensi: string;
+
+  status: StatusStockOpnameType;
+
+  keterangan: string;
+
+  createdAt: Date;
+
+  updatedAt: Date;
+
+  author: Pick<IPenggunaInternalType, "id" | "nama" | "role">;
+}
+
+// ============================================================
+// RESPONSE NOTIFIKASI WITH META
+// ============================================================
+
+export interface ResponseRiwayatStockOpnameForNotifikasiWithMetaType {
+  data: ResponseRiwayatStockOpnameForNotifikasiType[];
+
+  meta: MetaType;
+}

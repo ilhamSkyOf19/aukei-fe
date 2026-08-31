@@ -7,12 +7,7 @@ import useModal from "../../../hooks/useModal";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { useAuthStore } from "../../../stores/authStore";
 import { useToastAnimation } from "../../../hooks/useToast";
-import {
-  RETURN_STATUS,
-  STATUS_INVENTORI_TYPE,
-  type ReturnStatus,
-  type StatusInventoriType,
-} from "../../../types/constant.type";
+import { RETURN_STATUS, type ReturnStatus } from "../../../types/constant.type";
 import useConfirm from "../../../hooks/useConfirm";
 
 const useReturBarangDetail = () => {
@@ -47,7 +42,6 @@ const useReturBarangDetail = () => {
     modalRef: modalFormulirVerifikasiOrPengajuan,
     handleShowModal: handleShowModalFormulirVerifikasiOrPengajuan,
     handleCloseModal: handleCloseModalFormulirVerifikasiOrPengajuan,
-    dataModal: dataModalFormulirVerifikasiOrPengajuan,
   } = useModal<{ type: "pengajuan" | "tolak" }>();
 
   // modal konfirmasi verifikasi
@@ -241,7 +235,6 @@ const useReturBarangDetail = () => {
     summary,
     handleShowModalFormulirVerifikasiOrPengajuan,
     handleCloseModalFormulirVerifikasiOrPengajuan,
-    dataModalFormulirVerifikasiOrPengajuan,
     modalFormulirVerifikasiOrPengajuan,
     validatedReturBarangId,
     handleSetAlert,

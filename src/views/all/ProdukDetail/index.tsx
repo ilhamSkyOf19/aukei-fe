@@ -168,7 +168,6 @@ const ProdukDetail = () => {
                   <InputImg<UpdateProdukType>
                     controller={imgController}
                     name="img"
-                    required
                   />
                 </div>
               </CardForm>

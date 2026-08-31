@@ -35,9 +35,6 @@ export interface IStockOpnameDetailType {
 
   updatedAt: Date;
 }
-// ==================================================
-// CREATE STOCK OPNAME DETAIL
-// ==================================================
 
 export interface CreateStockOpnameDetailType {
   stockOpnameId: number;
@@ -45,16 +42,20 @@ export interface CreateStockOpnameDetailType {
   produkId: number;
 
   stokFisik: number;
-}
 
-// ==================================================
-// UPDATE STOCK OPNAME DETAIL
-// ==================================================
+  jenisPenyesuaian?: JenisPenyesuaianStockOpnameType;
+
+  keteranganPenyesuaian?: string;
+}
 
 export interface UpdateStockOpnameDetailType {
   produkId?: number;
 
   stokFisik?: number;
+
+  jenisPenyesuaian?: JenisPenyesuaianStockOpnameType;
+
+  keteranganPenyesuaian?: string;
 }
 
 // ==================================================
@@ -65,7 +66,7 @@ export interface ResponseStockOpnameDetailType extends Omit<
   IStockOpnameDetailType,
   "produkId"
 > {
-  produk: Pick<IProduk, "id" | "kode" | "nama">;
+  produk: Pick<IProduk, "id" | "kode" | "nama" | "hargaModalRataRata" | "img">;
 }
 
 // ==================================================

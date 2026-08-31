@@ -7,7 +7,6 @@ import type { StatusInventoriType } from "../../../types/constant.type";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
 import useModalUbahProdukKeluar from "./useModalUbahProdukKeluar";
-import InputPrice from "../../inputs/InputPrice";
 import type { UpdateBarangKeluarDetailType } from "../../../models/barangKeluarDetail.model";
 import InputNumber from "../../inputs/InputNumber";
 import CardProdukForAfterChooseInventori from "../../ui/cards/CardProdukForAfterChooseInventori";

@@ -1,9 +1,8 @@
 import { type FC } from "react";
-import { formatRupiah } from "../../../../helpers/helpers";
 import { cn } from "../../../../utils/cn";
 import {
-  BanknoteArrowDown,
   CalendarDays,
+  ChevronDown,
   Package,
   TextAlignStart,
 } from "lucide-react";
@@ -11,12 +10,9 @@ import { formatTanggalLengkap } from "../../../../helpers/formatDate";
 import ButtonInline from "../../../../components/ui/button/ButtonInline";
 import CardForm from "../../../../components/inputs/CardForm";
 import ModalInputDate from "../../../../components/modals/ModalInputDate";
-import type { UpdateBarangMasukForRequestType } from "../../../../models/barangMasuk.model";
 import InputTextAreaNonIcon from "../../../../components/inputs/InputTextAreaNonIcon";
 import {
   ROLE_INTERNAL_TYPE,
-  type RoleInternalType,
-  type StatusInventoriType,
   type StatusStockOpnameType,
 } from "../../../../types/constant.type";
 import type { IPenggunaInternalType } from "../../../../models/penggunaInternal.model";
@@ -64,6 +60,9 @@ const InformasiStockOpnameDetail: FC<Props> = ({
     handleCloseModalInputTanggalOpname,
     modalInputTanggalOpnameRef,
     tanggalOpnameController,
+
+    setShowKet,
+    showKet,
   } = useInformasiStockOpnameDetail({
     handleSetToast,
     keterangan,
@@ -237,7 +236,6 @@ const InformasiStockOpnameDetail: FC<Props> = ({
           </>
         ) : (
           <>
-            {/* tanggal barang masuk */}
             <div className="w-full flex flex-row justify-between items-start gap-3 mt-8">
               {/* icon */}
               <div className="h-full flex flex-row justify-start items-start">
@@ -256,6 +254,73 @@ const InformasiStockOpnameDetail: FC<Props> = ({
                 </span>
 
                 <span className={"text-sm font-medium"}>{totalProduk}</span>
+              </div>
+            </div>
+
+            {/* keterangan */}
+            <div className="w-full flex flex-row justify-between items-start gap-3 mt-8">
+              {/* icon */}
+              <div className="h-full flex flex-row justify-start items-start">
+                <TextAlignStart className="size-5 text-base-content" />
+              </div>
+
+              {/* label and value */}
+              <div
+                className={cn(
+                  "w-full flex flex-row justify-between pb-3 border-b border-base-content/10 items-center",
+                )}
+              >
+                {/* label */}
+                <div className="flex flex-col justify-start items-start gap-0.5 w-full">
+                  <div className="w-full flex flex-row justify-between items-center">
+                    <span className="text-xs text-base-content font-medium">
+                      Keterangan
+                    </span>
+
+                    {/* button show ket */}
+                    <button
+                      type="button"
+                      onClick={() => setShowKet((prev) => !prev)}
+                      className="flex flex-row justify-start items-center hover:underline"
+                    >
+                      <span className="text-[0.7rem] font-medium">
+                        {showKet ? "Sembunyikan" : "Lihat Keterangan"}
+                      </span>
+
+                      <ChevronDown
+                        className={cn("size-4 ml-1", showKet && "rotate-180")}
+                      />
+                    </button>
+                  </div>
+
+                  <div
+                    className={`grid transition-all duration-300 ${
+                      showKet ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="text-xs leading-6">
+                        Pilihan jenis penyesuaian digunakan untuk menentukan
+                        apakah selisih stok yang{" "}
+                        <strong>berkurang (minus)</strong> akan dicatat sebagai{" "}
+                        <strong>kerugian</strong> atau tidak. Jika memilih{" "}
+                        <strong>Masuk Kerugian</strong>, selisih stok minus akan
+                        dicatat sebagai kerugian, sedangkan pilihan{" "}
+                        <strong>Tidak Masuk Kerugian</strong> hanya akan
+                        menyesuaikan jumlah stok tanpa mencatatnya sebagai
+                        kerugian.
+                        <br />
+                        <em>
+                          <strong>Catatan:</strong> Penyesuaian kerugian hanya
+                          berlaku untuk stok minus. Jika hasil stock opname
+                          menunjukkan stok bertambah (plus), selisih tersebut
+                          secara otomatis tidak masuk ke kerugian, meskipun
+                          sebelumnya memilih opsi Masuk Kerugian.
+                        </em>
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </>

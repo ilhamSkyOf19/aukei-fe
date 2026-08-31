@@ -215,9 +215,7 @@ const Kredit = () => {
           ) : isExistDataTempo && !isLoadingDataTempo ? (
             dataTempo?.data?.data.map((item) => (
               <CardData
-                handleRedirectDetail={() =>
-                  handelRedirectDetail(item.pelanggan.id)
-                }
+                handleRedirectDetail={() => handelRedirectDetail(item.id)}
                 key={item.id}
                 jatuhTempoTerdekat={item.jatuhTempoTerdekat}
                 pelanggan={item.pelanggan}

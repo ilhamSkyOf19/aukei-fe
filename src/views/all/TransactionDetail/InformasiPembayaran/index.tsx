@@ -33,6 +33,9 @@ import Alert from "../../../../components/messages/Alert";
 import { ALERT_CONFIG_TRANSACTION } from "../../../../types/alert.types";
 import Toast from "../../../../components/messages/Toast";
 import { TOAST_CONFIG_TRANSACTION } from "../../../../types/toast.type";
+import ModalTempoPayment from "../../../../components/modals/ModalTempoPayment";
+import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import FormOngkir from "../../../kasir/Kasir/Pembayaran/FormOngkir";
 
 type Props = {
   dataTransaction?: ResponseStructure<ResponseTransactionType | null>;
@@ -61,7 +64,7 @@ const InformasiPembayaran: FC<Props> = ({
     isOpenHistory,
     setIsOpenHistory,
     metodePembayaran,
-    setMetodePembayaran,
+    handleMetodePembayaran,
     dataDiBayar,
     handlePay,
     buttonBayarRef,
@@ -73,7 +76,6 @@ const InformasiPembayaran: FC<Props> = ({
     handleShowModalTempo,
     modalTempoRef,
     dataTempo,
-    setDataTempo,
     buttonAturTempoRef,
     handleTransaction,
     isPendingTransaction,
@@ -99,6 +101,12 @@ const InformasiPembayaran: FC<Props> = ({
 
     handlePrintInvoiceKirimBarang,
     isLoadingPrintInvoiceKirimBarang,
+
+    totalAfterDiskon,
+
+    isPendingUpdateMetodePembayaran,
+
+    tempoDpPayment,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
@@ -162,6 +170,7 @@ const InformasiPembayaran: FC<Props> = ({
                 </span>
               )}
             </div>
+
             <div className="w-full flex flex-row justify-between items-center">
               <span className="text-xs text-base-content/70 font-medium">
                 Ongkir
@@ -185,7 +194,10 @@ const InformasiPembayaran: FC<Props> = ({
                 <div className="w-30 h-4 skeleton" />
               ) : (
                 <span className="text-xs text-info font-semibold">
-                  {formatRupiah(dataTransaction?.data?.totalBayar ?? 0)}
+                  {formatRupiah(
+                    (dataTransaction?.data?.totalBayar ?? 0) +
+                      (dataTransaction?.data?.ongkir ?? 0),
+                  )}
                 </span>
               )}
             </div>
@@ -197,7 +209,7 @@ const InformasiPembayaran: FC<Props> = ({
               dataTransaction?.data?.metodePembayaran === "TEMPO") && (
               <div className="w-full flex flex-row justify-between items-center">
                 <span className="text-xs text-base-content/70 font-medium">
-                  Uang Muka
+                  Total Uang Muka
                 </span>
 
                 {isLoadingTransaction ? (
@@ -215,7 +227,7 @@ const InformasiPembayaran: FC<Props> = ({
             {/* Dibayar - Selalu tampil */}
             <div className="w-full flex flex-row justify-between items-center">
               <span className="text-xs text-base-content/70 font-medium">
-                Dibayar
+                Total Dibayar
               </span>
 
               {isLoadingTransaction ? (
@@ -260,6 +272,24 @@ const InformasiPembayaran: FC<Props> = ({
             )}
           </div>
         </div>
+
+        {/* uang ongkir */}
+        {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
+          <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
+            <span className="text-sm font-medium text-base-content">
+              Ongkir (Opsional)
+            </span>
+
+            <div className="w-full flex flex-col justify-start items-start gap-1 h-14">
+              {/* form uang dp */}
+              <FormOngkir
+                transactionId={dataTransaction?.data?.id ?? 0}
+                queryKey={"transaction"}
+              />
+            </div>
+          </div>
+        )}
+
         {/* ringkasan pembayaran tempo */}
         {/* tempo */}
         {metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && (
@@ -269,12 +299,12 @@ const InformasiPembayaran: FC<Props> = ({
                 {/* uang muka */}
                 <div className="w-full flex flex-row justify-between items-center">
                   <span className="text-xs text-base-content/70 font-medium">
-                    Uang Muka
+                    Uang Muka Tempo
                   </span>
                   <span className="text-[0.7rem] font-medium text-base-content">
                     {dataTempo?.uangMuka
                       ? formatRupiah(dataTempo.uangMuka)
-                      : "-"}
+                      : formatRupiah(0)}
                   </span>
                 </div>
 
@@ -284,27 +314,31 @@ const InformasiPembayaran: FC<Props> = ({
                     Metode Pembayaran Uang Muka
                   </span>
                   <span className="text-[0.7rem] font-medium text-base-content">
-                    {dataTempo?.metodePembayaranUangDp}
+                    {tempoDpPayment?.metodePembayaran ?? "-"}
                   </span>
                 </div>
 
                 {/* metode pmebayaran uang muka cash */}
-                {dataTempo?.metodePembayaranUangDp === "CASH" && (
+                {tempoDpPayment?.metodePembayaran ===
+                  PAYMENT_METHOD_TYPE.CASH && (
                   <>
                     <div className="w-full flex flex-row justify-between items-center">
                       <span className="text-xs text-base-content/70 font-medium">
                         Dibayar
                       </span>
+
                       <span className="text-[0.7rem] font-medium text-base-content">
-                        {formatRupiah(dataTempo?.diBayar ?? 0)}
+                        {formatRupiah(tempoDpPayment?.diBayar ?? 0)}
                       </span>
                     </div>
+
                     <div className="w-full flex flex-row justify-between items-center">
                       <span className="text-xs text-base-content/70 font-medium">
                         Kembalian
                       </span>
+
                       <span className="text-[0.7rem] font-medium text-base-content">
-                        {formatRupiah(dataTempo?.kembalian ?? 0)}
+                        {formatRupiah(tempoDpPayment?.kembalian ?? 0)}
                       </span>
                     </div>
                   </>
@@ -432,61 +466,67 @@ const InformasiPembayaran: FC<Props> = ({
             </div>
 
             <div className="w-full flex flex-col justify-start items-start gap-2.5">
-              <div className="w-full flex flex-row justify-between items-center gap-2.5">
-                {/* cash */}
-                <CardMetodePembayaran
-                  icon={Banknote}
-                  bgColor="bg-emerald-50"
-                  iconColor="text-emerald-500"
-                  label="Tunai"
-                  description="Bayar dengan uang tunai."
-                  handleClick={() => setMetodePembayaran("CASH")}
-                  isActive={metodePembayaran === "CASH"}
-                  isError={isErrors.length > 0 && !metodePembayaran}
-                  noDeskripsi
-                />
+              {isPendingUpdateMetodePembayaran ? (
+                <LoadingFetch />
+              ) : (
+                <>
+                  <div className="w-full flex flex-row justify-between items-center gap-2.5">
+                    {/* cash */}
+                    <CardMetodePembayaran
+                      icon={Banknote}
+                      bgColor="bg-emerald-50"
+                      iconColor="text-emerald-500"
+                      label="Tunai"
+                      description="Bayar dengan uang tunai."
+                      handleClick={() => handleMetodePembayaran("CASH")}
+                      isActive={metodePembayaran === "CASH"}
+                      isError={isErrors.length > 0 && !metodePembayaran}
+                      noDeskripsi
+                    />
 
-                {/* transfer */}
-                <CardMetodePembayaran
-                  icon={Landmark}
-                  bgColor="bg-blue-50"
-                  iconColor="text-blue-500"
-                  label="Transfer Bank"
-                  description="Bayar melalui transfer bank."
-                  handleClick={() => setMetodePembayaran("TRANSFER")}
-                  isActive={metodePembayaran === "TRANSFER"}
-                  isError={isErrors.length > 0 && !metodePembayaran}
-                  noDeskripsi
-                />
-              </div>
+                    {/* transfer */}
+                    <CardMetodePembayaran
+                      icon={Landmark}
+                      bgColor="bg-blue-50"
+                      iconColor="text-blue-500"
+                      label="Transfer Bank"
+                      description="Bayar melalui transfer bank."
+                      handleClick={() => handleMetodePembayaran("TRANSFER")}
+                      isActive={metodePembayaran === "TRANSFER"}
+                      isError={isErrors.length > 0 && !metodePembayaran}
+                      noDeskripsi
+                    />
+                  </div>
 
-              <div className="w-full flex flex-row justify-between items-center gap-2.5">
-                {/* qris */}
-                <CardMetodePembayaran
-                  icon={QrCode}
-                  bgColor="bg-purple-50"
-                  iconColor="text-purple-500"
-                  label="QRIS"
-                  description="Bayar melalui QRIS."
-                  handleClick={() => setMetodePembayaran("QRIS")}
-                  isActive={metodePembayaran === "QRIS"}
-                  isError={isErrors.length > 0 && !metodePembayaran}
-                  noDeskripsi
-                />
+                  <div className="w-full flex flex-row justify-between items-center gap-2.5">
+                    {/* qris */}
+                    <CardMetodePembayaran
+                      icon={QrCode}
+                      bgColor="bg-purple-50"
+                      iconColor="text-purple-500"
+                      label="QRIS"
+                      description="Bayar melalui QRIS."
+                      handleClick={() => handleMetodePembayaran("QRIS")}
+                      isActive={metodePembayaran === "QRIS"}
+                      isError={isErrors.length > 0 && !metodePembayaran}
+                      noDeskripsi
+                    />
 
-                {/* tempo */}
-                <CardMetodePembayaran
-                  icon={CalendarClock}
-                  bgColor="bg-amber-50"
-                  iconColor="text-amber-500"
-                  label="Kredit / Cicilan"
-                  description="Bayar melalui kredit atau cicilan."
-                  handleClick={() => setMetodePembayaran("TEMPO")}
-                  isActive={metodePembayaran === "TEMPO"}
-                  isError={isErrors.length > 0 && !metodePembayaran}
-                  noDeskripsi
-                />
-              </div>
+                    {/* tempo */}
+                    <CardMetodePembayaran
+                      icon={CalendarClock}
+                      bgColor="bg-amber-50"
+                      iconColor="text-amber-500"
+                      label="Kredit / Cicilan"
+                      description="Bayar melalui kredit atau cicilan."
+                      handleClick={() => handleMetodePembayaran("TEMPO")}
+                      isActive={metodePembayaran === "TEMPO"}
+                      isError={isErrors.length > 0 && !metodePembayaran}
+                      noDeskripsi
+                    />
+                  </div>
+                </>
+              )}
 
               {isErrors && !metodePembayaran && (
                 <div className="w-full">
@@ -677,23 +717,25 @@ const InformasiPembayaran: FC<Props> = ({
             </>
           )}
         </div>
-
         {/* cetak sturuk */}
-        <ButtonWithIcon
-          icon={Printer}
-          customWidth="w-full mt-2"
-          bgColor="bg-emerald-500"
-          textColor="text-primary-white"
-          label="Cetak Struk Kirim Barang"
-          isLoading={isLoadingPrintInvoiceKirimBarang}
-          handleBtn={() =>
-            handlePrintInvoiceKirimBarang({
-              id: dataTransaction?.data?.id ?? 0,
-            })
-          }
-          skeleton={isLoadingTransaction}
-          classHidden="hidden lg:flex"
-        />
+        {dataTransaction?.data?.status ===
+          TRANSACTION_STATUS_TYPE.COMPLETED && (
+          <ButtonWithIcon
+            icon={Printer}
+            customWidth="w-full mt-2"
+            bgColor="bg-emerald-500"
+            textColor="text-primary-white"
+            label="Cetak Struk Kirim Barang"
+            isLoading={isLoadingPrintInvoiceKirimBarang}
+            handleBtn={() =>
+              handlePrintInvoiceKirimBarang({
+                id: dataTransaction?.data?.id ?? 0,
+              })
+            }
+            skeleton={isLoadingTransaction}
+            classHidden="hidden lg:flex"
+          />
+        )}
       </div>
 
       {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
@@ -756,19 +798,15 @@ const InformasiPembayaran: FC<Props> = ({
             (dataTransaction?.data?.totalDiBayar ?? 0),
         )}
       />
+
       {/* modal formulir tempo */}
-      {/* <ModalTempoPayment
-        data={{
-          total: Math.abs(
-            (dataTransaction?.data?.totalBayar ?? 0) -
-              (dataTransaction?.data?.totalDiBayar ?? 0),
-          ),
-        }}
+      <ModalTempoPayment
+        data={{ total: totalAfterDiskon }}
         modalRef={modalTempoRef}
         handleCloseModal={handleCloseModalTempo}
         handleShowModal={handleShowModalTempo}
-        handleSetDataTempo={setDataTempo}
-      /> */}
+        transactionId={dataTransaction?.data?.id ?? 0}
+      />
 
       {/* modal alert */}
       <ModalAlert

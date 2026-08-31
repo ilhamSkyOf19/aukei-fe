@@ -9,6 +9,9 @@ import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { StockOpnameServices } from "../../../services/stockOpname.service";
 import useSizeWindows from "../../../hooks/useSizeWindows";
 import useModal from "../../../hooks/useModal";
+import { useAuthStore } from "../../../stores/authStore";
+import { PengajuanStockOpnameServices } from "../../../services/pengajuanStockOpname.service";
+import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 
 type ClusterType = "stockOpname" | "pengajuanStockOpname" | "";
 
@@ -21,8 +24,28 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
 
   const navigate = useNavigate();
 
+  const pengguna = useAuthStore((state) => state.pengguna);
+
   // current pathname
   const currentPathname = useLocation().pathname;
+  const cluster = searchParams.get("cluster");
+
+  useEffect(() => {
+    if (!fromPengajuan) return;
+
+    if (cluster === "pengajuanStockOpname") return;
+
+    setSearchParams(
+      (previousParams) => {
+        const params = new URLSearchParams(previousParams);
+
+        params.set("cluster", "pengajuanStockOpname");
+
+        return params;
+      },
+      { replace: true },
+    );
+  }, [cluster, fromPengajuan, setSearchParams]);
 
   // ============================================
   // ACTIVE CLUSTER
@@ -36,20 +59,11 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
   // ============================================
 
   const getDefaultDate = () => {
-    const defaultStartDate = format(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() - 1,
-        new Date().getDate(),
-      ),
-      "yyyy-MM-dd",
-    );
-
-    const defaultEndDate = format(new Date(), "yyyy-MM-dd");
+    const today = format(new Date(), "yyyy-MM-dd");
 
     return {
-      defaultStartDate,
-      defaultEndDate,
+      defaultStartDate: today,
+      defaultEndDate: today,
     };
   };
 
@@ -183,14 +197,13 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
   // TOAST
   // ============================================
 
-  const { toast, handleSetToast } = useToastAnimation();
+  const { toast } = useToastAnimation();
 
   // ============================================
   // QUERY READY
   // ============================================
 
-  const isQueryReady =
-    activeCluster === "stockOpname" && Boolean(startDate) && Boolean(endDate);
+  const isQueryReady = Boolean(startDate) && Boolean(endDate);
 
   // ============================================
   // QUERY
@@ -221,9 +234,37 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
           ...(startDate && { startDate }),
           ...(endDate && { endDate }),
         });
+      } else {
+        return StockOpnameServices.all({
+          ...(search && { search }),
+          ...(sort && { sort }),
+          ...(limit && { limit }),
+          ...(page && { page }),
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+        });
       }
+    },
 
-      return StockOpnameServices.all({
+    enabled: isQueryReady,
+
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  // ============================================
+  // QUERY
+  // ============================================
+
+  const {
+    data: dataPengajuanStockOpname,
+    isLoading: isLoadingPengajuanStockOpname,
+    isFetching: isFetchingPengajuanStockOpname,
+  } = useQuery({
+    queryKey: [search, sort, limit, page, startDate, endDate],
+
+    queryFn: () => {
+      return PengajuanStockOpnameServices.findAll({
         ...(search && { search }),
         ...(sort && { sort }),
         ...(limit && { limit }),
@@ -233,7 +274,9 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
       });
     },
 
-    enabled: isQueryReady,
+    enabled:
+      pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
+      cluster === "pengajuanStockOpname",
 
     retry: false,
     refetchOnWindowFocus: false,
@@ -249,11 +292,16 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
     handleActiveCluster,
 
     toast,
-    handleSetToast,
 
     dataStockOpname,
 
-    isLoadingStockOpname: isLoadingStockOpname || isFetchingStockOpname,
+    dataPengajuanStockOpname,
+
+    isLoadingStockOpname:
+      isLoadingStockOpname ||
+      isFetchingStockOpname ||
+      isLoadingPengajuanStockOpname ||
+      isFetchingPengajuanStockOpname,
 
     windowSize,
 
@@ -269,6 +317,8 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
     handleShowModalFormulirStockOpname,
 
     handleRedirectDetail,
+
+    pengguna,
   };
 };
 

@@ -1,13 +1,13 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   PAYMENT_METHOD_TYPE,
+  TRANSACTION_PAYMENT_STATUS_TYPE,
   TRANSACTION_STATUS_TYPE,
   type ErrorType,
   type PaymentMethodType,
 } from "../../../../types/constant.type";
 import useModalCalculator from "../../../../hooks/useModalCalculator";
 import useModalTempo from "../../../../hooks/useModalTempo";
-import type { DataTempoType } from "../../../../models/tempo.model";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type {
   CreateTransactionForRequestType,
@@ -56,10 +56,7 @@ const useInformasiPembayaran = ({
 
   const [isOpenHistory, setIsOpenHistory] = useState<boolean>(false);
   const [isErrors, setIsErrors] = useState<ErrorType[]>([]);
-  const [dataTempo, setDataTempo] = useState<DataTempoType | null>(null);
   const [dataDiBayar, setDataDiBayar] = useState<number>(0);
-  const [metodePembayaran, setMetodePembayaran] =
-    useState<PaymentMethodType | null>(null);
 
   const buttonBayarRef = useRef<HTMLButtonElement | null>(null);
   const buttonAturTempoRef = useRef<HTMLButtonElement | null>(null);
@@ -71,6 +68,16 @@ const useInformasiPembayaran = ({
   const currentPathname = useLocation().pathname;
 
   const isPageTransaction = currentPathname.includes("kasir");
+
+  // total after diskon
+  const metodePembayaran: PaymentMethodType | null = useMemo(() => {
+    return dataTransaction?.data?.metodePembayaran ?? null;
+  }, [dataTransaction]);
+
+  // Data tempo (cicilan) jika pelanggan memilih metode pembayaran TEMPO
+  const dataTempo = useMemo(() => {
+    return dataTransaction?.data?.tempo;
+  }, [dataTransaction]);
 
   const {
     handleCloseModalCalculator,
@@ -102,14 +109,11 @@ const useInformasiPembayaran = ({
           });
         }
 
-        navigate(
-          `/dashboard/riwayat-transaksi/pelanggan/${data?.data?.pelanggan?.id}/transaksi/${data?.data?.id}`,
-          {
-            state: {
-              toast: "created_transaction_booking_success",
-            },
+        navigate(`/dashboard/riwayat-transaksi/${data?.data?.id}`, {
+          state: {
+            toast: "created_transaction_booking_success",
           },
-        );
+        });
       },
       onError: (err) => {
         console.log(err);
@@ -150,30 +154,60 @@ const useInformasiPembayaran = ({
     return true;
   };
 
+  const tempoDpPayment = dataTransaction?.data?.paymentTransactions?.find(
+    (item) => item.jenis === TRANSACTION_PAYMENT_STATUS_TYPE.TEMPO_DP,
+  );
+
   const calculateDiBayar = (): number => {
     switch (metodePembayaran) {
+      // ==================================================
+      // TEMPO
+      // ==================================================
+
       case PAYMENT_METHOD_TYPE.TEMPO:
-        return dataTempo?.metodePembayaranUangDp === PAYMENT_METHOD_TYPE.CASH
-          ? (dataTempo.diBayar ?? 0)
-          : (dataTempo?.uangMuka ?? 0);
+        return tempoDpPayment?.diBayar ?? dataTempo?.uangMuka ?? 0;
+
+      // ==================================================
+      // CASH
+      // ==================================================
+
       case PAYMENT_METHOD_TYPE.CASH:
         return dataDiBayar;
+
+      // ==================================================
+      // NON CASH
+      // ==================================================
+
       default:
         return transactionSummary.sisaTagihan ?? 0;
     }
   };
 
   const calculateKembalian = (): number => {
-    if (
-      metodePembayaran !== PAYMENT_METHOD_TYPE.CASH &&
-      metodePembayaran !== PAYMENT_METHOD_TYPE.TEMPO
-    )
-      return 0;
-    return metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO
-      ? dataTempo?.metodePembayaranUangDp === PAYMENT_METHOD_TYPE.CASH
-        ? (dataTempo?.kembalian ?? 0)
-        : 0
-      : dataDiBayar - (transactionSummary.totalPembayaran ?? 0);
+    // ==================================================
+    // TEMPO
+    // ==================================================
+
+    if (metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO) {
+      return tempoDpPayment?.kembalian ?? 0;
+    }
+
+    // ==================================================
+    // CASH
+    // ==================================================
+
+    if (metodePembayaran === PAYMENT_METHOD_TYPE.CASH) {
+      return Math.max(
+        dataDiBayar - (transactionSummary.totalPembayaran ?? 0),
+        0,
+      );
+    }
+
+    // ==================================================
+    // NON CASH
+    // ==================================================
+
+    return 0;
   };
 
   const buildTransactionPayload = (
@@ -182,30 +216,30 @@ const useInformasiPembayaran = ({
   ): CreateTransactionForRequestType => {
     return {
       id: transactionData.id,
+
       status: TRANSACTION_STATUS_TYPE.COMPLETED,
-      ...(dataTempo && {
-        tempo: {
-          jumlahCicilan: dataTempo.jumlahCicilan,
-          periode: dataTempo.periode,
-          uangMuka: dataTempo.uangMuka,
-          installments: dataTempo.installments,
-        },
-        metodePembayaranUangDp: dataTempo.metodePembayaranUangDp,
-      }),
+
       details: transactionData.details.map((detail) => ({
         diskon: detail.diskon,
+
         hargaJual: detail.hargaJual,
+
         produkId: detail.produk.id,
+
         quantity: detail.quantity,
       })),
+
       diBayar: calculateDiBayar(),
+
       kembalian: calculateKembalian(),
+
       metodePembayaran,
+
       pelangganId: transactionData.pelanggan.id,
+
       kasirId,
     };
   };
-
   const handleTransaction = async () => {
     try {
       if (!validateTransactionForm()) return;
@@ -230,14 +264,6 @@ const useInformasiPembayaran = ({
     }
   };
 
-  // handle metode pembayaran
-  const handleMetodePembayaran = (metode: PaymentMethodType) => {
-    if (metode !== PAYMENT_METHOD_TYPE.CASH) {
-      setDataDiBayar(0);
-    }
-    setMetodePembayaran(metode);
-  };
-
   // handle download
   const { handleDownloadPdf, isLoadingDownloadInvoicePdf } = useDownloadInvoice(
     { handleSetAlert, handleSetToast },
@@ -256,8 +282,65 @@ const useInformasiPembayaran = ({
     transactionId?: number;
     pelangganId?: number;
   }) => {
-    return navigate(
-      `/dashboard/booking/pelanggan/${params.pelangganId}/detail/${params.transactionId}`,
+    return navigate(`/dashboard/booking/${params.transactionId}`);
+  };
+
+  // total after diskon
+  const totalAfterDiskon = useMemo(() => {
+    return (
+      dataTransaction?.data?.details?.reduce(
+        (a, b) =>
+          a +
+          (b.hargaJual * b.quantity - b.diskon) -
+          (dataTransaction?.data?.paymentTransactions?.reduce(
+            (acc, curr) => acc + (curr.diBayar ?? 0) - (curr.kembalian ?? 0),
+            0,
+          ) ?? 0),
+        dataTransaction?.data?.ongkir ?? 0,
+      ) ?? 0
+    );
+  }, [dataTransaction]);
+
+  // mutate update metode pembayaran
+  const {
+    mutateAsync: updateMetodePembayaran,
+    isPending: isPendingUpdateMetodePembayaran,
+  } = useMutation({
+    mutationFn: (data: {
+      transactionId: number;
+      metodePembayaran: PaymentMethodType;
+    }) =>
+      TransactionServices.updateMetodePembayaran({
+        transactionId: data.transactionId,
+        data: { metodePembayaran: data.metodePembayaran },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transaction"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // Ubah metode pembayaran, sinkronkan ke localStorage, dan bersihkan data terkait metode lama
+  const handleMetodePembayaran = async (metode: PaymentMethodType) => {
+    if (metodePembayaran === metode || !dataTransaction?.data?.id) return;
+
+    await updateMetodePembayaran({
+      transactionId: dataTransaction?.data?.id,
+      metodePembayaran: metode,
+    });
+
+    // // Hapus nominal dibayar jika metode bukan CASH
+    // if (metode !== "CASH") localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
+    // // Hapus data tempo jika metode bukan TEMPO
+    // if (metode !== "TEMPO") {
+    //   localStorage.removeItem(LOCAL_STORAGE_KEYS.TEMPO);
+    //   setDataTempo(null);
+    // }
+    // Bersihkan error "metode pembayaran kosong" karena sudah dipilih
+    setIsErrors((prev) =>
+      prev.filter((item) => item !== "METODE_PEMBAYARAN_KOSONG"),
     );
   };
 
@@ -265,7 +348,8 @@ const useInformasiPembayaran = ({
     isOpenHistory,
     setIsOpenHistory,
     metodePembayaran,
-    setMetodePembayaran: handleMetodePembayaran,
+    handleMetodePembayaran,
+    isPendingUpdateMetodePembayaran,
     dataDiBayar,
     handlePay,
     buttonBayarRef,
@@ -277,7 +361,6 @@ const useInformasiPembayaran = ({
     modalTempoRef,
     handleCloseModalTempo,
     dataTempo,
-    setDataTempo,
     buttonAturTempoRef,
     handleTransaction,
     isPendingTransaction,
@@ -305,6 +388,10 @@ const useInformasiPembayaran = ({
 
     handlePrintInvoiceKirimBarang,
     isLoadingPrintInvoiceKirimBarang,
+
+    totalAfterDiskon,
+
+    tempoDpPayment,
   };
 };
 

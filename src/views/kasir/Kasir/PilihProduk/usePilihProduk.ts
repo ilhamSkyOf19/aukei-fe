@@ -119,11 +119,6 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     [transaksiDraft],
   );
 
-  // Hapus salah satu field dari daftar error form
-  const handleClearErrors = (field: "pelanggan" | "details") => {
-    setIsErrorsFormState((prev) => prev.filter((item) => item !== field));
-  };
-
   // Alert animasi (misal: pelanggan kosong, transaksi kosong)
   const { alert, handleSetAlert } = useAlertAnimation();
 

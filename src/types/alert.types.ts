@@ -180,7 +180,7 @@ export const ALERT_CONFIG_STOCK_OPNAME_DETAIL: Record<
     message: "Produk sudah ada dalam data, silahkan pilih produk lain.",
   },
   empty_produk: {
-    message: "Data Barang Masuk masih kosong, silahkan tambahkan barang masuk.",
+    message: "Data Produk masih kosong, silahkan tambahkan barang masuk.",
   },
   expired: {
     message: "Mohon maaf, barang masuk sudah tidak dapat dibatalkan.",

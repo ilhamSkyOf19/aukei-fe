@@ -4,7 +4,7 @@ import { TransactionServices } from "../../../services/transaction.service";
 import { useQuery } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useEffect, useState } from "react";
 import type { IPelangganType } from "../../../models/pelanggan.model";
@@ -22,9 +22,6 @@ const useRiwayatTransaksiDetail = () => {
   const { pelangganId } = useParams<{ pelangganId: string }>();
 
   const navigate = useNavigate();
-
-  // current pathname
-  const currentPathname = useLocation().pathname;
 
   // parse
   const validatedId = parseId(pelangganId);

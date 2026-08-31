@@ -207,7 +207,7 @@ const RiwayatTransaksi = () => {
           ) : isExistDataTransaksiBooking && dataTransaksiBooking ? (
             dataTransaksiBooking?.data?.data.map((item) => (
               <CardDataTransaksiBooking
-                handleRedirectDetail={() => handleRedirect(item.pelanggan.id)}
+                handleRedirectDetail={() => handleRedirect(item.id)}
                 key={item.id}
                 status={item.status}
                 pelanggan={item.pelanggan}

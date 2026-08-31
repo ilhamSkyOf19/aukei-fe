@@ -4,7 +4,6 @@ import { cn } from "../../../../utils/cn";
 import InputNumber from "../../../../components/inputs/InputNumber";
 import useFormulirTambahBarangKeluar from "./useFormulirTambahBarangKeluar";
 import type { CreateBarangKeluarDetailType } from "../../../../models/barangKeluarDetail.model";
-import InputPrice from "../../../../components/inputs/InputPrice";
 import ModalFormulirTambahBarangKeluar from "../../../../components/modals/ModalFormulirTambahBarangKeluar";
 import FormCariProdukInventori from "../../../../components/forms/FormCariProdukInventori";
 import CardProdukForAfterChooseInventori from "../../../../components/ui/cards/CardProdukForAfterChooseInventori";

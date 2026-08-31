@@ -219,6 +219,19 @@ const route = createBrowserRouter([
         ],
       },
       {
+        path: "pengajuan-stok-opname",
+        children: [
+          {
+            index: true,
+            element: <StockOpnamePage fromPengajuan />,
+          },
+          {
+            path: ":id",
+            element: <StockOpnameDetailPage fromPengajuan />,
+          },
+        ],
+      },
+      {
         path: "pegawai",
         children: [
           {

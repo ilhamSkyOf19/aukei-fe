@@ -119,6 +119,13 @@ const useFormulirTambahProdukStockOpnameDetail = (params: {
     name: "stokFisik",
   });
 
+  // jenis choose
+
+  const jenisChooseController = useController({
+    control,
+    name: "jenisPenyesuaian",
+  });
+
   // ============================================================
   // SET STOCK OPNAME ID
   // ============================================================
@@ -165,6 +172,12 @@ const useFormulirTambahProdukStockOpnameDetail = (params: {
         if (err.response?.data?.meta?.statusCode === 409) {
           handleSetAlert("produk_choose_exist_in_data");
         }
+
+        if (
+          err.response?.data?.meta?.customField?.includes("duplicate_produk")
+        ) {
+          handleSetAlert("produk_choose_exist_in_data");
+        }
       }
     },
   });
@@ -175,6 +188,7 @@ const useFormulirTambahProdukStockOpnameDetail = (params: {
 
   const onSubmit = async (data: CreateStockOpnameDetailType) => {
     try {
+      console.log(data);
       await mutateStockOpnameDetail(data);
     } catch (error) {
       console.log(error);
@@ -218,9 +232,9 @@ const useFormulirTambahProdukStockOpnameDetail = (params: {
   const handleDeleteValueProdukId = () => {
     setProdukChoose(null);
 
-    // setValue("produkId", undefined, {
-    //   shouldValidate: true,
-    // });
+    setValue("produkId", 0, {
+      shouldValidate: true,
+    });
   };
 
   return {
@@ -262,6 +276,8 @@ const useFormulirTambahProdukStockOpnameDetail = (params: {
     modalFormulirTambahBarangRef,
     handleShowModalFormulirTambahBarang,
     handleCloseModalFormulirTambahBarang,
+
+    jenisChooseController,
   };
 };
 

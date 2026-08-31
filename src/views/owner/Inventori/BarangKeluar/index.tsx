@@ -1,5 +1,5 @@
 import {
-  EllipsisVertical,
+  ArrowRight,
   Package,
   PackagePlus,
   PackageX,
@@ -27,7 +27,6 @@ import JenisKeluar from "../../../../components/ui/JenisKeluar";
 import FormulirBarangKeluar from "../../../../components/forms/FormulirBarangKeluar";
 import RangeDate from "../../../../components/filters/RangeDate";
 import type { FC } from "react";
-import DropDownInventori from "../../../../components/ui/DropDownInventori";
 import { formatNumber } from "../../../../helpers/helpers";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
@@ -607,26 +606,12 @@ const CardBarangKeluar: FC<CardBarangKeluar> = ({
 
         {/* aksi */}
         <div className="flex-1 flex flex-row justify-end items-start">
-          <div className={cn("dropdown dropdown-left dropdown-end")}>
-            <button
-              type="button"
-              role="button"
-              tabIndex={0}
-              className="px-1 py-1.5 border border-base-content/10 rounded-lg"
-            >
-              <EllipsisVertical className="size-4 text-base-content" />
-            </button>
-
-            <DropDownInventori
-              handleRedirectDetail={() => handleRedirectDetail(barang.id)}
-              handleShowModalDelete={handleShowModalDelete}
-            />
-          </div>
+          <StatusInventori status={barang.status} />
         </div>
       </div>
 
       {/* content 2 */}
-      <div className="w-full flex flex-row justify-evenly items-start gap-4 pt-0.5">
+      <div className="w-full flex flex-row justify-evenly items-start gap-4 pt-0.5 pb-2.5 border-b border-base-content/10">
         <div className="flex-2 flex flex-row justify-start items-start gap-1">
           {/* label */}
           <div className="flex-1 flex flex-row justify-start items-center gap-1">
@@ -654,11 +639,27 @@ const CardBarangKeluar: FC<CardBarangKeluar> = ({
             </p>
           </div>
         </div>
+      </div>
 
-        {/* status */}
-        <div className="flex-1 flex flex-row justify-end items-center">
-          <StatusInventori status={barang.status} />
-        </div>
+      <div className="w-full flex flex-row justify-end items-center gap-2.5 mt-2.5">
+        {(barang.status === STATUS_INVENTORI_TYPE.DRAFT ||
+          barang.status === STATUS_INVENTORI_TYPE.REJECTED) && (
+          <ButtonWithIcon
+            customHeight="h-8"
+            icon={Trash2}
+            label="Hapus"
+            bgColor="bg-error"
+            textColor="text-primary-white"
+            handleBtn={handleShowModalDelete}
+          />
+        )}
+        <ButtonWithIcon
+          customHeight="h-8"
+          icon={ArrowRight}
+          label="Detail"
+          handleBtn={() => handleRedirectDetail(barang.id)}
+          reverse
+        />
       </div>
     </div>
   );

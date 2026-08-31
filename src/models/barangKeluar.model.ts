@@ -22,10 +22,8 @@ interface IBarangKeluarType {
 }
 
 // create rquest
-export interface CreateBarangKeluarForRequestType extends Pick<
-  IBarangKeluarType,
-  "tanggalKeluar"
-> {
+export interface CreateBarangKeluarForRequestType {
+  tanggalKeluar: string;
   keterangan?: string;
   jenisKeluarId: number;
 }
@@ -62,6 +60,7 @@ export const toResponseBarangKeluar = (
 // response with meta
 export interface ResponseBarangKeluarWithMetaType {
   data: (ResponseBarangKeluarType & {
+    tanggalDiajukan?: number;
     countDetailBarangKeluar: number;
   })[];
   meta: MetaType;

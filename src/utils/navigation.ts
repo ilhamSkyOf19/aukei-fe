@@ -124,6 +124,11 @@ export const NAVIGATION_LIST_KASIR: {
     link: "/dashboard/pengajuan-barang-keluar",
   },
   {
+    label: "Pengajuan Stok Opname",
+    icon: ClipboardCheck,
+    link: "/dashboard/pengajuan-stok-opname",
+  },
+  {
     label: "Notifikasi",
     icon: Bell,
     link: "/dashboard/notifikasi",

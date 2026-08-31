@@ -58,9 +58,9 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
 
     dataDiBayar,
 
-    setDataDp,
-
     dataDp,
+
+    handleSetDataDiBayar,
   } = useBooking({ handleToast, kasir });
   return (
     <div className="w-full h-[95vh]  grid grid-cols-3 gap-2.5">
@@ -124,21 +124,21 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
                 {/* row 1 */}
                 {dataDetails && dataDetails.length > 0 ? (
                   dataDetails.map((item) => (
-                    <tr key={item.produkId} className="h-15">
+                    <tr key={item.produk.id} className="h-15">
                       <td>
                         <div className="avatar">
                           <div className="mask mask-squircle h-10 w-10">
-                            <img src={item.img} alt="gambar produk" />
+                            <img src={item.produk.img} alt="gambar produk" />
                           </div>
                         </div>
                       </td>
                       <td>
                         <div className="flex flex-col justify-start items-start gap-px">
                           <p className="xl:text-[0.625rem] text-base-content">
-                            {item.nama}
+                            {item.produk.nama}
                           </p>
                           <span className="xl:text-[0.625rem] font-medium text-base-content/50">
-                            {item.kode}
+                            {item.produk.kode ?? "-"}
                           </span>
                         </div>
                       </td>
@@ -163,14 +163,14 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
                         <span
                           className={cn(
                             "xl:text-[0.7rem]",
-                            item?.stokTersedia && item.stokTersedia <= 0
+                            item?.stokTersisa && item.stokTersisa <= 0
                               ? "text-error"
                               : "text-base-content",
                           )}
                         >
                           {/* stok tersedia */}
-                          {item?.stokTersedia && item.stokTersedia > 0
-                            ? formatNumber(item?.stokTersedia)
+                          {item?.stokTersisa && item.stokTersisa > 0
+                            ? formatNumber(item?.stokTersisa)
                             : 0}{" "}
                           Pcs
                         </span>
@@ -296,7 +296,7 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
                   ? transactionSummary.totalUangTransaksi
                   : undefined
               }
-              handleBayar={setDataDp}
+              handleBayar={handleSetDataDiBayar}
             />
 
             <span className="text-[0.7rem] text-base-content">

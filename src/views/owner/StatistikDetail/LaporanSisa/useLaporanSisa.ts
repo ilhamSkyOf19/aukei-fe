@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { StatistikServices } from "../../../../services/statistik.service";
 import { useKategoriChooseStore } from "../../../../stores/kategoriChooseStore";
 import { useMemo } from "react";

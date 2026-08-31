@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { IPelangganType } from "../../../../models/pelanggan.model";
-import type {
-  CreateTransactionForRequestType,
-  DetailsLocalStorageType,
-} from "../../../../models/transaction.model";
+import type { CreateTransactionForRequestType } from "../../../../models/transaction.model";
 import {
   PAYMENT_METHOD_TYPE,
   TRANSACTION_STATUS_TYPE,
@@ -13,18 +10,16 @@ import {
 import useModalCalculator from "../../../../hooks/useModalCalculator";
 import triggerAnimation from "../../../../hooks/triggerAnimation";
 import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TransactionServices } from "../../../../services/transaction.service";
 import useConfirm from "../../../../hooks/useConfirm";
 import { LOCAL_STORAGE_KEYS } from "../../../../utils/localStorageKeys";
 import { getLocalStorageJSON } from "../../../../helpers/helpers";
 import { useStepStore } from "../../../../stores/stepStore";
+import type { ITransactionDetailType } from "../../../../models/transactionDetail.model";
 
 // Persentase minimal DP yang disarankan dari total transaksi
 const MINIMAL_DP_PERCENTAGE = 0.3;
-
-// Delay debounce saat menyimpan metode pembayaran non-CASH ke localStorage
-const METODE_PEMBAYARAN_SYNC_DEBOUNCE_MS = 500;
 
 // Simpan data ke localStorage dalam bentuk JSON string
 const setLocalStorageJSON = (key: string, value: unknown) => {
@@ -39,22 +34,45 @@ const useBooking = (params: {
 
   const { setStep: handleSteps } = useStepStore((state) => state);
 
+  const queryClient = useQueryClient();
+
+  // ==================== DRAFT TRANSAKSI (SUMBER DATA UTAMA) ====================
+  const {
+    data: dataTransaksi,
+    isLoading: isLoadingTransaksi,
+    isRefetching: isRefetchingTransaksi,
+  } = useQuery({
+    queryKey: ["transaksi-draft"],
+    queryFn: () => TransactionServices.findTransaksiDraft(),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
   // Daftar error validasi yang sedang aktif
   const [isErrors, setIsErrors] = useState<ErrorType[]>([]);
 
   // Nominal uang yang dibayarkan
   const [dataDiBayar, setDataDiBayar] = useState<number>(0);
 
-  // Nominal DP yang diinput manual oleh user (jika null, pakai saran DP otomatis)
-  const [dataDp, setDataDp] = useState<number | null>(null);
+  // handle set data dibayar
+  const handleSetDataDiBayar = (value: number) => {
+    setDataDiBayar(value);
+  };
 
-  // Metode pembayaran terpilih, diinisialisasi dari localStorage
-  const [metodePembayaran, setMetodePembayaran] =
-    useState<PaymentMethodType | null>(() =>
-      getLocalStorageJSON<PaymentMethodType>(
-        LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN,
-      ),
-    );
+  // Metode pembayaran terpilih, diambil dari draft transaksi server
+  const metodePembayaran = useMemo<PaymentMethodType | null>(() => {
+    return dataTransaksi?.data?.metodePembayaran ?? null;
+  }, [dataTransaksi]);
+
+  // Nilai DP yang tersimpan di server (tempo.uangMuka pada draft transaksi)
+  const dataDp = useMemo<number | null>(() => {
+    return dataTransaksi?.data?.tempo?.uangMuka ?? null;
+  }, [dataTransaksi]);
+
+  // Nilai ongkir yang tersimpan di draft transaksi server
+  const dataOngkir = useMemo<number>(() => {
+    return dataTransaksi?.data?.ongkir ?? 0;
+  }, [dataTransaksi]);
 
   // Modal konfirmasi sebelum transaksi booking diproses
   const {
@@ -65,50 +83,26 @@ const useBooking = (params: {
     data: dataConfirm,
   } = useConfirm<{ title: string; deskripsi: string }>();
 
-  // Data pelanggan, diambil sekali dari localStorage
+  // Data pelanggan, diambil dari draft transaksi server
   const pelanggan = useMemo<Pick<
     IPelangganType,
     "id" | "nama" | "noWa"
-  > | null>(
-    () =>
-      getLocalStorageJSON<Pick<IPelangganType, "id" | "nama" | "noWa">>(
-        LOCAL_STORAGE_KEYS.PELANGGAN,
-      ),
-    [],
-  );
+  > | null>(() => {
+    return dataTransaksi?.data?.pelanggan ?? null;
+  }, [dataTransaksi?.data?.pelanggan]);
 
-  // get data transaction id from keranjang
-  const dataFromKeranjang = useMemo<{
-    transactionId: number;
-  } | null>(
-    () =>
-      getLocalStorageJSON<{ transactionId: number }>(
-        LOCAL_STORAGE_KEYS.DATA_FROM_KERANJANG,
-      ),
-    [],
-  );
-
-  // Detail item transaksi, diambil sekali dari localStorage
-  const dataDetails = useMemo<DetailsLocalStorageType[] | null>(
-    () =>
-      getLocalStorageJSON<DetailsLocalStorageType[]>(
-        LOCAL_STORAGE_KEYS.DETAILS,
-      ),
-    [],
-  );
-
-  // Sinkronkan ulang dataDetails ke localStorage setiap kali berubah (misal setelah diedit di step lain)
-  useEffect(() => {
-    try {
-      if (dataDetails) {
-        setLocalStorageJSON(LOCAL_STORAGE_KEYS.DETAILS, dataDetails);
-      } else {
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
-      }
-    } catch (error) {
-      console.error("Gagal menyimpan data ke localStorage:", error);
-    }
-  }, [dataDetails]);
+  const dataDetails = useMemo<
+    | (Omit<
+        ITransactionDetailType,
+        "createdAt" | "updatedAt" | "hpp" | "laba"
+      > & {
+        hargaJualTerakhir: number;
+        stokTersisa: number;
+      })[]
+    | undefined
+  >(() => {
+    return dataTransaksi?.data?.details;
+  }, [dataTransaksi?.data?.details]);
 
   // Tandai transaksi booking ini akan diubah, lalu kembali ke step pilih produk
   const handleUbahTransaction = () => {
@@ -118,12 +112,9 @@ const useBooking = (params: {
     handleSteps(1);
   };
 
-  // Batalkan transaksi booking: bersihkan data terkait dan kembali ke step 1
+  // Batalkan transaksi booking: kembali ke step 1
   const handleBatalTransaction = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.DATA_FROM_KERANJANG);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
 
     handleToast("cancelled");
     handleSteps(1);
@@ -143,31 +134,55 @@ const useBooking = (params: {
     modalCalculatorRef,
   } = useModalCalculator({ setIsErrors });
 
-  // Ubah metode pembayaran dan sinkronkan ke localStorage
-  const handleMetodePembayaran = (metode: PaymentMethodType) => {
-    if (metodePembayaran === metode) return;
-    setMetodePembayaran(metode);
+  // ==================== MUTATION: UPDATE METODE PEMBAYARAN ====================
+  const {
+    mutateAsync: updateMetodePembayaran,
+    isPending: isPendingUpdateMetodePembayaran,
+  } = useMutation({
+    mutationFn: (data: {
+      transactionId: number;
+      metodePembayaran: PaymentMethodType;
+    }) =>
+      TransactionServices.updateMetodePembayaran({
+        transactionId: data.transactionId,
+        data: { metodePembayaran: data.metodePembayaran },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
-    setLocalStorageJSON(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN, metode);
+  // Ubah metode pembayaran & push langsung ke server (draft transaksi)
+  const handleMetodePembayaran = async (metode: PaymentMethodType) => {
+    if (metodePembayaran === metode || !dataTransaksi?.data?.id) return;
 
-    // Hapus nominal dibayar jika metode bukan CASH
-    if (metode !== "CASH") localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
+    await updateMetodePembayaran({
+      transactionId: dataTransaksi.data.id,
+      metodePembayaran: metode,
+    });
 
-    // clear errors
+    if (metode !== "CASH") {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
+    }
+
     setIsErrors((prev) =>
       prev.filter((item) => item !== "METODE_PEMBAYARAN_KOSONG"),
     );
   };
 
-  // Ringkasan transaksi: total qty, subtotal, diskon, total transaksi, dan saran DP (30%)
+  // Ringkasan transaksi: total qty, subtotal, diskon, ongkir, total transaksi, dan saran DP (30%)
   const transactionSummary = useMemo(() => {
     if (!dataDetails) {
       return {
         totalQuantity: 0,
         totalUangSubTotal: 0,
         totalUangDiskon: 0,
-        totalUangTransaksi: 0,
-        saranDp: 0,
+        totalOngkir: dataOngkir,
+        totalUangTransaksi: dataOngkir,
+        saranDp: dataOngkir * MINIMAL_DP_PERCENTAGE,
       };
     }
 
@@ -175,7 +190,8 @@ const useBooking = (params: {
 
     let totalUangSubTotal = 0;
     let totalUangDiskon = 0;
-    let totalUangTransaksi = 0;
+    // Ongkir menjadi basis awal, sama seperti pola totalAfterDiskon di usePembayaran
+    let totalUangTransaksi = dataOngkir;
 
     for (const item of dataDetails) {
       const quantity = item.quantity;
@@ -193,10 +209,11 @@ const useBooking = (params: {
       totalQuantity,
       totalUangSubTotal,
       totalUangDiskon,
+      totalOngkir: dataOngkir,
       totalUangTransaksi,
       saranDp,
     };
-  }, [dataDetails]);
+  }, [dataDetails, dataOngkir]);
 
   // Ref tombol Bayar, dipakai untuk trigger animasi saat validasi gagal
   const buttonBayarRef = useRef<HTMLButtonElement>(null);
@@ -207,15 +224,10 @@ const useBooking = (params: {
       mutationFn: (data: CreateTransactionForRequestType) =>
         TransactionServices.create(data),
       onSuccess: (data) => {
-        // Bersihkan seluruh data booking di localStorage setelah transaksi berhasil
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
         localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.DATA_FROM_KERANJANG);
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.TEMPO);
 
-        // Simpan id transaksi yang baru dibuat untuk digunakan step selanjutnya
+        queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+
         setLocalStorageJSON(LOCAL_STORAGE_KEYS.TRANSACTION, {
           transactionId: data?.data?.id,
         });
@@ -230,13 +242,11 @@ const useBooking = (params: {
 
   // Validasi form booking sebelum transaksi dikirim; return false + set error jika tidak valid
   const validateBeforeTransaction = (): boolean => {
-    // Metode pembayaran wajib dipilih
     if (!metodePembayaran) {
       setIsErrors((prev) => [...prev, "METODE_PEMBAYARAN_KOSONG"]);
       return false;
     }
 
-    // Nominal dibayar wajib diisi untuk metode selain TEMPO
     if (!dataDiBayar && metodePembayaran !== "TEMPO") {
       triggerAnimation(buttonBayarRef);
       setIsErrors((prev) => [...prev, "DATA_DI_BAYAR_KOSONG"]);
@@ -250,14 +260,15 @@ const useBooking = (params: {
   const handleTransaction = async () => {
     try {
       if (!validateBeforeTransaction()) return;
-      if (!dataDetails || !pelanggan || !kasir) return;
+      if (!dataDetails || !pelanggan || !kasir || !metodePembayaran) return;
 
-      // DP yang dipakai: input manual jika ada, jika tidak pakai saran DP otomatis
+      // DP yang dipakai: nilai yang sudah tersimpan di server (input manual, sudah
+      // memperhitungkan ongkir lewat transactionSummary.saranDp), jika belum ada
+      // input sama sekali pakai saran DP otomatis
       const nilaiDp = dataDp ?? transactionSummary.saranDp;
 
       const dataTransaction: CreateTransactionForRequestType = {
-        // Sertakan detail tempo (DP) jika metode pembayaran TEMPO
-        ...(dataFromKeranjang && { id: dataFromKeranjang.transactionId }),
+        id: dataTransaksi?.data?.id,
         ...(metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO && {
           tempo: {
             jumlahCicilan: 0,
@@ -269,20 +280,19 @@ const useBooking = (params: {
         details: dataDetails.map((item) => ({
           diskon: item.diskon,
           hargaJual: item.hargaJual,
-          produkId: item.produkId,
+          produkId: item.produk.id,
           quantity: item.quantity,
         })),
         diBayar: dataDiBayar,
         kembalian:
           metodePembayaran === PAYMENT_METHOD_TYPE.CASH
-            ? dataDiBayar - nilaiDp
+            ? Math.max(0, dataDiBayar - nilaiDp)
             : 0,
-        metodePembayaran: metodePembayaran,
+        metodePembayaran,
         pelangganId: pelanggan.id,
         kasirId: kasir.id,
       };
 
-      // Minta konfirmasi user sebelum transaksi booking benar-benar dikirim
       const isConfirm = await confirm({
         title: "Apakah Anda yakin ingin memproses transaksi ini?",
         deskripsi:
@@ -299,9 +309,9 @@ const useBooking = (params: {
     }
   };
 
-  // Sinkronkan dataDiBayar setiap kali metode pembayaran berubah:
+  // Sinkronkan dataDiBayar setiap kali metode pembayaran / DP / saranDp berubah:
   // - CASH: ambil nominal dari localStorage (input manual)
-  // - non-CASH: otomatis set sebesar DP (manual/saran) dengan debounce
+  // - non-CASH: otomatis set sebesar DP (nilai server / saran, yang sudah mencakup ongkir)
   useEffect(() => {
     if (metodePembayaran === "CASH") {
       const diBayar = getLocalStorageJSON<number>(LOCAL_STORAGE_KEYS.DI_BAYAR);
@@ -309,16 +319,8 @@ const useBooking = (params: {
       return;
     }
 
-    const debounce = setTimeout(() => {
-      setLocalStorageJSON(
-        LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN,
-        metodePembayaran,
-      );
-      setDataDiBayar(dataDp ?? transactionSummary.saranDp);
-    }, METODE_PEMBAYARAN_SYNC_DEBOUNCE_MS);
-
-    return () => clearTimeout(debounce);
-  }, [metodePembayaran]);
+    setDataDiBayar(dataDiBayar ?? dataDp ?? transactionSummary.saranDp);
+  }, [metodePembayaran, dataDp, dataDiBayar, transactionSummary.saranDp]);
 
   // Ekspos state & handler yang dibutuhkan oleh komponen UI booking
   return {
@@ -349,9 +351,16 @@ const useBooking = (params: {
 
     dataDiBayar,
 
-    setDataDp,
+    handleSetDataDiBayar,
 
     dataDp,
+
+    dataOngkir,
+
+    isLoadingTransaksi,
+    isRefetchingTransaksi,
+
+    isPendingUpdateMetodePembayaran,
   };
 };
 

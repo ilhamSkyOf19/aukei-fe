@@ -5,7 +5,8 @@ export type NotifikasiPilihanType =
   | "produk"
   | "tempo"
   | "pengajuanBarang"
-  | "pengajuanReturBarang";
+  | "pengajuanReturBarang"
+  | "pengajuanStockOpname";
 
 interface NotifikasiStore {
   selectedNotifikasi: NotifikasiPilihanType;

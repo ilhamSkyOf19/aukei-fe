@@ -11,8 +11,9 @@ import ButtonWithIcon from "../../../../../components/ui/button/ButtonWithIcon";
 
 type Props = {
   transactionId: number;
+  queryKey?: string;
 };
-const FormOngkir: FC<Props> = ({ transactionId }) => {
+const FormOngkir: FC<Props> = ({ transactionId, queryKey }) => {
   const [displayValue, setDisplayValue] = useState<string>("");
 
   //   query client
@@ -24,7 +25,9 @@ const FormOngkir: FC<Props> = ({ transactionId }) => {
       mutationFn: (data: { ongkir: number }) =>
         TransactionServices.updateOngkir({ transactionId, data }),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+        queryClient.invalidateQueries({
+          queryKey: [queryKey ?? "transaksi-draft"],
+        });
 
         // reset
         setDisplayValue("");

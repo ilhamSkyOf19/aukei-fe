@@ -325,6 +325,7 @@ const InstallmentsDetail = () => {
             paymentTransactions={dataInstallments?.data?.paymentTransactions}
             customBtnWidth="w-full"
           />
+
           <ButtonWithIcon
             icon={Download}
             bgColor="bg-gray-400"
@@ -580,7 +581,7 @@ const InstallmentsDetail = () => {
 
             {/* peringatan */}
             {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
-              <div className="w-full">
+              <div className="w-full mt-2.5 md:mt-0">
                 <AlertLabelList
                   message={[
                     "Periksa jadwal jatuh tempo setiap angsuran agar pembayaran dapat dilakukan tepat waktu.",

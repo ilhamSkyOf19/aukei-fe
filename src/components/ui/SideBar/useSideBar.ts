@@ -9,8 +9,6 @@ import {
 } from "../../../utils/navigation";
 import useLogOut from "../../../hooks/useLogOut";
 import useHasScroll from "../../../hooks/useHasScroll";
-import useConfirm from "../../../hooks/useConfirm";
-import { useStepStore } from "../../../stores/stepStore";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 import { useNotifikasiStore } from "../../../stores/notifikasiStore";
 
@@ -28,14 +26,6 @@ const useSideBar = () => {
   // const handleClearDataActiveCluster = () => {
   //   localStorage.removeItem("active-cluster");
   // };
-
-  // use confirm
-  const {
-    modalRef: modalConfirmRef,
-    confirm,
-    handleConfirm,
-    handleCancel,
-  } = useConfirm();
 
   // get method in notifikasi store
   const resetNotifikasi = useNotifikasiStore((state) => state.resetNotifikasi);
@@ -58,13 +48,6 @@ const useSideBar = () => {
     // tidak ada transaksi aktif
     if (!activeTransaction) {
       return true;
-    }
-
-    // tampilkan konfirmasi
-    const isConfirm = await confirm();
-
-    if (!isConfirm) {
-      return false;
     }
 
     // hapus data transaksi
@@ -163,9 +146,6 @@ const useSideBar = () => {
     handleLogout,
     divRef,
     hasScroll,
-    modalConfirmRef,
-    handleConfirm,
-    handleCancel,
     handleLink,
   };
 };

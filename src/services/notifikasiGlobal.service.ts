@@ -5,6 +5,7 @@ import type { ResponseNotifikasiProdukWithMetaType } from "../models/notifikasiP
 import type { ResponseNotifikasiTempoWithMetaType } from "../models/notifikasiTempo.model";
 import type { PaginationType } from "../models/pagination.model";
 import type { ResponseRiwayatPengajuanReturnForNotifikasiWithMetaType } from "../models/riwayatPengajuanReturBarang.model";
+import type { ResponseRiwayatStockOpnameForNotifikasiWithMetaType } from "../models/riwayatStockOpname.model";
 import type { ResponseStructure } from "../types/response.type";
 
 export class NotifikasiGlobalServices {
@@ -67,6 +68,20 @@ export class NotifikasiGlobalServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseRiwayatPengajuanReturnForNotifikasiWithMetaType | null>
     >("/notifikasi-global/notifikasi-return", { params: query });
+
+    return result.data;
+  }
+
+  //   find notifikasi stock opname
+  static async findNotifikasiStockOpname(
+    query: PaginationType,
+  ): Promise<
+    ResponseStructure<ResponseRiwayatStockOpnameForNotifikasiWithMetaType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseRiwayatStockOpnameForNotifikasiWithMetaType | null>
+    >("/notifikasi-global/notifikasi-stock-opname", { params: query });
 
     return result.data;
   }

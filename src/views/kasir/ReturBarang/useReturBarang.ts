@@ -8,8 +8,6 @@ import { ReturBarangServices } from "../../../services/returBarang.service";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import { useAuthStore } from "../../../stores/authStore";
-import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
-import useSizeWindows from "../../../hooks/useSizeWindows";
 import useModal from "../../../hooks/useModal";
 import { useToastAnimation } from "../../../hooks/useToast";
 
@@ -32,13 +30,6 @@ const useReturBarang = () => {
 
   /**
    * ============================================================
-   * WINDOW SIZE
-   * ============================================================
-   */
-  const windowSize = useSizeWindows();
-
-  /**
-   * ============================================================
    * PARSE ID
    * ============================================================
    */
@@ -52,12 +43,11 @@ const useReturBarang = () => {
    * ============================================================
    */
   const {
-    confirm,
+    // confirm,
     data: dataConfirm,
     handleCancel: handleCancelConfirm,
     handleConfirm,
     modalRef: modalConfirmRef,
-    handleCloseModal: handleCloseModalConfirm,
   } = useConfirm<{
     bigTitle: string;
     smallTitle: string;
@@ -192,7 +182,7 @@ const useReturBarang = () => {
    */
   const {
     mutateAsync: mutateAddReturnDetail,
-    isPending: isPendingAddReturnDetail,
+    // isPending: isPendingAddReturnDetail,
   } = useMutation({
     mutationFn: ReturBarangServices.addReturnDetail,
 
@@ -263,45 +253,45 @@ const useReturBarang = () => {
    * DELETE RETURN DETAIL
    * ============================================================
    */
-  const {
-    mutateAsync: mutateDeleteReturnDetail,
-    isPending: isPendingDeleteReturnDetail,
-  } = useMutation({
-    mutationFn: ReturBarangServices.deleteReturnDetail,
+  // const {
+  //   mutateAsync: mutateDeleteReturnDetail,
+  //   isPending: isPendingDeleteReturnDetail,
+  // } = useMutation({
+  //   mutationFn: ReturBarangServices.deleteReturnDetail,
 
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["return-details", validateReturBarangId],
-      });
+  //   onSuccess: async () => {
+  //     await queryClient.invalidateQueries({
+  //       queryKey: ["return-details", validateReturBarangId],
+  //     });
 
-      await queryClient.invalidateQueries({
-        queryKey: ["transaction-for-retur-barang", validateTransactionId],
-      });
-    },
+  //     await queryClient.invalidateQueries({
+  //       queryKey: ["transaction-for-retur-barang", validateTransactionId],
+  //     });
+  //   },
 
-    onError: (err) => {
-      if (axios.isAxiosError<ErrorResponse>(err)) {
-        console.error(err.response?.data);
-      }
-    },
-  });
+  //   onError: (err) => {
+  //     if (axios.isAxiosError<ErrorResponse>(err)) {
+  //       console.error(err.response?.data);
+  //     }
+  //   },
+  // });
 
   /**
    * ============================================================
    * HANDLE DELETE
    * ============================================================
    */
-  const handleRemove = async (returnDetailId: number) => {
-    if (!validateReturBarangId) {
-      return;
-    }
+  // const handleRemove = async (returnDetailId: number) => {
+  //   if (!validateReturBarangId) {
+  //     return;
+  //   }
 
-    await mutateDeleteReturnDetail({
-      returnTransactionId: validateReturBarangId,
+  //   await mutateDeleteReturnDetail({
+  //     returnTransactionId: validateReturBarangId,
 
-      returnDetailId,
-    });
-  };
+  //     returnDetailId,
+  //   });
+  // };
 
   /**
    * ============================================================
@@ -376,20 +366,20 @@ const useReturBarang = () => {
    *
    * Container tidak otomatis dihapus.
    */
-  const handleBatalRetur = async () => {
-    const useConfirmResult = await confirm({
-      bigTitle: "Apakah Anda yakin ingin membatalkan retur barang?",
+  // const handleBatalRetur = async () => {
+  //   const useConfirmResult = await confirm({
+  //     bigTitle: "Apakah Anda yakin ingin membatalkan retur barang?",
 
-      smallTitle:
-        "Data produk return yang sudah ditambahkan tidak akan diproses sampai pengajuan dilakukan.",
-    });
+  //     smallTitle:
+  //       "Data produk return yang sudah ditambahkan tidak akan diproses sampai pengajuan dilakukan.",
+  //   });
 
-    if (!useConfirmResult) {
-      return;
-    }
+  //   if (!useConfirmResult) {
+  //     return;
+  //   }
 
-    handleBack();
-  };
+  //   handleBack();
+  // };
 
   /**
    * ============================================================
@@ -482,17 +472,9 @@ const useReturBarang = () => {
 
     returnDetails,
 
-    transactionDetailMap,
-
-    returnDetailMap,
-
     handleAppend,
 
-    handleRemove,
-
     summary,
-
-    handleBatalRetur,
 
     modalConfirmRef,
 
@@ -502,19 +484,9 @@ const useReturBarang = () => {
 
     dataConfirm,
 
-    // onSubmit,
-
-    isPendingAddReturnDetail,
-
-    isPendingDeleteReturnDetail,
-
-    // isPendingPengajuan,
-
     isCanSimpanAndAjukan,
 
     pengguna,
-
-    windowSize,
 
     isLoadingReturDraftDetail,
 

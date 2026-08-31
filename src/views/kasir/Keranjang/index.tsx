@@ -4,7 +4,6 @@ import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_KERANJANG } from "../../../types/toast.type";
 import DaftarKeranjang from "./DaftarKeranjang";
 import { cn } from "../../../utils/cn";
-import NotCompatible from "../../../components/messages/NotCompatible";
 
 const Keranjang = () => {
   // use call
@@ -13,7 +12,7 @@ const Keranjang = () => {
   return (
     <div
       className={cn(
-        "w-full flex flex-col h-screen justify-start items-start gap-2 p-2.5",
+        "w-full flex flex-col lg:h-screen justify-start items-start gap-2 p-2.5",
       )}
     >
       {toast && (
@@ -25,18 +24,15 @@ const Keranjang = () => {
         />
       )}
 
-      <div className="w-full h-full flex-row justify-between items-start gap-2 lg:flex hidden">
+      <div className="w-full h-full flex-col md:flex-row justify-between items-start gap-2 flex">
         {/* left */}
-        <div className="flex-2 h-full flex flex-col justify-start items-start">
+        <div className="w-full md:flex-2 h-full flex flex-col justify-start items-start">
           {/* daftar pelanggan */}
           <DataPelanggan />
         </div>
 
         <DaftarKeranjang />
       </div>
-
-      {/* message */}
-      <NotCompatible />
     </div>
   );
 };

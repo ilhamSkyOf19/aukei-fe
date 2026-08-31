@@ -11,14 +11,12 @@ type Props = {
   data: ResponseProdukForChooseType;
   hargaBeli?: boolean;
   hargaModal?: boolean;
-  kategori: string;
 };
 const CardProdukForChooseInventori: FC<Props> = ({
   data,
   handleSetValueProdukId,
   hargaBeli,
   hargaModal,
-  kategori,
 }) => {
   return (
     <button

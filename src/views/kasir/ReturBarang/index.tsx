@@ -9,7 +9,6 @@ import {
   ReceiptText,
   Undo2,
   UserRound,
-  X,
 } from "lucide-react";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import CardStatistikLarge from "../../../components/ui/cards/CardStatistikLarge";
@@ -44,17 +43,10 @@ const ReturBarang = () => {
     handleCancelConfirm,
     handleConfirm,
     modalConfirmRef,
-    handleBatalRetur,
     isCanSimpanAndAjukan,
     pengguna,
-    windowSize,
-    handleRemove,
     isLoadingReturDraftDetail,
-    isPendingAddReturnDetail,
-    isPendingDeleteReturnDetail,
-    returnDetailMap,
     returnDetails,
-    transactionDetailMap,
     combinedReturnDetails,
     handleCloseModalPengajuanOrVerifikasi,
     handleShowModalPengajuanOrVerifikasi,

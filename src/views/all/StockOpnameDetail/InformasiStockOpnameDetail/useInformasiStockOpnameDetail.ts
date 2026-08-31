@@ -3,17 +3,14 @@ import { useEffect, useState } from "react";
 import { useController, useForm } from "react-hook-form";
 import type { UpdateBarangMasukForRequestType } from "../../../../models/barangMasuk.model";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BarangMasukServices } from "../../../../services/barangMasuk.service";
 import useModal from "../../../../hooks/useModal";
 import {
-  STATUS_INVENTORI_TYPE,
   STATUS_STOCK_OPNAME_TYPE,
   type StatusStockOpnameType,
 } from "../../../../types/constant.type";
 import type { UpdateStockOpnameForRequestType } from "../../../../models/stockOpname.model";
 import { StockOpnameValidation } from "../../../../validations/stockOpname.validation";
 import { StockOpnameServices } from "../../../../services/stockOpname.service";
-import { useLocation } from "react-router-dom";
 
 const useInformasiStockOpnameDetail = (params: {
   tanggal?: Date;
@@ -30,11 +27,8 @@ const useInformasiStockOpnameDetail = (params: {
   //   query client
   const queryClient = useQueryClient();
 
-  //   current pathname
-  const currentPathname = useLocation().pathname;
-
-//   can show informasi pengajuan
-const canShowInformasiPengajuan = currentPathname.includes("")
+  // state show ket
+  const [showKet, setShowKet] = useState<boolean>(false);
 
   // use form upadate
   const {
@@ -170,6 +164,9 @@ const canShowInformasiPengajuan = currentPathname.includes("")
     tanggalOpnameController,
     modalInputTanggalOpnameRef,
     handleCloseModalInputTanggalOpname,
+
+    showKet,
+    setShowKet,
   };
 };
 

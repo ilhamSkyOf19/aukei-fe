@@ -1,4 +1,3 @@
-import { EllipsisVertical, PencilLine, Trash } from "lucide-react";
 import {
   formatNumber,
   formatNumberK,
@@ -10,7 +9,6 @@ import type { ResponseStructure } from "../../../../types/response.type";
 import type { ResponseBarangMasukWithDetailType } from "../../../../models/barangMasuk.model";
 import type { FC } from "react";
 import { cn } from "../../../../utils/cn";
-import LabelButtonDropDownWithIcon from "../../../../components/ui/button/LabelButtonDropDownWithIcon";
 import useShowBarangMasuk from "./useShowBarangMasuk";
 import ModalDelete from "../../../../components/modals/ModalDelete";
 import type { UpdateBarangMasukDetailType } from "../../../../models/barangMasukDetail.model";
@@ -27,6 +25,7 @@ import InputPrice from "../../../../components/inputs/InputPrice";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 
 type Props = {
   isLoadingBarangMasukDetail?: boolean;
@@ -41,9 +40,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
   role,
 }) => {
   const {
-    handleSetIsActiveAksi,
     isActiveAksi,
-    wrapperRef,
     handleCloseModalDelete,
     handleDelete,
     handleShowModalDelete,
@@ -124,70 +121,35 @@ const ShowDataBarangMasuk: FC<Props> = ({
                     </div>
 
                     {/* button aksi */}
-                    <div className="flex flex-row justify-end items-start">
+                    <div className="flex flex-row justify-end items-start gap-2.5">
                       {!fromPengajuanBarang && !isStatusPosted && (
-                        <div>
-                          <div
-                            ref={wrapperRef}
-                            className={cn(
-                              "dropdown dropdown-left dropdown-end",
-                            )}
-                          >
-                            <button
-                              type="button"
-                              role="button"
-                              tabIndex={0}
-                              className="m-1"
-                              onFocus={() => handleSetIsActiveAksi(item.id)}
-                              onBlur={() => handleSetIsActiveAksi(0)}
-                            >
-                              <EllipsisVertical className="size-4 text-base-content" />
-                            </button>
-                            <ul
-                              tabIndex={-1}
-                              className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
-                            >
-                              {/* <li>
-                                <LabelButtonDropDownWithIcon
-                                  label="Ganti Produk"
-                                  icon={PencilLine}
-                                  handleClick={() =>
-                                    handleShowModalUbahProduk(item.id, {
-                                      jumlahBox: item.jumlahBox,
-                                      produkId: item.produk.id,
-                                      hargaBeli: item.hargaBeli,
-                                    })
-                                  }
-                                />
-                              </li> */}
-                              <li>
-                                <LabelButtonDropDownWithIcon
-                                  label="Ubah Data"
-                                  icon={PencilLine}
-                                  handleClick={() =>
-                                    handleShowModalUbahProduk(item.id, {
-                                      jumlahBox: item.jumlahBox,
-                                      produk: item.produk,
-                                      hargaBeli: item.produk.hargaBeli,
-                                    })
-                                  }
-                                />
-                              </li>
-                              <li>
-                                <LabelButtonDropDownWithIcon
-                                  color="text-error"
-                                  label="Hapus"
-                                  icon={Trash}
-                                  handleClick={() =>
-                                    handleShowModalDelete(item.id, {
-                                      nama: item.produk.nama,
-                                    })
-                                  }
-                                />
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
+                        <>
+                          <ButtonWithIcon
+                            customHeight="h-8"
+                            label="Hapus"
+                            bgColor="bg-error"
+                            textColor="text-primary-white"
+                            handleBtn={() =>
+                              handleShowModalDelete(item.id, {
+                                nama: item.produk.nama,
+                              })
+                            }
+                          />
+
+                          <ButtonWithIcon
+                            customHeight="h-8"
+                            label="Ubah"
+                            bgColor="bg-info"
+                            textColor="text-primary-white"
+                            handleBtn={() =>
+                              handleShowModalUbahProduk(item.id, {
+                                jumlahBox: item.jumlahBox,
+                                produk: item.produk,
+                                hargaBeli: item.produk.hargaBeli,
+                              })
+                            }
+                          />
+                        </>
                       )}
                     </div>
                   </div>

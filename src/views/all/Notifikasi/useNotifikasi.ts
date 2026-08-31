@@ -1,4 +1,9 @@
-import { CalendarClock, Package, type LucideIcon } from "lucide-react";
+import {
+  CalendarClock,
+  ClipboardCheck,
+  Package,
+  type LucideIcon,
+} from "lucide-react";
 import { useRef } from "react";
 import useFilterState from "../../../services/useFilterState";
 import type { ChildRef } from "../../../types/ref.type";
@@ -38,6 +43,11 @@ const pilihan: {
     key: "pengajuanReturBarang",
     label: "Notifikasi Pengajuan Retur Barang",
     icon: Package,
+  },
+  {
+    key: "pengajuanStockOpname",
+    label: "Notifikasi Pengajuan Stok Opname",
+    icon: ClipboardCheck,
   },
 ];
 
@@ -134,6 +144,11 @@ const useNotifikasi = () => {
     }
   };
 
+  // handle redirect detail stok opname
+  const handleRedirectDetailStockOpname = (id: number) => {
+    navigate(`/dashboard/stok-opname/${id}`);
+  };
+
   // handle pilihan
   const handleSelected = (pilihan: NotifikasiPilihanType) => {
     // clear
@@ -160,6 +175,8 @@ const useNotifikasi = () => {
     pengguna,
 
     windowSize,
+
+    handleRedirectDetailStockOpname,
   };
 };
 

@@ -48,6 +48,7 @@ const FormData = ({
 
     handleDeleteReturnDetail,
     isPendingDeleteReturnDetail,
+    isPendingUpdateReturnDetail,
   } = useFormData({
     returnTransactionId,
     returnDetailId,
@@ -71,7 +72,7 @@ const FormData = ({
             controller={quantityReturnController}
             name="quantityReturn"
             max={maxQuantity}
-            disabled={isPending}
+            disabled={isPending || isPendingUpdateReturnDetail}
             onBlur={handleBlur}
           />
         </div>

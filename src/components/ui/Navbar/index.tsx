@@ -27,7 +27,7 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           // (currentPathname.includes("kasir") ||
           //   currentPathname.includes("keranjang") ||
           //   currentPathname.includes("kredit")) &&
-          "hidden",
+          "lg:hidden",
       )}
       style={{ minHeight: "2.5rem" }}
     >
@@ -58,7 +58,9 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           </div>
 
           {/* notifikasi */}
-          <Notifikasi pengguna={pengguna} />
+          {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
+            <Notifikasi pengguna={pengguna} />
+          )}
 
           {/* button theme */}
           <ButtonTheme />

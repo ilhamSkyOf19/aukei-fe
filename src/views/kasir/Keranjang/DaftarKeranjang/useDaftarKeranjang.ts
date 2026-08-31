@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import type { DetailsLocalStorageType } from "../../../../models/transaction.model";
 import { KeranjangServices } from "../../../../services/keranjang.service";
 import useModal from "../../../../hooks/useModal";
+import { useAuthStore } from "../../../../stores/authStore";
 
 const useDaftarKeranjang = () => {
   // set params
@@ -10,6 +10,8 @@ const useDaftarKeranjang = () => {
 
   //   is choose pelanggan
   const isChoosePelanggan = Number(searchParams.get("keranjangId") ?? 0);
+
+  const pengguna = useAuthStore((state) => state.pengguna);
 
   // current pathname
   const currentPathname = useLocation().pathname;
@@ -66,33 +68,33 @@ const useDaftarKeranjang = () => {
       0,
     ) ?? 0;
 
-  // handle set local storage
-  const handleSetLocalStorage = () => {
-    // data
-    const data: DetailsLocalStorageType[] | null =
-      dataKeranjang?.data?.details?.map((item, _) => ({
-        nama: item.produk.nama,
-        kode: item.produk.kode,
-        img: item.produk.img,
-        diskon: item.diskon,
-        hargaJual: item.hargaJual,
-        produkId: item.produk.id,
-        quantity: item.quantity,
-      })) ?? null;
+  // // handle set local storage
+  // const handleSetLocalStorage = () => {
+  //   // data
+  //   const data: DetailsLocalStorageType[] | null =
+  //     dataKeranjang?.data?.details?.map((item, _) => ({
+  //       nama: item.produk.nama,
+  //       kode: item.produk.kode,
+  //       img: item.produk.img,
+  //       diskon: item.diskon,
+  //       hargaJual: item.hargaJual,
+  //       produkId: item.produk.id,
+  //       quantity: item.quantity,
+  //     })) ?? null;
 
-    // set details
-    localStorage.setItem("details", JSON.stringify(data));
+  //   // set details
+  //   localStorage.setItem("details", JSON.stringify(data));
 
-    // set pelanggan
-    localStorage.setItem(
-      "pelanggan",
-      JSON.stringify(dataKeranjang?.data?.pelanggan),
-    );
-  };
+  //   // set pelanggan
+  //   localStorage.setItem(
+  //     "pelanggan",
+  //     JSON.stringify(dataKeranjang?.data?.pelanggan),
+  //   );
+  // };
 
   const handleLanjutTransaksi = (transactionId?: number) => {
     // data
-    handleSetLocalStorage();
+    // handleSetLocalStorage();
 
     // set local storage
     localStorage.setItem(
@@ -115,7 +117,7 @@ const useDaftarKeranjang = () => {
     );
 
     // handle local storage
-    handleSetLocalStorage();
+    // handleSetLocalStorage();
 
     // navigate
     navigate(`${currentPathname}/${dataKeranjang?.data?.id}`);
@@ -239,6 +241,7 @@ const useDaftarKeranjang = () => {
     dataDeleteKeranjang,
     handleDeleteProdukInKeranjang,
     isPendingDeleteProdukInKeranjang,
+    pengguna,
   };
 };
 

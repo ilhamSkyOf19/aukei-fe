@@ -3,9 +3,8 @@ import { Tooltip } from "react-tooltip";
 import { cn } from "../../../utils/cn";
 import useSideBar from "./useSideBar";
 import { highlightName } from "../../../helpers/helpers";
-import { ChevronRight, LogOut, Receipt } from "lucide-react";
+import { ChevronRight, LogOut } from "lucide-react";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
-import ModalAlert from "../../modals/ModalAlert";
 
 type Props = {
   isClose: boolean;
@@ -19,10 +18,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
     handleLogout,
     hasScroll,
     pengguna,
-    handleCancel,
-    handleConfirm,
     handleLink,
-    modalConfirmRef,
   } = useSideBar();
 
   return (
@@ -119,7 +115,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
         </div>
 
         {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
-          <div className="w-full flex flex-row justify-center items-center pb-6">
+          <div className="w-full flex-row justify-center items-center pb-6 hidden lg:flex">
             <button
               type="button"
               className="border border-transparent p-2.5 hover:border-error rounded-xl transition-all duration-150 ease-in-out"
@@ -223,18 +219,6 @@ const Sidebar: FC<Props> = ({ isClose }) => {
           fontSize: "14px",
         }}
         opacity={1}
-      />
-
-      <ModalAlert
-        modalRef={modalConfirmRef}
-        handleCloseModal={handleCancel}
-        handleConfirm={handleConfirm}
-        bigTitle={"Apakah Anda yakin ingin membatalkan transaksi?"}
-        smallTitle={
-          "Semua data pada transaksi ini akan dibatalkan dan tidak dapat dikembalikan."
-        }
-        icon={Receipt}
-        iconColor="text-warning"
       />
     </div>
   );

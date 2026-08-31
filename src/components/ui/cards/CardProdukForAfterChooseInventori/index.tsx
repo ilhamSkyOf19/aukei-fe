@@ -9,7 +9,7 @@ import { Trash2 } from "lucide-react";
 import { cn } from "../../../../utils/cn";
 
 type Props = {
-  data: ResponseProdukForChooseType;
+  data: Omit<ResponseProdukForChooseType, "kategori">;
   handleDeleteValueProdukId: (id: number) => void;
   customWidth?: string;
   hargaBeli?: boolean;
@@ -47,9 +47,9 @@ const CardProdukForAfterChooseInventori: FC<Props> = ({
               <p className="text-xs font-medium text-base-content">
                 {data.nama}
               </p>
-              <p className="text-[0.625rem] font-medium text-base-content/70">
+              {/* <p className="text-[0.625rem] font-medium text-base-content/70">
                 {data.kategori}
-              </p>
+              </p> */}
             </div>
             <p className="text-[0.625rem] text-base-content/70 font-medium">
               {data.kode}

@@ -195,7 +195,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
               {isLoadingProduk ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={10}>
+                    <td colSpan={11}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>

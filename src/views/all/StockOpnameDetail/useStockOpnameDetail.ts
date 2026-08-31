@@ -1,115 +1,389 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { parseId } from "../../../helpers/helpers";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { useAuthStore } from "../../../stores/authStore";
+
+import { parseId } from "../../../helpers/helpers";
+
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { useToastAnimation } from "../../../hooks/useToast";
 import useConfirm from "../../../hooks/useConfirm";
+import useModal from "../../../hooks/useModal";
+import useDeleteStockOpnameDetail from "../../../hooks/useDeleteStockOpnameDetail";
+
 import {
   BATAS_WAKTU_BATALKAN_POSTING_MS,
   ROLE_INTERNAL_TYPE,
-  STATUS_INVENTORI_TYPE,
   STATUS_STOCK_OPNAME_TYPE,
-  type StatusStockOpnameType,
 } from "../../../types/constant.type";
-import { BarangKeluarServices } from "../../../services/barangKeluar.service";
-import useDeleteBarangKeluar from "../../../hooks/useDeleteBarangKeluar";
-import { useAuthStore } from "../../../stores/authStore";
-import useModal from "../../../hooks/useModal";
-import { useMemo } from "react";
-import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
+
 import { StockOpnameServices } from "../../../services/stockOpname.service";
 import { PengajuanStockOpnameServices } from "../../../services/pengajuanStockOpname.service";
+import type { ErrorResponse } from "../../../types/response.type";
+import axios from "axios";
 
 const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
-  const { fromPengajuan } = params;
+  const { fromPengajuan = false } = params;
+
+  const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const pengguna = useAuthStore((state) => state.pengguna);
 
-  // query client
-  const queryClient = useQueryClient();
+  const { id } = useParams<{
+    id: string;
+  }>();
 
-  // navigate
-  const navigate = useNavigate();
+  const stockOpnameId = parseId(id);
 
-  // use alert
+  // ============================================================
+  // ALERT & TOAST
+  // ============================================================
+
   const { alert, handleSetAlert } = useAlertAnimation();
 
-  // use toast
   const { toast, handleSetToast } = useToastAnimation();
 
-  // get id from params
-  const { id } = useParams<{ id: string }>();
-  // parse
-  const validatedId = parseId(id);
+  // ============================================================
+  // CONFIRM
+  // ============================================================
 
-  // show modal konfirmasi posting
   const {
-    modalRef: modalKonfirmasiPostingRef,
     confirm,
-    handleConfirm: handleConfirmPosting,
-    handleCancel: handleCancelConfirmPosting,
+    modalRef: modalKonfirmasiRef,
+    handleConfirm,
+    handleCancel,
     data: dataConfirm,
-  } = useConfirm<{ bigTitle: string; smallTitle: string }>();
+  } = useConfirm<{
+    bigTitle: string;
+    smallTitle: string;
+  }>();
 
-  // use query
+  // ============================================================
+  // QUERY
+  // ============================================================
+
   const {
     data: dataStockOpnameDetail,
-    isLoading: isLoadingStockOpnameDetail,
-    isFetching: isFetchingStockOpnameDetail,
+    isLoading,
+    isFetching,
   } = useQuery({
-    queryKey: ["stock-opname-detail", validatedId],
-    queryFn: () => StockOpnameServices.detail({ id: validatedId! }),
-    enabled: !!validatedId,
+    queryKey: ["stock-opname-detail", stockOpnameId],
+
+    queryFn: () =>
+      StockOpnameServices.detail({
+        id: stockOpnameId!,
+      }),
+
+    enabled: !!stockOpnameId,
+
     retry: false,
+
     refetchOnWindowFocus: false,
   });
 
-  // handle show modal verifikasi rejected
-  const {
-    modalRef: modalFormulirVerifikasiOrPengajuan,
-    handleShowModal: showModalFormulirVerifikasiOrPengajuan,
-    handleCloseModal: handleCloseModalFormulirVerifikasiOrPengajuan,
-    idModal: idModalFormulirVerifikasiOrPengajuan,
-    dataModal: dataModalFormulirVerifikasiOrPengajuan,
-  } = useModal<{ type: "pengajuan" | "tolak" }>();
+  // ============================================================
+  // ROLE
+  // ============================================================
 
-  // handle show modal formulir verifikasi or pengajuan
-  const handleShowModalFormulirVerifikasiOrPengajuan = (
-    id?: number | undefined,
-    data?:
-      | {
-          type: "pengajuan" | "tolak";
-        }
-      | undefined,
-  ) => {
-    if (dataStockOpnameDetail?.data?.details.length === 0) {
-      handleSetAlert("empty_produk");
-      return;
-    }
-    showModalFormulirVerifikasiOrPengajuan(id, data);
-  };
+  const isKasir = pengguna?.role === ROLE_INTERNAL_TYPE.KASIR;
 
-  // invalidate
-  const invalidateQueries = () => {
-    // revalidated
-    queryClient.invalidateQueries({
-      queryKey: ["stock-opname-detail", validatedId],
+  // ============================================================
+  // MODE
+  // ============================================================
+
+  const isModeDetail = !fromPengajuan;
+
+  const isModePengajuan = fromPengajuan && isKasir;
+
+  // ============================================================
+  // STATUS
+  // ============================================================
+
+  const status = dataStockOpnameDetail?.data?.status;
+
+  const isStatusDraft = status === STATUS_STOCK_OPNAME_TYPE.DRAFT;
+
+  const isStatusPending = status === STATUS_STOCK_OPNAME_TYPE.PENDING;
+
+  const isStatusRejected = status === STATUS_STOCK_OPNAME_TYPE.REJECTED;
+
+  const isStatusApproved = status === STATUS_STOCK_OPNAME_TYPE.APPROVED;
+
+  // ============================================================
+  // PERMISSION
+  // ============================================================
+
+  /**
+
+Data stock opname hanya dapat diedit ketika:
+
+
+
+
+Status DRAFT
+
+
+Status REJECTED
+
+
+Dan berada pada:
+
+
+
+
+halaman detail
+
+
+halaman pengajuan kasir
+*/
+  const isCanUpdate =
+    (isStatusDraft || isStatusRejected) &&
+    (isModeDetail || isModePengajuan) &&
+    dataStockOpnameDetail?.data?.adminOpname?.id === pengguna?.id;
+
+  /**
+
+Kelola detail produk mengikuti permission update.
+*/
+  const isCanManageDetail = isCanUpdate;
+
+  /**
+
+Kasir hanya dapat mengajukan ketika:
+
+
+
+
+berada di halaman pengajuan
+
+
+status DRAFT atau REJECTED
+*/
+  const isCanAjukan = isModePengajuan && (isStatusDraft || isStatusRejected);
+
+  /**
+
+Owner hanya dapat melakukan verifikasi
+ketika data masih PENDING.
+*/
+  const isCanVerifikasi = isStatusPending || isStatusRejected;
+
+  // ============================================================
+  // INVALIDATE QUERIES
+  // ============================================================
+
+  const invalidateQueries = async () => {
+    await queryClient.invalidateQueries({
+      queryKey: ["stock-opname-detail", stockOpnameId],
     });
 
-    // revalidated
-    queryClient.invalidateQueries({
+    await queryClient.invalidateQueries({
+      queryKey: ["stock-opname"],
+    });
+
+    await queryClient.invalidateQueries({
       queryKey: ["notifikasi-global"],
     });
 
-    // revalidated
-    queryClient.invalidateQueries({
-      queryKey: ["notifikasi-produk"],
+    await queryClient.invalidateQueries({
+      queryKey: ["riwayat-pengajuan-stock-opname", stockOpnameId],
+    });
+  };
+
+  // ============================================================
+  // MODAL PENGAJUAN / PENOLAKAN
+  // ============================================================
+
+  const {
+    modalRef: modalFormulirRef,
+
+    handleShowModal: showModalFormulir,
+
+    handleCloseModal: handleCloseModalFormulir,
+
+    idModal: idModalFormulir,
+
+    dataModal: dataModalFormulir,
+  } = useModal<{
+    type: "pengajuan" | "tolak";
+  }>();
+
+  /**
+
+Membuka modal formulir untuk:
+
+
+
+
+pengajuan stock opname oleh kasir
+
+
+penolakan stock opname oleh owner
+*/
+  const handleShowModalFormulir = (
+    id?: number,
+    type?: "pengajuan" | "tolak",
+  ) => {
+    if (!id || !type) {
+      return;
+    }
+    /**
+     * Validasi pengajuan.
+     *
+     * Stock opname tidak boleh diajukan
+     * apabila belum memiliki produk.
+     */
+    if (
+      type === "pengajuan" &&
+      dataStockOpnameDetail?.data?.details.length === 0
+    ) {
+      handleSetAlert("empty_produk");
+
+      return;
+    }
+
+    showModalFormulir(id, {
+      type,
+    });
+  };
+
+  /**
+
+Helper khusus pengajuan.
+*/
+  const handleAjukan = () => {
+    if (!stockOpnameId || !isCanAjukan) {
+      return;
+    }
+    handleShowModalFormulir(stockOpnameId, "pengajuan");
+  };
+
+  /**
+
+Helper khusus penolakan.
+*/
+  const handleTolak = () => {
+    console.log(stockOpnameId, isCanVerifikasi);
+    if (!stockOpnameId || !isCanVerifikasi) {
+      return;
+    }
+    handleShowModalFormulir(stockOpnameId, "tolak");
+  };
+
+  // ============================================================
+  // DELETE DETAIL
+  // ============================================================
+
+  const deleteDetail = useDeleteStockOpnameDetail({
+    stockOpnameId: stockOpnameId!,
+
+    status,
+
+    handleSetToast,
+  });
+
+  // ============================================================
+  // APPROVE
+  // ============================================================
+
+  const {
+    mutateAsync: mutateSetuju,
+
+    isPending: isPendingSetuju,
+  } = useMutation({
+    mutationFn: () =>
+      PengajuanStockOpnameServices.verifikasi({
+        stockOpnameId: stockOpnameId!,
+
+        status: STATUS_STOCK_OPNAME_TYPE.APPROVED,
+      }),
+
+    onSuccess: async () => {
+      handleSetToast("approved_pengajuan");
+
+      await invalidateQueries();
+    },
+  });
+
+  const handleSetuju = async () => {
+    if (!stockOpnameId || !isCanVerifikasi) {
+      return;
+    }
+
+    const isConfirm = await confirm({
+      bigTitle: "Apakah Anda yakin ingin menyetujui pengajuan stock opname?",
+
+      smallTitle:
+        "Setelah disetujui, stok produk akan disesuaikan berdasarkan hasil stock opname.",
     });
 
-    // invalidated riwayat
-    queryClient.invalidateQueries({
-      queryKey: ["riwayat-pengajuan-stock-opname", validatedId],
-    });
+    if (!isConfirm) {
+      return;
+    }
+
+    await mutateSetuju();
+  };
+
+  // ============================================================
+  // DELETE STOCK OPNAME
+  // ============================================================
+
+  const isExpired =
+    dataStockOpnameDetail?.data &&
+    dataStockOpnameDetail?.data?.verifiedAt &&
+    Date.now() - new Date(dataStockOpnameDetail.data.verifiedAt).getTime() >
+      BATAS_WAKTU_BATALKAN_POSTING_MS;
+
+  const {
+    modalRef: modalDeleteStockOpnameRef,
+
+    handleShowModal: handleShowModalDeleteStockOpname,
+
+    handleCloseModal: handleCloseModalDeleteStockOpname,
+
+    idModal: idDeleteStockOpname,
+
+    dataModal: dataDeleteStockOpname,
+  } = useModal<{
+    kodeReferensi?: string;
+  }>();
+
+  const {
+    mutateAsync: mutateDeleteStockOpname,
+
+    isPending: isPendingDeleteStockOpname,
+  } = useMutation({
+    mutationFn: (id: number) => StockOpnameServices.delete(id),
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["stock-opname"],
+      });
+
+      navigate("/dashboard/stok-opname?cluster=stockOpname", {
+        state: {
+          toast: "deleted_stock_opname",
+        },
+      });
+    },
+  });
+
+  const handleDeleteStockOpname = async () => {
+    if (!idDeleteStockOpname) {
+      return;
+    }
+
+    await mutateDeleteStockOpname(idDeleteStockOpname);
+  };
+
+  // ============================================================
+  // BACK
+  // ============================================================
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   // mutate posting
@@ -124,7 +398,21 @@ const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
         invalidateQueries();
       },
       onError: (err) => {
-        console.log(err);
+        if (axios.isAxiosError<ErrorResponse>(err)) {
+          if (
+            err?.response?.data?.meta?.customField?.includes(
+              "empty_stock_opname",
+            )
+          ) {
+            handleSetAlert("empty_stock_opname");
+          }
+
+          if (
+            err?.response?.data?.meta?.customField?.includes("stok_not_enough")
+          ) {
+            handleSetAlert("stok_not_enough");
+          }
+        }
       },
     });
 
@@ -139,7 +427,7 @@ const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
         return;
 
       if (dataStockOpnameDetail?.data?.details.length === 0) {
-        handleSetAlert("empty_produk");
+        handleSetAlert("empty_stock_opname");
         return;
       }
 
@@ -147,9 +435,7 @@ const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
       const isConfirm = await confirm({
         bigTitle: "Apakah Anda yakin ingin memposting data stok opname?",
         smallTitle:
-          pengguna?.role === ROLE_INTERNAL_TYPE.KASIR
-            ? "Setelah diposting, stok barang akan diperbarui"
-            : "Setelah diposting, menunggu persetujuan dari Owner",
+          "Pastikan seluruh data stok opname telah sesuai. Setelah diposting, stok barang akan diperbarui dan transaksi akan tercatat dalam sistem.",
       });
 
       if (!isConfirm) {
@@ -162,26 +448,43 @@ const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
     }
   };
 
-  // mutate cancel posting
+  // Invalidate seluruh query terkait detail barang masuk & notifikasi setelah suatu aksi berhasil
+  const invalidateStockOpnameQueries = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["stock-opname-detail", stockOpnameId],
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: ["notifikasi-global"],
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: ["notifikasi-produk"],
+    });
+
+    // invalidated riwayat
+    queryClient.invalidateQueries({
+      queryKey: ["riwayat-stock-opname", stockOpnameId],
+    });
+  };
+
+  // Mutation untuk membatalkan posting barang masuk (stok dikembalikan)
   const {
     mutateAsync: mutateCancelPosting,
     isPending: isPendingCancelPosting,
   } = useMutation({
-    mutationFn: (id: number) => BarangKeluarServices.cancelPosted(id),
+    mutationFn: (id: number) => StockOpnameServices.cancelPosted(id),
 
     onSuccess: () => {
-      // handle toast
       handleSetToast("cancel_posted");
-
-      // invalidated
-      invalidateQueries();
+      invalidateStockOpnameQueries();
     },
     onError: (err) => {
       console.log(err);
     },
   });
 
-  // cancel verifikasi
+  // Mutation untuk membatalkan verifikasi pengajuan barang masuk
   const {
     mutateAsync: mutateCancelVerifikasi,
     isPending: isPendingCancelVerifikasi,
@@ -190,41 +493,29 @@ const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
       PengajuanStockOpnameServices.cancelVerifikasi({ stockOpnameId: id }),
 
     onSuccess: () => {
-      // handle toast
       handleSetToast("canceled_verifikasi");
-
-      // invalidated
-      invalidateQueries();
+      invalidateStockOpnameQueries();
     },
     onError: (err) => {
       console.log(err);
     },
   });
 
-  // is expired
-  const isExpired =
-    dataStockOpnameDetail?.data &&
-    dataStockOpnameDetail?.data?.verifiedAt &&
-    Date.now() - new Date(dataStockOpnameDetail?.data?.verifiedAt).getTime() >
-      BATAS_WAKTU_BATALKAN_POSTING_MS;
-
-  // handle posting
-  const handleCancelPosting = async (id: number) => {
+  // Proses batalkan posting: validasi status, cek expired, konfirmasi, lalu kirim ke server
+  const handleCancelPosting = async (id?: number) => {
     try {
       if (
-        dataStockOpnameDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
-        isExpired ||
+        dataStockOpnameDetail?.data?.status ===
+          STATUS_STOCK_OPNAME_TYPE.DRAFT ||
         !id
       )
         return;
 
-      // check expired
       if (isExpired) {
         handleSetAlert("expired");
         return;
       }
 
-      // confirm
       const isConfirm = await confirm({
         bigTitle:
           "Apakah Anda yakin ingin membatalkan posting data stok opname?",
@@ -242,22 +533,21 @@ const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
     }
   };
 
-  // handle verifikasi
+  // Proses batalkan verifikasi pengajuan: validasi status, cek expired, konfirmasi, lalu kirim ke server
   const handleCancelVerifikasi = async (id?: number) => {
     try {
       if (
-        dataStockOpnameDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT ||
+        dataStockOpnameDetail?.data?.status ===
+          STATUS_STOCK_OPNAME_TYPE.DRAFT ||
         !id
       )
         return;
 
-      // check expired
       if (isExpired) {
         handleSetAlert("expired");
         return;
       }
 
-      // confirm
       const isConfirm = await confirm({
         bigTitle:
           "Apakah Anda yakin ingin membatalkan verifikasi pengajuan stok opname?",
@@ -275,173 +565,131 @@ const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
     }
   };
 
-  const isStatusPosted =
-    dataStockOpnameDetail?.data?.status === STATUS_STOCK_OPNAME_TYPE.APPROVED;
-  const isStatusDraft =
-    dataStockOpnameDetail?.data?.status === STATUS_STOCK_OPNAME_TYPE.DRAFT;
-
-  const isStatusRejected =
-    dataStockOpnameDetail?.data?.status === STATUS_STOCK_OPNAME_TYPE.REJECTED;
-
-  // can show form tambah barang
-  const canShowFormTambahBarang =
-    ((!fromPengajuan && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) ||
-      (fromPengajuan && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR)) &&
-    (dataStockOpnameDetail?.data?.status === STATUS_STOCK_OPNAME_TYPE.DRAFT ||
-      dataStockOpnameDetail?.data?.status ===
-        STATUS_STOCK_OPNAME_TYPE.REJECTED);
-
-  const isCanBatalkanPosting =
-    isStatusPosted && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && !isExpired;
-
-  // use delete barang keluar
-  const {
-    dataDelete,
-    handleCloseModalDelete,
-    handleDelete,
-    handleShowModalDelete,
-    isPendingDelete,
-    modalDeleteRef,
-  } = useDeleteBarangKeluar({
-    redirect: () => {
-      navigate("/dashboard/inventori", {
-        state: {
-          toast: "deleted_barang_keluar",
-        },
-      });
-    },
-  });
-
-  // mutation
-  const {
-    mutateAsync: mutateVerifikasiPengajuanStockOpname,
-    isPending: isPendingVerifikasiPengajuanStockOpname,
-  } = useMutation({
-    mutationFn: (data: {
-      stockOpnameId: number;
-      keterangan?: string;
-      status: Exclude<StatusStockOpnameType, "DRAFT" | "PENDING">;
-    }) => PengajuanStockOpnameServices.verifikasi(data),
-
-    onSuccess: () => {
-      // set toast
-      handleSetToast("approved_pengajuan");
-
-      // invalidate queries
-      invalidateQueries();
-    },
-
-    onError: (err) => {
-      console.log(err);
-    },
-  });
-  // handle setuju
-  const handleSetuju = async () => {
-    try {
-      // check validated id
-      if (!validatedId || !fromPengajuan) return;
-
-      // confirm
-      const isConfirm = await confirm({
-        bigTitle: "Apakah Anda yakin ingin menyetujui pengajuan stok opname?",
-        smallTitle:
-          "Pastikan seluruh data stok opname telah sesuai. Setelah disetujui, data akan diposting dan stok barang akan diperbarui",
-      });
-
-      if (!isConfirm) {
-        return;
-      }
-
-      await mutateVerifikasiPengajuanStockOpname({
-        stockOpnameId: validatedId,
-        status: STATUS_STOCK_OPNAME_TYPE.APPROVED,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const isCanUpdate =
-    isStatusDraft ||
-    (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
-
-  // hadle back
-  const handleBack = () => {
-    return navigate(-1);
-  };
-
-  const fromPengajuanStockOpnameNotifikasi = useMemo<boolean | null>(() => {
-    const data = localStorage.getItem(
-      LOCAL_STORAGE_KEYS.FROM_PENGAJUAN_STOCK_OPNAME,
-    );
-
-    if (!data) return null;
-
-    try {
-      return JSON.parse(data) as boolean;
-    } catch {
-      return null;
-    }
-  }, []);
-
-  // // download invoice barang keluar
-  // const {
-  //   handleDownloadInvoiceBarangKeluarPdf,
-  //   isPendingDownloadInvoiceBarangKeluar,
-  // } = useDownloadInvoiceBarangKeluar({ handleSetAlert, handleSetToast });
-
-  // // get use print
-  // const { handlePrintInvoiceBarangKeluar, isLoadingPrintInvoiceBarangKeluar } =
-  //   usePrintInvoiceBarangKeluar({ handleSetAlert });
-
   return {
+    // ============================================================
+    // DATA
+    // ============================================================
+
     dataStockOpnameDetail,
-    isLoadingStockOpnameDetail:
-      isLoadingStockOpnameDetail || isFetchingStockOpnameDetail,
-    alert,
-    toast,
-    handlePosting,
-    isPendingPosting,
-    modalKonfirmasiPostingRef,
-    handleCancelPosting,
-    handleConfirmPosting,
-    handleCancelConfirmPosting,
-    isPendingCancelPosting,
-    isStatusPosted,
-    isStatusDraft,
-    isExpired,
-    modalDeleteRef,
-    handleShowModalDelete,
-    handleCloseModalDelete,
-    dataDelete,
-    handleDelete,
-    isPendingDelete,
-    handleSetToast,
-    handleSetAlert,
+
+    isLoadingStockOpnameDetail: isLoading || isFetching,
 
     pengguna,
 
-    handleSetuju,
-    isPendingVerifikasiPengajuanStockOpname,
+    // ============================================================
+    // MODE
+    // ============================================================
+
+    // ============================================================
+    // STATUS
+    // ============================================================
+
+    isStatusDraft,
+
+    isStatusPending,
+
+    isStatusRejected,
+
+    isStatusApproved,
+
+    // ============================================================
+    // PERMISSION
+    // ============================================================
+
+    isCanManageDetail,
+
+    isCanAjukan,
+
+    isCanVerifikasi,
+
+    // ============================================================
+    // ALERT
+    // ============================================================
+
+    alert,
+
+    handleSetAlert,
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+
+    toast,
+
+    handleSetToast,
+
+    // ============================================================
+    // CONFIRM
+    // ============================================================
+
+    modalKonfirmasiRef,
+
+    handleConfirm,
+
+    handleCancel,
 
     dataConfirm,
 
-    handleCancelVerifikasi,
-    isPendingCancelVerifikasi,
+    // ============================================================
+    // PENGAJUAN / PENOLAKAN
+    // ============================================================
 
-    modalFormulirVerifikasiOrPengajuan,
-    handleShowModalFormulirVerifikasiOrPengajuan,
-    handleCloseModalFormulirVerifikasiOrPengajuan,
-    idModalFormulirVerifikasiOrPengajuan,
-    dataModalFormulirVerifikasiOrPengajuan,
+    modalFormulirRef,
 
-    isStatusRejected,
-    canShowFormTambahBarang,
-    isCanUpdate,
-    isCanBatalkanPosting,
+    handleCloseModalFormulir,
+
+    idModalFormulir,
+
+    dataModalFormulir,
+
+    handleAjukan,
+
+    handleTolak,
+
+    // ============================================================
+    // VERIFIKASI SETUJU
+    // ============================================================
+
+    handleSetuju,
+
+    isPendingSetuju,
+
+    // ============================================================
+    // DELETE DETAIL
+    // ============================================================
+
+    ...deleteDetail,
+
+    // ============================================================
+    // OTHER
+    // ============================================================
 
     handleBack,
 
-    fromPengajuanStockOpnameNotifikasi,
+    handlePosting,
+    isPendingPosting,
+
+    isExpired,
+
+    modalDeleteStockOpnameRef,
+
+    handleShowModalDeleteStockOpname,
+
+    handleCloseModalDeleteStockOpname,
+
+    dataDeleteStockOpname,
+
+    isPendingDeleteStockOpname,
+
+    handleDeleteStockOpname,
+
+    handleCancelPosting,
+
+    handleCancelVerifikasi,
+
+    isPendingCancelVerifikasi,
+
+    isPendingCancelPosting,
   };
 };
 

@@ -45,7 +45,7 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
       ) {
         return navigate(-1);
       } else {
-        return navigate(currentPathname.split("/").slice(0, -2).join("/"));
+        return navigate(currentPathname.split("/").slice(0, -1).join("/"));
       }
     } else {
       handleSteps?.(1);
@@ -124,7 +124,10 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
         0,
       ) ?? 0;
 
-    const sisaTagihan = totalPembayaran - (totalDiBayar - totalKembalian);
+    const sisaTagihan =
+      totalPembayaran -
+      (totalDiBayar - totalKembalian) +
+      dataTransaction?.data?.ongkir;
 
     return {
       totalQuantity,

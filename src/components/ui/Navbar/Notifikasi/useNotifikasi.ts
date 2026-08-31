@@ -8,6 +8,7 @@ import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInt
 import { ROLE_INTERNAL_TYPE } from "../../../../types/constant.type";
 import { useNotifikasiStore } from "../../../../stores/notifikasiStore";
 import { RiwayatPengajuanReturBarangService } from "../../../../services/riwayatPengajuanReturBarang.service";
+import { RiwayatPengajuanStockOpnameService } from "../../../../services/riwayatStockOpname.service";
 
 const useNotifikasi = (params: {
   pengguna?: PayloadPenggunaInternalType | null;
@@ -82,6 +83,13 @@ const useNotifikasi = (params: {
         refetchOnWindowFocus: false,
         enabled: isChoose === "pengajuanReturBarang",
       },
+      {
+        queryKey: ["notifikasi-stock-opname"],
+        queryFn: () => RiwayatPengajuanStockOpnameService.findAllForHighlight(),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: isChoose === "pengajuanStockOpname",
+      },
     ],
   });
 
@@ -103,15 +111,23 @@ const useNotifikasi = (params: {
       isLoading: isLoadingDataNotifikasiTempo,
       refetch: refetchDataNotifikasiTempo,
     },
+
     {
       data: dataNotifikasiPengajuanBarang,
       isLoading: isLoadingDataNotifikasiPengajuanBarang,
       refetch: refetchDataNotifikasiPengajuanBarang,
     },
+
     {
       data: dataNotifikasiPengajuanReturBarang,
       isLoading: isLoadingDataNotifikasiPengajuanReturBarang,
       refetch: refetchDataNotifikasiPengajuanReturBarang,
+    },
+
+    {
+      data: dataNotifikasiStockOpname,
+      isLoading: isLoadingDataNotifikasiStockOpname,
+      refetch: refetchDataNotifikasiStockOpname,
     },
   ] = data;
 
@@ -130,6 +146,10 @@ const useNotifikasi = (params: {
   const dataNotifikasiGlobalPengajuanReturBarang =
     notifikasiGlobal?.data?.notifikasiPengajuanReturBarang;
 
+  // data notifikasi pengajuan stock opname
+  const dataNotifikasiGlobalStockOpname =
+    notifikasiGlobal?.data?.notifikasiPengajuanStockOpname;
+
   // is existing data notifikasi global produk
   const isExistingNotifikasiGlobal =
     (dataNotifikasiGlobalProduk && dataNotifikasiGlobalProduk.length > 0) ||
@@ -138,7 +158,9 @@ const useNotifikasi = (params: {
     (dataNotifikasiGlobalPengajuanBarang &&
       dataNotifikasiGlobalPengajuanBarang.length > 0) ||
     (dataNotifikasiGlobalPengajuanReturBarang &&
-      dataNotifikasiGlobalPengajuanReturBarang.length > 0);
+      dataNotifikasiGlobalPengajuanReturBarang.length > 0) ||
+    (dataNotifikasiGlobalStockOpname &&
+      dataNotifikasiGlobalStockOpname.length > 0);
 
   //   handle redirect produk detail
   const handleRedirectProdukDetail = (id: number) => {
@@ -167,6 +189,12 @@ const useNotifikasi = (params: {
     return navigate(
       `/dashboard/riwayat-transaksi/${params.transactionId}/daftar-retur-barang/detail/${params.returBarangId}`,
     );
+  };
+
+  // handle redirect stock opname detail
+  const handleRedirectPengajuanStockOpnameDetail = (id: number) => {
+    setIsOpen(false);
+    return navigate(`/dashboard/stok-opname/${id}`);
   };
 
   // handle redirect pengajuan barang detail
@@ -206,18 +234,23 @@ const useNotifikasi = (params: {
       await refetchDataNotifikasiProduk({
         throwOnError: true,
       });
-    } else if (isChoose === "tempo")
+    } else if (isChoose === "tempo") {
       await refetchDataNotifikasiTempo({
         throwOnError: true,
       });
-    else if (isChoose === "pengajuan")
+    } else if (isChoose === "pengajuan") {
       await refetchDataNotifikasiPengajuanBarang({
         throwOnError: true,
       });
-    else if (isChoose === "pengajuanReturBarang")
+    } else if (isChoose === "pengajuanReturBarang") {
       await refetchDataNotifikasiPengajuanReturBarang({
         throwOnError: true,
       });
+    } else if (isChoose === "pengajuanStockOpname") {
+      await refetchDataNotifikasiStockOpname({
+        throwOnError: true,
+      });
+    }
   };
 
   //   is loading
@@ -234,14 +267,15 @@ const useNotifikasi = (params: {
     dataNotifikasiGlobalProduk &&
     dataNotifikasiGlobalTempoOverdue &&
     dataNotifikasiGlobalPengajuanBarang &&
-    dataNotifikasiGlobalPengajuanReturBarang
-      ? dataNotifikasiGlobalProduk?.length +
-        dataNotifikasiGlobalTempoOverdue?.length +
-        dataNotifikasiGlobalPengajuanBarang?.length +
-        dataNotifikasiGlobalPengajuanReturBarang?.length
+    dataNotifikasiGlobalPengajuanReturBarang &&
+    dataNotifikasiGlobalStockOpname
+      ? dataNotifikasiGlobalProduk.length +
+        dataNotifikasiGlobalTempoOverdue.length +
+        dataNotifikasiGlobalPengajuanBarang.length +
+        dataNotifikasiGlobalPengajuanReturBarang.length +
+        dataNotifikasiGlobalStockOpname.length
       : undefined;
 
-  // handle redirect detail
   const handleRedirectDetail = () => {
     if (isChoose === "produk") {
       setSelectedNotifikasi("produk");
@@ -249,8 +283,10 @@ const useNotifikasi = (params: {
       setSelectedNotifikasi("tempo");
     } else if (isChoose === "pengajuan") {
       setSelectedNotifikasi("pengajuanBarang");
-    } else {
+    } else if (isChoose === "pengajuanReturBarang") {
       setSelectedNotifikasi("pengajuanReturBarang");
+    } else if (isChoose === "pengajuanStockOpname") {
+      setSelectedNotifikasi("pengajuanStockOpname");
     }
 
     // close
@@ -296,6 +332,13 @@ const useNotifikasi = (params: {
     isLoadingDataNotifikasiPengajuanReturBarang,
 
     handleRedirectPengajuanReturBarangDetail,
+
+    dataNotifikasiStockOpname,
+    isLoadingDataNotifikasiStockOpname,
+
+    dataNotifikasiGlobalStockOpname,
+
+    handleRedirectPengajuanStockOpnameDetail,
   };
 };
 

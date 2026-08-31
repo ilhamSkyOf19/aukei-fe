@@ -3,7 +3,6 @@ import { useController, useForm, useWatch } from "react-hook-form";
 import type {
   CreateTempoForRequestType,
   CreateTempoType,
-  DataTempoType,
 } from "../../../models/tempo.model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TempoValidations } from "../../../validations/tempo.validation";
@@ -210,6 +209,10 @@ const useModalTempoPayment = (params: {
   const finalTotal = useMemo(() => {
     const uangMuka = debouncedUangMuka ?? 0;
 
+    if (uangMuka === 0) {
+      setValue("metodePembayaranUangDp", undefined);
+    }
+
     const finalUangMuka = uangMuka > total ? total : uangMuka;
 
     const sisa = total - finalUangMuka;
@@ -288,6 +291,10 @@ const useModalTempoPayment = (params: {
           queryKey: ["transaksi-draft"],
         });
 
+        queryClient.invalidateQueries({
+          queryKey: ["transaction"],
+        });
+
         // ==========================
         // TOAST
         // ==========================
@@ -358,20 +365,24 @@ const useModalTempoPayment = (params: {
 
         installments: dataTempo,
 
-        paymentUangMuka: {
-          dibayar:
-            metodePembayaranUangUangMukaWatch === PAYMENT_METHOD_TYPE.CASH
-              ? pembayaranUangMukaCash
-              : debouncedUangMuka,
-          kembalian:
-            metodePembayaranUangUangMukaWatch === PAYMENT_METHOD_TYPE.CASH
-              ? pembayaranUangMukaCash - debouncedUangMuka
-              : 0,
-          metodePaymentUangMuka: metodePembayaranUangUangMukaWatch as Exclude<
-            PaymentMethodType,
-            "TEMPO"
-          >,
-        },
+        paymentUangMuka:
+          debouncedUangMuka > 0
+            ? {
+                dibayar:
+                  metodePembayaranUangUangMukaWatch === PAYMENT_METHOD_TYPE.CASH
+                    ? pembayaranUangMukaCash
+                    : debouncedUangMuka,
+                kembalian:
+                  metodePembayaranUangUangMukaWatch === PAYMENT_METHOD_TYPE.CASH
+                    ? pembayaranUangMukaCash - debouncedUangMuka
+                    : 0,
+                metodePaymentUangMuka:
+                  metodePembayaranUangUangMukaWatch as Exclude<
+                    PaymentMethodType,
+                    "TEMPO"
+                  >,
+              }
+            : undefined,
       });
     } catch (error) {
       console.error("Gagal menyimpan tempo:", error);

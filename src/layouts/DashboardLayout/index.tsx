@@ -42,7 +42,9 @@ const DashboardLayout: FC = () => {
       <div
         className={cn(
           "drawer-content h-screen bg-base-300 pb-4 overflow-x-hidden",
-          isCanShowScrollbar ? "overflow-y-auto" : "overflow-hidden",
+          isCanShowScrollbar
+            ? "overflow-y-auto"
+            : "overflow-y-auto md:overflow-hidden",
         )}
       >
         {/* navbar */}

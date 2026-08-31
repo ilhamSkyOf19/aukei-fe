@@ -33,7 +33,6 @@ import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTabl
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 import ModalAlert from "../../../../components/modals/ModalAlert";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
-import ProdukDetail from "../../../all/ProdukDetail";
 
 type Props = {
   handleToast: (value: string) => void;

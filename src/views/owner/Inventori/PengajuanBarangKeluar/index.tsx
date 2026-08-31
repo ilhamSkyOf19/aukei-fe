@@ -79,7 +79,7 @@ const PengajuanBarangKeluar = () => {
               <CardBarangKeluar
                 key={item.id}
                 author={item.author}
-                tanggalDiajukan={item.tanggalDiajukan}
+                tanggalDiajukan={item.tanggalKeluar}
                 barang={{
                   id: item.id,
                   kode: item.kodeReferensi,
@@ -162,7 +162,9 @@ const PengajuanBarangKeluar = () => {
                     {/* tanggal diajukan */}
                     <td>
                       {barang?.tanggalDiajukan
-                        ? formatTanggalLengkap(barang?.tanggalDiajukan)
+                        ? formatTanggalLengkap(
+                            new Date(barang?.tanggalDiajukan),
+                          )
                         : "-"}{" "}
                       WIB
                     </td>

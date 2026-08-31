@@ -4,6 +4,7 @@ import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import { cn } from "../../../utils/cn";
 import NotifikasiPengajuanBarang from "./NotifikasiPengajuanBarang";
+import NotifikasiPengajuanStockOpname from "./NotifikasiPengajuanStokOpname";
 import NotifikasiProduk from "./NotifikasiProduk";
 import NotifikasiReturBarang from "./NotifikasiReturBarang";
 import NotifikasiTempo from "./NotifikasiTempo";
@@ -27,6 +28,8 @@ const Notifikasi = () => {
     handleRedirectDetail,
     pengguna,
     windowSize,
+
+    handleRedirectDetailStockOpname,
   } = useNotifikasi();
 
   return (
@@ -181,6 +184,18 @@ const Notifikasi = () => {
                   returBarangId: params.returBarangId,
                 })
               }
+              windowSize={windowSize}
+            />
+          )}
+
+          {selectedNotifikasi === "pengajuanStockOpname" && (
+            <NotifikasiPengajuanStockOpname
+              ref={notifikasiProdukRef}
+              limit={limit}
+              page={page}
+              search={search}
+              sort={sort}
+              handleRedirectDetail={handleRedirectDetailStockOpname}
               windowSize={windowSize}
             />
           )}

@@ -79,7 +79,6 @@ const FormCariProdukInventori: FC<Props> = ({
                 dataProdukForChoose?.data?.map((item, _) => (
                   <CardProdukForChooseInventori
                     key={item.id}
-                    kategori={item.kategori}
                     hargaBeli={hargaBeli}
                     hargaModal={hargaModal}
                     data={item}

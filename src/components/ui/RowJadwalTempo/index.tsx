@@ -312,34 +312,38 @@ const RowJadwaTempo: FC<Props> = ({
           </div>
 
           <div className="flex flex-row justify-start items-start gap-2.5">
-            <ButtonWithIcon
-              icon={Printer}
-              label="Cetak Struk Kredit"
-              bgColor={"bg-info"}
-              textColor="text-primary-white"
-              isLoading={isLoadingPrintInvoiceKredit}
-              handleBtn={() =>
-                handlePrintInvoiceKredit({
-                  id: transactionId,
-                })
-              }
-              classHidden="hidden lg:flex"
-            />
+            {dataTempo && dataTempo.length > 0 && (
+              <>
+                <ButtonWithIcon
+                  icon={Printer}
+                  label="Cetak Struk Kredit"
+                  bgColor={"bg-info"}
+                  textColor="text-primary-white"
+                  isLoading={isLoadingPrintInvoiceKredit}
+                  handleBtn={() =>
+                    handlePrintInvoiceKredit({
+                      id: transactionId,
+                    })
+                  }
+                  classHidden="hidden lg:flex"
+                />
 
-            <ButtonWithIcon
-              icon={Download}
-              label="Download Struk Kredit"
-              bgColor="bg-gray-400"
-              textColor="text-primary-white"
-              isLoading={isLoadingDownloadInvoiceKreditPdf}
-              handleBtn={() =>
-                handleDownloadInvoiceKreditPdf({
-                  id: transactionId,
-                  nomorTransaksi: nomorTransaksi ?? "",
-                })
-              }
-              classHidden="hidden lg:flex"
-            />
+                <ButtonWithIcon
+                  icon={Download}
+                  label="Download Struk Kredit"
+                  bgColor="bg-gray-400"
+                  textColor="text-primary-white"
+                  isLoading={isLoadingDownloadInvoiceKreditPdf}
+                  handleBtn={() =>
+                    handleDownloadInvoiceKreditPdf({
+                      id: transactionId,
+                      nomorTransaksi: nomorTransaksi ?? "",
+                    })
+                  }
+                  classHidden="hidden lg:flex"
+                />
+              </>
+            )}
           </div>
 
           <ButtonWithIcon

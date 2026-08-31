@@ -18,7 +18,7 @@ export class StockOpnameDetailServices {
   ): Promise<ResponseStructure<ResponseStockOpnameDetailType | null>> {
     const result = await instanceAxios.post<
       ResponseStructure<ResponseStockOpnameDetailType | null>
-    >(`/stock-opname-detail`, req);
+    >("/stock-opname-detail", req);
 
     return result.data;
   }
@@ -29,14 +29,14 @@ export class StockOpnameDetailServices {
 
   static async update(params: {
     id: number;
+
     status: string;
+
     req: UpdateStockOpnameDetailType;
   }): Promise<ResponseStructure<ResponseStockOpnameDetailType | null>> {
-    const { id, status, req } = params;
-
     const result = await instanceAxios.patch<
       ResponseStructure<ResponseStockOpnameDetailType | null>
-    >(`/stock-opname-detail/${id}/status/${status}`, req);
+    >(`/stock-opname-detail/${params.id}/status/${params.status}`, params.req);
 
     return result.data;
   }

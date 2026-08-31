@@ -295,6 +295,11 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     color: "success" | "error" | "info" | "warning" | "neutral";
   }
 > = {
+  created_transaction_booking_success: {
+    color: "success",
+    message: "Transaksi berhasil disimpan",
+  },
+
   created_transaction: {
     color: "success",
     message: "Transaksi berhasil dibuat",
@@ -426,6 +431,10 @@ export const TOAST_CONFIG_TRANSACTION_DETAIL: Record<
   download_success: {
     color: "success",
     message: "Berhasil download file",
+  },
+  set_tempo: {
+    color: "success",
+    message: "Tempo berhasil diatur",
   },
 };
 
