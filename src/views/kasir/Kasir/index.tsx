@@ -5,7 +5,6 @@ import Pembayaran from "./Pembayaran";
 import Struk from "./Struk";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_TRANSACTION } from "../../../types/toast.type";
-import NotCompatible from "../../../components/messages/NotCompatible";
 import Booking from "./Booking";
 
 const Kasir = () => {
@@ -39,8 +38,6 @@ const Kasir = () => {
         {/* booking */}
         {step === 4 && <Booking handleToast={handleSetToast} kasir={kasir} />}
       </div>
-      {/* message  */}
-      <NotCompatible />
     </div>
   );
 };

@@ -725,7 +725,7 @@ const InformasiPembayaran: FC<Props> = ({
             customWidth="w-full mt-2"
             bgColor="bg-emerald-500"
             textColor="text-primary-white"
-            label="Cetak Struk Kirim Barang"
+            label="Cetak Surat Jalan"
             isLoading={isLoadingPrintInvoiceKirimBarang}
             handleBtn={() =>
               handlePrintInvoiceKirimBarang({

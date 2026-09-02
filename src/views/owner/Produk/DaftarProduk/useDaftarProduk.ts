@@ -7,6 +7,7 @@ import useModal from "../../../../hooks/useModal";
 import useDeleteProduk from "../../../../hooks/useDeleteProduk";
 import useUpdateProdukIsActive from "../../../../validations/useUpdateProdukIsActive";
 import type { IProduk } from "../../../../models/produk.model";
+import useGenerateHargaJualPpn from "../../../../hooks/useGenerateHargaJualPpn";
 
 const useDaftarProduk = (params: {
   handleSetToast: (toast: string) => void;
@@ -43,7 +44,13 @@ const useDaftarProduk = (params: {
   } = useModal<{
     produk: Pick<
       IProduk,
-      "id" | "nama" | "img" | "hargaJual" | "kategori" | "kode"
+      | "id"
+      | "nama"
+      | "img"
+      | "hargaJual"
+      | "kategori"
+      | "kode"
+      | "hargaModalRataRata"
     >;
   }>();
 
@@ -134,6 +141,11 @@ const useDaftarProduk = (params: {
     variablesUpdateIsActive,
   } = useUpdateProdukIsActive({ handleSetToast });
 
+  // use get harga ppn
+  const { handleGetHargaPpn, isPendingGetHargaPpn } = useGenerateHargaJualPpn({
+    handleSetToast,
+  });
+
   // Ekspos state & handler yang dibutuhkan oleh komponen UI daftar produk
   return {
     handleRedirectDetail,
@@ -164,6 +176,8 @@ const useDaftarProduk = (params: {
     handleCloseModalGenerateHargaJual,
     handleShowModalGenerateHargaJual,
     dataModalGenerateHargaJual,
+    handleGetHargaPpn,
+    isPendingGetHargaPpn,
   };
 };
 

@@ -60,8 +60,10 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
 
     dataDp,
 
-    handleSetDataDiBayar,
+    handleSetCustomDp,
   } = useBooking({ handleToast, kasir });
+
+  console.log(dataDiBayar);
   return (
     <div className="w-full h-[95vh]  grid grid-cols-3 gap-2.5">
       <div className="col-span-2 grid grid-rows-10 min-h-0 gap-2.5">
@@ -296,7 +298,7 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
                   ? transactionSummary.totalUangTransaksi
                   : undefined
               }
-              handleBayar={handleSetDataDiBayar}
+              handleBayar={handleSetCustomDp}
             />
 
             <span className="text-[0.7rem] text-base-content">

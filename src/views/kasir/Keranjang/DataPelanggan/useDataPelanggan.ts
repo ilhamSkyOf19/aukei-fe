@@ -32,7 +32,7 @@ const useDataPelanggan = () => {
 
   //   query pelanggan
   const { data: dataPelanggan, isLoading: isLoadingPelanggan } = useQuery({
-    queryKey: ["pelanggan", search, page],
+    queryKey: ["pelanggan-keranjang", search, page],
     queryFn: () =>
       PelangganServices.findAllForKeranjang({
         ...(search && { search }),

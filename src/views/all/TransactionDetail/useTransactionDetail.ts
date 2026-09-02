@@ -39,14 +39,7 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
   // handle back transaksi
   const handleBackTransaksi = () => {
     if (!currentPathname.includes("kasir")) {
-      if (
-        currentPathname.includes("riwayat-transaksi") ||
-        currentPathname.includes("kredit")
-      ) {
-        return navigate(-1);
-      } else {
-        return navigate(currentPathname.split("/").slice(0, -1).join("/"));
-      }
+      return navigate(currentPathname.split("/").slice(0, -1).join("/"));
     } else {
       handleSteps?.(1);
 

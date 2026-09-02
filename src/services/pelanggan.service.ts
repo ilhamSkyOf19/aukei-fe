@@ -25,6 +25,18 @@ export class PelangganServices {
     return result.data;
   }
 
+  // find by id
+  static async findByTanpaNama(): Promise<
+    ResponseStructure<ResponsePelangganType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponsePelangganType | null>
+    >(`/pelanggan/tanpa-nama`);
+
+    return result.data;
+  }
+
   // find all with riwayat
   static async findAllWithRiwayat(
     query: PaginationType,

@@ -5,7 +5,6 @@ import RangeDate from "../../../components/filters/RangeDate";
 import GrafikBatang from "../../../components/grafik/GrafikBatang";
 import GrafikLine from "../../../components/grafik/GrafikLine";
 import GrafikPieMetodePembayaran from "../../../components/grafik/GrafikPieMetodePembayaran";
-import listDateRangeLong from "../../../utils/listDateRangeLong";
 import StatistikTopPelanggan from "../../../components/grafik/StatistikTopPelanggan";
 import StatistikTopProduk from "../../../components/grafik/StatistikTopProduk";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
@@ -122,7 +121,6 @@ const StatistikDetail = () => {
                     {/* button filter */}
                     <RangeDate
                       customWidth="w-50 lg:w-70"
-                      listDate={listDateRangeLong}
                       labelDown
                       noLabel
                       noLabelAll

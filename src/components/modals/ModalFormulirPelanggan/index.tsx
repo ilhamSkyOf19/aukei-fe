@@ -76,8 +76,7 @@ const ModalFormulirPelanggan: FC<Props> = ({
             <InputPhoneNumber<UpdatePelangganType | CreatePelangganType>
               controller={noWaController}
               placeholder="Masukan no whatsapp aktif"
-              label="No Whatsapp"
-              required
+              label="No Whatsapp (Opsional)"
               name="noWa"
               handleClearError={handleClearErrorNoWa}
             />

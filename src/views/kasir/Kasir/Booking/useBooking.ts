@@ -54,9 +54,12 @@ const useBooking = (params: {
   // Nominal uang yang dibayarkan
   const [dataDiBayar, setDataDiBayar] = useState<number>(0);
 
+  // nominla custom dp
+  const [dataCustomDp, setDataCustomDp] = useState<number>(0);
+
   // handle set data dibayar
-  const handleSetDataDiBayar = (value: number) => {
-    setDataDiBayar(value);
+  const handleSetCustomDp = (value: number) => {
+    setDataCustomDp(value);
   };
 
   // Metode pembayaran terpilih, diambil dari draft transaksi server
@@ -66,8 +69,12 @@ const useBooking = (params: {
 
   // Nilai DP yang tersimpan di server (tempo.uangMuka pada draft transaksi)
   const dataDp = useMemo<number | null>(() => {
-    return dataTransaksi?.data?.tempo?.uangMuka ?? null;
-  }, [dataTransaksi]);
+    if (dataCustomDp) {
+      return dataCustomDp;
+    } else {
+      return dataTransaksi?.data?.tempo?.uangMuka ?? null;
+    }
+  }, [dataTransaksi, dataCustomDp]);
 
   // Nilai ongkir yang tersimpan di draft transaksi server
   const dataOngkir = useMemo<number>(() => {
@@ -351,7 +358,7 @@ const useBooking = (params: {
 
     dataDiBayar,
 
-    handleSetDataDiBayar,
+    handleSetCustomDp,
 
     dataDp,
 

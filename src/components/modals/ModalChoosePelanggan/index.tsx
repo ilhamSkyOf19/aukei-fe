@@ -130,7 +130,6 @@ const ModalChoosePelanggan: FC<Props> = ({
                   <div className="flex-2 flex flex-row justify-start items-center gap-4">
                     {/* avatar */}
                     <Avatar index={index} nama={item.nama} sm />
-
                     {/* nama and no wa */}
                     <div className="flex flex-col justify-start items-start gap-0.5">
                       <span className="text-xs font-medium text-base-content">
@@ -141,6 +140,10 @@ const ModalChoosePelanggan: FC<Props> = ({
                       </span>
                     </div>
                   </div>
+
+                  <span className="text-xs font-medium text-base-content capitalize">
+                    {item.label}
+                  </span>
 
                   <div className="flex-1 flex flex-row justify-end items-center">
                     <ChevronRight className="size-4 text-base-content" />

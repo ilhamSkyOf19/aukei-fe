@@ -44,6 +44,10 @@ export const TOAST_CONFIG_PRODUK: Record<
     color: "error",
     message: "Kategori produk berhasil dihapus",
   },
+  updated_harga_ppn: {
+    color: "info",
+    message: "Harga PPN berhasil diperbarui",
+  },
 };
 
 // toast produk detail

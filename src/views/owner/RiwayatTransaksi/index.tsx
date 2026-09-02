@@ -19,7 +19,10 @@ import {
   formatRupiah,
 } from "../../../helpers/helpers";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
-import { type PaymentMethodType } from "../../../types/constant.type";
+import {
+  ROLE_INTERNAL_TYPE,
+  type PaymentMethodType,
+} from "../../../types/constant.type";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import Avatar from "../../../components/ui/Avatar";
@@ -40,6 +43,7 @@ const RiwayatTransaksi = () => {
     isExistDataRiwayatTransaksi,
     isLoadingRiwayatTransaksi,
     setLimit,
+    pengguna,
     setPage,
     setSort,
     sort,
@@ -161,40 +165,42 @@ const RiwayatTransaksi = () => {
               }
               caption={"Jumlah omzet terjual"}
             />
-
-            {/* total modal */}
-            <CardStatistik
-              isLoading={isLoadingRiwayatTransaksi}
-              icon={{
-                icon: BanknoteArrowUp,
-                bgColor: "bg-amber-100",
-                iconColor: "text-amber-400",
-              }}
-              label={"Total Modal Terjual"}
-              value={
-                formatNumber(
-                  dataRiwayatTransaksi?.data?.statistik?.totalModal ?? 0,
-                ) || "0"
-              }
-              caption={"Jumlah modal terjual"}
-            />
-
-            {/* total laba */}
-            <CardStatistik
-              isLoading={isLoadingRiwayatTransaksi}
-              icon={{
-                icon: ChartNoAxesCombined,
-                bgColor: "bg-blue-100",
-                iconColor: "text-blue-400",
-              }}
-              label={"Total Laba"}
-              value={
-                formatNumber(
-                  dataRiwayatTransaksi?.data?.statistik?.totalLaba ?? 0,
-                ) || "0"
-              }
-              caption={"Jumlah laba"}
-            />
+            {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
+              <>
+                {/* total modal */}
+                <CardStatistik
+                  isLoading={isLoadingRiwayatTransaksi}
+                  icon={{
+                    icon: BanknoteArrowUp,
+                    bgColor: "bg-amber-100",
+                    iconColor: "text-amber-400",
+                  }}
+                  label={"Total Modal Terjual"}
+                  value={
+                    formatNumber(
+                      dataRiwayatTransaksi?.data?.statistik?.totalModal ?? 0,
+                    ) || "0"
+                  }
+                  caption={"Jumlah modal terjual"}
+                />
+                {/* total laba */}
+                <CardStatistik
+                  isLoading={isLoadingRiwayatTransaksi}
+                  icon={{
+                    icon: ChartNoAxesCombined,
+                    bgColor: "bg-blue-100",
+                    iconColor: "text-blue-400",
+                  }}
+                  label={"Total Laba"}
+                  value={
+                    formatNumber(
+                      dataRiwayatTransaksi?.data?.statistik?.totalLaba ?? 0,
+                    ) || "0"
+                  }
+                  caption={"Jumlah laba"}
+                />
+              </>
+            )}
 
             {/* total kas masuk */}
             <CardStatistik

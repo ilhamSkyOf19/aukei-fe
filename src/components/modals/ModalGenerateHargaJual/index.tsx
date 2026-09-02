@@ -15,7 +15,16 @@ type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
   data?: Partial<
-    Pick<IProduk, "id" | "nama" | "img" | "hargaJual" | "kategori" | "kode">
+    Pick<
+      IProduk,
+      | "id"
+      | "nama"
+      | "img"
+      | "hargaJual"
+      | "kategori"
+      | "kode"
+      | "hargaModalRataRata"
+    >
   >;
   handleSetToast: (toast: string) => void;
   noInfo?: boolean;
@@ -90,15 +99,15 @@ const ModalGenerateHargaJual: FC<Props> = ({
                       {/* kode produk */}
                       <Label
                         label={`Kode Produk`}
-                        value={data?.kode || ""}
+                        value={data?.kode || "-"}
                         small
                       />
                     </div>
 
                     {/* harga jual */}
                     <Label
-                      label={`Harga Jual`}
-                      value={formatRupiah(data?.hargaJual ?? "")}
+                      label={`Harga Modal Rata Rata`}
+                      value={formatRupiah(data?.hargaModalRataRata ?? "")}
                       small
                     />
                   </div>

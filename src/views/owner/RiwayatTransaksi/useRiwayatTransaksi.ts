@@ -4,6 +4,7 @@ import { TransactionServices } from "../../../services/transaction.service";
 import { useQueries } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
+import { useAuthStore } from "../../../stores/authStore";
 
 const useRiwayatTransaksi = () => {
   // navigate
@@ -16,6 +17,9 @@ const useRiwayatTransaksi = () => {
       allowQuery: ["semua", "cash", "transfer", "qris", "tempo"],
       defaultValueCustom: "semua",
     });
+
+  // get pengguna
+  const pengguna = useAuthStore((state) => state.pengguna);
 
   // filter search
   const { search, setSearch: handleSearch } = useFilterSearch("search");
@@ -101,6 +105,7 @@ const useRiwayatTransaksi = () => {
     handleSearch,
     setPage,
     setLimit,
+    pengguna,
     setSort,
     sort,
   };

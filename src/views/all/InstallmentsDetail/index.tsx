@@ -494,7 +494,10 @@ const InstallmentsDetail = () => {
                           <td align="center">
                             <ButtonSendMessageTable
                               tooltipPosition="left"
-                              disabled={selisihDate > 3}
+                              disabled={
+                                selisihDate > 3 &&
+                                dataInstallments?.data?.pelanggan?.noWa === "-"
+                              }
                               handleSend={() =>
                                 kirimWA({
                                   nama:

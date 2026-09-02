@@ -14,6 +14,7 @@ import ButtonWithIcon from "../../button/ButtonWithIcon";
 
 type Props = {
   data: Omit<ITransactionDetailType, "createdAt" | "updatedAt" | "laba">;
+  disabled?: boolean;
   handleAppend?: (params: {
     detailId: number;
     nama: string;
@@ -26,6 +27,7 @@ type Props = {
 };
 const CardProdukTransaksi: FC<Props> = ({
   handleAppend,
+  disabled,
   data: { id, diskon, hargaJual, produk, quantity, totalHarga, totalRetur },
 }) => {
   return (
@@ -117,7 +119,7 @@ const CardProdukTransaksi: FC<Props> = ({
       {handleAppend && (
         <div className="w-full mt-2.5 flex flex-row justify-end  items-end gap-2.5">
           <ButtonWithIcon
-            disabled={quantity <= totalRetur}
+            disabled={disabled}
             label="Retur"
             icon={Undo2}
             bgColor="bg-error"

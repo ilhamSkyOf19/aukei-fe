@@ -45,7 +45,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
-      <div className="modal-box lg:w-3/4 max-w-3xl rounded-xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10">
+      <div className="modal-box lg:w-3/4 max-w-4xl rounded-xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
@@ -95,15 +95,22 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 <div className="w-full flex flex-row justify-around items-stretch gap-2.5">
                   {/* harga modal */}
                   <Label
-                    label={`Hrg. Modal`}
+                    label={`Hrg. Modal Rata Rata`}
                     value={formatRupiah(data?.hargaModalRataRata ?? "")}
                     small
                   />
 
                   {/* harga jual */}
                   <Label
-                    label={`Hrg. Jual Patokan`}
+                    label={`Hrg. Jual`}
                     value={formatRupiah(data?.hargaJual ?? "")}
+                    small
+                  />
+
+                  {/* harga jual */}
+                  <Label
+                    label={`Hrg. Jual + PPN`}
+                    value={formatRupiah(data?.hargaPpn ?? "")}
                     small
                   />
 

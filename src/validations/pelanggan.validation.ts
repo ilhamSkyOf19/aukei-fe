@@ -23,10 +23,8 @@ export class PelangganValidations {
   private static noWaSchema(field: string) {
     return z
       .string(`${field} harap diisi`)
-      .trim()
-      .min(10, `${field} minimal 10 digit`)
       .max(15, `${field} maksimal 15 digit`)
-      .regex(/^[0-9]+$/, `${field} hanya boleh berisi angka`);
+      .optional();
   }
 
   static readonly CREATE = z

@@ -59,6 +59,9 @@ const ReturBarang = () => {
 
     handleSetToast,
     toast,
+
+    handlePosted,
+    isPendingPosted,
   } = useReturBarang();
 
   return (
@@ -165,6 +168,10 @@ const ReturBarang = () => {
                 <CardProdukTransaksi
                   key={item.id}
                   data={item}
+                  disabled={
+                    item.quantity <= item.totalRetur ||
+                    returnDetails?.some((item) => item.id)
+                  }
                   handleAppend={handleAppend}
                 />
               ))
@@ -514,7 +521,13 @@ const ReturBarang = () => {
                       ? "Simpan dan Review"
                       : "Simpan dan Ajukan"
                   }
-                  handleBtn={() => handleShowModalPengajuanOrVerifikasi()}
+                  handleBtn={() => {
+                    if (pengguna?.role === ROLE_INTERNAL_TYPE.OWNER) {
+                      handlePosted();
+                    } else {
+                      handleShowModalPengajuanOrVerifikasi();
+                    }
+                  }}
                   customWidth="col-span-1"
                   skeleton={isLoadingForReturBarang}
                 />

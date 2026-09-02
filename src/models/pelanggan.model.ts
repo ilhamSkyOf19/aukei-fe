@@ -10,10 +10,9 @@ export interface IPelangganType {
 }
 
 // create
-export interface CreatePelangganType extends Pick<
-  IPelangganType,
-  "nama" | "noWa"
-> {}
+export interface CreatePelangganType extends Pick<IPelangganType, "nama"> {
+  noWa?: string;
+}
 
 // update
 export interface UpdatePelangganType extends Partial<CreatePelangganType> {}
@@ -23,7 +22,7 @@ export interface ResponsePelangganType extends IPelangganType {}
 
 // response with meta
 export interface ResponsePelangganWithMetaType {
-  data: ResponsePelangganType[];
+  data: Array<ResponsePelangganType & { label: "lama" | "baru" }>;
   meta: MetaType;
 }
 
@@ -46,6 +45,7 @@ export interface ResponsePelangganForKeranjangWithMetaType {
 // response pelanggan with riwayat
 export interface ResponsePelangganWithRiwayatAndMetaType {
   data: (IPelangganType & {
+    label: "lama" | "baru";
     totalTransaction?: number;
     booking?: number;
     kredit?: {

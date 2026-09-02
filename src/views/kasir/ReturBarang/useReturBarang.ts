@@ -10,6 +10,7 @@ import type { ErrorResponse } from "../../../types/response.type";
 import { useAuthStore } from "../../../stores/authStore";
 import useModal from "../../../hooks/useModal";
 import { useToastAnimation } from "../../../hooks/useToast";
+import type { AddReturnDetailByIdRequestType } from "../../../models/returBarang.model";
 
 const useReturBarang = () => {
   const pengguna = useAuthStore((state) => state.pengguna);
@@ -43,7 +44,7 @@ const useReturBarang = () => {
    * ============================================================
    */
   const {
-    // confirm,
+    confirm,
     data: dataConfirm,
     handleCancel: handleCancelConfirm,
     handleConfirm,
@@ -59,6 +60,10 @@ const useReturBarang = () => {
     handleCloseModal: handleCloseModalPengajuanOrVerifikasi,
     handleShowModal: handleShowModalPengajuanOrVerifikasi,
   } = useModal();
+
+  // buat modal confirm untuk owner
+  // modal confirm
+  const {} = useConfirm();
 
   /**
    * ============================================================
@@ -184,7 +189,20 @@ const useReturBarang = () => {
     mutateAsync: mutateAddReturnDetail,
     // isPending: isPendingAddReturnDetail,
   } = useMutation({
-    mutationFn: ReturBarangServices.addReturnDetail,
+    mutationFn: (data: AddReturnDetailByIdRequestType) => {
+      if (returBarangId && data.returnId) {
+        return ReturBarangServices.addReturnDetailById({
+          returnId: data.returnId,
+          transactionDetailId: data.transactionDetailId,
+          transactionId: data.transactionId,
+        });
+      } else {
+        return ReturBarangServices.addReturnDetail({
+          transactionDetailId: data.transactionDetailId,
+          transactionId: data.transactionId,
+        });
+      }
+    },
 
     onSuccess: async () => {
       /**
@@ -245,6 +263,7 @@ const useReturBarang = () => {
     await mutateAddReturnDetail({
       transactionId: validateTransactionId!,
       transactionDetailId: params.detailId,
+      returnId: validateReturBarangId ?? null,
     });
   };
 
@@ -463,6 +482,61 @@ const useReturBarang = () => {
   //   });
   // };
 
+  const { mutateAsync: mutatePosted, isPending: isPendingPosted } = useMutation(
+    {
+      mutationFn: (data: { kodeReferensi: string }) =>
+        ReturBarangServices.posted({
+          kodeReferensi: data.kodeReferensi,
+        }),
+
+      onSuccess: async () => {
+        /**
+         * Jika container sudah ada, cukup refresh detail.
+         */
+        await queryClient.invalidateQueries({
+          queryKey: ["transaction-for-retur-barang", validateTransactionId],
+        });
+
+        /**
+         * Refresh transaksi juga jika diperlukan.
+         */
+        await queryClient.invalidateQueries({
+          queryKey: ["return-draft-details", validateTransactionId],
+        });
+
+        await queryClient.invalidateQueries({
+          queryKey: ["return-details", validateReturBarangId],
+        });
+      },
+
+      onError: (err) => {
+        console.log(err);
+      },
+    },
+  );
+
+  const handlePosted = async () => {
+    try {
+      if (!dataForReturBarang?.data?.nomorTransaksi) return;
+
+      const isConfirm = await confirm({
+        bigTitle: "Apakah anda yakin ingin menyimpan data retur barang?",
+        smallTitle:
+          "Data akan langsung diposting dan tidak melewati proses verifikasi",
+      });
+
+      if (!isConfirm) {
+        handleCancelConfirm();
+      }
+
+      await mutatePosted({
+        kodeReferensi: dataForReturBarang?.data?.nomorTransaksi,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     handleBack,
 
@@ -505,6 +579,10 @@ const useReturBarang = () => {
     toast,
 
     handleSetToast,
+
+    handlePosted,
+
+    isPendingPosted,
   };
 };
 

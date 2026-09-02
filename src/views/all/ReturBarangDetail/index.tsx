@@ -537,7 +537,8 @@ const ReturBarangDetail = () => {
             {/* aksi */}
             <div className="w-full flex flex-row justify-end items-end gap-2.5 mt-2.5">
               {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
-                dataReturBarang?.data?.status === RETURN_STATUS.PENDING && (
+                (dataReturBarang?.data?.status === RETURN_STATUS.PENDING ||
+                  dataReturBarang?.data?.status === RETURN_STATUS.DRAFT) && (
                   <>
                     {/* batal */}
                     <ButtonWithIcon

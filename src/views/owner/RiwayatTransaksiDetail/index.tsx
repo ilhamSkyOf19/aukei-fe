@@ -360,7 +360,9 @@ const RiwayatTransaksiDetail = () => {
                   </tr>
                 ))
               ) : isExistDataRiwayatTransaksi &&
-                dataRiwayatTransaksi?.data?.data.transaksi !== undefined ? (
+                dataRiwayatTransaksi?.data?.data.transaksi !== undefined &&
+                dataRiwayatTransaksi?.data?.data.transaksi !== undefined &&
+                dataRiwayatTransaksi?.data?.data?.transaksi?.length > 0 ? (
                 dataRiwayatTransaksi?.data?.data.transaksi.map((item, _) => (
                   <tr
                     key={item.id}

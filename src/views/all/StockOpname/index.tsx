@@ -54,7 +54,7 @@ const StockOpname: FC<Props> = ({ fromPengajuan }) => {
         />
       )}
 
-      <div className="w-full mb-2.5 flex flex-col justify-start items-start">
+      <div className="w-full mb-2.5 pt-22 md:pt-0 flex flex-col justify-start items-start">
         {/* button cluster */}
         <div
           className={cn(
@@ -161,7 +161,7 @@ const StockOpname: FC<Props> = ({ fromPengajuan }) => {
         <div
           className={cn(
             "w-full flex flex-col justify-center items-start px-2.5 mt-1 md:pt-0 md:mt-0",
-            pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? " pt-20" : "pt-2.5",
+            pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? "pt-2.5" : "pt-2.5",
           )}
         >
           {/* filter */}

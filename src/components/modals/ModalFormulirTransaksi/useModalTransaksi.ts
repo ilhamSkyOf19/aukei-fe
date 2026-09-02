@@ -10,6 +10,12 @@ import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
 
+// helper: ambil harga efektif -> pakai hargaPpn kalau ada isinya (> 0), fallback ke hargaJual
+const getHargaEfektif = (hargaPpn?: number | null, hargaJual?: number) => {
+  const ppn = Number(hargaPpn ?? 0);
+  return ppn > 0 ? ppn : (hargaJual ?? 0);
+};
+
 const useModalTransaksi = (params: {
   handleCloseModal: () => void;
   data?: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
@@ -36,7 +42,7 @@ const useModalTransaksi = (params: {
     if (data) {
       reset({
         produkId: data.produkId,
-        hargaJual: data.hargaJual,
+        hargaJual: getHargaEfektif(data.hargaPpn, data.hargaJual),
         quantity: data.quantity,
         diskon: (data.diskon ?? 0) / data.quantity,
       });
@@ -60,11 +66,15 @@ const useModalTransaksi = (params: {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
+      const hargaEfektifDefault = getHargaEfektif(
+        data?.hargaPpn,
+        data?.hargaJual,
+      );
+
       const totalDiskon = (diskon ?? data?.diskon ?? 0) * quantity;
 
       const total =
-        (hargaJual ?? data?.hargaJual ?? 0) *
-          (quantity ?? data?.quantity ?? 0) -
+        (hargaJual ?? hargaEfektifDefault) * (quantity ?? data?.quantity ?? 0) -
         totalDiskon;
 
       // set total diskon
@@ -79,6 +89,7 @@ const useModalTransaksi = (params: {
     quantity,
     diskon,
     data?.hargaJual,
+    data?.hargaPpn,
     data?.quantity,
     data?.diskon,
   ]);
@@ -101,11 +112,10 @@ const useModalTransaksi = (params: {
     name: "quantity",
   });
 
-  // queyr client
+  // query client
   const queryClient = useQueryClient();
 
   // mutate pilih produk
-
   const { mutateAsync: handleTambahProduk, isPending: isPendingTambahProduk } =
     useMutation({
       mutationFn: (req: TambahProdukDetailForReqeustType) => {

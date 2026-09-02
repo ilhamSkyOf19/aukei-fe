@@ -1,6 +1,7 @@
 import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
+  AddReturnDetailByIdRequestType,
   AddReturnDetailRequestType,
   AddReturnDetailResponseType,
   DeleteReturnDetailParamsType,
@@ -29,6 +30,16 @@ export class ReturBarangServices {
     const result = await instanceAxios.post<
       ResponseStructure<AddReturnDetailResponseType | null>
     >("/return/detail", req);
+
+    return result.data;
+  }
+
+  static async addReturnDetailById(
+    req: AddReturnDetailByIdRequestType,
+  ): Promise<ResponseStructure<AddReturnDetailResponseType | null>> {
+    const result = await instanceAxios.post<
+      ResponseStructure<AddReturnDetailResponseType | null>
+    >("/return/by-id/detail", req);
 
     return result.data;
   }
@@ -132,12 +143,22 @@ export class ReturBarangServices {
   }
 
   // verifikasi
+  static async posted(data: {
+    kodeReferensi: string;
+  }): Promise<ResponseStructure<ResponseReturnForByIdType | null>> {
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponseReturnForByIdType | null>
+    >(`/return/posted`, data);
+
+    return result.data;
+  }
+
+  // verifikasi
   static async verifikasi(data: {
     kodeReferensi: string;
     status: Extract<ReturnStatus, "APPROVED" | "REJECTED">;
     keterangan?: string;
   }): Promise<ResponseStructure<ResponseReturnForByIdType | null>> {
-    console.log(data);
     const result = await instanceAxios.patch<
       ResponseStructure<ResponseReturnForByIdType | null>
     >(`/return/verifikasi`, data);

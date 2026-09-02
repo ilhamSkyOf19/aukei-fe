@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   Banknote,
+  CircleDollarSign,
   Package,
   PackagePlus,
   RefreshCcwIcon,
@@ -66,6 +67,8 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
     handleCloseModalGenerateHargaJual,
     handleShowModalGenerateHargaJual,
     modalGenerateHargaJualRef,
+    handleGetHargaPpn,
+    isPendingGetHargaPpn,
   } = useDaftarProduk({ handleSetToast });
 
   return (
@@ -77,6 +80,15 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
             icon={PackagePlus}
             label="Tambah Produk"
             handleBtn={() => handleRedirectTambah()}
+            classHidden="md:hidden flex w-full mb-3"
+            customWidth="w-full"
+          />
+          <ButtonAdd
+            icon={PackagePlus}
+            label="Generate Harga Jual PPN"
+            bgColor="bg-info"
+            textColor="text-primary-white"
+            handleBtn={() => handleGetHargaPpn()}
             classHidden="md:hidden flex w-full mb-3"
             customWidth="w-full"
           />
@@ -102,7 +114,21 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
               value={sort}
             />
 
-            {/* button add produk */}
+            {/* generate */}
+            <div className="flex-col justify-start items-start gap-1.5 hidden md:flex">
+              <span className="text-xs text-base-content/80 font-medium">
+                Harga PPN
+              </span>
+
+              <ButtonAdd
+                icon={CircleDollarSign}
+                bgColor="bg-info"
+                textColor="text-primary-white"
+                label="Generate"
+                isLoading={isPendingGetHargaPpn}
+                handleBtn={() => handleGetHargaPpn()}
+              />
+            </div>
             <div className="flex-col justify-start items-start gap-1.5 hidden md:flex">
               <span className="text-xs text-base-content/80 font-medium">
                 Tambah
@@ -137,6 +163,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                   kode: produk.kode,
                   stok: produk.stok,
                   isActive: produk.isActive,
+                  hargaPpn: produk.hargaPpn,
                 }}
                 variablesUpdateIsActive={variablesUpdateIsActive}
                 handelUpdateIsActive={handelUpdateIsActive}
@@ -151,6 +178,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                       kategori: produk.kategori,
                       nama: produk.nama,
                       kode: produk.kode,
+                      hargaModalRataRata: produk.hargaModalRataRata,
                     },
                   })
                 }
@@ -183,10 +211,11 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                 <th>Nama</th>
                 <th>Kategori</th>
                 <th>Hrg. Beli Terakhir</th>
-                <th>Modal Rata Rata</th>
-                <th>Harga Jual</th>
+                <th>Mdl. Rata Rata</th>
+                <th>Hrg. Jual</th>
+                <th>Hrg. PPN</th>
                 <th>Stok</th>
-                <th>Isi PerBox</th>
+                <th>Isi Box</th>
                 <th>Aktif</th>
                 <th align="center">Aksi</th>
               </tr>
@@ -234,6 +263,8 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                     <td>{formatRupiah(produk.hargaModalRataRata)}</td>
                     {/* harga jual */}
                     <td>{formatRupiah(produk.hargaJual)}</td>
+                    {/* harga ppn */}
+                    <td>{formatRupiah(produk.hargaPpn)}</td>
                     {/* stok */}
                     <td
                       className={cn(
@@ -245,7 +276,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                     </td>
                     {/* isi perbox */}
                     <td className="font-medium">
-                      {formatNumber(produk.isiPerBox.toString())}
+                      {formatNumber(produk.isiPerBox.toString())} Pcs
                     </td>
 
                     {/* aktif */}
@@ -285,6 +316,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                                 kategori: produk.kategori,
                                 nama: produk.nama,
                                 kode: produk.kode,
+                                hargaModalRataRata: produk.hargaModalRataRata,
                               },
                             })
                           }
@@ -372,6 +404,7 @@ type CardProdukProps = {
     isiPerBox: number;
     img: string;
     isActive: boolean;
+    hargaPpn: number;
   };
   handleRedirectDetail: (value: number) => void;
   handleShowModalDelete: () => void;
@@ -450,89 +483,123 @@ const CardProduk: FC<CardProdukProps> = ({
       </div>
 
       {/* content 2 */}
-      <div className="w-full flex flex-row justify-evenly items-start gap-4 py-1">
-        <div className="flex-1 flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
-          {/* label */}
-          <div className="flex flex-row justify-start items-center gap-1">
-            {/* icon */}
-            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-purple-100">
-              <ShoppingBag className="text-purple-400 size-2.5" />
+      <div className="w-full flex flex-col gap-3 py-1">
+        {/* baris atas - 3 item */}
+        <div className="w-full grid grid-cols-3 gap-x-2">
+          <div className="flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
+            {/* label */}
+            <div className="flex flex-row justify-start items-center gap-1">
+              {/* icon */}
+              <div className="w-5 h-5 rounded-full flex justify-center items-center bg-purple-100">
+                <ShoppingBag className="text-purple-400 size-2.5" />
+              </div>
+
+              {/* label */}
+              <span className="text-[0.625rem] text-base-content">Beli</span>
             </div>
 
-            {/* label */}
-            <span className="text-[0.625rem] text-base-content">Beli</span>
+            {/* value */}
+            <span className="text-[0.7rem] font-medium text-base-content">
+              {(produk.hargaBeli ?? 0) >= 100000
+                ? formatRupiahShort(produk.hargaBeli ?? 0)
+                : formatRupiah(produk.hargaBeli ?? 0)}
+            </span>
           </div>
 
-          {/* value */}
-          <span className="text-[0.7rem] font-medium text-base-content">
-            {(produk.hargaBeli ?? 0) >= 100000
-              ? formatRupiahShort(produk.hargaBeli ?? 0)
-              : formatRupiah(produk.hargaBeli ?? 0)}
-          </span>
+          <div className="flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
+            {/* label */}
+            <div className="flex flex-row justify-start items-center gap-1">
+              {/* icon */}
+              <div className="w-5 h-5 rounded-full flex justify-center items-center bg-emerald-100">
+                <Banknote className="text-emerald-400 size-2.5" />
+              </div>
+
+              {/* label */}
+              <span className="text-[0.625rem] text-base-content">Jual</span>
+            </div>
+
+            {/* value */}
+            <span className="text-[0.7rem] font-medium text-base-content">
+              {(produk.hargaJual ?? 0) >= 100000
+                ? formatRupiahShort(produk.hargaJual ?? 0)
+                : formatRupiah(produk.hargaJual ?? 0)}
+            </span>
+          </div>
+
+          <div className="flex flex-col justify-start items-start gap-1">
+            {/* label */}
+            <div className="flex flex-row justify-start items-center gap-1">
+              {/* icon */}
+              <div className="w-5 h-5 rounded-full flex justify-center items-center bg-emerald-100">
+                <CircleDollarSign className="text-emerald-400 size-2.5" />
+              </div>
+
+              {/* label */}
+              <span className="text-[0.625rem] text-base-content">
+                Hrg. PPN
+              </span>
+            </div>
+
+            {/* value */}
+            <span className="text-[0.7rem] font-medium text-base-content">
+              {(produk.hargaPpn ?? 0) >= 100000
+                ? formatRupiahShort(produk.hargaPpn ?? 0)
+                : formatRupiah(produk.hargaPpn ?? 0)}
+            </span>
+          </div>
         </div>
-        <div className="flex-1 flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
-          {/* label */}
-          <div className="flex flex-row justify-start items-center gap-1">
-            {/* icon */}
-            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-emerald-100">
-              <Banknote className="text-emerald-400 size-2.5" />
+
+        {/* garis pemisah tengah */}
+        <div className="w-full border-t border-base-content/10" />
+
+        {/* baris bawah - 2 item */}
+        <div className="w-full grid grid-cols-3 gap-x-2">
+          <div className="flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
+            {/* label */}
+            <div className="flex flex-row justify-start items-center gap-1">
+              {/* icon */}
+              <div className="w-5 h-5 rounded-full flex justify-center items-center bg-blue-100">
+                <Package className="text-blue-400 size-2.5" />
+              </div>
+
+              {/* label */}
+              <span className="text-[0.625rem] text-base-content">Stok</span>
             </div>
 
-            {/* label */}
-            <span className="text-[0.625rem] text-base-content">Jual</span>
+            {/* value */}
+            <span
+              className={cn(
+                "text-[0.7rem] font-medium text-base-content",
+                generateColorForStok(produk.stok ?? 0, produk.stok ?? 0),
+              )}
+            >
+              {produk.stok === 0
+                ? 0
+                : (produk.stok ?? 0) >= 1000
+                  ? formatNumberK(produk.stok ?? 0)
+                  : formatNumber(produk.stok ?? 0)}
+            </span>
           </div>
 
-          {/* value */}
-          <span className="text-[0.7rem] font-medium text-base-content">
-            {(produk.hargaJual ?? 0) >= 100000
-              ? formatRupiahShort(produk.hargaJual ?? 0)
-              : formatRupiah(produk.hargaJual ?? 0)}
-          </span>
-        </div>
-        <div className="flex-1 flex flex-col justify-start items-start gap-1 border-r border-base-content/10">
-          {/* label */}
-          <div className="flex flex-row justify-start items-center gap-1">
-            {/* icon */}
-            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-blue-100">
-              <Package className="text-blue-400 size-2.5" />
+          <div className="flex flex-col justify-start items-start gap-1">
+            {/* label */}
+            <div className="flex flex-row justify-start items-center gap-1">
+              {/* icon */}
+              <div className="w-5 h-5 rounded-full flex justify-center items-center bg-amber-100">
+                <ShoppingBag className="text-amber-600 size-2.5" />
+              </div>
+
+              {/* label */}
+              <span className="text-[0.625rem] text-base-content">Isi/Box</span>
             </div>
 
-            {/* label */}
-            <span className="text-[0.625rem] text-base-content">Stok</span>
+            {/* value */}
+            <span className="text-[0.7rem] font-medium text-base-content">
+              {(produk.isiPerBox ?? 0) >= 100000
+                ? formatNumberK(produk.isiPerBox ?? 0)
+                : formatNumber(produk.isiPerBox ?? 0)}
+            </span>
           </div>
-
-          {/* value */}
-          <span
-            className={cn(
-              "text-[0.7rem] font-medium text-base-content",
-              generateColorForStok(produk.stok ?? 0, produk.stok ?? 0),
-            )}
-          >
-            {produk.stok === 0
-              ? 0
-              : (produk.stok ?? 0) >= 1000
-                ? formatNumberK(produk.stok ?? 0)
-                : formatNumber(produk.stok ?? 0)}
-          </span>
-        </div>
-        <div className="flex-1 flex flex-col justify-start items-start gap-1">
-          {/* label */}
-          <div className="flex flex-row justify-start items-center gap-1">
-            {/* icon */}
-            <div className="w-5 h-5 rounded-full flex justify-center items-center bg-amber-100">
-              <ShoppingBag className="text-amber-600 size-2.5" />
-            </div>
-
-            {/* label */}
-            <span className="text-[0.625rem] text-base-content">Isi/Box</span>
-          </div>
-
-          {/* value */}
-          <span className="text-[0.7rem] font-medium text-base-content">
-            {(produk.isiPerBox ?? 0) >= 100000
-              ? formatNumberK(produk.isiPerBox ?? 0)
-              : formatNumber(produk.isiPerBox ?? 0)}
-          </span>
         </div>
       </div>
 

@@ -51,6 +51,13 @@ export class TransactionValidation {
     })
     .strict() satisfies z.ZodType<DetailsForCreate>;
 
+  // detail
+  static readonly NAMA = z
+    .object({
+      nama: z.string("Nama harus di isi").min(1, "Nama minimal 1 huruf"),
+    })
+    .strict() satisfies z.ZodType<{ nama: string }>;
+
   // static readonly CREATE_FOR_KERANJANG = z
   //   .object({
   //     pelangganId: z.number().int().positive().max(2147483647),

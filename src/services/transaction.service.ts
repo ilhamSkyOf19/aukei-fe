@@ -3,6 +3,7 @@ import type { PaginationType } from "../models/pagination.model";
 import type {
   CreateTransactionForRequestType,
   ResponseForReturBarang,
+  ResponsePilihPelangganType,
   ResponseProdukDetailType,
   ResponseRiwayatTransactionType,
   ResponseRiwayatTransaksiPelangganType,
@@ -179,11 +180,25 @@ export class TransactionServices {
   // pilih pelanggan
   static async pilihPelanggan(data: {
     pelangganId: number;
-  }): Promise<ResponseStructure<ResponseForReturBarang | null>> {
+  }): Promise<ResponseStructure<ResponsePilihPelangganType | null>> {
     // call api
     const result = await instanceAxios.post<
-      ResponseStructure<ResponseForReturBarang | null>
+      ResponseStructure<ResponsePilihPelangganType | null>
     >(`/transaction/pilih-pelanggan`, data);
+
+    return result.data;
+  }
+
+  // create fast pelanggan
+  static async fastCreateCustomer(data: {
+    pelangganId?: number;
+    transactionId: number;
+    nama: string;
+  }): Promise<ResponseStructure<ResponsePilihPelangganType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponsePilihPelangganType | null>
+    >(`/transaction/fast-create-customer`, data);
 
     return result.data;
   }

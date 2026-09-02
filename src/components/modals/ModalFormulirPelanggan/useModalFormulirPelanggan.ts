@@ -116,7 +116,10 @@ const useModalFormulirPelanggan = (params: {
   //   on submit
   const onSubmit = async (data: UpdatePelangganType | CreatePelangganType) => {
     try {
-      await handleMutatePelanggan(data);
+      await handleMutatePelanggan({
+        nama: data.nama,
+        noWa: data.noWa === "" ? "-" : data.noWa,
+      });
     } catch (error) {
       console.log(error);
     }

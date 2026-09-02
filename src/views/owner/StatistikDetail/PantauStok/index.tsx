@@ -62,33 +62,37 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
           />
         </div>
 
-        <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end md:items-end items-center gap-3 md:gap-2.5 mt-3 md:mt-0">
-          {/* filter kategori */}
-          <FilterKategori
-            setKategori={handleKategori}
-            customWidth="w-full md:w-40"
-            value={kategori}
-          />
+        <div className="w-full md:flex-wrap md:flex-2 flex flex-col md:flex-row justify-start md:justify-end md:items-end items-center gap-3 md:gap-2.5 mt-3 md:mt-0">
+          <div className="w-full md:w-auto flex flex-row justify-start items-start gap-2.5">
+            {/* filter kategori */}
+            <FilterKategori
+              setKategori={handleKategori}
+              customWidth="w-full md:w-40"
+              value={kategori}
+            />
 
-          {/* filter sort */}
-          <FilterSort
-            setSort={handleSort}
-            customWidth="w-full md:w-30"
-            value={sort}
-          />
+            {/* filter sort */}
+            <FilterSort
+              setSort={handleSort}
+              customWidth="w-full md:w-30"
+              value={sort}
+            />
+          </div>
+          <div className="w-full md:w-auto flex flex-row justify-start items-start gap-2.5">
+            <ButtonWithIcon
+              icon={FileText}
+              label="Export PDF"
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              customWidth="flex-1 md:w-auto"
+              isLoading={isLoadingDownloadLaporanStokPdf}
+              disabled={!dataProduk?.data?.data}
+              handleBtn={() => handleDownloadLaporanStokPdf()}
+            />
 
-          <ButtonWithIcon
-            icon={FileText}
-            label="Export PDF"
-            bgColor="bg-error"
-            textColor="text-primary-white"
-            customWidth="w-full md:w-auto"
-            isLoading={isLoadingDownloadLaporanStokPdf}
-            handleBtn={() => handleDownloadLaporanStokPdf()}
-          />
-
-          {/* handle refetch */}
-          <ButtonRefresh handleRefresh={handleRefresh} />
+            {/* handle refetch */}
+            <ButtonRefresh handleRefresh={handleRefresh} />
+          </div>
         </div>
       </div>
 

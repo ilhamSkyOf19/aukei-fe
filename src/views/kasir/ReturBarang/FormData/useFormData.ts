@@ -105,9 +105,9 @@ export const useFormData = ({
 
   // refech
   const refetch = async () => [
-    await Promise.all([
+    await Promise.allSettled([
       queryClient.invalidateQueries({
-        queryKey: ["return-draft-details", returnDetailId],
+        queryKey: ["return-draft-details", transactionId],
       }),
 
       queryClient.invalidateQueries({

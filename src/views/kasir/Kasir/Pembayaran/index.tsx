@@ -73,6 +73,9 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
   });
 
   // perbaiki design nya
+  const paymentTransaction = dataTempo?.paymentTransactions?.[0] ?? null;
+
+  const metodePembayaranUangMuka = paymentTransaction?.metodePembayaran ?? null;
 
   return (
     <div className="w-full h-full grid grid-rows-9 gap-4 relative">
@@ -352,9 +355,9 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                                   Uang Muka
                                 </span>
                                 <span className="text-[0.7rem] font-medium text-error">
-                                  -{" "}
+                                  {" "}
                                   {dataTempo?.uangMuka
-                                    ? formatRupiah(dataTempo.uangMuka)
+                                    ? `-${formatRupiah(dataTempo.uangMuka)}`
                                     : "-"}
                                 </span>
                               </div>
@@ -365,10 +368,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                                   Metode Pembayaran Uang Muka
                                 </span>
                                 <span className="text-[0.7rem] font-medium text-base-content">
-                                  {
-                                    dataTempo?.paymentTransactions?.[0]
-                                      .metodePembayaran
-                                  }
+                                  {metodePembayaranUangMuka ?? "-"}
                                 </span>
                               </div>
 
@@ -384,8 +384,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                               </div>
 
                               {/* metode pmebayaran uang muka cash */}
-                              {dataTempo?.paymentTransactions?.[0]
-                                .metodePembayaran === "CASH" && (
+                              {metodePembayaranUangMuka === "CASH" && (
                                 <>
                                   <div className="w-full flex flex-row justify-between items-center">
                                     <span className="text-xs text-base-content/70 font-medium">

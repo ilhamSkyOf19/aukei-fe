@@ -154,20 +154,21 @@ const Pelanggan = () => {
                 <th>Pilih</th>
                 <th>Nama Pelanggan</th>
                 <th>No Wa</th>
+                <th>Label</th>
                 <th>Total transaksi</th>
                 <th>Kredit Selesai</th>
                 <th>Kredit Berjalan</th>
                 <th>Kredit Terlambat</th>
                 <th>Booking</th>
                 <th>Aktif</th>
-                <th>Aksi</th>
+                <th align="center">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {isLoadingPelanggan ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={10}>
+                    <td colSpan={11}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>
@@ -176,7 +177,9 @@ const Pelanggan = () => {
                 dataPelanggan?.data?.data.map((pelanggan, _) => (
                   <tr
                     key={pelanggan.id}
-                    className={cn("transition-all duration-75 ease-in-out")}
+                    className={cn(
+                      "transition-all duration-75 ease-in-out h-12",
+                    )}
                   >
                     <th>
                       <label>
@@ -203,12 +206,18 @@ const Pelanggan = () => {
                     </td>
                     {/* no wa */}
                     <td className="text-base-content">
-                      <div className="flex flex-row justify-start items-center gap-6">
-                        {/* icon */}
-                        <p className=" font-semibold text-base-content">
-                          {formatNumberPhone(pelanggan.noWa)}
-                        </p>
-                      </div>
+                      {/* icon */}
+                      <span className="font-semibold text-base-content">
+                        {pelanggan.noWa !== "-"
+                          ? formatNumberPhone(pelanggan.noWa)
+                          : "-"}
+                      </span>
+                    </td>
+
+                    <td>
+                      <span className="font-semibold text-base-content capitalize">
+                        {pelanggan.label}
+                      </span>
                     </td>
                     {/*  total transaksi */}
                     <td className="text-base-content">
@@ -242,7 +251,7 @@ const Pelanggan = () => {
                     </td>
                     {/* kredit berjalan */}
                     <td className="text-base-content">
-                      <div className="flex flex-row justify-start items-center gap-6">
+                      <div className="flex flex-row justify-center items-center gap-6">
                         {/* icon */}
                         {pelanggan?.kredit?.berjalan ? (
                           <p className=" font-semibold text-base-content">

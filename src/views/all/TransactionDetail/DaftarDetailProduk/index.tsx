@@ -442,7 +442,9 @@ const DaftarDetailProduk: FC<Props> = ({
               icon={Eye}
               bgColor="bg-info"
               textColor="text-primary-white"
-              handleBtn={() => handleDaftarReturBarang()}
+              handleBtn={() =>
+                handleDaftarReturBarang(dataTransaction?.data?.id)
+              }
               customWidth="flex-3 md:flex-none"
             />
 

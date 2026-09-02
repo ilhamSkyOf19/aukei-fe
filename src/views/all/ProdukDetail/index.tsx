@@ -3,6 +3,7 @@ import {
   CalendarDays,
   CircleCheck,
   Clock,
+  DollarSign,
   PencilLineIcon,
   RefreshCcw,
   SendHorizonal,
@@ -399,7 +400,7 @@ const ProdukDetail = () => {
                       {/* harga */}
                       {keyUpdate !== "hargaJual" ? (
                         <div className="flex flex-row justify-start items-center gap-4">
-                          <span className="text-lg font-semibold text-emerald-500">
+                          <span className="text-base font-semibold text-emerald-500">
                             {formatRupiah(dataProduk?.data?.hargaJual ?? 0)}
                           </span>
 
@@ -458,7 +459,7 @@ const ProdukDetail = () => {
                       {/* harga */}
                       {keyUpdate !== "hargaBeli" ? (
                         <div className="flex flex-row justify-start items-center gap-4">
-                          <span className="text-lg font-semibold text-indigo-500">
+                          <span className="text-base font-semibold text-indigo-500">
                             {formatRupiah(dataProduk?.data?.hargaBeli ?? 0)}
                           </span>
 
@@ -659,6 +660,39 @@ const ProdukDetail = () => {
                             </div>
                           </CardForm>
                         )}
+                      </div>
+                    </div>
+
+                    <div className="w-full flex flex-row justify-between items-start gap-3">
+                      {/* icon */}
+                      <DollarSign className="size-5 text-success" />
+
+                      {/* label and value */}
+                      <div
+                        className={cn(
+                          "w-full flex flex-row justify-between pb-3 border-b border-base-content/10",
+                          keyUpdate === "stokMinimum"
+                            ? "items-start"
+                            : "items-center",
+                        )}
+                      >
+                        {/* label */}
+                        <span className="text-xs text-base-content/90 text-medium">
+                          Harga Jual + PPN (11%)
+                        </span>
+
+                        {/* harga ppn*/}
+                        <span
+                          className={cn(
+                            (dataProduk?.data?.hargaPpn ?? 0) > 0
+                              ? "text-xs font-medium"
+                              : "italic text-xs",
+                          )}
+                        >
+                          {(dataProduk?.data?.hargaPpn ?? 0) > 0
+                            ? formatNumber(dataProduk?.data?.hargaPpn ?? 0)
+                            : "Belum dibuat"}
+                        </span>
                       </div>
                     </div>
                   </div>

@@ -127,6 +127,14 @@ export interface AddReturnDetailRequestType {
   transactionDetailId: number;
 }
 
+export interface AddReturnDetailByIdRequestType {
+  returnId?: number | null;
+
+  transactionId: number;
+
+  transactionDetailId: number;
+}
+
 export interface AddReturnDetailResponseType {
   returnTransactionId: number;
   returnDetailId: number;

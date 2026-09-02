@@ -16,6 +16,7 @@ export interface IProduk {
   img: string;
   createdAt: Date;
   updatedAt: Date;
+  hargaPpn: number;
 }
 
 // create
@@ -31,13 +32,17 @@ export interface CreateProdukType extends Pick<
 // update
 export interface UpdateProdukType extends Partial<CreateProdukType> {}
 
+export type ResponseUpdateHargaPpnType = {
+  updated: number;
+};
+
 // response
 export interface ProdukResponseType extends IProduk {}
 
 // response with meta
 export interface ResponseProdukWithMetaType {
   meta: MetaType;
-  data: ProdukResponseType[];
+  data: Array<ProdukResponseType>;
 }
 
 // update status
@@ -67,6 +72,7 @@ export interface ResponseProdukForKasirType extends Pick<
   | "img"
   | "kategori"
   | "hargaModalRataRata"
+  | "hargaPpn"
 > {
   hargaJualTerakhirTransaksi?: number;
 }

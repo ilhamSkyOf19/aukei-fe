@@ -2,7 +2,7 @@ import type {
   DetailsForCreate,
   ResponseTransaksiDraftType, // TODO: pastikan type ini memang diexport dari models/transaction.model
 } from "../../../../models/transaction.model";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ResponseProdukForKasirType } from "../../../../models/produk.model";
 import { useAlertAnimation } from "../../../../hooks/useAlert";
 import useModal from "../../../../hooks/useModal";
@@ -20,6 +20,7 @@ import { useAuthStore } from "../../../../stores/authStore";
 import useConfirm from "../../../../hooks/useConfirm";
 import { useStepStore } from "../../../../stores/stepStore";
 import { TransactionServices } from "../../../../services/transaction.service";
+import { PelangganServices } from "../../../../services/pelanggan.service";
 
 type IsErrorsType = "pelanggan" | "details";
 
@@ -42,6 +43,9 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
   const pengguna = useAuthStore((state) => state.pengguna);
 
   const queryClient = useQueryClient();
+
+  // form aktif
+  const [formActive, setFormActive] = useState<boolean>(false);
 
   // Ambil keranjangId dari search params
   const { keranjangId } = useParams<{ keranjangId: string }>();
@@ -169,6 +173,7 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
       kode: findDetail.produk.kode,
       nama: findDetail.produk.nama,
       hargaModalRataRata: findDetail.produk.hargaModalRataRata,
+      hargaPpn: findDetail.produk.hargaPpn,
       // TODO: `stok` tidak ada di ResponseTransaksiDraftType (hanya ada di
       // ResponseProdukForKasirType). Kalau modal butuh nilai stok terkini,
       // ambil dari data produk asli (mis. dari daftar produk kasir), bukan
@@ -451,6 +456,45 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
       console.log(error);
     }
   };
+  const hasTriggeredRef = useRef<boolean>(false);
+
+  const { data: dataPelangganTanpaNama } = useQuery({
+    queryKey: ["pelanggan-tanpa-nama"],
+    queryFn: () => PelangganServices.findByTanpaNama(),
+    enabled: dataTransaksi?.data === null,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const {
+    mutateAsync: handlePilihPelanggan,
+    isPending: isPendingPilihPelanggan,
+  } = useMutation({
+    mutationFn: (data: { pelangganId: number }) =>
+      TransactionServices.pilihPelanggan(data),
+    onSuccess: () => {
+      handleCloseModalChoosePelanggan();
+      queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+    },
+    onError: (err) => {
+      console.log(err);
+      hasTriggeredRef.current = false; // izinkan retry kalau gagal
+    },
+  });
+
+  useEffect(() => {
+    const pelangganId = dataPelangganTanpaNama?.data?.id;
+
+    // belum ada data / masih loading -> jangan lanjut
+    if (!pelangganId) return;
+
+    // sudah pernah dipanggil / sedang berjalan -> jangan panggil lagi
+    if (hasTriggeredRef.current || isPendingPilihPelanggan) return;
+
+    hasTriggeredRef.current = true;
+
+    handlePilihPelanggan({ pelangganId });
+  }, [dataPelangganTanpaNama, isPendingPilihPelanggan, handlePilihPelanggan]);
 
   return {
     produkDetails,
@@ -489,12 +533,17 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     fromBooking,
 
     // query state, berguna untuk loading indicator di UI
-    isLoadingTransaksi,
+    isLoadingTransaksi: isLoadingTransaksi || isPendingPilihPelanggan,
     isRefetchingTransaksi,
     variablesRemoveDetail,
 
     handleRemoveAll,
     isPendingRemoveAll,
+
+    formActive,
+    setFormActive,
+
+    dataTransaksi,
   };
 };
 

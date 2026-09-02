@@ -7,6 +7,7 @@ import type {
   ResponseProdukForChooseType,
   ResponseProdukForKasirWithMetaType,
   ResponseProdukWithMetaType,
+  ResponseUpdateHargaPpnType,
 } from "../models/produk.model";
 import type { ResponseStructure } from "../types/response.type";
 
@@ -64,6 +65,18 @@ export class ProdukServices {
     const result = await instanceAxios.patch<
       ResponseStructure<ProdukResponseType | null>
     >(`/produk/${params.id}`, params.req);
+
+    return result.data;
+  }
+
+  // update harga ppn
+  static async updateHargaPpn(): Promise<
+    ResponseStructure<ResponseUpdateHargaPpnType | null>
+  > {
+    // call api
+    const result = await instanceAxios.put<
+      ResponseStructure<ResponseUpdateHargaPpnType | null>
+    >(`/produk/update-harga-ppn`);
 
     return result.data;
   }

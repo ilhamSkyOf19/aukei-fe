@@ -32,6 +32,7 @@ const useShowProduk = (params: { pelangganId?: number; step: number }) => {
         ...(kategori && { kategori }),
         ...(pelangganId && { pelangganId }),
       }),
+    enabled: !!pelangganId,
     retry: false,
     refetchOnWindowFocus: false,
   });

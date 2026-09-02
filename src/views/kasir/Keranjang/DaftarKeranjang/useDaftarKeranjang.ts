@@ -132,7 +132,7 @@ const useDaftarKeranjang = () => {
       KeranjangServices.delete({ id: data.id, pelangganId: data.pelangganId }),
     onSuccess: () => {
       // invalidate
-      queryClient.invalidateQueries({ queryKey: ["pelanggan"] });
+      queryClient.invalidateQueries({ queryKey: ["pelanggan-keranjang"] });
 
       // set toast
       navigate(currentPathname, {

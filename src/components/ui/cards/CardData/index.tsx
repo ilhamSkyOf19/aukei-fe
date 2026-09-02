@@ -353,7 +353,7 @@ const CardData: FC<Props> = ({
           )}
 
           {/* button kirim pesan */}
-          {handleSendMessage && (
+          {pelanggan?.noWa !== "-" && handleSendMessage && (
             <button
               type="button"
               onClick={() => handleSendMessage()}
