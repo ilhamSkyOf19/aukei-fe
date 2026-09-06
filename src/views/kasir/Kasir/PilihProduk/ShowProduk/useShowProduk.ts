@@ -20,6 +20,7 @@ const useShowProduk = (params: { pelangganId?: number; step: number }) => {
   const { filter: kategori, setFilter: handleKategori } = useFilter({
     paramName: "kategori",
     isNumber: true,
+    resetPage: true,
   });
 
   // query

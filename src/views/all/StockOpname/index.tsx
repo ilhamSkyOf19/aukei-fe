@@ -173,7 +173,6 @@ const StockOpname: FC<Props> = ({ fromPengajuan }) => {
               handleBtn={() => handleShowModalFormulirStockOpname()}
               customWidth="md:hidden w-full mb-3"
             />
-
             <div className="w-full md:flex-1 flex flex-row justify-start items-center">
               {/* input search */}
               <InputSearch
@@ -182,7 +181,6 @@ const StockOpname: FC<Props> = ({ fromPengajuan }) => {
                 withLabel
               />
             </div>
-
             <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-2.5 mt-3 md:mt-0">
               {/* input range date */}
               <RangeDate customWidth="flex-2 md:flex-none md:w-50 lg:w-70" />
@@ -192,7 +190,6 @@ const StockOpname: FC<Props> = ({ fromPengajuan }) => {
                 customWidth="flex-1 md:flex-none md:w-30 lg:w-40"
                 value={sort}
               />
-
               {activeCluster === "stockOpname" &&
                 pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
                   <>
@@ -213,7 +210,6 @@ const StockOpname: FC<Props> = ({ fromPengajuan }) => {
                     </div>
                   </>
                 )}
-
               {activeCluster === "pengajuanStockOpname" &&
                 pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
                   <>

@@ -91,6 +91,8 @@ export interface ResponseDataReturBarangDetailType {
 
   customTotalRefund: number;
 
+  kodeReferensi: string;
+
   keterangan: string | null;
 
   details: Array<

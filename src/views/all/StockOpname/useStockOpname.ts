@@ -123,7 +123,12 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
 
         // cluster
         if (!params.get("cluster")) {
-          params.set("cluster", clusterFromStorage || "stockOpname");
+          params.set(
+            "cluster",
+            clusterFromStorage || pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+              ? "stockOpname"
+              : "pengajuanStockOpname",
+          );
 
           isChanged = true;
         }

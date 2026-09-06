@@ -489,7 +489,7 @@ const useReturBarang = () => {
           kodeReferensi: data.kodeReferensi,
         }),
 
-      onSuccess: async () => {
+      onSuccess: async (response) => {
         /**
          * Jika container sudah ada, cukup refresh detail.
          */
@@ -507,6 +507,15 @@ const useReturBarang = () => {
         await queryClient.invalidateQueries({
           queryKey: ["return-details", validateReturBarangId],
         });
+
+        navigate(
+          `/dashboard/riwayat-transaksi/${transactionId}/daftar-retur-barang/detail/${response.data?.id}`,
+          {
+            state: {
+              toast: "send_pengajuan",
+            },
+          },
+        );
       },
 
       onError: (err) => {
@@ -517,7 +526,7 @@ const useReturBarang = () => {
 
   const handlePosted = async () => {
     try {
-      if (!dataForReturBarang?.data?.nomorTransaksi) return;
+      if (!dataReturDraftDetail?.data?.kodeReferensi) return;
 
       const isConfirm = await confirm({
         bigTitle: "Apakah anda yakin ingin menyimpan data retur barang?",
@@ -530,7 +539,7 @@ const useReturBarang = () => {
       }
 
       await mutatePosted({
-        kodeReferensi: dataForReturBarang?.data?.nomorTransaksi,
+        kodeReferensi: dataReturDraftDetail.data.kodeReferensi,
       });
     } catch (error) {
       console.log(error);

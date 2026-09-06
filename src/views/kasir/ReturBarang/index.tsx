@@ -513,6 +513,7 @@ const ReturBarang = () => {
               <div className="col-span-4 md:col-span-1 flex-row justify-start items-center gap-2.5 pb-2 grid grid-cols-2">
                 {/* simpan dan ajukan */}
                 <ButtonWithIcon
+                  isLoading={isPendingPosted}
                   disabled={!isCanSimpanAndAjukan}
                   icon={Check}
                   // tambahkan response created by agar saya mudah melacak nya

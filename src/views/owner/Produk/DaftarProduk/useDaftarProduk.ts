@@ -82,12 +82,13 @@ const useDaftarProduk = (params: {
   const { filter: sort, setFilter: handleSort } = useFilter({
     paramName: "sort",
     allowQuery: ["asc", "desc"],
-    defaultValueCustom: "desc",
+    defaultValueCustom: "asc",
   });
 
   // Filter kategori produk (query param "kategori")
   const { filter: kategori, setFilter: handleKategori } = useFilter({
     paramName: "kategori",
+    resetPage: true,
   });
 
   // Filter halaman (pagination, query param "page")

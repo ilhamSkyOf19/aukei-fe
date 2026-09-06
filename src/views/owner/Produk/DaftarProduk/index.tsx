@@ -112,6 +112,10 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
               setSort={handleSort}
               customWidth="w-full md:w-30"
               value={sort}
+              customLabel={{
+                "0": "Kecil - Besar",
+                "1": "Besar - Kecil",
+              }}
             />
 
             {/* generate */}

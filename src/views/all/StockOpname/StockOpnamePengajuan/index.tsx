@@ -50,7 +50,6 @@ const StockOpnamePengajuan: FC<Props> = ({
           </div>
         )}
       </div>
-
       <div className="overflow-x-auto w-full bg-base-100 rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-2.5 hidden md:flex">
         <table className="w-full table table-xs mb-2 table-zebra">
           {/* HEAD */}
