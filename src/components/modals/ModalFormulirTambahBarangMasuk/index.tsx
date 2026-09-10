@@ -16,11 +16,13 @@ import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
+  fromPengajuanBarang?: boolean;
 };
 
 const ModalFormulirTambahBarangMasuk: FC<Props> = ({
   modalRef,
   handleCloseModal,
+  fromPengajuanBarang,
 }) => {
   const {
     handleSubmit,
@@ -158,12 +160,14 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
 
             {/* input jumlah perbox */}
             <div className="w-full mt-2 flex flex-col justify-start items-center">
-              <InputPrice<CreateBarangMasukDetailType>
-                controller={hargaBeliController}
-                label="Harga Beli Custom"
-                placeholder="Harga Beli Custom"
-                caption="Berlaku untuk produk yang dipilih"
-              />
+              {!fromPengajuanBarang && (
+                <InputPrice<CreateBarangMasukDetailType>
+                  controller={hargaBeliController}
+                  label="Harga Beli Custom"
+                  placeholder="Harga Beli Custom"
+                  caption="Berlaku untuk produk yang dipilih"
+                />
+              )}
 
               <InputNumber<CreateBarangMasukDetailType>
                 controller={jumlahBoxController}

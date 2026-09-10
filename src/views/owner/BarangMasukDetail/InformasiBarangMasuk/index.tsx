@@ -1,8 +1,10 @@
 import { type FC } from "react";
-import { formatRupiah } from "../../../../helpers/helpers";
+import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
 import { cn } from "../../../../utils/cn";
 import {
   BanknoteArrowDown,
+  Box,
+  Boxes,
   CalendarDays,
   Package,
   TextAlignStart,
@@ -23,6 +25,8 @@ type Props = {
   tanggalMasuk?: Date;
   keterangan?: string;
   totalBarangMasuk: number;
+  totalBox: number;
+  totalPcs: number;
   totalNilai?: number;
   idBarangMasukDetail?: number;
   handleSetToast: (data: string) => void;
@@ -46,6 +50,8 @@ const InformasiBarangMasuk: FC<Props> = ({
   author,
   tanggalDiajukan,
   isUpdate,
+  totalBox,
+  totalPcs,
 }) => {
   // call use
   const {
@@ -252,7 +258,55 @@ const InformasiBarangMasuk: FC<Props> = ({
                 </span>
 
                 <span className={"text-sm font-medium"}>
-                  {totalBarangMasuk}
+                  {formatNumber(totalBarangMasuk)}
+                </span>
+              </div>
+            </div>
+
+            {/* total box */}
+            <div className="w-full flex flex-row justify-between items-start gap-3 mt-4">
+              {/* icon */}
+              <div className="h-full flex flex-row justify-start items-start">
+                <Box className="size-5 text-purple-600" />
+              </div>
+
+              {/* label and value */}
+              <div
+                className={cn(
+                  "w-full flex flex-row justify-between pb-3 border-b border-base-content/10 items-center",
+                )}
+              >
+                {/* label */}
+                <span className="text-xs text-base-content font-medium">
+                  Total Box
+                </span>
+
+                <span className={"text-sm font-medium"}>
+                  {formatNumber(totalBox)}
+                </span>
+              </div>
+            </div>
+
+            {/* total pcs */}
+            <div className="w-full flex flex-row justify-between items-start gap-3 mt-4">
+              {/* icon */}
+              <div className="h-full flex flex-row justify-start items-start">
+                <Boxes className="size-5 text-blue-600" />
+              </div>
+
+              {/* label and value */}
+              <div
+                className={cn(
+                  "w-full flex flex-row justify-between pb-3 border-b border-base-content/10 items-center",
+                )}
+              >
+                {/* label */}
+                <span className="text-xs text-base-content font-medium">
+                  Total Pcs
+                </span>
+
+                <span className={"text-sm font-medium"}>
+                  {formatNumber(totalPcs)}
                 </span>
               </div>
             </div>

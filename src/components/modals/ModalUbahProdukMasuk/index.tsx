@@ -31,6 +31,7 @@ type Props = {
     hargaBeli: number;
   };
   status?: StatusInventoriType;
+  fromPengajuanBarang?: boolean;
 };
 
 const ModalUbahProdukMasuk: FC<Props> = ({
@@ -39,6 +40,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
   idBarangMasuk,
   status,
   dataUpdate,
+  fromPengajuanBarang,
 }) => {
   const {
     handleSubmit,
@@ -180,13 +182,15 @@ const ModalUbahProdukMasuk: FC<Props> = ({
 
             {/* jumlah box  */}
             <div className="w-full lg:hidden">
-              <InputPrice<UpdateBarangMasukDetailType>
-                controller={hargaBeliController}
-                label="Harga Beli"
-                placeholder="Harga beli"
-                max={1000000}
-                required
-              />
+              {!fromPengajuanBarang && (
+                <InputPrice<UpdateBarangMasukDetailType>
+                  controller={hargaBeliController}
+                  label="Harga Beli"
+                  placeholder="Harga beli"
+                  max={1000000}
+                  required
+                />
+              )}
               <InputNumber<UpdateBarangMasukDetailType>
                 controller={jumlahBoxController}
                 label="Jumlah Box"

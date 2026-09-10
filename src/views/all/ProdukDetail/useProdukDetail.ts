@@ -14,6 +14,7 @@ import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import useUpdateProdukIsActive from "../../../validations/useUpdateProdukIsActive";
 import useKategoriForChoose from "../../../hooks/useKategoriForChoose";
+import useDeleteImg from "../../../hooks/useDeleteImg";
 
 const useProdukDetail = () => {
   // state key update
@@ -184,6 +185,23 @@ const useProdukDetail = () => {
                 message: "Kode Produk sudah digunakan pada produk lain",
               });
             }
+
+            if (
+              err?.response?.data?.meta?.customField?.includes(
+                "produk_kategoriId_nama_key",
+              )
+            ) {
+              if (keyUpdate === "nama") {
+                setError("nama", {
+                  message: "Nama Produk sudah digunakan pada kategori ini",
+                });
+              }
+              if (keyUpdate === "kategoriId") {
+                setError("kategoriId", {
+                  message: "Produk sudah ada pada kategori yang dipilih",
+                });
+              }
+            }
           }
         }
       },
@@ -287,6 +305,18 @@ const useProdukDetail = () => {
         }),
     });
 
+  // use delete img
+  const {
+    handleCloseModalDeleteImg,
+    handleDeleteImg,
+    handleShowModalDeleteImg,
+    idModalDeleteImg,
+    isPendingDeleteImg,
+    modalDeleteImgRef,
+  } = useDeleteImg({
+    handleSetToast,
+  });
+
   return {
     handleRedirectFormulir,
     isExistData,
@@ -325,6 +355,13 @@ const useProdukDetail = () => {
     modalFailedDeleteRef,
     handleCloseModalFailedDelete,
     dataModalFailedDelete,
+
+    handleCloseModalDeleteImg,
+    handleDeleteImg,
+    handleShowModalDeleteImg,
+    idModalDeleteImg,
+    isPendingDeleteImg,
+    modalDeleteImgRef,
   };
 };
 

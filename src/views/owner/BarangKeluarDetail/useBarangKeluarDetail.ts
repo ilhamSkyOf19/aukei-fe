@@ -431,6 +431,36 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { handlePrintInvoiceBarangKeluar, isLoadingPrintInvoiceBarangKeluar } =
     usePrintInvoiceBarangKeluar({ handleSetAlert });
 
+  const informasiBarangKeluar = useMemo(() => {
+    const detailBarangKeluars =
+      dataBarangKeluarDetail?.data?.detailBarangKeluars ?? [];
+
+    return {
+      isLoadingBarangKeluarDetail,
+      totalItemKeluar: detailBarangKeluars.reduce(
+        (acc, item) => acc + item.jumlahStok,
+        0,
+      ),
+      totalBarangKeluar: detailBarangKeluars.length,
+      tanggalKeluar: dataBarangKeluarDetail?.data?.tanggalKeluar,
+      keterangan: dataBarangKeluarDetail?.data?.keterangan ?? undefined,
+      totalNilai: dataBarangKeluarDetail?.data?.totalNilai ?? undefined,
+      idBarangKeluarDetail: dataBarangKeluarDetail?.data?.id,
+      handleSetToast,
+      jenisKeluar: dataBarangKeluarDetail?.data?.jenisKeluar,
+      status: dataBarangKeluarDetail?.data?.status,
+      author: dataBarangKeluarDetail?.data?.author,
+      tanggalDiajukan:
+        dataBarangKeluarDetail?.data?.tanggalDiajukan ?? undefined,
+      isUpdate: isCanUpdate,
+    };
+  }, [
+    dataBarangKeluarDetail,
+    isLoadingBarangKeluarDetail,
+    handleSetToast,
+    isCanUpdate,
+  ]);
+
   return {
     dataBarangKeluarDetail,
     isLoadingBarangKeluarDetail:
@@ -484,6 +514,8 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     fromPengajuanBarangNotifikasi,
     handleDownloadInvoiceBarangKeluarPdf,
     isPendingDownloadInvoiceBarangKeluar,
+
+    informasiBarangKeluar,
   };
 };
 

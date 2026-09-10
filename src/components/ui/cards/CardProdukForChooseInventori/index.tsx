@@ -26,7 +26,7 @@ const CardProdukForChooseInventori: FC<Props> = ({
     >
       <div className="flex-4 flex flex-row col row justify-start items-start gap-4">
         {/* img */}
-        <div className="w-11 h-11 rounded-xl overflow-hidden">
+        <div className="w-11 h-11 shrink-0 rounded-xl overflow-hidden">
           <img
             src={data.img}
             alt="foto produk"
@@ -37,7 +37,9 @@ const CardProdukForChooseInventori: FC<Props> = ({
         {/* nama */}
         <div className="flex flex-col justify-start items-start gap-0.5">
           <div className="flex flex-col justify-start items-start">
-            <p className="text-xs font-medium text-base-content">{data.nama}</p>
+            <p className="text-xs font-medium text-base-content text-left">
+              {data.nama}
+            </p>
             <p className="text-[0.625rem] font-medium text-base-content/70">
               {data.kategori}
             </p>

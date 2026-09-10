@@ -126,12 +126,27 @@ const useFormulirProduk = () => {
       },
       onError: (err) => {
         if (axios.isAxiosError<ErrorResponse>(err)) {
-          if (
-            err?.response?.data?.meta?.customField?.includes("produk_kode_key")
-          ) {
-            setError("kode", {
-              message: "Kode Produk sudah digunakan",
-            });
+          if (err?.response?.data?.meta?.statusCode === 409) {
+            if (
+              err?.response?.data?.meta?.customField?.includes(
+                "produk_kode_key",
+              )
+            ) {
+              setError("kode", {
+                message: "Kode Produk sudah digunakan",
+              });
+            }
+
+            if (
+              err?.response?.data?.meta?.customField?.includes(
+                "produk_kategoriId_nama_key",
+              )
+            ) {
+              setError("nama", {
+                message:
+                  "Nama Produk sudah digunakan pada kategori yang dipilih",
+              });
+            }
           }
         }
       },

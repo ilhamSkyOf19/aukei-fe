@@ -74,6 +74,8 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     isPendingDownloadInvoiceBarangKeluar,
     handlePrintInvoiceBarangKeluar,
     isLoadingPrintInvoiceBarangKeluar,
+
+    informasiBarangKeluar,
   } = useBarangKeluarDetail({ fromPengajuanBarang });
 
   return (
@@ -340,30 +342,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       </div>
 
       {/* informasi tanggal dan keterangan */}
-      <InformasiBarangKeluar
-        isLoadingBarangKeluarDetail={isLoadingBarangKeluarDetail}
-        totalBarangKeluar={
-          dataBarangKeluarDetail?.data?.detailBarangKeluars?.length ?? 0
-        }
-        tanggalKeluar={dataBarangKeluarDetail?.data?.tanggalKeluar}
-        totalItemKeluar={
-          dataBarangKeluarDetail?.data?.detailBarangKeluars?.reduce(
-            (acc, curr) => acc + curr.jumlahStok,
-            0,
-          ) ?? 0
-        }
-        keterangan={dataBarangKeluarDetail?.data?.keterangan ?? undefined}
-        totalNilai={dataBarangKeluarDetail?.data?.totalNilai ?? undefined}
-        idBarangKeluarDetail={dataBarangKeluarDetail?.data?.id}
-        handleSetToast={handleSetToast}
-        jenisKeluar={dataBarangKeluarDetail?.data?.jenisKeluar}
-        status={dataBarangKeluarDetail?.data?.status}
-        author={dataBarangKeluarDetail?.data?.author}
-        tanggalDiajukan={
-          dataBarangKeluarDetail?.data?.tanggalDiajukan ?? undefined
-        }
-        isUpdate={isCanUpdate}
-      />
+      <InformasiBarangKeluar {...informasiBarangKeluar} />
 
       {/* formulir */}
       {canShowFormTambahBarang && (

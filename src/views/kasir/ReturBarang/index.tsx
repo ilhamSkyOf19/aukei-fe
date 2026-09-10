@@ -548,7 +548,7 @@ const ReturBarang = () => {
         handleCloseModal={handleCancelConfirm}
         handleConfirm={handleConfirm}
         labelNext="Lanjutkan"
-        // isLoading={isPendingMutateReturBarang}
+        isLoading={isPendingPosted}
       />
 
       {/* modal pengajuan  */}

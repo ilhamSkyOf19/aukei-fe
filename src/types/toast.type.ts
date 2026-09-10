@@ -62,6 +62,10 @@ export const TOAST_CONFIG_PRODUK_DETAIL: Record<
     color: "info",
     message: "Produk berhasil diperbarui",
   },
+  deleted_img: {
+    color: "error",
+    message: "Gambar Produk berhasil dihapus",
+  },
   updated_status: {
     color: "info",
     message: "Status berhasil diperbarui",

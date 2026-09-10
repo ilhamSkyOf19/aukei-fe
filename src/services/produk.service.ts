@@ -181,4 +181,17 @@ export class ProdukServices {
 
     return result.data;
   }
+
+  static async deleteImg(params: {
+    id: number;
+  }): Promise<ResponseStructure<ProdukResponseType | null>> {
+    const { id } = params;
+
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<ProdukResponseType | null>
+    >(`/produk/${id}/img`);
+
+    return result.data;
+  }
 }

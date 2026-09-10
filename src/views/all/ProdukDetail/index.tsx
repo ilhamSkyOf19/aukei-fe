@@ -8,6 +8,7 @@ import {
   RefreshCcw,
   SendHorizonal,
   Trash,
+  Trash2,
   Trash2Icon,
   TriangleAlert,
   X,
@@ -78,6 +79,12 @@ const ProdukDetail = () => {
     dataModalFailedDelete,
     handleCloseModalFailedDelete,
     modalFailedDeleteRef,
+
+    handleCloseModalDeleteImg,
+    handleDeleteImg,
+    handleShowModalDeleteImg,
+    isPendingDeleteImg,
+    modalDeleteImgRef,
   } = useProdukDetail();
 
   return (
@@ -128,7 +135,7 @@ const ProdukDetail = () => {
 
         <div className="w-full flex lg:flex-row flex-col justify-start items-center gap-0 lg:gap-4">
           {/* img */}
-          <div className="w-full order-1 lg:order-2 flex-2 flex flex-row lg:flex-col lg:gap-6 justify-center items-center">
+          <div className="w-full order-1 lg:order-2 flex-2 flex flex-row lg:flex-col lg:gap-6 justify-center items-center   relative md:static">
             {keyUpdate !== "img" ? (
               <>
                 <div
@@ -146,8 +153,33 @@ const ProdukDetail = () => {
                   )}
                 </div>
 
+                {/* button delete img for mobilr */}
+                <div className="absolute lg:hidden bottom-0 right-0">
+                  <ButtonWithIcon
+                    icon={Trash2}
+                    label="Hapus Gambar"
+                    bgColor="bg-error"
+                    textColor="text-primary-white"
+                    disabled={
+                      dataProduk?.data?.img.split("/").pop() === "default.webp"
+                    }
+                    customHeight="h-9"
+                    handleBtn={() => handleShowModalDeleteImg()}
+                  />
+                </div>
+
                 {/* button update */}
-                <div className="w-full hidden absolute bottom-4 right-4 lg:flex flex-row justify-end items-center">
+                <div className="w-full hidden absolute bottom-4 right-4 lg:flex flex-row justify-end items-center gap-2.5">
+                  <ButtonWithIcon
+                    icon={Trash2}
+                    label="Hapus Gambar"
+                    bgColor="bg-error"
+                    textColor="text-primary-white"
+                    disabled={
+                      dataProduk?.data?.img.split("/").pop() === "default.webp"
+                    }
+                    handleBtn={() => handleShowModalDeleteImg()}
+                  />
                   <ButtonText
                     typeButton
                     handleClick={() => handleKeyUpdate("img")}
@@ -202,7 +234,9 @@ const ProdukDetail = () => {
                       isPending={isPendingUpdateProduk}
                     >
                       {/* input text */}
-                      <div className="w-80">
+                      <div
+                        className={cn("w-80", errors?.nama?.message && "mb-6")}
+                      >
                         <InputTextNonIcon
                           register={register("nama")}
                           name="nama"
@@ -218,7 +252,6 @@ const ProdukDetail = () => {
                 </div>
               )
             )}
-
             {/* kode produk */}
             <div className="flex w-full flex-col justify-start items-start gap-1.5">
               {isLoadingDataProduk ? (
@@ -234,7 +267,9 @@ const ProdukDetail = () => {
 
                     {/* value */}
                     <span className="text-sm font-medium text-base-content">
-                      {dataProduk?.data?.kode ?? "-"}
+                      {dataProduk?.data?.kode && dataProduk?.data?.kode !== ""
+                        ? dataProduk?.data?.kode
+                        : "-"}
                     </span>
                   </div>
 
@@ -289,7 +324,6 @@ const ProdukDetail = () => {
                 </>
               )}
             </div>
-
             {/* kategori produk */}
             <div className="flex w-full flex-col justify-start items-start gap-1.5">
               {isLoadingDataProduk ? (
@@ -372,7 +406,6 @@ const ProdukDetail = () => {
                 )
               )}
             </div>
-
             {/* content harga  */}
             <div className="w-full flex flex-row justify-between gap-2.5 items-stretch border-t border-base-content/30 pt-2">
               {isLoadingDataProduk ? (
@@ -500,7 +533,6 @@ const ProdukDetail = () => {
                 )
               )}
             </div>
-
             {isLoadingDataProduk ? (
               <div className="w-full flex flex-col justify-start items-start gap-5 border border-base-content/10 card px-3 py-4 mt-4">
                 {Array.from({ length: 4 }, (_, idx) => (
@@ -784,7 +816,6 @@ const ProdukDetail = () => {
                 </div>
               )
             )}
-
             {/* button aksi for mobile device */}
             <div className="lg:hidden w-full flex flex-row justify-end items-center gap-2 mt-2">
               {/* button delete */}
@@ -826,6 +857,17 @@ const ProdukDetail = () => {
         handleDelete={() => handleDeleteProduk()}
         isLoadingDelete={isPendingDeleteProduk}
         bigTitle={`Apakah anda yakin ingin menghapus data "${dataProduk?.data?.nama}" ini?`}
+      />
+
+      {/* modal delete img */}
+      <ModalDelete
+        modalRef={modalDeleteImgRef}
+        handleCloseModal={handleCloseModalDeleteImg}
+        handleDelete={async () => {
+          await handleDeleteImg({ id: dataProduk?.data?.id ?? 0 });
+        }}
+        isLoadingDelete={isPendingDeleteImg}
+        bigTitle={`Apakah anda yakin ingin menghapus gambar "${dataProduk?.data?.nama}" ini?`}
       />
 
       {/* modal generate harga jual */}

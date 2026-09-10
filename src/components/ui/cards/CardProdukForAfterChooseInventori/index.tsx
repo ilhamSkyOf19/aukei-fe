@@ -33,7 +33,7 @@ const CardProdukForAfterChooseInventori: FC<Props> = ({
       <div className="w-full flex flex-row justify-start items-center gap-2">
         <div className="flex-2 w-full flex flex-row justify-start items-start gap-4">
           {/* img */}
-          <div className="w-11 h-11 rounded-xl overflow-hidden">
+          <div className="w-11 h-11 shrink-0 rounded-xl overflow-hidden">
             <img
               src={data.img}
               alt="foto produk"

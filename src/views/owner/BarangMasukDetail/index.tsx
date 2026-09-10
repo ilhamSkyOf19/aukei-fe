@@ -30,7 +30,6 @@ import CountDown from "../../../components/ui/CountDown";
 import type { FC } from "react";
 import ModalFormulirVerifikasiOrPengajuan from "../../../components/modals/ModalFormulirVerifikasiOrPengajuan";
 import { cn } from "../../../utils/cn";
-import NotCompatible from "../../../components/messages/NotCompatible";
 
 type Props = {
   fromPengajuanBarang?: boolean;
@@ -86,16 +85,14 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     handleBack,
     handlePrintInvoiceBarangMasuk,
     isLoadingPrintInvoiceBarangMasuk,
+    informasiBarangMasuk,
   } = useBarangMasukDetail({ fromPengajuanBarang });
 
   return (
     <main className="w-full">
       <div
         className={cn(
-          "w-full flex-col justify-start items-start gap-2.5 p-2.5",
-          pengguna?.role === ROLE_INTERNAL_TYPE.KASIR
-            ? "hidden md:flex"
-            : "flex",
+          "w-full flex-col justify-start items-start gap-2.5 p-2.5 flex",
         )}
       >
         {/* alert */}
@@ -363,27 +360,12 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
         </div>
 
         {/* informasi tanggal dan keterangan */}
-        <InformasiBarangMasuk
-          isLoadingBarangMasukDetail={isLoadingBarangMasukDetail}
-          totalBarangMasuk={
-            dataBarangMasukDetail?.data?.detailBarangMasuks?.length ?? 0
-          }
-          tanggalMasuk={dataBarangMasukDetail?.data?.tanggalMasuk}
-          keterangan={dataBarangMasukDetail?.data?.keterangan ?? undefined}
-          totalNilai={dataBarangMasukDetail?.data?.totalNilai ?? undefined}
-          idBarangMasukDetail={dataBarangMasukDetail?.data?.id}
-          handleSetToast={handleSetToast}
-          status={dataBarangMasukDetail?.data?.status}
-          author={dataBarangMasukDetail?.data?.author}
-          tanggalDiajukan={
-            dataBarangMasukDetail?.data?.tanggalDiajukan ?? undefined
-          }
-          isUpdate={isCanUpdate}
-        />
+        <InformasiBarangMasuk {...informasiBarangMasuk} />
 
         {/* formulir */}
         {canShowFormTambahBarang && (
           <FormulirTambahBarangMasuk
+            fromPengajuanBarang={fromPengajuanBarang}
             handleSetToast={handleSetToast}
             handleSetAlert={handleSetAlert}
             isGlobalLoading={isPendingPosting}
@@ -432,13 +414,6 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
           isLoadingDelete={isPendingDelete}
         />
       </div>
-
-      {/* not compatible */}
-      {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
-        <div className="w-full h-[80vh] flex items-center lg:hidden">
-          <NotCompatible />
-        </div>
-      )}
     </main>
   );
 };

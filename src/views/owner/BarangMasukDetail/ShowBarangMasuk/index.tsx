@@ -122,7 +122,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
 
                     {/* button aksi */}
                     <div className="flex flex-row justify-end items-start gap-2.5">
-                      {!fromPengajuanBarang && !isStatusPosted && (
+                      {!isStatusPosted && (
                         <>
                           <ButtonWithIcon
                             customHeight="h-8"
@@ -303,19 +303,20 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             {(isRejectedKasir ||
                               isDrafOwner ||
                               dataBarangMasukDetail?.data?.status ===
-                                STATUS_INVENTORI_TYPE.DRAFT) && (
-                              <ButtonInline
-                                handleKeyUpdate={() =>
-                                  handleSetDataUpdate({
-                                    data: {
-                                      id: item.id,
-                                      produkId: item.produk.id,
-                                      hargaBeli: item.produk.hargaBeli,
-                                    },
-                                  })
-                                }
-                              />
-                            )}
+                                STATUS_INVENTORI_TYPE.DRAFT) &&
+                              !fromPengajuanBarang && (
+                                <ButtonInline
+                                  handleKeyUpdate={() =>
+                                    handleSetDataUpdate({
+                                      data: {
+                                        id: item.id,
+                                        produkId: item.produk.id,
+                                        hargaBeli: item.produk.hargaBeli,
+                                      },
+                                    })
+                                  }
+                                />
+                              )}
                           </div>
                         )}
                       </td>
@@ -432,24 +433,6 @@ const ShowDataBarangMasuk: FC<Props> = ({
                 </tr>
               )}
             </tbody>
-            {/* foot */}
-            {!isLoadingBarangMasukDetail &&
-              isExistData &&
-              dataBarangMasukDetail?.data?.detailBarangMasuks?.length! > 8 && (
-                <tfoot>
-                  <tr>
-                    <th></th>
-                    <th>Foto</th>
-                    <th>Kode</th>
-                    <th>Nama</th>
-                    <th>Kategori</th>
-                    <th>Harga Beli Satuan</th>
-                    <th>Jumlah Box</th>
-                    <th>Isi PerBox</th>
-                    {!fromPengajuanBarang && !isStatusPosted && <th>Aksi</th>}
-                  </tr>
-                </tfoot>
-              )}
           </table>
         </div>
       </div>
@@ -465,6 +448,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
 
       {/* modal Ubah produk */}
       <ModalUbahProdukMasuk
+        fromPengajuanBarang={fromPengajuanBarang}
         modalRef={modalUbahProdukRef}
         handleCloseModal={handleCloseModalUbahProduk}
         idBarangMasuk={idBarangMasuk}

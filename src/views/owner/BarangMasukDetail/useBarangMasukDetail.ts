@@ -20,6 +20,7 @@ import { PengajuanBarangMasukServices } from "../../../services/pengajuanBarangM
 import useModal from "../../../hooks/useModal";
 import useDownloadInvoiceBarangMasuk from "../../../hooks/useDownloadInvoiceBarangMasuk";
 import usePrintInvoiceBarangMasuk from "../../../hooks/usePrintInvoiceBarangMasuk";
+import { useMemo } from "react";
 
 // Batas waktu (ms) setelah posting sebelum dianggap expired dan tidak bisa dibatalkan
 
@@ -382,6 +383,39 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const { handlePrintInvoiceBarangMasuk, isLoadingPrintInvoiceBarangMasuk } =
     usePrintInvoiceBarangMasuk({ handleSetAlert: handleSetAlert });
 
+  const informasiBarangMasuk = useMemo(() => {
+    const detailBarangMasuks =
+      dataBarangMasukDetail?.data?.detailBarangMasuks ?? [];
+
+    return {
+      isLoadingBarangMasukDetail,
+      totalBox: detailBarangMasuks.reduce(
+        (acc, item) => acc + item.jumlahBox,
+        0,
+      ),
+      totalPcs: detailBarangMasuks.reduce(
+        (acc, item) => acc + item.jumlahBox * item.isiPerBox,
+        0,
+      ),
+      totalBarangMasuk: detailBarangMasuks.length,
+      tanggalMasuk: dataBarangMasukDetail?.data?.tanggalMasuk,
+      keterangan: dataBarangMasukDetail?.data?.keterangan ?? undefined,
+      totalNilai: dataBarangMasukDetail?.data?.totalNilai ?? undefined,
+      idBarangMasukDetail: dataBarangMasukDetail?.data?.id,
+      handleSetToast,
+      status: dataBarangMasukDetail?.data?.status,
+      author: dataBarangMasukDetail?.data?.author,
+      tanggalDiajukan:
+        dataBarangMasukDetail?.data?.tanggalDiajukan ?? undefined,
+      isUpdate: isCanUpdate,
+    };
+  }, [
+    dataBarangMasukDetail,
+    isLoadingBarangMasukDetail,
+    handleSetToast,
+    isCanUpdate,
+  ]);
+
   // Ekspos state & handler yang dibutuhkan oleh komponen UI detail barang masuk
   return {
     dataBarangMasukDetail,
@@ -438,6 +472,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isLoadingDownloadInvoiceBarangMasukPdf,
     isLoadingPrintInvoiceBarangMasuk,
     handlePrintInvoiceBarangMasuk,
+    informasiBarangMasuk,
   };
 };
 

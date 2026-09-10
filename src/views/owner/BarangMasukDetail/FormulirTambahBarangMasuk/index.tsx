@@ -14,10 +14,12 @@ type Props = {
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
   isGlobalLoading?: boolean;
+  fromPengajuanBarang?: boolean;
 };
 const FormulirTambahBarangMasuk: FC<Props> = ({
   handleSetToast,
   handleSetAlert,
+  fromPengajuanBarang,
   isGlobalLoading,
 }) => {
   const {
@@ -93,14 +95,22 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
           />
 
           {/* input jumlah perbox */}
-          <div className="flex-2 gap-4 flex flex-row justify-start items-start">
-            <InputPrice<CreateBarangMasukDetailType>
-              controller={hargaBeliController}
-              label="Harga Beli Custom"
-              placeholder="Harga Beli Custom"
-              max={1000000}
-              caption="Berlaku untuk produk yang dipilih"
-            />
+          <div
+            className={cn(
+              " gap-4 flex flex-row justify-start items-start",
+              fromPengajuanBarang ? "flex-1" : "flex-2",
+            )}
+          >
+            {!fromPengajuanBarang && (
+              <InputPrice<CreateBarangMasukDetailType>
+                controller={hargaBeliController}
+                label="Harga Beli Custom"
+                placeholder="Harga Beli Custom"
+                max={1000000}
+                caption="Berlaku untuk produk yang dipilih"
+              />
+            )}
+
             <InputNumber<CreateBarangMasukDetailType>
               controller={jumlahBoxController}
               label="Jumlah Box"
@@ -144,6 +154,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
 
       {/* modal formulir barang masuk */}
       <ModalFormulirTambahBarangMasuk
+        fromPengajuanBarang={fromPengajuanBarang}
         modalRef={modalFormulirTambahBarangRef}
         handleCloseModal={handleCloseModalFormulirTambahBarang}
       />

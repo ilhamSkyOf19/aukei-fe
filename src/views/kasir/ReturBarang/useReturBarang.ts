@@ -61,10 +61,6 @@ const useReturBarang = () => {
     handleShowModal: handleShowModalPengajuanOrVerifikasi,
   } = useModal();
 
-  // buat modal confirm untuk owner
-  // modal confirm
-  const {} = useConfirm();
-
   /**
    * ============================================================
    * QUERY
@@ -535,7 +531,7 @@ const useReturBarang = () => {
       });
 
       if (!isConfirm) {
-        handleCancelConfirm();
+        return;
       }
 
       await mutatePosted({

@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useHighlight from "../../../../hooks/useHighlight";
 import useModal from "../../../../hooks/useModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -239,20 +238,10 @@ const useShowBarangKeluar = (params: {
     }
   };
 
-  // highlight
-  const {
-    handleSetIsHighlight: handleSetIsActiveAksi,
-    isHighlight: isActiveAksi,
-    wrapperRef,
-  } = useHighlight();
-
   // status
   const isStatusPosted = status === STATUS_INVENTORI_TYPE.POSTED;
 
   return {
-    handleSetIsActiveAksi,
-    isActiveAksi,
-    wrapperRef,
     handleShowModalDelete,
     handleCloseModalDelete,
     modalDeleteRef,

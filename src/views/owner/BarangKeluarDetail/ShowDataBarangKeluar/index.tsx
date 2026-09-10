@@ -1,4 +1,3 @@
-import { EllipsisVertical, PencilLine, Trash } from "lucide-react";
 import {
   formatNumber,
   formatNumberK,
@@ -9,7 +8,6 @@ import DataEmpty from "../../../../components/messages/DataEmpty";
 import type { ResponseStructure } from "../../../../types/response.type";
 import type { FC } from "react";
 import { cn } from "../../../../utils/cn";
-import LabelButtonDropDownWithIcon from "../../../../components/ui/button/LabelButtonDropDownWithIcon";
 import ModalDelete from "../../../../components/modals/ModalDelete";
 import type { UpdateBarangMasukDetailType } from "../../../../models/barangMasukDetail.model";
 import CardForm from "../../../../components/inputs/CardForm";
@@ -27,6 +25,7 @@ import InputNumber from "../../../../components/inputs/InputNumber";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 
 type Props = {
   isLoadingBarangKeluarDetail?: boolean;
@@ -43,9 +42,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
   handleSetAlert,
 }) => {
   const {
-    handleSetIsActiveAksi,
-    isActiveAksi,
-    wrapperRef,
     handleCloseModalDelete,
     handleDelete,
     handleShowModalDelete,
@@ -102,7 +98,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
               className="flex flex-col p-3 justify-start items-start w-full rounded-2xl md:rounded-xl bg-base-100 shadow-xs min-h-20 gap-1"
             >
               {/* content one */}
-              <div className="w-full h-full flex flex-row justify-start items-start gap-3 border-b border-base-content/10 pb-2">
+              <div className="w-full h-full flex flex-row justify-start items-start gap-3 pb-2 border-b border-base-content/10">
                 {/* img */}
                 <div className="flex-1 flex flex-row justify-start items-center">
                   <div className="w-12.5 h-12 overflow-hidden bg-black rounded-2xl">
@@ -121,10 +117,12 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       <p className="text-base-content text-sm font-semibold">
                         {item.produk.nama}
                       </p>
+
                       <div className="flex flex-row justify-start items-center gap-2">
                         <p className="text-base-content/50 text-[0.7rem] font-medium border-r border-base-content/10 pr-2.5">
                           {item.produk.kode}
                         </p>
+
                         <p className="text-base-content/50 text-[0.7rem] font-medium">
                           {item.produk.kategori.nama}
                         </p>
@@ -132,56 +130,34 @@ const ShowDataBarangKeluar: FC<Props> = ({
                     </div>
 
                     {/* button aksi */}
-                    <div className="flex flex-row justify-end items-start">
+                    <div className="flex flex-row justify-end items-start gap-2.5">
                       {!fromPengajuanBarang && !isStatusPosted && (
-                        <div className="sticky right-0 bg-base-100 z-10">
-                          <div
-                            ref={wrapperRef}
-                            className={cn(
-                              "dropdown dropdown-left dropdown-end",
-                            )}
-                          >
-                            <button
-                              type="button"
-                              role="button"
-                              tabIndex={0}
-                              className="m-1"
-                              onFocus={() => handleSetIsActiveAksi(item.id)}
-                              onBlur={() => handleSetIsActiveAksi(0)}
-                            >
-                              <EllipsisVertical className="size-4 text-base-content" />
-                            </button>
-                            <ul
-                              tabIndex={-1}
-                              className="z-1 dark:border dark:border-base-content/10 dropdown-content menu bg-base-100 rounded-box w-35 lg:w-40 p-2 shadow-sm space-y-2"
-                            >
-                              <li>
-                                <LabelButtonDropDownWithIcon
-                                  label="Ubah Produk"
-                                  icon={PencilLine}
-                                  handleClick={() =>
-                                    handleShowModalUbahProduk(item.id, {
-                                      produkId: item.produk.id,
-                                      jumlahStok: item.jumlahStok,
-                                    })
-                                  }
-                                />
-                              </li>
-                              <li>
-                                <LabelButtonDropDownWithIcon
-                                  color="text-error"
-                                  label="Hapus"
-                                  icon={Trash}
-                                  handleClick={() =>
-                                    handleShowModalDelete(item.id, {
-                                      nama: item.produk.nama,
-                                    })
-                                  }
-                                />
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
+                        <>
+                          <ButtonWithIcon
+                            customHeight="h-8"
+                            label="Hapus"
+                            bgColor="bg-error"
+                            textColor="text-primary-white"
+                            handleBtn={() =>
+                              handleShowModalDelete(item.id, {
+                                nama: item.produk.nama,
+                              })
+                            }
+                          />
+
+                          <ButtonWithIcon
+                            customHeight="h-8"
+                            label="Ubah"
+                            bgColor="bg-info"
+                            textColor="text-primary-white"
+                            handleBtn={() =>
+                              handleShowModalUbahProduk(item.id, {
+                                produkId: item.produk.id,
+                                jumlahStok: item.jumlahStok,
+                              })
+                            }
+                          />
+                        </>
                       )}
                     </div>
                   </div>
@@ -192,29 +168,34 @@ const ShowDataBarangKeluar: FC<Props> = ({
               <div className="w-full flex flex-row justify-start items-start gap-2">
                 {/* data */}
                 <div className="w-full flex flex-row justify-start items-end mt-2 flex-wrap gap-4">
-                  {/* harga beli */}
+                  {/* harga modal */}
                   <div className="flex-1 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
                     <span className="text-[0.625rem] text-base-content/50">
                       Harga Modal
                     </span>
+
                     <span className="text-xs font-semibold text-base-content">
                       {formatRupiahShort(item.hargaModalSatuan)}
                     </span>
                   </div>
+
                   {/* jumlah stok */}
                   <div className="flex-1 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
                     <span className="text-[0.625rem] font-medium text-base-content/50">
                       Jumlah Stok
                     </span>
+
                     <span className="text-xs font-semibold text-base-content">
                       {formatNumberK(item.jumlahStok)}
                     </span>
                   </div>
+
                   {/* total nilai */}
                   <div className="flex-1 flex flex-col justify-start items-start gap-0.5">
                     <span className="text-[0.625rem] font-medium text-base-content/50">
                       Total Nilai
                     </span>
+
                     <span className="text-xs font-semibold text-base-content">
                       {formatRupiahShort(
                         item.jumlahStok * item.hargaModalSatuan,
@@ -247,7 +228,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                 <th>Kode</th>
                 <th>Nama</th>
                 <th>Kategori</th>
-                <th>Harga Modal Satuan</th>
+                <th>Harga Modal</th>
                 <th>Stok Saat Ini</th>
                 <th>Stok Keluar</th>
                 <th>Total</th>
@@ -273,7 +254,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       key={item.id}
                       className={cn(
                         "transition-all duration-75 ease-in-out text-base-content text-[0.7rem]",
-                        isActiveAksi === item.id && "bg-base-200",
                       )}
                     >
                       <th>{index + 1}</th>

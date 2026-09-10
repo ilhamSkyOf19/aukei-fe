@@ -1,20 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
+
 import { useFilterSearch } from "../../../../../hooks/useFilterSearch";
 import { useFilter } from "../../../../../hooks/useFilter";
 import { ProdukServices } from "../../../../../services/produk.service";
-import { handlePagination } from "../../../../../helpers/helpers";
 
 const useShowProduk = (params: { pelangganId?: number; step: number }) => {
   const { pelangganId, step } = params;
 
   // search filter
   const { search, setSearch } = useFilterSearch("search", "page");
-
-  // page filter
-  const { filter: page, setFilter: setPage } = useFilter({
-    paramName: "page",
-    isNumber: true,
-  });
 
   // kategori filter
   const { filter: kategori, setFilter: handleKategori } = useFilter({
@@ -23,68 +17,70 @@ const useShowProduk = (params: { pelangganId?: number; step: number }) => {
     resetPage: true,
   });
 
-  // query
-  const { data: dataProduk, isLoading: isLoadingProduk } = useQuery({
-    queryKey: ["produk", search, page, kategori, step, pelangganId],
-    queryFn: () =>
+  // query infinite scroll
+  const {
+    data: dataProduk,
+    isLoading: isLoadingProduk,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["produk", search, kategori, step, pelangganId],
+
+    queryFn: ({ pageParam }) =>
       ProdukServices.findAllForKasir({
         ...(search && { search }),
-        ...(page && { page }),
+        page: pageParam.toString(),
         ...(kategori && { kategori }),
         ...(pelangganId && { pelangganId }),
       }),
+
+    initialPageParam: 1,
+
+    getNextPageParam: (lastPage) => {
+      const currentPage = lastPage?.data?.meta?.currentPage ?? 1;
+      const totalPage = lastPage?.data?.meta?.totalPage ?? 1;
+
+      if (currentPage < totalPage) {
+        return currentPage + 1;
+      }
+
+      return undefined;
+    },
+
     enabled: !!pelangganId,
+
     retry: false,
+
     refetchOnWindowFocus: false,
   });
 
-  //   is existing produk
-  const isExistDataProduk: boolean =
-    !isLoadingProduk && dataProduk?.data
-      ? dataProduk?.data?.data?.length > 0
-        ? true
-        : false
-      : false;
+  // gabungkan seluruh data dari semua halaman
+  const produk =
+    dataProduk?.pages.flatMap((page) => page?.data?.data ?? []) ?? [];
 
-  const currentPage = dataProduk?.data?.meta?.currentPage ?? 1;
-
-  // pagination
-  const { goTo, isNext, isPrev, pages } = handlePagination({
-    setPage,
-    currentPage,
-    totalPage: dataProduk?.data?.meta?.totalPage,
-  });
-
-  //   handle page
-  const handlePage = (val: "prev" | "next") => {
-    if (val === "next") {
-      if (
-        Number(currentPage) >= 1 &&
-        Number(currentPage) < dataProduk?.data?.meta?.totalPage!
-      ) {
-        return setPage((Number(currentPage) + 1).toString());
-      } else {
-        return;
-      }
-    } else if (val === "prev") {
-      if (Number(currentPage) <= 1) {
-        return;
-      }
-      return setPage((Number(currentPage) - 1).toString());
-    }
-  };
+  // cek apakah ada produk
+  const isExistDataProduk = produk.length > 0;
 
   return {
+    produk,
+
     dataProduk,
+
     isLoadingProduk,
+
+    isFetchingNextPage,
+
+    fetchNextPage,
+
+    hasNextPage,
+
     setSearch,
-    handlePage,
+
     handleKategori,
+
     isExistDataProduk,
-    goTo,
-    isNext,
-    isPrev,
-    pages,
+
     kategori,
   };
 };

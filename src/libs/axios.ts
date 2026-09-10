@@ -20,7 +20,6 @@ const clearLocalStorage = () => {
 
 instanceAxios.interceptors.response.use(
   async (response) => {
-    // await delay(1000);
     return response;
   },
   async (error) => {

@@ -93,13 +93,6 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 </div>
 
                 <div className="w-full flex flex-row justify-around items-stretch gap-2.5">
-                  {/* harga modal */}
-                  <Label
-                    label={`Hrg. Modal Rata Rata`}
-                    value={formatRupiah(data?.hargaModalRataRata ?? "")}
-                    small
-                  />
-
                   {/* harga jual */}
                   <Label
                     label={`Hrg. Jual`}
