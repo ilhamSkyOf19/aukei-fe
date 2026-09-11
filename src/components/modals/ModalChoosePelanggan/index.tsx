@@ -14,11 +14,13 @@ type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
   handleShowModal: () => void;
+  transactionIdFromCart?: number;
 };
 const ModalChoosePelanggan: FC<Props> = ({
   modalRef,
   handleCloseModal,
   handleShowModal,
+  transactionIdFromCart,
 }) => {
   // call use
   const {
@@ -124,7 +126,10 @@ const ModalChoosePelanggan: FC<Props> = ({
                   key={item.id}
                   className="w-full flex flex-row justify-between items-center px-4 py-2.5 border-b border-base-content/10 hover-overlay shrink-0"
                   onClick={() => {
-                    handlePilihPelanggan({ pelangganId: item.id });
+                    handlePilihPelanggan({
+                      pelangganId: item.id,
+                      transactionId: transactionIdFromCart,
+                    });
                   }}
                 >
                   <div className="flex-2 flex flex-row justify-start items-center gap-4">

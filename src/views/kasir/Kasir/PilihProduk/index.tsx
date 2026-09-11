@@ -8,6 +8,7 @@
 import { type FC } from "react";
 import ShowProduk from "./ShowProduk";
 import {
+  ArrowLeft,
   ArrowLeftRight,
   CalendarClock,
   CreditCard,
@@ -42,10 +43,7 @@ import ModalAlert from "../../../../components/modals/ModalAlert";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import AddFastCustomer from "../../../../components/AddFastCustomer";
 
-type Props = {
-  handleToast: (value: string) => void;
-};
-const PilihProduk: FC<Props> = ({ handleToast }) => {
+const PilihProduk: FC = () => {
   const {
     handleStepsNext,
     isErrorsFormState,
@@ -60,9 +58,7 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
     handleSimpanKeranjang,
     isPendingKeranjang,
     isUpdateKeranjang,
-    handleBatalkanSimpanKeranjang,
     handleBatalkanUpdateTransaction,
-    handleSimpanPerubahanKeranjang,
     handleCloseModalFormulirTransaksi,
     handleShowModalFormulirTransaksi,
     modalFormulirTransaksiRef,
@@ -91,9 +87,12 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
     setFormActive,
 
     dataTransaksi,
-  } = usePilihProduk({
-    handleToast,
-  });
+
+    isNextTransaction,
+
+    handleBackKeranjang,
+    transactionIdFromCart,
+  } = usePilihProduk();
 
   return (
     // MOBILE: flex-col di default (mobile), lg:flex-row mengembalikan
@@ -292,9 +291,36 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
         </div>
 
         {/* total */}
-        <div className="w-full flex-1 flex flex-col justify-start items-start p-3 border-t border-custom-secondary/50">
+        <div className="w-full flex-1 flex flex-col justify-start items-start p-3 pb-1.5 border-t border-custom-secondary/50">
           {/* sub total & total diskon */}
-          <div className="w-full flex flex-col justify-start items-start gap-2.5 pb-4 border-b border-base-content/30 border-dashed">
+          <div className="w-full flex flex-col justify-start items-start gap-1.5 pb-1.5 border-b border-base-content/30 border-dashed">
+            {/* total produk */}
+            <div className="w-full flex flex-row justify-between items-center">
+              {/* MOBILE: tambahkan ukuran dasar text-[0.7rem] karena
+                  sebelumnya tidak ada size di bawah breakpoint md. */}
+              <span className="text-[0.7rem] md:text-xs text-base-content/80">
+                Total Produk
+              </span>
+              <span className="text-[0.7rem] font-semibold text-base-content">
+                {formatNumber(produkDetails.length)} Produk
+              </span>
+            </div>
+
+            {/* total quantity */}
+            <div className="w-full flex flex-row justify-between items-center">
+              {/* MOBILE: tambahkan ukuran dasar text-[0.7rem] karena
+                  sebelumnya tidak ada size di bawah breakpoint md. */}
+              <span className="text-[0.7rem] md:text-xs text-base-content/80">
+                Total Quantity
+              </span>
+              <span className="text-[0.7rem]  font-semibold text-base-content">
+                {formatNumber(
+                  produkDetails.reduce((a, b) => a + b.quantity, 0),
+                )}{" "}
+                Item
+              </span>
+            </div>
+
             {/* sub total */}
             <div className="w-full flex flex-row justify-between items-center">
               {/* MOBILE: tambahkan ukuran dasar text-[0.7rem] karena
@@ -332,7 +358,7 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
           </div>
 
           {/* total */}
-          <div className="w-full flex flex-row justify-between items-center pt-3 pb-1">
+          <div className="w-full flex flex-row justify-between items-center pt-2.5">
             <span className="text-[0.8rem] md:text-sm font-semibold text-base-content">
               Total
             </span>
@@ -348,39 +374,13 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
               {/* button batalkan */}
               <button
                 type="button"
-                className="flex flex-row justify-center items-center gap-2 sm:gap-4 h-full flex-1 rounded-xl border border-custom-primary hover-overlay"
-                onClick={() => handleBatalkanSimpanKeranjang()}
+                className="flex flex-row justify-center items-center gap-2 sm:gap-4 h-full flex-1 rounded-xl bg-custom-primary hover-overlay text-custom-secondary"
+                onClick={() => handleBackKeranjang()}
               >
-                <X className="size-4 lg:size-4 xl:size-5 text-base-content" />
+                <ArrowLeft className="size-4 lg:size-4 xl:size-5 text-base-content" />
                 <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
-                  Batalkan
+                  Kembali
                 </span>
-              </button>
-
-              {/* simpan */}
-              <button
-                disabled={produkDetails.length === 0}
-                type="button"
-                className={cn(
-                  "flex flex-row justify-center items-center gap-2 sm:gap-4 h-full border border-custom-primary flex-1 rounded-xl bg-custom-primary disabled:opacity-50",
-                  produkDetails.length !== 0 && "hover-overlay",
-                )}
-                style={{
-                  cursor:
-                    produkDetails.length === 0 ? "not-allowed" : "pointer",
-                }}
-                onClick={() => handleSimpanPerubahanKeranjang()}
-              >
-                {isPendingKeranjang ? (
-                  <div className="loading lg:loading-xs xl:loading-sm text-custom-secondary" />
-                ) : (
-                  <>
-                    <Save className="size-4 xl:size-4 text-custom-secondary" />
-                    <span className="text-custom-secondary text-[0.65rem] xl:text-xs font-semibold">
-                      Simpan Perubahan
-                    </span>
-                  </>
-                )}
               </button>
             </div>
           )}
@@ -396,38 +396,58 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
                   : ""
               }
             >
+              {isNextTransaction && !isUpdateKeranjang && (
+                <button
+                  type="button"
+                  disabled={produkDetails.length === 0 || !pelanggan}
+                  className={cn(
+                    "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary hover-overlay flex-1 disabled:opacity-50",
+                  )}
+                  onClick={() => {
+                    handleBackKeranjang();
+                  }}
+                >
+                  <ArrowLeft className="size-4 xl:size-4 text-base-content" />
+                  <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
+                    Kembali
+                  </span>
+                </button>
+              )}
+
               {/* button chart */}
-              <button
-                type="button"
-                disabled={produkDetails.length === 0 || !pelanggan}
-                className={cn(
-                  "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
-                  fromBooking ? "w-12" : "flex-1",
-                  (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
-                )}
-                style={{
-                  cursor:
-                    produkDetails.length === 0 || !pelanggan
-                      ? "not-allowed"
-                      : "pointer",
-                }}
-                onClick={() => {
-                  handleSimpanKeranjang();
-                }}
-              >
-                {isPendingKeranjang ? (
-                  <div className="loading lg:loading-xs xl:loading-sm text-base-content" />
-                ) : (
-                  <>
-                    <ShoppingCart className="size-4 xl:size-4 text-base-content" />
-                    {!fromBooking && (
-                      <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
-                        Keranjang
-                      </span>
-                    )}
-                  </>
-                )}
-              </button>
+              {!isNextTransaction && (
+                <button
+                  type="button"
+                  disabled={produkDetails.length === 0 || !pelanggan}
+                  className={cn(
+                    "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
+                    fromBooking ? "w-12" : "flex-1",
+                    (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
+                  )}
+                  style={{
+                    cursor:
+                      produkDetails.length === 0 || !pelanggan
+                        ? "not-allowed"
+                        : "pointer",
+                  }}
+                  onClick={() => {
+                    handleSimpanKeranjang();
+                  }}
+                >
+                  {isPendingKeranjang ? (
+                    <div className="loading lg:loading-xs xl:loading-sm text-base-content" />
+                  ) : (
+                    <>
+                      <ShoppingCart className="size-4 xl:size-4 text-base-content" />
+                      {!fromBooking && (
+                        <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
+                          Keranjang
+                        </span>
+                      )}
+                    </>
+                  )}
+                </button>
+              )}
 
               {/* button booking */}
               {!fromBooking ? (
@@ -535,7 +555,7 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
         step={step}
         pelangganId={pelanggan?.id}
         dataChooseProduk={produkDetails.map((item) => ({
-          id: item.id,
+          id: item.produk.id,
           diskon: item.diskon,
           hargaJual: item.hargaJual,
           img: item.produk.img,
@@ -553,6 +573,7 @@ const PilihProduk: FC<Props> = ({ handleToast }) => {
         handleShowModal={handleShowModalChoosePelanggan}
         modalRef={modalChoosePelangganRef}
         handleCloseModal={handleCloseModalChoosePelanggan}
+        transactionIdFromCart={transactionIdFromCart ?? undefined}
       />
 
       {/* modal add trasaksi */}

@@ -72,7 +72,7 @@ const useModalChoosePelanggan = (params: {
     mutateAsync: handlePilihPelanggan,
     isPending: isPendingPilihPelanggan,
   } = useMutation({
-    mutationFn: (data: { pelangganId: number }) =>
+    mutationFn: (data: { pelangganId: number; transactionId?: number }) =>
       TransactionServices.pilihPelanggan(data),
     onSuccess: () => {
       handleCloseModalChoosePelanggan();

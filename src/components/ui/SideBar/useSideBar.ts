@@ -11,6 +11,8 @@ import useLogOut from "../../../hooks/useLogOut";
 import useHasScroll from "../../../hooks/useHasScroll";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 import { useNotifikasiStore } from "../../../stores/notifikasiStore";
+import { useCartStore } from "../../../stores/useCartStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 const useSideBar = () => {
   // get auth context
@@ -21,6 +23,13 @@ const useSideBar = () => {
 
   // navigate
   const navigate = useNavigate();
+
+  const { resetNext, resetUpdate, transactionId } = useCartStore(
+    (state) => state,
+  );
+
+  // query client
+  const queryClient = useQueryClient();
 
   // // clear localstorage
   // const handleClearDataActiveCluster = () => {
@@ -58,6 +67,18 @@ const useSideBar = () => {
 
   const handleLink = async (link: string) => {
     if (!link) return;
+
+    if (transactionId) {
+      // clear keranjang
+      resetNext();
+      resetUpdate();
+
+      if (pathname === "/dashboard/kasir") {
+        queryClient.removeQueries({
+          queryKey: ["transaksi-draft"],
+        });
+      }
+    }
 
     // const isUpdateKeranjang = localStorage.getItem("is-update-keranjang");
 

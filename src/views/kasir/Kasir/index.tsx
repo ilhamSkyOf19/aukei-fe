@@ -26,7 +26,7 @@ const Kasir = () => {
         className={cn("w-full h-full flex flex-col justify-start items-center")}
       >
         {/* pilih produk */}
-        {step === 1 && <PilihProduk handleToast={handleSetToast} />}
+        {step === 1 && <PilihProduk />}
         {/* pembayaran */}
         {step === 2 && (
           <Pembayaran handleToast={handleSetToast} kasir={kasir} />

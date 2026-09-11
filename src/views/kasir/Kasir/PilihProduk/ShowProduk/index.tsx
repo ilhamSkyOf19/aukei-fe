@@ -149,10 +149,10 @@ const ShowProduk: FC<Props> = ({
                 >
                   <div
                     className={cn(
-                      "w-full h-full flex flex-col justify-start items-start border rounded-xl shadow-sm overflow-hidden gap-2 group-hover:shadow-sm transition-all duration-300 ease-in-out bg-base-100 p-1.5",
+                      "w-full h-full flex flex-col justify-start items-start rounded-xl shadow-sm overflow-hidden gap-2 bg-base-100 p-1.5 border border-transparent transition-colors",
                       dataChooseProduk?.some((produk) => produk.id === item.id)
-                        ? "border-custom-secondary border-2"
-                        : "border-transparent dark:border-base-content/10",
+                        ? "border-custom-secondary"
+                        : "hover:border-custom-secondary",
                     )}
                   >
                     {/* image */}

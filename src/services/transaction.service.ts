@@ -177,9 +177,22 @@ export class TransactionServices {
     return result.data;
   }
 
+  // find transaksi draft cart by id
+  static async findTransaksiDraftCartById(params: {
+    id: number;
+  }): Promise<ResponseStructure<ResponseTransaksiDraftType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseTransaksiDraftType | null>
+    >(`/transaction/${params.id}/draft-cart`);
+
+    return result.data;
+  }
+
   // pilih pelanggan
   static async pilihPelanggan(data: {
     pelangganId: number;
+    transactionId?: number;
   }): Promise<ResponseStructure<ResponsePilihPelangganType | null>> {
     // call api
     const result = await instanceAxios.post<

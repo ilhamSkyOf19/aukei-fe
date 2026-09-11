@@ -11,7 +11,11 @@ import TitleModalFormulir from "../../../../components/ui/TitleModalFormulir";
 import usePembayaran from "./usePembayaran";
 import { type FC } from "react";
 import { cn } from "../../../../utils/cn";
-import { formatRupiah, getWeekFromPeriod } from "../../../../helpers/helpers";
+import {
+  formatNumber,
+  formatRupiah,
+  getWeekFromPeriod,
+} from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
@@ -67,6 +71,9 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
 
     handleSteps,
     isPendingUpdateMetodePembayaran,
+
+    totalProduk,
+    totalQuantity,
   } = usePembayaran({
     handleToast,
     kasir,
@@ -129,13 +136,13 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
         <div className={cn("h-full col-span-5")}>
           <div
             className={cn(
-              "w-full h-full overflow-y-auto row-span-2 rounded-xl border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6",
+              "w-full h-[85vh] scrollbar-thin overflow-y-auto row-span-2 rounded-xl border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6",
             )}
           >
             <table className="table  table-zebra">
               {/* head */}
               <thead>
-                <tr className="text-[0.7rem] h-12 bg-base-200">
+                <tr className="text-[0.7rem] h-12 bg-base-200 sticky top-0 z-10">
                   <th>Gambar</th>
                   <th>Nama Produk</th>
                   <th>Harga (Rp)</th>
@@ -241,6 +248,25 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                   <>
                     {/* sub total & total diskon */}
                     <div className="w-full flex flex-col justify-start items-start gap-3 pb-4 border-b border-base-content/30 border-dashed">
+                      {/* total produk */}
+                      <div className="w-full flex flex-row justify-between items-center">
+                        <span className="text-xs text-base-content/80">
+                          Total Produk
+                        </span>
+                        <span className="text-xs font-medium text-base-content">
+                          {formatNumber(totalProduk)} Produk
+                        </span>
+                      </div>
+
+                      {/* total item */}
+                      <div className="w-full flex flex-row justify-between items-center">
+                        <span className="text-xs text-base-content/80">
+                          Total Quantity
+                        </span>
+                        <span className="text-xs font-medium text-base-content">
+                          {formatNumber(totalQuantity)} Item
+                        </span>
+                      </div>
                       {/* sub total */}
                       <div className="w-full flex flex-row justify-between items-center">
                         <span className="text-xs text-base-content/80">

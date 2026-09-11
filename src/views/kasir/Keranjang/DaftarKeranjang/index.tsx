@@ -199,7 +199,7 @@ const DaftarKeranjang = () => {
                   bgColor="bg-info"
                   textColor="text-primary-white"
                   label="Ubah Keranjang"
-                  handleBtn={handleUbahKeranjang}
+                  handleBtn={() => handleUbahKeranjang(dataKeranjang?.data?.id)}
                 />
               </div>
             </div>

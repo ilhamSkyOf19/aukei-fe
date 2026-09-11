@@ -19,6 +19,7 @@ import useModalTempo from "../../../../hooks/useModalTempo";
 import { LOCAL_STORAGE_KEYS } from "../../../../utils/localStorageKeys";
 import { getLocalStorageJSON } from "../../../../helpers/helpers";
 import { useStepStore } from "../../../../stores/stepStore";
+import { useCartStore } from "../../../../stores/useCartStore";
 
 // Delay debounce saat menyimpan metode pembayaran non-CASH ke localStorage
 const METODE_PEMBAYARAN_SYNC_DEBOUNCE_MS = 500;
@@ -35,7 +36,6 @@ const clearTransactionLocalStorage = () => {
   localStorage.removeItem(LOCAL_STORAGE_KEYS.DETAILS);
   localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
   localStorage.removeItem(LOCAL_STORAGE_KEYS.PELANGGAN);
-  localStorage.removeItem(LOCAL_STORAGE_KEYS.DATA_FROM_KERANJANG);
   localStorage.removeItem(LOCAL_STORAGE_KEYS.TEMPO);
 };
 
@@ -87,13 +87,28 @@ const usePembayaran = (params: {
   // query client
   const queryClient = useQueryClient();
 
+  // transaction id from cart
+  const {
+    transactionId: transactionIdFromCart,
+    resetCart,
+    resetNext,
+  } = useCartStore((state) => state);
+
   const {
     data: dataTransaksi,
     isLoading: isLoadingTransaksi,
     isRefetching: isRefetchingTransaksi,
   } = useQuery({
     queryKey: ["transaksi-draft"],
-    queryFn: () => TransactionServices.findTransaksiDraft(),
+    queryFn: () => {
+      if (transactionIdFromCart !== null) {
+        return TransactionServices.findTransaksiDraftCartById({
+          id: transactionIdFromCart,
+        });
+      } else {
+        return TransactionServices.findTransaksiDraft();
+      }
+    },
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -144,19 +159,25 @@ const usePembayaran = (params: {
     [],
   );
 
-  // Total diskon dari seluruh item
-  const totalDiskon = dataDetails?.reduce((a, b) => a + b.diskon, 0) ?? 0;
-
-  // Sub total harga sebelum dikurangi diskon
-  const subTotalBeforeDiskon =
-    dataDetails?.reduce((a, b) => a + b.hargaJual * b.quantity, 0) ?? 0;
-
-  // Total harga setelah dikurangi diskon per item
-  const totalAfterDiskon =
+  // Total diskon, sub total sebelum diskon, dan total quantity dihitung sekaligus
+  // dalam satu kali reduce (bukan 3 reduce terpisah) biar cuma 1x looping data
+  const { totalDiskon, subTotalBeforeDiskon, totalQuantity } =
     dataDetails?.reduce(
-      (a, b) => a + (b.hargaJual * b.quantity - b.diskon),
-      dataTransaksi?.data?.ongkir ?? 0,
-    ) ?? 0;
+      (acc, item) => {
+        acc.totalDiskon += item.diskon;
+        acc.subTotalBeforeDiskon += item.hargaJual * item.quantity;
+        acc.totalQuantity += item.quantity;
+        return acc;
+      },
+      { totalDiskon: 0, subTotalBeforeDiskon: 0, totalQuantity: 0 },
+    ) ?? { totalDiskon: 0, subTotalBeforeDiskon: 0, totalQuantity: 0 };
+
+  // Total produk (jumlah baris/varian item, bukan jumlah quantity)
+  const totalProduk = dataDetails?.length ?? 0;
+
+  // Total harga setelah dikurangi diskon per item + ongkir
+  const totalAfterDiskon =
+    subTotalBeforeDiskon - totalDiskon + (dataTransaksi?.data?.ongkir ?? 0);
 
   // mutate update metode pembayaran
   const {
@@ -263,6 +284,12 @@ const usePembayaran = (params: {
           transactionId: data?.data?.id,
         });
 
+        // check
+        if (transactionIdFromCart !== null) {
+          resetCart();
+          resetNext();
+        }
+
         handleToast("created_transaction");
         handleSteps(3);
       },
@@ -351,6 +378,8 @@ const usePembayaran = (params: {
     subTotalBeforeDiskon,
     totalDiskon,
     totalAfterDiskon,
+    totalProduk,
+    totalQuantity,
     handleTransaction,
     isPendingTransaction,
     isErrors,

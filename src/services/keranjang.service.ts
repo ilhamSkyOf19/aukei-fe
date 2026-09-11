@@ -1,6 +1,5 @@
 import instanceAxios from "../libs/axios";
 import type {
-  CreateKeranjangType,
   ResponseKeranjangType,
   UpdateKeranjangType,
 } from "../models/keranjang.model";
@@ -9,13 +8,14 @@ import type { ResponseStructure } from "../types/response.type";
 
 export class KeranjangServices {
   // create for keranjang
-  static async create(
-    req: CreateKeranjangType,
-  ): Promise<ResponseStructure<ResponseKeranjangType | null>> {
+  static async create(): Promise<
+    ResponseStructure<ResponseKeranjangType | null>
+  > {
     // call api
-    const result = await instanceAxios.post<
-      ResponseStructure<ResponseKeranjangType | null>
-    >("/keranjang", req);
+    const result =
+      await instanceAxios.post<ResponseStructure<ResponseKeranjangType | null>>(
+        "/keranjang",
+      );
 
     return result.data;
   }

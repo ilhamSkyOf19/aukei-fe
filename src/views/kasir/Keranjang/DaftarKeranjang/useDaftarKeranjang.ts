@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { KeranjangServices } from "../../../../services/keranjang.service";
 import useModal from "../../../../hooks/useModal";
 import { useAuthStore } from "../../../../stores/authStore";
+import { useCartStore } from "../../../../stores/useCartStore";
 
 const useDaftarKeranjang = () => {
   // set params
@@ -92,29 +93,30 @@ const useDaftarKeranjang = () => {
   //   );
   // };
 
+  // get use cart store
+  const { setNext, setUpdate } = useCartStore((state) => state);
+
   const handleLanjutTransaksi = (transactionId?: number) => {
     // data
     // handleSetLocalStorage();
 
-    // set local storage
-    localStorage.setItem(
-      "data-from-keranjang",
-      JSON.stringify({ transactionId }),
-    );
+    // set next
+    setNext({
+      next: true,
+      transactionId: transactionId ?? null,
+    });
 
     // navigate
     navigate("/dashboard/kasir");
   };
 
   // handle ubah keranjang
-  const handleUbahKeranjang = () => {
+  const handleUbahKeranjang = (transactionId?: number) => {
     // set local storage is update keranjang
-    localStorage.setItem(
-      "is-update-keranjang",
-      JSON.stringify({
-        pelangganId: dataKeranjang?.data?.pelanggan?.id,
-      }),
-    );
+    setUpdate({
+      update: true,
+      transactionId: transactionId ?? null,
+    });
 
     // handle local storage
     // handleSetLocalStorage();

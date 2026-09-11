@@ -358,6 +358,10 @@ export const TOAST_CONFIG_KERANJANG: Record<
     color: "error",
     message: "Keranjang berhasil dihapus",
   },
+  simpan_keranjang: {
+    color: "success",
+    message: "Data berhasil di simpan ke keranjang",
+  },
 };
 
 // toast daftar retur barang

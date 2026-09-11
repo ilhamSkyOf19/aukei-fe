@@ -9,18 +9,14 @@ import useModal from "../../../../hooks/useModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import type { ErrorResponse } from "../../../../types/response.type";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import type {
-  CreateKeranjangType,
-  UpdateKeranjangType,
-} from "../../../../models/keranjang.model";
+import { useLocation, useNavigate } from "react-router-dom";
 import { KeranjangServices } from "../../../../services/keranjang.service";
-import { parseId } from "../../../../helpers/helpers";
 import { useAuthStore } from "../../../../stores/authStore";
 import useConfirm from "../../../../hooks/useConfirm";
 import { useStepStore } from "../../../../stores/stepStore";
 import { TransactionServices } from "../../../../services/transaction.service";
 import { PelangganServices } from "../../../../services/pelanggan.service";
+import { useCartStore } from "../../../../stores/useCartStore";
 
 type IsErrorsType = "pelanggan" | "details";
 
@@ -35,9 +31,7 @@ const LOCAL_STORAGE_KEYS = {
   METODE_PEMBAYARAN: "metode-pembayaran",
 } as const;
 
-const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
-  const { handleToast } = props;
-
+const usePilihProduk = () => {
   const { setStep: handleSteps, step } = useStepStore((state) => state);
 
   const pengguna = useAuthStore((state) => state.pengguna);
@@ -46,10 +40,6 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
 
   // form aktif
   const [formActive, setFormActive] = useState<boolean>(false);
-
-  // Ambil keranjangId dari search params
-  const { keranjangId } = useParams<{ keranjangId: string }>();
-  const keranjangIdParse = parseId(keranjangId);
 
   const navigate = useNavigate();
   const currentPathname = useLocation().pathname;
@@ -96,13 +86,31 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
   // ganti pelanggan) sudah langsung hit API dan bikin data di DB
   // up to date. Keduanya sekarang diturunkan langsung dari query ini,
   // supaya otomatis sinkron begitu query di-refetch/invalidate.
+
+  // get cart
+  const {
+    next: isNextTransaction,
+    update: isUpdateKeranjang,
+    setNext: setNextTransaction,
+    setUpdate: setUpdateKeranjang,
+    transactionId: transactionIdFromCart,
+  } = useCartStore((state) => state);
+
   const {
     data: dataTransaksi,
     isLoading: isLoadingTransaksi,
     isRefetching: isRefetchingTransaksi,
   } = useQuery({
     queryKey: ["transaksi-draft"],
-    queryFn: () => TransactionServices.findTransaksiDraft(),
+    queryFn: () => {
+      if (transactionIdFromCart !== null) {
+        return TransactionServices.findTransaksiDraftCartById({
+          id: transactionIdFromCart,
+        });
+      } else {
+        return TransactionServices.findTransaksiDraft();
+      }
+    },
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -223,21 +231,6 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     },
   );
 
-  // Data keranjang yang sedang diupdate (jika ada)
-  const [isUpdateKeranjang] = useState<{
-    pelangganId: number;
-  } | null>(() => {
-    const isUpdateKeranjang = localStorage.getItem(
-      LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG,
-    );
-    if (isUpdateKeranjang) {
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
-      return JSON.parse(isUpdateKeranjang);
-    } else {
-      return null;
-    }
-  });
-
   // Lanjut ke step berikutnya
   const handleStepsNext = async (toPembayaran?: boolean) => {
     if (!validatePelangganDanDetails()) return;
@@ -303,32 +296,12 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
   // Mutation untuk membuat atau mengupdate keranjang
   const { mutateAsync: mutateKeranjang, isPending: isPendingKeranjang } =
     useMutation({
-      mutationFn: (req: CreateKeranjangType | UpdateKeranjangType) => {
-        if (keranjangIdParse) {
-          return KeranjangServices.update({
-            id: keranjangIdParse,
-            req: req as UpdateKeranjangType,
-          });
-        } else {
-          return KeranjangServices.create(req as CreateKeranjangType);
-        }
-      },
+      mutationFn: () => KeranjangServices.create(),
       onSuccess: (data) => {
         // Data draft di server sudah berubah (dikonsumsi jadi keranjang),
         // jadi cukup invalidate query supaya UI ikut ter-refresh —
         // tidak perlu lagi `handleRemoveAllDetails()` / `setPelanggan(null)`.
         queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
-
-        if (isUpdateKeranjang) {
-          return navigate(
-            `/dashboard/keranjang?pelangganId=${data?.data?.pelanggan?.id}`,
-            {
-              state: {
-                toast: "updated_keranjang",
-              },
-            },
-          );
-        }
 
         if (isUpdateTransaction) {
           localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
@@ -337,7 +310,11 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
           setIsUpdateTransaction(false);
         }
 
-        handleToast("simpan_keranjang");
+        navigate(`/dashboard/keranjang?keranjangId=${data?.data?.id}`, {
+          state: {
+            toast: "simpan_keranjang",
+          },
+        });
       },
       onError: (error) => {
         if (axios.isAxiosError<ErrorResponse>(error)) {
@@ -383,53 +360,19 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
   // Validasi form, lalu simpan produk terpilih sebagai keranjang baru
   const handleSimpanKeranjang = async () => {
     try {
-      if (!validatePelangganDanDetails()) return;
-
-      const dataDetails: DetailsForCreate[] = produkDetails.map((item) => ({
-        diskon: item.diskon,
-        hargaJual: item.hargaJual,
-        produkId: item.produk.id,
-        quantity: item.quantity,
-      }));
-
-      await mutateKeranjang({
-        details: dataDetails,
-        pelangganId: pelanggan?.id,
-      });
+      await mutateKeranjang();
     } catch (error) {
       console.log(error);
     }
   };
 
   // Batalkan proses simpan keranjang (mode update)
-  const handleBatalkanSimpanKeranjang = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
-
-    navigate(
-      `/dashboard/keranjang?pelangganId=${isUpdateKeranjang?.pelangganId}`,
-    );
-  };
-
-  // Validasi form, lalu simpan perubahan pada keranjang yang sedang diupdate
-  const handleSimpanPerubahanKeranjang = async () => {
-    try {
-      if (!validatePelangganDanDetails()) return false;
-
-      const dataDetails: DetailsForCreate[] = produkDetails.map((item) => ({
-        diskon: item.diskon,
-        hargaJual: item.hargaJual,
-        produkId: item.produk.id,
-        quantity: item.quantity,
-      }));
-
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_KERANJANG);
-
-      await mutateKeranjang({
-        details: dataDetails,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+  const handleBackKeranjang = () => {
+    // reset
+    setUpdateKeranjang({ update: false, transactionId: null });
+    setNextTransaction({ next: false, transactionId: null });
+    // navigate
+    navigate(`/dashboard/keranjang?keranjangId=${transactionIdFromCart}`);
   };
 
   // mutate delete all
@@ -507,10 +450,8 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     alert,
     isUpdateTransaction,
     handleSimpanKeranjang,
-    handleSimpanPerubahanKeranjang,
     isPendingKeranjang,
     isUpdateKeranjang,
-    handleBatalkanSimpanKeranjang,
     handleBatalkanUpdateTransaction,
     modalFormulirTransaksiRef,
     handleShowModalFormulirTransaksi,
@@ -544,6 +485,12 @@ const usePilihProduk = (props: { handleToast: (value: string) => void }) => {
     setFormActive,
 
     dataTransaksi,
+
+    isNextTransaction,
+
+    handleBackKeranjang,
+
+    transactionIdFromCart,
   };
 };
 
