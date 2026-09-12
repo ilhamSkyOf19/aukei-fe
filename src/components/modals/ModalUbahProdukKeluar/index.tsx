@@ -3,7 +3,11 @@ import { cn } from "../../../utils/cn";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import InputSearch from "../../inputs/InputSearch";
-import type { StatusInventoriType } from "../../../types/constant.type";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+  type StatusInventoriType,
+} from "../../../types/constant.type";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
 import useModalUbahProdukKeluar from "./useModalUbahProdukKeluar";
@@ -23,6 +27,7 @@ type Props = {
   };
   status?: StatusInventoriType;
   idBarangKeluar?: number;
+  role?: RoleInternalType;
 };
 
 const ModalUbahProdukKeluar: FC<Props> = ({
@@ -31,6 +36,7 @@ const ModalUbahProdukKeluar: FC<Props> = ({
   status,
   idBarangKeluar,
   dataUpdate: { jumlahStok, produkId },
+  role,
 }) => {
   const {
     handleSubmit,
@@ -142,7 +148,7 @@ const ModalUbahProdukKeluar: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
-                            hargaModal
+                            hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
                             key={item.id}
                             data={item}
                             handleSetValueProdukId={handleSetValueProdukId}
@@ -165,7 +171,7 @@ const ModalUbahProdukKeluar: FC<Props> = ({
                 <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
                   <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
                   <CardProdukForAfterChooseInventori
-                    hargaModal
+                    hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
                     data={produkChoose}
                     handleDeleteValueProdukId={handleDeleteValueProdukId}
                     customWidth="w-full"

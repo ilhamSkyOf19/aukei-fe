@@ -82,6 +82,12 @@ const useFormulirTambahBarangMasuk = (params: {
     name: "jumlahBox",
   });
 
+  // jumlah stok
+  const jumlahStokController = useController({
+    control,
+    name: "jumlahStok",
+  });
+
   // controller harga beli
   const hargaBeliController = useController({
     control,
@@ -200,6 +206,8 @@ const useFormulirTambahBarangMasuk = (params: {
     handleShowModalFormulirTambahBarang,
     handleCloseModalFormulirTambahBarang,
     hargaBeliController,
+
+    jumlahStokController,
   };
 };
 export default useFormulirTambahBarangMasuk;

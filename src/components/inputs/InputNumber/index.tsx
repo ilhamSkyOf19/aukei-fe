@@ -106,7 +106,7 @@ const InputNumber = <T extends FieldValues = any>({
              */
             if (rawValue === "") {
               setDisplayValue("");
-              field.onChange(0);
+              field.onChange(undefined);
               return;
             }
 

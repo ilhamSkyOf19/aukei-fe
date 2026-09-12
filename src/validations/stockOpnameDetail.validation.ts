@@ -10,7 +10,7 @@ export class StockOpnameDetailValidation {
     .object({
       stockOpnameId: z.number().int().positive().max(2147483647),
       produkId: z
-        .number()
+        .number("Mohon pilih produk")
         .int()
         .positive("Mohon pilih produk")
         .max(2147483647)

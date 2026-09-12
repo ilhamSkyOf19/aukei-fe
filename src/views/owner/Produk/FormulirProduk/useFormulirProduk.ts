@@ -201,7 +201,7 @@ const useFormulirProduk = () => {
          * "" berarti user sengaja menghapus kode.
          * "ABC001" berarti user ingin mengganti kode.
          */
-        formData.append("kode", data.kode?.trim() ?? "");
+        formData.append("kode", undefined!);
       }
 
       await mutateProduk(formData);

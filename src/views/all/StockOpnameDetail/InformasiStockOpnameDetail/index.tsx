@@ -1,6 +1,7 @@
 import { type FC } from "react";
 import { cn } from "../../../../utils/cn";
 import {
+  Boxes,
   CalendarDays,
   ChevronDown,
   Package,
@@ -25,6 +26,7 @@ type Props = {
   tanggal?: Date;
   keterangan?: string;
   totalProduk: number;
+  totalItem: number;
   idStockOpnameDetail?: number;
   handleSetToast: (data: string) => void;
   status?: StatusStockOpnameType;
@@ -46,6 +48,7 @@ const InformasiStockOpnameDetail: FC<Props> = ({
   totalProduk,
   idStockOpnameDetail,
   tanggal,
+  totalItem,
 }) => {
   // call use
   const {
@@ -254,6 +257,26 @@ const InformasiStockOpnameDetail: FC<Props> = ({
                 </span>
 
                 <span className={"text-sm font-medium"}>{totalProduk}</span>
+              </div>
+            </div>
+
+            <div className="w-full flex flex-row justify-between items-start gap-3 mt-8">
+              <div className="h-full flex flex-row justify-start items-start">
+                <Boxes className="size-5 text-emerald-600" />
+              </div>
+
+              {/* label and value */}
+              <div
+                className={cn(
+                  "w-full flex flex-row justify-between pb-3 border-b border-base-content/10 items-center",
+                )}
+              >
+                {/* label */}
+                <span className="text-xs text-base-content font-medium">
+                  Total Item
+                </span>
+
+                <span className={"text-sm font-medium"}>{totalItem}</span>
               </div>
             </div>
 

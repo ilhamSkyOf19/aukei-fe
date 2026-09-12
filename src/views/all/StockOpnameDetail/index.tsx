@@ -6,7 +6,6 @@ import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import Alert from "../../../components/messages/Alert";
 import Toast from "../../../components/messages/Toast";
 import ModalDelete from "../../../components/modals/ModalDelete";
-import NotCompatible from "../../../components/messages/NotCompatible";
 import ModalAlert from "../../../components/modals/ModalAlert";
 
 import {
@@ -38,7 +37,7 @@ type Props = {
 const StockOpnameDetail: FC<Props> = ({ fromPengajuan }) => {
   const {
     // DATA
-    dataStockOpnameDetail,
+    stockOpname,
     pengguna,
 
     // LOADING
@@ -89,7 +88,6 @@ const StockOpnameDetail: FC<Props> = ({ fromPengajuan }) => {
     isPendingDelete,
 
     // OTHER
-    handleBack,
 
     handlePosting,
     isPendingPosting,
@@ -108,13 +106,11 @@ const StockOpnameDetail: FC<Props> = ({ fromPengajuan }) => {
     handleCancelVerifikasi,
     isPendingCancelPosting,
     isPendingCancelVerifikasi,
+
+    informasiStockOpnameDetail,
   } = useStockOpnameDetail({
     fromPengajuan,
   });
-
-  const stockOpname = dataStockOpnameDetail?.data;
-
-  const isKasir = pengguna?.role === ROLE_INTERNAL_TYPE.KASIR;
 
   const canShowFormTambahBarang = isCanManageDetail;
 
@@ -165,7 +161,7 @@ ALERT
           {/* BUTTON BACK */}
 
           <div className="w-30">
-            <ButtonBackText label="Kembali" handleClick={handleBack} />
+            <ButtonBackText label="Kembali" />
           </div>
 
           {isLoadingStockOpnameDetail ? (
@@ -239,8 +235,7 @@ ALERT
                         {!isExpired && (
                           <CountDown
                             expiredAt={subtractMinutes(
-                              dataStockOpnameDetail?.data?.verifiedAt ??
-                                new Date(),
+                              stockOpname?.verifiedAt ?? new Date(),
                               1,
                             )}
                           />
@@ -330,8 +325,7 @@ ALERT
 
                   {isCanManageDetail &&
                     (isStatusDraft || isStatusRejected) &&
-                    dataStockOpnameDetail?.data?.adminOpname?.id ===
-                      pengguna?.id && (
+                    stockOpname?.adminOpname?.id === pengguna?.id && (
                       <>
                         <ButtonWithIcon
                           textColor="text-primary-white"
@@ -352,9 +346,7 @@ ALERT
                               disabled={isPendingPosting}
                               label="Posting"
                               icon={Check}
-                              handleBtn={() =>
-                                handlePosting(dataStockOpnameDetail?.data?.id)
-                              }
+                              handleBtn={() => handlePosting(stockOpname?.id)}
                             />
                           )}
                       </>
@@ -364,24 +356,19 @@ ALERT
                 {isStatusApproved &&
                   !isExpired &&
                   pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
-                  (dataStockOpnameDetail?.data?.adminOpname?.id ===
-                  pengguna?.id ? (
+                  (stockOpname?.adminOpname?.id === pengguna?.id ? (
                     <ButtonWithIcon
                       label="Batalkan Posting"
                       icon={Check}
                       isLoading={isPendingCancelPosting}
-                      handleBtn={() =>
-                        handleCancelPosting(dataStockOpnameDetail?.data?.id)
-                      }
+                      handleBtn={() => handleCancelPosting(stockOpname?.id)}
                     />
                   ) : (
                     <ButtonWithIcon
                       label="Batalkan Verifikasi"
                       icon={Check}
                       isLoading={isPendingCancelVerifikasi}
-                      handleBtn={() =>
-                        handleCancelVerifikasi(dataStockOpnameDetail?.data?.id)
-                      }
+                      handleBtn={() => handleCancelVerifikasi(stockOpname?.id)}
                     />
                   ))}
 
@@ -416,22 +403,19 @@ ALERT
     ============================================================ */}
 
         <InformasiStockOpnameDetail
-          author={stockOpname?.adminOpname}
-          tanggalDiajukan={
-            stockOpname?.status === STATUS_STOCK_OPNAME_TYPE.PENDING ||
-            stockOpname?.status === STATUS_STOCK_OPNAME_TYPE.REJECTED ||
-            stockOpname?.status === STATUS_STOCK_OPNAME_TYPE.APPROVED
-              ? stockOpname?.riwayat?.[1]?.createdAt
-              : stockOpname?.riwayat?.[0]?.createdAt
-          }
-          isUpdate={isCanManageDetail}
+          author={informasiStockOpnameDetail.author}
+          tanggalDiajukan={informasiStockOpnameDetail.tanggalDiajukan}
+          isUpdate={informasiStockOpnameDetail.isUpdate}
           handleSetToast={handleSetToast}
-          totalProduk={stockOpname?.details?.length ?? 0}
-          idStockOpnameDetail={stockOpname?.id}
-          isLoadingStocOpnameDetail={isLoadingStockOpnameDetail}
-          keterangan={stockOpname?.keterangan ?? ""}
-          status={stockOpname?.status}
-          tanggal={stockOpname?.tanggalOpname}
+          totalProduk={informasiStockOpnameDetail.totalProduk}
+          totalItem={informasiStockOpnameDetail.totalItem}
+          idStockOpnameDetail={informasiStockOpnameDetail.idStockOpnameDetail}
+          isLoadingStocOpnameDetail={
+            informasiStockOpnameDetail.isLoadingStocOpnameDetail
+          }
+          keterangan={informasiStockOpnameDetail.keterangan}
+          status={informasiStockOpnameDetail.status}
+          tanggal={informasiStockOpnameDetail.tanggal}
         />
 
         {/* ============================================================
@@ -443,6 +427,7 @@ ALERT
             handleSetToast={handleSetToast}
             handleSetAlert={handleSetAlert}
             alert={alert}
+            role={pengguna?.role}
           />
         )}
 
@@ -451,10 +436,11 @@ ALERT
     ============================================================ */}
 
         <ShowStockOpname
-          dataStockOpnameDetail={dataStockOpnameDetail}
+          dataStockOpnameDetail={stockOpname}
           isCanUpdate={isCanManageDetail}
           isLoadingStockOpnameDetail={isLoadingStockOpnameDetail}
           handleSetToast={handleSetToast}
+          role={pengguna?.role}
         />
 
         {/* ============================================================
@@ -512,16 +498,6 @@ ALERT
           isLoadingDelete={isPendingDeleteStockOpname}
         />
       </div>
-
-      {/* ============================================================
-      NOT COMPATIBLE
-  ============================================================ */}
-
-      {isKasir && (
-        <div className={cn("w-full h-[80vh]", "flex items-center lg:hidden")}>
-          <NotCompatible />
-        </div>
-      )}
     </main>
   );
 };

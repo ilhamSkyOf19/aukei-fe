@@ -68,7 +68,6 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     dataModalFormulirVerifikasiOrPengajuan,
     isCanUpdate,
     isCanBatalkanPosting,
-    handleBack,
     fromPengajuanBarangNotifikasi,
     handleDownloadInvoiceBarangKeluarPdf,
     isPendingDownloadInvoiceBarangKeluar,
@@ -103,7 +102,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       <div className="rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-2 lg:p-4">
         {/* button back */}
         <div className="w-30">
-          <ButtonBackText label="Kembali" handleClick={() => handleBack()} />
+          <ButtonBackText label="Kembali" />
         </div>
 
         {isLoadingBarangKeluarDetail ? (
@@ -342,11 +341,32 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       </div>
 
       {/* informasi tanggal dan keterangan */}
-      <InformasiBarangKeluar {...informasiBarangKeluar} />
+      <InformasiBarangKeluar
+        isLoadingBarangKeluarDetail={
+          informasiBarangKeluar.isLoadingBarangKeluarDetail
+        }
+        totalItemKeluar={informasiBarangKeluar.totalItemKeluar}
+        totalBarangKeluar={informasiBarangKeluar.totalBarangKeluar}
+        tanggalKeluar={informasiBarangKeluar.tanggalKeluar}
+        keterangan={informasiBarangKeluar.keterangan}
+        totalNilai={
+          pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+            ? informasiBarangKeluar.totalNilai
+            : undefined
+        }
+        idBarangKeluarDetail={informasiBarangKeluar.idBarangKeluarDetail}
+        handleSetToast={informasiBarangKeluar.handleSetToast}
+        jenisKeluar={informasiBarangKeluar.jenisKeluar}
+        status={informasiBarangKeluar.status}
+        author={informasiBarangKeluar.author}
+        tanggalDiajukan={informasiBarangKeluar.tanggalDiajukan}
+        isUpdate={informasiBarangKeluar.isUpdate}
+      />
 
       {/* formulir */}
       {canShowFormTambahBarang && (
         <FormulirTambahBarangKeluar
+          role={pengguna?.role}
           totalBarang={
             dataBarangKeluarDetail?.data?.detailBarangKeluars?.length ?? 0
           }

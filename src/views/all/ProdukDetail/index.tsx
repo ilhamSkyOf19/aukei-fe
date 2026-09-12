@@ -85,6 +85,8 @@ const ProdukDetail = () => {
     handleShowModalDeleteImg,
     isPendingDeleteImg,
     modalDeleteImgRef,
+
+    handleBack,
   } = useProdukDetail();
 
   return (
@@ -104,7 +106,7 @@ const ProdukDetail = () => {
         <div className="w-full flex flex-row justify-center items-center gap-2">
           {/* button back */}
           <div className="flex flex-1 flex-row justify-start items-center">
-            <ButtonBackText link="/dashboard/produk" />
+            <ButtonBackText handleClick={() => handleBack()} />
           </div>
 
           <div className="flex flex-1 flex-row justify-center items-center">

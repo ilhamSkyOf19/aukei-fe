@@ -311,32 +311,34 @@ const InformasiBarangMasuk: FC<Props> = ({
               </div>
             </div>
 
-            {/* keterangan barang masuk */}
-            <div className="w-full flex flex-row justify-between items-start gap-3 mt-6">
-              {/* icon */}
-              <div className="h-full flex flex-row justify-start items-start">
-                <BanknoteArrowDown className="size-5 text-info" />
-              </div>
+            {/* total nilai */}
+            {totalNilai && (
+              <div className="w-full flex flex-row justify-between items-start gap-3 mt-6">
+                {/* icon */}
+                <div className="h-full flex flex-row justify-start items-start">
+                  <BanknoteArrowDown className="size-5 text-info" />
+                </div>
 
-              {/* label and value */}
-              <div
-                className={cn(
-                  "w-full flex flex-col justify-between pb-3 border-b border-base-content/10 items-start",
-                )}
-              >
-                {/* label */}
-                <span className="text-xs text-base-content font-medium">
-                  Total Nilai
-                </span>
-
-                {/* keterangan */}
-                <div className="mt-2">
-                  <span className="text-lg text-base-content font-semibold">
-                    {formatRupiah(totalNilai ?? 0)}
+                {/* label and value */}
+                <div
+                  className={cn(
+                    "w-full flex flex-col justify-between pb-3 border-b border-base-content/10 items-start",
+                  )}
+                >
+                  {/* label */}
+                  <span className="text-xs text-base-content font-medium">
+                    Total Nilai
                   </span>
+
+                  {/* keterangan */}
+                  <div className="mt-2">
+                    <span className="text-lg text-base-content font-semibold">
+                      {formatRupiah(totalNilai ?? 0)}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </>
         )}
       </div>

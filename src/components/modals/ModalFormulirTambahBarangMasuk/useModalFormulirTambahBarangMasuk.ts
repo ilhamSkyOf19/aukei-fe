@@ -62,6 +62,12 @@ const useModalFormulirTambahBarangMasuk = (params: {
     name: "jumlahBox",
   });
 
+  // jumlah stok
+  const jumlahStokController = useController({
+    control,
+    name: "jumlahStok",
+  });
+
   // harga beli controller
   const hargaBeliController = useController({
     control,
@@ -214,6 +220,8 @@ const useModalFormulirTambahBarangMasuk = (params: {
     isPendingBarangMasukDetail,
 
     alert,
+
+    jumlahStokController,
   };
 };
 

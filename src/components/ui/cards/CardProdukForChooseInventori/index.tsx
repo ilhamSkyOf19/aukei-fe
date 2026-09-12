@@ -57,7 +57,7 @@ const CardProdukForChooseInventori: FC<Props> = ({
       <div className="flex-2 flex flex-col justify-start items-start gap-1">
         {/* label */}
         <span className="text-[0.625rem] text-base-content/50">
-          {hargaModal ? "Harga Modal" : "Hrg. Beli Terakhir"}
+          {hargaModal ? "Harga Modal" : hargaBeli && "Hrg. Beli Terakhir"}
         </span>
         {/* value */}
         {hargaBeli && (

@@ -5,6 +5,8 @@ import { cn } from "../../../utils/cn";
 import type { ResponseStructure } from "../../../types/response.type";
 import type { ResponseProdukForChooseType } from "../../../models/produk.model";
 import CardProdukForChooseInventori from "../../ui/cards/CardProdukForChooseInventori";
+import { useAuthStore } from "../../../stores/authStore";
+import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 
 type Props = {
   inputSearchRef: RefObject<InputSearchRef | null>;
@@ -34,6 +36,9 @@ const FormCariProdukInventori: FC<Props> = ({
   hargaBeli,
   hargaModal,
 }) => {
+  // get pengguna
+  const role = useAuthStore((state) => state.pengguna?.role);
+
   return (
     <div
       ref={wrapperRef}
@@ -79,8 +84,12 @@ const FormCariProdukInventori: FC<Props> = ({
                 dataProdukForChoose?.data?.map((item, _) => (
                   <CardProdukForChooseInventori
                     key={item.id}
-                    hargaBeli={hargaBeli}
-                    hargaModal={hargaModal}
+                    hargaBeli={
+                      role === ROLE_INTERNAL_TYPE.OWNER ? hargaBeli : false
+                    }
+                    hargaModal={
+                      role === ROLE_INTERNAL_TYPE.OWNER ? hargaModal : false
+                    }
                     data={item}
                     handleSetValueProdukId={handleSetValueProdukId}
                   />

@@ -82,7 +82,6 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     handleDownloadInvoiceBarangMasukPdf,
     isLoadingDownloadInvoiceBarangMasukPdf,
 
-    handleBack,
     handlePrintInvoiceBarangMasuk,
     isLoadingPrintInvoiceBarangMasuk,
     informasiBarangMasuk,
@@ -122,7 +121,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
         >
           {/* button back */}
           <div className="w-30">
-            <ButtonBackText label="Kembali" handleClick={() => handleBack()} />
+            <ButtonBackText label="Kembali" />
           </div>
 
           {isLoadingBarangMasukDetail ? (
@@ -360,7 +359,27 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
         </div>
 
         {/* informasi tanggal dan keterangan */}
-        <InformasiBarangMasuk {...informasiBarangMasuk} />
+        <InformasiBarangMasuk
+          isLoadingBarangMasukDetail={
+            informasiBarangMasuk.isLoadingBarangMasukDetail
+          }
+          totalBox={informasiBarangMasuk.totalBox}
+          totalPcs={informasiBarangMasuk.totalPcs}
+          totalBarangMasuk={informasiBarangMasuk.totalBarangMasuk}
+          tanggalMasuk={informasiBarangMasuk.tanggalMasuk}
+          keterangan={informasiBarangMasuk.keterangan}
+          totalNilai={
+            pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+              ? informasiBarangMasuk.totalNilai
+              : undefined
+          }
+          idBarangMasukDetail={informasiBarangMasuk.idBarangMasukDetail}
+          handleSetToast={informasiBarangMasuk.handleSetToast}
+          status={informasiBarangMasuk.status}
+          author={informasiBarangMasuk.author}
+          tanggalDiajukan={informasiBarangMasuk.tanggalDiajukan}
+          isUpdate={informasiBarangMasuk.isUpdate}
+        />
 
         {/* formulir */}
         {canShowFormTambahBarang && (
@@ -369,6 +388,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
             handleSetToast={handleSetToast}
             handleSetAlert={handleSetAlert}
             isGlobalLoading={isPendingPosting}
+            role={pengguna?.role}
           />
         )}
 

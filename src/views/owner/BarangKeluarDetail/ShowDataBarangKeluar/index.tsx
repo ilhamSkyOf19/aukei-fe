@@ -118,9 +118,9 @@ const ShowDataBarangKeluar: FC<Props> = ({
                         {item.produk.nama}
                       </p>
 
-                      <div className="flex flex-row justify-start items-center gap-2">
+                      <div className="flex flex-row justify-start items-start gap-2">
                         <p className="text-base-content/50 text-[0.7rem] font-medium border-r border-base-content/10 pr-2.5">
-                          {item.produk.kode}
+                          {item.produk.kode ?? "-"}
                         </p>
 
                         <p className="text-base-content/50 text-[0.7rem] font-medium">
@@ -131,7 +131,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
 
                     {/* button aksi */}
                     <div className="flex flex-row justify-end items-start gap-2.5">
-                      {!fromPengajuanBarang && !isStatusPosted && (
+                      {fromPengajuanBarang && !isStatusPosted && (
                         <>
                           <ButtonWithIcon
                             customHeight="h-8"
@@ -169,15 +169,17 @@ const ShowDataBarangKeluar: FC<Props> = ({
                 {/* data */}
                 <div className="w-full flex flex-row justify-start items-end mt-2 flex-wrap gap-4">
                   {/* harga modal */}
-                  <div className="flex-1 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
-                    <span className="text-[0.625rem] text-base-content/50">
-                      Harga Modal
-                    </span>
+                  {role === ROLE_INTERNAL_TYPE.OWNER && (
+                    <div className="flex-1 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
+                      <span className="text-[0.625rem] text-base-content/50">
+                        Harga Modal
+                      </span>
 
-                    <span className="text-xs font-semibold text-base-content">
-                      {formatRupiahShort(item.hargaModalSatuan)}
-                    </span>
-                  </div>
+                      <span className="text-xs font-semibold text-base-content">
+                        {formatRupiahShort(item.hargaModalSatuan)}
+                      </span>
+                    </div>
+                  )}
 
                   {/* jumlah stok */}
                   <div className="flex-1 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
@@ -225,13 +227,13 @@ const ShowDataBarangKeluar: FC<Props> = ({
               <tr className="text-[0.7rem] bg-base-200 h-12">
                 <th>No</th>
                 <th>Foto</th>
-                <th>Kode</th>
                 <th>Nama</th>
+                <th>Kode</th>
                 <th>Kategori</th>
-                <th>Harga Modal</th>
+                {role === ROLE_INTERNAL_TYPE.OWNER && <th>Harga Modal</th>}
                 <th>Stok Saat Ini</th>
                 <th>Stok Keluar</th>
-                <th>Total</th>
+                {role === ROLE_INTERNAL_TYPE.OWNER && <th>Total</th>}
                 {(isRejectedKasir ||
                   isDrafOwner ||
                   dataBarangKeluarDetail?.data?.status ===
@@ -242,7 +244,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
               {isLoadingBarangKeluarDetail ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={10}>
+                    <td colSpan={role === ROLE_INTERNAL_TYPE.OWNER ? 10 : 9}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>
@@ -267,21 +269,21 @@ const ShowDataBarangKeluar: FC<Props> = ({
                           </div>
                         </div>
                       </td>
-                      {/* kode */}
-                      <td className="font-semibold text-info">
-                        {item.produk.kode}
-                      </td>
                       {/* nama */}
                       <td>{item.produk.nama}</td>
+                      {/* kode */}
+                      <td>{item.produk.kode ?? "-"}</td>
                       {/* kategori */}
                       <td>{item.produk.kategori.nama}</td>
 
                       {/* jumlah perbox */}
-                      <td>
-                        <span>
-                          {formatRupiah(item.hargaModalSatuan.toString())}
-                        </span>
-                      </td>
+                      {role === ROLE_INTERNAL_TYPE.OWNER && (
+                        <td>
+                          <span>
+                            {formatRupiah(item.hargaModalSatuan.toString())}
+                          </span>
+                        </td>
+                      )}
 
                       {/* stok saat ini */}
                       <td className="font-medium">
@@ -336,9 +338,13 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       </td>
 
                       {/* total */}
-                      <td className="font-medium">
-                        {formatRupiah(item.hargaModalSatuan * item.jumlahStok)}
-                      </td>
+                      {role === ROLE_INTERNAL_TYPE.OWNER && (
+                        <td className="font-medium">
+                          {formatRupiah(
+                            item.hargaModalSatuan * item.jumlahStok,
+                          )}
+                        </td>
+                      )}
 
                       {/* detail */}
                       {(isRejectedKasir ||
@@ -371,7 +377,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                 )
               ) : (
                 <tr>
-                  <td colSpan={10}>
+                  <td colSpan={role === ROLE_INTERNAL_TYPE.OWNER ? 10 : 9}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
                         title="Data Produk Tidak Tersedia"
@@ -406,6 +412,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
           jumlahStok: dataUpdateBarangKeluar?.jumlahStok,
           produkId: dataUpdateBarangKeluar?.produkId,
         }}
+        role={role}
       />
     </>
   );

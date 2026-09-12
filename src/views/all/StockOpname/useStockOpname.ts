@@ -111,10 +111,6 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
   useEffect(() => {
     const { defaultStartDate, defaultEndDate } = getDefaultDate();
 
-    const clusterFromStorage = localStorage.getItem(
-      "active-cluster",
-    ) as ClusterType | null;
-
     setSearchParams(
       (prev) => {
         const params = new URLSearchParams(prev);
@@ -125,7 +121,7 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
         if (!params.get("cluster")) {
           params.set(
             "cluster",
-            clusterFromStorage || pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
+            pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
               ? "stockOpname"
               : "pengajuanStockOpname",
           );

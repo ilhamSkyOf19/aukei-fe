@@ -10,18 +10,24 @@ import InputChoose from "../../../../components/inputs/InputChoose";
 import InputNumber from "../../../../components/inputs/InputNumber";
 import ModalFormulirTambahProdukStockOpname from "../../../../components/modals/ModalFormulirTambahProdukStockOpname";
 import type { Alert } from "../../../../types/alert.types";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+} from "../../../../types/constant.type";
 
 type Props = {
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
   alert?: Alert | null;
   isGlobalLoading?: boolean;
+  role?: RoleInternalType;
 };
 const FormulirTambahBarangMasuk: FC<Props> = ({
   handleSetToast,
   handleSetAlert,
   isGlobalLoading,
   alert,
+  role,
 }) => {
   const {
     handleShowModalFormulirTambahBarang,
@@ -78,7 +84,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
         >
           {/* produk */}
           <FormCariProdukInventori
-            hargaBeli
+            hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
             wrapperRef={wrapperRef}
             handleSearch={handleSearch}
             handleCloseActiveComponentChooseProduk={
@@ -149,7 +155,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
 
             <div className="w-full grid grid-cols-4 gap-2.5">
               <CardProdukForAfterChooseInventori
-                hargaBeli
+                hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
                 data={produkChoose}
                 handleDeleteValueProdukId={handleDeleteValueProdukId}
               />

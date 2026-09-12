@@ -9,18 +9,21 @@ import InputPrice from "../../../../components/inputs/InputPrice";
 import FormCariProdukInventori from "../../../../components/forms/FormCariProdukInventori";
 import CardProdukForAfterChooseInventori from "../../../../components/ui/cards/CardProdukForAfterChooseInventori";
 import { PackagePlus } from "lucide-react";
+import type { RoleInternalType } from "../../../../types/constant.type";
 
 type Props = {
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
   isGlobalLoading?: boolean;
   fromPengajuanBarang?: boolean;
+  role?: RoleInternalType;
 };
 const FormulirTambahBarangMasuk: FC<Props> = ({
   handleSetToast,
   handleSetAlert,
   fromPengajuanBarang,
   isGlobalLoading,
+  role,
 }) => {
   const {
     dataProdukForChoose,
@@ -43,6 +46,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
     handleShowModalFormulirTambahBarang,
     modalFormulirTambahBarangRef,
     hargaBeliController,
+    jumlahStokController,
   } = useFormulirTambahBarangMasuk({
     handleSetToast,
     handleSetAlert,
@@ -73,7 +77,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
         {/* form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-full flex flex-row justify-start items-start mt-4 gap-8"
+          className="w-full flex flex-row justify-start items-start mt-4 pb-4 gap-8"
         >
           {/* produk */}
           <FormCariProdukInventori
@@ -98,7 +102,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
           <div
             className={cn(
               " gap-4 flex flex-row justify-start items-start",
-              fromPengajuanBarang ? "flex-1" : "flex-2",
+              fromPengajuanBarang ? "flex-2" : "flex-3",
             )}
           >
             {!fromPengajuanBarang && (
@@ -113,14 +117,20 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
 
             <InputNumber<CreateBarangMasukDetailType>
               controller={jumlahBoxController}
-              label="Jumlah Box"
+              label="Jumlah Box (opsional)"
               placeholder="Jumlah Box"
-              required
+              max={1000000}
+            />
+
+            <InputNumber<CreateBarangMasukDetailType>
+              controller={jumlahStokController}
+              label="Jumlah Item (opsional)"
+              placeholder="Jumlah Item"
               max={1000000}
             />
           </div>
           {/* button submit */}
-          <div className="flex-1 flex flex-row justify-end items-end h-18">
+          <div className="flex-1 flex flex-row justify-end items-end h-16">
             <ButtonWithIcon
               icon={PackagePlus}
               disabled={isGlobalLoading}
@@ -157,6 +167,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
         fromPengajuanBarang={fromPengajuanBarang}
         modalRef={modalFormulirTambahBarangRef}
         handleCloseModal={handleCloseModalFormulirTambahBarang}
+        role={role}
       />
     </div>
   );

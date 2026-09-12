@@ -8,18 +8,24 @@ import ModalFormulirTambahBarangKeluar from "../../../../components/modals/Modal
 import FormCariProdukInventori from "../../../../components/forms/FormCariProdukInventori";
 import CardProdukForAfterChooseInventori from "../../../../components/ui/cards/CardProdukForAfterChooseInventori";
 import { PackageMinus } from "lucide-react";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+} from "../../../../types/constant.type";
 
 type Props = {
   totalBarang: number;
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
   isGlobalLoading?: boolean;
+  role?: RoleInternalType;
 };
 const FormulirTambahBarangKeluar: FC<Props> = ({
   totalBarang,
   handleSetToast,
   handleSetAlert,
   isGlobalLoading,
+  role,
 }) => {
   const {
     dataProdukForChoose,
@@ -131,7 +137,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
 
             <div className="w-full grid grid-cols-4 gap-2.5">
               <CardProdukForAfterChooseInventori
-                hargaModal
+                hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
                 data={produkChoose}
                 handleDeleteValueProdukId={handleDeleteValueProdukId}
               />
@@ -144,6 +150,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
       <ModalFormulirTambahBarangKeluar
         modalRef={modalFormulirTambahBarangKeluarRef}
         handleCloseModal={handleCloseModalFormulirTambahBarangKeluar}
+        role={role}
       />
     </div>
   );

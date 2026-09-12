@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BarangMasukServices } from "../../../services/barangMasuk.service";
@@ -36,9 +36,6 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
-
-  // currentpathname
-  const currentPathname = useLocation().pathname;
 
   // Invalidate seluruh query terkait detail barang masuk & notifikasi setelah suatu aksi berhasil
   const invalidateBarangMasukQueries = () => {
@@ -363,16 +360,6 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const isCanBatalkanPosting =
     isStatusPosted && pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && !isExpired;
 
-  // hadle back
-  const handleBack = () => {
-    return navigate(
-      currentPathname
-        .split("/")
-        .slice(0, pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? -2 : -1)
-        .join("/"),
-    );
-  };
-
   // use download invoice barang masuk
   const {
     handleDownloadInvoiceBarangMasukPdf,
@@ -394,7 +381,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
         0,
       ),
       totalPcs: detailBarangMasuks.reduce(
-        (acc, item) => acc + item.jumlahBox * item.isiPerBox,
+        (acc, item) => acc + item.jumlahStok,
         0,
       ),
       totalBarangMasuk: detailBarangMasuks.length,
@@ -467,7 +454,6 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isCanUpdate,
     isCanBatalkanPosting,
 
-    handleBack,
     handleDownloadInvoiceBarangMasukPdf,
     isLoadingDownloadInvoiceBarangMasukPdf,
     isLoadingPrintInvoiceBarangMasuk,

@@ -15,6 +15,7 @@ import type { ErrorResponse } from "../../../types/response.type";
 import useUpdateProdukIsActive from "../../../validations/useUpdateProdukIsActive";
 import useKategoriForChoose from "../../../hooks/useKategoriForChoose";
 import useDeleteImg from "../../../hooks/useDeleteImg";
+import { getPreviousPath } from "../../../helpers/previousPath";
 
 const useProdukDetail = () => {
   // state key update
@@ -305,6 +306,12 @@ const useProdukDetail = () => {
         }),
     });
 
+  const handleBack = () => {
+    const previousPath = getPreviousPath();
+
+    navigate(previousPath ?? "/dashboard/produk");
+  };
+
   // use delete img
   const {
     handleCloseModalDeleteImg,
@@ -362,6 +369,7 @@ const useProdukDetail = () => {
     idModalDeleteImg,
     isPendingDeleteImg,
     modalDeleteImgRef,
+    handleBack,
   };
 };
 

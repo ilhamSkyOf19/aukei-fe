@@ -21,6 +21,7 @@ import { StockOpnameServices } from "../../../services/stockOpname.service";
 import { PengajuanStockOpnameServices } from "../../../services/pengajuanStockOpname.service";
 import type { ErrorResponse } from "../../../types/response.type";
 import axios from "axios";
+import { useMemo } from "react";
 
 const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
   const { fromPengajuan = false } = params;
@@ -382,10 +383,6 @@ Helper khusus penolakan.
   // BACK
   // ============================================================
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   // mutate posting
   const { mutateAsync: mutatePosting, isPending: isPendingPosting } =
     useMutation({
@@ -565,12 +562,44 @@ Helper khusus penolakan.
     }
   };
 
+  const stockOpname = dataStockOpnameDetail?.data;
+
+  const informasiStockOpnameDetail = useMemo(() => {
+    const status = stockOpname?.status;
+
+    const tanggalDiajukan =
+      status === STATUS_STOCK_OPNAME_TYPE.PENDING ||
+      status === STATUS_STOCK_OPNAME_TYPE.REJECTED ||
+      status === STATUS_STOCK_OPNAME_TYPE.APPROVED
+        ? stockOpname?.riwayat?.[1]?.createdAt
+        : stockOpname?.riwayat?.[0]?.createdAt;
+
+    const totalProduk = stockOpname?.details?.length ?? 0;
+
+    const totalItem =
+      stockOpname?.details?.reduce(
+        (total, detail) => total + (detail.stokFisik ?? 0),
+        0,
+      ) ?? 0;
+
+    return {
+      author: stockOpname?.adminOpname,
+      tanggalDiajukan,
+      isUpdate: isCanManageDetail,
+      totalProduk,
+      totalItem,
+      idStockOpnameDetail: stockOpname?.id,
+      isLoadingStocOpnameDetail: isLoading,
+      keterangan: stockOpname?.keterangan ?? "",
+      status,
+      tanggal: stockOpname?.tanggalOpname,
+    };
+  }, [stockOpname, isCanManageDetail, isLoading]);
+
   return {
     // ============================================================
     // DATA
     // ============================================================
-
-    dataStockOpnameDetail,
 
     isLoadingStockOpnameDetail: isLoading || isFetching,
 
@@ -664,8 +693,6 @@ Helper khusus penolakan.
     // OTHER
     // ============================================================
 
-    handleBack,
-
     handlePosting,
     isPendingPosting,
 
@@ -690,6 +717,10 @@ Helper khusus penolakan.
     isPendingCancelVerifikasi,
 
     isPendingCancelPosting,
+
+    stockOpname,
+
+    informasiStockOpnameDetail,
   };
 };
 

@@ -100,7 +100,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
   const [dataUpdate, setDataUpdate] = useState<
     | (UpdateBarangMasukDetailType & {
         id: number;
-        isActive: "hargaBeli" | "jumlahBox";
+        isActive: "hargaBeli" | "jumlahBox" | "jumlahStok";
       })
     | null
   >(null);
@@ -123,6 +123,12 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     name: "jumlahBox",
   });
 
+  // jumlah stok controller
+  const jumlahStokController = useController({
+    control,
+    name: "jumlahStok",
+  });
+
   // harga beli controller
   const hargaBeliController = useController({
     control,
@@ -138,28 +144,46 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     // set state
     if (data) {
       if (data.hargaBeli) {
-        // set state
+        // Update harga beli saja
         setDataUpdate({
           id: data.id,
           produkId: data.produkId,
           hargaBeli: data.hargaBeli,
           jumlahBox: undefined,
+          jumlahStok: undefined,
           isActive: "hargaBeli",
         });
 
         setValue("hargaBeli", data.hargaBeli);
         setValue("jumlahBox", undefined);
+        setValue("jumlahStok", undefined);
+      } else if (data.jumlahStok !== undefined) {
+        // Update jumlah stok saja
+        setDataUpdate({
+          id: data.id,
+          produkId: data.produkId,
+          hargaBeli: undefined,
+          jumlahBox: undefined,
+          jumlahStok: data.jumlahStok,
+          isActive: "jumlahStok",
+        });
+
+        setValue("hargaBeli", undefined);
+        setValue("jumlahBox", undefined);
+        setValue("jumlahStok", data.jumlahStok);
       } else {
-        // set state
+        // Update jumlah box saja
         setDataUpdate({
           id: data.id,
           produkId: data.produkId,
           jumlahBox: data.jumlahBox,
+          jumlahStok: undefined,
           hargaBeli: undefined,
           isActive: "jumlahBox",
         });
 
         setValue("jumlahBox", data.jumlahBox);
+        setValue("jumlahStok", undefined);
         setValue("hargaBeli", undefined);
       }
 
@@ -189,6 +213,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
             produkId: data.produkId,
             jumlahBox: data.jumlahBox,
             hargaBeli: data.hargaBeli,
+            jumlahStok: data.jumlahStok,
           },
           status: data.status,
         }),
@@ -233,6 +258,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
       await mutateUpdate({
         jumlahBox: data.jumlahBox,
         hargaBeli: data.hargaBeli,
+        jumlahStok: data.jumlahStok,
         id: dataUpdate.id,
         status,
       });
@@ -274,6 +300,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     idBarangMasuk,
     dataUpdateBarangMasuk,
     hargaBeliController,
+    jumlahStokController,
   };
 };
 

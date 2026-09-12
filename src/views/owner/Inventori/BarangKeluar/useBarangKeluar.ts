@@ -156,7 +156,7 @@ const useBarangKeluar = (params: { fromPengajuanBarang?: boolean }) => {
         });
       }
     },
-    enabled: activeCluster === "barangKeluar",
+    enabled: activeCluster === "barangKeluar" || fromPengajuanBarang,
     retry: false,
     refetchOnWindowFocus: false,
   });

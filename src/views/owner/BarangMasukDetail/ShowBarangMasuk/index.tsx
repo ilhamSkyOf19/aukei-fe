@@ -62,9 +62,12 @@ const ShowDataBarangMasuk: FC<Props> = ({
     modalUbahProdukRef,
     dataUpdateBarangMasuk,
     hargaBeliController,
+    jumlahStokController,
   } = useShowBarangMasuk({
     status: dataBarangMasukDetail?.data?.status,
   });
+
+  const roleOwner = role === ROLE_INTERNAL_TYPE.OWNER;
 
   // existing data
   const isExistData =
@@ -81,7 +84,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
   // const is draft owner
   const isDrafOwner =
     dataBarangMasukDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT &&
-    role === ROLE_INTERNAL_TYPE.OWNER;
+    roleOwner;
 
   return (
     <>
@@ -221,14 +224,14 @@ const ShowDataBarangMasuk: FC<Props> = ({
               <tr className="text-xs h-12 text-[0.7rem] bg-base-200">
                 <th>No</th>
                 <th>Foto</th>
-                <th>Kode</th>
                 <th>Nama</th>
+                <th>Kode</th>
                 <th>Kategori</th>
-                <th>Harga Beli Satuan</th>
-                <th>Jumlah Box</th>
-                <th>Isi PerBox</th>
+                {roleOwner && <th>Hrg. Beli Terakhir</th>}
+                <th>Jml. Box</th>
+                <th>Isi / Box</th>
                 <th>Total Item</th>
-                <th>Total Nilai</th>
+                {roleOwner && <th>Total Nilai</th>}
                 {(isRejectedKasir ||
                   isDrafOwner ||
                   dataBarangMasukDetail?.data?.status ===
@@ -265,61 +268,63 @@ const ShowDataBarangMasuk: FC<Props> = ({
                           </div>
                         </div>
                       </td>
-                      {/* kode */}
-                      <td className="font-semibold text-info">
-                        {item.produk.kode}
-                      </td>
                       {/* nama */}
                       <td>{item.produk.nama}</td>
+
+                      {/* kode */}
+                      <td>{item.produk.kode ?? "-"}</td>
+
                       {/* kategori */}
                       <td>{item.produk.kategori.nama}</td>
                       {/* harga beli */}
-                      <td className="font-medium">
-                        {dataUpdate?.id === item.id &&
-                        dataUpdate.isActive === "hargaBeli" ? (
-                          <CardForm<UpdateBarangMasukDetailType>
-                            handleResetForm={handleClearDataUpdate}
-                            handleSubmit={handleSubmit}
-                            onSubmit={onSubmit}
-                            isPending={isPendingUpdate}
-                            btnAksiPosition="top"
-                            isDirty={isDirty}
-                          >
-                            {/* input text */}
-                            <div className="w-40">
-                              <InputPrice<UpdateBarangMasukDetailType>
-                                controller={hargaBeliController}
-                                placeholder="Harga beli"
-                                required
-                                xs
-                              />
-                            </div>
-                          </CardForm>
-                        ) : (
-                          <div className="flex flex-row justify-start items-start gap-2">
-                            <span>{formatRupiah(item.produk.hargaBeli)}</span>
-
-                            {/* button update */}
-                            {(isRejectedKasir ||
-                              isDrafOwner ||
-                              dataBarangMasukDetail?.data?.status ===
-                                STATUS_INVENTORI_TYPE.DRAFT) &&
-                              !fromPengajuanBarang && (
-                                <ButtonInline
-                                  handleKeyUpdate={() =>
-                                    handleSetDataUpdate({
-                                      data: {
-                                        id: item.id,
-                                        produkId: item.produk.id,
-                                        hargaBeli: item.produk.hargaBeli,
-                                      },
-                                    })
-                                  }
+                      {roleOwner && (
+                        <td className="font-medium">
+                          {dataUpdate?.id === item.id &&
+                          dataUpdate.isActive === "hargaBeli" ? (
+                            <CardForm<UpdateBarangMasukDetailType>
+                              handleResetForm={handleClearDataUpdate}
+                              handleSubmit={handleSubmit}
+                              onSubmit={onSubmit}
+                              isPending={isPendingUpdate}
+                              btnAksiPosition="top"
+                              isDirty={isDirty}
+                            >
+                              {/* input text */}
+                              <div className="w-40">
+                                <InputPrice<UpdateBarangMasukDetailType>
+                                  controller={hargaBeliController}
+                                  placeholder="Harga beli"
+                                  required
+                                  xs
                                 />
-                              )}
-                          </div>
-                        )}
-                      </td>
+                              </div>
+                            </CardForm>
+                          ) : (
+                            <div className="flex flex-row justify-start items-start gap-2">
+                              <span>{formatRupiah(item.produk.hargaBeli)}</span>
+
+                              {/* button update */}
+                              {(isRejectedKasir ||
+                                isDrafOwner ||
+                                dataBarangMasukDetail?.data?.status ===
+                                  STATUS_INVENTORI_TYPE.DRAFT) &&
+                                !fromPengajuanBarang && (
+                                  <ButtonInline
+                                    handleKeyUpdate={() =>
+                                      handleSetDataUpdate({
+                                        data: {
+                                          id: item.id,
+                                          produkId: item.produk.id,
+                                          hargaBeli: item.produk.hargaBeli,
+                                        },
+                                      })
+                                    }
+                                  />
+                                )}
+                            </div>
+                          )}
+                        </td>
+                      )}
                       {/* jumlah perbox */}
                       <td
                         className={cn(
@@ -375,20 +380,74 @@ const ShowDataBarangMasuk: FC<Props> = ({
                           </div>
                         )}
                       </td>
+
                       {/* isi perbox */}
                       <td className="font-medium">
                         {formatNumber(item.produk.isiPerBox.toString())}
                       </td>
-                      <td className="font-medium">
-                        {formatNumber(item.jumlahStok)}
-                      </td>
-                      {/* total */}
-                      <td className="font-medium">
-                        {formatRupiah(
-                          item.produk.hargaBeli *
-                            (item.produk.isiPerBox * item.jumlahBox),
+
+                      {/* jumlah stok */}
+                      <td
+                        className={cn(
+                          "font-medium",
+                          dataUpdate?.id === item.id &&
+                            dataUpdate.isActive === "jumlahStok" &&
+                            "w-50",
+                        )}
+                      >
+                        {dataUpdate?.id === item.id &&
+                        dataUpdate.isActive === "jumlahStok" ? (
+                          <CardForm<UpdateBarangMasukDetailType>
+                            handleResetForm={handleClearDataUpdate}
+                            handleSubmit={handleSubmit}
+                            onSubmit={onSubmit}
+                            isPending={isPendingUpdate}
+                            btnAksiPosition="top"
+                            isDirty={isDirty}
+                          >
+                            {/* input text */}
+                            <div className="w-20">
+                              <InputNumber<UpdateBarangMasukDetailType>
+                                controller={jumlahStokController}
+                                placeholder="Masukkan Jumlah Item"
+                                required
+                                xs
+                              />
+                            </div>
+                          </CardForm>
+                        ) : (
+                          <div className="flex flex-row justify-start items-start gap-2">
+                            <span>{formatNumber(item.jumlahStok)}</span>
+
+                            {/* button update */}
+                            {(isRejectedKasir ||
+                              isDrafOwner ||
+                              dataBarangMasukDetail?.data?.status ===
+                                STATUS_INVENTORI_TYPE.DRAFT) && (
+                              <ButtonInline
+                                handleKeyUpdate={() =>
+                                  handleSetDataUpdate({
+                                    data: {
+                                      id: item.id,
+                                      jumlahStok: item.jumlahStok,
+                                      produkId: item.produk.id,
+                                    },
+                                  })
+                                }
+                              />
+                            )}
+                          </div>
                         )}
                       </td>
+
+                      {/* total */}
+                      {roleOwner && (
+                        <td className="font-medium">
+                          {formatRupiah(
+                            item.produk.hargaBeli * item.jumlahStok,
+                          )}
+                        </td>
+                      )}
 
                       {/* detail */}
                       {(isRejectedKasir ||

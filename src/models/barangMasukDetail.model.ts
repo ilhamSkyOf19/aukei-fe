@@ -48,9 +48,13 @@ export interface IBarangMasukDetailType {
 
 export interface CreateBarangMasukDetailType extends Pick<
   IBarangMasukDetailType,
-  "barangMasukId" | "jumlahBox"
+  "barangMasukId"
 > {
   hargaBeli?: number;
+
+  jumlahBox?: number;
+
+  jumlahStok?: number;
 
   produkId: number[];
 }

@@ -54,12 +54,17 @@ const StockOpname: FC<Props> = ({ fromPengajuan }) => {
         />
       )}
 
-      <div className="w-full mb-2.5 pt-22 md:pt-0 flex flex-col justify-start items-start">
+      <div
+        className={cn(
+          "w-full mb-2.5 md:pt-0 flex flex-col justify-start items-start",
+          pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && "pt-22",
+        )}
+      >
         {/* button cluster */}
         <div
           className={cn(
             "w-full flex flex-row justify-center fixed md:sticky p-2 z-8 backdrop-blur-2xl shrink-0",
-            pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? "top-14" : "top-0",
+            pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? "top-14" : "hidden",
           )}
         >
           {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (

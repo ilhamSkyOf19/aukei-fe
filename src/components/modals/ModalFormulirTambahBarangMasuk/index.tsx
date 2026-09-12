@@ -13,15 +13,21 @@ import InputPrice from "../../inputs/InputPrice";
 import CardProdukForChooseInventori from "../../ui/cards/CardProdukForChooseInventori";
 import CardProdukForAfterChooseInventori from "../../ui/cards/CardProdukForAfterChooseInventori";
 import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+} from "../../../types/constant.type";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
   fromPengajuanBarang?: boolean;
+  role?: RoleInternalType;
 };
 
 const ModalFormulirTambahBarangMasuk: FC<Props> = ({
   modalRef,
   handleCloseModal,
+  role,
   fromPengajuanBarang,
 }) => {
   const {
@@ -43,6 +49,8 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
     isPendingBarangMasukDetail,
     alert,
     hargaBeliController,
+
+    jumlahStokController,
   } = useModalFormulirTambahBarangMasuk({
     handleCloseModal,
   });
@@ -121,7 +129,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
-                            hargaBeli
+                            hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
                             key={item.id}
                             data={item}
                             handleSetValueProdukId={handleSetValueProdukId}
@@ -171,9 +179,14 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
 
               <InputNumber<CreateBarangMasukDetailType>
                 controller={jumlahBoxController}
-                label="Jumlah Box"
+                label="Jumlah Box (opsional)"
                 placeholder="Jumlah Box"
-                required
+              />
+
+              <InputNumber<CreateBarangMasukDetailType>
+                controller={jumlahStokController}
+                label="Jumlah Item (opsional)"
+                placeholder="Jumlah Item"
               />
             </div>
 

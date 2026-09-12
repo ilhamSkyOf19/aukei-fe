@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAlertAnimation } from "../../../hooks/useAlert";
@@ -32,9 +32,6 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
   // navigate
   const navigate = useNavigate();
-
-  // current pathname
-  const currentPathname = useLocation().pathname;
 
   // show modal konfirmasi posting
   const {
@@ -399,16 +396,6 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isStatusDraft ||
     (isStatusRejected && pengguna?.role === ROLE_INTERNAL_TYPE.KASIR);
 
-  // hadle back
-  const handleBack = () => {
-    return navigate(
-      currentPathname
-        .split("/")
-        .slice(0, pengguna?.role === ROLE_INTERNAL_TYPE.OWNER ? -2 : -1)
-        .join("/"),
-    );
-  };
-
   const fromPengajuanBarangNotifikasi = useMemo<boolean | null>(() => {
     const data = localStorage.getItem(LOCAL_STORAGE_KEYS.FROM_PENGAJUAN_BARANG);
 
@@ -510,7 +497,6 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isCanUpdate,
     isCanBatalkanPosting,
 
-    handleBack,
     fromPengajuanBarangNotifikasi,
     handleDownloadInvoiceBarangKeluarPdf,
     isPendingDownloadInvoiceBarangKeluar,

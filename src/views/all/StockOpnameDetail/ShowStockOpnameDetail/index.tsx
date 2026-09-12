@@ -16,12 +16,12 @@ import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTabl
 
 import {
   JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE,
+  ROLE_INTERNAL_TYPE,
   STATUS_STOCK_OPNAME_TYPE,
+  type RoleInternalType,
 } from "../../../../types/constant.type";
 
 import type { ResponseStockOpnameWithDetailType } from "../../../../models/stockOpname.model";
-
-import type { ResponseStructure } from "../../../../types/response.type";
 
 import type { UpdateStockOpnameDetailType } from "../../../../models/stockOpnameDetail.model";
 
@@ -38,11 +38,12 @@ import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 type Props = {
   isLoadingStockOpnameDetail?: boolean;
 
-  dataStockOpnameDetail?: ResponseStructure<ResponseStockOpnameWithDetailType | null>;
+  dataStockOpnameDetail?: ResponseStockOpnameWithDetailType | null;
 
   isCanUpdate?: boolean;
 
   handleSetToast: (value: string) => void;
+  role?: RoleInternalType;
 };
 
 // ============================================================
@@ -54,6 +55,7 @@ const ShowStockOpname: FC<Props> = ({
   isLoadingStockOpnameDetail,
   isCanUpdate,
   handleSetToast,
+  role,
 }) => {
   const {
     isActiveAksi,
@@ -74,9 +76,9 @@ const ShowStockOpname: FC<Props> = ({
     isDirty,
     stokFisikController,
   } = useShowStockOpname({
-    status: dataStockOpnameDetail?.data?.status,
+    status: dataStockOpnameDetail?.status,
     handleSetToast,
-    stockOpnameId: dataStockOpnameDetail?.data?.id,
+    stockOpnameId: dataStockOpnameDetail?.id,
   });
 
   // ============================================================
@@ -84,15 +86,14 @@ const ShowStockOpname: FC<Props> = ({
   // ============================================================
 
   const isExistData =
-    dataStockOpnameDetail?.data &&
-    dataStockOpnameDetail.data.details.length > 0;
+    dataStockOpnameDetail && dataStockOpnameDetail.details.length > 0;
 
   // ============================================================
   // STATUS
   // ============================================================
 
   const isStatusApproved =
-    dataStockOpnameDetail?.data?.status === STATUS_STOCK_OPNAME_TYPE.APPROVED;
+    dataStockOpnameDetail?.status === STATUS_STOCK_OPNAME_TYPE.APPROVED;
 
   return (
     <>
@@ -104,7 +105,7 @@ const ShowStockOpname: FC<Props> = ({
         {isLoadingStockOpnameDetail ? (
           <LoadingFetch />
         ) : isExistData ? (
-          dataStockOpnameDetail?.data?.details.map((item) => (
+          dataStockOpnameDetail?.details.map((item) => (
             <div
               key={item.id}
               className="flex flex-col p-3 justify-start items-start w-full rounded-2xl md:rounded-xl bg-base-100 shadow-xs min-h-20 gap-3"
@@ -193,17 +194,19 @@ const ShowStockOpname: FC<Props> = ({
                   </span>
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <span className="text-[0.625rem] text-base-content/50">
-                    Harga Modal
-                  </span>
+                {role === ROLE_INTERNAL_TYPE.OWNER && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[0.625rem] text-base-content/50">
+                      Harga Modal
+                    </span>
 
-                  <span className="text-xs font-semibold">
-                    {item.produk.hargaModalRataRata !== null
-                      ? formatRupiah(item.produk.hargaModalRataRata)
-                      : "-"}
-                  </span>
-                </div>
+                    <span className="text-xs font-semibold">
+                      {item.produk.hargaModalRataRata !== null
+                        ? formatRupiah(item.produk.hargaModalRataRata)
+                        : "-"}
+                    </span>
+                  </div>
+                )}
 
                 <div className="flex flex-col gap-1">
                   <span className="text-[0.625rem] text-base-content/50">
@@ -268,7 +271,7 @@ const ShowStockOpname: FC<Props> = ({
                 <th>Stok Fisik</th>
                 <th>Selisih</th>
                 <th>Penyesuaian</th>
-                <th>Harga Modal</th>
+                {role === ROLE_INTERNAL_TYPE.OWNER && <th>Harga Modal</th>}
                 <th>Total Kerugian</th>
 
                 {isCanUpdate && !isStatusApproved && <th>Aksi</th>}
@@ -286,7 +289,7 @@ const ShowStockOpname: FC<Props> = ({
                   </tr>
                 ))
               ) : isExistData ? (
-                dataStockOpnameDetail?.data?.details.map((item, index) => (
+                dataStockOpnameDetail?.details.map((item, index) => (
                   <tr
                     key={item.id}
                     className={cn(
@@ -389,11 +392,13 @@ const ShowStockOpname: FC<Props> = ({
                     </td>
 
                     {/* HARGA MODAL */}
-                    <td className="font-medium">
-                      {item.hargaModalSatuan !== null
-                        ? formatRupiah(item.hargaModalSatuan)
-                        : "-"}
-                    </td>
+                    {role === ROLE_INTERNAL_TYPE.OWNER && (
+                      <td className="font-medium">
+                        {item.hargaModalSatuan !== null
+                          ? formatRupiah(item.hargaModalSatuan)
+                          : "-"}
+                      </td>
+                    )}
 
                     {/* TOTAL KERUGIAN */}
                     <td className="font-medium text-error">
@@ -409,7 +414,7 @@ const ShowStockOpname: FC<Props> = ({
                               namaProduk: item.produk.nama,
                               kodeProduk: item.produk.kode ?? "-",
                               kodeReferensi:
-                                dataStockOpnameDetail?.data?.kodeReferensi,
+                                dataStockOpnameDetail?.kodeReferensi,
                             })
                           }
                         />

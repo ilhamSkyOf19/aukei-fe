@@ -8,13 +8,15 @@ import useDeleteProduk from "../../../../hooks/useDeleteProduk";
 import useUpdateProdukIsActive from "../../../../validations/useUpdateProdukIsActive";
 import type { IProduk } from "../../../../models/produk.model";
 import useGenerateHargaJualPpn from "../../../../hooks/useGenerateHargaJualPpn";
+import { savePreviousPath } from "../../../../helpers/previousPath";
 
 const useDaftarProduk = (params: {
   handleSetToast: (toast: string) => void;
 }) => {
   const { handleSetToast } = params;
 
-  const currentPathname = useLocation().pathname;
+  const { search: searchParamsProduk, pathname: currentPathname } =
+    useLocation();
 
   const queryClient = useQueryClient();
 
@@ -126,9 +128,10 @@ const useDaftarProduk = (params: {
   const isExistDataProduk: boolean =
     !isLoadingProduk && !!dataProduk?.data?.data?.length;
 
-  // Arahkan ke halaman detail produk
   const handleRedirectDetail = (id: number) => {
-    navigate(`${currentPathname}/${id}`);
+    savePreviousPath(currentPathname, searchParamsProduk);
+
+    navigate(`/${currentPathname}/${id}`);
   };
 
   // Arahkan ke halaman tambah produk

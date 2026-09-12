@@ -12,14 +12,20 @@ import useModalFormulirTambahBarangKeluar from "./useModalFormulirTambahBarangKe
 import type { CreateBarangKeluarDetailType } from "../../../models/barangKeluarDetail.model";
 import CardProdukForChooseInventori from "../../ui/cards/CardProdukForChooseInventori";
 import CardProdukForAfterChooseInventori from "../../ui/cards/CardProdukForAfterChooseInventori";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+} from "../../../types/constant.type";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
+  role?: RoleInternalType;
 };
 
 const ModalFormulirTambahBarangKeluar: FC<Props> = ({
   modalRef,
   handleCloseModal,
+  role,
 }) => {
   const {
     handleSubmit,
@@ -117,7 +123,7 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
-                            hargaModal
+                            hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
                             key={item.id}
                             data={item}
                             handleSetValueProdukId={handleSetValueProdukId}
@@ -142,7 +148,7 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                     Daftar Pilihan Barang:
                   </p>
                   <CardProdukForAfterChooseInventori
-                    hargaModal
+                    hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
                     data={produkChoose}
                     handleDeleteValueProdukId={handleDeleteValueProdukId}
                     customWidth="w-full"
