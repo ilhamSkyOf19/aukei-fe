@@ -17,6 +17,9 @@ import { useStepStore } from "../../../../stores/stepStore";
 import { TransactionServices } from "../../../../services/transaction.service";
 import { PelangganServices } from "../../../../services/pelanggan.service";
 import { useCartStore } from "../../../../stores/useCartStore";
+import { useTransactionComplate } from "../../../../stores/useTransactionComplate";
+import useCancelUpdateTransactionComplate from "../../../../hooks/useCancelTransactionUpdateComplate";
+import useDeleteTransactionDetailOld from "../../../../hooks/useDeleteTransactionDetailOld";
 
 type IsErrorsType = "pelanggan" | "details";
 
@@ -68,6 +71,9 @@ const usePilihProduk = () => {
         diskon?: number;
         detailId?: number;
         hargaModalRataRata: number;
+        hargaJualOld?: number;
+      } & {
+        transactionId?: number;
       }
   >();
 
@@ -91,10 +97,16 @@ const usePilihProduk = () => {
   const {
     next: isNextTransaction,
     update: isUpdateKeranjang,
-    setNext: setNextTransaction,
-    setUpdate: setUpdateKeranjang,
+    resetCart,
     transactionId: transactionIdFromCart,
   } = useCartStore((state) => state);
+
+  // get update transaction complate
+  const {
+    transactionId: transactionIdFromTransactionComplate,
+    update: isUpdateTransaksiComplate,
+    resetUpdate: resetUpdateTransaksiComplate,
+  } = useTransactionComplate((state) => state);
 
   const {
     data: dataTransaksi,
@@ -106,6 +118,10 @@ const usePilihProduk = () => {
       if (transactionIdFromCart !== null) {
         return TransactionServices.findTransaksiDraftCartById({
           id: transactionIdFromCart,
+        });
+      } else if (transactionIdFromTransactionComplate !== null) {
+        return TransactionServices.findTransaksiComplateById({
+          id: transactionIdFromTransactionComplate,
         });
       } else {
         return TransactionServices.findTransaksiDraft();
@@ -176,12 +192,14 @@ const usePilihProduk = () => {
       detailId: findDetail.id,
       produkId: findDetail.produk.id,
       quantity: findDetail.quantity,
+      hargaJualOld: findDetail.hargaJualOld,
       hargaJual: findDetail.hargaJual,
       img: findDetail.produk.img,
       kode: findDetail.produk.kode,
       nama: findDetail.produk.nama,
       hargaModalRataRata: findDetail.produk.hargaModalRataRata,
       hargaPpn: findDetail.produk.hargaPpn,
+      hargaJualTerakhirTransaksi: findDetail.hargaJualTerakhir,
       // TODO: `stok` tidak ada di ResponseTransaksiDraftType (hanya ada di
       // ResponseProdukForKasirType). Kalau modal butuh nilai stok terkini,
       // ambil dari data produk asli (mis. dari daftar produk kasir), bukan
@@ -213,7 +231,10 @@ const usePilihProduk = () => {
       return;
     }
 
-    showModalFormulirTransaksi(undefined, params);
+    showModalFormulirTransaksi(undefined, {
+      ...params,
+      transactionId: transactionIdFromTransactionComplate ?? undefined,
+    });
   };
 
   // Flag apakah sedang dalam mode update transaksi
@@ -369,8 +390,7 @@ const usePilihProduk = () => {
   // Batalkan proses simpan keranjang (mode update)
   const handleBackKeranjang = () => {
     // reset
-    setUpdateKeranjang({ update: false, transactionId: null });
-    setNextTransaction({ next: false, transactionId: null });
+    resetCart();
     // navigate
     navigate(`/dashboard/keranjang?keranjangId=${transactionIdFromCart}`);
   };
@@ -439,6 +459,64 @@ const usePilihProduk = () => {
     handlePilihPelanggan({ pelangganId });
   }, [dataPelangganTanpaNama, isPendingPilihPelanggan, handlePilihPelanggan]);
 
+  // get use cancel update transaction complate
+  const {
+    handleCancelUpdate,
+    isPendingCancelUpdate: isPendingCancelUpdateTransactionComplete,
+  } = useCancelUpdateTransactionComplate({
+    linkBack:
+      step === 4
+        ? "/dashboard/kasir"
+        : `/dashboard/riwayat-transaksi/${transactionIdFromTransactionComplate}`,
+    onSuccess: () => resetUpdateTransaksiComplate(),
+  });
+
+  // handle cancel update transaction
+  const handleCancelUpdateTransactionComplete = async () => {
+    try {
+      // check id
+      if (transactionIdFromTransactionComplate === null) return;
+
+      const isConfirm: boolean = await confirm({
+        title: "Peringatan",
+        deskripsi:
+          "Apakah anda yakin ingin keluar dari ubah produk ini, semua data yang belum disimpan akan hilang?",
+      });
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await handleCancelUpdate(transactionIdFromTransactionComplate);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // handle simpan
+  const {
+    handleDeleteTransactionDetailOld,
+    isPendingDeleteTransactiondetailOld:
+      isPendingSimpanPerubahanTransactionComplete,
+  } = useDeleteTransactionDetailOld({
+    link:
+      step === 4
+        ? "/dashboard/kasir"
+        : `/dashboard/riwayat-transaksi/${transactionIdFromTransactionComplate}`,
+    toast: "updated_transaction",
+  });
+
+  const handleSimpanPerubahanTransactionComplete = async () => {
+    // check id
+    if (transactionIdFromTransactionComplate === null) return;
+
+    await handleDeleteTransactionDetailOld(
+      transactionIdFromTransactionComplate,
+    );
+
+    resetUpdateTransaksiComplate();
+  };
+
   return {
     produkDetails,
     handleStepsNext,
@@ -448,6 +526,7 @@ const usePilihProduk = () => {
     handleShowModalChoosePelanggan,
     handleCloseModalChoosePelanggan,
     alert,
+    handleSetAlert,
     isUpdateTransaction,
     handleSimpanKeranjang,
     isPendingKeranjang,
@@ -491,6 +570,16 @@ const usePilihProduk = () => {
     handleBackKeranjang,
 
     transactionIdFromCart,
+
+    isUpdateTransaksiComplate,
+
+    handleCancelUpdateTransactionComplete,
+    isPendingCancelUpdateTransactionComplete,
+
+    handleSimpanPerubahanTransactionComplete,
+    isPendingSimpanPerubahanTransactionComplete,
+
+    transactionIdFromTransactionComplate,
   };
 };
 

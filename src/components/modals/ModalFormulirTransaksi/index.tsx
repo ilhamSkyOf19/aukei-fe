@@ -11,6 +11,11 @@ import { formatRupiah } from "../../../helpers/helpers";
 import AlertLabel from "../../messages/AlertLabel";
 import { ShoppingBasket } from "lucide-react";
 import ButtonText from "../../ui/button/ButtonText";
+import Alert from "../../messages/Alert";
+import {
+  ALERT_CONFIG_TRANSACTION,
+  type Alert as AlertType,
+} from "../../../types/alert.types";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -20,8 +25,12 @@ type Props = {
       diskon?: number;
       detailId?: number;
       hargaModalRataRata: number;
+      hargaJualOld?: number;
     };
   index?: number;
+  handleSetAlert: (data: string) => void;
+
+  alert: AlertType | null;
 };
 
 const ModalFormulirTransaksi: FC<Props> = ({
@@ -29,6 +38,8 @@ const ModalFormulirTransaksi: FC<Props> = ({
   handleCloseModal,
   data,
   index,
+  alert,
+  handleSetAlert,
 }) => {
   // call use
   const {
@@ -41,10 +52,19 @@ const ModalFormulirTransaksi: FC<Props> = ({
     totalDiskon,
     hargaJual,
     isPendingTambahProduk,
-  } = useModalTransaksi({ handleCloseModal, data });
+  } = useModalTransaksi({ handleCloseModal, data, handleSetAlert });
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal">
+      {alert && (
+        <Alert
+          alert={alert?.id !== null}
+          isAnimationOut={alert?.isAnimationOut || false}
+          label={ALERT_CONFIG_TRANSACTION[alert.type].message}
+          full
+        />
+      )}
+
       <div className="modal-box lg:w-3/4 max-w-4xl rounded-xl max-h-[90vh] bg-base-200 dark:border dark:border-base-content/10">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
@@ -96,7 +116,9 @@ const ModalFormulirTransaksi: FC<Props> = ({
                   {/* harga jual */}
                   <Label
                     label={`Hrg. Jual`}
-                    value={formatRupiah(data?.hargaJual ?? "")}
+                    value={formatRupiah(
+                      data?.hargaJualOld ?? data?.hargaJual ?? "",
+                    )}
                     small
                   />
 

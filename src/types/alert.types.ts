@@ -103,6 +103,9 @@ export const ALERT_CONFIG_TRANSACTION: Record<
     message:
       "Mohon maaf, gagal mendownload invoice transaksi. Silahkan tunggu beberapa saat atau hubungi developer.",
   },
+  stock_not_enough: {
+    message: "Mohon maaf, stok tidak mencukupi.",
+  },
 };
 
 export const ALERT_CONFIG_STATISTIK: Record<

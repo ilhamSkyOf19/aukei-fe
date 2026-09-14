@@ -6,13 +6,20 @@ import Kasir from "../../views/kasir/Kasir";
 
 type Props = {
   isUpdateKeranjang?: boolean;
+  isUpdateTransaction?: boolean;
 };
-const KasirPage: FC<Props> = ({ isUpdateKeranjang }) => {
+const KasirPage: FC<Props> = ({ isUpdateKeranjang, isUpdateTransaction }) => {
   // get context
   const { handleTitle } = useOutletContext<OutletContextType>();
 
   useEffect(() => {
-    handleTitle(isUpdateKeranjang ? "Keranjang" : "Kasir");
+    handleTitle(
+      isUpdateKeranjang
+        ? "Keranjang"
+        : isUpdateTransaction
+          ? "Ubah Produk Transaksi"
+          : "Kasir",
+    );
   }, [handleTitle]);
 
   const location = useLocation();
@@ -21,7 +28,7 @@ const KasirPage: FC<Props> = ({ isUpdateKeranjang }) => {
     <>
       {/* header page */}
       <HeaderPage
-        title={`${isUpdateKeranjang ? "Keranjang" : "Kasir"} | AUKEI`}
+        title={`${isUpdateKeranjang ? "Keranjang" : isUpdateTransaction ? "Ubah Produk Transaksi" : "Kasir"} | AUKEI`}
       />
 
       {/* view toko */}

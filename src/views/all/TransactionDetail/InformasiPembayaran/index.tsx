@@ -238,11 +238,30 @@ const InformasiPembayaran: FC<Props> = ({
                 </span>
               )}
             </div>
+
+            {transactionSummary.totalPembayaran >
+              (transactionSummary.totalDiBayar ?? 0) && (
+              <div className="w-full flex flex-row justify-between items-center">
+                <span className="text-xs text-base-content/70 font-medium">
+                  Kekurangan
+                </span>
+
+                {isLoadingTransaction ? (
+                  <div className="w-30 h-4 skeleton" />
+                ) : (
+                  <span className="text-xs font-semibold text-error">
+                    {formatRupiah(
+                      (transactionSummary.totalDiBayar ?? 0) -
+                        transactionSummary.totalPembayaran,
+                    )}
+                  </span>
+                )}
+              </div>
+            )}
+
             {/* kembalian */}
-            {(dataTransaction?.data?.metodePembayaran === "CASH" ||
-              dataTransaction?.data?.paymentTransactions?.some(
-                (item) => item.metodePembayaran === "CASH",
-              )) && (
+            {transactionSummary.totalPembayaran <
+              (transactionSummary.totalDiBayar ?? 0) && (
               <div className="w-full flex flex-row justify-between items-center">
                 <span className="text-xs text-base-content/70 font-medium">
                   Kembalian
@@ -256,6 +275,7 @@ const InformasiPembayaran: FC<Props> = ({
                 )}
               </div>
             )}
+
             {dataTransaction?.data?.status === "BOOKING" && (
               <div className="w-full flex flex-row justify-between items-center">
                 <span className="text-xs text-base-content/70 font-medium">

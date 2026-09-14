@@ -340,6 +340,11 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     color: "success",
     message: "Berhasil download laporan",
   },
+
+  cancel_updated: {
+    color: "error",
+    message: "Ubah produk berhasil dibatalkan",
+  },
 };
 
 // toast keranjang
@@ -436,6 +441,10 @@ export const TOAST_CONFIG_TRANSACTION_DETAIL: Record<
     color: "success" | "error" | "info" | "warning" | "neutral";
   }
 > = {
+  updated_transaction: {
+    color: "info",
+    message: "Data berhasil diperbarui",
+  },
   created_transaction_booking_success: {
     color: "success",
     message: "Transaksi berhasil disimpan",
@@ -447,6 +456,10 @@ export const TOAST_CONFIG_TRANSACTION_DETAIL: Record<
   set_tempo: {
     color: "success",
     message: "Tempo berhasil diatur",
+  },
+  cancel_updated: {
+    color: "error",
+    message: "Ubah produk berhasil dibatalkan",
   },
 };
 

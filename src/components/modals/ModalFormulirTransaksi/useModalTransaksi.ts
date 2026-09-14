@@ -9,6 +9,8 @@ import type { ResponseProdukForKasirType } from "../../../models/produk.model";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
+import axios from "axios";
+import type { ErrorResponse } from "../../../types/response.type";
 
 const useModalTransaksi = (params: {
   handleCloseModal: () => void;
@@ -16,9 +18,12 @@ const useModalTransaksi = (params: {
     Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
       diskon?: number;
       detailId?: number;
+    } & {
+      transactionId?: number;
     };
+  handleSetAlert: (data: string) => void;
 }) => {
-  const { handleCloseModal, data } = params;
+  const { handleCloseModal, data, handleSetAlert } = params;
 
   // state sub total
   const [subTotal, setSubTotal] = useState<number>(0);
@@ -114,6 +119,11 @@ const useModalTransaksi = (params: {
               qty: req.detail.quantity,
             },
           });
+        } else if (data?.transactionId) {
+          return TransactionServices.tambahProdukByTransactionId({
+            transactionId: data?.transactionId,
+            data: req,
+          });
         } else {
           return TransactionServices.tambahProduk(req);
         }
@@ -122,7 +132,13 @@ const useModalTransaksi = (params: {
         queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
       },
       onError: (err) => {
-        console.log(err);
+        if (axios.isAxiosError<ErrorResponse>(err)) {
+          if (
+            err.response?.data.meta.message.includes("stok tidak mencukupi")
+          ) {
+            handleSetAlert("stock_not_enough");
+          }
+        }
       },
     });
 

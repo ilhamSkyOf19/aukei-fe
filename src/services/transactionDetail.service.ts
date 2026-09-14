@@ -17,4 +17,14 @@ export class TransactionDetailServices {
 
     return result.data;
   }
+
+  static async updateOld(params: {
+    transactionId: number;
+  }): Promise<ResponseStructure<ResponseTransactionDetailType | null>> {
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponseTransactionDetailType | null>
+    >(`/transaction-detail/old/${params.transactionId}`);
+
+    return result.data;
+  }
 }

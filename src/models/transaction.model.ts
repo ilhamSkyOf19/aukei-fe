@@ -299,6 +299,7 @@ export interface ResponseTransaksiDraftType extends Pick<
     Omit<ITransactionDetailType, "createdAt" | "updatedAt" | "hpp" | "laba"> & {
       hargaJualTerakhir: number;
       stokTersisa: number;
+      hargaJualOld: number;
     }
   >;
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa"> | null;

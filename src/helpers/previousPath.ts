@@ -5,3 +5,8 @@ export const savePreviousPath = (pathname: string, search: string) => {
 export const getPreviousPath = () => {
   return sessionStorage.getItem("previous-path");
 };
+
+// remove
+export const removePreviousPath = () => {
+  sessionStorage.removeItem("previous-path");
+};

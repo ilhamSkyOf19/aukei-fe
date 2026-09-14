@@ -13,6 +13,10 @@ import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 import { useNotifikasiStore } from "../../../stores/notifikasiStore";
 import { useCartStore } from "../../../stores/useCartStore";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTransactionComplate } from "../../../stores/useTransactionComplate";
+import useConfirm from "../../../hooks/useConfirm";
+import useCancelUpdateTransactionComplate from "../../../hooks/useCancelTransactionUpdateComplate";
+import { removePreviousPath } from "../../../helpers/previousPath";
 
 const useSideBar = () => {
   // get auth context
@@ -24,9 +28,15 @@ const useSideBar = () => {
   // navigate
   const navigate = useNavigate();
 
-  const { resetNext, resetUpdate, transactionId } = useCartStore(
+  const { resetCart, transactionId: transactionIdFormCart } = useCartStore(
     (state) => state,
   );
+
+  // reset update transaction
+  const {
+    resetUpdate: resetUpdateTransaction,
+    transactionId: transactionIdFormTransaction,
+  } = useTransactionComplate((state) => state);
 
   // query client
   const queryClient = useQueryClient();
@@ -35,6 +45,23 @@ const useSideBar = () => {
   // const handleClearDataActiveCluster = () => {
   //   localStorage.removeItem("active-cluster");
   // };
+
+  // modal confirm
+  const {
+    modalRef: modalCancelRef,
+    confirm,
+    handleCancel: handleCancelConfirm,
+    handleConfirm: handleConfirmConfirm,
+    data: dataConfirm,
+  } = useConfirm<{ bigTitle: string; smallTitle: string }>();
+
+  // get use cancel update transaction complate
+  const {
+    handleCancelUpdate: handleCancelUpdateTransactionComplete,
+    isPendingCancelUpdate: isPendingCancelUpdateTransactionComplete,
+  } = useCancelUpdateTransactionComplate({
+    linkBack: `/dashboard/riwayat-transaksi/${transactionIdFormTransaction}`,
+  });
 
   // get method in notifikasi store
   const resetNotifikasi = useNotifikasiStore((state) => state.resetNotifikasi);
@@ -68,11 +95,39 @@ const useSideBar = () => {
   const handleLink = async (link: string) => {
     if (!link) return;
 
-    if (transactionId) {
-      // clear keranjang
-      resetNext();
-      resetUpdate();
+    // remove session
+    removePreviousPath();
 
+    const isKeranjangUpdate: boolean = transactionIdFormCart !== null;
+    const isUpdateTransaction: boolean = transactionIdFormTransaction !== null;
+
+    if (isKeranjangUpdate) {
+      // clear keranjang
+      resetCart();
+    }
+
+    if (isUpdateTransaction) {
+      if (link === "/dashboard/riwayat-transaksi/:id/ubah-produk") return;
+
+      const isConfirm = await confirm({
+        bigTitle: "Peringatan",
+        smallTitle:
+          "Apakah anda yakin ingin keluar dari ubah produk ini, semua data yang belum disimpan akan hilang?",
+      });
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await handleCancelUpdateTransactionComplete(
+        transactionIdFormTransaction ?? 0,
+      );
+
+      // clear keranjang
+      resetUpdateTransaction();
+    }
+
+    if (isKeranjangUpdate || isUpdateTransaction) {
       if (pathname === "/dashboard/kasir") {
         queryClient.removeQueries({
           queryKey: ["transaksi-draft"],
@@ -168,6 +223,13 @@ const useSideBar = () => {
     divRef,
     hasScroll,
     handleLink,
+
+    modalCancelRef,
+    handleCancelConfirm,
+    handleConfirmConfirm,
+    dataConfirm,
+
+    isPendingCancelUpdateTransactionComplete,
   };
 };
 

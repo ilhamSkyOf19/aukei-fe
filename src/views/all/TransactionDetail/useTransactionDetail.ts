@@ -12,12 +12,13 @@ import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 import { useStepStore } from "../../../stores/stepStore";
 import { useToastAnimation } from "../../../hooks/useToast";
 import { useAlertAnimation } from "../../../hooks/useAlert";
+import { getPreviousPath } from "../../../helpers/previousPath";
 
 const useTransactionDetail = (params: { transactionId?: number }) => {
   const { transactionId: transactionIdProps } = params;
 
   // handle steps
-  const { setStep: handleSteps } = useStepStore((state) => state);
+  const { setStep: handleSteps, step } = useStepStore((state) => state);
 
   // toast
   const { toast, handleSetToast } = useToastAnimation();
@@ -39,7 +40,19 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
   // handle back transaksi
   const handleBackTransaksi = () => {
     if (!currentPathname.includes("kasir")) {
-      return navigate(-1);
+      const previousPath = getPreviousPath();
+
+      // kembali ke riwayat transaksi
+      if (currentPathname.includes("riwayat-transaksi") && previousPath) {
+        return navigate(previousPath);
+      }
+
+      if (step > 0) {
+        navigate("/dashboard/kasir");
+        return handleSteps?.(1);
+      }
+
+      return navigate("/dashboard/riwayat-transaksi");
     } else {
       handleSteps?.(1);
 
@@ -102,7 +115,7 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     for (const item of dataTransaction.data.details) {
       totalQuantity += item.quantity;
 
-      totalPembayaran += item.quantity * item.hargaJual - item.diskon;
+      totalPembayaran += item.subtotal - item.diskon;
     }
 
     const totalDiBayar =
@@ -124,7 +137,7 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
 
     return {
       totalQuantity,
-      totalPembayaran: sisaTagihan,
+      totalPembayaran,
       totalDiBayar,
       totalKembalian,
       sisaTagihan,
@@ -147,6 +160,7 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
     isKasirPage,
+    pengguna,
     toast,
 
     alert,

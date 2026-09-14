@@ -15,11 +15,20 @@ import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTabl
 import AlertLabelList from "../../../../components/messages/AlertLabelList";
 import {
   PAYMENT_METHOD_TYPE,
+  ROLE_INTERNAL_TYPE,
   TRANSACTION_STATUS_TYPE,
+  type RoleInternalType,
 } from "../../../../types/constant.type";
 import AlertLabel from "../../../../components/messages/AlertLabel";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import { ChevronsRightIcon, Eye, Pencil, Undo, X } from "lucide-react";
+import {
+  ChevronsRightIcon,
+  Eye,
+  Pencil,
+  PencilLine,
+  Undo,
+  X,
+} from "lucide-react";
 import CardProdukTransaksi from "../../../../components/ui/cards/CardProdukTransaksi";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
@@ -36,6 +45,7 @@ type Props = {
 
   handleSetToast: (value: string) => void;
   handleSetAlert: (value: string) => void;
+  role?: RoleInternalType;
 };
 const DaftarDetailProduk: FC<Props> = ({
   dataTransaction,
@@ -46,6 +56,7 @@ const DaftarDetailProduk: FC<Props> = ({
   isLoadingKebutuhanBarang,
   handleSetAlert,
   handleSetToast,
+  role,
 }) => {
   const {
     isPendingUpdate,
@@ -62,6 +73,10 @@ const DaftarDetailProduk: FC<Props> = ({
 
     isUbahData,
     setIsUbahData,
+
+    handleUbahProduk,
+
+    isPendingTransactionOld,
   } = useDaftarDetailProduk({
     transactionId: dataTransaction?.data?.id,
     dataKebutuhanBarang,
@@ -434,30 +449,57 @@ const DaftarDetailProduk: FC<Props> = ({
         message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur."
       />
       {/* button retur */}
-      {dataTransaction?.data?.status !== TRANSACTION_STATUS_TYPE.BOOKING &&
-        !isLoadingTransaction && (
-          <div className="w-full flex flex-row justify-end items-end gap-2.5">
-            <ButtonWithIcon
-              label="Lihat Daftar Retur Barang"
-              icon={Eye}
-              bgColor="bg-info"
-              textColor="text-primary-white"
-              handleBtn={() =>
-                handleDaftarReturBarang(dataTransaction?.data?.id)
-              }
-              customWidth="flex-3 md:flex-none"
-            />
+      {!isLoadingTransaction && (
+        <div
+          className={cn(
+            "w-full flex flex-row items-end gap-2.5",
+            role === ROLE_INTERNAL_TYPE.KASIR
+              ? "justify-between"
+              : "justify-end",
+          )}
+        >
+          {role === ROLE_INTERNAL_TYPE.KASIR &&
+            !isPageBookingKasir &&
+            dataTransaction?.data?.metodePembayaran !==
+              PAYMENT_METHOD_TYPE.TEMPO && (
+              <ButtonWithIcon
+                label="Ubah Transaksi"
+                icon={PencilLine}
+                bgColor="bg-info"
+                textColor="text-primary-white"
+                isLoading={isPendingTransactionOld}
+                handleBtn={() =>
+                  handleUbahProduk({ id: dataTransaction?.data?.id })
+                }
+                customWidth="flex-3 md:flex-none"
+              />
+            )}
+          {dataTransaction?.data?.status !==
+            TRANSACTION_STATUS_TYPE.BOOKING && (
+            <div className="flex flex-row justify-end items-end gap-2.5">
+              <ButtonWithIcon
+                label="Lihat Daftar Retur Barang"
+                icon={Eye}
+                bgColor="bg-info"
+                textColor="text-primary-white"
+                handleBtn={() =>
+                  handleDaftarReturBarang(dataTransaction?.data?.id)
+                }
+                customWidth="flex-3 md:flex-none"
+              />
 
-            <ButtonWithIcon
-              label="Retur Barang"
-              icon={Undo}
-              bgColor="bg-error"
-              textColor="text-primary-white"
-              handleBtn={() => handleToRetur()}
-              customWidth="flex-2 md:flex-none"
-            />
-          </div>
-        )}
+              <ButtonWithIcon
+                label="Retur Barang"
+                icon={Undo}
+                bgColor="bg-error"
+                textColor="text-primary-white"
+                handleBtn={() => handleToRetur()}
+                customWidth="flex-2 md:flex-none"
+              />
+            </div>
+          )}
+        </div>
+      )}
       {isExistDataKebutuhanBarang &&
         !isLoadingKebutuhanBarang &&
         !siapKirim && (

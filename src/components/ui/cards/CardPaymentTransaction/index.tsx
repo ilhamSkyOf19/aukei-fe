@@ -2,10 +2,7 @@ import type { FC } from "react";
 import { formatRupiah } from "../../../../helpers/helpers";
 import type { ResponseTransactionPaymentType } from "../../../../models/paymentTransaction.model";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
-import {
-  PAYMENT_METHOD_TYPE,
-  TRANSACTION_PAYMENT_STATUS_TYPE,
-} from "../../../../types/constant.type";
+import { TRANSACTION_PAYMENT_STATUS_TYPE } from "../../../../types/constant.type";
 
 type Props = {
   paymentTransactions: Pick<
@@ -45,7 +42,7 @@ const CardPaymentTransaction: FC<Props> = ({ paymentTransactions }) => {
         <span className="text-[0.7rem]  font-medium text-base-content">
           Di Bayar
         </span>
-        {paymentTransactions.metodePembayaran === PAYMENT_METHOD_TYPE.CASH && (
+        {paymentTransactions.kembalian > 0 && (
           <span className="text-[0.7rem]  font-medium text-base-content">
             kembalian
           </span>
@@ -59,10 +56,7 @@ const CardPaymentTransaction: FC<Props> = ({ paymentTransactions }) => {
       <div className="col-span-2 grid grid-cols-14 gap-1.5">
         <div className="col-span-1 flex flex-col justify-start items-start gap-1.5">
           {Array.from({
-            length:
-              paymentTransactions.metodePembayaran === PAYMENT_METHOD_TYPE.CASH
-                ? 8
-                : 7,
+            length: paymentTransactions.kembalian > 0 ? 8 : 7,
           }).map((_, index) => (
             <span key={index} className="text-[0.7rem] text-base-content">
               :
@@ -96,8 +90,7 @@ const CardPaymentTransaction: FC<Props> = ({ paymentTransactions }) => {
           <span className="text-[0.7rem] text-base-content">
             {formatRupiah(paymentTransactions?.diBayar)}
           </span>
-          {paymentTransactions.metodePembayaran ===
-            PAYMENT_METHOD_TYPE.CASH && (
+          {paymentTransactions.kembalian > 0 && (
             <span className="text-[0.7rem] text-base-content">
               {formatRupiah(paymentTransactions?.kembalian)}
             </span>

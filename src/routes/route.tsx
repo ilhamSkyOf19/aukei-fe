@@ -302,6 +302,10 @@ const route = createBrowserRouter([
                 path: "retur-barang",
                 element: <ReturBarangPage />,
               },
+              {
+                path: "ubah-produk",
+                element: <KasirPage isUpdateTransaction />,
+              },
             ],
           },
         ],

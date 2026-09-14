@@ -28,6 +28,7 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
     isLoadingKebutuhanBarang,
     isKasirPage,
     toast,
+    pengguna,
 
     alert,
     handleSetAlert,
@@ -82,6 +83,7 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
       <div className="flex w-full flex-col lg:flex-row justify-start md:items-end items-start lg:items-start gap-2.5">
         {/* daftar produk and kredit detail */}
         <DaftarDetailProduk
+          role={pengguna?.role}
           dataTransaction={dataTransaction}
           isExistingDataTransaction={isExistingDataTransaction}
           isLoadingTransaction={isLoadingTransaction}

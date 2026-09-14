@@ -8,6 +8,9 @@ import { TransactionDetailServices } from "../../../../services/transactionDetai
 import type { ResponseStatistikKebutuhanBarang } from "../../../../models/transaction.model";
 import type { ResponseStructure } from "../../../../types/response.type";
 import { useNavigate } from "react-router-dom";
+import { useTransactionComplate } from "../../../../stores/useTransactionComplate";
+import useCreateTransactionOld from "../../../../hooks/useCreateTransactionOld";
+import { useStepStore } from "../../../../stores/stepStore";
 
 const useDaftarDetailProduk = (params: {
   transactionId?: number | null;
@@ -23,6 +26,9 @@ const useDaftarDetailProduk = (params: {
 
   // navigate
   const navigate = useNavigate();
+
+  // store update transaksi
+  const setUpdateTransaksi = useTransactionComplate((state) => state.setUpdate);
 
   // state is ubah data
   const [isUbahData, setIsUbahData] = useState<boolean>(false);
@@ -145,6 +151,25 @@ const useDaftarDetailProduk = (params: {
     navigate(`/dashboard/riwayat-transaksi/${id}/daftar-retur-barang`);
   };
 
+  // get use create transaction old
+  const { handleCreateTransactionOld, isPendingTransactionOld } =
+    useCreateTransactionOld();
+
+  const setStep = useStepStore((state) => state.setStep);
+
+  // handle ubah transaksi
+  const handleUbahProduk = async (params: { id?: number }) => {
+    if (!params.id) return;
+
+    await handleCreateTransactionOld(params.id);
+
+    setUpdateTransaksi({ update: true, transactionId: params.id });
+
+    setStep(1);
+
+    return navigate(`/dashboard/riwayat-transaksi/${params.id}/ubah-produk`);
+  };
+
   return {
     isFromActive,
     handleSetIsFromActive,
@@ -160,6 +185,10 @@ const useDaftarDetailProduk = (params: {
 
     isUbahData,
     setIsUbahData,
+
+    handleUbahProduk,
+
+    isPendingTransactionOld,
   };
 };
 

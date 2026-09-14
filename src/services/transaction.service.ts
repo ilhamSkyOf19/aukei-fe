@@ -189,6 +189,18 @@ export class TransactionServices {
     return result.data;
   }
 
+  // find transaksi complate by id
+  static async findTransaksiComplateById(params: {
+    id: number;
+  }): Promise<ResponseStructure<ResponseTransaksiDraftType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseTransaksiDraftType | null>
+    >(`/transaction/${params.id}/complate`);
+
+    return result.data;
+  }
+
   // pilih pelanggan
   static async pilihPelanggan(data: {
     pelangganId: number;
@@ -224,6 +236,19 @@ export class TransactionServices {
     const result = await instanceAxios.post<
       ResponseStructure<ResponseTransaksiDraftType | null>
     >(`/transaction/tambah-produk`, data);
+
+    return result.data;
+  }
+
+  // tambah produk by transaction id
+  static async tambahProdukByTransactionId(params: {
+    transactionId: number;
+    data: TambahProdukDetailForReqeustType;
+  }): Promise<ResponseStructure<ResponseTransaksiDraftType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponseTransaksiDraftType | null>
+    >(`/transaction/tambah-produk/${params.transactionId}`, params.data);
 
     return result.data;
   }

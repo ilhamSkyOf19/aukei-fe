@@ -18,6 +18,7 @@ import {
   Save,
   ShoppingCart,
   Trash2,
+  TriangleAlert,
   UserRound,
   UsersRound,
   X,
@@ -92,6 +93,18 @@ const PilihProduk: FC = () => {
 
     handleBackKeranjang,
     transactionIdFromCart,
+
+    isUpdateTransaksiComplate,
+
+    handleCancelUpdateTransactionComplete,
+
+    isPendingCancelUpdateTransactionComplete,
+
+    handleSetAlert,
+
+    handleSimpanPerubahanTransactionComplete,
+    isPendingSimpanPerubahanTransactionComplete,
+    transactionIdFromTransactionComplate,
   } = usePilihProduk();
 
   return (
@@ -108,7 +121,11 @@ const PilihProduk: FC = () => {
       )}
 
       {/* loading */}
-      {(isLoadingTransaksi || isRefetchingTransaksi || isPendingRemoveAll) && (
+      {(isLoadingTransaksi ||
+        isRefetchingTransaksi ||
+        isPendingRemoveAll ||
+        isPendingSimpanPerubahanTransactionComplete ||
+        isPendingCancelUpdateTransactionComplete) && (
         <div className="absolute w-full h-full flex flex-row justify-center items-center z-20">
           <div className="w-full h-full bg-base-100 opacity-70 absolute" />
           <LoadingFetch />
@@ -128,110 +145,112 @@ const PilihProduk: FC = () => {
         )}
       >
         {/* pilih pelanggan */}
-        <div className="w-full md:flex-1 p-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 sm:gap-0 border-b border-base-content/10">
-          {/* MOBILE: dibungkus flex-wrap supaya info pelanggan (bisa panjang)
+        {!isUpdateTransaksiComplate && (
+          <div className="w-full md:flex-1 p-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 sm:gap-0 border-b border-base-content/10">
+            {/* MOBILE: dibungkus flex-wrap supaya info pelanggan (bisa panjang)
               tidak mendorong/menabrak card kasir di layar sempit. */}
-          <div className="w-full flex flex-row flex-wrap justify-between items-center gap-2.5">
-            <div className="flex flex-row justify-start items-center gap-2.5">
-              {/* input floating */}
-              {formActive && (
-                <>
-                  <AddFastCustomer
-                    pelangganId={pelanggan?.id}
-                    transactionId={dataTransaksi?.data?.id ?? 0}
-                    handleSetFormActive={() => setFormActive(false)}
-                  />
-
-                  <ButtonWithIcon
-                    noLabel
-                    icon={X}
-                    bgColor="bg-rose-500"
-                    textColor="text-primary-white"
-                    handleBtn={() => setFormActive(false)}
-                  />
-                </>
-              )}
-
-              {pelanggan && !formActive ? (
-                <div className="flex flex-row justify-start items-center gap-6 flex-wrap">
-                  <div className="flex flex-row justify-start items-center gap-2 min-w-0">
-                    <Avatar
-                      nama={pelanggan?.nama ?? ""}
-                      index={pelanggan?.id}
-                      xs
+            <div className="w-full flex flex-row flex-wrap justify-between items-center gap-2.5">
+              <div className="flex flex-row justify-start items-center gap-2.5">
+                {/* input floating */}
+                {formActive && (
+                  <>
+                    <AddFastCustomer
+                      pelangganId={pelanggan?.id}
+                      transactionId={dataTransaksi?.data?.id ?? 0}
+                      handleSetFormActive={() => setFormActive(false)}
                     />
-                    <div className="flex flex-col justify-start items-start gap-0.5 min-w-0">
-                      {/* name */}
-                      <span className="text-base-content font-semibold text-xs truncate max-w-36 sm:max-w-none">
-                        {pelanggan?.nama}
-                      </span>
-                      {/* no telp */}
-                      <span className="text-base-content/80 text-[0.625rem]">
-                        {formatNumberPhone(pelanggan?.noWa ?? "")}
-                      </span>
-                    </div>
-                  </div>
 
+                    <ButtonWithIcon
+                      noLabel
+                      icon={X}
+                      bgColor="bg-rose-500"
+                      textColor="text-primary-white"
+                      handleBtn={() => setFormActive(false)}
+                    />
+                  </>
+                )}
+
+                {pelanggan && !formActive ? (
+                  <div className="flex flex-row justify-start items-center gap-6 flex-wrap">
+                    <div className="flex flex-row justify-start items-center gap-2 min-w-0">
+                      <Avatar
+                        nama={pelanggan?.nama ?? ""}
+                        index={pelanggan?.id}
+                        xs
+                      />
+                      <div className="flex flex-col justify-start items-start gap-0.5 min-w-0">
+                        {/* name */}
+                        <span className="text-base-content font-semibold text-xs truncate max-w-36 sm:max-w-none">
+                          {pelanggan?.nama}
+                        </span>
+                        {/* no telp */}
+                        <span className="text-base-content/80 text-[0.625rem]">
+                          {formatNumberPhone(pelanggan?.noWa ?? "")}
+                        </span>
+                      </div>
+                    </div>
+
+                    <ButtonWithIcon
+                      noLabel
+                      icon={X}
+                      bgColor="bg-rose-500"
+                      textColor="text-primary-white"
+                      handleBtn={() => setFormActive(true)}
+                    />
+
+                    {/* button ganti pelanggan */}
+                    <ButtonWithIcon
+                      icon={ArrowLeftRight}
+                      handleBtn={() => handleShowModalChoosePelanggan()}
+                      bgColor="bg-info"
+                      textColor="text-primary-white"
+                      label="Ganti"
+                    />
+                  </div>
+                ) : (
                   <ButtonWithIcon
                     noLabel
-                    icon={X}
-                    bgColor="bg-rose-500"
-                    textColor="text-primary-white"
-                    handleBtn={() => setFormActive(true)}
-                  />
-
-                  {/* button ganti pelanggan */}
-                  <ButtonWithIcon
-                    icon={ArrowLeftRight}
+                    icon={UsersRound}
                     handleBtn={() => handleShowModalChoosePelanggan()}
-                    bgColor="bg-info"
-                    textColor="text-primary-white"
-                    label="Ganti"
                   />
-                </div>
-              ) : (
-                <ButtonWithIcon
-                  noLabel
-                  icon={UsersRound}
-                  handleBtn={() => handleShowModalChoosePelanggan()}
-                />
-              )}
-            </div>
+                )}
+              </div>
 
-            {/* kasir */}
-            <div
-              className={cn(
-                // MOBILE: min-w-24 sedikit lebih sempit di layar kecil,
-                // sm:min-w-28 mengembalikan lebar asli di layar >=640px.
-                "flex flex-row justify-start items-center gap-2 h-10 min-w-24 sm:min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10",
-              )}
-            >
+              {/* kasir */}
               <div
                 className={cn(
-                  "w-7 h-7 dark:border-base-content/10 rounded-lg flex justify-center items-center",
-                  "bg-base-300 border border-transparent",
+                  // MOBILE: min-w-24 sedikit lebih sempit di layar kecil,
+                  // sm:min-w-28 mengembalikan lebar asli di layar >=640px.
+                  "flex flex-row justify-start items-center gap-2 h-10 min-w-24 sm:min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10",
                 )}
               >
-                <UserRound className={cn("size-4", "text-base-content")} />
-              </div>
-              <div className="flex flex-col justify-start items-start">
-                <span
+                <div
                   className={cn(
-                    "text-[0.625rem] font-medium",
-                    "text-base-content/50",
+                    "w-7 h-7 dark:border-base-content/10 rounded-lg flex justify-center items-center",
+                    "bg-base-300 border border-transparent",
                   )}
                 >
-                  Kasir
-                </span>
-                <span
-                  className={cn("text-xs font-medium", "text-base-content")}
-                >
-                  {pengguna?.nama}
-                </span>
+                  <UserRound className={cn("size-4", "text-base-content")} />
+                </div>
+                <div className="flex flex-col justify-start items-start">
+                  <span
+                    className={cn(
+                      "text-[0.625rem] font-medium",
+                      "text-base-content/50",
+                    )}
+                  >
+                    Kasir
+                  </span>
+                  <span
+                    className={cn("text-xs font-medium", "text-base-content")}
+                  >
+                    {pengguna?.nama}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
         {/* header */}
         <div className="w-full h-6 px-2.5 flex flex-row justify-between items-center my-1.5">
           <h3 className="text-xs font-medium text-base-content">
@@ -375,7 +394,13 @@ const PilihProduk: FC = () => {
               <button
                 type="button"
                 className="flex flex-row justify-center items-center gap-2 sm:gap-4 h-full flex-1 rounded-xl bg-custom-primary hover-overlay text-custom-secondary"
-                onClick={() => handleBackKeranjang()}
+                onClick={() => {
+                  if (isUpdateKeranjang) {
+                    return handleBackKeranjang();
+                  } else {
+                    return handleCancelUpdateTransactionComplete();
+                  }
+                }}
               >
                 <ArrowLeft className="size-4 lg:size-4 xl:size-5 text-base-content" />
                 <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
@@ -384,7 +409,8 @@ const PilihProduk: FC = () => {
               </button>
             </div>
           )}
-          {!isUpdateKeranjang && (
+
+          {(!isUpdateKeranjang || !isUpdateTransaksiComplate) && (
             <div
               className={cn(
                 // MOBILE: gap sedikit lebih kecil di layar sempit.
@@ -396,26 +422,38 @@ const PilihProduk: FC = () => {
                   : ""
               }
             >
-              {isNextTransaction && !isUpdateKeranjang && (
-                <button
-                  type="button"
-                  disabled={produkDetails.length === 0 || !pelanggan}
-                  className={cn(
-                    "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary hover-overlay flex-1 disabled:opacity-50",
-                  )}
-                  onClick={() => {
-                    handleBackKeranjang();
-                  }}
-                >
-                  <ArrowLeft className="size-4 xl:size-4 text-base-content" />
-                  <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
-                    Kembali
-                  </span>
-                </button>
-              )}
+              {(isNextTransaction || isUpdateTransaksiComplate) &&
+                !isUpdateKeranjang && (
+                  <button
+                    type="button"
+                    disabled={
+                      !isUpdateTransaksiComplate &&
+                      (produkDetails.length === 0 || !pelanggan)
+                    }
+                    className={cn(
+                      "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary hover-overlay flex-1 disabled:opacity-50",
+                    )}
+                    onClick={() => {
+                      if (isNextTransaction) {
+                        handleBackKeranjang();
+                      } else if (isUpdateTransaksiComplate) {
+                        handleCancelUpdateTransactionComplete();
+                      }
+                    }}
+                  >
+                    {isUpdateTransaksiComplate ? (
+                      <X className="size-4 xl:size-4 text-base-content" />
+                    ) : (
+                      <ArrowLeft className="size-4 xl:size-4 text-base-content" />
+                    )}
+                    <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
+                      {isUpdateTransaksiComplate ? "Batalkan" : "Kembali"}
+                    </span>
+                  </button>
+                )}
 
               {/* button chart */}
-              {!isNextTransaction && (
+              {!isNextTransaction && !isUpdateTransaksiComplate && (
                 <button
                   type="button"
                   disabled={produkDetails.length === 0 || !pelanggan}
@@ -450,48 +488,51 @@ const PilihProduk: FC = () => {
               )}
 
               {/* button booking */}
-              {!fromBooking ? (
-                <button
-                  type="button"
-                  disabled={produkDetails.length === 0 || !pelanggan}
-                  className={cn(
-                    "flex-1 flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
-                    (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
-                  )}
-                  style={{
-                    cursor:
-                      produkDetails.length === 0 || !pelanggan
-                        ? "not-allowed"
-                        : "pointer",
-                  }}
-                  onClick={() => handleRedirectBooking()}
-                >
-                  <CalendarClock className="size-4 xl:size-4 text-base-content" />
-                  <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
-                    Booking
-                  </span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  disabled={
-                    produkDetails.length === 0 ||
-                    !pelanggan ||
-                    produkDetails.some((detail) => detail.stokTersisa === 0)
-                  }
-                  className={cn(
-                    "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
-                    fromBooking ? "px-2.5" : "flex-1",
-                    (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
-                  )}
-                  onClick={() => handleStepsNext(true)}
-                >
-                  <CreditCard className="size-4 xl:size-4 text-base-content" />
-                  <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
-                    Pembayaran
-                  </span>
-                </button>
-              )}
+              {!isUpdateTransaksiComplate &&
+                (!fromBooking ? (
+                  <button
+                    type="button"
+                    disabled={produkDetails.length === 0 || !pelanggan}
+                    className={cn(
+                      "flex-1 flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
+                      (produkDetails.length > 0 || !pelanggan) &&
+                        "hover-overlay",
+                    )}
+                    style={{
+                      cursor:
+                        produkDetails.length === 0 || !pelanggan
+                          ? "not-allowed"
+                          : "pointer",
+                    }}
+                    onClick={() => handleRedirectBooking()}
+                  >
+                    <CalendarClock className="size-4 xl:size-4 text-base-content" />
+                    <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
+                      Booking
+                    </span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={
+                      produkDetails.length === 0 ||
+                      !pelanggan ||
+                      produkDetails.some((detail) => detail.stokTersisa === 0)
+                    }
+                    className={cn(
+                      "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
+                      fromBooking ? "px-2.5" : "flex-1",
+                      (produkDetails.length > 0 || !pelanggan) &&
+                        "hover-overlay",
+                    )}
+                    onClick={() => handleStepsNext(true)}
+                  >
+                    <CreditCard className="size-4 xl:size-4 text-base-content" />
+                    <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
+                      Pembayaran
+                    </span>
+                  </button>
+                ))}
 
               {/* button transaksi */}
               <div
@@ -529,15 +570,26 @@ const PilihProduk: FC = () => {
                       ? "gap-1.5 sm:gap-2.5"
                       : "gap-2 sm:gap-4",
                   )}
-                  onClick={() => handleStepsNext()}
+                  onClick={() => {
+                    if (
+                      isUpdateTransaksiComplate &&
+                      transactionIdFromTransactionComplate
+                    ) {
+                      return handleSimpanPerubahanTransactionComplete();
+                    } else {
+                      return handleStepsNext();
+                    }
+                  }}
                 >
-                  {isUpdateTransaction ? (
+                  {isUpdateTransaction || isUpdateTransaksiComplate ? (
                     <Save className="size-4 text-custom-secondary" />
                   ) : (
                     <CreditCard className="size-4 text-custom-secondary" />
                   )}
                   <span className="text-custom-secondary text-[0.65rem] sm:text-[0.7rem] font-semibold">
-                    {isUpdateTransaction ? "Simpan" : "Pembayaran"}
+                    {isUpdateTransaction || isUpdateTransaksiComplate
+                      ? "Simpan"
+                      : "Pembayaran"}
                   </span>
                 </button>
               </div>
@@ -582,6 +634,8 @@ const PilihProduk: FC = () => {
         data={dataModalFormulirTransaksi}
         index={idModalUpdateTransaksi}
         handleCloseModal={handleCloseModalFormulirTransaksi}
+        handleSetAlert={handleSetAlert}
+        alert={alert}
       />
 
       {/* alert */}
@@ -592,6 +646,9 @@ const PilihProduk: FC = () => {
         handleCloseModal={handleCancelConfirm}
         handleConfirm={handleConfirm}
         labelNext="Lanjutkan"
+        iconColor="text-warning"
+        icon={TriangleAlert}
+        isLoading={isPendingCancelUpdateTransactionComplete}
       />
     </div>
   );

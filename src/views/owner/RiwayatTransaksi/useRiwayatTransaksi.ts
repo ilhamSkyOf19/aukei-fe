@@ -1,14 +1,21 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFilter } from "../../../hooks/useFilter";
 import { TransactionServices } from "../../../services/transaction.service";
 import { useQueries } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useAuthStore } from "../../../stores/authStore";
+import { savePreviousPath } from "../../../helpers/previousPath";
 
 const useRiwayatTransaksi = () => {
   // navigate
   const navigate = useNavigate();
+
+  // current pathname
+  const { pathname: currentPathname, search: searchParamsTransaksi } =
+    useLocation();
+
+  // search params
 
   // filter metode pembayaran
   const { filter: metodePembayaran, setFilter: handleSetMetodePembayaran } =
@@ -92,6 +99,8 @@ const useRiwayatTransaksi = () => {
 
   // handle detail
   const handleRedirectDetail = (id: number) => {
+    savePreviousPath(currentPathname, searchParamsTransaksi);
+
     navigate(`/dashboard/riwayat-transaksi/${id}`);
   };
 

@@ -3,8 +3,9 @@ import { Tooltip } from "react-tooltip";
 import { cn } from "../../../utils/cn";
 import useSideBar from "./useSideBar";
 import { highlightName } from "../../../helpers/helpers";
-import { ChevronRight, LogOut } from "lucide-react";
+import { AlertTriangle, ChevronRight, LogOut } from "lucide-react";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
+import ModalAlert from "../../modals/ModalAlert";
 
 type Props = {
   isClose: boolean;
@@ -19,6 +20,13 @@ const Sidebar: FC<Props> = ({ isClose }) => {
     hasScroll,
     pengguna,
     handleLink,
+
+    handleCancelConfirm,
+    handleConfirmConfirm,
+    modalCancelRef,
+    dataConfirm,
+
+    isPendingCancelUpdateTransactionComplete,
   } = useSideBar();
 
   return (
@@ -219,6 +227,18 @@ const Sidebar: FC<Props> = ({ isClose }) => {
           fontSize: "14px",
         }}
         opacity={1}
+      />
+
+      {/* confirm */}
+      <ModalAlert
+        modalRef={modalCancelRef}
+        handleCloseModal={handleCancelConfirm}
+        handleConfirm={handleConfirmConfirm}
+        bigTitle={dataConfirm?.bigTitle ?? ""}
+        smallTitle={dataConfirm?.smallTitle ?? ""}
+        isLoading={isPendingCancelUpdateTransactionComplete}
+        icon={AlertTriangle}
+        iconColor="text-warning"
       />
     </div>
   );
