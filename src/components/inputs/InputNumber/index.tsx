@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { type FieldValues, type UseControllerReturn } from "react-hook-form";
 
@@ -34,14 +34,24 @@ const InputNumber = <T extends FieldValues = any>({
 
   const [displayValue, setDisplayValue] = useState("");
 
-  /**
-   * Sinkronkan tampilan dengan field.value.
-   *
-   * TIDAK ada fallback ke defaultValue di sini,
-   * supaya nilai 0 (hasil pengosongan input) tidak
-   * pernah ditimpa balik oleh nilai lama/default.
-   */
+  // Menandai bahwa user sedang mengosongkan input.
+  const isClearingRef = useRef(false);
+
   useEffect(() => {
+    // Kalau user baru saja mengosongkan input,
+    // jangan kembalikan value lama dari field.value.
+    if (isClearingRef.current) {
+      if (
+        field.value !== undefined &&
+        field.value !== null &&
+        field.value !== 0
+      ) {
+        return;
+      }
+
+      return;
+    }
+
     if (field.value !== undefined && field.value !== null) {
       setDisplayValue(formatNumber(String(field.value)));
     } else {
@@ -56,7 +66,6 @@ const InputNumber = <T extends FieldValues = any>({
         fieldState.error && "mb-3",
       )}
     >
-      {/* Label */}
       <div className="w-full text-base-content relative flex flex-row justify-between items-center">
         {label && (
           <div className="flex-2 relative">
@@ -95,20 +104,20 @@ const InputNumber = <T extends FieldValues = any>({
           onChange={(e) => {
             const rawValue = e.target.value.trim();
 
-            /**
-             * Input dikosongkan total.
-             *
-             * Set ke 0 (bukan undefined), supaya:
-             * - Tidak ada celah fallback ke defaultValue di useEffect manapun.
-             * - handleBlur di form tidak menganggap field "belum diisi"
-             *   (guard `typeof !== "number"`), sehingga tetap bisa
-             *   mengirim update ke backend dengan nilai 0.
-             */
+            // User menghapus seluruh isi input
             if (rawValue === "") {
+              isClearingRef.current = true;
+
               setDisplayValue("");
-              field.onChange(undefined);
+
+              // Nilai form menjadi 0
+              field.onChange(0);
+
               return;
             }
+
+            // User mulai mengetik kembali
+            isClearingRef.current = false;
 
             const unformatted = unformatNumber(rawValue);
             let numberValue = Number(unformatted);
@@ -124,6 +133,7 @@ const InputNumber = <T extends FieldValues = any>({
             }
 
             setDisplayValue(formatNumber(String(numberValue)));
+
             field.onChange(numberValue);
           }}
         />

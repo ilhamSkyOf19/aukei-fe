@@ -45,7 +45,7 @@ export interface CreateStockOpnameDetailType {
 
   jenisPenyesuaian?: JenisPenyesuaianStockOpnameType;
 
-  keteranganPenyesuaian?: string;
+  selisih: number;
 }
 
 export interface UpdateStockOpnameDetailType {

@@ -1,33 +1,168 @@
 import { type FC, type RefObject } from "react";
+
 import { PackagePlus } from "lucide-react";
+
+import { useController, useWatch, type Control } from "react-hook-form";
 
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
-
-import InputSearch from "../../inputs/InputSearch";
+import DataEmpty from "../../messages/DataEmpty";
 import InputNumber from "../../inputs/InputNumber";
-import InputChoose from "../../inputs/InputChoose";
-
-import CardProdukForChooseInventori from "../../ui/cards/CardProdukForChooseInventori";
-import CardProdukForAfterChooseInventori from "../../ui/cards/CardProdukForAfterChooseInventori";
 
 import { cn } from "../../../utils/cn";
+import { formatRupiah } from "../../../helpers/helpers";
 
-import type { CreateStockOpnameDetailType } from "../../../models/stockOpnameDetail.model";
-import {
-  ALERT_CONFIG_STOCK_OPNAME_DETAIL,
-  type Alert as AlertType,
-} from "../../../types/alert.types";
 import useModalFormulirTambahProdukStockOpname from "./useModalFormulirTambahProdukStockOpname";
-import Alert from "../../messages/Alert";
+import type { CreateStockOpnameDetailType } from "../../../models/stockOpnameDetail.model";
+import type { ResponseProdukForChooseType } from "../../../models/produk.model";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
-  alert?: AlertType | null;
+  isOwner: boolean;
+};
+
+/**
+ * Tipe form yang digunakan oleh useForm.
+ */
+type FormValues = {
+  details: CreateStockOpnameDetailType[];
+};
+
+type ProductRowProps = {
+  produk: ResponseProdukForChooseType;
+  index: number;
+  control: Control<FormValues>;
+  checked: boolean;
+  isOwner: boolean;
+  isPending: boolean;
+  handleToggleProduct: (produk: ResponseProdukForChooseType) => void;
+  handleTogglePenyesuaian: (produkId: number) => void;
+};
+
+const ProductRow: FC<ProductRowProps> = ({
+  produk,
+  index,
+  control,
+  checked,
+  isOwner,
+  isPending,
+  handleToggleProduct,
+}) => {
+  /**
+   * Ambil controller lengkap.
+   *
+   * Jangan menggunakan:
+   *
+   * const { field } = useController(...)
+   *
+   * karena InputNumber membutuhkan
+   * UseControllerReturn, bukan ControllerRenderProps.
+   */
+  const stokFisikController = useController<
+    FormValues,
+    `details.${number}.stokFisik`
+  >({
+    control,
+    name: `details.${index}.stokFisik`,
+  });
+
+  /**
+   * Ambil nilai stok fisik untuk menghitung selisih.
+   */
+  const stokFisik = useWatch({
+    control,
+    name: `details.${index}.stokFisik`,
+  });
+
+  /**
+   * Ambil nilai penyesuaian.
+   */
+
+  const stokSistem = Number(produk.stok ?? 0);
+
+  const stokFisikNumber = Number(stokFisik ?? 0);
+
+  const selisih = stokFisikNumber - stokSistem;
+
+  return (
+    <tr className="h-18 text-[0.7rem] text-base-content">
+      {/* CHECKBOX */}
+      <td>
+        <input
+          type="checkbox"
+          className="checkbox checkbox-sm"
+          checked={checked}
+          onChange={() => handleToggleProduct(produk)}
+          disabled={isPending}
+        />
+      </td>
+
+      {/* NO */}
+      <td>{index + 1}</td>
+
+      {/* PRODUK */}
+      <td>
+        <div className="flex items-center gap-3">
+          <div className="avatar">
+            <div className="mask mask-squircle w-10 h-10">
+              <img src={produk.img} alt="Foto Produk" loading="lazy" />
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-start items-start">
+            <p className="font-medium">{produk.nama}</p>
+
+            <p className="text-base-content/60">{produk.kode ?? "-"}</p>
+          </div>
+        </div>
+      </td>
+
+      {/* HARGA MODAL */}
+      {isOwner && (
+        <td className="whitespace-nowrap">
+          {formatRupiah(produk.hargaModalRataRata)}
+        </td>
+      )}
+
+      {/* STOK SISTEM */}
+      <td className="font-medium">{stokSistem}</td>
+
+      {/* STOK FISIK */}
+      <td>
+        <div className="w-20">
+          <InputNumber
+            controller={stokFisikController}
+            placeholder="0"
+            max={1000000}
+            disabled={!checked || isPending}
+          />
+        </div>
+      </td>
+
+      {/* SELISIH */}
+      <td>
+        <p
+          className={cn(
+            "font-medium",
+            selisih < 0
+              ? "text-error"
+              : selisih > 0
+                ? "text-success"
+                : "text-base-content/70",
+          )}
+        >
+          {selisih}
+        </p>
+      </td>
+
+      {/* PENYESUAIAN */}
+      <td></td>
+    </tr>
+  );
 };
 
 const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
@@ -35,34 +170,22 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
   handleCloseModal,
   handleSetToast,
   handleSetAlert,
-  alert,
+  isOwner,
 }) => {
   const {
+    dataProduk,
+    isLoadingDataProduk,
+
+    control,
+    fields,
+
+    handleToggleProduct,
+    handleTogglePenyesuaian,
+
+    isAllChecked,
+    handleToggleSelectAll,
+
     handleSubmit,
-    onSubmit,
-
-    wrapperRef,
-
-    handleSearch,
-    inputSearchRef,
-
-    handleCloseActiveComponentChooseProduk,
-    handleShowActiveComponentChooseProduk,
-
-    errors,
-
-    activeComponentChooseProduk,
-
-    isLoadingProdukForChoose,
-    dataProdukForChoose,
-
-    handleSetValueProdukId,
-    handleDeleteValueProdukId,
-
-    produkChoose,
-
-    stokFisikController,
-    jenisChooseController,
 
     isPendingStockOpnameDetail,
   } = useModalFormulirTambahProdukStockOpname({
@@ -71,168 +194,227 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
     handleSetAlert,
   });
 
+  const TOTAL_COLUMN = 8;
+
+  const colSpan = isOwner ? TOTAL_COLUMN : TOTAL_COLUMN - 1;
+
   return (
     <dialog
       ref={modalRef}
       id="modal-formulir-tambah-stock-opname"
-      className="modal lg:hidden"
+      className="modal"
     >
-      {alert && (
-        <Alert
-          alert={alert.id !== null}
-          isAnimationOut={alert.isAnimationOut || false}
-          label={ALERT_CONFIG_STOCK_OPNAME_DETAIL[alert.type].message}
-        />
-      )}
+      <div
+        className="
+          modal-box
+          w-11/12
+          h-[85vh]
+          max-w-6xl
+          bg-base-200
+          dark:border
+          dark:border-base-content/10
+          scrollbar-thin
+          flex
+          flex-col
+        "
+      >
+        {/* HEADER */}
+        <div className="w-full flex flex-row justify-start items-center shrink-0">
+          <TitleModalFormulir
+            title="Formulir Stock Opname"
+            keterangan="Pilih produk dan sesuaikan stok fisik untuk melakukan stock opname"
+            withIcon={{
+              icon: PackagePlus,
+            }}
+          />
+        </div>
 
-      <div className="modal-box w-11/12 h-[80vh] max-w-5xl bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
-        <div className="w-full flex flex-col rounded-2xl md:rounded-xl justify-start items-start">
-          {/* TITLE */}
-          <div className="w-full flex flex-row justify-start items-center">
-            <TitleModalFormulir
-              title="Formulir Stock Opname"
-              keterangan="Formulir untuk menambah produk Stock Opname"
-              withIcon={{
-                icon: PackagePlus,
-              }}
-            />
-          </div>
-
-          {/* FORM */}
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="w-full flex flex-col justify-start items-start mt-4 gap-3"
-          >
-            {/* PRODUK */}
-            <div
-              ref={wrapperRef}
-              className="w-full flex flex-col justify-start items-start gap-2"
-            >
-              <div className="w-full flex flex-col justify-start items-start gap-2 relative">
-                {/* LABEL */}
-                <div className="relative">
-                  <label className="capitalize text-xs lg:text-sm text-base-content">
-                    Cari Produk
-                  </label>
-
-                  <span className="absolute -top-1 ml-1 text-error">{"*"}</span>
-                </div>
-
-                {/* INPUT SEARCH */}
-                <InputSearch
-                  ref={inputSearchRef}
-                  handleSearch={handleSearch}
-                  placeholder="Cari produk nama atau kode"
-                  handleOnFocus={handleShowActiveComponentChooseProduk}
-                  handleClear={handleCloseActiveComponentChooseProduk}
-                  errorMessage={errors.produkId?.message}
-                />
-
-                {/* DROPDOWN PRODUK */}
-                <div
-                  className={cn(
-                    "absolute bg-base-100 w-full z-40 rounded-2xl md:rounded-xl shadow-xl top-full grid transition-all duration-300 ease-in-out",
-                    activeComponentChooseProduk
-                      ? "grid-rows-[1fr] pb-2.5"
-                      : "grid-rows-[0fr]",
-                  )}
-                >
-                  <div className="overflow-y-scroll scrollbar-thin">
-                    <div className="w-full flex flex-col h-40 px-2.5 py-4 gap-2">
-                      {isLoadingProdukForChoose ? (
-                        <div className="w-full h-full flex flex-col justify-center items-center">
-                          <div className="loading loading-xl" />
-                        </div>
-                      ) : dataProdukForChoose?.data &&
-                        dataProdukForChoose.data.length > 0 ? (
-                        dataProdukForChoose.data.map((item) => (
-                          <CardProdukForChooseInventori
-                            key={item.id}
-                            data={item}
-                            handleSetValueProdukId={handleSetValueProdukId}
-                          />
-                        ))
-                      ) : (
-                        <div className="w-full h-full flex flex-col justify-center items-center">
-                          <p className="text-xs font-medium text-base-content/50">
-                            Data produk tidak ditemukan
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* PRODUK DIPILIH */}
-              {produkChoose !== null && (
-                <div className="w-full flex flex-col justify-start items-start gap-2 mt-4">
-                  <p className="text-xs font-medium text-base-content">
-                    Produk yang Dipilih:
-                  </p>
-
-                  <CardProdukForAfterChooseInventori
-                    key={produkChoose.id}
-                    data={produkChoose}
-                    handleDeleteValueProdukId={handleDeleteValueProdukId}
-                    customWidth="w-full"
+        {/* TABLE */}
+        <div
+          className="
+            w-full
+            flex-1
+            overflow-auto
+            rounded-2xl
+            md:rounded-xl
+            border
+            border-base-content/10
+            mt-4
+            scrollbar-thin
+          "
+        >
+          <table className="table table-xs lg:table-sm table-zebra">
+            <thead>
+              <tr className="h-12 bg-base-200 text-[0.7rem]">
+                <th>
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm"
+                    checked={isAllChecked}
+                    onChange={handleToggleSelectAll}
+                    disabled={isLoadingDataProduk || isPendingStockOpnameDetail}
                   />
-                </div>
+                </th>
+
+                <th>No</th>
+
+                <th>Produk</th>
+
+                {isOwner && <th>Harga Modal</th>}
+
+                <th>Stok Sistem</th>
+
+                <th>Stok Fisik</th>
+
+                <th>Selisih</th>
+
+                <th>Penyesuaian</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {isLoadingDataProduk ? (
+                Array.from({
+                  length: 4,
+                }).map((_, index) => (
+                  <tr key={index}>
+                    <td colSpan={colSpan}>
+                      <div className="skeleton h-12 w-full py-1" />
+                    </td>
+                  </tr>
+                ))
+              ) : dataProduk.length > 0 ? (
+                dataProduk.map((produk, index) => {
+                  const fieldIndex = fields.findIndex(
+                    (field) => field.produkId === produk.id,
+                  );
+
+                  const checked = fieldIndex !== -1;
+
+                  /**
+                   * Produk belum dipilih.
+                   */
+                  if (!checked) {
+                    return (
+                      <tr
+                        key={produk.id}
+                        className="h-18 text-[0.7rem] text-base-content"
+                      >
+                        <td>
+                          <input
+                            type="checkbox"
+                            className="checkbox checkbox-sm"
+                            checked={false}
+                            onChange={() => handleToggleProduct(produk)}
+                            disabled={isPendingStockOpnameDetail}
+                          />
+                        </td>
+
+                        <td>{index + 1}</td>
+
+                        <td>
+                          <div className="flex items-center gap-3">
+                            <div className="avatar">
+                              <div className="mask mask-squircle w-10 h-10">
+                                <img
+                                  src={produk.img}
+                                  alt="Foto Produk"
+                                  loading="lazy"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col justify-start items-start">
+                              <p className="font-medium">{produk.nama}</p>
+
+                              <p className="text-base-content/60">
+                                {produk.kode ?? "-"}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {isOwner && (
+                          <td className="whitespace-nowrap">
+                            {formatRupiah(produk.hargaModalRataRata)}
+                          </td>
+                        )}
+
+                        <td className="font-medium">{produk.stok}</td>
+
+                        <td>
+                          <span className="text-base-content/40">
+                            Pilih produk
+                          </span>
+                        </td>
+
+                        <td>
+                          <span className="text-base-content/40">0</span>
+                        </td>
+
+                        <td>
+                          <input
+                            type="checkbox"
+                            className="
+                                checkbox
+                                checkbox-sm
+                                cursor-not-allowed
+                                opacity-50
+                              "
+                            disabled
+                          />
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  /**
+                   * Produk sudah dipilih.
+                   */
+                  return (
+                    <ProductRow
+                      key={produk.id}
+                      produk={produk}
+                      index={fieldIndex}
+                      control={control}
+                      checked={checked}
+                      isOwner={isOwner}
+                      isPending={isPendingStockOpnameDetail}
+                      handleToggleProduct={handleToggleProduct}
+                      handleTogglePenyesuaian={handleTogglePenyesuaian}
+                    />
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={colSpan}>
+                    <div className="w-full h-full flex flex-col justify-center items-center">
+                      <DataEmpty
+                        title="Data Produk Tidak Tersedia"
+                        description="Belum ada data produk yang dapat ditampilkan saat ini."
+                      />
+                    </div>
+                  </td>
+                </tr>
               )}
-            </div>
+            </tbody>
+          </table>
+        </div>
 
-            {/* JENIS PENYESUAIAN */}
-            <div className="w-full flex flex-col justify-start items-start gap-1">
-              <InputChoose<CreateStockOpnameDetailType>
-                chooseList={[
-                  {
-                    label: "Masuk Kerugian",
-                    value: "MASUK_KERUGIAN",
-                  },
-                  {
-                    label: "Tidak Masuk Kerugian",
-                    value: "TIDAK_MASUK_KERUGIAN",
-                  },
-                ]}
-                controller={jenisChooseController}
-                label="Jenis Penyesuaian"
-                placeholder="Jenis Penyesuaian"
-                required={false}
-              />
+        {/* FOOTER */}
+        <div className="w-full flex flex-row justify-end items-end gap-4 mt-4 shrink-0">
+          <ButtonCloseText
+            handleClose={handleCloseModal}
+            label="Batal"
+            disabled={isPendingStockOpnameDetail}
+          />
 
-              <span className="text-[0.7rem] text-base-content/70">
-                Jenis penyesuaian ketika stok fisik lebih sedikit dari stok
-                sistem.
-              </span>
-            </div>
-
-            {/* STOK FISIK */}
-            <div className="w-full">
-              <InputNumber<CreateStockOpnameDetailType>
-                controller={stokFisikController}
-                label="Stok Fisik"
-                placeholder="Stok Fisik"
-                max={1000000}
-                required
-              />
-            </div>
-
-            {/* BUTTON */}
-            <div className="w-full flex flex-row justify-end items-end gap-4 mt-2">
-              <ButtonCloseText
-                handleClose={handleCloseModal}
-                label="Batal"
-                disabled={isPendingStockOpnameDetail}
-              />
-
-              <ButtonWithIcon
-                typeButton="submit"
-                icon={PackagePlus}
-                label="Tambah Stock Opname"
-                isLoading={isPendingStockOpnameDetail}
-              />
-            </div>
-          </form>
+          <ButtonWithIcon
+            icon={PackagePlus}
+            label="Simpan"
+            isLoading={isPendingStockOpnameDetail}
+            handleBtn={handleSubmit}
+          />
         </div>
       </div>
     </dialog>

@@ -48,7 +48,9 @@ const useFormulirTambahProdukStockOpnameDetail = (params: {
   // STATE SEARCH
   // ============================================================
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
+
+  const [kategori, setKategori] = useState<number | undefined>(undefined);
 
   const handleSearch = (value: string) => setSearch(value);
 
@@ -83,6 +85,7 @@ const useFormulirTambahProdukStockOpnameDetail = (params: {
   const { dataProdukForChoose, isLoadingProdukForChoose } =
     useDataProdukForChoose({
       search,
+      kategori,
     });
 
   // ============================================================

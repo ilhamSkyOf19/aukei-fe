@@ -3,7 +3,7 @@ import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import { cn } from "../../../../utils/cn";
 import FormCariProdukInventori from "../../../../components/forms/FormCariProdukInventori";
 import CardProdukForAfterChooseInventori from "../../../../components/ui/cards/CardProdukForAfterChooseInventori";
-import { PackagePlus } from "lucide-react";
+import { ClipboardCheck, PackagePlus } from "lucide-react";
 import useFormulirTambahProdukStockOpnameDetail from "./useFormulirTambahProdukStockOpnameDetail";
 import type { CreateStockOpnameDetailType } from "../../../../models/stockOpnameDetail.model";
 import InputChoose from "../../../../components/inputs/InputChoose";
@@ -59,116 +59,24 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
     <div
       className={cn("w-full flex flex-col justify-start items-center gap-2")}
     >
-      <div className="w-full lg:hidden flex flex-row justify-between items-center mt-2.5">
+      <div className="w-full flex flex-row justify-between items-center mt-2.5">
         <p className="text-md font-semibold text-base-content">
-          Daftar Barang Masuk
+          Daftar Stok Opname
         </p>
 
         {/* button add */}
         <ButtonWithIcon
+          icon={ClipboardCheck}
+          label="Tambah Stok Opname"
           handleBtn={() => handleShowModalFormulirTambahBarang()}
         />
-      </div>
-      {/* form for lg */}
-      <div className="hidden lg:flex flex-col justify-start items-start min-h-30 w-full rounded-2xl md:rounded-xl shadow-xs dark:border dark:border-base-content/10 bg-base-100 py-2.5 px-4">
-        {/* title */}
-        <div className="w-full flex flex-row justify-start items-center">
-          <h2 className="text-base-content text-sm font-semibold">
-            Tambah Stok Opname
-          </h2>
-        </div>
-        {/* form */}
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-full flex flex-row justify-start items-start mt-4 gap-8"
-        >
-          {/* produk */}
-          <FormCariProdukInventori
-            hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
-            wrapperRef={wrapperRef}
-            handleSearch={handleSearch}
-            handleCloseActiveComponentChooseProduk={
-              handleCloseActiveComponentChooseProduk
-            }
-            handleSetValueProdukId={handleSetValueProdukId}
-            handleShowActiveComponentChooseProduk={
-              handleShowActiveComponentChooseProduk
-            }
-            inputSearchRef={inputSearchRef}
-            activeComponentChooseProduk={activeComponentChooseProduk}
-            dataProdukForChoose={dataProdukForChoose}
-            error={errors.produkId?.message}
-            isLoadingProdukForChoose={isLoadingProdukForChoose}
-          />
-
-          {/* input jumlah perbox */}
-          <div className="flex-2 gap-4 flex flex-row justify-start items-start">
-            <div className="flex flex-col justify-start items-start w-120">
-              <InputChoose<CreateStockOpnameDetailType>
-                chooseList={[
-                  {
-                    label: "Masuk Kerugian",
-                    value: "MASUK_KERUGIAN",
-                  },
-                  {
-                    label: "Tidak Masuk Kerugian",
-                    value: "TIDAK_MASUK_KERUGIAN",
-                  },
-                ]}
-                controller={jenisChooseController}
-                label="Jenis Penyesuaian"
-                placeholder="Jenis Penyesuaian"
-                required={false}
-              />
-
-              <span className="text-[0.7rem] text-base-content">
-                Jenis penyesuaian ketika stok minus
-              </span>
-            </div>
-
-            <InputNumber<CreateStockOpnameDetailType>
-              controller={stokFisikController}
-              label="Stok Fisik"
-              placeholder="Stok Fisik"
-              max={1000000}
-              required
-            />
-          </div>
-          {/* button submit */}
-          <div className="flex-1 flex flex-row justify-end items-end h-17">
-            <ButtonWithIcon
-              icon={PackagePlus}
-              disabled={isGlobalLoading}
-              typeButton="submit"
-              label="Tambah Stok Opname"
-              isLoading={isPendingStockOpnameDetail}
-            />
-          </div>
-        </form>
-
-        {/* card produk choose */}
-        {produkChoose !== null && (
-          <div className="w-full flex flex-col justify-start items-start gap-2">
-            <p className="text-xs font-medium text-base-content">
-              Daftar Pilihan Barang
-            </p>
-
-            <div className="w-full grid grid-cols-4 gap-2.5">
-              <CardProdukForAfterChooseInventori
-                hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
-                data={produkChoose}
-                handleDeleteValueProdukId={handleDeleteValueProdukId}
-              />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* modal formulir barang masuk */}
       <ModalFormulirTambahProdukStockOpname
         modalRef={modalFormulirTambahBarangRef}
         handleCloseModal={handleCloseModalFormulirTambahBarang}
-        alert={alert}
+        isOwner={role === ROLE_INTERNAL_TYPE.OWNER}
         handleSetAlert={handleSetAlert}
         handleSetToast={handleSetToast}
       />

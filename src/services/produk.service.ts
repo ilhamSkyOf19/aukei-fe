@@ -110,15 +110,17 @@ export class ProdukServices {
 
   // find all for choose
   static async findAllForChoose(params: {
-    search: string;
+    search?: string;
+    kategori?: string;
   }): Promise<ResponseStructure<ResponseProdukForChooseType[] | null>> {
-    const { search } = params;
+    const { search, kategori } = params;
     // call api
     const result = await instanceAxios.get<
       ResponseStructure<ResponseProdukForChooseType[] | null>
     >(`/produk/for-choose`, {
       params: {
         search,
+        kategori,
       },
     });
     return result.data;

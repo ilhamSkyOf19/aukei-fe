@@ -22,6 +22,10 @@ export class StockOpnameDetailValidation {
       jenisPenyesuaian: z
         .enum(JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE, "Mohon pilih penyesuaian")
         .optional(),
+      selisih: z
+        .number("Selisih tidak valid")
+        .int()
+        .max(2147483647, "Selisih terlalu besar"),
     })
     .strict() satisfies z.ZodType<CreateStockOpnameDetailType>;
 
