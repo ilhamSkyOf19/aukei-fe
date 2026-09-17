@@ -113,19 +113,19 @@ const useBooking = (params: {
 
   // Tandai transaksi booking ini akan diubah, lalu kembali ke step pilih produk
   const handleUbahTransaction = () => {
-    localStorage.setItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION, "true");
-    localStorage.setItem(LOCAL_STORAGE_KEYS.FROM_BOOKING, "true");
+    // localStorage.setItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION, "true");
+    // localStorage.setItem(LOCAL_STORAGE_KEYS.FROM_BOOKING, "true");
 
     handleSteps(1);
   };
 
   // Batalkan transaksi booking: kembali ke step 1
-  const handleBatalTransaction = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
+  // const handleBatalTransaction = () => {
+  //   localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
 
-    handleToast("cancelled");
-    handleSteps(1);
-  };
+  //   handleToast("cancelled");
+  //   handleSteps(1);
+  // };
 
   // Simpan nominal yang dibayarkan (dari modal kalkulator) ke state & localStorage
   const handlePay = (value: number) => {
@@ -334,7 +334,6 @@ const useBooking = (params: {
     pelanggan,
     dataDetails,
     handleUbahTransaction,
-    handleBatalTransaction,
     metodePembayaran,
     transactionSummary,
     handleMetodePembayaran,

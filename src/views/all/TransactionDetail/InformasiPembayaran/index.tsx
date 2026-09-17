@@ -444,35 +444,37 @@ const InformasiPembayaran: FC<Props> = ({
           </div>
         )}
         {/* ringkasan pembayaran cash */}
-        {metodePembayaran === PAYMENT_METHOD_TYPE.CASH && (
-          <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5 border-b border-base-content/10 pb-2.5">
-            <span className="text-xs font-medium text-base-content">
-              Ringkasan Pembayaran Cash
-            </span>
-            <div className="w-full flex flex-row justify-between items-center">
-              <span className="text-xs font-medium text-base-content/70">
-                Uang Diterima
+        {metodePembayaran === PAYMENT_METHOD_TYPE.CASH &&
+          dataTransaction?.data?.status !==
+            TRANSACTION_STATUS_TYPE.COMPLETED && (
+            <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5 border-b border-base-content/10 pb-2.5">
+              <span className="text-xs font-medium text-base-content">
+                Ringkasan Pembayaran Cash
               </span>
-              {/* total */}
-              <span className="text-xs font-semibold text-info">
-                {formatRupiah(dataDiBayar)}
-              </span>
+              <div className="w-full flex flex-row justify-between items-center">
+                <span className="text-xs font-medium text-base-content/70">
+                  Uang Diterima
+                </span>
+                {/* total */}
+                <span className="text-xs font-semibold text-info">
+                  {formatRupiah(dataDiBayar)}
+                </span>
+              </div>
+              <div className="w-full flex flex-row justify-between items-center">
+                <span className="text-xs font-medium text-base-content/70">
+                  Uang Kembalian
+                </span>
+                {/* total */}
+                <span className="text-xs font-semibold text-emerald-600">
+                  {formatRupiah(
+                    dataDiBayar > 0
+                      ? dataDiBayar - (transactionSummary.totalPembayaran ?? 0)
+                      : 0,
+                  )}
+                </span>
+              </div>
             </div>
-            <div className="w-full flex flex-row justify-between items-center">
-              <span className="text-xs font-medium text-base-content/70">
-                Uang Kembalian
-              </span>
-              {/* total */}
-              <span className="text-xs font-semibold text-emerald-600">
-                {formatRupiah(
-                  dataDiBayar > 0
-                    ? dataDiBayar - (transactionSummary.totalPembayaran ?? 0)
-                    : 0,
-                )}
-              </span>
-            </div>
-          </div>
-        )}
+          )}
         {/* metode pembayaran pelunasan */}
         {isPageBookingKasir && (
           <div className="flex flex-col justify-start items-start gap-2.5 w-full mt-4">

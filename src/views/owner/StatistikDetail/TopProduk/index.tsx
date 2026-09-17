@@ -16,7 +16,7 @@ import RankMedal from "../../../../components/ui/RankMedal";
 import RangeDate from "../../../../components/filters/RangeDate";
 import useStatistikTopProduk from "../../../../hooks/useStatistikTopProduk";
 import type { DataStatistikTopProdukType } from "../../../../models/statistik.model";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import { ArrowUpRight, FileText, Trophy } from "lucide-react";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
@@ -193,6 +193,7 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
               <th>Top Kategori</th>
             </tr>
           </thead>
+
           <tbody>
             {isLoading ? (
               Array.from({ length: 4 }).map((_, index) => (
@@ -203,58 +204,86 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
                 </tr>
               ))
             ) : isExistData ? (
-              dataTopProduk?.data?.map((produk, _) => (
-                <tr
-                  key={produk.id}
-                  className={cn(
-                    "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+              dataTopProduk?.data?.map((produk, index) => (
+                <Fragment key={produk.id}>
+                  {/* header setiap 25 data */}
+                  {index > 0 && index % 25 === 0 && (
+                    <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                      <th>Foto</th>
+                      <th>Kode</th>
+                      <th>Nama</th>
+                      <th>Kategori</th>
+                      <th>Total Terjual</th>
+                      <th>Total Omzet</th>
+                      <th>Rank (Qty)</th>
+                      <th>Rank (Omzet)</th>
+                      <th>Top Kategori</th>
+                    </tr>
                   )}
-                >
-                  {/* foto */}
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
-                          <img
-                            src={produk.img}
-                            alt="Foto Produk"
-                            loading="lazy"
-                          />
+
+                  <tr
+                    className={cn(
+                      "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+                    )}
+                  >
+                    {/* foto */}
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
+                            <img
+                              src={produk.img}
+                              alt="Foto Produk"
+                              loading="lazy"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  {/* kode */}
-                  <td className="font-medium text-info">{produk.kode}</td>
-                  {/* nama */}
-                  <td>{produk.nama}</td>
-                  {/* kategori */}
-                  <td>{produk.kategori}</td>
-                  {/* total terjual */}
-                  <td>{formatNumber(produk.totalTerjual)} Item</td>
-                  {/* total omzet */}
-                  <td>{formatRupiah(produk.totalOmzet)}</td>
-                  {/* rank qty */}
-                  <td>
-                    {produk.rankQty ? <RankStar rank={produk.rankQty} /> : "-"}
-                  </td>
-                  {/* rank omzet */}
-                  <td>
-                    {produk.rankOmzet ? (
-                      <RankStar rank={produk.rankOmzet} />
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  {/* top kategori */}
-                  <td>
-                    {produk.rankKategori ? (
-                      <RankMedal rank={produk.rankKategori} />
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                </tr>
+                    </td>
+
+                    {/* kode */}
+                    <td className="font-medium text-info">{produk.kode}</td>
+
+                    {/* nama */}
+                    <td>{produk.nama}</td>
+
+                    {/* kategori */}
+                    <td>{produk.kategori}</td>
+
+                    {/* total terjual */}
+                    <td>{formatNumber(produk.totalTerjual)} Item</td>
+
+                    {/* total omzet */}
+                    <td>{formatRupiah(produk.totalOmzet)}</td>
+
+                    {/* rank qty */}
+                    <td>
+                      {produk.rankQty ? (
+                        <RankStar rank={produk.rankQty} />
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    {/* rank omzet */}
+                    <td>
+                      {produk.rankOmzet ? (
+                        <RankStar rank={produk.rankOmzet} />
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    {/* top kategori */}
+                    <td>
+                      {produk.rankKategori ? (
+                        <RankMedal rank={produk.rankKategori} />
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  </tr>
+                </Fragment>
               ))
             ) : (
               <tr>
@@ -286,6 +315,7 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
         limit={dataTopProduk?.meta?.limit ?? 8}
         isLoading={isLoading}
         emptyData={!isExistData}
+        totalData={dataTopProduk?.meta?.totalData}
       />
     </div>
   );

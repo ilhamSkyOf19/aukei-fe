@@ -21,11 +21,13 @@ type Props = {
   wrapperRef: RefObject<HTMLDivElement | null>;
   hargaBeli?: boolean;
   hargaModal?: boolean;
+  formInputRef?: RefObject<HTMLInputElement | null>;
 };
 const FormCariProdukInventori: FC<Props> = ({
   inputSearchRef,
   error,
   handleSearch,
+  formInputRef,
   handleCloseActiveComponentChooseProduk,
   activeComponentChooseProduk,
   handleShowActiveComponentChooseProduk,
@@ -62,6 +64,7 @@ const FormCariProdukInventori: FC<Props> = ({
           handleClear={() => handleCloseActiveComponentChooseProduk()}
           errorMessage={error}
           customHeight="h-10"
+          formInputRef={formInputRef}
         />
 
         {/* modal show data produk for choose */}

@@ -22,6 +22,7 @@ import FilterSort from "../../../components/filters/Sort";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
 import CardDataTransaksiBooking from "../../../components/ui/cards/CardDataTransaksiBooking";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
+import { Fragment } from "react/jsx-runtime";
 
 const RiwayatTransaksi = () => {
   const {
@@ -239,6 +240,7 @@ const RiwayatTransaksi = () => {
                 <th>Aksi</th>
               </tr>
             </thead>
+
             <tbody>
               {isLoadingDataTransaksiBooking ? (
                 Array.from({ length: 4 }).map((_, index) => (
@@ -249,58 +251,76 @@ const RiwayatTransaksi = () => {
                   </tr>
                 ))
               ) : isExistDataTransaksiBooking ? (
-                dataTransaksiBooking?.data?.data.map((item, _) => (
-                  <tr
-                    key={item.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
-                      // false === true && "bg-base-200",
+                dataTransaksiBooking?.data?.data.map((item, index) => (
+                  <Fragment key={item.id}>
+                    {/* HEADER SETIAP 25 DATA */}
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="h-12 bg-base-200 text-xs text-base-content/60">
+                        <th>Pelanggan</th>
+                        <th>Total Transaksi</th>
+                        <th>Total Item Booking</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                      </tr>
                     )}
-                  >
-                    {/* pelanggan */}
-                    <td>
-                      <div className="w-full flex flex-row justify-start items-center gap-2">
-                        {/* avatar */}
-                        <Avatar
-                          nama={item.pelanggan.nama}
-                          index={item.pelanggan.id}
-                          xs
-                        />
-                        <div className="flex flex-col justify-start items-start">
-                          {/* nama */}
-                          <span className="font-semibold text-[0.625rem]">
-                            {item.pelanggan.nama}
-                          </span>
-                          {/* no wa */}
-                          <span className="text-[0.625rem] text-base-content/50">
-                            {formatNumberPhone(item.pelanggan.noWa)}
-                          </span>
+
+                    <tr
+                      className={cn(
+                        "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
+                        // false === true && "bg-base-200",
+                      )}
+                    >
+                      {/* pelanggan */}
+                      <td>
+                        <div className="w-full flex flex-row justify-start items-center gap-2">
+                          {/* avatar */}
+                          <Avatar
+                            nama={item.pelanggan.nama}
+                            index={item.pelanggan.id}
+                            xs
+                          />
+
+                          <div className="flex flex-col justify-start items-start">
+                            {/* nama */}
+                            <span className="font-semibold text-[0.625rem]">
+                              {item.pelanggan.nama}
+                            </span>
+
+                            {/* no wa */}
+                            <span className="text-[0.625rem] text-base-content/50">
+                              {formatNumberPhone(item.pelanggan.noWa)}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      {formatNumber(item.totalTransaksiBooking)} Transaksi
-                    </td>
-                    <td>
-                      <span className="font-medium">
-                        {item.totalItemBooking > 0
-                          ? `${formatNumber(item.totalItemBooking)} Pcs`
-                          : "-"}
-                      </span>
-                    </td>
-                    <td>
-                      <StatusTransaction status={item.status} />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="text-info hover:underline"
-                        onClick={() => handleRedirect(item.id)}
-                      >
-                        detail
-                      </button>
-                    </td>
-                  </tr>
+                      </td>
+
+                      <td>
+                        {formatNumber(item.totalTransaksiBooking)} Transaksi
+                      </td>
+
+                      <td>
+                        <span className="font-medium">
+                          {item.totalItemBooking > 0
+                            ? `${formatNumber(item.totalItemBooking)} Pcs`
+                            : "-"}
+                        </span>
+                      </td>
+
+                      <td>
+                        <StatusTransaction status={item.status} />
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          className="text-info hover:underline"
+                          onClick={() => handleRedirect(item.id)}
+                        >
+                          detail
+                        </button>
+                      </td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>
@@ -333,6 +353,7 @@ const RiwayatTransaksi = () => {
             totalPage={dataTransaksiBooking?.data?.meta?.totalPage || 1}
             limit={dataTransaksiBooking?.data?.meta?.limit || 8}
             setLimit={handleLimit}
+            totalData={dataTransaksiBooking?.data?.meta?.totalData}
           />
         </div>
       </div>

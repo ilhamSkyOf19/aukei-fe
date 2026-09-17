@@ -17,7 +17,7 @@ import {
 import ModalDelete from "../../../../components/modals/ModalDelete";
 import FormulirBarangMasuk from "../../../../components/forms/FormulirBarangMasuk";
 import RangeDate from "../../../../components/filters/RangeDate";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import { formatNumber } from "../../../../helpers/helpers";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
@@ -204,67 +204,85 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
                   </tr>
                 ))
               ) : isExistDataBarangMasuk ? (
-                dataBarangMasuk?.data?.data.map((barang, _) => (
-                  <tr
-                    key={barang.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+                dataBarangMasuk?.data?.data.map((barang, index) => (
+                  <Fragment key={barang.id}>
+                    {/* Header setiap 25 data */}
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                        <th>Pilih</th>
+                        <th>Kode Referensi</th>
+                        <th>Tanggal Masuk</th>
+                        <th>Keterangan</th>
+                        <th>Jumlah</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                      </tr>
                     )}
-                  >
-                    <th>
-                      <label>
-                        <input
-                          type="checkbox"
-                          className="checkbox"
-                          disabled={
-                            barang.status === STATUS_INVENTORI_TYPE.POSTED ||
-                            barang.status === STATUS_INVENTORI_TYPE.PENDING
-                          }
-                          checked={chooseBarangMasuk.some(
-                            (item) => item.id === barang.id,
-                          )}
-                          onChange={() => {
-                            handleSetChooseBarangMasuk({
-                              id: barang.id,
-                              kodeReferensi: barang.kodeReferensi,
-                            });
-                          }}
-                        />
-                      </label>
-                    </th>
-                    {/* kode */}
-                    <td className="font-medium text-info">
-                      {barang.kodeReferensi}
-                    </td>
-                    {/* tanggal */}
-                    <td>{formatTanggalLengkap(barang.tanggalMasuk)} WIB</td>
-                    {/* keterangan */}
-                    <td>
-                      {barang.keterangan ? (
-                        <span>{barang.keterangan}</span>
-                      ) : (
-                        <span className="italic text-base-content/50">
-                          Tidak ada keterangan
-                        </span>
-                      )}
-                    </td>
-                    {/* jumlah */}
-                    <td>{barang.countDetailBarangMasuk}</td>
-                    {/* status */}
-                    <td>
-                      <StatusInventori status={barang.status} />
-                    </td>
 
-                    {/* detail */}
-                    <td>
-                      <div className="flex flex-row justify-start items-center gap-2">
+                    <tr
+                      className={cn(
+                        "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+                      )}
+                    >
+                      {/* checkbox */}
+                      <th>
+                        <label>
+                          <input
+                            type="checkbox"
+                            className="checkbox"
+                            disabled={
+                              barang.status === STATUS_INVENTORI_TYPE.POSTED ||
+                              barang.status === STATUS_INVENTORI_TYPE.PENDING
+                            }
+                            checked={chooseBarangMasuk.some(
+                              (item) => item.id === barang.id,
+                            )}
+                            onChange={() => {
+                              handleSetChooseBarangMasuk({
+                                id: barang.id,
+                                kodeReferensi: barang.kodeReferensi,
+                              });
+                            }}
+                          />
+                        </label>
+                      </th>
+
+                      {/* kode */}
+                      <td className="font-medium text-info">
+                        {barang.kodeReferensi}
+                      </td>
+
+                      {/* tanggal */}
+                      <td>{formatTanggalLengkap(barang.tanggalMasuk)} WIB</td>
+
+                      {/* keterangan */}
+                      <td>
+                        {barang.keterangan ? (
+                          <span>{barang.keterangan}</span>
+                        ) : (
+                          <span className="italic text-base-content/50">
+                            Tidak ada keterangan
+                          </span>
+                        )}
+                      </td>
+
+                      {/* jumlah */}
+                      <td>{barang.countDetailBarangMasuk}</td>
+
+                      {/* status */}
+                      <td>
+                        <StatusInventori status={barang.status} />
+                      </td>
+
+                      {/* aksi */}
+                      <td>
                         <div className="flex flex-row justify-start items-center gap-2">
                           <ButtonDetailTable
                             handleRedirect={() =>
                               handleRedirectDetail(barang.id)
                             }
                           />
-                          {/* button delete */}
+
                           <ButtonDeleteTable
                             handleShowModalDelete={() =>
                               handleShowModalDelete(barang.id, {
@@ -290,9 +308,9 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
                             }
                           />
                         </div>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>
@@ -351,6 +369,8 @@ const BarangMasuk: FC<Props> = ({ fromPengajuanBarang }) => {
           setPage={handlePage}
           setLimit={handleLimit}
           emptyData={!isExistDataBarangMasuk}
+          limit={dataBarangMasuk?.data?.meta?.limit}
+          totalData={dataBarangMasuk?.data?.meta?.totalData}
         />
       </div>
 

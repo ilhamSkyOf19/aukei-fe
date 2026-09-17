@@ -105,13 +105,13 @@ export class BarangMasukDetailValidation {
 
       if (hasJumlahBox && hasJumlahStok) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["jumlahBox"],
           message: "Jumlah box dan jumlah stok tidak boleh diisi bersamaan",
         });
 
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["jumlahStok"],
           message: "Jumlah box dan jumlah stok tidak boleh diisi bersamaan",
         });

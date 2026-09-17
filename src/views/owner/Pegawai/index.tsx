@@ -11,7 +11,7 @@ import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import ModalFormulirPegawai from "../../../components/modals/ModalFormulirPegawai";
 import ModalDelete from "../../../components/modals/ModalDelete";
 import Avatar from "../../../components/ui/Avatar";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import ButtonDeleteTable from "../../../components/ui/button/ButtonDeleteTable";
 import ButtonUpdateTable from "../../../components/ui/button/ButtonUpdateTable";
 import ModalAlert from "../../../components/modals/ModalAlert";
@@ -220,6 +220,7 @@ const Pegawai = () => {
                 <th>Aksi</th>
               </tr>
             </thead>
+
             <tbody>
               {isLoadingPegawai ? (
                 Array.from({ length: 4 }).map((_, index) => (
@@ -230,84 +231,100 @@ const Pegawai = () => {
                   </tr>
                 ))
               ) : isExistDataPegawai ? (
-                dataPegawai?.data?.data.map((pegawai, _) => (
-                  <tr
-                    key={pegawai.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out text-[0.7rem] text-base-content",
+                dataPegawai?.data?.data.map((pegawai, index) => (
+                  <Fragment key={pegawai.id}>
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="text-[0.7rem] h-12 bg-base-200 text-base-content/60">
+                        <th>Pilih</th>
+                        <th>Nama Pegawai</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Aktif</th>
+                        <th>Aksi</th>
+                      </tr>
                     )}
-                  >
-                    <th>
-                      <label>
-                        <input
-                          type="checkbox"
-                          className="checkbox"
-                          // checked={choosePegawai.some(
-                          //   (item) => item.id === pegawai.id,
-                          // )}
-                          onChange={() => {
-                            handleSetChoosePegawai({
-                              id: pegawai.id,
-                              nama: pegawai.nama,
-                            });
-                          }}
-                        />
-                      </label>
-                    </th>
-                    {/* nama pegawai */}
-                    <td className="font-semibold">{pegawai.nama}</td>
-                    {/* Username */}
-                    <td>{pegawai.username}</td>
-                    {/* role */}
-                    <td>
-                      <div className="flex flex-row justify-center w-14 items-center bg-blue-50 border border-blue-500 dark:bg-blue-500 rounded-full">
-                        <p className="text-[0.7rem] py-1 font-medium text-blue-500">
-                          {pegawai.role.toLowerCase()}
-                        </p>
-                      </div>
-                    </td>
 
-                    {/* update is active */}
-                    <td>
-                      {isPendingUpdateIsActive &&
-                      variablesUpdateIsActive?.id == pegawai.id ? (
-                        <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
-                          <div className="loading loading-xs" />
-                        </div>
-                      ) : (
-                        <input
-                          type="checkbox"
-                          checked={pegawai.isActive}
-                          className="toggle toggle-success toggle-sm"
-                          onChange={() =>
-                            handelUpdateIsActive({
-                              id: pegawai.id,
-                              status: !pegawai.isActive,
-                            })
-                          }
-                        />
+                    <tr
+                      className={cn(
+                        "transition-all duration-75 ease-in-out text-[0.7rem] text-base-content",
                       )}
-                    </td>
-                    <td>
-                      <div className="flex flex-row justify-start items-center gap-1.5">
-                        {/* update */}
-                        <ButtonUpdateTable
-                          handleShowModalFormulir={() =>
-                            handleShowModalFormulirPegawai(pegawai.id)
-                          }
-                        />
+                    >
+                      <th>
+                        <label>
+                          <input
+                            type="checkbox"
+                            className="checkbox"
+                            // checked={choosePegawai.some(
+                            //   (item) => item.id === pegawai.id,
+                            // )}
+                            onChange={() => {
+                              handleSetChoosePegawai({
+                                id: pegawai.id,
+                                nama: pegawai.nama,
+                              });
+                            }}
+                          />
+                        </label>
+                      </th>
 
-                        {/* hapus */}
-                        <ButtonDeleteTable
-                          handleShowModalDelete={() =>
-                            handleShowModalDelete(pegawai.id, {
-                              nama: pegawai.nama,
-                            })
-                          }
-                        />
-                      </div>
-                    </td>
-                  </tr>
+                      {/* nama pegawai */}
+                      <td className="font-semibold">{pegawai.nama}</td>
+
+                      {/* Username */}
+                      <td>{pegawai.username}</td>
+
+                      {/* role */}
+                      <td>
+                        <div className="flex flex-row justify-center w-14 items-center bg-blue-50 border border-blue-500 dark:bg-blue-500 rounded-full">
+                          <p className="text-[0.7rem] py-1 font-medium text-blue-500">
+                            {pegawai.role.toLowerCase()}
+                          </p>
+                        </div>
+                      </td>
+
+                      {/* update is active */}
+                      <td>
+                        {isPendingUpdateIsActive &&
+                        variablesUpdateIsActive?.id == pegawai.id ? (
+                          <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
+                            <div className="loading loading-xs" />
+                          </div>
+                        ) : (
+                          <input
+                            type="checkbox"
+                            checked={pegawai.isActive}
+                            className="toggle toggle-success toggle-sm"
+                            onChange={() =>
+                              handelUpdateIsActive({
+                                id: pegawai.id,
+                                status: !pegawai.isActive,
+                              })
+                            }
+                          />
+                        )}
+                      </td>
+
+                      <td>
+                        <div className="flex flex-row justify-start items-center gap-1.5">
+                          {/* update */}
+                          <ButtonUpdateTable
+                            handleShowModalFormulir={() =>
+                              handleShowModalFormulirPegawai(pegawai.id)
+                            }
+                          />
+
+                          {/* hapus */}
+                          <ButtonDeleteTable
+                            handleShowModalDelete={() =>
+                              handleShowModalDelete(pegawai.id, {
+                                nama: pegawai.nama,
+                              })
+                            }
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>
@@ -322,6 +339,7 @@ const Pegawai = () => {
                 </tr>
               )}
             </tbody>
+
             {/* foot */}
             <tfoot>
               <tr>
@@ -370,6 +388,8 @@ const Pegawai = () => {
           setPage={handlePage}
           setLimit={handleLimit}
           emptyData={!isExistDataPegawai}
+          limit={dataPegawai?.data?.meta?.limit}
+          totalData={dataPegawai?.data?.meta?.totalData}
         />
       </div>
 

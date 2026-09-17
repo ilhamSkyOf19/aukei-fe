@@ -31,6 +31,8 @@ const useFormulirTambahBarangKeluar = (params: {
 
   const inputSearchRef = useRef<InputSearchRef>(null);
 
+  const formInputRef = useRef<HTMLInputElement | null>(null);
+
   // state search
   const [search, setSearch] = useState("");
 
@@ -48,7 +50,10 @@ const useFormulirTambahBarangKeluar = (params: {
 
   // params
   const { id } = useParams<{ id: string }>();
+
   const validatedId = parseId(id);
+
+  console.log(validatedId);
 
   // produk choose query
   const { dataProdukForChoose, isLoadingProdukForChoose } =
@@ -74,8 +79,6 @@ const useFormulirTambahBarangKeluar = (params: {
   } = useForm<CreateBarangKeluarDetailType>({
     resolver: zodResolver(BarangKeluarDetailValidation.CREATE),
   });
-
-  console.log(errors);
 
   // jumlah stok controller
   const jumlahStokController = useController({
@@ -114,11 +117,17 @@ const useFormulirTambahBarangKeluar = (params: {
       queryClient.invalidateQueries({
         queryKey: ["barang-keluar-detail", validatedId],
       });
+
+      // back focus
+      formInputRef?.current?.focus();
     },
 
     onError: (err) => {
       if (axios.isAxiosError<ErrorResponse>(err)) {
-        if (err.response?.data?.meta?.statusCode === 409) {
+        if (
+          err.response?.data?.meta?.statusCode === 409 ||
+          err.response?.data?.meta?.customField?.includes("duplicate_produk")
+        ) {
           handleSetAlert("produk_choose_exist_in_data");
         }
 
@@ -180,6 +189,7 @@ const useFormulirTambahBarangKeluar = (params: {
     setProdukChoose(null);
 
     reset({
+      barangKeluarId: validatedId!,
       produkId: undefined,
     });
 
@@ -206,6 +216,7 @@ const useFormulirTambahBarangKeluar = (params: {
     modalFormulirTambahBarangKeluarRef,
     handleShowModalFormulirTambahBarangKeluar,
     handleCloseModalFormulirTambahBarangKeluar,
+    formInputRef,
   };
 };
 export default useFormulirTambahBarangKeluar;

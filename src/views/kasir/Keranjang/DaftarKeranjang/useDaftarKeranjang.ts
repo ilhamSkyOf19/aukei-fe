@@ -186,11 +186,11 @@ const useDaftarKeranjang = () => {
       navigate(
         {
           pathname: currentPathname,
-          search: `?pelangganId=${isChoosePelanggan}`,
+          search: `?keranjangId=${isChoosePelanggan}`,
         },
         {
           state: {
-            toast: "updated_keranjang",
+            toast: "deleted_produk_in_keranjang",
           },
         },
       );

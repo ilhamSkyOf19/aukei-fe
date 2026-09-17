@@ -363,6 +363,11 @@ export const TOAST_CONFIG_KERANJANG: Record<
     color: "error",
     message: "Keranjang berhasil dihapus",
   },
+  deleted_produk_in_keranjang: {
+    color: "error",
+    message: "Produk berhasil dihapus",
+  },
+
   simpan_keranjang: {
     color: "success",
     message: "Data berhasil di simpan ke keranjang",

@@ -14,6 +14,7 @@ interface PaginationAndLimitProps {
   customPositionPagination?: "end" | "start";
   limit?: number;
   isLoading?: boolean;
+  totalData?: number;
 }
 
 export default function PaginationAndLimit({
@@ -26,6 +27,7 @@ export default function PaginationAndLimit({
   customWindowSize,
   limit,
   isLoading,
+  totalData,
 }: PaginationAndLimitProps) {
   const windowSize = customWindowSize
     ? customWindowSize
@@ -42,10 +44,9 @@ export default function PaginationAndLimit({
   return (
     <div
       className={cn(
-        "w-full flex flex-col gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm md:gap-0 md:flex-row items-center mt-2.5 relative p-2 rounded-2xl md:rounded-xl shrink-0",
-        totalPage! < 2 && setLimit && "h-15",
+        "w-full h-15 flex flex-col gap-4 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm md:gap-0 md:flex-row items-center mt-2.5 relative p-2 rounded-2xl md:rounded-xl shrink-0",
         customPositionPagination === "end" ? "justify-end" : "justify-center",
-        (emptyData || totalPage === 1) && "hidden",
+        (emptyData || (totalPage === 1 && totalData! <= 8)) && "hidden",
       )}
     >
       {/* limit */}
@@ -67,6 +68,10 @@ export default function PaginationAndLimit({
               {
                 label: "24",
                 value: "24",
+              },
+              {
+                label: "50",
+                value: "50",
               },
             ]}
             placeholder="-"

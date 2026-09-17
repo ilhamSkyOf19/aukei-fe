@@ -36,7 +36,7 @@ import ModalAlert from "../../../components/modals/ModalAlert";
 import CardProdukTransaksi from "../../../components/ui/cards/CardProdukTransaksi";
 import DataEmpty from "../../../components/messages/DataEmpty";
 import CardProdukRetur from "../../../components/ui/cards/CardProdukRetur";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
 import ModalDelete from "../../../components/modals/ModalDelete";
 
@@ -252,8 +252,9 @@ const ReturBarangDetail = () => {
                     <th>Subtotal</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  {/* row 1 */}
+                  {/* row */}
                   {isLoadingReturBarang ? (
                     Array.from({ length: 4 }, (_, i) => i).map((item) => (
                       <tr key={item} className="h-18">
@@ -266,13 +267,25 @@ const ReturBarangDetail = () => {
                     dataReturBarang?.data?.transaction.details.length > 0 ? (
                     <>
                       {dataReturBarang?.data?.transaction.details.map(
-                        (item, index) => {
-                          return (
-                            <tr
-                              key={item.id}
-                              className="h-18 text-base-content"
-                            >
+                        (item, index) => (
+                          <Fragment key={item.id}>
+                            {/* HEADER SETIAP 25 DATA */}
+                            {index > 0 && index % 25 === 0 && (
+                              <tr className="text-[0.625rem] bg-base-content/5 h-10 text-base-content/60">
+                                <th>No</th>
+                                <th>Gambar</th>
+                                <th>Nama Produk</th>
+                                <th>Harga (Rp)</th>
+                                <th>Diskon (Rp)</th>
+                                <th>Qty. Pesan</th>
+                                <th>Qty. Retur</th>
+                                <th>Subtotal</th>
+                              </tr>
+                            )}
+
+                            <tr className="h-18 text-base-content">
                               <th className="px-3">{index + 1}</th>
+
                               <td>
                                 <div className="avatar">
                                   <div className="mask mask-squircle h-10 w-10">
@@ -283,6 +296,7 @@ const ReturBarangDetail = () => {
                                   </div>
                                 </div>
                               </td>
+
                               <td>
                                 <div className="flex flex-col justify-start items-start gap-px">
                                   <p className="xl:text-[0.7rem] text-base-content font-semibold">
@@ -293,9 +307,9 @@ const ReturBarangDetail = () => {
                                   </span>
                                 </div>
                               </td>
+
                               <td>
                                 <span className="xl:text-[0.7rem] text-base-content">
-                                  {/* harga jual */}
                                   {formatRupiah(item.hargaJual)}
                                 </span>
                               </td>
@@ -305,18 +319,19 @@ const ReturBarangDetail = () => {
                                   {formatRupiah(item.diskon)}
                                 </span>
                               </td>
+
                               <td>
                                 <span className="xl:text-[0.7rem] text-base-content">
-                                  {/* qty */}
                                   {formatNumber(item.quantity)} Pcs
                                 </span>
                               </td>
+
                               <td>
                                 <span className="xl:text-[0.7rem] text-base-content">
-                                  {/* qty */}
                                   {formatNumber(item.totalRetur)} Pcs
                                 </span>
                               </td>
+
                               <td>
                                 <span className="font-medium h-full flex flex-row justify-start items-start xl:text-[0.7rem] text-base-content">
                                   {formatRupiah(
@@ -326,8 +341,8 @@ const ReturBarangDetail = () => {
                                 </span>
                               </td>
                             </tr>
-                          );
-                        },
+                          </Fragment>
+                        ),
                       )}
                     </>
                   ) : (

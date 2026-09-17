@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { Fragment, type FC } from "react";
 import { cn } from "../../../../utils/cn";
 import {
   formatNumber,
@@ -171,6 +171,7 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
               <th>Status</th>
             </tr>
           </thead>
+
           <tbody>
             {isLoading ? (
               Array.from({ length: 4 }).map((_, index) => (
@@ -181,97 +182,117 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
                 </tr>
               ))
             ) : isExistDataProduk ? (
-              dataProduk?.data?.data?.map((produk, _) => (
-                <tr
-                  key={produk.id}
-                  className={cn(
-                    "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+              dataProduk?.data?.data?.map((produk, index) => (
+                <Fragment key={produk.id}>
+                  {index > 0 && index % 25 === 0 && (
+                    <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                      <th>Foto</th>
+                      <th>Kode</th>
+                      <th>Nama</th>
+                      <th>Kategori</th>
+                      <th>Stok Tersedia</th>
+                      <th>Stok Minimum</th>
+                      <th>Terakhir Restock</th>
+                      <th>Pergerakan</th>
+                      <th>Status</th>
+                    </tr>
                   )}
-                >
-                  {/* foto */}
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
-                          <img
-                            src={produk.img}
-                            alt="Foto Produk"
-                            loading="lazy"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  {/* kode */}
-                  <td className="font-medium text-info">{produk.kode}</td>
-                  {/* nama */}
-                  <td>{produk.nama}</td>
-                  {/* kategori */}
-                  <td>{produk.kategori.nama}</td>
-                  {/* stok */}
-                  <td
+
+                  <tr
                     className={cn(
-                      "font-medium",
-                      generateColorForStok(produk.stok, produk.stokMinimum),
+                      "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                     )}
                   >
-                    {formatNumber(produk.stok.toString())}
-                  </td>
+                    {/* foto */}
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
+                            <img
+                              src={produk.img}
+                              alt="Foto Produk"
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </td>
 
-                  {/* stok minimum */}
-                  <td>
-                    <span className="font-semibold ">
-                      {formatNumber(produk.stokMinimum)}
-                    </span>
-                  </td>
+                    {/* kode */}
+                    <td className="font-medium text-info">{produk.kode}</td>
 
-                  {/* terkhir restock */}
-                  <td>
-                    <span>
-                      {produk.restockTerakhir
-                        ? formatTanggalPanjang(produk.restockTerakhir)
-                        : "-"}
-                    </span>
-                  </td>
+                    {/* nama */}
+                    <td>{produk.nama}</td>
 
-                  {/* penjualan */}
-                  <td>
-                    {produk.statusPergerakan !== null ? (
-                      <span
-                        className={cn(
-                          "text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full capitalize",
-                          produk.statusPergerakan === STATUS_PERGERAKAN.CEPAT &&
-                            "bg-emerald-500",
-                          produk.statusPergerakan ===
-                            STATUS_PERGERAKAN.LAMBAT && "bg-amber-500",
-                          produk.statusPergerakan ===
-                            STATUS_PERGERAKAN.NORMAL && "bg-blue-500",
-                        )}
-                      >
-                        {produk?.statusPergerakan?.toLowerCase()}
-                      </span>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
+                    {/* kategori */}
+                    <td>{produk.kategori.nama}</td>
 
-                  <td>
-                    {produk?.stok > produk.stokMinimum ? (
-                      <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-emerald-500 ">
-                        Cukup
+                    {/* stok */}
+                    <td
+                      className={cn(
+                        "font-medium",
+                        generateColorForStok(produk.stok, produk.stokMinimum),
+                      )}
+                    >
+                      {formatNumber(produk.stok.toString())}
+                    </td>
+
+                    {/* stok minimum */}
+                    <td>
+                      <span className="font-semibold">
+                        {formatNumber(produk.stokMinimum)}
                       </span>
-                    ) : produk?.stok < produk.stokMinimum &&
-                      produk?.stok !== 0 ? (
-                      <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-amber-500 ">
-                        Menipis
+                    </td>
+
+                    {/* terakhir restock */}
+                    <td>
+                      <span>
+                        {produk.restockTerakhir
+                          ? formatTanggalPanjang(produk.restockTerakhir)
+                          : "-"}
                       </span>
-                    ) : (
-                      <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-rose-500 ">
-                        Habis
-                      </span>
-                    )}
-                  </td>
-                </tr>
+                    </td>
+
+                    {/* penjualan */}
+                    <td>
+                      {produk.statusPergerakan !== null ? (
+                        <span
+                          className={cn(
+                            "text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full capitalize",
+                            produk.statusPergerakan ===
+                              STATUS_PERGERAKAN.CEPAT && "bg-emerald-500",
+                            produk.statusPergerakan ===
+                              STATUS_PERGERAKAN.LAMBAT && "bg-amber-500",
+                            produk.statusPergerakan ===
+                              STATUS_PERGERAKAN.NORMAL && "bg-blue-500",
+                          )}
+                        >
+                          {produk?.statusPergerakan?.toLowerCase()}
+                        </span>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    {/* status */}
+                    <td>
+                      {produk?.stok > produk.stokMinimum ? (
+                        <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-emerald-500">
+                          Cukup
+                        </span>
+                      ) : produk?.stok < produk.stokMinimum &&
+                        produk?.stok !== 0 ? (
+                        <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-amber-500">
+                          Menipis
+                        </span>
+                      ) : (
+                        <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-rose-500">
+                          Habis
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                </Fragment>
               ))
             ) : (
               <tr>
@@ -303,6 +324,7 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
         limit={dataProduk?.data?.meta?.limit ?? 8}
         isLoading={isLoading}
         emptyData={!isExistDataProduk}
+        totalData={dataProduk?.data?.meta?.totalData}
       />
     </div>
   );

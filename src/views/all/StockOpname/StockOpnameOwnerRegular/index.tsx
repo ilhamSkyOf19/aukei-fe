@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import type { ResponseStockOpnameType } from "../../../../models/stockOpname.model";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
 import StatusStockOpname from "../../../../components/ui/StatusStockOpname";
@@ -76,48 +76,61 @@ const StockOpnameRegular: FC<Props> = ({
               ))
             ) : isExistData ? (
               data?.map((stockOpname, index) => (
-                <tr
-                  key={stockOpname.id}
-                  className="transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content"
-                >
-                  {/* NOMOR */}
-                  <td>{index + 1}</td>
+                <Fragment key={stockOpname.id}>
+                  {/* HEADER SETIAP 25 DATA */}
+                  {index > 0 && index % 25 === 0 && (
+                    <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                      <th>No</th>
+                      <th>Kode Referensi</th>
+                      <th>Tanggal Opname</th>
+                      <th>Keterangan</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
+                    </tr>
+                  )}
 
-                  {/* KODE REFERENSI */}
-                  <td className="font-medium text-info">
-                    {stockOpname.kodeReferensi}
-                  </td>
+                  <tr className="transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content">
+                    {/* NOMOR */}
+                    <td>{index + 1}</td>
 
-                  {/* TANGGAL OPNAME */}
-                  <td>{formatTanggalLengkap(stockOpname.tanggalOpname)} WIB</td>
+                    {/* KODE REFERENSI */}
+                    <td className="font-medium text-info">
+                      {stockOpname.kodeReferensi}
+                    </td>
 
-                  {/* KETERANGAN */}
-                  <td>
-                    {stockOpname.keterangan ? (
-                      <span>{stockOpname.keterangan}</span>
-                    ) : (
-                      <span className="italic text-base-content/50">
-                        Tidak ada keterangan
-                      </span>
-                    )}
-                  </td>
+                    {/* TANGGAL OPNAME */}
+                    <td>
+                      {formatTanggalLengkap(stockOpname.tanggalOpname)} WIB
+                    </td>
 
-                  {/* STATUS */}
-                  <td>
-                    <StatusStockOpname status={stockOpname.status} />
-                  </td>
+                    {/* KETERANGAN */}
+                    <td>
+                      {stockOpname.keterangan ? (
+                        <span>{stockOpname.keterangan}</span>
+                      ) : (
+                        <span className="italic text-base-content/50">
+                          Tidak ada keterangan
+                        </span>
+                      )}
+                    </td>
 
-                  {/* AKSI */}
-                  <td>
-                    <div className="flex flex-row justify-start items-center gap-2">
-                      <ButtonDetailTable
-                        handleRedirect={() => {
-                          handleRedirectDetail(stockOpname.id);
-                        }}
-                      />
-                    </div>
-                  </td>
-                </tr>
+                    {/* STATUS */}
+                    <td>
+                      <StatusStockOpname status={stockOpname.status} />
+                    </td>
+
+                    {/* AKSI */}
+                    <td>
+                      <div className="flex flex-row justify-start items-center gap-2">
+                        <ButtonDetailTable
+                          handleRedirect={() => {
+                            handleRedirectDetail(stockOpname.id);
+                          }}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </Fragment>
               ))
             ) : (
               <tr>

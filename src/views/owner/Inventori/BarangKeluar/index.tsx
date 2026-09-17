@@ -26,7 +26,7 @@ import useBarangKeluar from "./useBarangKeluar";
 import JenisKeluar from "../../../../components/ui/JenisKeluar";
 import FormulirBarangKeluar from "../../../../components/forms/FormulirBarangKeluar";
 import RangeDate from "../../../../components/filters/RangeDate";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import { formatNumber } from "../../../../helpers/helpers";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
@@ -337,94 +337,119 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
                   </tr>
                 ))
               ) : isExistDataBarangKeluar ? (
-                dataBarangKeluar?.data?.data.map((barang, _) => (
-                  <tr
-                    key={barang.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+                dataBarangKeluar?.data?.data.map((barang, index) => (
+                  <Fragment key={barang.id}>
+                    {/* Header setiap 25 data */}
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                        <th>Pilih</th>
+                        <th>Kode Referensi</th>
+                        <th>Tanggal Keluar</th>
+                        <th>Keterangan</th>
+                        <th>Jumlah</th>
+                        <th>Jenis Keluar</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                      </tr>
                     )}
-                  >
-                    <th>
-                      <label>
-                        <input
-                          type="checkbox"
-                          className="checkbox"
-                          disabled={
-                            barang.status === STATUS_INVENTORI_TYPE.POSTED ||
-                            barang.status === STATUS_INVENTORI_TYPE.PENDING
-                          }
-                          checked={chooseBarangKeluar.some(
-                            (item) => item.id === barang.id,
-                          )}
-                          onChange={() => {
-                            handleSetChooseBarangKeluar({
-                              id: barang.id,
-                              kodeReferensi: barang.kodeReferensi,
-                            });
-                          }}
-                        />
-                      </label>
-                    </th>
-                    {/* kode */}
-                    <td className="font-medium text-info">
-                      {barang.kodeReferensi}
-                    </td>
-                    {/* tanggal */}
-                    <td>{formatTanggalLengkap(barang.tanggalKeluar)} WIB</td>
-                    {/* keterangan */}
-                    <td>
-                      {barang.keterangan ? (
-                        <span>{barang.keterangan}</span>
-                      ) : (
-                        <span className="italic text-base-content/50">
-                          Tidak ada keterangan
-                        </span>
+
+                    <tr
+                      className={cn(
+                        "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                       )}
-                    </td>
-                    {/* jumlah */}
-                    <td>{barang.countDetailBarangKeluar}</td>
-                    {/* jumlah barang masuk */}
-                    <td>
-                      <JenisKeluar jenisKeluar={barang.jenisKeluar.nama} />
-                    </td>
-                    {/* status */}
-                    <td>
-                      <StatusInventori status={barang.status} />
-                    </td>
+                    >
+                      {/* pilih */}
+                      <th>
+                        <label>
+                          <input
+                            type="checkbox"
+                            className="checkbox"
+                            disabled={
+                              barang.status === STATUS_INVENTORI_TYPE.POSTED ||
+                              barang.status === STATUS_INVENTORI_TYPE.PENDING
+                            }
+                            checked={chooseBarangKeluar.some(
+                              (item) => item.id === barang.id,
+                            )}
+                            onChange={() => {
+                              handleSetChooseBarangKeluar({
+                                id: barang.id,
+                                kodeReferensi: barang.kodeReferensi,
+                              });
+                            }}
+                          />
+                        </label>
+                      </th>
 
-                    {/* detail */}
-                    <td>
-                      <div className="flex flex-row justify-start items-center gap-2">
-                        <ButtonDetailTable
-                          handleRedirect={() => handleRedirectDetail(barang.id)}
-                        />
+                      {/* kode */}
+                      <td className="font-medium text-info">
+                        {barang.kodeReferensi}
+                      </td>
 
-                        {/* button delete */}
-                        <ButtonDeleteTable
-                          handleShowModalDelete={() =>
-                            handleShowModalDelete(barang.id, {
-                              kodeReferensi: barang.kodeReferensi,
-                            })
-                          }
-                          customDataTip={
-                            barang.status === STATUS_INVENTORI_TYPE.DRAFT ||
-                            (barang.status !== STATUS_INVENTORI_TYPE.PENDING &&
-                              barang.status !== STATUS_INVENTORI_TYPE.POSTED)
-                              ? "hapus"
-                              : ""
-                          }
-                          disabled={
-                            !(
+                      {/* tanggal */}
+                      <td>{formatTanggalLengkap(barang.tanggalKeluar)} WIB</td>
+
+                      {/* keterangan */}
+                      <td>
+                        {barang.keterangan ? (
+                          <span>{barang.keterangan}</span>
+                        ) : (
+                          <span className="italic text-base-content/50">
+                            Tidak ada keterangan
+                          </span>
+                        )}
+                      </td>
+
+                      {/* jumlah */}
+                      <td>{barang.countDetailBarangKeluar}</td>
+
+                      {/* jenis keluar */}
+                      <td>
+                        <JenisKeluar jenisKeluar={barang.jenisKeluar.nama} />
+                      </td>
+
+                      {/* status */}
+                      <td>
+                        <StatusInventori status={barang.status} />
+                      </td>
+
+                      {/* aksi */}
+                      <td>
+                        <div className="flex flex-row justify-start items-center gap-2">
+                          <ButtonDetailTable
+                            handleRedirect={() =>
+                              handleRedirectDetail(barang.id)
+                            }
+                          />
+
+                          <ButtonDeleteTable
+                            handleShowModalDelete={() =>
+                              handleShowModalDelete(barang.id, {
+                                kodeReferensi: barang.kodeReferensi,
+                              })
+                            }
+                            customDataTip={
                               barang.status === STATUS_INVENTORI_TYPE.DRAFT ||
                               (barang.status !==
                                 STATUS_INVENTORI_TYPE.PENDING &&
                                 barang.status !== STATUS_INVENTORI_TYPE.POSTED)
-                            )
-                          }
-                        />
-                      </div>
-                    </td>
-                  </tr>
+                                ? "hapus"
+                                : ""
+                            }
+                            disabled={
+                              !(
+                                barang.status === STATUS_INVENTORI_TYPE.DRAFT ||
+                                (barang.status !==
+                                  STATUS_INVENTORI_TYPE.PENDING &&
+                                  barang.status !==
+                                    STATUS_INVENTORI_TYPE.POSTED)
+                              )
+                            }
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>
@@ -484,6 +509,8 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
           setPage={handlePage}
           setLimit={handleLimit}
           emptyData={!isExistDataBarangKeluar}
+          limit={dataBarangKeluar?.data?.meta?.limit}
+          totalData={dataBarangKeluar?.data?.meta?.totalData}
         />
       </div>
 

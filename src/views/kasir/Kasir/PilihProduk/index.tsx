@@ -74,7 +74,6 @@ const PilihProduk: FC = () => {
     step,
 
     handleRedirectBooking,
-    fromBooking,
 
     isLoadingTransaksi,
     isPendingRemoveDetail,
@@ -105,6 +104,8 @@ const PilihProduk: FC = () => {
     handleSimpanPerubahanTransactionComplete,
     isPendingSimpanPerubahanTransactionComplete,
     transactionIdFromTransactionComplate,
+
+    isPendingUpdateMetodePembayaran,
   } = usePilihProduk();
 
   return (
@@ -125,7 +126,8 @@ const PilihProduk: FC = () => {
         isRefetchingTransaksi ||
         isPendingRemoveAll ||
         isPendingSimpanPerubahanTransactionComplete ||
-        isPendingCancelUpdateTransactionComplete) && (
+        isPendingCancelUpdateTransactionComplete ||
+        isPendingUpdateMetodePembayaran) && (
         <div className="absolute w-full h-full flex flex-row justify-center items-center z-20">
           <div className="w-full h-full bg-base-100 opacity-70 absolute" />
           <LoadingFetch />
@@ -388,21 +390,16 @@ const PilihProduk: FC = () => {
         </div>
 
         <div className="w-full flex flex-row justify-start items-end p-2.5 md:p-0 h-16">
+          {/* ==================== UPDATE KERANJANG ==================== */}
           {isUpdateKeranjang && (
-            <div className="w-full row-span-1 flex flex-row justify-between items-center gap-2.5 bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm rounded-xl xl:p-1 h-12">
-              {/* button batalkan */}
+            <div className="w-full p-1.5">
               <button
                 type="button"
-                className="flex flex-row justify-center items-center gap-2 sm:gap-4 h-full flex-1 rounded-xl bg-custom-primary hover-overlay text-custom-secondary"
-                onClick={() => {
-                  if (isUpdateKeranjang) {
-                    return handleBackKeranjang();
-                  } else {
-                    return handleCancelUpdateTransactionComplete();
-                  }
-                }}
+                className="w-full flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-9.5 rounded-xl border border-custom-primary hover-overlay disabled:opacity-50 bg-custom-primary"
+                onClick={handleBackKeranjang}
               >
                 <ArrowLeft className="size-4 lg:size-4 xl:size-5 text-base-content" />
+
                 <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
                   Kembali
                 </span>
@@ -410,57 +407,91 @@ const PilihProduk: FC = () => {
             </div>
           )}
 
-          {(!isUpdateKeranjang || !isUpdateTransaksiComplate) && (
+          {/* ==================== UPDATE TRANSAKSI COMPLETE ==================== */}
+          {!isUpdateKeranjang && isUpdateTransaksiComplate && (
+            <div className="w-full gap-1.5 sm:gap-2.5 flex flex-row justify-between items-center xl:p-1 h-12">
+              {/* Batalkan */}
+              <button
+                type="button"
+                className="flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary hover-overlay flex-1"
+                onClick={handleCancelUpdateTransactionComplete}
+              >
+                <X className="size-4 xl:size-4 text-base-content" />
+
+                <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
+                  Batalkan
+                </span>
+              </button>
+
+              {/* Simpan */}
+              <button
+                type="button"
+                disabled={
+                  produkDetails.length === 0 ||
+                  !pelanggan ||
+                  produkDetails.some((detail) => detail.stokTersisa === 0)
+                }
+                className={cn(
+                  "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full border border-custom-primary flex-1 rounded-xl bg-custom-primary disabled:opacity-50",
+                  produkDetails.length > 0 && pelanggan && "hover-overlay",
+                )}
+                style={{
+                  cursor:
+                    produkDetails.length === 0 ||
+                    !pelanggan ||
+                    produkDetails.some((detail) => detail.stokTersisa === 0)
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+                onClick={() => {
+                  if (transactionIdFromTransactionComplate) {
+                    handleSimpanPerubahanTransactionComplete();
+                  }
+                }}
+              >
+                <Save className="size-4 text-custom-secondary" />
+
+                <span className="text-custom-secondary text-[0.65rem] sm:text-[0.7rem] font-semibold">
+                  Simpan
+                </span>
+              </button>
+            </div>
+          )}
+
+          {/* ==================== TRANSAKSI BIASA ==================== */}
+          {!isUpdateKeranjang && !isUpdateTransaksiComplate && (
             <div
-              className={cn(
-                // MOBILE: gap sedikit lebih kecil di layar sempit.
-                "w-full gap-1.5 sm:gap-2.5 row-span-1 flex flex-row justify-between items-center xl:p-1 h-12 tooltip",
-              )}
+              className="w-full gap-1.5 sm:gap-2.5 flex flex-row justify-between items-center xl:p-1 h-12 tooltip"
               data-tip={
                 !pelanggan || produkDetails.length === 0
                   ? "Silahkan lengkapi data pelanggan dan produk terlebih dahulu"
                   : ""
               }
             >
-              {(isNextTransaction || isUpdateTransaksiComplate) &&
-                !isUpdateKeranjang && (
-                  <button
-                    type="button"
-                    disabled={
-                      !isUpdateTransaksiComplate &&
-                      (produkDetails.length === 0 || !pelanggan)
-                    }
-                    className={cn(
-                      "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary hover-overlay flex-1 disabled:opacity-50",
-                    )}
-                    onClick={() => {
-                      if (isNextTransaction) {
-                        handleBackKeranjang();
-                      } else if (isUpdateTransaksiComplate) {
-                        handleCancelUpdateTransactionComplete();
-                      }
-                    }}
-                  >
-                    {isUpdateTransaksiComplate ? (
-                      <X className="size-4 xl:size-4 text-base-content" />
-                    ) : (
-                      <ArrowLeft className="size-4 xl:size-4 text-base-content" />
-                    )}
-                    <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
-                      {isUpdateTransaksiComplate ? "Batalkan" : "Kembali"}
-                    </span>
-                  </button>
-                )}
+              {/* Kembali */}
+              {isNextTransaction && (
+                <button
+                  type="button"
+                  disabled={produkDetails.length === 0 || !pelanggan}
+                  className="flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary hover-overlay flex-1 disabled:opacity-50"
+                  onClick={handleBackKeranjang}
+                >
+                  <ArrowLeft className="size-4 xl:size-4 text-base-content" />
 
-              {/* button chart */}
-              {!isNextTransaction && !isUpdateTransaksiComplate && (
+                  <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
+                    Kembali
+                  </span>
+                </button>
+              )}
+
+              {/* Keranjang */}
+              {!isNextTransaction && (
                 <button
                   type="button"
                   disabled={produkDetails.length === 0 || !pelanggan}
                   className={cn(
-                    "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
-                    fromBooking ? "w-12" : "flex-1",
-                    (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
+                    "flex-1 flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
+                    produkDetails.length > 0 && pelanggan && "hover-overlay",
                   )}
                   style={{
                     cursor:
@@ -468,128 +499,104 @@ const PilihProduk: FC = () => {
                         ? "not-allowed"
                         : "pointer",
                   }}
-                  onClick={() => {
-                    handleSimpanKeranjang();
-                  }}
+                  onClick={handleSimpanKeranjang}
                 >
                   {isPendingKeranjang ? (
                     <div className="loading lg:loading-xs xl:loading-sm text-base-content" />
                   ) : (
                     <>
                       <ShoppingCart className="size-4 xl:size-4 text-base-content" />
-                      {!fromBooking && (
-                        <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
-                          Keranjang
-                        </span>
-                      )}
+
+                      <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
+                        Keranjang
+                      </span>
                     </>
                   )}
                 </button>
               )}
 
-              {/* button booking */}
-              {!isUpdateTransaksiComplate &&
-                (!fromBooking ? (
-                  <button
-                    type="button"
-                    disabled={produkDetails.length === 0 || !pelanggan}
-                    className={cn(
-                      "flex-1 flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
-                      (produkDetails.length > 0 || !pelanggan) &&
-                        "hover-overlay",
-                    )}
-                    style={{
-                      cursor:
-                        produkDetails.length === 0 || !pelanggan
-                          ? "not-allowed"
-                          : "pointer",
-                    }}
-                    onClick={() => handleRedirectBooking()}
-                  >
-                    <CalendarClock className="size-4 xl:size-4 text-base-content" />
-                    <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
-                      Booking
-                    </span>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    disabled={
-                      produkDetails.length === 0 ||
-                      !pelanggan ||
-                      produkDetails.some((detail) => detail.stokTersisa === 0)
-                    }
-                    className={cn(
-                      "flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
-                      fromBooking ? "px-2.5" : "flex-1",
-                      (produkDetails.length > 0 || !pelanggan) &&
-                        "hover-overlay",
-                    )}
-                    onClick={() => handleStepsNext(true)}
-                  >
-                    <CreditCard className="size-4 xl:size-4 text-base-content" />
-                    <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
-                      Pembayaran
-                    </span>
-                  </button>
-                ))}
+              {/* Booking */}
+              <button
+                type="button"
+                disabled={
+                  produkDetails.length === 0 ||
+                  !pelanggan ||
+                  isPendingUpdateMetodePembayaran
+                }
+                className={cn(
+                  "flex-1 flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full rounded-xl border border-custom-primary disabled:opacity-50",
+                  produkDetails.length > 0 && pelanggan && "hover-overlay",
+                )}
+                style={{
+                  cursor:
+                    produkDetails.length === 0 || !pelanggan
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+                onClick={handleRedirectBooking}
+              >
+                <CalendarClock className="size-4 xl:size-4 text-base-content" />
 
-              {/* button transaksi */}
+                <span className="text-base-content text-[0.65rem] md:text-[0.7rem] font-semibold">
+                  Booking
+                </span>
+              </button>
+
+              {/* ==================== AREA PEMBAYARAN ==================== */}
               <div
                 className={cn(
                   "flex flex-row h-full justify-end items-center gap-1.5 sm:gap-2",
                   isUpdateTransaction ? "flex-2" : "flex-1",
                 )}
               >
+                {/* Batalkan Update Transaksi */}
                 {isUpdateTransaction && (
                   <button
                     type="button"
                     className="flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-full flex-1 rounded-xl bg-error hover-overlay"
-                    onClick={() => {
-                      handleBatalkanUpdateTransaction();
-                    }}
+                    onClick={handleBatalkanUpdateTransaction}
                   >
                     <X className="size-4 text-primary-white" />
+
                     <span className="text-primary-white text-[0.65rem] sm:text-[0.7rem] font-semibold">
                       Batalkan
                     </span>
                   </button>
                 )}
 
+                {/* Pembayaran */}
                 <button
                   type="button"
                   disabled={
-                    produkDetails?.length === 0 ||
+                    produkDetails.length === 0 ||
                     !pelanggan ||
                     produkDetails.some((detail) => detail.stokTersisa === 0)
                   }
                   className={cn(
                     "flex flex-row justify-center items-center h-full border border-custom-primary flex-1 rounded-xl bg-custom-primary disabled:opacity-50",
-                    (produkDetails.length > 0 || !pelanggan) && "hover-overlay",
+                    produkDetails.length > 0 && pelanggan && "hover-overlay",
                     isUpdateTransaction
                       ? "gap-1.5 sm:gap-2.5"
                       : "gap-2 sm:gap-4",
                   )}
-                  onClick={() => {
-                    if (
-                      isUpdateTransaksiComplate &&
-                      transactionIdFromTransactionComplate
-                    ) {
-                      return handleSimpanPerubahanTransactionComplete();
-                    } else {
-                      return handleStepsNext();
-                    }
+                  style={{
+                    cursor:
+                      produkDetails.length === 0 ||
+                      !pelanggan ||
+                      produkDetails.some((detail) => detail.stokTersisa === 0)
+                        ? "not-allowed"
+                        : "pointer",
                   }}
+                  onClick={() => handleStepsNext()}
                 >
-                  {isUpdateTransaction || isUpdateTransaksiComplate ? (
+                  {isUpdateTransaction ? (
                     <Save className="size-4 text-custom-secondary" />
                   ) : (
                     <CreditCard className="size-4 text-custom-secondary" />
                   )}
+
                   <span className="text-custom-secondary text-[0.65rem] sm:text-[0.7rem] font-semibold">
-                    {isUpdateTransaction || isUpdateTransaksiComplate
-                      ? "Simpan"
-                      : "Pembayaran"}
+                    {isUpdateTransaction ? "Simpan" : "Pembayaran"}
                   </span>
                 </button>
               </div>

@@ -277,6 +277,8 @@ const StockOpname: FC<Props> = ({ fromPengajuan }) => {
             !dataStockOpname?.data?.data?.length &&
             !dataPengajuanStockOpname?.data?.data?.length
           }
+          limit={dataStockOpname?.data?.meta?.limit}
+          totalData={dataStockOpname?.data?.meta?.totalData}
         />
       </div>
 

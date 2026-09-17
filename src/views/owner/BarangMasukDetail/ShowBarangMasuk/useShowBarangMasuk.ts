@@ -53,6 +53,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
       hargaModalRataRata: number;
     };
     jumlahBox: number;
+    jumlahStok: number;
     hargaBeli: number;
   }>();
 

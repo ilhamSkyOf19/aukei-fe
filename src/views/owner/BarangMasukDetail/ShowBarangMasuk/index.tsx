@@ -149,6 +149,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                                 jumlahBox: item.jumlahBox,
                                 produk: item.produk,
                                 hargaBeli: item.produk.hargaBeli,
+                                jumlahStok: item.jumlahStok,
                               })
                             }
                           />
@@ -188,6 +189,15 @@ const ShowDataBarangMasuk: FC<Props> = ({
                       {formatNumberK(item.produk.isiPerBox)}
                     </span>
                   </div>
+                  {/* jumlah item */}
+                  <div className="flex-1 flex flex-col justify-start items-start gap-0.5 border-r border-base-content/10">
+                    <span className="text-[0.625rem] font-medium text-base-content/50">
+                      Ttl. Item
+                    </span>
+                    <span className="text-xs font-semibold text-base-content">
+                      {formatNumberK(item.jumlahStok)}
+                    </span>
+                  </div>
                   {/* total */}
                   <div className="flex-1 flex flex-col justify-start items-start gap-0.5">
                     <span className="text-[0.625rem] font-medium text-base-content/50">
@@ -195,9 +205,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                     </span>
                     <span className="text-xs font-semibold text-base-content">
                       {formatRupiahShort(
-                        item.produk.isiPerBox *
-                          item.jumlahBox *
-                          item.produk.hargaBeli,
+                        item.jumlahStok * item.produk.hargaBeli,
                       )}
                     </span>
                   </div>
@@ -462,6 +470,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
                                   produk: item.produk,
                                   jumlahBox: item.jumlahBox,
                                   hargaBeli: item.produk.hargaBeli,
+                                  jumlahStok: item.jumlahStok,
                                 })
                               }
                               customDataTip="ganti produk"
@@ -507,6 +516,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
 
       {/* modal Ubah produk */}
       <ModalUbahProdukMasuk
+        role={role}
         fromPengajuanBarang={fromPengajuanBarang}
         modalRef={modalUbahProdukRef}
         handleCloseModal={handleCloseModalUbahProduk}
@@ -516,6 +526,7 @@ const ShowDataBarangMasuk: FC<Props> = ({
           jumlahBox: dataUpdateBarangMasuk?.jumlahBox ?? 0,
           produk: dataUpdateBarangMasuk?.produk,
           hargaBeli: dataUpdateBarangMasuk?.hargaBeli ?? 0,
+          jumlahStok: dataUpdateBarangMasuk?.jumlahStok ?? 0,
         }}
       />
     </>

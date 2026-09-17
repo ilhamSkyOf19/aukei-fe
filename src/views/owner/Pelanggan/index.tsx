@@ -18,6 +18,7 @@ import ButtonDeleteTable from "../../../components/ui/button/ButtonDeleteTable";
 import ButtonDetailTable from "../../../components/ui/button/ButtonDetailTable";
 import CardPelanggan from "../../../components/ui/cards/CardPelanggan";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
+import { Fragment } from "react/jsx-runtime";
 
 const Pelanggan = () => {
   // call use
@@ -151,6 +152,7 @@ const Pelanggan = () => {
             {/* head */}
             <thead>
               <tr className="text-xs h-12 bg-base-200">
+                <th>No</th>
                 <th>Pilih</th>
                 <th>Nama Pelanggan</th>
                 <th>No Wa</th>
@@ -164,6 +166,7 @@ const Pelanggan = () => {
                 <th align="center">Aksi</th>
               </tr>
             </thead>
+
             <tbody>
               {isLoadingPelanggan ? (
                 Array.from({ length: 4 }).map((_, index) => (
@@ -174,185 +177,205 @@ const Pelanggan = () => {
                   </tr>
                 ))
               ) : isExistDataPelanggan ? (
-                dataPelanggan?.data?.data.map((pelanggan, _) => (
-                  <tr
-                    key={pelanggan.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out h-12",
+                dataPelanggan?.data?.data.map((pelanggan, index) => (
+                  <Fragment key={pelanggan.id}>
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="text-xs h-12 bg-base-200 text-base-content/60">
+                        <th>No</th>
+                        <th>Pilih</th>
+                        <th>Nama Pelanggan</th>
+                        <th>No Wa</th>
+                        <th>Label</th>
+                        <th>Total transaksi</th>
+                        <th>Kredit Selesai</th>
+                        <th>Kredit Berjalan</th>
+                        <th>Kredit Terlambat</th>
+                        <th>Booking</th>
+                        <th>Aktif</th>
+                        <th align="center">Aksi</th>
+                      </tr>
                     )}
-                  >
-                    <th>
-                      <label>
-                        <input
-                          disabled={(pelanggan?.totalTransaction ?? 0) > 0}
-                          type="checkbox"
-                          className="checkbox"
-                          checked={choosePelanggan.some(
-                            (item) => item.id === pelanggan.id,
-                          )}
-                          onChange={() => {
-                            (pelanggan?.totalTransaction ?? 0) <= 0 &&
-                              handleSetChoosePelanggan({
-                                id: pelanggan.id,
-                                nama: pelanggan.nama,
-                              });
-                          }}
-                        />
-                      </label>
-                    </th>
-                    {/* nama Pelanggan */}
-                    <td className="font-semibold text-base-content">
-                      {pelanggan.nama}
-                    </td>
-                    {/* no wa */}
-                    <td className="text-base-content">
-                      {/* icon */}
-                      <span className="font-semibold text-base-content">
-                        {pelanggan.noWa !== "-"
-                          ? formatNumberPhone(pelanggan.noWa)
-                          : "-"}
-                      </span>
-                    </td>
 
-                    <td>
-                      <span className="font-semibold text-base-content capitalize">
-                        {pelanggan.label}
-                      </span>
-                    </td>
-                    {/*  total transaksi */}
-                    <td className="text-base-content">
-                      <div className="flex flex-row justify-start items-center gap-6">
-                        {/* icon */}
-                        {pelanggan?.totalTransaction ? (
-                          <p className=" font-semibold text-base-content">
-                            {formatNumber(pelanggan.totalTransaction)}
-                          </p>
-                        ) : (
-                          <p className=" font-light italic text-base-content/50">
-                            Kosong
-                          </p>
-                        )}
-                      </div>
-                    </td>
-                    {/* kredit selesai */}
-                    <td className="text-base-content">
-                      <div className="flex flex-row justify-start items-center gap-6">
-                        {/* icon */}
-                        {pelanggan?.kredit?.selesai ? (
-                          <p className=" font-semibold text-base-content">
-                            {formatNumber(pelanggan.kredit.selesai)}
-                          </p>
-                        ) : (
-                          <p className=" font-light italic text-base-content/50">
-                            Kosong
-                          </p>
-                        )}
-                      </div>
-                    </td>
-                    {/* kredit berjalan */}
-                    <td className="text-base-content">
-                      <div className="flex flex-row justify-center items-center gap-6">
-                        {/* icon */}
-                        {pelanggan?.kredit?.berjalan ? (
-                          <p className=" font-semibold text-base-content">
-                            {formatNumber(pelanggan.kredit.berjalan)}
-                          </p>
-                        ) : (
-                          <p className=" font-light italic text-base-content/50">
-                            Kosong
-                          </p>
-                        )}
-                      </div>
-                    </td>
-                    {/* kredit terlambat */}
-                    <td className="text-base-content">
-                      <div className="flex flex-row justify-start items-center gap-6">
-                        {/* icon */}
-                        {pelanggan?.kredit?.terlambat ? (
-                          <p className=" font-semibold text-base-content">
-                            {formatNumber(pelanggan.kredit.terlambat)}
-                          </p>
-                        ) : (
-                          <p className=" font-light italic text-base-content/50">
-                            Kosong
-                          </p>
-                        )}
-                      </div>
-                    </td>
-                    {/* booking */}
-                    <td className="text-base-content">
-                      <div className="flex flex-row justify-start items-center gap-6">
-                        {/* icon */}
-                        {pelanggan?.booking ? (
-                          <p className=" font-semibold text-base-content">
-                            {formatNumber(pelanggan.booking)}
-                          </p>
-                        ) : (
-                          <p className=" font-light italic text-base-content/50">
-                            Kosong
-                          </p>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* aktif */}
-                    <td>
-                      {isPendingUpdateIsActive &&
-                      variablesUpdateIsActive?.id == pelanggan.id ? (
-                        <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
-                          <div className="loading loading-xs" />
-                        </div>
-                      ) : (
-                        <input
-                          type="checkbox"
-                          checked={pelanggan.isActive}
-                          className="toggle toggle-success toggle-sm"
-                          onChange={() =>
-                            handelUpdateIsActive({
-                              id: pelanggan.id,
-                              status: !pelanggan.isActive,
-                            })
-                          }
-                        />
+                    <tr
+                      className={cn(
+                        "transition-all duration-75 ease-in-out h-12",
                       )}
-                    </td>
+                    >
+                      <th>{index + 1}</th>
+                      <th>
+                        <label>
+                          <input
+                            disabled={(pelanggan?.totalTransaction ?? 0) > 0}
+                            type="checkbox"
+                            className="checkbox"
+                            checked={choosePelanggan.some(
+                              (item) => item.id === pelanggan.id,
+                            )}
+                            onChange={() => {
+                              (pelanggan?.totalTransaction ?? 0) <= 0 &&
+                                handleSetChoosePelanggan({
+                                  id: pelanggan.id,
+                                  nama: pelanggan.nama,
+                                });
+                            }}
+                          />
+                        </label>
+                      </th>
 
-                    <td>
-                      <div className="flex flex-row justify-start items-center gap-1.5">
-                        <ButtonDetailTable
-                          handleRedirect={() =>
-                            handleRedirectRiwayatTransaksiDetail(pelanggan.id)
-                          }
-                          customDataTip="lihat transaksi"
-                        />
+                      {/* nama Pelanggan */}
+                      <td className="font-semibold text-base-content">
+                        {pelanggan.nama}
+                      </td>
 
-                        {/* update */}
-                        <ButtonUpdateTable
-                          handleShowModalFormulir={() =>
-                            handleShowModalFormulirPelanggan(pelanggan.id)
-                          }
-                        />
+                      {/* no wa */}
+                      <td className="text-base-content">
+                        <span className="font-semibold text-base-content">
+                          {pelanggan.noWa !== "-"
+                            ? formatNumberPhone(pelanggan.noWa)
+                            : "-"}
+                        </span>
+                      </td>
 
-                        {/* hapus */}
-                        <ButtonDeleteTable
-                          handleShowModalDelete={() =>
-                            handleShowModalDelete(pelanggan.id, {
-                              nama: pelanggan.nama,
-                            })
-                          }
-                          customDataTip={
-                            (pelanggan?.totalTransaction ?? 0) <= 0
-                              ? "hapus"
-                              : ""
-                          }
-                          disabled={
-                            (pelanggan?.totalTransaction ?? 0) > 0 ||
-                            isPendingDelete
-                          }
-                        />
-                      </div>
-                    </td>
-                  </tr>
+                      <td>
+                        <span className="font-semibold text-base-content capitalize">
+                          {pelanggan.label}
+                        </span>
+                      </td>
+
+                      {/* total transaksi */}
+                      <td className="text-base-content">
+                        <div className="flex flex-row justify-start items-center gap-6">
+                          {pelanggan?.totalTransaction ? (
+                            <p className="font-semibold text-base-content">
+                              {formatNumber(pelanggan.totalTransaction)}
+                            </p>
+                          ) : (
+                            <p className="font-light italic text-base-content/50">
+                              Kosong
+                            </p>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* kredit selesai */}
+                      <td className="text-base-content">
+                        <div className="flex flex-row justify-start items-center gap-6">
+                          {pelanggan?.kredit?.selesai ? (
+                            <p className="font-semibold text-base-content">
+                              {formatNumber(pelanggan.kredit.selesai)}
+                            </p>
+                          ) : (
+                            <p className="font-light italic text-base-content/50">
+                              Kosong
+                            </p>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* kredit berjalan */}
+                      <td className="text-base-content">
+                        <div className="flex flex-row justify-center items-center gap-6">
+                          {pelanggan?.kredit?.berjalan ? (
+                            <p className="font-semibold text-base-content">
+                              {formatNumber(pelanggan.kredit.berjalan)}
+                            </p>
+                          ) : (
+                            <p className="font-light italic text-base-content/50">
+                              Kosong
+                            </p>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* kredit terlambat */}
+                      <td className="text-base-content">
+                        <div className="flex flex-row justify-start items-center gap-6">
+                          {pelanggan?.kredit?.terlambat ? (
+                            <p className="font-semibold text-base-content">
+                              {formatNumber(pelanggan.kredit.terlambat)}
+                            </p>
+                          ) : (
+                            <p className="font-light italic text-base-content/50">
+                              Kosong
+                            </p>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* booking */}
+                      <td className="text-base-content">
+                        <div className="flex flex-row justify-start items-center gap-6">
+                          {pelanggan?.booking ? (
+                            <p className="font-semibold text-base-content">
+                              {formatNumber(pelanggan.booking)}
+                            </p>
+                          ) : (
+                            <p className="font-light italic text-base-content/50">
+                              Kosong
+                            </p>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* aktif */}
+                      <td>
+                        {isPendingUpdateIsActive &&
+                        variablesUpdateIsActive?.id == pelanggan.id ? (
+                          <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
+                            <div className="loading loading-xs" />
+                          </div>
+                        ) : (
+                          <input
+                            type="checkbox"
+                            checked={pelanggan.isActive}
+                            className="toggle toggle-success toggle-sm"
+                            onChange={() =>
+                              handelUpdateIsActive({
+                                id: pelanggan.id,
+                                status: !pelanggan.isActive,
+                              })
+                            }
+                          />
+                        )}
+                      </td>
+
+                      <td>
+                        <div className="flex flex-row justify-start items-center gap-1.5">
+                          <ButtonDetailTable
+                            handleRedirect={() =>
+                              handleRedirectRiwayatTransaksiDetail(pelanggan.id)
+                            }
+                            customDataTip="lihat transaksi"
+                          />
+
+                          {/* update */}
+                          <ButtonUpdateTable
+                            handleShowModalFormulir={() =>
+                              handleShowModalFormulirPelanggan(pelanggan.id)
+                            }
+                          />
+
+                          {/* hapus */}
+                          <ButtonDeleteTable
+                            handleShowModalDelete={() =>
+                              handleShowModalDelete(pelanggan.id, {
+                                nama: pelanggan.nama,
+                              })
+                            }
+                            customDataTip={
+                              (pelanggan?.totalTransaction ?? 0) <= 0
+                                ? "hapus"
+                                : ""
+                            }
+                            disabled={
+                              (pelanggan?.totalTransaction ?? 0) > 0 ||
+                              isPendingDelete
+                            }
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>
@@ -367,6 +390,7 @@ const Pelanggan = () => {
                 </tr>
               )}
             </tbody>
+
             {/* foot */}
             <tfoot>
               <tr>
@@ -402,6 +426,7 @@ const Pelanggan = () => {
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
               </tr>
             </tfoot>
           </table>
@@ -421,6 +446,8 @@ const Pelanggan = () => {
           setPage={handlePage}
           setLimit={handleLimit}
           emptyData={!isExistDataPelanggan}
+          limit={dataPelanggan?.data?.meta?.limit}
+          totalData={dataPelanggan?.data?.meta?.totalData}
         />
       </div>
 

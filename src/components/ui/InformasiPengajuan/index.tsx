@@ -4,16 +4,19 @@ import { CalendarDays, History, UserRound } from "lucide-react";
 import { cn } from "../../../utils/cn";
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
 import SideBarRiwayatPengajuanStockOpname from "../../SideBarRiwayatPengajuanStockOpname";
+import SideBarRiwayatPengajuan from "../../SideBarRiwayatPengajuan";
 
 type Props = {
   isLoading?: boolean;
   author: Pick<IPenggunaInternalType, "id" | "nama" | "isActive" | "username">;
   tanggalDiajukan?: Date | null;
+  stockOpname?: boolean;
 };
 const InformasiPengajuan: FC<Props> = ({
   author,
   isLoading,
   tanggalDiajukan,
+  stockOpname,
 }) => {
   return (
     <div
@@ -140,7 +143,11 @@ const InformasiPengajuan: FC<Props> = ({
 
               {/* value */}
               <div className="flex flex-row justify-end items-center">
-                <SideBarRiwayatPengajuanStockOpname />
+                {stockOpname ? (
+                  <SideBarRiwayatPengajuanStockOpname />
+                ) : (
+                  <SideBarRiwayatPengajuan />
+                )}
               </div>
             </div>
           </div>

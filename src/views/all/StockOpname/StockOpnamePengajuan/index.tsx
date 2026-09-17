@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import {
   formatTanggalLengkap,
   formatTanggalPanjang,
@@ -78,79 +78,93 @@ const StockOpnamePengajuan: FC<Props> = ({
               ))
             ) : isExistData ? (
               data?.map((stockOpname, index) => (
-                <tr
-                  key={stockOpname.id}
-                  className="transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content"
-                >
-                  {/* NOMOR */}
-                  <td>{index + 1}</td>
+                <Fragment key={stockOpname.id}>
+                  {/* HEADER SETIAP 25 DATA */}
+                  {index > 0 && index % 25 === 0 && (
+                    <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                      <th>No</th>
+                      <th>Kode Referensi</th>
+                      <th>Tanggal Opname</th>
+                      <th>Diajukan Oleh</th>
+                      <th>Status</th>
+                      <th>Diverifikasi Oleh</th>
+                      <th>Tanggal Verifikasi</th>
+                      <th>Aksi</th>
+                    </tr>
+                  )}
 
-                  {/* KODE REFERENSI */}
-                  <td className="font-medium text-info">
-                    {stockOpname.kodeReferensi}
-                  </td>
+                  <tr className="transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content">
+                    {/* NOMOR */}
+                    <td>{index + 1}</td>
 
-                  {/* TANGGAL OPNAME */}
-                  <td>{formatTanggalLengkap(stockOpname.tanggalOpname)} WIB</td>
+                    {/* KODE REFERENSI */}
+                    <td className="font-medium text-info">
+                      {stockOpname.kodeReferensi}
+                    </td>
 
-                  {/* ADMIN OPNAME */}
-                  <td>
-                    <div className="flex flex-col">
-                      <span className="font-medium">
-                        {stockOpname.adminOpname.nama}
-                      </span>
+                    {/* TANGGAL OPNAME */}
+                    <td>
+                      {formatTanggalLengkap(stockOpname.tanggalOpname)} WIB
+                    </td>
 
-                      <span className="text-base-content/50">
-                        {stockOpname.adminOpname.username}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* STATUS */}
-                  <td>
-                    <StatusStockOpname status={stockOpname.status} />
-                  </td>
-
-                  {/* VERIFIED BY */}
-                  <td>
-                    {stockOpname.verifiedBy ? (
+                    {/* ADMIN OPNAME */}
+                    <td>
                       <div className="flex flex-col">
                         <span className="font-medium">
-                          {stockOpname.verifiedBy.nama}
+                          {stockOpname.adminOpname.nama}
                         </span>
 
                         <span className="text-base-content/50">
-                          {stockOpname.verifiedBy.username}
+                          {stockOpname.adminOpname.username}
                         </span>
                       </div>
-                    ) : (
-                      <span className="italic text-base-content/50">
-                        Belum diverifikasi
-                      </span>
-                    )}
-                  </td>
+                    </td>
 
-                  {/* VERIFIED AT */}
-                  <td>
-                    {stockOpname.verifiedAt ? (
-                      `${formatTanggalLengkap(stockOpname.verifiedAt)} WIB`
-                    ) : (
-                      <span className="italic text-base-content/50">-</span>
-                    )}
-                  </td>
+                    {/* STATUS */}
+                    <td>
+                      <StatusStockOpname status={stockOpname.status} />
+                    </td>
 
-                  {/* AKSI */}
-                  <td>
-                    <div className="flex flex-row justify-start items-center gap-2">
-                      <ButtonDetailTable
-                        handleRedirect={() => {
-                          // handle redirect detail
-                          handleRedirectDetail(stockOpname.id);
-                        }}
-                      />
-                    </div>
-                  </td>
-                </tr>
+                    {/* VERIFIED BY */}
+                    <td>
+                      {stockOpname.verifiedBy ? (
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            {stockOpname.verifiedBy.nama}
+                          </span>
+
+                          <span className="text-base-content/50">
+                            {stockOpname.verifiedBy.username}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="italic text-base-content/50">
+                          Belum diverifikasi
+                        </span>
+                      )}
+                    </td>
+
+                    {/* VERIFIED AT */}
+                    <td>
+                      {stockOpname.verifiedAt ? (
+                        `${formatTanggalLengkap(stockOpname.verifiedAt)} WIB`
+                      ) : (
+                        <span className="italic text-base-content/50">-</span>
+                      )}
+                    </td>
+
+                    {/* AKSI */}
+                    <td>
+                      <div className="flex flex-row justify-start items-center gap-2">
+                        <ButtonDetailTable
+                          handleRedirect={() => {
+                            handleRedirectDetail(stockOpname.id);
+                          }}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </Fragment>
               ))
             ) : (
               <tr>

@@ -11,7 +11,7 @@ import StatusInventori from "../../../../components/ui/StatusInventori";
 import { type StatusInventoriType } from "../../../../types/constant.type";
 import JenisKeluar from "../../../../components/ui/JenisKeluar";
 import RangeDate from "../../../../components/filters/RangeDate";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import DropDownInventori from "../../../../components/ui/DropDownInventori";
 import { formatNumber } from "../../../../helpers/helpers";
 import usePengajuanBarangKeluar from "./usePengajuanBarangKeluar";
@@ -128,81 +128,104 @@ const PengajuanBarangKeluar = () => {
                   </tr>
                 ))
               ) : isExistDataPengajuanBarangKeluar ? (
-                dataPengajuanBarangKeluar?.data?.data.map((barang, _) => (
-                  <tr
-                    key={barang.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+                dataPengajuanBarangKeluar?.data?.data.map((barang, index) => (
+                  <Fragment key={barang.id}>
+                    {/* Header setiap 25 data */}
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                        <th>Diajukan Oleh</th>
+                        <th>Tanggal Diajukan</th>
+                        <th>Kode Referensi</th>
+                        <th>Tanggal Keluar</th>
+                        <th>Keterangan</th>
+                        <th>Jumlah</th>
+                        <th>Jenis Keluar</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                      </tr>
                     )}
-                  >
-                    {/* author */}
-                    <td>
-                      {barang.author ? (
-                        <div className="flex flex-row justify-start items-start gap-2.5">
-                          <Avatar
-                            index={barang.author.id}
-                            nama={barang.author.nama}
-                            isActive={barang.author.isActive}
-                            xs
-                          />
-                          <div className="flex flex-col justify-start items-start gap-0.5">
-                            <span className="text-xs font-medium">
-                              {barang.author.nama}
-                            </span>
-                            <span className="text-[0.625rem] font-medium">
-                              {barang.author.username}
-                            </span>
+
+                    <tr
+                      className={cn(
+                        "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+                      )}
+                    >
+                      {/* author */}
+                      <td>
+                        {barang.author ? (
+                          <div className="flex flex-row justify-start items-start gap-2.5">
+                            <Avatar
+                              index={barang.author.id}
+                              nama={barang.author.nama}
+                              isActive={barang.author.isActive}
+                              xs
+                            />
+
+                            <div className="flex flex-col justify-start items-start gap-0.5">
+                              <span className="text-xs font-medium">
+                                {barang.author.nama}
+                              </span>
+
+                              <span className="text-[0.625rem] font-medium">
+                                {barang.author.username}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <span>-</span>
-                      )}
-                    </td>
+                        ) : (
+                          <span>-</span>
+                        )}
+                      </td>
 
-                    {/* tanggal diajukan */}
-                    <td>
-                      {barang?.tanggalDiajukan
-                        ? formatTanggalLengkap(
-                            new Date(barang?.tanggalDiajukan),
-                          )
-                        : "-"}{" "}
-                      WIB
-                    </td>
+                      {/* tanggal diajukan */}
+                      <td>
+                        {barang?.tanggalDiajukan
+                          ? formatTanggalLengkap(
+                              new Date(barang?.tanggalDiajukan),
+                            )
+                          : "-"}{" "}
+                        WIB
+                      </td>
 
-                    {/* kode */}
-                    <td className="font-medium text-info">
-                      {barang.kodeReferensi}
-                    </td>
-                    {/* tanggal */}
-                    <td>{formatTanggalLengkap(barang.tanggalKeluar)} WIB</td>
-                    {/* keterangan */}
-                    <td>
-                      {barang.keterangan ? (
-                        <span>{barang.keterangan}</span>
-                      ) : (
-                        <span className="italic text-base-content/50">
-                          Tidak ada keterangan
-                        </span>
-                      )}
-                    </td>
-                    {/* jumlah */}
-                    <td>{barang.countDetailBarangKeluar}</td>
-                    {/* jumlah barang masuk */}
-                    <td>
-                      <JenisKeluar jenisKeluar={barang.jenisKeluar.nama} />
-                    </td>
-                    {/* status */}
-                    <td>
-                      <StatusInventori status={barang.status} />
-                    </td>
+                      {/* kode */}
+                      <td className="font-medium text-info">
+                        {barang.kodeReferensi}
+                      </td>
 
-                    {/* detail */}
-                    <td>
-                      <ButtonDetailTable
-                        handleRedirect={() => handleRedirectDetail(barang.id)}
-                      />
-                    </td>
-                  </tr>
+                      {/* tanggal */}
+                      <td>{formatTanggalLengkap(barang.tanggalKeluar)} WIB</td>
+
+                      {/* keterangan */}
+                      <td>
+                        {barang.keterangan ? (
+                          <span>{barang.keterangan}</span>
+                        ) : (
+                          <span className="italic text-base-content/50">
+                            Tidak ada keterangan
+                          </span>
+                        )}
+                      </td>
+
+                      {/* jumlah */}
+                      <td>{barang.countDetailBarangKeluar}</td>
+
+                      {/* jenis keluar */}
+                      <td>
+                        <JenisKeluar jenisKeluar={barang.jenisKeluar.nama} />
+                      </td>
+
+                      {/* status */}
+                      <td>
+                        <StatusInventori status={barang.status} />
+                      </td>
+
+                      {/* aksi */}
+                      <td>
+                        <ButtonDetailTable
+                          handleRedirect={() => handleRedirectDetail(barang.id)}
+                        />
+                      </td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>
@@ -217,19 +240,6 @@ const PengajuanBarangKeluar = () => {
                 </tr>
               )}
             </tbody>
-            {/* foot */}
-            <tfoot>
-              <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
-            </tfoot>
           </table>
         </div>
 
@@ -242,6 +252,8 @@ const PengajuanBarangKeluar = () => {
           setPage={handlePage}
           setLimit={handleLimit}
           emptyData={!isExistDataPengajuanBarangKeluar}
+          limit={dataPengajuanBarangKeluar?.data?.meta?.limit}
+          totalData={dataPengajuanBarangKeluar?.data?.meta?.totalData}
         />
       </div>
     </div>

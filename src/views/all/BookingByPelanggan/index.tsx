@@ -23,6 +23,7 @@ import useBookingByPelanggan from "./useBookingByPelanggan";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import CardLabelMetodePembayaran from "../../../components/ui/cards/CardLabelMetodePembayaran";
 import CardDataTransaksiBookingDetail from "../../../components/ui/cards/CardDataTransaksiBookingDetail";
+import { Fragment } from "react/jsx-runtime";
 
 const filterStatus: { label: string; value: string }[] = [
   {
@@ -260,6 +261,7 @@ const BookingByPelanggan = () => {
                   <th>Aksi</th>
                 </tr>
               </thead>
+
               <tbody>
                 {isLoadingDataBookingByPelanggan ? (
                   Array.from({ length: 4 }).map((_, index) => (
@@ -271,57 +273,84 @@ const BookingByPelanggan = () => {
                   ))
                 ) : isExistDataBookingByPelanggan ? (
                   dataBookingByPelanggan?.data?.data?.transaksi?.map(
-                    (item, _) => (
-                      <tr
-                        key={item.id}
-                        className={cn(
-                          "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
-                          // false === true && "bg-base-200",
+                    (item, index) => (
+                      <Fragment key={item.id}>
+                        {/* HEADER SETIAP 25 DATA */}
+                        {index > 0 && index % 25 === 0 && (
+                          <tr className="h-12 bg-base-200 text-xs text-base-content/60">
+                            <th>No. Transaksi</th>
+                            <th>Total Item</th>
+                            <th>Total Bayar</th>
+                            <th>Uang Muka</th>
+                            <th>
+                              <div
+                                className="tooltip text-xs font-normal"
+                                data-tip="Metode Pembayaran Uang Muka"
+                              >
+                                <span className="font-bold">
+                                  Metode Pembayaran
+                                </span>
+                              </div>
+                            </th>
+                            <th>Aksi</th>
+                          </tr>
                         )}
-                      >
-                        <td>
-                          <div className="flex flex-col justify-start items-start">
-                            <span className="font-medium text-info">
-                              {item?.nomorTransaksi}
+
+                        <tr
+                          className={cn(
+                            "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
+                            // false === true && "bg-base-200",
+                          )}
+                        >
+                          <td>
+                            <div className="flex flex-col justify-start items-start">
+                              <span className="font-medium text-info">
+                                {item?.nomorTransaksi}
+                              </span>
+                              <span className="text-[0.625rem]">
+                                {formatTanggalLengkap(
+                                  item.tanggalBooking ?? new Date(),
+                                )}
+                              </span>
+                            </div>
+                          </td>
+
+                          <td>
+                            <span className="font-medium">
+                              {formatNumber(item.totalItem)} Pcs
                             </span>
-                            <span className="text-[0.625rem]">
-                              {formatTanggalLengkap(
-                                item.tanggalBooking ?? new Date(),
-                              )}
+                          </td>
+
+                          <td>
+                            <span className="text-blue-600 font-medium">
+                              {formatRupiah(item.totalBayar)}
                             </span>
-                          </div>
-                        </td>
-                        <td>
-                          <span className="font-medium">
-                            {formatNumber(item.totalItem)} Pcs
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-blue-600 font-medium">
-                            {formatRupiah(item.totalBayar)}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-emerald-600 font-medium">
-                            {formatRupiah(item.totalDiBayar ?? 0)}
-                          </span>
-                        </td>
-                        <td>
-                          <CardLabelMetodePembayaran
-                            metodePembayaran={item.metodePembayaran!}
-                            noLabel
-                          />
-                        </td>
-                        <td>
-                          <button
-                            type="button"
-                            className="text-info hover:underline"
-                            onClick={() => handleRedirectDetail(item.id)}
-                          >
-                            detail
-                          </button>
-                        </td>
-                      </tr>
+                          </td>
+
+                          <td>
+                            <span className="text-emerald-600 font-medium">
+                              {formatRupiah(item.totalDiBayar ?? 0)}
+                            </span>
+                          </td>
+
+                          <td>
+                            <CardLabelMetodePembayaran
+                              metodePembayaran={item.metodePembayaran!}
+                              noLabel
+                            />
+                          </td>
+
+                          <td>
+                            <button
+                              type="button"
+                              className="text-info hover:underline"
+                              onClick={() => handleRedirectDetail(item.id)}
+                            >
+                              detail
+                            </button>
+                          </td>
+                        </tr>
+                      </Fragment>
                     ),
                   )
                 ) : (
@@ -350,6 +379,7 @@ const BookingByPelanggan = () => {
             isLoading={isLoadingDataBookingByPelanggan}
             limit={dataBookingByPelanggan?.data?.meta?.limit ?? 8}
             setLimit={handleLimit}
+            totalData={dataBookingByPelanggan?.data?.meta?.totalData}
           />
         </div>
       ) : (

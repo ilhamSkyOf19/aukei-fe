@@ -17,7 +17,7 @@ import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import { FileText, RefreshCcw } from "lucide-react";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import ButtonRefresh from "../../../../components/ui/button/ButtonRefresh";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 
 type Props = {
   handleSetAlert: (value: string) => void;
@@ -198,6 +198,7 @@ const TopPelanggan: FC<Props> = ({ handleSetAlert, handleSetToast }) => {
               <th>Rank Nilai Transaksi</th>
             </tr>
           </thead>
+
           <tbody>
             {isLoading ? (
               Array.from({ length: 4 }).map((_, index) => (
@@ -208,58 +209,77 @@ const TopPelanggan: FC<Props> = ({ handleSetAlert, handleSetToast }) => {
                 </tr>
               ))
             ) : isExistData ? (
-              dataTopPelanggan?.data?.map((pelanggan, _) => (
-                <tr
-                  key={pelanggan.id}
-                  className={cn(
-                    "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+              dataTopPelanggan?.data?.map((pelanggan, index) => (
+                <Fragment key={pelanggan.id}>
+                  {/* header setiap 25 data */}
+                  {index > 0 && index % 25 === 0 && (
+                    <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                      <th>Nama</th>
+                      <th>No. Wa</th>
+                      <th>Total Transaksi</th>
+                      <th>Total Nilai Transaksi</th>
+                      <th>Rank Transaksi</th>
+                      <th>Rank Nilai Transaksi</th>
+                    </tr>
                   )}
-                >
-                  {/* nama */}
-                  <td>
-                    <div className="flex flex-col justify-start items-start gap-1">
-                      <span className="text-xs font-semibold">
-                        {pelanggan.nama}
-                      </span>
-                      <span
-                        className={cn(
-                          "px-1.5 py-px rounded-full text-[0.625rem] font-medium",
-                          pelanggan.isActive
-                            ? "bg-emerald-100 border border-emerald-600"
-                            : "bg-rose-50 border border-rose-600",
-                        )}
-                      >
-                        {pelanggan.isActive ? "Aktif" : "Tidak Aktif"}
-                      </span>
-                    </div>
-                  </td>
-                  {/* no wa */}
-                  <td>{formatNumberPhone(pelanggan.noWa)}</td>
-                  {/* total transaksi */}
-                  <td className="font-medium">
-                    {formatNumber(pelanggan.totalTransaksi)}
-                  </td>
-                  {/* total nilai transaksi */}
-                  <td className="font-medium">
-                    {formatRupiah(pelanggan.totalNilaiTransaksi)}
-                  </td>
-                  {/* rank total trasaksi */}
-                  <td>
-                    {pelanggan.rankTransaksi ? (
-                      <RankStar rank={pelanggan.rankTransaksi} />
-                    ) : (
-                      "-"
+
+                  <tr
+                    className={cn(
+                      "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                     )}
-                  </td>
-                  {/* rank total nilai transaksi */}
-                  <td>
-                    {pelanggan.rankNilaiTransaksi ? (
-                      <RankStar rank={pelanggan.rankNilaiTransaksi} />
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                </tr>
+                  >
+                    {/* nama */}
+                    <td>
+                      <div className="flex flex-col justify-start items-start gap-1">
+                        <span className="text-xs font-semibold">
+                          {pelanggan.nama}
+                        </span>
+
+                        <span
+                          className={cn(
+                            "px-1.5 py-px rounded-full text-[0.625rem] font-medium",
+                            pelanggan.isActive
+                              ? "bg-emerald-100 border border-emerald-600"
+                              : "bg-rose-50 border border-rose-600",
+                          )}
+                        >
+                          {pelanggan.isActive ? "Aktif" : "Tidak Aktif"}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* no wa */}
+                    <td>{formatNumberPhone(pelanggan.noWa)}</td>
+
+                    {/* total transaksi */}
+                    <td className="font-medium">
+                      {formatNumber(pelanggan.totalTransaksi)}
+                    </td>
+
+                    {/* total nilai transaksi */}
+                    <td className="font-medium">
+                      {formatRupiah(pelanggan.totalNilaiTransaksi)}
+                    </td>
+
+                    {/* rank total transaksi */}
+                    <td>
+                      {pelanggan.rankTransaksi ? (
+                        <RankStar rank={pelanggan.rankTransaksi} />
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    {/* rank total nilai transaksi */}
+                    <td>
+                      {pelanggan.rankNilaiTransaksi ? (
+                        <RankStar rank={pelanggan.rankNilaiTransaksi} />
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  </tr>
+                </Fragment>
               ))
             ) : (
               <tr>
@@ -290,6 +310,7 @@ const TopPelanggan: FC<Props> = ({ handleSetAlert, handleSetToast }) => {
         setLimit={handleLimit}
         limit={dataTopPelanggan?.meta?.limit ?? 8}
         isLoading={isLoading}
+        totalData={dataTopPelanggan?.meta?.totalData}
         emptyData={!isExistData}
       />
     </div>

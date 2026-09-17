@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { Fragment, type FC } from "react";
 import { cn } from "../../../../utils/cn";
 import {
   formatNumber,
@@ -172,6 +172,7 @@ const DataBooking: FC<Props> = ({ pilihan }) => {
               <th>Status</th>
             </tr>
           </thead>
+
           <tbody>
             {isLoadingDaftarKebutuhanBarang ? (
               Array.from({ length: 4 }).map((_, index) => (
@@ -182,77 +183,98 @@ const DataBooking: FC<Props> = ({ pilihan }) => {
                 </tr>
               ))
             ) : isExistDataKebutuhanBarang ? (
-              daftarKebutuhanBarang?.data?.data?.map((produk, _) => (
-                <tr
-                  key={produk.id}
-                  className={cn(
-                    "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+              daftarKebutuhanBarang?.data?.data?.map((produk, index) => (
+                <Fragment key={produk.id}>
+                  {index > 0 && index % 25 === 0 && (
+                    <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                      <th>Foto</th>
+                      <th>Kode</th>
+                      <th>Nama</th>
+                      <th>Kategori</th>
+                      <th>Stok Tersedia</th>
+                      <th>Stok Minimum</th>
+                      <th>Stok Dibooking</th>
+                      <th>Stok Dibutuhkan</th>
+                      <th>Status</th>
+                    </tr>
                   )}
-                >
-                  {/* foto */}
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
-                          <img
-                            src={produk.img}
-                            alt="Foto Produk"
-                            loading="lazy"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  {/* kode */}
-                  <td className="font-medium text-info">{produk.kode}</td>
-                  {/* nama */}
-                  <td>{produk.nama}</td>
-                  {/* kategori */}
-                  <td>{produk.kategori}</td>
-                  {/* stok */}
-                  <td
+
+                  <tr
                     className={cn(
-                      "font-medium",
-                      generateColorForStok(
-                        produk.stokTersedia,
-                        produk.stokMinimum,
-                      ),
+                      "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                     )}
                   >
-                    {formatNumber(produk.stokTersedia.toString())}
-                  </td>
+                    {/* foto */}
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
+                            <img
+                              src={produk.img}
+                              alt="Foto Produk"
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </td>
 
-                  {/* stok minimum */}
-                  <td>
-                    <span className="font-semibold mr-1">
-                      {formatNumber(produk.stokMinimum)}
-                    </span>
-                  </td>
-                  {/* stok di booking */}
-                  <td>
-                    <span className="font-semibold mr-1">
-                      {formatNumber(produk.stokBooking)}
-                    </span>
-                  </td>
-                  {/* stok di butuhkan */}
-                  <td>
-                    <span className="font-semibold mr-1">
-                      {formatNumber(produk.totalKebutuhanStok)}
-                    </span>
-                  </td>
+                    {/* kode */}
+                    <td className="font-medium text-info">{produk.kode}</td>
 
-                  <td>
-                    {produk?.stokBooking <= produk.stokTersedia ? (
-                      <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-emerald-500 ">
-                        Cukup
+                    {/* nama */}
+                    <td>{produk.nama}</td>
+
+                    {/* kategori */}
+                    <td>{produk.kategori}</td>
+
+                    {/* stok */}
+                    <td
+                      className={cn(
+                        "font-medium",
+                        generateColorForStok(
+                          produk.stokTersedia,
+                          produk.stokMinimum,
+                        ),
+                      )}
+                    >
+                      {formatNumber(produk.stokTersedia.toString())}
+                    </td>
+
+                    {/* stok minimum */}
+                    <td>
+                      <span className="font-semibold mr-1">
+                        {formatNumber(produk.stokMinimum)}
                       </span>
-                    ) : (
-                      <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-rose-500 ">
-                        Kurang
+                    </td>
+
+                    {/* stok di booking */}
+                    <td>
+                      <span className="font-semibold mr-1">
+                        {formatNumber(produk.stokBooking)}
                       </span>
-                    )}
-                  </td>
-                </tr>
+                    </td>
+
+                    {/* stok di butuhkan */}
+                    <td>
+                      <span className="font-semibold mr-1">
+                        {formatNumber(produk.totalKebutuhanStok)}
+                      </span>
+                    </td>
+
+                    <td>
+                      {produk?.stokBooking <= produk.stokTersedia ? (
+                        <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-emerald-500">
+                          Cukup
+                        </span>
+                      ) : (
+                        <span className="text-[0.625rem] font-medium text-primary-white py-1 px-1.5 rounded-full bg-rose-500">
+                          Kurang
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                </Fragment>
               ))
             ) : (
               <tr>
@@ -279,6 +301,7 @@ const DataBooking: FC<Props> = ({ pilihan }) => {
         limit={daftarKebutuhanBarang?.data?.meta?.limit ?? 8}
         isLoading={isLoadingDaftarKebutuhanBarang}
         emptyData={!isExistDataKebutuhanBarang}
+        totalData={daftarKebutuhanBarang?.data?.meta?.totalData}
       />
     </div>
   );

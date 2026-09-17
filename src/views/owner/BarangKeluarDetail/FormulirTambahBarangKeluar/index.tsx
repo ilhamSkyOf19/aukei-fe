@@ -47,6 +47,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
     handleCloseModalFormulirTambahBarangKeluar,
     handleShowModalFormulirTambahBarangKeluar,
     modalFormulirTambahBarangKeluarRef,
+    formInputRef,
   } = useFormulirTambahBarangKeluar({
     handleSetToast,
     handleSetAlert,
@@ -89,6 +90,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
           {/* produk */}
           <FormCariProdukInventori
             hargaModal
+            formInputRef={formInputRef}
             wrapperRef={wrapperRef}
             handleSearch={handleSearch}
             handleCloseActiveComponentChooseProduk={

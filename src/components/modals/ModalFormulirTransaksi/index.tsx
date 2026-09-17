@@ -26,7 +26,9 @@ type Props = {
       detailId?: number;
       hargaModalRataRata: number;
       hargaJualOld?: number;
+      transactionId?: number;
     };
+
   index?: number;
   handleSetAlert: (data: string) => void;
 

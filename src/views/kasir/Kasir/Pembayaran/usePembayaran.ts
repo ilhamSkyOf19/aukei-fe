@@ -5,7 +5,7 @@ import {
   type PaymentMethodType,
 } from "../../../../types/constant.type";
 import type { IPelangganType } from "../../../../models/pelanggan.model";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   CreateTransactionForRequestType,
   DetailsType,
@@ -20,6 +20,7 @@ import { LOCAL_STORAGE_KEYS } from "../../../../utils/localStorageKeys";
 import { getLocalStorageJSON } from "../../../../helpers/helpers";
 import { useStepStore } from "../../../../stores/stepStore";
 import { useCartStore } from "../../../../stores/useCartStore";
+import useUpdateMetodePembayaran from "../../../../hooks/useUpdateMetodePembayaran";
 
 // Delay debounce saat menyimpan metode pembayaran non-CASH ke localStorage
 const METODE_PEMBAYARAN_SYNC_DEBOUNCE_MS = 500;
@@ -83,9 +84,6 @@ const usePembayaran = (params: {
   kasir?: PayloadPenggunaInternalType | null;
 }) => {
   const { handleToast, kasir } = params;
-
-  // query client
-  const queryClient = useQueryClient();
 
   // transaction id from cart
   const {
@@ -180,25 +178,8 @@ const usePembayaran = (params: {
     subTotalBeforeDiskon - totalDiskon + (dataTransaksi?.data?.ongkir ?? 0);
 
   // mutate update metode pembayaran
-  const {
-    mutateAsync: updateMetodePembayaran,
-    isPending: isPendingUpdateMetodePembayaran,
-  } = useMutation({
-    mutationFn: (data: {
-      transactionId: number;
-      metodePembayaran: PaymentMethodType;
-    }) =>
-      TransactionServices.updateMetodePembayaran({
-        transactionId: data.transactionId,
-        data: { metodePembayaran: data.metodePembayaran },
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
+  const { isPendingUpdateMetodePembayaran, updateMetodePembayaran } =
+    useUpdateMetodePembayaran();
 
   // Ubah metode pembayaran, sinkronkan ke localStorage, dan bersihkan data terkait metode lama
   const handleMetodePembayaran = async (metode: PaymentMethodType) => {

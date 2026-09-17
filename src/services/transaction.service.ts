@@ -248,7 +248,10 @@ export class TransactionServices {
     // call api
     const result = await instanceAxios.post<
       ResponseStructure<ResponseTransaksiDraftType | null>
-    >(`/transaction/tambah-produk/${params.transactionId}`, params.data);
+    >(
+      `/transaction/tambah-produk-by-transaction/${params.transactionId}`,
+      params.data,
+    );
 
     return result.data;
   }

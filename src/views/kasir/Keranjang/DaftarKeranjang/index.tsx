@@ -38,7 +38,12 @@ const DaftarKeranjang = () => {
     <div className="w-full md:flex-6 h-full">
       {/* loading */}
       {isLoadingKeranjang ? (
-        <div></div>
+        <div className="w-full h-full flex flex-col gap-2.5 justify-center items-center">
+          <div className="loading loading-sm" />
+          <span className="text-xs text-base-content/50">
+            sedang memuat data ...
+          </span>
+        </div>
       ) : isExistDataProduk ? (
         <div className="w-full h-full flex flex-col lg:flex-row justify-start items-start gap-2.5">
           {/* ==================== BAGIAN KIRI ==================== */}
@@ -62,7 +67,6 @@ const DaftarKeranjang = () => {
                   </span>
                 </div>
               </div>
-
               {/* kasir */}
               <div
                 className={cn(
@@ -77,7 +81,7 @@ const DaftarKeranjang = () => {
                   <UserRound className={cn("size-4 text-base-content")} />
                 </div>
 
-                <div className="md:hidden flex flex-col justify-start items-start">
+                <div className=" flex flex-col justify-start items-start">
                   <span
                     className={cn(
                       "text-[0.625rem] text-base-content/50 font-medium",

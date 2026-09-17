@@ -1,5 +1,11 @@
 import { Search, X } from "lucide-react";
-import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+import {
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  type RefObject,
+} from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { cn } from "../../../utils/cn";
@@ -16,6 +22,7 @@ type Props = {
   withLabel?: boolean;
   customHeight?: string;
   isLoading?: boolean;
+  formInputRef?: RefObject<HTMLInputElement | null>;
 };
 
 const InputSearch = forwardRef<InputSearchRef, Props>(
@@ -30,6 +37,7 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
       errorMessage,
       withLabel,
       customHeight,
+      formInputRef,
     },
     ref,
   ) => {
@@ -128,6 +136,7 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
                 </label>
 
                 <input
+                  ref={formInputRef}
                   type="text"
                   id="search"
                   placeholder={placeholder ?? "Search"}

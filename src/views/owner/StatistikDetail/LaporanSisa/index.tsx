@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { Fragment, type FC } from "react";
 import { cn } from "../../../../utils/cn";
 import { formatNumber } from "../../../../helpers/helpers";
 import {
@@ -274,42 +274,59 @@ const LaporanSisa: FC<Props> = ({}) => {
               ) : dataSisaModalByProduk?.data?.produk &&
                 dataSisaModalByProduk.data.produk.length > 0 ? (
                 dataSisaModalByProduk.data.produk.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content"
-                  >
-                    <td>{index + 1}</td>
+                  <Fragment key={item.id}>
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                        <th>No</th>
+                        <th>Foto</th>
+                        <th>Nama</th>
+                        <th>Hrg. Mdl. Rata Rata</th>
+                        <th>Harga Jual</th>
+                        <th>Ttl. Stok</th>
+                        <th>Ttl. Est. Modal</th>
+                        <th>Ttl. Est. Omzet</th>
+                        <th>Ttl. Est. Laba</th>
+                      </tr>
+                    )}
 
-                    <td>
-                      <div className="avatar">
-                        <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
-                          <img src={item.img} alt={item.nama} loading="lazy" />
+                    <tr className="transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content">
+                      <td>{index + 1}</td>
+
+                      <td>
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
+                            <img
+                              src={item.img}
+                              alt={item.nama}
+                              loading="lazy"
+                            />
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td>
-                      <div className="flex flex-col justify-start items-start">
-                        <p className="font-medium">{item.nama}</p>
+                      <td>
+                        <div className="flex flex-col justify-start items-start">
+                          <p className="font-medium">{item.nama}</p>
 
-                        <p className="text-base-content/60">
-                          {item.kode ?? "-"}
-                        </p>
-                      </div>
-                    </td>
+                          <p className="text-base-content/60">
+                            {item.kode ?? "-"}
+                          </p>
+                        </div>
+                      </td>
 
-                    <td>{formatNumber(item.hargaModalRataRata)}</td>
+                      <td>{formatNumber(item.hargaModalRataRata)}</td>
 
-                    <td>{formatNumber(item.hargaJual)}</td>
+                      <td>{formatNumber(item.hargaJual)}</td>
 
-                    <td>{formatNumber(item.totalStok)}</td>
+                      <td>{formatNumber(item.totalStok)}</td>
 
-                    <td>{formatNumber(item.totalModal)}</td>
+                      <td>{formatNumber(item.totalModal)}</td>
 
-                    <td>{formatNumber(item.totalOmzet)}</td>
+                      <td>{formatNumber(item.totalOmzet)}</td>
 
-                    <td>{formatNumber(item.totalLaba)}</td>
-                  </tr>
+                      <td>{formatNumber(item.totalLaba)}</td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>

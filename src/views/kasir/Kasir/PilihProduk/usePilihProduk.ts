@@ -20,6 +20,9 @@ import { useCartStore } from "../../../../stores/useCartStore";
 import { useTransactionComplate } from "../../../../stores/useTransactionComplate";
 import useCancelUpdateTransactionComplate from "../../../../hooks/useCancelTransactionUpdateComplate";
 import useDeleteTransactionDetailOld from "../../../../hooks/useDeleteTransactionDetailOld";
+import useUpdateMetodePembayaran from "../../../../hooks/useUpdateMetodePembayaran";
+import { PAYMENT_METHOD_TYPE } from "../../../../types/constant.type";
+import { LOCAL_STORAGE_KEYS } from "../../../../utils/localStorageKeys";
 
 type IsErrorsType = "pelanggan" | "details";
 
@@ -27,12 +30,6 @@ type IsErrorsType = "pelanggan" | "details";
 // Alasan: produk & pelanggan sekarang selalu diambil live dari query
 // "transaksi-draft" (server = source of truth), jadi tidak perlu lagi
 // disimpan manual ke localStorage untuk "dibawa" ke step berikutnya.
-const LOCAL_STORAGE_KEYS = {
-  FROM_BOOKING: "from-booking",
-  IS_UPDATE_TRANSACTION: "is-update-transaction",
-  IS_UPDATE_KERANJANG: "is-update-keranjang",
-  METODE_PEMBAYARAN: "metode-pembayaran",
-} as const;
 
 const usePilihProduk = () => {
   const { setStep: handleSteps, step } = useStepStore((state) => state);
@@ -52,11 +49,9 @@ const usePilihProduk = () => {
     [],
   );
 
-  // Flag apakah transaksi ini berasal dari flow booking
-  const fromBooking = useMemo<boolean>(() => {
-    const data = localStorage.getItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
-    return data ? JSON.parse(data) : null;
-  }, []);
+  // use update metode pembayaran
+  const { isPendingUpdateMetodePembayaran, updateMetodePembayaran } =
+    useUpdateMetodePembayaran();
 
   // Modal formulir tambah/edit transaksi produk
   const {
@@ -233,7 +228,10 @@ const usePilihProduk = () => {
 
     showModalFormulirTransaksi(undefined, {
       ...params,
-      transactionId: transactionIdFromTransactionComplate ?? undefined,
+      transactionId:
+        transactionIdFromTransactionComplate ??
+        transactionIdFromCart ??
+        undefined,
     });
   };
 
@@ -264,7 +262,7 @@ const usePilihProduk = () => {
     // `hasInsufficientStock` di response transaksi draft.
     const insufficientStock = false;
 
-    if (insufficientStock && (!fromBooking || toPembayaran)) {
+    if (insufficientStock && toPembayaran) {
       const isConfirm = await confirm({
         title: "Stok Tidak Mencukupi",
         deskripsi:
@@ -275,30 +273,40 @@ const usePilihProduk = () => {
         return;
       }
 
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
       return handleSteps(4);
     }
 
-    if (isUpdateTransaction || isUpdateKeranjang || fromBooking)
+    if (isUpdateTransaction || isUpdateKeranjang)
       navigate(currentPathname, {
         state: {
           toast: "updated_transaction",
         },
       });
 
-    if (fromBooking) {
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
-      handleSteps(toPembayaran ? 2 : 4);
-    } else {
-      handleSteps(2);
-    }
+    // update di bayar
+    localStorage.setItem(LOCAL_STORAGE_KEYS.DI_BAYAR, "0");
+
+    handleSteps(2);
   };
 
   // handle booking
-  const handleRedirectBooking = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
+  const handleRedirectBooking = async () => {
+    // localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
+    // localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
+
+    if (!dataTransaksi?.data?.id) return;
+
+    // update metode pembayaran
+    if (dataTransaksi?.data?.metodePembayaran !== PAYMENT_METHOD_TYPE.CASH) {
+      await updateMetodePembayaran({
+        transactionId: dataTransaksi?.data?.id,
+        metodePembayaran: PAYMENT_METHOD_TYPE.CASH,
+      });
+    }
+
+    // update di bayar
+    localStorage.setItem(LOCAL_STORAGE_KEYS.DI_BAYAR, "0");
+
     return handleSteps(4);
   };
 
@@ -306,12 +314,7 @@ const usePilihProduk = () => {
   const handleBatalkanUpdateTransaction = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
 
-    if (fromBooking) {
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
-      handleSteps(4);
-    } else {
-      handleSteps(2);
-    }
+    handleSteps(2);
   };
 
   // Mutation untuk membuat atau mengupdate keranjang
@@ -327,7 +330,6 @@ const usePilihProduk = () => {
         if (isUpdateTransaction) {
           localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_UPDATE_TRANSACTION);
           localStorage.removeItem(LOCAL_STORAGE_KEYS.METODE_PEMBAYARAN);
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.FROM_BOOKING);
           setIsUpdateTransaction(false);
         }
 
@@ -548,9 +550,9 @@ const usePilihProduk = () => {
     handleConfirm,
     step,
 
-    handleRedirectBooking,
+    isPendingUpdateMetodePembayaran,
 
-    fromBooking,
+    handleRedirectBooking,
 
     // query state, berguna untuk loading indicator di UI
     isLoadingTransaksi: isLoadingTransaksi || isPendingPilihPelanggan,

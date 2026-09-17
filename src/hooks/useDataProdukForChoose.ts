@@ -9,7 +9,7 @@ const useDataProdukForChoose = (params: { search: string }) => {
       queryKey: ["produk-for-choose", search],
       queryFn: () =>
         ProdukServices.findAllForChoose({
-          search,
+          search: search.trim(),
         }),
       enabled: search !== "",
       retry: false,

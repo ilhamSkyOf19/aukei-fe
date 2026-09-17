@@ -23,7 +23,7 @@ import {
 import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import ModalDelete from "../../../../components/modals/ModalDelete";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import ModalAlert from "../../../../components/modals/ModalAlert";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
@@ -205,7 +205,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
         </div>
 
         {/* SHOW DATA FOR MD, LG, XL*/}
-        <div className="overflow-x-auto w-full bg-base-100 rounded-xl mt-2.5 md:mt-2.5 border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex">
+        <div className="overflow-x-auto w-full h-full bg-base-100 rounded-xl mt-2.5 md:mt-2.5 border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex">
           <table className="table table-xs lg:table-sm table-zebra">
             {/* head */}
             <thead>
@@ -234,118 +234,146 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                   </tr>
                 ))
               ) : isExistDataProduk ? (
-                dataProduk?.data?.data.map((produk, _) => (
-                  <tr
-                    key={produk.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
+                dataProduk?.data?.data.map((produk, index) => (
+                  <Fragment key={produk.id}>
+                    {/* Header setiap 25 data */}
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                        <th>Foto</th>
+                        <th>Kode</th>
+                        <th>Nama</th>
+                        <th>Kategori</th>
+                        <th>Hrg. Beli Terakhir</th>
+                        <th>Mdl. Rata Rata</th>
+                        <th>Hrg. Jual</th>
+                        <th>Hrg. PPN</th>
+                        <th>Stok</th>
+                        <th>Isi Box</th>
+                        <th>Aktif</th>
+                        <th align="center">Aksi</th>
+                      </tr>
                     )}
-                  >
-                    {/* foto */}
-                    <td>
-                      <div className="flex items-center gap-3">
-                        <div className="avatar">
-                          <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
-                            <img
-                              src={produk.img}
-                              alt="Foto Produk"
-                              loading="lazy"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    {/* kode */}
-                    <td className="font-medium">{produk.kode ?? "-"}</td>
-                    {/* nama */}
-                    <td>{produk.nama}</td>
-                    {/* kategori */}
-                    <td>{produk.kategori.nama}</td>
-                    {/* harga beli */}
-                    <td>{formatRupiah(produk.hargaBeli)}</td>
-                    {/* harga modal rata rata */}
-                    <td>{formatRupiah(produk.hargaModalRataRata)}</td>
-                    {/* harga jual */}
-                    <td>{formatRupiah(produk.hargaJual)}</td>
-                    {/* harga ppn */}
-                    <td>{formatRupiah(produk.hargaPpn)}</td>
-                    {/* stok */}
-                    <td
+
+                    <tr
                       className={cn(
-                        "font-medium",
-                        generateColorForStok(produk.stok, produk.stokMinimum),
+                        "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                       )}
                     >
-                      {formatNumber(produk.stok.toString())}
-                    </td>
-                    {/* isi perbox */}
-                    <td className="font-medium">
-                      {formatNumber(produk.isiPerBox.toString())} Pcs
-                    </td>
-
-                    {/* aktif */}
-                    <td>
-                      {isPendingUpdateIsActive &&
-                      variablesUpdateIsActive?.id == produk.id ? (
-                        <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
-                          <div className="loading loading-xs" />
+                      {/* foto */}
+                      <td>
+                        <div className="flex items-center gap-3">
+                          <div className="avatar">
+                            <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
+                              <img
+                                src={produk.img}
+                                alt="Foto Produk"
+                                loading="lazy"
+                              />
+                            </div>
+                          </div>
                         </div>
-                      ) : (
-                        <input
-                          type="checkbox"
-                          checked={produk.isActive}
-                          className="toggle toggle-success toggle-sm"
-                          onChange={() =>
-                            handelUpdateIsActive({
-                              id: produk.id,
-                              status: !produk.isActive,
-                            })
-                          }
-                        />
-                      )}
-                    </td>
+                      </td>
 
-                    {/* detail */}
-                    <td>
-                      <div className="flex flex-row justify-center items-center gap-2">
-                        {/* button generate harga jual */}
-                        <ButtonGenerateHargaJual
-                          disabled={produk.stok <= 0}
-                          handleShowModalGenerateHargaJual={() =>
-                            handleShowModalGenerateHargaJual(undefined, {
-                              produk: {
+                      {/* kode */}
+                      <td className="font-medium">{produk.kode ?? "-"}</td>
+
+                      {/* nama */}
+                      <td>{produk.nama}</td>
+
+                      {/* kategori */}
+                      <td>{produk.kategori.nama}</td>
+
+                      {/* harga beli */}
+                      <td>{formatRupiah(produk.hargaBeli)}</td>
+
+                      {/* harga modal rata rata */}
+                      <td>{formatRupiah(produk.hargaModalRataRata)}</td>
+
+                      {/* harga jual */}
+                      <td>{formatRupiah(produk.hargaJual)}</td>
+
+                      {/* harga ppn */}
+                      <td>{formatRupiah(produk.hargaPpn)}</td>
+
+                      {/* stok */}
+                      <td
+                        className={cn(
+                          "font-medium",
+                          generateColorForStok(produk.stok, produk.stokMinimum),
+                        )}
+                      >
+                        {formatNumber(produk.stok.toString())}
+                      </td>
+
+                      {/* isi perbox */}
+                      <td className="font-medium">
+                        {formatNumber(produk.isiPerBox.toString())} Pcs
+                      </td>
+
+                      {/* aktif */}
+                      <td>
+                        {isPendingUpdateIsActive &&
+                        variablesUpdateIsActive?.id == produk.id ? (
+                          <div className="w-10 h-6 rounded-full flex justify-center items-center border border-base-content/10">
+                            <div className="loading loading-xs" />
+                          </div>
+                        ) : (
+                          <input
+                            type="checkbox"
+                            checked={produk.isActive}
+                            className="toggle toggle-success toggle-sm"
+                            onChange={() =>
+                              handelUpdateIsActive({
                                 id: produk.id,
-                                hargaJual: produk.hargaJual,
-                                img: produk.img,
-                                kategori: produk.kategori,
-                                nama: produk.nama,
-                                kode: produk.kode,
-                                hargaModalRataRata: produk.hargaModalRataRata,
-                              },
-                            })
-                          }
-                        />
-                        {/* button  */}
-                        <ButtonDetailTable
-                          handleRedirect={() => handleRedirectDetail(produk.id)}
-                        />
+                                status: !produk.isActive,
+                              })
+                            }
+                          />
+                        )}
+                      </td>
 
-                        {/* button delete */}
-                        <ButtonDeleteTable
-                          handleShowModalDelete={() =>
-                            handleShowModalDelete(produk.id, {
-                              nama: produk.nama,
-                            })
-                          }
-                          customSize="w-7 h-7"
-                        />
-                      </div>
-                    </td>
-                  </tr>
+                      {/* aksi */}
+                      <td>
+                        <div className="flex flex-row justify-center items-center gap-2">
+                          <ButtonGenerateHargaJual
+                            disabled={produk.stok <= 0}
+                            handleShowModalGenerateHargaJual={() =>
+                              handleShowModalGenerateHargaJual(undefined, {
+                                produk: {
+                                  id: produk.id,
+                                  hargaJual: produk.hargaJual,
+                                  img: produk.img,
+                                  kategori: produk.kategori,
+                                  nama: produk.nama,
+                                  kode: produk.kode,
+                                  hargaModalRataRata: produk.hargaModalRataRata,
+                                },
+                              })
+                            }
+                          />
+
+                          <ButtonDetailTable
+                            handleRedirect={() =>
+                              handleRedirectDetail(produk.id)
+                            }
+                          />
+
+                          <ButtonDeleteTable
+                            handleShowModalDelete={() =>
+                              handleShowModalDelete(produk.id, {
+                                nama: produk.nama,
+                              })
+                            }
+                            customSize="w-7 h-7"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={11}>
+                  <td colSpan={12}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
                         title="Data Produk Tidak Tersedia"
@@ -367,6 +395,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
           setLimit={handleLimit}
           emptyData={!isExistDataProduk}
           limit={dataProduk?.data?.meta?.limit}
+          totalData={dataProduk?.data?.meta?.totalData}
         />
       </div>
       <ModalDelete

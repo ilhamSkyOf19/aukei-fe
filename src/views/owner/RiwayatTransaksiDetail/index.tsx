@@ -12,7 +12,7 @@ import {
   Sheet,
   ShoppingBag,
 } from "lucide-react";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import { cn } from "../../../utils/cn";
 import {
   formatNumber,
@@ -350,6 +350,7 @@ const RiwayatTransaksiDetail = () => {
                 <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
               </tr>
             </thead>
+
             <tbody>
               {isLoadingRiwayatTransaksi ? (
                 Array.from({ length: 4 }).map((_, index) => (
@@ -363,46 +364,69 @@ const RiwayatTransaksiDetail = () => {
                 dataRiwayatTransaksi?.data?.data.transaksi !== undefined &&
                 dataRiwayatTransaksi?.data?.data.transaksi !== undefined &&
                 dataRiwayatTransaksi?.data?.data?.transaksi?.length > 0 ? (
-                dataRiwayatTransaksi?.data?.data.transaksi.map((item, _) => (
-                  <tr
-                    key={item.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
-                      // false === true && "bg-base-200",
-                    )}
-                  >
-                    <td>
-                      <span className="font-medium text-info">
-                        {item.nomorTransaksi}
-                      </span>
-                    </td>
-                    <td>
-                      {formatTanggalLengkap(item.completedAt ?? new Date())}
-                    </td>
-                    <td>{formatNumber(item.totalItem)} item</td>
-                    <td>{formatRupiah(item.totalBayar)}</td>
-                    <td>
-                      <MetodePembayaranComponent
-                        metodePembayaran={item.metodePembayaran || "CASH"}
-                      />
-                    </td>
-                    <td>
-                      <StatusTransaction
-                        status={item.status}
-                        statusTempo={item.statusTempo}
-                      />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="text-info hover:underline"
-                        onClick={() => handleRedirectDetail(item.id)}
+                dataRiwayatTransaksi?.data?.data.transaksi.map(
+                  (item, index) => (
+                    <Fragment key={item.id}>
+                      {index > 0 && index % 25 === 0 && (
+                        <tr className="h-12 bg-base-100 text-xs text-base-content/60">
+                          <th>No. Transaksi</th>
+                          <th>Tanggal</th>
+                          <th>Total Item</th>
+                          <th>Total Pembayaran</th>
+                          <th>Pembayaran</th>
+                          <th>Status</th>
+                          <th className="sticky right-0 bg-base-100 z-10">
+                            Aksi
+                          </th>
+                        </tr>
+                      )}
+
+                      <tr
+                        className={cn(
+                          "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
+                          // false === true && "bg-base-200",
+                        )}
                       >
-                        detail
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                        <td>
+                          <span className="font-medium text-info">
+                            {item.nomorTransaksi}
+                          </span>
+                        </td>
+
+                        <td>
+                          {formatTanggalLengkap(item.completedAt ?? new Date())}
+                        </td>
+
+                        <td>{formatNumber(item.totalItem)} item</td>
+
+                        <td>{formatRupiah(item.totalBayar)}</td>
+
+                        <td>
+                          <MetodePembayaranComponent
+                            metodePembayaran={item.metodePembayaran || "CASH"}
+                          />
+                        </td>
+
+                        <td>
+                          <StatusTransaction
+                            status={item.status}
+                            statusTempo={item.statusTempo}
+                          />
+                        </td>
+
+                        <td>
+                          <button
+                            type="button"
+                            className="text-info hover:underline"
+                            onClick={() => handleRedirectDetail(item.id)}
+                          >
+                            detail
+                          </button>
+                        </td>
+                      </tr>
+                    </Fragment>
+                  ),
+                )
               ) : (
                 <tr>
                   <td colSpan={7}>

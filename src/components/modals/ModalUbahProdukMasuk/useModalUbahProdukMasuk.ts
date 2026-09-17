@@ -29,6 +29,7 @@ const useModalUbahProdukMasuk = (params: {
       hargaModalRataRata: number;
     };
     jumlahBox: number;
+    jumlahStok: number;
     hargaBeli: number;
   };
   handleCloseModal: () => void;
@@ -38,7 +39,7 @@ const useModalUbahProdukMasuk = (params: {
     idBarangMasuk,
     status,
     handleCloseModal,
-    dataUpdate: { jumlahBox, produk, hargaBeli },
+    dataUpdate: { jumlahBox, produk, hargaBeli, jumlahStok },
   } = params;
 
   // navigate
@@ -86,8 +87,10 @@ const useModalUbahProdukMasuk = (params: {
   useEffect(() => {
     reset({
       produkId: produk?.id,
-      jumlahBox,
+      jumlahBox: jumlahBox === 0 ? undefined : jumlahBox,
       hargaBeli,
+      jumlahStok:
+        jumlahBox > 0 ? undefined : jumlahStok === 0 ? undefined : jumlahStok,
     });
   }, [reset, jumlahBox, produk, hargaBeli]);
 
@@ -101,6 +104,12 @@ const useModalUbahProdukMasuk = (params: {
   const hargaBeliController = useController({
     control,
     name: "hargaBeli",
+  });
+
+  // jumlah stok controller
+  const jumlahStokController = useController({
+    control,
+    name: "jumlahStok",
   });
 
   const { dataProdukForChoose, isLoadingProdukForChoose } =
@@ -132,6 +141,7 @@ const useModalUbahProdukMasuk = (params: {
           produkId: req.produkId,
           jumlahBox: req.jumlahBox,
           hargaBeli: req.hargaBeli,
+          jumlahStok: req.jumlahStok,
         },
         status: status!,
       }),
@@ -146,6 +156,7 @@ const useModalUbahProdukMasuk = (params: {
           produkId: data.data.produk.id,
           jumlahBox: data.data.jumlahBox,
           hargaBeli: data.data.produk.hargaBeli,
+          jumlahStok: data.data.jumlahStok,
         });
       }
 
@@ -194,9 +205,15 @@ const useModalUbahProdukMasuk = (params: {
         produkChoose === null ? false : data.produkId !== produk?.id;
 
       const isJumlahChanged = data.jumlahBox !== jumlahBox;
+      const isJumlahStokChanged = data.jumlahStok !== jumlahStok;
       const isHargaBeliChanged = data.hargaBeli !== hargaBeli;
 
-      if (!isProdukChanged && !isJumlahChanged && !isHargaBeliChanged) {
+      if (
+        !isProdukChanged &&
+        !isJumlahChanged &&
+        !isHargaBeliChanged &&
+        !isJumlahStokChanged
+      ) {
         setError("produkId", {
           message: "Minimal ubah produk, harga beli atau jumlah box",
         });
@@ -216,6 +233,7 @@ const useModalUbahProdukMasuk = (params: {
         produkId: isProdukChanged ? data.produkId : undefined,
         jumlahBox: isJumlahChanged ? data.jumlahBox : undefined,
         hargaBeli: data.hargaBeli ? data.hargaBeli : undefined,
+        jumlahStok: isJumlahStokChanged ? data.jumlahStok : undefined,
       };
 
       await mutateBarangMasukDetail(payload);
@@ -238,7 +256,14 @@ const useModalUbahProdukMasuk = (params: {
 
     reset({
       produkId: findData.id,
-      jumlahBox: jumlahBox,
+      jumlahBox:
+        jumlahBox === undefined || jumlahBox === 0 ? undefined : jumlahBox,
+      jumlahStok:
+        jumlahBox > 0
+          ? undefined
+          : jumlahStok === undefined || jumlahStok === 0
+            ? undefined
+            : jumlahStok,
       hargaBeli: findData.hargaBeli,
     });
 
@@ -298,6 +323,8 @@ const useModalUbahProdukMasuk = (params: {
     jumlahBoxController,
 
     hargaBeliController,
+
+    jumlahStokController,
   };
 };
 

@@ -11,7 +11,7 @@ import {
   QrCode,
   ReceiptText,
 } from "lucide-react";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import { cn } from "../../../utils/cn";
 import {
   formatNumber,
@@ -255,6 +255,7 @@ const RiwayatTransaksi = () => {
                 <th className="sticky right-0 bg-base-100 z-10">Aksi</th>
               </tr>
             </thead>
+
             <tbody>
               {isLoadingRiwayatTransaksi ? (
                 Array.from({ length: 4 }).map((_, index) => (
@@ -265,90 +266,119 @@ const RiwayatTransaksi = () => {
                   </tr>
                 ))
               ) : isExistDataRiwayatTransaksi ? (
-                dataRiwayatTransaksi?.data?.data.map((item, _) => (
-                  <tr
-                    key={item.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
-                      // false === true && "bg-base-200",
+                dataRiwayatTransaksi?.data?.data.map((item, index) => (
+                  <Fragment key={item.id}>
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="h-12 bg-base-100 text-xs text-base-content/60">
+                        <th>No. Transaksi</th>
+                        <th>Tanggal</th>
+                        <th>Kasir</th>
+                        <th>Pelanggan</th>
+                        <th>Total Item</th>
+                        <th>Total Pembayaran</th>
+                        <th>Pembayaran</th>
+                        <th>Status</th>
+                        <th className="sticky right-0 bg-base-100 z-10">
+                          Aksi
+                        </th>
+                      </tr>
                     )}
-                  >
-                    <td>
-                      <span className="font-medium text-info">
-                        {item.nomorTransaksi}
-                      </span>
-                    </td>
-                    <td>
-                      {formatTanggalLengkap(item.completedAt ?? new Date())}
-                    </td>
-                    {/* kasir */}
-                    <td>
-                      {item.kasir ? (
+
+                    <tr
+                      className={cn(
+                        "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
+                        // false === true && "bg-base-200",
+                      )}
+                    >
+                      <td>
+                        <span className="font-medium text-info">
+                          {item.nomorTransaksi}
+                        </span>
+                      </td>
+
+                      <td>
+                        {formatTanggalLengkap(item.completedAt ?? new Date())}
+                      </td>
+
+                      {/* kasir */}
+                      <td>
+                        {item.kasir ? (
+                          <div className="w-full flex flex-row justify-start items-center gap-2">
+                            {/* avatar */}
+                            <Avatar
+                              nama={item.kasir.nama}
+                              index={item.kasir.id}
+                              xs
+                            />
+
+                            <div className="flex flex-col justify-start items-start">
+                              {/* nama */}
+                              <span className="font-semibold text-[0.625rem]">
+                                {item.kasir.nama}
+                              </span>
+
+                              {/* no wa */}
+                              <span className="text-[0.625rem] text-base-content/50">
+                                {item.kasir.username}
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-xs font-medium italic text-base-content/50">
+                            Kasir tidak tersedia
+                          </span>
+                        )}
+                      </td>
+
+                      {/* pelanggan */}
+                      <td>
                         <div className="w-full flex flex-row justify-start items-center gap-2">
                           {/* avatar */}
                           <Avatar
-                            nama={item.kasir.nama}
-                            index={item.kasir.id}
+                            nama={item.pelanggan.nama}
+                            index={item.pelanggan.id}
                             xs
                           />
+
                           <div className="flex flex-col justify-start items-start">
                             {/* nama */}
                             <span className="font-semibold text-[0.625rem]">
-                              {item.kasir.nama}
+                              {item.pelanggan.nama}
                             </span>
+
                             {/* no wa */}
                             <span className="text-[0.625rem] text-base-content/50">
-                              {item.kasir.username}
+                              {formatNumberPhone(item.pelanggan.noWa)}
                             </span>
                           </div>
                         </div>
-                      ) : (
-                        <span className="text-xs font-medium italic text-base-content/50">
-                          Kasir tidak tersedia
-                        </span>
-                      )}
-                    </td>
-                    {/* pelanggan */}
-                    <td>
-                      <div className="w-full flex flex-row justify-start items-center gap-2">
-                        {/* avatar */}
-                        <Avatar
-                          nama={item.pelanggan.nama}
-                          index={item.pelanggan.id}
-                          xs
+                      </td>
+
+                      <td>{formatNumber(item.totalItem)} item</td>
+
+                      <td>{formatRupiah(item.totalBayar)}</td>
+
+                      <td>
+                        <MetodePembayaranComponent
+                          metodePembayaran={item.metodePembayaran || "CASH"}
                         />
-                        <div className="flex flex-col justify-start items-start">
-                          {/* nama */}
-                          <span className="font-semibold text-[0.625rem]">
-                            {item.pelanggan.nama}
-                          </span>
-                          {/* no wa */}
-                          <span className="text-[0.625rem] text-base-content/50">
-                            {formatNumberPhone(item.pelanggan.noWa)}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{formatNumber(item.totalItem)} item</td>
-                    <td>{formatRupiah(item.totalBayar)}</td>
-                    <td>
-                      <MetodePembayaranComponent
-                        metodePembayaran={item.metodePembayaran || "CASH"}
-                      />
-                    </td>
-                    <td>
-                      <StatusTransaction status={item.status} />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="text-info hover:underline"
-                        onClick={() => handleRedirectDetail(item.id)}
-                      >
-                        detail
-                      </button>
-                    </td>
-                  </tr>
+                      </td>
+
+                      <td>
+                        <StatusTransaction status={item.status} />
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          className="text-info hover:underline"
+                          onClick={() => handleRedirectDetail(item.id)}
+                        >
+                          detail
+                        </button>
+                      </td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>
@@ -365,6 +395,7 @@ const RiwayatTransaksi = () => {
                 </tr>
               )}
             </tbody>
+
             {/* foot */}
           </table>
         </div>
@@ -376,6 +407,7 @@ const RiwayatTransaksi = () => {
             totalPage={dataRiwayatTransaksi?.data?.meta?.totalPage || 1}
             limit={dataRiwayatTransaksi?.data?.meta?.limit || 8}
             setLimit={setLimit}
+            totalData={dataRiwayatTransaksi?.data?.meta?.totalData}
           />
         </div>
       </div>

@@ -57,6 +57,9 @@ const useRangeDate = ({
 
   const [selected, setSelected] = useState<DateRange>();
 
+  /**
+   * Set default date ke URL jika belum ada.
+   */
   useEffect(() => {
     if (isControlled) return;
 
@@ -81,18 +84,28 @@ const useRangeDate = ({
     setSearchParams,
   ]);
 
+  /**
+   * Sinkronisasi selected DayPicker dengan
+   * startDate dan endDate.
+   */
   useEffect(() => {
     if (!startDate || !endDate) {
       setSelected(undefined);
       return;
     }
 
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
     setSelected({
-      from: new Date(startDate),
-      to: new Date(endDate),
+      from: start,
+      to: end,
     });
   }, [startDate, endDate]);
 
+  /**
+   * Set range tanggal.
+   */
   const setRangeDate = (startDate?: string, endDate?: string) => {
     if (isControlled && state?.onChange) {
       state.onChange({
@@ -122,6 +135,9 @@ const useRangeDate = ({
     });
   };
 
+  /**
+   * Reset ke tanggal default.
+   */
   const resetRangeDate = () => {
     if (isControlled && state?.onChange) {
       state.onChange({
@@ -142,6 +158,9 @@ const useRangeDate = ({
     });
   };
 
+  /**
+   * Handle dropdown tanggal.
+   */
   const handleOnChangeDropDown = (value: string) => {
     if (value === "aturTanggal") {
       handleShowModalDate();
@@ -163,26 +182,51 @@ const useRangeDate = ({
     setRangeDate(range.startDate, range.endDate);
   };
 
+  /**
+   * Apply tanggal dari DayPicker.
+   *
+   * Jika hanya memilih satu tanggal:
+   *
+   * from = 16 September
+   * to   = undefined
+   *
+   * maka otomatis:
+   *
+   * startDate = 16 September
+   * endDate   = 16 September
+   */
   const handleApply = () => {
-    if (!selected?.from || !selected?.to) return;
+    if (!selected?.from) return;
 
-    setRangeDate(
-      format(selected.from, "yyyy-MM-dd"),
-      format(selected.to, "yyyy-MM-dd"),
-    );
+    const startDate = format(selected.from, "yyyy-MM-dd");
+
+    const endDate = format(selected.to ?? selected.from, "yyyy-MM-dd");
+
+    setRangeDate(startDate, endDate);
 
     closeModalDate();
   };
 
+  /**
+   * Menentukan option dropdown berdasarkan
+   * startDate dan endDate saat ini.
+   *
+   * Jika kombinasi tanggal tidak ada di listDate,
+   * maka dianggap sebagai tanggal custom.
+   */
   const selectedOption = useMemo(() => {
     if (!startDate || !endDate) return "";
 
     const found = listDate.find((item) => {
       if (item.value === "reset") return false;
 
-      const range = JSON.parse(item.value) as RangeDateState;
+      try {
+        const range = JSON.parse(item.value) as RangeDateState;
 
-      return range.startDate === startDate && range.endDate === endDate;
+        return range.startDate === startDate && range.endDate === endDate;
+      } catch {
+        return false;
+      }
     });
 
     return found?.value ?? "aturTanggal";

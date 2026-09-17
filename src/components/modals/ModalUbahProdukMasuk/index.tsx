@@ -5,7 +5,11 @@ import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import { Save } from "lucide-react";
 import InputSearch from "../../inputs/InputSearch";
 import useModalUbahProdukMasuk from "./useModalUbahProdukMasuk";
-import type { StatusInventoriType } from "../../../types/constant.type";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+  type StatusInventoriType,
+} from "../../../types/constant.type";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
 import InputNumber from "../../inputs/InputNumber";
@@ -28,10 +32,12 @@ type Props = {
       hargaModalRataRata: number;
     };
     jumlahBox: number;
+    jumlahStok: number;
     hargaBeli: number;
   };
   status?: StatusInventoriType;
   fromPengajuanBarang?: boolean;
+  role?: RoleInternalType;
 };
 
 const ModalUbahProdukMasuk: FC<Props> = ({
@@ -41,6 +47,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
   status,
   dataUpdate,
   fromPengajuanBarang,
+  role,
 }) => {
   const {
     handleSubmit,
@@ -71,6 +78,8 @@ const ModalUbahProdukMasuk: FC<Props> = ({
     alert,
     jumlahBoxController,
     hargaBeliController,
+
+    jumlahStokController,
   } = useModalUbahProdukMasuk({
     idBarangMasuk,
     status,
@@ -148,7 +157,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
-                            hargaBeli
+                            hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
                             key={item.id}
                             data={item}
                             handleSetValueProdukId={handleSetValueProdukId}
@@ -171,7 +180,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
                 <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
                   <p className="text-xs font-medium">Daftar Pilihan Barang:</p>
                   <CardProdukForAfterChooseInventori
-                    hargaBeli
+                    hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
                     data={produkChoose}
                     handleDeleteValueProdukId={handleDeleteValueProdukId}
                     customWidth="w-full"
@@ -185,18 +194,23 @@ const ModalUbahProdukMasuk: FC<Props> = ({
               {!fromPengajuanBarang && (
                 <InputPrice<UpdateBarangMasukDetailType>
                   controller={hargaBeliController}
-                  label="Harga Beli"
+                  label="Harga Beli (opsional)"
                   placeholder="Harga beli"
                   max={1000000}
-                  required
                 />
               )}
               <InputNumber<UpdateBarangMasukDetailType>
                 controller={jumlahBoxController}
-                label="Jumlah Box"
+                label="Jumlah Box (opsional)"
                 placeholder="Jumlah Box"
                 max={1000000}
-                required
+              />
+
+              <InputNumber<UpdateBarangMasukDetailType>
+                controller={jumlahStokController}
+                label="Jumlah Stok (opsional)"
+                placeholder="Jumlah Stok"
+                max={1000000}
               />
             </div>
 

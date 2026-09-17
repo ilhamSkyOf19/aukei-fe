@@ -413,6 +413,7 @@ const KreditDetail = () => {
         isLoading={isLoadingDataTempo}
         limit={dataTempo?.data?.meta?.limit ?? 8}
         setLimit={handleLimit}
+        totalData={dataTempo?.data?.meta?.totalData}
       />
     </div>
   ) : (

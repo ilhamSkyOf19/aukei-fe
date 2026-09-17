@@ -9,7 +9,10 @@ import InputPrice from "../../../../components/inputs/InputPrice";
 import FormCariProdukInventori from "../../../../components/forms/FormCariProdukInventori";
 import CardProdukForAfterChooseInventori from "../../../../components/ui/cards/CardProdukForAfterChooseInventori";
 import { PackagePlus } from "lucide-react";
-import type { RoleInternalType } from "../../../../types/constant.type";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+} from "../../../../types/constant.type";
 
 type Props = {
   handleSetToast: (data: string) => void;
@@ -47,6 +50,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
     modalFormulirTambahBarangRef,
     hargaBeliController,
     jumlahStokController,
+    formInputRef,
   } = useFormulirTambahBarangMasuk({
     handleSetToast,
     handleSetAlert,
@@ -82,6 +86,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
           {/* produk */}
           <FormCariProdukInventori
             hargaBeli
+            formInputRef={formInputRef}
             wrapperRef={wrapperRef}
             handleSearch={handleSearch}
             handleCloseActiveComponentChooseProduk={
@@ -151,7 +156,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
             <div className="w-full grid grid-cols-4 gap-2.5">
               {produkChoose.map((item) => (
                 <CardProdukForAfterChooseInventori
-                  hargaBeli
+                  hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
                   key={item.id}
                   data={item}
                   handleDeleteValueProdukId={handleDeleteValueProdukId}

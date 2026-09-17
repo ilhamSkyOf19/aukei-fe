@@ -53,7 +53,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
     // invalidated riwayat
     queryClient.invalidateQueries({
-      queryKey: ["riwayat-pengajuan-barang-keluar", validatedId],
+      queryKey: ["riwayat-pengajuan-barang-masuk", validatedId],
     });
   };
 

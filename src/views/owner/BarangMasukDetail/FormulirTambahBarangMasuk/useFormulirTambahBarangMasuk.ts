@@ -32,6 +32,8 @@ const useFormulirTambahBarangMasuk = (params: {
 
   const inputSearchRef = useRef<InputSearchRef>(null);
 
+  const formInputRef = useRef<HTMLInputElement | null>(null);
+
   // state search
   const [search, setSearch] = useState("");
 
@@ -124,6 +126,8 @@ const useFormulirTambahBarangMasuk = (params: {
       setProdukChoose([]);
 
       handleSetToast("barang_masuk_detail_add_success");
+
+      formInputRef?.current?.focus();
     },
 
     onError: (err) => {
@@ -208,6 +212,7 @@ const useFormulirTambahBarangMasuk = (params: {
     hargaBeliController,
 
     jumlahStokController,
+    formInputRef,
   };
 };
 export default useFormulirTambahBarangMasuk;

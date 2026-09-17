@@ -16,7 +16,7 @@ import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
 import { CircleAlert, EllipsisVertical, Undo2 } from "lucide-react";
 import DropDownInventori from "../../../components/ui/DropDownInventori";
 import { formatRupiah } from "../../../helpers/helpers";
-import type { FC } from "react";
+import { Fragment, type FC } from "react";
 import { RETURN_STATUS } from "../../../types/constant.type";
 import ModalDelete from "../../../components/modals/ModalDelete";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
@@ -141,6 +141,7 @@ const DaftarReturBarang = () => {
                     <th>Aksi</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {/* row 1 */}
                   {isLoadingReturBarang ? (
@@ -154,15 +155,32 @@ const DaftarReturBarang = () => {
                   ) : daftarReturBarang?.data &&
                     daftarReturBarang?.data?.data.length > 0 ? (
                     <>
-                      {daftarReturBarang?.data?.data.map((item, index) => {
-                        return (
-                          <tr key={item.id} className="h-18 text-base-content">
+                      {daftarReturBarang?.data?.data.map((item, index) => (
+                        <Fragment key={item.id}>
+                          {/* HEADER SETIAP 25 DATA */}
+                          {index > 0 && index % 25 === 0 && (
+                            <tr className="text-[0.625rem] bg-base-content/5 h-10 text-base-content/60">
+                              <th>No</th>
+                              <th>Kode Referensi</th>
+                              <th>Dibuat</th>
+                              <th>Tgl. Retur</th>
+                              <th>Diverifikasi</th>
+                              <th>Tgl. Verifikasi</th>
+                              <th>Total Refund</th>
+                              <th>Status</th>
+                              <th>Aksi</th>
+                            </tr>
+                          )}
+
+                          <tr className="h-18 text-base-content">
                             <th className="px-3">{index + 1}</th>
+
                             <td>
                               <span className="text-info font-medium">
                                 {item.kodeReferensi}
                               </span>
                             </td>
+
                             <td>
                               <div className="w-full flex flex-row justify-start items-center gap-2">
                                 {/* avatar */}
@@ -171,18 +189,21 @@ const DaftarReturBarang = () => {
                                   index={item.createdBy.id}
                                   xs
                                 />
+
                                 <div className="flex flex-col justify-start items-start">
                                   {/* nama */}
                                   <span className="font-semibold text-[0.625rem]">
                                     {item.createdBy.nama}
                                   </span>
-                                  {/* no wa */}
+
+                                  {/* role */}
                                   <span className="text-[0.625rem] text-base-content/50 capitalize">
                                     {item.createdBy.role.toLowerCase()}
                                   </span>
                                 </div>
                               </div>
                             </td>
+
                             <td>{formatTanggalPanjang(item.tanggalReturn)}</td>
 
                             <td>
@@ -194,12 +215,14 @@ const DaftarReturBarang = () => {
                                     index={item.verifiedBy.id}
                                     xs
                                   />
+
                                   <div className="flex flex-col justify-start items-start">
                                     {/* nama */}
                                     <span className="font-semibold text-[0.625rem]">
                                       {item.verifiedBy.nama}
                                     </span>
-                                    {/* no wa */}
+
+                                    {/* role */}
                                     <span className="text-[0.625rem] text-base-content/50 capitalize">
                                       {item.verifiedBy.role.toLowerCase()}
                                     </span>
@@ -209,15 +232,19 @@ const DaftarReturBarang = () => {
                                 "-"
                               )}
                             </td>
+
                             <td>
                               {item.verifiedAt
                                 ? formatTanggalPanjang(item.verifiedAt)
                                 : "-"}
                             </td>
+
                             <td>{formatRupiah(item.totalRefundAll)}</td>
+
                             <td>
                               <StatusReturBarang status={item.status} />
                             </td>
+
                             <td>
                               <div className="flex flex-row justify-start items-center gap-1.5">
                                 {/* button detail */}
@@ -243,8 +270,8 @@ const DaftarReturBarang = () => {
                               </div>
                             </td>
                           </tr>
-                        );
-                      })}
+                        </Fragment>
+                      ))}
                     </>
                   ) : (
                     <tr>
@@ -272,6 +299,7 @@ const DaftarReturBarang = () => {
           limit={daftarReturBarang?.data?.meta?.limit ?? 8}
           setLimit={handleLimit}
           emptyData={!isExistingDaftarReturBarang}
+          totalData={daftarReturBarang?.data?.meta?.totalData}
         />
       </div>
 

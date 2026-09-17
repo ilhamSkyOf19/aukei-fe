@@ -82,6 +82,7 @@ const InformasiStockOpnameDetail: FC<Props> = ({
           author={author}
           isLoading={isLoadingStocOpnameDetail}
           tanggalDiajukan={tanggalDiajukan}
+          stockOpname
         />
       )}
       {/* informasi stok opname */}

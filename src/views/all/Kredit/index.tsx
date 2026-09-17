@@ -31,6 +31,7 @@ import {
 } from "../../../types/constant.type";
 import CardData from "../../../components/ui/cards/CardData";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
+import { Fragment } from "react/jsx-runtime";
 
 const Kredit = () => {
   const {
@@ -252,6 +253,7 @@ const Kredit = () => {
                 <th>Aksi</th>
               </tr>
             </thead>
+
             <tbody>
               {isLoadingDataTempo ? (
                 Array.from({ length: 4 }).map((_, index) => (
@@ -262,81 +264,106 @@ const Kredit = () => {
                   </tr>
                 ))
               ) : isExistDataTempo ? (
-                dataTempo?.data?.data.map((item, _) => (
-                  <tr
-                    key={item.id}
-                    className={cn(
-                      "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
+                dataTempo?.data?.data.map((item, index) => (
+                  <Fragment key={item.id}>
+                    {/* HEADER SETIAP 25 DATA */}
+                    {index > 0 && index % 25 === 0 && (
+                      <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                        <th>Pelanggan</th>
+                        <th>Total Transaksi</th>
+                        <th>Belum Lunas</th>
+                        <th>Sudah Lunas</th>
+                        <th>Jatuh Tempo</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                      </tr>
                     )}
-                  >
-                    {/* pelanggan */}
-                    <td>
-                      <div className="w-full flex flex-row justify-start items-center gap-2">
-                        {/* avatar */}
-                        <Avatar
-                          nama={item.pelanggan.nama}
-                          index={item.pelanggan.id}
-                          xs
-                        />
-                        <div className="flex flex-col justify-start items-start">
-                          {/* nama */}
-                          <span className="font-semibold text-[0.625rem]">
-                            {item.pelanggan.nama}
-                          </span>
-                          {/* no wa */}
-                          <span className="text-[0.625rem] text-base-content/50">
-                            {formatNumberPhone(item.pelanggan.noWa)}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{formatNumber(item.totalTransaksiTempo)} Transaksi</td>
-                    <td>
-                      <span className="text-error font-medium">
-                        {formatRupiah(item.tagihanBelumLunas)}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="text-success font-medium">
-                        {formatRupiah(item.tagihanLunas)}
-                      </span>
-                    </td>
-                    <td>
-                      {item.jatuhTempoTerdekat ? (
-                        <div className="flex flex-col justify-start items-start gap-1">
-                          <span>
-                            {formatTanggalPanjang(
-                              item.jatuhTempoTerdekat ?? new Date(),
-                            )}
-                          </span>
-                          <span
-                            className={cn(
-                              "font-medium text-[0.625rem]",
-                              getJatuhTempoTextColor(
-                                item.jatuhTempoTerdekat ?? new Date(),
-                              ),
-                            )}
-                          >
-                            {getJatuhTempoText(item.jatuhTempoTerdekat)}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-xs font-medium">-</span>
+
+                    <tr
+                      className={cn(
+                        "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
                       )}
-                    </td>
-                    <td>
-                      <StatusTransaction statusTempo={item.status} />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="text-info hover:underline"
-                        onClick={() => handelRedirectDetail(item.id)}
-                      >
-                        detail
-                      </button>
-                    </td>
-                  </tr>
+                    >
+                      {/* pelanggan */}
+                      <td>
+                        <div className="w-full flex flex-row justify-start items-center gap-2">
+                          {/* avatar */}
+                          <Avatar
+                            nama={item.pelanggan.nama}
+                            index={item.pelanggan.id}
+                            xs
+                          />
+
+                          <div className="flex flex-col justify-start items-start">
+                            {/* nama */}
+                            <span className="font-semibold text-[0.625rem]">
+                              {item.pelanggan.nama}
+                            </span>
+
+                            {/* no wa */}
+                            <span className="text-[0.625rem] text-base-content/50">
+                              {formatNumberPhone(item.pelanggan.noWa)}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>
+                        {formatNumber(item.totalTransaksiTempo)} Transaksi
+                      </td>
+
+                      <td>
+                        <span className="text-error font-medium">
+                          {formatRupiah(item.tagihanBelumLunas)}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span className="text-success font-medium">
+                          {formatRupiah(item.tagihanLunas)}
+                        </span>
+                      </td>
+
+                      <td>
+                        {item.jatuhTempoTerdekat ? (
+                          <div className="flex flex-col justify-start items-start gap-1">
+                            <span>
+                              {formatTanggalPanjang(
+                                item.jatuhTempoTerdekat ?? new Date(),
+                              )}
+                            </span>
+
+                            <span
+                              className={cn(
+                                "font-medium text-[0.625rem]",
+                                getJatuhTempoTextColor(
+                                  item.jatuhTempoTerdekat ?? new Date(),
+                                ),
+                              )}
+                            >
+                              {getJatuhTempoText(item.jatuhTempoTerdekat)}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs font-medium">-</span>
+                        )}
+                      </td>
+
+                      <td>
+                        <StatusTransaction statusTempo={item.status} />
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          className="text-info hover:underline"
+                          onClick={() => handelRedirectDetail(item.id)}
+                        >
+                          detail
+                        </button>
+                      </td>
+                    </tr>
+                  </Fragment>
                 ))
               ) : (
                 <tr>
@@ -365,6 +392,7 @@ const Kredit = () => {
           isLoading={isLoadingDataTempo}
           limit={dataTempo?.data?.meta?.limit ?? 8}
           setLimit={handleLimit}
+          totalData={dataTempo?.data?.meta?.totalData}
         />
       </div>
     </div>

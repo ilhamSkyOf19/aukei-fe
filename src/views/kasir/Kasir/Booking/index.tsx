@@ -11,14 +11,7 @@ import {
   unformatRupiah,
 } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import {
-  ArrowLeftRight,
-  Banknote,
-  Check,
-  Landmark,
-  QrCode,
-  X,
-} from "lucide-react";
+import { ArrowLeft, Banknote, Check, Landmark, QrCode } from "lucide-react";
 import CardMetodePembayaran from "../../../../components/ui/cards/CardMetodePembayaran";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
@@ -36,7 +29,6 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
     dataDetails,
     pelanggan,
     handleUbahTransaction,
-    handleBatalTransaction,
     metodePembayaran,
     transactionSummary,
     handleMetodePembayaran,
@@ -87,17 +79,8 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
 
             <div className="flex flex-row justify-end items-center gap-2.5">
               <ButtonWithIcon
-                icon={X}
-                bgColor="bg-error"
-                textColor="text-primary-white"
-                label="Batalkan Transaksi"
-                handleBtn={handleBatalTransaction}
-              />
-              <ButtonWithIcon
-                icon={ArrowLeftRight}
-                bgColor="bg-info"
-                textColor="text-primary-white"
-                label="Ubah Produk"
+                icon={ArrowLeft}
+                label="Kembali"
                 handleBtn={handleUbahTransaction}
               />
             </div>
