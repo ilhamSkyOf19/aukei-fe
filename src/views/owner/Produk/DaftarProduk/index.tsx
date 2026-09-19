@@ -214,7 +214,7 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                 <th>Kode</th>
                 <th>Nama</th>
                 <th>Kategori</th>
-                <th>Hrg. Beli Terakhir</th>
+                <th>Hrg. Mdl. Terakhir</th>
                 <th>Mdl. Rata Rata</th>
                 <th>Hrg. Jual</th>
                 <th>Hrg. PPN</th>

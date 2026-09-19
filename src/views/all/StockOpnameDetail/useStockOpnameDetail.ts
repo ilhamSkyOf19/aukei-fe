@@ -69,6 +69,7 @@ const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
     data: dataStockOpnameDetail,
     isLoading,
     isFetching,
+    refetch,
   } = useQuery({
     queryKey: ["stock-opname-detail", stockOpnameId],
 
@@ -83,6 +84,13 @@ const useStockOpnameDetail = (params: { fromPengajuan?: boolean }) => {
 
     refetchOnWindowFocus: false,
   });
+
+  const handleRefresh = async () => {
+    await refetch({
+      throwOnError: true,
+    });
+    // await grafikLineRef.current?.refetchActive();
+  };
 
   // ============================================================
   // ROLE
@@ -574,20 +582,59 @@ Helper khusus penolakan.
         ? stockOpname?.riwayat?.[1]?.createdAt
         : stockOpname?.riwayat?.[0]?.createdAt;
 
-    const totalProduk = stockOpname?.details?.length ?? 0;
+    const details = stockOpname?.details ?? [];
 
-    const totalItem =
-      stockOpname?.details?.reduce(
-        (total, detail) => total + (detail.stokFisik ?? 0),
-        0,
-      ) ?? 0;
+    const totalProduk = details.length;
+
+    const totalItem = details.reduce(
+      (total, detail) => total + (detail.stokFisik ?? 0),
+      0,
+    );
+
+    const totalItemMinus = details.reduce(
+      (total, detail) =>
+        total + ((detail.selisih ?? 0) < 0 ? Math.abs(detail.selisih ?? 0) : 0),
+      0,
+    );
+
+    const totalItemSurplus = details.reduce(
+      (total, detail) =>
+        total + ((detail.selisih ?? 0) > 0 ? (detail.selisih ?? 0) : 0),
+      0,
+    );
+
+    const totalNilaiMinus = details.reduce(
+      (total, detail) =>
+        total +
+        ((detail.selisih ?? 0) < 0
+          ? Math.abs(detail.selisih ?? 0) * (detail.hargaModalSatuan ?? 0)
+          : 0),
+      0,
+    );
+
+    const totalNilaiSurplus = details.reduce(
+      (total, detail) =>
+        total +
+        ((detail.selisih ?? 0) > 0
+          ? (detail.selisih ?? 0) * (detail.hargaModalSatuan ?? 0)
+          : 0),
+      0,
+    );
 
     return {
       author: stockOpname?.adminOpname,
       tanggalDiajukan,
       isUpdate: isCanManageDetail,
+
       totalProduk,
       totalItem,
+
+      totalItemMinus,
+      totalItemSurplus,
+
+      totalNilaiMinus,
+      totalNilaiSurplus,
+
       idStockOpnameDetail: stockOpname?.id,
       isLoadingStocOpnameDetail: isLoading,
       keterangan: stockOpname?.keterangan ?? "",
@@ -721,6 +768,8 @@ Helper khusus penolakan.
     stockOpname,
 
     informasiStockOpnameDetail,
+
+    handleRefresh,
   };
 };
 

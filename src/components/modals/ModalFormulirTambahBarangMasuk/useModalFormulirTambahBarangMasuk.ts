@@ -33,7 +33,7 @@ const useModalFormulirTambahBarangMasuk = (params: {
     ResponseProdukForChooseType[]
   >([]);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
 
   const inputSearchRef = useRef<InputSearchRef>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);

@@ -30,6 +30,9 @@ import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
 import { cn } from "../../../../utils/cn";
 import useShowStockOpname from "./useShowStockOpnameDetail";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
+import InputChoose from "../../../../components/inputs/InputChoose";
+import ModalFormulirUbahProdukStockOpname from "../../../../components/modals/ModalFormulirUbahProdukStockOpname";
+import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 
 // ============================================================
 // TYPE
@@ -44,6 +47,8 @@ type Props = {
 
   handleSetToast: (value: string) => void;
   role?: RoleInternalType;
+
+  stockOpnameId: number;
 };
 
 // ============================================================
@@ -58,8 +63,6 @@ const ShowStockOpname: FC<Props> = ({
   role,
 }) => {
   const {
-    isActiveAksi,
-
     modalDeleteRef,
     handleCloseModalDelete,
     handleShowModalDelete,
@@ -75,6 +78,13 @@ const ShowStockOpname: FC<Props> = ({
     isPendingUpdate,
     isDirty,
     stokFisikController,
+    jenisPenyesuaianController,
+    activeField,
+
+    dataUpdateModal,
+    handleCloseModalUpdate,
+    handleShowModalUpdate,
+    modalUpdateRef,
   } = useShowStockOpname({
     status: dataStockOpnameDetail?.status,
     handleSetToast,
@@ -138,6 +148,20 @@ const ShowStockOpname: FC<Props> = ({
                 {/* ACTION */}
                 {isCanUpdate && !isStatusApproved && (
                   <div className="flex flex-row justify-end items-center gap-2.5">
+                    <ButtonWithIcon
+                      bgColor="bg-info"
+                      textColor="text-primary-white"
+                      label="Ubah"
+                      handleBtn={() =>
+                        handleShowModalUpdate(undefined, {
+                          id: item.id,
+                          jenisPenyesuaian: item.jenisPenyesuaian ?? undefined,
+                          stokFisik: item.stokFisik ?? 0,
+                          produkId: item.produk.id,
+                        })
+                      }
+                      customHeight="h-8"
+                    />
                     <ButtonWithIcon
                       bgColor="bg-error"
                       textColor="text-primary-white"
@@ -208,15 +232,17 @@ const ShowStockOpname: FC<Props> = ({
                   </div>
                 )}
 
-                <div className="flex flex-col gap-1">
-                  <span className="text-[0.625rem] text-base-content/50">
-                    Total Kerugian
-                  </span>
+                {role === ROLE_INTERNAL_TYPE.OWNER && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[0.625rem] text-base-content/50">
+                      Total Kerugian
+                    </span>
 
-                  <span className="text-xs font-semibold text-error">
-                    {formatRupiah(item.totalKerugian)}
-                  </span>
-                </div>
+                    <span className="text-xs font-semibold text-error">
+                      {formatRupiah(item.totalKerugian)}
+                    </span>
+                  </div>
+                )}
 
                 <div className="flex flex-col gap-1">
                   <span className="text-[0.625rem] text-base-content/50">
@@ -271,10 +297,16 @@ const ShowStockOpname: FC<Props> = ({
                 <th>Stok Fisik</th>
                 <th>Selisih</th>
                 <th>Penyesuaian</th>
-                {role === ROLE_INTERNAL_TYPE.OWNER && <th>Harga Modal</th>}
-                <th>Total Kerugian</th>
+                {role === ROLE_INTERNAL_TYPE.OWNER && (
+                  <>
+                    <th>Harga Modal</th>
+                    <th>Total Kerugian</th>
+                  </>
+                )}
 
-                {isCanUpdate && !isStatusApproved && <th>Aksi</th>}
+                {isCanUpdate && !isStatusApproved && (
+                  <th align="center">Aksi</th>
+                )}
               </tr>
             </thead>
 
@@ -301,18 +333,21 @@ const ShowStockOpname: FC<Props> = ({
                         <th>Selisih</th>
                         <th>Penyesuaian</th>
                         {role === ROLE_INTERNAL_TYPE.OWNER && (
-                          <th>Harga Modal</th>
+                          <>
+                            <th>Harga Modal</th>
+                            <th>Total Kerugian</th>
+                          </>
                         )}
-                        <th>Total Kerugian</th>
 
-                        {isCanUpdate && !isStatusApproved && <th>Aksi</th>}
+                        {isCanUpdate && !isStatusApproved && (
+                          <th align="center">Aksi</th>
+                        )}
                       </tr>
                     )}
 
                     <tr
                       className={cn(
                         "transition-all duration-75 ease-in-out text-base-content text-[0.7rem]",
-                        isActiveAksi === item.id && "bg-base-200",
                       )}
                     >
                       {/* NO */}
@@ -320,12 +355,23 @@ const ShowStockOpname: FC<Props> = ({
 
                       {/* NAMA */}
                       <td>
-                        <div className="flex flex-col justify-start items-start">
-                          {item.produk.nama}
+                        <div className="flex flex-row justify-start items-start gap-2.5">
+                          <div className="avatar">
+                            <div className="mask mask-squircle w-8 h-8">
+                              <img
+                                src={item.produk.img}
+                                alt="Foto Produk"
+                                loading="lazy"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex flex-col justify-start items-start">
+                            {item.produk.nama}
 
-                          <p className="font-medium">
-                            {item.produk.kode ?? "-"}
-                          </p>
+                            <p className="font-medium">
+                              {item.produk.kode ?? "-"}
+                            </p>
+                          </div>
                         </div>
                       </td>
 
@@ -338,10 +384,13 @@ const ShowStockOpname: FC<Props> = ({
                       <td
                         className={cn(
                           "font-medium",
-                          dataUpdate?.id === item.id && "min-w-45",
+                          dataUpdate?.id === item.id &&
+                            activeField === "stokFisik" &&
+                            "min-w-45",
                         )}
                       >
-                        {dataUpdate?.id === item.id ? (
+                        {dataUpdate?.id === item.id &&
+                        activeField === "stokFisik" ? (
                           <CardForm<UpdateStockOpnameDetailType>
                             handleResetForm={handleClearDataUpdate}
                             handleSubmit={handleSubmit}
@@ -372,6 +421,7 @@ const ShowStockOpname: FC<Props> = ({
                                 <ButtonInline
                                   handleKeyUpdate={() =>
                                     handleSetDataUpdate({
+                                      active: "stokFisik",
                                       data: {
                                         id: item.id,
                                         produkId: item.produk.id,
@@ -399,47 +449,123 @@ const ShowStockOpname: FC<Props> = ({
                         )}
                       >
                         {item.selisih !== null
-                          ? formatNumber(item.selisih)
+                          ? `${item.selisih > 0 ? "+" : ""}${formatNumber(item.selisih)}`
                           : "-"}
                       </td>
 
                       {/* JENIS PENYESUAIAN */}
-                      <td>
-                        {item.jenisPenyesuaian
-                          ? item.jenisPenyesuaian ===
-                            JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE.MASUK_KERUGIAN
-                            ? "Masuk Kerugian"
-                            : "Tidak Masuk Kerugian"
-                          : "-"}
+                      <td
+                        className={cn(
+                          "font-medium",
+                          dataUpdate?.id === item.id &&
+                            activeField === "jenisPenyesuaian" &&
+                            "min-w-45",
+                        )}
+                      >
+                        {dataUpdate?.id === item.id &&
+                        activeField === "jenisPenyesuaian" ? (
+                          <CardForm<UpdateStockOpnameDetailType>
+                            handleResetForm={handleClearDataUpdate}
+                            handleSubmit={handleSubmit}
+                            onSubmit={onSubmit}
+                            isPending={isPendingUpdate}
+                            btnAksiPosition="top"
+                            isDirty={isDirty}
+                          >
+                            <div className="w-40">
+                              <InputChoose<UpdateStockOpnameDetailType>
+                                controller={jenisPenyesuaianController}
+                                placeholder="Jenis Penyesuaian"
+                                chooseList={[
+                                  {
+                                    label: "Masuk Kerugian",
+                                    value:
+                                      JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE.MASUK_KERUGIAN,
+                                  },
+                                  {
+                                    label: "Tidak Masuk Kerugian",
+                                    value:
+                                      JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE.TIDAK_MASUK_KERUGIAN,
+                                  },
+                                ]}
+                                required
+                                xs
+                              />
+                            </div>
+                          </CardForm>
+                        ) : (
+                          <div className="flex flex-row justify-start items-center gap-2">
+                            <span>
+                              {item.jenisPenyesuaian
+                                ? item.jenisPenyesuaian ===
+                                  JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE.MASUK_KERUGIAN
+                                  ? "Masuk Kerugian"
+                                  : "Tidak Masuk Kerugian"
+                                : "-"}
+                            </span>
+
+                            {isCanUpdate && !isStatusApproved && (
+                              <>
+                                <ButtonInline
+                                  disabled={(item.selisih ?? 0) >= 0}
+                                  handleKeyUpdate={() =>
+                                    handleSetDataUpdate({
+                                      active: "jenisPenyesuaian",
+                                      data: {
+                                        id: item.id,
+                                        jenisPenyesuaian:
+                                          item.jenisPenyesuaian ?? undefined,
+                                      },
+                                    })
+                                  }
+                                />
+                              </>
+                            )}
+                          </div>
+                        )}
                       </td>
 
                       {/* HARGA MODAL */}
                       {role === ROLE_INTERNAL_TYPE.OWNER && (
-                        <td className="font-medium">
-                          {item.hargaModalSatuan !== null
-                            ? formatRupiah(item.hargaModalSatuan)
-                            : "-"}
-                        </td>
+                        <>
+                          <td className="font-medium">
+                            {item.hargaModalSatuan !== null
+                              ? formatRupiah(item.hargaModalSatuan)
+                              : "-"}
+                          </td>
+                          {/* TOTAL KERUGIAN */}
+                          <td className="font-medium text-error">
+                            {formatRupiah(item.totalKerugian)}
+                          </td>
+                        </>
                       )}
-
-                      {/* TOTAL KERUGIAN */}
-                      <td className="font-medium text-error">
-                        {formatRupiah(item.totalKerugian)}
-                      </td>
 
                       {/* AKSI */}
                       {isCanUpdate && !isStatusApproved && (
                         <td>
-                          <ButtonDeleteTable
-                            handleShowModalDelete={() =>
-                              handleShowModalDelete(item.id, {
-                                namaProduk: item.produk.nama,
-                                kodeProduk: item.produk.kode ?? "-",
-                                kodeReferensi:
-                                  dataStockOpnameDetail?.kodeReferensi,
-                              })
-                            }
-                          />
+                          <div className="flex flex-row justify-center items-start gap-1.5">
+                            <ButtonUpdateTable
+                              handleShowModalFormulir={() =>
+                                handleShowModalUpdate(undefined, {
+                                  id: item.id,
+                                  jenisPenyesuaian:
+                                    item.jenisPenyesuaian ?? undefined,
+                                  stokFisik: item.stokFisik ?? 0,
+                                  produkId: item.produk.id,
+                                })
+                              }
+                            />
+                            <ButtonDeleteTable
+                              handleShowModalDelete={() =>
+                                handleShowModalDelete(item.id, {
+                                  namaProduk: item.produk.nama,
+                                  kodeProduk: item.produk.kode ?? "-",
+                                  kodeReferensi:
+                                    dataStockOpnameDetail?.kodeReferensi,
+                                })
+                              }
+                            />
+                          </div>
                         </td>
                       )}
                     </tr>
@@ -472,6 +598,23 @@ const ShowStockOpname: FC<Props> = ({
         handleDelete={handleDelete}
         isLoadingDelete={isPendingDelete}
         bigTitle={`Apakah anda yakin ingin menghapus produk "${dataDelete?.namaProduk}" dari stok opname ini?`}
+      />
+
+      {/* modal update  */}
+      <ModalFormulirUbahProdukStockOpname
+        role={role}
+        modalRef={modalUpdateRef}
+        handleCloseModal={handleCloseModalUpdate}
+        dataUpdate={{
+          detailId: dataUpdateModal?.id,
+          stokFisik: dataUpdateModal?.stokFisik,
+          jenisPenyesuaian: dataUpdateModal?.jenisPenyesuaian,
+          produkId: dataUpdateModal?.produkId,
+        }}
+        status={dataStockOpnameDetail?.status}
+        dataChooseIds={dataStockOpnameDetail?.details?.map(
+          (item) => item.produk.id,
+        )}
       />
     </>
   );

@@ -29,6 +29,7 @@ import ShowStockOpname from "./ShowStockOpnameDetail";
 import ModalFormulirVerifikasiOrPengajuanStockOpname from "../../../components/modals/ModalFormulirVerifikasiOrPengajuanStockOpname";
 import { subtractMinutes } from "../../../helpers/helpers";
 import CountDown from "../../../components/ui/CountDown";
+import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
 
 type Props = {
   fromPengajuan?: boolean;
@@ -108,6 +109,8 @@ const StockOpnameDetail: FC<Props> = ({ fromPengajuan }) => {
     isPendingCancelVerifikasi,
 
     informasiStockOpnameDetail,
+
+    handleRefresh,
   } = useStockOpnameDetail({
     fromPengajuan,
   });
@@ -122,8 +125,8 @@ const StockOpnameDetail: FC<Props> = ({ fromPengajuan }) => {
         )}
       >
         {/* ============================================================
-ALERT
-============================================================ */}
+        ALERT
+        ============================================================ */}
 
         {alert && (
           <Alert
@@ -160,8 +163,13 @@ ALERT
         >
           {/* BUTTON BACK */}
 
-          <div className="w-30">
-            <ButtonBackText label="Kembali" />
+          <div className="w-full flex flex-row justify-between items-center">
+            <div className="w-30">
+              <ButtonBackText label="Kembali" />
+            </div>
+
+            {/* button refetch */}
+            <ButtonRefresh handleRefresh={() => handleRefresh()} />
           </div>
 
           {isLoadingStockOpnameDetail ? (
@@ -409,6 +417,10 @@ ALERT
           handleSetToast={handleSetToast}
           totalProduk={informasiStockOpnameDetail.totalProduk}
           totalItem={informasiStockOpnameDetail.totalItem}
+          totalItemMinus={informasiStockOpnameDetail.totalItemMinus}
+          totalItemSurplus={informasiStockOpnameDetail.totalItemSurplus}
+          totalNilaiMinus={informasiStockOpnameDetail.totalNilaiMinus}
+          totalNilaiSurplus={informasiStockOpnameDetail.totalNilaiSurplus}
           idStockOpnameDetail={informasiStockOpnameDetail.idStockOpnameDetail}
           isLoadingStocOpnameDetail={
             informasiStockOpnameDetail.isLoadingStocOpnameDetail
@@ -416,6 +428,7 @@ ALERT
           keterangan={informasiStockOpnameDetail.keterangan}
           status={informasiStockOpnameDetail.status}
           tanggal={informasiStockOpnameDetail.tanggal}
+          role={pengguna?.role}
         />
 
         {/* ============================================================
@@ -428,6 +441,10 @@ ALERT
             handleSetAlert={handleSetAlert}
             alert={alert}
             role={pengguna?.role}
+            produkChooseIds={
+              stockOpname?.details.map((detail) => detail.produk.id) ?? []
+            }
+            isGlobalLoading={isLoadingStockOpnameDetail}
           />
         )}
 
@@ -441,6 +458,7 @@ ALERT
           isLoadingStockOpnameDetail={isLoadingStockOpnameDetail}
           handleSetToast={handleSetToast}
           role={pengguna?.role}
+          stockOpnameId={stockOpname?.id ?? 0}
         />
 
         {/* ============================================================

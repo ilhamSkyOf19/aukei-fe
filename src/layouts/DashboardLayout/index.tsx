@@ -35,13 +35,13 @@ const DashboardLayout: FC = () => {
   }, [currentPathname, step]);
 
   return (
-    <div className="drawer lg:drawer-open">
+    <div className="drawer lg:drawer-open font-poppins">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
       {/* content */}
       <div
         className={cn(
-          "drawer-content h-screen bg-base-300 pb-4 overflow-x-hidden",
+          "drawer-content h-screen bg-base-300 pb-4 overflow-x-hidden ",
           isCanShowScrollbar
             ? "overflow-y-auto"
             : "overflow-y-auto md:overflow-hidden",

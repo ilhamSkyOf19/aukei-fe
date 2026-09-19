@@ -1,36 +1,43 @@
 import { useParams } from "react-router-dom";
-import { parseId } from "../../../helpers/helpers";
+import { parseId } from "../../helpers/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import axios from "axios";
 import { useFieldArray, useForm } from "react-hook-form";
 
-import type { ResponseProdukForChooseType } from "../../../models/produk.model";
-import type { ErrorResponse } from "../../../types/response.type";
+import type { ResponseProdukForChooseType } from "../../models/produk.model";
+import type { ErrorResponse } from "../../types/response.type";
 
-import useDataProdukForChoose from "../../../hooks/useDataProdukForChoose";
+import { StockOpnameDetailServices } from "../../services/stockOpnameDetail.service";
 
-import { StockOpnameDetailServices } from "../../../services/stockOpnameDetail.service";
-import type { CreateStockOpnameDetailType } from "../../../models/stockOpnameDetail.model";
+import type {
+  CreateStockOpnameDetailArrayForServiceType,
+  CreateStockOpnameDetailArrayType,
+} from "../../models/stockOpnameDetail.model";
+import useDataProdukForChooseInfinity from "../../hooks/useDataProdukforChooseInfinity";
+import useInfiniteScroll from "../../hooks/useInfiniteScroll";
+import useFilterState from "../../services/useFilterState";
 
 // ============================================================
 // TYPES
 // ============================================================
 
 type FormValues = {
-  details: CreateStockOpnameDetailType[];
+  details: CreateStockOpnameDetailArrayType["details"];
 };
 
 // ============================================================
 // HOOK
 // ============================================================
 
-const useModalFormulirTambahProdukStockOpname = (params: {
+const useFormulirTambahStockOpname = (params: {
   handleCloseModal: () => void;
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
+  produkChooseIds?: number[];
 }) => {
-  const { handleCloseModal, handleSetToast, handleSetAlert } = params;
+  const { handleCloseModal, handleSetToast, handleSetAlert, produkChooseIds } =
+    params;
 
   // ============================================================
   // QUERY CLIENT
@@ -46,19 +53,22 @@ const useModalFormulirTambahProdukStockOpname = (params: {
 
   const validatedId = parseId(id);
 
+  const { handleKategori, setSearch, search, kategori } = useFilterState();
+
   // ============================================================
   // DATA PRODUK
   // ============================================================
 
-  const { dataProdukForChoose, isLoadingProdukForChoose: isLoadingDataProduk } =
-    useDataProdukForChoose({
-      search: "",
-    });
-
-  const dataProduk = useMemo(
-    () => dataProdukForChoose?.data ?? [],
-    [dataProdukForChoose?.data],
-  );
+  const {
+    isLoadingProdukForChoose: isLoadingDataProduk,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    dataProduk,
+  } = useDataProdukForChooseInfinity({
+    search,
+    kategori,
+  });
 
   // ============================================================
   // FORM
@@ -69,7 +79,10 @@ const useModalFormulirTambahProdukStockOpname = (params: {
     getValues,
     setValue,
     reset,
+    setError,
+    clearErrors,
     handleSubmit: handleFormSubmit,
+    formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
       details: [],
@@ -106,20 +119,13 @@ const useModalFormulirTambahProdukStockOpname = (params: {
   // ============================================================
 
   const handleAppend = (produk: ResponseProdukForChooseType) => {
-    // Jangan tambahkan jika sudah dipilih
     if (isChecked(produk.id)) {
       return;
     }
 
     append({
-      stockOpnameId: validatedId!,
       produkId: produk.id,
-
-      // Default stok fisik = stok sistem
       stokFisik: produk.stok,
-
-      // Stok fisik sama dengan stok sistem
-      // sehingga selisih = 0
       selisih: 0,
     });
   };
@@ -135,6 +141,8 @@ const useModalFormulirTambahProdukStockOpname = (params: {
       return;
     }
 
+    clearErrors(`details.${index}.produkId`);
+
     remove(index);
   };
 
@@ -142,7 +150,9 @@ const useModalFormulirTambahProdukStockOpname = (params: {
   // TOGGLE PRODUK
   // ============================================================
 
-  const handleToggleProduct = (produk: ResponseProdukForChooseType) => {
+  const handleToggleProduct = (produk?: ResponseProdukForChooseType) => {
+    if (!produk) return;
+
     if (isChecked(produk.id)) {
       handleRemove(produk.id);
       return;
@@ -176,7 +186,7 @@ const useModalFormulirTambahProdukStockOpname = (params: {
       return 0;
     }
 
-    return detail.selisih;
+    return detail.stokFisik - produk.stok;
   };
 
   // ============================================================
@@ -193,114 +203,124 @@ const useModalFormulirTambahProdukStockOpname = (params: {
       return;
     }
 
-    const stokFisik = value === "" ? produk.stok : Number(value);
+    const stokFisik = value === "" ? 0 : Number(value);
 
-    const selisih = stokFisik - produk.stok;
-
-    // Update stok fisik
     setValue(`details.${index}.stokFisik`, stokFisik, {
       shouldDirty: true,
       shouldValidate: true,
     });
-
-    // Update selisih
-    setValue(`details.${index}.selisih`, selisih, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-
-    // ========================================================
-    // LOGIKA PENYESUAIAN
-    // ========================================================
-    //
-    // Selisih negatif:
-    // stok fisik < stok sistem
-    // => default penyesuaian = true
-    //
-    // Selisih 0 / positif:
-    // => penyesuaian = false
-    //
-    // ========================================================
-
-    // if (selisih < 0) {
-    //   setValue(`details.${index}.penyesuaian`, true, {
-    //     shouldDirty: true,
-    //     shouldValidate: true,
-    //   });
-    // } else {
-    //   setValue(`details.${index}.penyesuaian`, false, {
-    //     shouldDirty: true,
-    //     shouldValidate: true,
-    //   });
-    // }
   };
 
   // ============================================================
   // TOGGLE PENYESUAIAN
   // ============================================================
 
-  const handleTogglePenyesuaian = (produkId: number) => {
-    const index = getFieldIndex(produkId);
-
-    if (index === -1) {
-      return;
-    }
-
-    const detail = getValues(`details.${index}`);
-
-    // Penyesuaian hanya boleh dilakukan
-    // jika stok fisik lebih kecil dari stok sistem
-    if (detail.selisih >= 0) {
-      return;
-    }
-
-    // setValue(`details.${index}.penyesuaian`, !detail.penyesuaian, {
-    //   shouldDirty: true,
-    //   shouldValidate: true,
-    // });
-  };
-
   // ============================================================
   // SELECT ALL STATE
   // ============================================================
 
   const isAllChecked = useMemo(() => {
-    if (dataProduk.length === 0) {
+    const selectableProduk = dataProduk.filter(
+      (produk) => !produkChooseIds?.includes(produk?.id ?? 0),
+    );
+
+    if (selectableProduk.length === 0) {
       return false;
     }
 
-    return fields.length === dataProduk.length;
-  }, [dataProduk.length, fields.length]);
+    const selectedProdukIds = new Set(fields.map((field) => field.produkId));
+
+    return selectableProduk.every((produk) =>
+      selectedProdukIds.has(produk?.id ?? 0),
+    );
+  }, [dataProduk, produkChooseIds, fields]);
 
   // ============================================================
   // SELECT ALL
   // ============================================================
 
   const handleToggleSelectAll = () => {
-    // Jika semua sudah dipilih
-    // maka hapus semua
+    if (!dataProduk || !dataProduk?.length) return;
+
     if (isAllChecked) {
+      clearErrors("details");
       remove();
       return;
     }
 
-    // Produk yang sudah dipilih
     const selectedProdukIds = new Set(fields.map((field) => field.produkId));
 
-    // Hanya append produk yang belum dipilih
     const productsToAppend = dataProduk
-      .filter((produk) => !selectedProdukIds.has(produk.id))
+      .filter((produk) => produk?.id !== undefined)
+      .filter((produk) => !produkChooseIds?.includes(produk?.id!))
+      .filter((produk) => !selectedProdukIds.has(produk?.id!))
       .map((produk) => ({
-        stockOpnameId: validatedId!,
-        produkId: produk.id,
-        stokFisik: produk.stok,
+        produkId: produk?.id ?? 0,
+        stokFisik: produk?.stok ?? 0,
         selisih: 0,
-        penyesuaian: true,
       }));
 
     if (productsToAppend.length > 0) {
+      clearErrors("details");
       append(productsToAppend);
     }
+  };
+
+  // ============================================================
+  // SET DUPLICATE ERROR
+  // ============================================================
+
+  const setDuplicateProdukErrors = (produkIds: number[]) => {
+    produkIds.forEach((produkId) => {
+      const index = getFieldIndex(produkId);
+
+      if (index === -1) {
+        return;
+      }
+
+      setError(`details.${index}.produkId`, {
+        type: "duplicate_produk",
+        message: "Produk sudah ditambahkan pada stock opname",
+      });
+    });
+  };
+
+  // ============================================================
+  // GET DUPLICATE PRODUK ID FROM RESPONSE
+  // ============================================================
+
+  const getDuplicateProdukIds = (error: unknown): number[] => {
+    if (!axios.isAxiosError<ErrorResponse>(error)) {
+      return [];
+    }
+
+    const customField = error.response?.data?.meta?.customField;
+
+    if (!Array.isArray(customField)) {
+      return [];
+    }
+
+    /*
+     * Backend:
+     *
+     * customField: [
+     *   "duplicate_produk",
+     *   "1, 2, 3"
+     * ]
+     */
+
+    const produkIdsValue = customField.find(
+      (value) => typeof value === "string" && /^[\d,\s]+$/.test(value),
+    );
+
+    if (!produkIdsValue) {
+      return [];
+    }
+
+    return produkIdsValue
+      .split(",")
+      .map((value) => Number(value.trim()))
+      .filter((value) => Number.isInteger(value) && value > 0);
   };
 
   // ============================================================
@@ -311,49 +331,74 @@ const useModalFormulirTambahProdukStockOpname = (params: {
     mutateAsync: mutateStockOpnameDetail,
     isPending: isPendingStockOpnameDetail,
   } = useMutation({
-    mutationFn: async (payload: CreateStockOpnameDetailType[]) => {
-      return Promise.all(
-        payload.map((detail) => StockOpnameDetailServices.create(detail)),
-      );
+    mutationFn: async (payload: CreateStockOpnameDetailArrayForServiceType) => {
+      return await StockOpnameDetailServices.create(payload);
     },
 
+    // ==========================================================
+    // SUCCESS
+    // ==========================================================
+
     onSuccess: () => {
-      // Refresh data detail stock opname
       queryClient.invalidateQueries({
         queryKey: ["stock-opname-detail", validatedId],
       });
 
-      // Reset form
       reset({
         details: [],
       });
 
-      // Tutup modal
       handleCloseModal();
 
-      // Toast success
       handleSetToast("stock_opname_detail_add_success");
     },
+
+    // ==========================================================
+    // ERROR
+    // ==========================================================
 
     onError: (err) => {
       console.log(err);
 
-      if (axios.isAxiosError<ErrorResponse>(err)) {
-        // Conflict
-        if (err.response?.data?.meta?.statusCode === 409) {
-          handleSetAlert("produk_choose_exist_in_data");
+      if (!axios.isAxiosError<ErrorResponse>(err)) {
+        return;
+      }
 
-          return;
-        }
+      const meta = err.response?.data?.meta;
 
-        // Duplicate produk
-        if (
-          err.response?.data?.meta?.customField?.includes("duplicate_produk")
-        ) {
-          handleSetAlert("produk_choose_exist_in_data");
+      // ========================================================
+      // DUPLICATE PRODUK
+      // ========================================================
 
-          return;
-        }
+      if (meta?.customField?.includes("duplicate_produk")) {
+        const duplicateProdukIds = getDuplicateProdukIds(err);
+
+        /*
+         * Contoh:
+         *
+         * Backend:
+         * customField: [
+         *   "duplicate_produk",
+         *   "1, 2, 3"
+         * ]
+         *
+         * duplicateProdukIds:
+         * [1, 2, 3]
+         */
+
+        setDuplicateProdukErrors(duplicateProdukIds);
+
+        return;
+      }
+
+      // ========================================================
+      // PRODUK TIDAK DITEMUKAN
+      // ========================================================
+
+      if (meta?.customField?.includes("produk_not_found")) {
+        handleSetAlert("produk_not_found");
+
+        return;
       }
     },
   });
@@ -365,15 +410,23 @@ const useModalFormulirTambahProdukStockOpname = (params: {
   const handleSubmit = handleFormSubmit(async (formData) => {
     const payload = formData.details;
 
-    // Tidak ada produk
     if (payload.length === 0) {
       return;
     }
 
     try {
-      console.log("PAYLOAD STOCK OPNAME DETAIL:", payload);
+      await mutateStockOpnameDetail({
+        stockOpnameId: validatedId!,
+        details: payload.map((item) => ({
+          produkId: item.produkId,
 
-      await mutateStockOpnameDetail(payload);
+          stokFisik: item.stokFisik,
+
+          jenisPenyesuaian: item.jenisPenyesuaian,
+
+          keteranganPenyesuaian: item.keteranganPenyesuaian,
+        })),
+      });
     } catch (error) {
       console.log(error);
     }
@@ -388,6 +441,14 @@ const useModalFormulirTambahProdukStockOpname = (params: {
       details: [],
     });
   };
+
+  // use infinity scroll
+  const { containerRef, loadMoreRef } = useInfiniteScroll({
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    rootMargin: "10px",
+  });
 
   // ============================================================
   // RETURN
@@ -407,8 +468,11 @@ const useModalFormulirTambahProdukStockOpname = (params: {
 
     control,
     fields,
+    errors,
     getValues,
     setValue,
+    setError,
+    clearErrors,
 
     // ========================================================
     // FIELD ARRAY
@@ -442,8 +506,6 @@ const useModalFormulirTambahProdukStockOpname = (params: {
     // PENYESUAIAN
     // ========================================================
 
-    handleTogglePenyesuaian,
-
     // ========================================================
     // SELECT ALL
     // ========================================================
@@ -463,7 +525,19 @@ const useModalFormulirTambahProdukStockOpname = (params: {
     // ========================================================
 
     isPendingStockOpnameDetail,
+
+    containerRef,
+
+    loadMoreRef,
+
+    setSearch,
+
+    handleKategori,
+
+    kategori,
+
+    isFetchingNextPage,
   };
 };
 
-export default useModalFormulirTambahProdukStockOpname;
+export default useFormulirTambahStockOpname;

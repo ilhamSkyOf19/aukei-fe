@@ -1,88 +1,97 @@
 import { type FC, type RefObject } from "react";
-import { cn } from "../../../utils/cn";
+import { Save } from "lucide-react";
+
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import InputNumber from "../../inputs/InputNumber";
-import type { CreateBarangMasukDetailType } from "../../../models/barangMasukDetail.model";
-import { PackagePlus } from "lucide-react";
-import InputSearch from "../../inputs/InputSearch";
-import useModalFormulirTambahBarangMasuk from "./useModalFormulirTambahBarangMasuk";
-import Alert from "../../messages/Alert";
-import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
-import InputPrice from "../../inputs/InputPrice";
-import CardProdukForChooseInventori from "../../ui/cards/CardProdukForChooseInventori";
-import CardProdukForAfterChooseInventori from "../../ui/cards/CardProdukForAfterChooseInventori";
 import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
+import InputNumber from "../../inputs/InputNumber";
+
 import {
+  JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE,
   ROLE_INTERNAL_TYPE,
   type RoleInternalType,
+  type StatusStockOpnameType,
 } from "../../../types/constant.type";
+import type { UpdateStockOpnameDetailType } from "../../../models/stockOpnameDetail.model";
+import useModalFormulirUbahProdukStokOpname from "./useModalFormulirUbahProdukStokOpname";
+import InputSearch from "../../inputs/InputSearch";
+import { cn } from "../../../utils/cn";
+import CardProdukForChooseInventori from "../../ui/cards/CardProdukForChooseInventori";
+import CardProdukForAfterChooseInventori from "../../ui/cards/CardProdukForAfterChooseInventori";
+import InputChoose from "../../inputs/InputChoose";
+import { formatNumber } from "../../../helpers/helpers";
+
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
-  fromPengajuanBarang?: boolean;
+
+  status?: StatusStockOpnameType;
+
+  dataUpdate: {
+    detailId?: number;
+    stokFisik?: number;
+    jenisPenyesuaian?: UpdateStockOpnameDetailType["jenisPenyesuaian"];
+    produkId?: number;
+  };
   role?: RoleInternalType;
+
+  dataChooseIds?: number[];
 };
 
-const ModalFormulirTambahBarangMasuk: FC<Props> = ({
+const ModalFormulirUbahProdukStockOpname: FC<Props> = ({
   modalRef,
   handleCloseModal,
+  status,
+  dataUpdate,
   role,
-  fromPengajuanBarang,
+  dataChooseIds,
 }) => {
   const {
     handleSubmit,
+    inputSearchRef,
+    isDirty,
+    isPendingUpdate,
+    jenisPenyesuaianController,
+    stokFisikController,
     onSubmit,
     wrapperRef,
+    reset,
     handleSearch,
-    inputSearchRef,
-    handleCloseActiveComponentChooseProduk,
-    handleShowActiveComponentChooseProduk,
-    errors,
     activeComponentChooseProduk,
-    isLoadingProdukForChoose,
     dataProdukForChoose,
-    handleSetValueProdukId,
-    produkChoose,
+    handleCloseActiveComponentChooseProduk,
     handleDeleteValueProdukId,
-    jumlahBoxController,
-    isPendingBarangMasukDetail,
-    alert,
-    hargaBeliController,
+    handleSetValueProdukId,
+    handleShowActiveComponentChooseProduk,
+    produkChoose,
+    isLoadingProdukForChoose,
+    errors,
 
-    jumlahStokController,
-  } = useModalFormulirTambahBarangMasuk({
+    selisih,
+  } = useModalFormulirUbahProdukStokOpname({
+    dataUpdate,
     handleCloseModal,
+    status,
   });
 
   return (
-    <dialog ref={modalRef} id="my_modal_4" className="modal lg:hidden">
-      {alert && (
-        <Alert
-          alert={alert?.id !== null}
-          isAnimationOut={alert?.isAnimationOut || false}
-          label={ALERT_CONFIG_BARANG_MASUK_DETAIL[alert.type].message}
-        />
-      )}
-      <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl  h-[80vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
-        <div className="w-full flex flex-col rounded-2xl md:rounded-xl justify-start items-start">
-          {/* title page */}
+    <dialog ref={modalRef} className="modal">
+      <div className="modal-box w-11/12 max-w-lg bg-base-200 dark:border dark:border-base-content/10">
+        <div className="w-full flex flex-col justify-start items-start">
+          {/* title */}
           <div className="w-full flex flex-row justify-start items-center">
             <TitleModalFormulir
-              title="Formulir Barang Masuk"
-              keterangan={`Formulir untuk menambah Barang Masuk`}
-              withIcon={{
-                icon: PackagePlus,
-              }}
+              title="Formulir Stock Opname"
+              keterangan="Formulir untuk mengubah data stock opname produk"
             />
           </div>
 
           {/* form */}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full flex flex-col justify-start items-start mt-4 gap-2"
+            className="w-full flex flex-col justify-start items-start mt-4 gap-4"
           >
-            {/* produk */}
+            {/* informasi produk */}
             <div
               ref={wrapperRef}
               className="w-full flex flex-col justify-start items-start gap-2"
@@ -118,7 +127,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                   <div className="overflow-y-scroll scrollbar-thin">
                     <div
                       className={cn(
-                        "w-full flex flex-col h-40 px-2.5 py-4 gap-2",
+                        "w-full flex flex-col h-70 px-2.5 py-4 gap-2",
                       )}
                     >
                       {isLoadingProdukForChoose ? (
@@ -129,7 +138,13 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
-                            hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
+                            disabled={
+                              dataChooseIds?.some((id) => id === item.id) ||
+                              produkChoose?.some(
+                                (produk) => produk.id === item.id,
+                              )
+                            }
+                            hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
                             key={item.id}
                             data={item}
                             handleSetValueProdukId={handleSetValueProdukId}
@@ -155,7 +170,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                   </p>
                   {produkChoose.map((item) => (
                     <CardProdukForAfterChooseInventori
-                      hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
+                      hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
                       key={item.id}
                       data={item}
                       handleDeleteValueProdukId={handleDeleteValueProdukId}
@@ -166,42 +181,68 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
               )}
             </div>
 
-            {/* input jumlah perbox */}
-            <div className="w-full mt-2 flex flex-col justify-start items-center">
-              {!fromPengajuanBarang && (
-                <InputPrice<CreateBarangMasukDetailType>
-                  controller={hargaBeliController}
-                  label="Harga Beli Custom"
-                  placeholder="Harga Beli Custom"
-                  caption="Berlaku untuk produk yang dipilih"
-                />
-              )}
-
-              <InputNumber<CreateBarangMasukDetailType>
-                controller={jumlahBoxController}
-                label="Jumlah Box (opsional)"
-                placeholder="Jumlah Box"
-              />
-
-              <InputNumber<CreateBarangMasukDetailType>
-                controller={jumlahStokController}
-                label="Jumlah Item (opsional)"
-                placeholder="Jumlah Item"
+            {/* stok fisik */}
+            <div className="w-full">
+              <InputNumber<UpdateStockOpnameDetailType>
+                controller={stokFisikController}
+                label="Stok Fisik"
+                placeholder="Masukkan stok fisik"
+                max={1000000}
               />
             </div>
 
-            {/* button submit */}
+            {/* selisih  */}
+            <div className="w-full flex flex-col justify-start items-start gap-1.5">
+              {/* label */}
+              <span className="capitalize text-xs text-base-content">
+                Selisih
+              </span>
+              <span
+                className={cn(
+                  "capitalize text-xs text-base-content font-medium",
+                  selisih > 0 ? "text-success" : "text-error",
+                )}
+              >
+                {formatNumber(selisih)}
+              </span>
+            </div>
+
+            {/* jenis penyesuaian */}
+            <InputChoose<UpdateStockOpnameDetailType>
+              required={false}
+              disabled={selisih >= 0}
+              placeholder="Jenis Penyesuaian"
+              controller={jenisPenyesuaianController}
+              chooseList={[
+                {
+                  label: "Masuk Kerugian",
+                  value: JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE.MASUK_KERUGIAN,
+                },
+                {
+                  label: "Tidak Masuk Kerugian",
+                  value:
+                    JENIS_PENYESUAIAN_STOCK_OPNAME_TYPE.TIDAK_MASUK_KERUGIAN,
+                },
+              ]}
+            />
+
+            {/* button */}
             <div className="w-full flex flex-row justify-end items-end gap-4 mt-2">
               <ButtonCloseText
-                handleClose={handleCloseModal}
+                disabled={isPendingUpdate}
+                handleClose={() => {
+                  reset();
+                  handleCloseModal();
+                }}
                 label="Batal"
-                disabled={isPendingBarangMasukDetail}
               />
 
               <ButtonWithIcon
                 typeButton="submit"
-                label="Tambah Barang Masuk"
-                isLoading={isPendingBarangMasukDetail}
+                icon={Save}
+                label="Simpan"
+                isLoading={isPendingUpdate}
+                disabled={!isDirty || isPendingUpdate}
               />
             </div>
           </form>
@@ -211,4 +252,4 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
   );
 };
 
-export default ModalFormulirTambahBarangMasuk;
+export default ModalFormulirUbahProdukStockOpname;

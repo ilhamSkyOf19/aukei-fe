@@ -61,6 +61,13 @@ export interface ResponseProdukForChooseType {
   img: string;
 }
 
+export interface ResponseProdukForChooseWithMetaType {
+  meta: MetaType & {
+    hasNextPage: boolean;
+  };
+  data: ResponseProdukForChooseType[];
+}
+
 // response produk for kasir
 export interface ResponseProdukForKasirType extends Pick<
   IProduk,

@@ -1,10 +1,12 @@
 import { type FC } from "react";
 import { cn } from "../../../../utils/cn";
 import {
-  Boxes,
+  BanknoteArrowDown,
+  BanknoteArrowUp,
   CalendarDays,
-  ChevronDown,
   Package,
+  PackageMinus,
+  PackagePlus,
   TextAlignStart,
 } from "lucide-react";
 import { formatTanggalLengkap } from "../../../../helpers/formatDate";
@@ -14,12 +16,14 @@ import ModalInputDate from "../../../../components/modals/ModalInputDate";
 import InputTextAreaNonIcon from "../../../../components/inputs/InputTextAreaNonIcon";
 import {
   ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
   type StatusStockOpnameType,
 } from "../../../../types/constant.type";
 import type { IPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import InformasiPengajuan from "../../../../components/ui/InformasiPengajuan";
 import useInformasiStockOpnameDetail from "./useInformasiStockOpnameDetail";
 import type { UpdateStockOpnameForRequestType } from "../../../../models/stockOpname.model";
+import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
 
 type Props = {
   isLoadingStocOpnameDetail?: boolean;
@@ -27,6 +31,10 @@ type Props = {
   keterangan?: string;
   totalProduk: number;
   totalItem: number;
+  totalItemMinus: number;
+  totalItemSurplus: number;
+  totalNilaiSurplus: number;
+  totalNilaiMinus: number;
   idStockOpnameDetail?: number;
   handleSetToast: (data: string) => void;
   status?: StatusStockOpnameType;
@@ -36,6 +44,7 @@ type Props = {
   > | null;
   tanggalDiajukan?: Date;
   isUpdate?: boolean;
+  role?: RoleInternalType;
 };
 const InformasiStockOpnameDetail: FC<Props> = ({
   isLoadingStocOpnameDetail,
@@ -48,7 +57,11 @@ const InformasiStockOpnameDetail: FC<Props> = ({
   totalProduk,
   idStockOpnameDetail,
   tanggal,
-  totalItem,
+  totalItemMinus,
+  totalItemSurplus,
+  totalNilaiMinus,
+  totalNilaiSurplus,
+  role,
 }) => {
   // call use
   const {
@@ -63,9 +76,6 @@ const InformasiStockOpnameDetail: FC<Props> = ({
     handleCloseModalInputTanggalOpname,
     modalInputTanggalOpnameRef,
     tanggalOpnameController,
-
-    setShowKet,
-    showKet,
   } = useInformasiStockOpnameDetail({
     handleSetToast,
     keterangan,
@@ -257,13 +267,15 @@ const InformasiStockOpnameDetail: FC<Props> = ({
                   Total Produk
                 </span>
 
-                <span className={"text-sm font-medium"}>{totalProduk}</span>
+                <span className={"text-sm font-medium"}>
+                  {formatNumber(totalProduk)}
+                </span>
               </div>
             </div>
 
-            <div className="w-full flex flex-row justify-between items-start gap-3 mt-8">
+            <div className="w-full flex flex-row justify-between items-start gap-3 mt-2.5">
               <div className="h-full flex flex-row justify-start items-start">
-                <Boxes className="size-5 text-emerald-600" />
+                <PackageMinus className="size-5 text-rose-600" />
               </div>
 
               {/* label and value */}
@@ -274,18 +286,41 @@ const InformasiStockOpnameDetail: FC<Props> = ({
               >
                 {/* label */}
                 <span className="text-xs text-base-content font-medium">
-                  Total Item
+                  Total Item Minus
                 </span>
 
-                <span className={"text-sm font-medium"}>{totalItem}</span>
+                <span className={"text-sm font-medium"}>
+                  {formatNumber(totalItemMinus)}
+                </span>
               </div>
             </div>
 
-            {/* keterangan */}
-            <div className="w-full flex flex-row justify-between items-start gap-3 mt-8">
-              {/* icon */}
+            {/* label and value */}
+            {role === ROLE_INTERNAL_TYPE.OWNER && (
+              <div className="w-full flex flex-row justify-between items-start gap-3 mt-2.5">
+                <div className="h-full flex flex-row justify-start items-start">
+                  <BanknoteArrowDown className="size-5 text-rose-600" />
+                </div>
+                <div
+                  className={cn(
+                    "w-full flex flex-row justify-between pb-3 border-b border-base-content/10 items-center",
+                  )}
+                >
+                  {/* label */}
+                  <span className="text-xs text-base-content font-medium">
+                    Total Nilai Minus
+                  </span>
+
+                  <span className={"text-sm font-medium text-rose-600"}>
+                    {formatRupiah(totalNilaiMinus)}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="w-full flex flex-row justify-between items-start gap-3 mt-2.5">
               <div className="h-full flex flex-row justify-start items-start">
-                <TextAlignStart className="size-5 text-base-content" />
+                <PackagePlus className="size-5 text-emerald-600" />
               </div>
 
               {/* label and value */}
@@ -295,58 +330,39 @@ const InformasiStockOpnameDetail: FC<Props> = ({
                 )}
               >
                 {/* label */}
-                <div className="flex flex-col justify-start items-start gap-0.5 w-full">
-                  <div className="w-full flex flex-row justify-between items-center">
-                    <span className="text-xs text-base-content font-medium">
-                      Keterangan
-                    </span>
+                <span className="text-xs text-base-content font-medium">
+                  Total Item Surplus
+                </span>
 
-                    {/* button show ket */}
-                    <button
-                      type="button"
-                      onClick={() => setShowKet((prev) => !prev)}
-                      className="flex flex-row justify-start items-center hover:underline"
-                    >
-                      <span className="text-[0.7rem] font-medium">
-                        {showKet ? "Sembunyikan" : "Lihat Keterangan"}
-                      </span>
-
-                      <ChevronDown
-                        className={cn("size-4 ml-1", showKet && "rotate-180")}
-                      />
-                    </button>
-                  </div>
-
-                  <div
-                    className={`grid transition-all duration-300 ${
-                      showKet ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      <p className="text-xs leading-6">
-                        Pilihan jenis penyesuaian digunakan untuk menentukan
-                        apakah selisih stok yang{" "}
-                        <strong>berkurang (minus)</strong> akan dicatat sebagai{" "}
-                        <strong>kerugian</strong> atau tidak. Jika memilih{" "}
-                        <strong>Masuk Kerugian</strong>, selisih stok minus akan
-                        dicatat sebagai kerugian, sedangkan pilihan{" "}
-                        <strong>Tidak Masuk Kerugian</strong> hanya akan
-                        menyesuaikan jumlah stok tanpa mencatatnya sebagai
-                        kerugian.
-                        <br />
-                        <em>
-                          <strong>Catatan:</strong> Penyesuaian kerugian hanya
-                          berlaku untuk stok minus. Jika hasil stock opname
-                          menunjukkan stok bertambah (plus), selisih tersebut
-                          secara otomatis tidak masuk ke kerugian, meskipun
-                          sebelumnya memilih opsi Masuk Kerugian.
-                        </em>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <span className={"text-sm font-medium"}>
+                  {formatNumber(totalItemSurplus)}
+                </span>
               </div>
             </div>
+
+            {/* label and value */}
+            {role === ROLE_INTERNAL_TYPE.OWNER && (
+              <div className="w-full flex flex-row justify-between items-start gap-3 mt-2.5">
+                <div className="h-full flex flex-row justify-start items-start">
+                  <BanknoteArrowUp className="size-5 text-emerald-600" />
+                </div>
+
+                <div
+                  className={cn(
+                    "w-full flex flex-row justify-between pb-3 border-b border-base-content/10 items-center",
+                  )}
+                >
+                  {/* label */}
+                  <span className="text-xs text-base-content font-medium">
+                    Total Nilai Surplus
+                  </span>
+
+                  <span className={"text-sm font-medium text-emerald-600"}>
+                    {formatRupiah(totalNilaiSurplus)}
+                  </span>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

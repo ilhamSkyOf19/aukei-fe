@@ -17,6 +17,7 @@ type Props<T extends FieldValues = any> = {
   xs?: boolean;
   name?: string;
   onBlur?: () => void;
+  customHeight?: string;
 };
 
 const InputNumber = <T extends FieldValues = any>({
@@ -29,6 +30,7 @@ const InputNumber = <T extends FieldValues = any>({
   xs,
   name,
   onBlur,
+  customHeight,
 }: Props<T>) => {
   const { field, fieldState } = controller;
 
@@ -83,9 +85,10 @@ const InputNumber = <T extends FieldValues = any>({
 
       <div
         className={clsx(
-          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out bg-base-100 px-2.5 h-10.5 md:h-9",
+          "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out bg-base-100 px-2.5",
           fieldState.error && "border-error",
           label && "mt-2",
+          customHeight ?? "h-10.5 md:h-9",
         )}
       >
         <input

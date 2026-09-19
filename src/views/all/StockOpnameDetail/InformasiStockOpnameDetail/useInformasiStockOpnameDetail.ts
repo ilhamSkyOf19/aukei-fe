@@ -27,9 +27,6 @@ const useInformasiStockOpnameDetail = (params: {
   //   query client
   const queryClient = useQueryClient();
 
-  // state show ket
-  const [showKet, setShowKet] = useState<boolean>(false);
-
   // use form upadate
   const {
     register,
@@ -164,9 +161,6 @@ const useInformasiStockOpnameDetail = (params: {
     tanggalOpnameController,
     modalInputTanggalOpnameRef,
     handleCloseModalInputTanggalOpname,
-
-    showKet,
-    setShowKet,
   };
 };
 

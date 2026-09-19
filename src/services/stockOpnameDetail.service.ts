@@ -1,9 +1,9 @@
 import instanceAxios from "../libs/axios";
 
 import type {
-  CreateStockOpnameDetailType,
   UpdateStockOpnameDetailType,
   ResponseStockOpnameDetailType,
+  CreateStockOpnameDetailArrayForServiceType,
 } from "../models/stockOpnameDetail.model";
 
 import type { ResponseStructure } from "../types/response.type";
@@ -14,10 +14,10 @@ export class StockOpnameDetailServices {
   // ============================================================
 
   static async create(
-    req: CreateStockOpnameDetailType,
-  ): Promise<ResponseStructure<ResponseStockOpnameDetailType | null>> {
+    req: CreateStockOpnameDetailArrayForServiceType,
+  ): Promise<ResponseStructure<ResponseStockOpnameDetailType[] | null>> {
     const result = await instanceAxios.post<
-      ResponseStructure<ResponseStockOpnameDetailType | null>
+      ResponseStructure<ResponseStockOpnameDetailType[] | null>
     >("/stock-opname-detail", req);
 
     return result.data;

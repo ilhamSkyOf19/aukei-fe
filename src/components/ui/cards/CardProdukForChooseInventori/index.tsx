@@ -5,25 +5,38 @@ import {
   formatRupiah,
   formatRupiahShort,
 } from "../../../../helpers/helpers";
+import { cn } from "../../../../utils/cn";
 
 type Props = {
   handleSetValueProdukId: (id: number) => void;
   data: ResponseProdukForChooseType;
   hargaBeli?: boolean;
   hargaModal?: boolean;
+  disabled?: boolean;
 };
 const CardProdukForChooseInventori: FC<Props> = ({
   data,
   handleSetValueProdukId,
   hargaBeli,
   hargaModal,
+  disabled,
 }) => {
   return (
     <button
       type="button"
-      className="w-full flex flex-row justify-between items-center gap-1 hover:bg-custom-primary/50 p-2 transition-all duration-100 ease-in-out border border-base-content/10 rounded-xl"
+      disabled={disabled}
+      className={cn(
+        "w-full flex flex-row justify-between items-center gap-1  p-2 transition-all duration-100 ease-in-out border border-base-content/10 rounded-xl relative",
+        !disabled && "hover:bg-custom-primary/50",
+      )}
       onClick={() => handleSetValueProdukId(data.id)}
     >
+      {disabled && (
+        <span className="text-[0.625rem] text-base-content italic absolute left-1/2 bottom-2 -translate-x-1/2">
+          Sudah dipilih
+        </span>
+      )}
+
       <div className="flex-4 flex flex-row col row justify-start items-start gap-4">
         {/* img */}
         <div className="w-11 h-11 shrink-0 rounded-xl overflow-hidden">

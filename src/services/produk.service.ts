@@ -5,6 +5,7 @@ import type {
   ResponseGetModalType,
   ResponsePantauStokWithMetaType,
   ResponseProdukForChooseType,
+  ResponseProdukForChooseWithMetaType,
   ResponseProdukForKasirWithMetaType,
   ResponseProdukWithMetaType,
   ResponseUpdateHargaPpnType,
@@ -122,6 +123,21 @@ export class ProdukServices {
         search,
         kategori,
       },
+    });
+    return result.data;
+  }
+
+  // find all for choose infinity
+  static async findAllForChooseInfinity(
+    params: PaginationType & {
+      kategori?: string;
+    },
+  ): Promise<ResponseStructure<ResponseProdukForChooseWithMetaType | null>> {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseProdukForChooseWithMetaType | null>
+    >(`/produk/for-choose-infinity`, {
+      params,
     });
     return result.data;
   }

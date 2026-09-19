@@ -5,15 +5,20 @@ import { cn } from "../../../../utils/cn";
 type Props = {
   handleKeyUpdate: () => void;
   customHidden?: string;
+  disabled?: boolean;
 };
 
-const ButtonInline: FC<Props> = ({ handleKeyUpdate, customHidden }) => {
+const ButtonInline: FC<Props> = ({
+  handleKeyUpdate,
+  customHidden,
+  disabled,
+}) => {
   return (
     <div
       className={cn("tooltip", customHidden ? customHidden : "hidden lg:block")}
-      data-tip="ubah"
+      data-tip={disabled ? "tidak dapat diubah" : "ubah"}
     >
-      <button type="button" onClick={handleKeyUpdate}>
+      <button disabled={disabled} type="button" onClick={handleKeyUpdate}>
         <PencilLineIcon className="size-4 text-info" />
       </button>
     </div>

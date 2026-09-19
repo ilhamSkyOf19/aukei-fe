@@ -36,17 +36,26 @@ export interface IStockOpnameDetailType {
   updatedAt: Date;
 }
 
-export interface CreateStockOpnameDetailType {
-  stockOpnameId: number;
-
+export type CreateStockOpnameDetailItemType = {
   produkId: number;
-
   stokFisik: number;
-
-  jenisPenyesuaian?: JenisPenyesuaianStockOpnameType;
-
   selisih: number;
-}
+  jenisPenyesuaian?: JenisPenyesuaianStockOpnameType;
+  keteranganPenyesuaian?: string;
+};
+
+export type CreateStockOpnameDetailArrayType = {
+  stockOpnameId: number;
+  details: CreateStockOpnameDetailItemType[];
+};
+
+export type CreateStockOpnameDetailArrayForServiceType = {
+  stockOpnameId: number;
+  details: Pick<
+    CreateStockOpnameDetailItemType,
+    "stokFisik" | "jenisPenyesuaian" | "keteranganPenyesuaian" | "produkId"
+  >[];
+};
 
 export interface UpdateStockOpnameDetailType {
   produkId?: number;

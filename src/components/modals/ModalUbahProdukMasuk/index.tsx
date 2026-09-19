@@ -38,6 +38,7 @@ type Props = {
   status?: StatusInventoriType;
   fromPengajuanBarang?: boolean;
   role?: RoleInternalType;
+  dataChooseIds?: number[];
 };
 
 const ModalUbahProdukMasuk: FC<Props> = ({
@@ -48,6 +49,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
   dataUpdate,
   fromPengajuanBarang,
   role,
+  dataChooseIds,
 }) => {
   const {
     handleSubmit,
@@ -97,7 +99,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
         />
       )}
 
-      <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl  h-[80vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
+      <div className="modal-box w-11/12 lg:w-2/5 max-w-5xl  h-[90vh] bg-base-200 dark:border dark:border-base-content/10 scrollbar-thin">
         <div className="w-full flex flex-col justify-start items-start">
           {/* title page */}
           <div className="w-full flex flex-row justify-start items-center">
@@ -146,7 +148,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
                   <div className="overflow-y-auto scrollbar-thin">
                     <div
                       className={cn(
-                        "w-full flex flex-col h-40 rounded-lg p-4 gap-2",
+                        "w-full flex flex-col h-60 rounded-lg p-4 gap-2",
                       )}
                     >
                       {isLoadingProdukForChoose ? (
@@ -157,6 +159,12 @@ const ModalUbahProdukMasuk: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
+                            disabled={
+                              produkChoose?.id === item.id ||
+                              dataChooseIds?.some(
+                                (produk) => produk === item.id,
+                              )
+                            }
                             hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
                             key={item.id}
                             data={item}
@@ -190,7 +198,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
             </div>
 
             {/* jumlah box  */}
-            <div className="w-full lg:hidden">
+            <div className="w-full ">
               {!fromPengajuanBarang && (
                 <InputPrice<UpdateBarangMasukDetailType>
                   controller={hargaBeliController}

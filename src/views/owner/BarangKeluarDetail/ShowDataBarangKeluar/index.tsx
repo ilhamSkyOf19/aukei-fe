@@ -30,14 +30,12 @@ import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 type Props = {
   isLoadingBarangKeluarDetail?: boolean;
   dataBarangKeluarDetail?: ResponseStructure<ResponseBarangKeluarWithDetailType | null>;
-  fromPengajuanBarang?: boolean;
   role?: RoleInternalType;
   handleSetAlert: (data: string) => void;
 };
 const ShowDataBarangKeluar: FC<Props> = ({
   dataBarangKeluarDetail,
   isLoadingBarangKeluarDetail,
-  fromPengajuanBarang,
   role,
   handleSetAlert,
 }) => {
@@ -131,7 +129,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
 
                     {/* button aksi */}
                     <div className="flex flex-row justify-end items-start gap-2.5">
-                      {fromPengajuanBarang && !isStatusPosted && (
+                      {!isStatusPosted && (
                         <>
                           <ButtonWithIcon
                             customHeight="h-8"
@@ -413,6 +411,9 @@ const ShowDataBarangKeluar: FC<Props> = ({
           produkId: dataUpdateBarangKeluar?.produkId,
         }}
         role={role}
+        dataChooseIds={dataBarangKeluarDetail?.data?.detailBarangKeluars.map(
+          (item) => item.produk.id,
+        )}
       />
     </>
   );

@@ -15,6 +15,7 @@ import type { ResponseProdukForKasirType } from "../../../../../models/produk.mo
 import { type FC, useEffect, useRef } from "react";
 import DataEmpty from "../../../../../components/messages/DataEmpty";
 import { cn } from "../../../../../utils/cn";
+import useInfiniteScroll from "../../../../../hooks/useInfiniteScroll";
 
 // props
 type Props = {
@@ -50,42 +51,12 @@ const ShowProduk: FC<Props> = ({
     kategori,
   } = useShowProduk({ pelangganId, step });
 
-  // ref container produk
-  const produkContainerRef = useRef<HTMLDivElement | null>(null);
-
-  // ref trigger load more
-  const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
-  // infinite scroll
-  useEffect(() => {
-    const container = produkContainerRef.current;
-    const loadMore = loadMoreRef.current;
-
-    if (!container || !loadMore) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const firstEntry = entries[0];
-
-        if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      {
-        root: container,
-        threshold: 0.1,
-      },
-    );
-
-    observer.observe(loadMore);
-
-    return () => {
-      observer.unobserve(loadMore);
-      observer.disconnect();
-    };
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  const { containerRef: produkContainerRef, loadMoreRef } = useInfiniteScroll({
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    rootMargin: "200px",
+  });
 
   return (
     <div className="flex-1 lg:flex-5 max-h-full grid grid-rows-2">

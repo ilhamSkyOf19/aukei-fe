@@ -188,7 +188,7 @@ const StockOpname: FC<Props> = ({ fromPengajuan }) => {
             </div>
             <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-start gap-2.5 mt-3 md:mt-0">
               {/* input range date */}
-              <RangeDate customWidth="flex-2 md:flex-none md:w-50 lg:w-70" />
+              <RangeDate customWidth="flex-2 md:flex-none md:w-50 lg:w-75" />
               {/* filter sort */}
               <FilterSort
                 setSort={handleSort}

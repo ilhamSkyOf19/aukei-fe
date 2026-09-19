@@ -2,20 +2,17 @@ import { type FC, type RefObject } from "react";
 
 import { PackagePlus } from "lucide-react";
 
-import { useController, useWatch, type Control } from "react-hook-form";
-
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
 import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
 import DataEmpty from "../../messages/DataEmpty";
-import InputNumber from "../../inputs/InputNumber";
 
-import { cn } from "../../../utils/cn";
 import { formatRupiah } from "../../../helpers/helpers";
 
-import useModalFormulirTambahProdukStockOpname from "./useModalFormulirTambahProdukStockOpname";
-import type { CreateStockOpnameDetailType } from "../../../models/stockOpnameDetail.model";
-import type { ResponseProdukForChooseType } from "../../../models/produk.model";
+import InputSearch from "../../inputs/InputSearch";
+import FilterKategori from "../../filters/Kategori";
+import useFormulirTambahStockOpname from "../../FormulirTambahStockOpname/useFormulirTambahStockOpname";
+import ProductRow from "../../FormulirTambahStockOpname/ProductRow";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -23,146 +20,7 @@ type Props = {
   handleSetToast: (data: string) => void;
   handleSetAlert: (data: string) => void;
   isOwner: boolean;
-};
-
-/**
- * Tipe form yang digunakan oleh useForm.
- */
-type FormValues = {
-  details: CreateStockOpnameDetailType[];
-};
-
-type ProductRowProps = {
-  produk: ResponseProdukForChooseType;
-  index: number;
-  control: Control<FormValues>;
-  checked: boolean;
-  isOwner: boolean;
-  isPending: boolean;
-  handleToggleProduct: (produk: ResponseProdukForChooseType) => void;
-  handleTogglePenyesuaian: (produkId: number) => void;
-};
-
-const ProductRow: FC<ProductRowProps> = ({
-  produk,
-  index,
-  control,
-  checked,
-  isOwner,
-  isPending,
-  handleToggleProduct,
-}) => {
-  /**
-   * Ambil controller lengkap.
-   *
-   * Jangan menggunakan:
-   *
-   * const { field } = useController(...)
-   *
-   * karena InputNumber membutuhkan
-   * UseControllerReturn, bukan ControllerRenderProps.
-   */
-  const stokFisikController = useController<
-    FormValues,
-    `details.${number}.stokFisik`
-  >({
-    control,
-    name: `details.${index}.stokFisik`,
-  });
-
-  /**
-   * Ambil nilai stok fisik untuk menghitung selisih.
-   */
-  const stokFisik = useWatch({
-    control,
-    name: `details.${index}.stokFisik`,
-  });
-
-  /**
-   * Ambil nilai penyesuaian.
-   */
-
-  const stokSistem = Number(produk.stok ?? 0);
-
-  const stokFisikNumber = Number(stokFisik ?? 0);
-
-  const selisih = stokFisikNumber - stokSistem;
-
-  return (
-    <tr className="h-18 text-[0.7rem] text-base-content">
-      {/* CHECKBOX */}
-      <td>
-        <input
-          type="checkbox"
-          className="checkbox checkbox-sm"
-          checked={checked}
-          onChange={() => handleToggleProduct(produk)}
-          disabled={isPending}
-        />
-      </td>
-
-      {/* NO */}
-      <td>{index + 1}</td>
-
-      {/* PRODUK */}
-      <td>
-        <div className="flex items-center gap-3">
-          <div className="avatar">
-            <div className="mask mask-squircle w-10 h-10">
-              <img src={produk.img} alt="Foto Produk" loading="lazy" />
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-start items-start">
-            <p className="font-medium">{produk.nama}</p>
-
-            <p className="text-base-content/60">{produk.kode ?? "-"}</p>
-          </div>
-        </div>
-      </td>
-
-      {/* HARGA MODAL */}
-      {isOwner && (
-        <td className="whitespace-nowrap">
-          {formatRupiah(produk.hargaModalRataRata)}
-        </td>
-      )}
-
-      {/* STOK SISTEM */}
-      <td className="font-medium">{stokSistem}</td>
-
-      {/* STOK FISIK */}
-      <td>
-        <div className="w-20">
-          <InputNumber
-            controller={stokFisikController}
-            placeholder="0"
-            max={1000000}
-            disabled={!checked || isPending}
-          />
-        </div>
-      </td>
-
-      {/* SELISIH */}
-      <td>
-        <p
-          className={cn(
-            "font-medium",
-            selisih < 0
-              ? "text-error"
-              : selisih > 0
-                ? "text-success"
-                : "text-base-content/70",
-          )}
-        >
-          {selisih}
-        </p>
-      </td>
-
-      {/* PENYESUAIAN */}
-      <td></td>
-    </tr>
-  );
+  produkChooseIds: number[];
 };
 
 const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
@@ -171,6 +29,7 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
   handleSetToast,
   handleSetAlert,
   isOwner,
+  produkChooseIds,
 }) => {
   const {
     dataProduk,
@@ -180,7 +39,6 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
     fields,
 
     handleToggleProduct,
-    handleTogglePenyesuaian,
 
     isAllChecked,
     handleToggleSelectAll,
@@ -188,10 +46,25 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
     handleSubmit,
 
     isPendingStockOpnameDetail,
-  } = useModalFormulirTambahProdukStockOpname({
+
+    errors,
+
+    containerRef,
+
+    loadMoreRef,
+
+    handleKategori,
+
+    kategori,
+
+    setSearch,
+
+    isFetchingNextPage,
+  } = useFormulirTambahStockOpname({
     handleCloseModal,
     handleSetToast,
     handleSetAlert,
+    produkChooseIds,
   });
 
   const TOTAL_COLUMN = 8;
@@ -208,7 +81,7 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
         className="
           modal-box
           w-11/12
-          h-[85vh]
+          h-[95vh]
           max-w-6xl
           bg-base-200
           dark:border
@@ -229,8 +102,23 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
           />
         </div>
 
+        {/* filter */}
+        <div className="w-full flex flex-col lg:flex-row justify-start items-start gap-2.5 mt-2.5">
+          <div className="w-full lg:w-70">
+            <InputSearch handleSearch={setSearch} withLabel />
+          </div>
+
+          {/* kategori */}
+          <FilterKategori
+            setKategori={handleKategori}
+            value={kategori}
+            customWidth="w-full lg:w-50"
+          />
+        </div>
+
         {/* TABLE */}
         <div
+          ref={containerRef}
           className="
             w-full
             flex-1
@@ -243,9 +131,9 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
             scrollbar-thin
           "
         >
-          <table className="table table-xs lg:table-sm table-zebra">
+          <table className="table table-xs lg:table-sm table-zebra table-pin-rows ">
             <thead>
-              <tr className="h-12 bg-base-200 text-[0.7rem]">
+              <tr className="h-9.5 bg-base-200 text-[0.7rem] ">
                 <th>
                   <input
                     type="checkbox"
@@ -256,7 +144,7 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
                   />
                 </th>
 
-                <th>No</th>
+                <th className="hidden lg:block">No</th>
 
                 <th>Produk</th>
 
@@ -283,108 +171,121 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
                     </td>
                   </tr>
                 ))
-              ) : dataProduk.length > 0 ? (
-                dataProduk.map((produk, index) => {
-                  const fieldIndex = fields.findIndex(
-                    (field) => field.produkId === produk.id,
-                  );
+              ) : dataProduk !== undefined && dataProduk.length > 0 ? (
+                <>
+                  {dataProduk.map((produk, index) => {
+                    if (produk === null || produk === undefined) return null;
 
-                  const checked = fieldIndex !== -1;
+                    // produk choose
+                    const produkIsChoose = produkChooseIds.some(
+                      (id) => id === produk?.id,
+                    );
 
-                  /**
-                   * Produk belum dipilih.
-                   */
-                  if (!checked) {
-                    return (
-                      <tr
-                        key={produk.id}
-                        className="h-18 text-[0.7rem] text-base-content"
-                      >
-                        <td>
-                          <input
-                            type="checkbox"
-                            className="checkbox checkbox-sm"
-                            checked={false}
-                            onChange={() => handleToggleProduct(produk)}
-                            disabled={isPendingStockOpnameDetail}
-                          />
-                        </td>
+                    const fieldIndex = fields.findIndex(
+                      (field) => field.produkId === produk?.id,
+                    );
 
-                        <td>{index + 1}</td>
+                    const checked = fieldIndex !== -1;
 
-                        <td>
-                          <div className="flex items-center gap-3">
-                            <div className="avatar">
-                              <div className="mask mask-squircle w-10 h-10">
-                                <img
-                                  src={produk.img}
-                                  alt="Foto Produk"
-                                  loading="lazy"
-                                />
+                    /**
+                     * Produk belum dipilih.
+                     */
+                    if (!checked) {
+                      return (
+                        <tr
+                          key={produk?.id}
+                          className="h-12 text-[0.7rem] text-base-content"
+                        >
+                          <td>
+                            <input
+                              type="checkbox"
+                              className="checkbox checkbox-sm"
+                              checked={false}
+                              onChange={() => handleToggleProduct(produk)}
+                              disabled={
+                                isPendingStockOpnameDetail || produkIsChoose
+                              }
+                            />
+                          </td>
+
+                          <td className="hidden lg:block">{index + 1}</td>
+
+                          <td>
+                            <div className="flex items-center gap-3">
+                              <div className="avatar">
+                                <div className="mask mask-squircle w-8 h-8">
+                                  <img
+                                    src={produk.img}
+                                    alt="Foto Produk"
+                                    loading="lazy"
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex flex-col justify-start items-start">
+                                <p className="font-medium">{produk.nama}</p>
+
+                                <p className="text-base-content/60">
+                                  {produk.kode ?? "-"}
+                                </p>
                               </div>
                             </div>
-
-                            <div className="flex flex-col justify-start items-start">
-                              <p className="font-medium">{produk.nama}</p>
-
-                              <p className="text-base-content/60">
-                                {produk.kode ?? "-"}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-
-                        {isOwner && (
-                          <td className="whitespace-nowrap">
-                            {formatRupiah(produk.hargaModalRataRata)}
                           </td>
-                        )}
 
-                        <td className="font-medium">{produk.stok}</td>
+                          {isOwner && (
+                            <td className="whitespace-nowrap">
+                              {formatRupiah(produk.hargaModalRataRata ?? 0)}
+                            </td>
+                          )}
 
-                        <td>
-                          <span className="text-base-content/40">
-                            Pilih produk
-                          </span>
-                        </td>
+                          <td className="font-medium">{produk.stok ?? 0}</td>
 
-                        <td>
-                          <span className="text-base-content/40">0</span>
-                        </td>
+                          <td>
+                            <span className="text-base-content/40">-</span>
+                          </td>
 
-                        <td>
-                          <input
-                            type="checkbox"
-                            className="
-                                checkbox
-                                checkbox-sm
-                                cursor-not-allowed
-                                opacity-50
-                              "
-                            disabled
-                          />
-                        </td>
-                      </tr>
+                          <td>
+                            <span className="text-base-content/40">0</span>
+                          </td>
+
+                          <td>-</td>
+                        </tr>
+                      );
+                    }
+
+                    /**
+                     * Produk sudah dipilih.
+                     */
+                    const produkError = errors.details?.[fieldIndex]?.produkId;
+
+                    return (
+                      <ProductRow
+                        key={produk.id}
+                        produk={produk}
+                        index={fieldIndex}
+                        control={control}
+                        checked={checked}
+                        isOwner={isOwner}
+                        isPending={isPendingStockOpnameDetail}
+                        handleToggleProduct={handleToggleProduct}
+                        error={produkError?.message}
+                      />
                     );
-                  }
+                  })}
 
-                  /**
-                   * Produk sudah dipilih.
-                   */
-                  return (
-                    <ProductRow
-                      key={produk.id}
-                      produk={produk}
-                      index={fieldIndex}
-                      control={control}
-                      checked={checked}
-                      isOwner={isOwner}
-                      isPending={isPendingStockOpnameDetail}
-                      handleToggleProduct={handleToggleProduct}
-                      handleTogglePenyesuaian={handleTogglePenyesuaian}
-                    />
-                  );
-                })
+                  {/* trigger infinite scroll */}
+                  <tr>
+                    <td colSpan={colSpan}>
+                      <div
+                        ref={loadMoreRef}
+                        className="col-span-full w-full flex flex-row justify-center items-center py-3 min-h-10"
+                      >
+                        {isFetchingNextPage && (
+                          <div className="loading loading-md" />
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                </>
               ) : (
                 <tr>
                   <td colSpan={colSpan}>

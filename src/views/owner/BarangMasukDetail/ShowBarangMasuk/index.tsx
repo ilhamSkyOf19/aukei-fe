@@ -528,6 +528,9 @@ const ShowDataBarangMasuk: FC<Props> = ({
           hargaBeli: dataUpdateBarangMasuk?.hargaBeli ?? 0,
           jumlahStok: dataUpdateBarangMasuk?.jumlahStok ?? 0,
         }}
+        dataChooseIds={dataBarangMasukDetail?.data?.detailBarangMasuks?.map(
+          (item) => item.produk.id,
+        )}
       />
     </>
   );

@@ -13,6 +13,7 @@ type Props<T extends FieldValues = any> = {
   disabled?: boolean;
   isLoading?: boolean;
   xs?: boolean;
+  customHeight?: string;
 };
 
 export default function InputChoose<T extends FieldValues = any>({

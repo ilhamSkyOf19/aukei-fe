@@ -28,6 +28,7 @@ type Props = {
   status?: StatusInventoriType;
   idBarangKeluar?: number;
   role?: RoleInternalType;
+  dataChooseIds?: number[];
 };
 
 const ModalUbahProdukKeluar: FC<Props> = ({
@@ -37,6 +38,7 @@ const ModalUbahProdukKeluar: FC<Props> = ({
   idBarangKeluar,
   dataUpdate: { jumlahStok, produkId },
   role,
+  dataChooseIds,
 }) => {
   const {
     handleSubmit,
@@ -137,7 +139,7 @@ const ModalUbahProdukKeluar: FC<Props> = ({
                   <div className="overflow-y-auto scrollbar-thin">
                     <div
                       className={cn(
-                        "w-full flex flex-col h-40 rounded-lg p-4 gap-2",
+                        "w-full flex flex-col h-60 rounded-lg p-4 gap-2",
                       )}
                     >
                       {isLoadingProdukForChoose ? (
@@ -148,6 +150,11 @@ const ModalUbahProdukKeluar: FC<Props> = ({
                         dataProdukForChoose?.data?.length > 0 ? (
                         dataProdukForChoose?.data?.map((item, _) => (
                           <CardProdukForChooseInventori
+                            disabled={
+                              dataChooseIds?.some(
+                                (produk) => produk === item.id,
+                              ) || produkChoose?.id === item.id
+                            }
                             hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
                             key={item.id}
                             data={item}
@@ -181,7 +188,7 @@ const ModalUbahProdukKeluar: FC<Props> = ({
             </div>
 
             {/* jumlah stok */}
-            <div className="w-full lg:hidden">
+            <div className="w-full">
               <InputNumber<UpdateBarangKeluarDetailType>
                 controller={jumlahStokController}
                 label="Jumlah Stok"
