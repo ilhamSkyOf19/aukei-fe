@@ -12,7 +12,7 @@ import type {
   ProdukDetailItem,
 } from "../../../../../models/transaction.model";
 import type { ResponseProdukForKasirType } from "../../../../../models/produk.model";
-import { type FC, useEffect, useRef } from "react";
+import { type FC } from "react";
 import DataEmpty from "../../../../../components/messages/DataEmpty";
 import { cn } from "../../../../../utils/cn";
 import useInfiniteScroll from "../../../../../hooks/useInfiniteScroll";

@@ -380,7 +380,6 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       <ShowDataBarangKeluar
         isLoadingBarangKeluarDetail={isLoadingBarangKeluarDetail}
         dataBarangKeluarDetail={dataBarangKeluarDetail}
-        fromPengajuanBarang={fromPengajuanBarang}
         role={pengguna?.role}
         handleSetAlert={handleSetAlert}
       />
