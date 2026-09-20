@@ -206,3 +206,40 @@ export type ResponseStatistikStokDetailKategoriType = {
 
   produk: ResponseStatistikStokDetailProdukType[];
 };
+
+export type ResponseLaporanProdukDetailByKategoriType = {
+  kategoriId: number;
+  namaKategori: string;
+  totalProdukTerjual: number;
+  totalQtyTerjual: number;
+  totalOmzet: number;
+  totalLaba: number;
+};
+
+export type ResponseLaporanProdukByKategoriType = {
+  totalProdukTerjual: number;
+  totalQtyTerjual: number;
+  totalLaba: number;
+  totalOmzet: number;
+
+  kategori: ResponseLaporanProdukDetailByKategoriType[];
+};
+
+export type ResponseDaftarLaporanProdukDetailByKategoriType = {
+  id: number;
+  nama: string;
+  kode: string | null;
+  img: string;
+
+  totalQtyTerjual: number;
+  totalOmzet: number;
+  totalLaba: number;
+};
+
+export type ResponseDaftarLaporanProdukByKategoriType = {
+  totalQtyTerjual: number;
+  totalLaba: number;
+  totalOmzet: number;
+
+  produk: ResponseDaftarLaporanProdukDetailByKategoriType[];
+};

@@ -21,6 +21,7 @@ import { TOAST_CONFIG_STATISTIK } from "../../../types/toast.type";
 import Alert from "../../../components/messages/Alert";
 import { ALERT_CONFIG_STATISTIK } from "../../../types/alert.types";
 import LaporanSisa from "./LaporanSisa";
+import LaporanPenjualanProduk from "./LaporanPenjualanProduk";
 
 const StatistikDetail = () => {
   const {
@@ -113,7 +114,8 @@ const StatistikDetail = () => {
           {selectedLaporan !== "pantauanStok" &&
             selectedLaporan !== "topProduk" &&
             selectedLaporan !== "topPelanggan" &&
-            selectedLaporan !== "laporanSisa" && (
+            selectedLaporan !== "laporanSisa" &&
+            selectedLaporan !== "penjualanProduk" && (
               <>
                 <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
                   {/* aksi */}
@@ -253,6 +255,8 @@ const StatistikDetail = () => {
               </>
             )}
 
+          {selectedLaporan === "penjualanProduk" && <LaporanPenjualanProduk />}
+
           {selectedLaporan === "booking" && (
             <DataBooking pilihan={selectedLaporan} />
           )}
@@ -265,13 +269,7 @@ const StatistikDetail = () => {
             />
           )}
 
-          {selectedLaporan === "laporanSisa" && (
-            <LaporanSisa
-              pilihan={selectedLaporan}
-              handleSetAlert={handleSetAlert}
-              handleSetToast={handleSetToast}
-            />
-          )}
+          {selectedLaporan === "laporanSisa" && <LaporanSisa />}
 
           {selectedLaporan === "topProduk" && (
             <TopProduk

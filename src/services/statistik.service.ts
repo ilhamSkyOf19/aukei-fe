@@ -11,6 +11,8 @@ import type {
   ResponseStatistikTopPelangganWithMetaType,
   ResponseStatistikStokModalType,
   ResponseStatistikStokDetailKategoriType,
+  ResponseLaporanProdukByKategoriType,
+  ResponseDaftarLaporanProdukByKategoriType,
 } from "../models/statistik.model";
 import type {
   QueryRiwayatTransactionType,
@@ -259,6 +261,49 @@ export class StatistikServices {
     const result = await instanceAxios.get<
       ResponseStructure<ResponseStatistikStokModalType | null>
     >("/statistik/laporan-sisa");
+
+    return result.data;
+  }
+
+  // laporan penjualan produk
+  static async laporanPenjualanProduk(params: {
+    startDate?: string;
+    endDate?: string;
+    sortOmzet?: string;
+    sortLaba?: string;
+    sortQty?: string;
+  }): Promise<ResponseStructure<ResponseLaporanProdukByKategoriType | null>> {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseLaporanProdukByKategoriType | null>
+    >("/statistik/laporan-penjualan-produk", {
+      params: params,
+    });
+
+    return result.data;
+  }
+
+  // by kategori
+  static async laporanPenjualanProdukByKategori(params: {
+    kategoriId: number;
+    startDate?: string;
+    endDate?: string;
+    sortOmzet?: string;
+    sortLaba?: string;
+    sortQty?: string;
+  }): Promise<
+    ResponseStructure<ResponseDaftarLaporanProdukByKategoriType | null>
+  > {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseDaftarLaporanProdukByKategoriType | null>
+    >(`/statistik/laporan-penjualan-produk/kategori/${params.kategoriId}`, {
+      params: {
+        startDate: params.startDate,
+        endDate: params.endDate,
+        sortOmzet: params.sortOmzet,
+        sortLaba: params.sortLaba,
+        sortQty: params.sortQty,
+      },
+    });
 
     return result.data;
   }

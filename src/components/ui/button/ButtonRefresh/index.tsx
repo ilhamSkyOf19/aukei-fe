@@ -5,9 +5,15 @@ import { useRefresh } from "../../../../hooks/useRefresh";
 
 type Props = {
   handleRefresh: () => Promise<void>;
+  customWidth?: string;
+  classHidden?: string;
 };
 
-const ButtonRefresh: FC<Props> = ({ handleRefresh }) => {
+const ButtonRefresh: FC<Props> = ({
+  handleRefresh,
+  customWidth,
+  classHidden,
+}) => {
   const { disabled, isLoading, refresh } = useRefresh({
     onRefresh: handleRefresh,
   });
@@ -32,6 +38,8 @@ const ButtonRefresh: FC<Props> = ({ handleRefresh }) => {
         disabled={disabled}
         handleBtn={refresh}
         isLoading={isLoading}
+        customWidth={customWidth}
+        classHidden={classHidden}
       />
     </>
   );

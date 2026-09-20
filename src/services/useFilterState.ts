@@ -1,7 +1,10 @@
 import { useState } from "react";
 import type { RangeDateState } from "../hooks/useRangeDate";
 
-const useFilterState = () => {
+const useFilterState = (defaultStartDate?: {
+  startDate?: string;
+  endDate?: string;
+}) => {
   // filter sort
   const [sort, setSort] = useState<string | undefined>(undefined);
 
@@ -31,9 +34,13 @@ const useFilterState = () => {
   >(undefined);
 
   // start date end date
+
   const [startDateEndDate, setStartDateEndDate] = useState<
     RangeDateState | undefined
-  >(undefined);
+  >({
+    startDate: defaultStartDate?.startDate ?? undefined,
+    endDate: defaultStartDate?.endDate ?? undefined,
+  });
 
   // handle sort qty
   const handleSortQty = (value: string) => {

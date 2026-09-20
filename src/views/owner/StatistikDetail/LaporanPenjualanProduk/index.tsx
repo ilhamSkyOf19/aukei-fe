@@ -1,52 +1,134 @@
 import { Fragment, type FC } from "react";
 import { cn } from "../../../../utils/cn";
-import { formatNumber } from "../../../../helpers/helpers";
+import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
 import {
   ArrowRight,
   Banknote,
+  Calculator,
   ChartLine,
   Package,
-  ShoppingCart,
   Wallet,
 } from "lucide-react";
 
-import useLaporanSisa from "./useLaporanSisa";
 import CardStatistik from "../../../../components/ui/cards/CardStatistik";
 import ButtonDetailTable from "../../../../components/ui/button/ButtonDetailTable";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import ButtonRefresh from "../../../../components/ui/button/ButtonRefresh";
 import ButtonBackText from "../../../../components/ui/button/ButtonBackText";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
+import useLaporanPenjualanProduk from "./laporanPenjualanProduk";
+import FilterSort from "../../../../components/filters/Sort";
+import RangeDate from "../../../../components/filters/RangeDate";
+import ModalHitungPendapatanProduk from "../../../../components/modals/ModalHitungPendapatanProduk";
 
-const LaporanSisa: FC = () => {
+const LaporanPenjualanProduk: FC = () => {
   const {
-    dataLaporanSisa,
-    isLoadingLaporanSisa,
-    isRefetchingLaporanSisa,
     handleRefresh,
     statistik,
 
-    dataSisaModalByProduk,
-    isLoadingSisaModalByProduk,
-    isRefetchingSisaModalByProduk,
-    resetKategori,
+    handleBack,
     setKategori,
     kategori,
-  } = useLaporanSisa();
 
-  const isLoadingKategori = isLoadingLaporanSisa || isRefetchingLaporanSisa;
+    dataPenjualanProduk,
 
-  const isLoadingProduk =
-    isLoadingSisaModalByProduk || isRefetchingSisaModalByProduk;
+    isLoadingLaporanProduk,
+    isRefetchingLaporanPenjualanProduk,
+    setStartDateEndDate,
+    sortLaba,
+    sortOmzet,
+    sortQty,
+    startDateEndDate,
+    handleSortLaba,
+    handleSortOmzet,
+    handleSortQty,
+
+    dataPenjualanProdukByKategori,
+    isLoadingPenjualanProdukByKategori,
+    isRefetchingPenjualanProdukByKategori,
+
+    handlePilihProduk,
+    handlePilihSemuaProduk,
+    selectedProducts,
+
+    handleCloseModalHitungPendapatanProduk,
+    handleShowModalHitungPendapatanProduk,
+    modalHitungPendapatanProdukRef,
+  } = useLaporanPenjualanProduk();
+
+  const isLoadingLaporanGlobal =
+    isLoadingLaporanProduk || isRefetchingLaporanPenjualanProduk;
+
+  const isLoadingLaporanByKategori =
+    isLoadingPenjualanProdukByKategori || isRefetchingPenjualanProdukByKategori;
 
   return (
     <div className="w-full flex flex-col justify-start items-start">
       {/* back */}
       {kategori.id !== 0 && (
         <div className="flex flex-row justify-start items-start mb-2.5">
-          <ButtonBackText label="Kembali" handleClick={() => resetKategori()} />
+          <ButtonBackText label="Kembali" handleClick={() => handleBack()} />
         </div>
       )}
+
+      {/* filter */}
+      <div className="w-full flex flex-col md:flex-row justify-start items-start md:justify-between md:items-end bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 gap-2.5 mb-2.5">
+        <div className="w-full md:flex-wrap md:flex-2 flex flex-col md:flex-row flex-start justify-start items-center md:justify-start gap-3 md:gap-2.5 mt-3 md:mt-0">
+          {/* filter range date */}
+          <RangeDate
+            state={{
+              value: startDateEndDate,
+              onChange: setStartDateEndDate,
+            }}
+            customWidth="w-full md:w-80"
+          />
+
+          <div className="w-full md:w-auto flex flex-row justify-start items-start gap-2.5">
+            {/* filter sort omzet */}
+            <FilterSort
+              setSort={handleSortQty}
+              customWidth="w-full md:w-30"
+              value={sortQty}
+              customLabel={["Tersedikit", "Terbanyak"]}
+              customTitle="Urutkan Qty"
+            />
+
+            {/* filter sort omzet */}
+            <FilterSort
+              setSort={handleSortOmzet}
+              customWidth="w-full md:w-30"
+              value={sortOmzet}
+              customLabel={["Tersedikit", "Terbanyak"]}
+              customTitle="Urutkan Omzet"
+            />
+          </div>
+
+          <div className="w-full md:w-auto flex flex-row justify-start items-end gap-2.5">
+            {/* filter sort laba */}
+            <FilterSort
+              setSort={handleSortLaba}
+              customWidth="w-full md:w-30"
+              value={sortLaba}
+              customLabel={["Tersedikit", "Terbanyak"]}
+              customTitle="Urutkan Laba"
+            />
+
+            {/* button refresh */}
+            <ButtonRefresh
+              handleRefresh={async () => {
+                await handleRefresh();
+              }}
+              classHidden="flex md:hidden"
+            />
+          </div>
+        </div>
+        {/* button refresh */}
+        <ButtonRefresh
+          handleRefresh={async () => {
+            await handleRefresh();
+          }}
+        />
+      </div>
 
       {/* header */}
       <div className="w-full flex flex-col justify-start items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 gap-2.5">
@@ -65,59 +147,65 @@ const LaporanSisa: FC = () => {
             </span>
           </div>
 
-          <ButtonRefresh handleRefresh={() => handleRefresh()} />
+          {/* button hitung */}
+          {kategori.id !== 0 && (
+            <ButtonWithIcon
+              icon={Calculator}
+              disabled={isLoadingLaporanProduk || selectedProducts.length === 0}
+              label="Hitung Pendapatan Produk"
+              handleBtn={handleShowModalHitungPendapatanProduk}
+            />
+          )}
         </div>
 
         {/* statistik */}
-        <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-2.5">
+        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2.5">
           <CardStatistik
-            isLoading={isLoadingKategori}
+            isLoading={isLoadingLaporanGlobal}
             icon={{
               icon: Package,
               bgColor: "bg-blue-100",
               iconColor: "text-blue-400",
             }}
-            label="Total Stok Tersisa"
-            value={formatNumber(statistik.totalStok) || "0"}
-            caption="Jumlah Stok Tersisa"
+            label="Total Produk Terjual"
+            value={formatNumber(statistik.totalProdukTerjual) || "0"}
+            caption="Jumlah produk terjual"
           />
 
           <CardStatistik
-            isLoading={isLoadingKategori}
+            isLoading={isLoadingLaporanGlobal}
             icon={{
               icon: Banknote,
               bgColor: "bg-emerald-100",
               iconColor: "text-emerald-400",
             }}
-            label="Total Modal Tersisa"
-            value={formatNumber(statistik.totalModal)}
-            caption="Jumlah Modal Tersisa"
+            label="Total Quantity Terjual"
+            value={formatNumber(statistik.totalQtyTerjual)}
+            caption="Jumlah quantity terjual"
           />
 
           <CardStatistik
-            isLoading={isLoadingKategori}
+            isLoading={isLoadingLaporanGlobal}
             icon={{
               icon: Wallet,
               bgColor: "bg-purple-100",
               iconColor: "text-purple-400",
             }}
-            label="Total Estimasi Omzet"
-            value={formatNumber(statistik.totalEstimasiOmzet)}
-            caption="Jumlah Estimasi Omzet Tersisa"
+            label="Total Omzet Terjual"
+            value={formatRupiah(statistik.totalOmzet)}
+            caption="Jumlah omzet terjual"
           />
 
           <CardStatistik
-            isLoading={isLoadingKategori}
+            isLoading={isLoadingLaporanGlobal}
             icon={{
               icon: ChartLine,
               bgColor: "bg-emerald-100",
               iconColor: "text-emerald-400",
             }}
-            label="Total Estimasi Laba"
-            value={formatNumber(
-              statistik.totalEstimasiOmzet - statistik.totalModal,
-            )}
-            caption="Jumlah Estimasi Laba Tersisa"
+            label="Total Laba Terjual"
+            value={formatRupiah(statistik.totalLaba)}
+            caption="Jumlah laba terjual"
           />
         </div>
       </div>
@@ -132,25 +220,26 @@ const LaporanSisa: FC = () => {
               <tr className="h-12 bg-base-200 text-[0.7rem]">
                 <th>No</th>
                 <th>Kategori</th>
-                <th>Total Produk</th>
-                <th>Total Stok</th>
-                <th>Total Estimasi Omzet</th>
+                <th>Total Produk Terjual</th>
+                <th>Total Quantity Terjual</th>
+                <th>Total Omzet</th>
+                <th>Total Laba</th>
                 <th align="center">Aksi</th>
               </tr>
             </thead>
 
             <tbody>
-              {isLoadingKategori ? (
+              {isLoadingLaporanGlobal ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
-                    <td colSpan={6}>
+                    <td colSpan={8}>
                       <div className="skeleton h-12 w-full py-1" />
                     </td>
                   </tr>
                 ))
-              ) : dataLaporanSisa?.data?.kategori &&
-                dataLaporanSisa.data.kategori.length > 0 ? (
-                dataLaporanSisa.data.kategori.map((item, index) => (
+              ) : dataPenjualanProduk?.data?.kategori &&
+                dataPenjualanProduk.data.kategori.length > 0 ? (
+                dataPenjualanProduk.data.kategori.map((item, index) => (
                   <tr
                     key={item.kategoriId}
                     className={cn(
@@ -161,11 +250,13 @@ const LaporanSisa: FC = () => {
 
                     <td className="font-semibold">{item.namaKategori}</td>
 
-                    <td>{formatNumber(item.totalProduk)}</td>
+                    <td>{formatNumber(item.totalProdukTerjual)}</td>
 
-                    <td>{formatNumber(item.totalStok)}</td>
+                    <td>{formatNumber(item.totalQtyTerjual)}</td>
 
-                    <td>{formatNumber(item.totalEstimasiOmzet)}</td>
+                    <td>{formatRupiah(item.totalOmzet)}</td>
+
+                    <td>{formatRupiah(item.totalLaba)}</td>
 
                     <td align="center">
                       <ButtonDetailTable
@@ -202,20 +293,21 @@ const LaporanSisa: FC = () => {
       ============================================================ */}
       {kategori.id === 0 && (
         <div className="w-full lg:hidden flex flex-col gap-2.5 mt-2.5">
-          {isLoadingKategori ? (
+          {isLoadingLaporanGlobal ? (
             Array.from({ length: 4 }).map((_, index) => (
               <CardKategoriSkeleton key={index} />
             ))
-          ) : dataLaporanSisa?.data?.kategori &&
-            dataLaporanSisa.data.kategori.length > 0 ? (
-            dataLaporanSisa.data.kategori.map((item, index) => (
+          ) : dataPenjualanProduk?.data?.kategori &&
+            dataPenjualanProduk.data.kategori.length > 0 ? (
+            dataPenjualanProduk.data.kategori.map((item, index) => (
               <CardKategori
                 key={item.kategoriId}
                 nomor={index + 1}
                 nama={item.namaKategori}
-                totalProduk={item.totalProduk}
-                totalStok={item.totalStok}
-                totalEstimasiOmzet={item.totalEstimasiOmzet}
+                totalProdukTerjual={item.totalProdukTerjual}
+                totalQuantity={item.totalQtyTerjual}
+                totalOmzet={item.totalOmzet}
+                totalLaba={item.totalLaba}
                 handleClick={() =>
                   setKategori({
                     id: item.kategoriId,
@@ -244,20 +336,34 @@ const LaporanSisa: FC = () => {
           <table className="table table-xs lg:table-sm table-zebra">
             <thead>
               <tr className="h-12 bg-base-200 text-[0.7rem]">
+                <th>
+                  {/* input checked */}
+                  <label>
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      checked={
+                        (dataPenjualanProdukByKategori?.data?.produk?.length ??
+                          0) > 0 &&
+                        selectedProducts.length ===
+                          (dataPenjualanProdukByKategori?.data?.produk
+                            ?.length ?? 0)
+                      }
+                      onChange={handlePilihSemuaProduk}
+                    />
+                  </label>
+                </th>
                 <th>No</th>
                 <th>Foto</th>
                 <th>Nama</th>
-                <th>Hrg. Mdl. Rata Rata</th>
-                <th>Harga Jual</th>
-                <th>Ttl. Stok</th>
-                <th>Ttl. Est. Modal</th>
-                <th>Ttl. Est. Omzet</th>
-                <th>Ttl. Est. Laba</th>
+                <th>Total Qty Terjual</th>
+                <th>Total Omzet</th>
+                <th>Total Laba</th>
               </tr>
             </thead>
 
             <tbody>
-              {isLoadingProduk ? (
+              {isLoadingLaporanByKategori ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
                     <td colSpan={9}>
@@ -265,25 +371,36 @@ const LaporanSisa: FC = () => {
                     </td>
                   </tr>
                 ))
-              ) : dataSisaModalByProduk?.data?.produk &&
-                dataSisaModalByProduk.data.produk.length > 0 ? (
-                dataSisaModalByProduk.data.produk.map((item, index) => (
+              ) : dataPenjualanProdukByKategori?.data?.produk &&
+                dataPenjualanProdukByKategori.data.produk.length > 0 ? (
+                dataPenjualanProdukByKategori.data.produk.map((item, index) => (
                   <Fragment key={item.id}>
                     {index > 0 && index % 25 === 0 && (
                       <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                        <th>...</th>
                         <th>No</th>
                         <th>Foto</th>
                         <th>Nama</th>
-                        <th>Hrg. Mdl. Rata Rata</th>
-                        <th>Harga Jual</th>
-                        <th>Ttl. Stok</th>
-                        <th>Ttl. Est. Modal</th>
-                        <th>Ttl. Est. Omzet</th>
-                        <th>Ttl. Est. Laba</th>
+                        <th>Total Qty Terjual</th>
+                        <th>Total Omzet</th>
+                        <th>Total Laba</th>
                       </tr>
                     )}
 
                     <tr className="transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content">
+                      <td>
+                        <label>
+                          <input
+                            type="checkbox"
+                            className="checkbox"
+                            checked={selectedProducts.some(
+                              (selected) => selected.id === item.id,
+                            )}
+                            onChange={() => handlePilihProduk(item)}
+                          />
+                        </label>
+                      </td>
+
                       <td>{index + 1}</td>
 
                       <td>
@@ -308,17 +425,11 @@ const LaporanSisa: FC = () => {
                         </div>
                       </td>
 
-                      <td>{formatNumber(item.hargaModalRataRata)}</td>
+                      <td>{formatNumber(item.totalQtyTerjual)}</td>
 
-                      <td>{formatNumber(item.hargaJual)}</td>
+                      <td>{formatRupiah(item.totalOmzet)}</td>
 
-                      <td>{formatNumber(item.totalStok)}</td>
-
-                      <td>{formatNumber(item.totalModal)}</td>
-
-                      <td>{formatNumber(item.totalOmzet)}</td>
-
-                      <td>{formatNumber(item.totalLaba)}</td>
+                      <td>{formatRupiah(item.totalLaba)}</td>
                     </tr>
                   </Fragment>
                 ))
@@ -345,14 +456,14 @@ const LaporanSisa: FC = () => {
       ============================================================ */}
       {kategori.id !== 0 && (
         <div className="w-full lg:hidden flex flex-col gap-2.5 mt-2.5">
-          {isLoadingProduk ? (
+          {isLoadingLaporanByKategori ? (
             Array.from({ length: 4 }).map((_, index) => (
               <CardProdukSkeleton key={index} />
             ))
-          ) : dataSisaModalByProduk?.data?.produk &&
-            dataSisaModalByProduk.data.produk.length > 0 ? (
-            dataSisaModalByProduk.data.produk.map((item) => (
-              <CardProdukStok key={item.id} produk={item} />
+          ) : dataPenjualanProdukByKategori?.data?.produk &&
+            dataPenjualanProdukByKategori.data.produk.length > 0 ? (
+            dataPenjualanProdukByKategori.data.produk.map((item) => (
+              <CardProduk key={item.id} produk={item} />
             ))
           ) : (
             <div className="w-full bg-base-100 rounded-2xl border border-transparent dark:border-base-content/10 shadow-sm py-10">
@@ -365,6 +476,14 @@ const LaporanSisa: FC = () => {
           )}
         </div>
       )}
+
+      {/* modal hitung  */}
+      <ModalHitungPendapatanProduk
+        dataChooses={selectedProducts}
+        handleCloseModal={handleCloseModalHitungPendapatanProduk}
+        kategori={kategori.nama}
+        modalRef={modalHitungPendapatanProdukRef}
+      />
     </div>
   );
 };
@@ -373,16 +492,13 @@ const LaporanSisa: FC = () => {
     TYPE CARD PRODUK
 ============================================================ */
 
-type CardProdukStokProps = {
+type CardProdukProps = {
   produk: {
     id: number;
     img: string;
     nama: string;
     kode: string | null;
-    hargaModalRataRata: number;
-    hargaJual: number;
-    totalStok: number;
-    totalModal: number;
+    totalQtyTerjual: number;
     totalOmzet: number;
     totalLaba: number;
   };
@@ -392,7 +508,7 @@ type CardProdukStokProps = {
     CARD PRODUK MOBILE
 ============================================================ */
 
-const CardProdukStok: FC<CardProdukStokProps> = ({ produk }) => {
+const CardProduk: FC<CardProdukProps> = ({ produk }) => {
   return (
     <div className="w-full bg-base-100 rounded-2xl flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 shadow-sm gap-3">
       {/* ========================================================
@@ -412,116 +528,57 @@ const CardProdukStok: FC<CardProdukStokProps> = ({ produk }) => {
 
           {/* informasi produk */}
           <div className="flex flex-col justify-start items-start gap-0.5 min-w-0">
-            <span className="text-[0.65rem] text-base-content/60">
-              {produk.kode ?? "-"}
-            </span>
-
             <span className="text-sm font-semibold text-base-content line-clamp-2">
               {produk.nama}
             </span>
 
-            <div className="flex flex-col mt-1">
-              <span className="text-[0.6rem] text-base-content/60">
-                Harga Jual
-              </span>
-
-              <span className="text-xs font-semibold text-primary">
-                {formatNumber(produk.hargaJual)}
-              </span>
-            </div>
+            <span className="text-[0.65rem] text-base-content/60">
+              {produk.kode ?? "-"}
+            </span>
           </div>
         </div>
 
-        {/* stok */}
-        <div className="flex flex-col justify-start items-end shrink-0">
-          <span className="text-[0.6rem] text-base-content/60">Total Stok</span>
+        <div className="flex flex-col items-end">
+          <span className="text-[0.6rem] text-base-content/60">
+            Total Qty Terjual
+          </span>
 
-          <span className="text-sm font-bold text-base-content">
-            {formatNumber(produk.totalStok)}
+          <span className="text-xs font-semibold text-primary">
+            {formatNumber(produk.totalQtyTerjual)}
           </span>
         </div>
       </div>
 
-      {/* ========================================================
-          HARGA
-      ======================================================== */}
       <div className="w-full grid grid-cols-2 gap-2">
         <div className="bg-base-200/60 rounded-xl p-2.5 flex flex-col gap-1">
           <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-full bg-amber-100 flex justify-center items-center">
-              <Banknote className="size-3 text-amber-600" />
+            <div className="w-5 h-5 rounded-full bg-emerald-100 flex justify-center items-center">
+              <Banknote className="size-3 text-emerald-600" />
             </div>
 
             <span className="text-[0.6rem] text-base-content/60">
-              Modal Rata-rata
+              Total Omzet
             </span>
           </div>
 
-          <span className="text-[0.7rem] font-semibold text-base-content">
-            {formatNumber(produk.hargaModalRataRata)}
+          <span className="text-[0.7rem] font-medium text-base-content">
+            {formatRupiah(produk.totalOmzet)}
           </span>
         </div>
 
         <div className="bg-base-200/60 rounded-xl p-2.5 flex flex-col gap-1">
           <div className="flex items-center gap-1.5">
             <div className="w-5 h-5 rounded-full bg-blue-100 flex justify-center items-center">
-              <ShoppingCart className="size-3 text-blue-500" />
+              <Banknote className="size-3 text-blue-600" />
             </div>
 
             <span className="text-[0.6rem] text-base-content/60">
-              Harga Jual
+              Total Laba
             </span>
           </div>
 
-          <span className="text-[0.7rem] font-semibold text-base-content">
-            {formatNumber(produk.hargaJual)}
-          </span>
-        </div>
-      </div>
-
-      {/* ========================================================
-          ESTIMASI NILAI
-      ======================================================== */}
-      <div className="w-full grid grid-cols-3 divide-x divide-base-content/10 border-y border-base-content/10 py-3">
-        {/* modal */}
-        <div className="flex flex-col justify-start items-center px-2 gap-1">
-          <span className="text-[0.58rem] text-center text-base-content/60">
-            Est. Modal
-          </span>
-
-          <span className="text-[0.65rem] text-center font-semibold text-base-content">
-            {formatNumber(produk.totalModal)}
-          </span>
-        </div>
-
-        {/* omzet */}
-        <div className="flex flex-col justify-start items-center px-2 gap-1">
-          <span className="text-[0.58rem] text-center text-base-content/60">
-            Est. Omzet
-          </span>
-
-          <span className="text-[0.65rem] text-center font-semibold text-primary">
-            {formatNumber(produk.totalOmzet)}
-          </span>
-        </div>
-
-        {/* laba */}
-        <div className="flex flex-col justify-start items-center px-2 gap-1">
-          <span className="text-[0.58rem] text-center text-base-content/60">
-            Est. Laba
-          </span>
-
-          <span
-            className={cn(
-              "text-[0.65rem] text-center font-semibold",
-              produk.totalLaba > 0
-                ? "text-emerald-500"
-                : produk.totalLaba < 0
-                  ? "text-error"
-                  : "text-base-content",
-            )}
-          >
-            {formatNumber(produk.totalLaba)}
+          <span className="text-[0.7rem] font-medium text-base-content">
+            {formatRupiah(produk.totalLaba)}
           </span>
         </div>
       </div>
@@ -536,9 +593,10 @@ const CardProdukStok: FC<CardProdukStokProps> = ({ produk }) => {
 type CardKategoriProps = {
   nomor: number;
   nama: string;
-  totalProduk: number;
-  totalStok: number;
-  totalEstimasiOmzet: number;
+  totalProdukTerjual: number;
+  totalQuantity: number;
+  totalOmzet: number;
+  totalLaba: number;
   handleClick: () => void;
 };
 
@@ -549,9 +607,10 @@ type CardKategoriProps = {
 const CardKategori: FC<CardKategoriProps> = ({
   nomor,
   nama,
-  totalProduk,
-  totalStok,
-  totalEstimasiOmzet,
+  totalProdukTerjual,
+  totalQuantity,
+  totalOmzet,
+  totalLaba,
   handleClick,
 }) => {
   return (
@@ -568,6 +627,16 @@ const CardKategori: FC<CardKategoriProps> = ({
           </span>
         </div>
 
+        <div className="flex flex-col items-center px-2 gap-1">
+          <span className="text-[0.58rem] text-center text-base-content/60">
+            Produk Terjual
+          </span>
+
+          <span className="text-xs font-semibold">
+            {formatNumber(totalProdukTerjual)}
+          </span>
+        </div>
+
         <ButtonWithIcon
           icon={ArrowRight}
           reverse
@@ -581,31 +650,30 @@ const CardKategori: FC<CardKategoriProps> = ({
       <div className="w-full grid grid-cols-3 divide-x divide-base-content/10 border-y border-base-content/10 py-3">
         <div className="flex flex-col items-center px-2 gap-1">
           <span className="text-[0.58rem] text-center text-base-content/60">
-            Produk
+            Total Quantity
           </span>
 
           <span className="text-xs font-semibold">
-            {formatNumber(totalProduk)}
+            {formatNumber(totalQuantity)}
           </span>
         </div>
 
         <div className="flex flex-col items-center px-2 gap-1">
           <span className="text-[0.58rem] text-center text-base-content/60">
-            Total Stok
-          </span>
-
-          <span className="text-xs font-semibold">
-            {formatNumber(totalStok)}
-          </span>
-        </div>
-
-        <div className="flex flex-col items-center px-2 gap-1">
-          <span className="text-[0.58rem] text-center text-base-content/60">
-            Est. Omzet
+            Ttl. Omzet
           </span>
 
           <span className="text-xs text-center font-semibold text-primary">
-            {formatNumber(totalEstimasiOmzet)}
+            {formatRupiah(totalOmzet)}
+          </span>
+        </div>
+        <div className="flex flex-col items-center px-2 gap-1">
+          <span className="text-[0.58rem] text-center text-base-content/60">
+            Ttl. Laba
+          </span>
+
+          <span className="text-xs text-center font-semibold text-primary">
+            {formatRupiah(totalLaba)}
           </span>
         </div>
       </div>
@@ -669,4 +737,4 @@ const CardKategoriSkeleton: FC = () => {
   );
 };
 
-export default LaporanSisa;
+export default LaporanPenjualanProduk;

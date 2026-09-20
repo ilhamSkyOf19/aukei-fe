@@ -14,6 +14,7 @@ const useLaporanSisa = () => {
       {
         queryKey: ["laporan-sisa"],
         queryFn: async () => StatistikServices.laporanSisa(),
+        enabled: kategori.id === 0,
         retry: false,
         refetchOnWindowFocus: false,
       },
@@ -23,7 +24,7 @@ const useLaporanSisa = () => {
           StatistikServices.daftarSisaStokModalByProduk({
             kategoriId: kategori.id,
           }),
-        enabled: kategori.id !== null,
+        enabled: kategori.id !== 0,
         retry: false,
         refetchOnWindowFocus: false,
       },

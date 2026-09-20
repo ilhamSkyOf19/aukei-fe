@@ -61,26 +61,28 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
         </div>
 
         <div className="w-full md:flex-wrap md:flex-2 flex flex-col justify-start items-center md:justify-end gap-3 md:gap-2.5 mt-3 md:mt-0">
-          <div className="w-full flex flex-row justify-end items-end gap-2.5">
-            {/* filter kategori */}
-            <FilterKategori
-              setKategori={handleKategori}
-              customWidth="w-full md:w-40"
-              value={kategori}
-            />
-            {/* filter sort omzet */}
-            <FilterSort
-              setSort={handleSortOmzet}
-              customWidth="w-full md:w-30"
-              value={sortOmzet}
-              customLabel={["Tersedikit", "Terbanyak"]}
-              customTitle="Urutkan Omzet"
-            />
+          <div className="w-full flex flex-col md:flex-row justify-end items-end gap-2.5">
+            <div className="w-full flex flex-row justify-start items-start gap-2.5">
+              {/* filter kategori */}
+              <FilterKategori
+                setKategori={handleKategori}
+                customWidth="w-full md:w-40"
+                value={kategori}
+              />
+              {/* filter sort omzet */}
+              <FilterSort
+                setSort={handleSortOmzet}
+                customWidth="w-full md:w-30"
+                value={sortOmzet}
+                customLabel={["Tersedikit", "Terbanyak"]}
+                customTitle="Urutkan Omzet"
+              />
+            </div>
 
             {/* filter sort qty */}
             <FilterSort
               setSort={handleSortQty}
-              customWidth="w-full md:w-30"
+              customWidth="w-full"
               value={sortQty}
               customLabel={["Tersedikit", "Terbanyak"]}
               customTitle="Urutkan Qty"
@@ -111,10 +113,11 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
               handleRefresh={async () => {
                 await refetchTopProduk();
               }}
+              classHidden="hidden md:flex"
             />
           </div>
 
-          <div className="w-full grid grid-cols-5 md:grid-cols-4 lg:flex lg:flex-row items-end gap-2.5 justify-end">
+          <div className="w-full md:grid md:grid-cols-4 lg:flex lg:flex-row items-end gap-2.5 justify-end">
             <div className="col-span-1 hidden md:flex" />
             {/* filter range */}
             <RangeDate
@@ -122,31 +125,40 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
                 value: startDateEndDate,
                 onChange: setStartDateEndDate,
               }}
-              customWidth="col-span-3 md:col-span-2"
+              customWidth="w-full md:w-auto md:col-span-2"
+            />
+          </div>
+
+          <div className="w-full flex flex-row justify-start items-start gap-2.5">
+            <ButtonWithIcon
+              customWidth="flex-1"
+              label="PDF"
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              icon={FileText}
+              isLoading={isLoadingDownloadLaporanTopProdukPdf}
+              disabled={
+                dataTopProduk?.data === undefined ||
+                dataTopProduk?.data === null ||
+                dataTopProduk?.data?.length === 0
+              }
+              handleBtn={() =>
+                handleDownloadLaporanTopProdukPdf({
+                  startDate: startDateEndDate.startDate,
+                  endDate: startDateEndDate.endDate,
+                })
+              }
+              classHidden="flex lg:hidden"
             />
 
-            <div className="col-span-2 md:col-span-1 lg:hidden">
-              <ButtonWithIcon
-                customWidth="w-full"
-                label="PDF"
-                bgColor="bg-error"
-                textColor="text-primary-white"
-                icon={FileText}
-                isLoading={isLoadingDownloadLaporanTopProdukPdf}
-                disabled={
-                  dataTopProduk?.data === undefined ||
-                  dataTopProduk?.data === null ||
-                  dataTopProduk?.data?.length === 0
-                }
-                handleBtn={() =>
-                  handleDownloadLaporanTopProdukPdf({
-                    startDate: startDateEndDate.startDate,
-                    endDate: startDateEndDate.endDate,
-                  })
-                }
-                classHidden="flex lg:hidden"
-              />
-            </div>
+            {/* button refresh */}
+            <ButtonRefresh
+              handleRefresh={async () => {
+                await refetchTopProduk();
+              }}
+              classHidden="flex md:hidden"
+              customWidth="flex-1"
+            />
           </div>
         </div>
       </div>
@@ -183,7 +195,6 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
           <thead>
             <tr className="h-12 bg-base-200 text-[0.7rem]">
               <th>Foto</th>
-              <th>Kode</th>
               <th>Nama</th>
               <th>Kategori</th>
               <th>Total Terjual</th>
@@ -210,7 +221,6 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
                   {index > 0 && index % 25 === 0 && (
                     <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
                       <th>Foto</th>
-                      <th>Kode</th>
                       <th>Nama</th>
                       <th>Kategori</th>
                       <th>Total Terjual</th>
@@ -241,11 +251,13 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
                       </div>
                     </td>
 
-                    {/* kode */}
-                    <td className="font-medium text-info">{produk.kode}</td>
-
                     {/* nama */}
-                    <td>{produk.nama}</td>
+                    <td>
+                      <div className="flex flex-col">
+                        <span>{produk.nama}</span>
+                        <span>{produk.kode ?? "-"}</span>
+                      </div>
+                    </td>
 
                     {/* kategori */}
                     <td>{produk.kategori}</td>

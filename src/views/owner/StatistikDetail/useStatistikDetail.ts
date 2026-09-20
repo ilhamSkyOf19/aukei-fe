@@ -37,6 +37,11 @@ const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
       label: "Laporan Penjualan",
       icon: Banknote,
     },
+    {
+      key: "penjualanProduk",
+      label: "Laporan Penjualan Produk",
+      icon: ChartArea,
+    },
 
     {
       key: "barang",

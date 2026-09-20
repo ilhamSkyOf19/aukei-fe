@@ -9,7 +9,8 @@ export type LaporanPilihanType =
   | "pantauanStok"
   | "topProduk"
   | "topPelanggan"
-  | "laporanSisa";
+  | "laporanSisa"
+  | "penjualanProduk";
 
 interface LaporanStore {
   selectedLaporan: LaporanPilihanType;
