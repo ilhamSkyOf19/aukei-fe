@@ -52,8 +52,8 @@ const Sidebar: FC<Props> = ({ isClose }) => {
           >
             {/* title is closed */}
             <div className="w-full h-14 flex flex-row justify-center items-center">
-              <div className="is-drawer-open:hidden rounded-full bg-custom-primary w-11 h-11 flex flex-row justify-center items-center">
-                <p className="font-semibold text-custom-secondary lg:text-xl ">
+              <div className="is-drawer-open:hidden rounded-full bg-custom-primary-brand w-11 h-11 flex flex-row justify-center items-center">
+                <p className="font-semibold text-custom-secondary-brand lg:text-xl ">
                   A
                 </p>
               </div>
@@ -61,7 +61,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
               {/* heading */}
               <p className="is-drawer-close:hidden text-primary-black font-semibold text-base lg:text-3xl">
                 <span className="text-primary-white">AU</span>
-                <span className="text-custom-primary">KEI</span>
+                <span className="text-custom-primary-brand">KEI</span>
               </p>
             </div>
           </div>
@@ -91,25 +91,25 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                   >
                     <item.icon
                       className={cn(
-                        "my-1.5 inline-block size-5 text-base-content group-hover:text-custom-secondary transition-all duration-150 ease-in-out",
+                        "my-1.5 inline-block size-5 text-base-content group-hover:text-text-custom-secondary transition-all duration-150 ease-in-out",
                         item.link === "/dashboard"
                           ? pathname === "/dashboard"
-                            ? "text-custom-secondary"
+                            ? "text-text-custom-secondary"
                             : "text-primary-white"
                           : pathname.startsWith(item.link)
-                            ? "text-custom-secondary"
+                            ? "text-text-custom-secondary"
                             : "text-primary-white",
                       )}
                     />
                     <span
                       className={cn(
-                        "is-drawer-close:hidden group-hover:text-custom-secondary text-base-content capitalize transition-all duration-150 ease-in-out",
+                        "is-drawer-close:hidden group-hover:text-text-custom-secondary text-base-content capitalize transition-all duration-150 ease-in-out",
                         item.link === "/dashboard"
                           ? pathname === "/dashboard"
-                            ? "text-custom-secondary"
+                            ? "text-text-custom-secondary"
                             : "text-primary-white"
                           : pathname.startsWith(item.link)
-                            ? "text-custom-secondary"
+                            ? "text-text-custom-secondary"
                             : "text-primary-white",
                       )}
                     >

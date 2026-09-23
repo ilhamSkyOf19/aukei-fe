@@ -17,15 +17,15 @@ import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInt
 import useModalCalculator from "../../../../hooks/useModalCalculator";
 import useModalTempo from "../../../../hooks/useModalTempo";
 import { LOCAL_STORAGE_KEYS } from "../../../../utils/localStorageKeys";
-import { getLocalStorageJSON } from "../../../../helpers/helpers";
+import { getLocalStorageJSON, parseId } from "../../../../helpers/helpers";
 import { useStepStore } from "../../../../stores/stepStore";
 import { useCartStore } from "../../../../stores/useCartStore";
 import useUpdateMetodePembayaran from "../../../../hooks/useUpdateMetodePembayaran";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import useUpdatePembayaran from "../../../../hooks/useUpdatePembayaran";
 
 // Delay debounce saat menyimpan metode pembayaran non-CASH ke localStorage
 const METODE_PEMBAYARAN_SYNC_DEBOUNCE_MS = 500;
-
-// Ambil dan parse data JSON dari localStorage, return null jika tidak ada/invalid
 
 // Simpan data ke localStorage dalam bentuk JSON string
 const setLocalStorageJSON = (key: string, value: unknown) => {
@@ -80,10 +80,21 @@ const buildTransactionPayload = ({
 };
 
 const usePembayaran = (params: {
-  handleToast: (value: string) => void;
+  handleToast?: (value: string) => void;
   kasir?: PayloadPenggunaInternalType | null;
+  ubahPembayaran?: boolean;
 }) => {
-  const { handleToast, kasir } = params;
+  const { handleToast, kasir, ubahPembayaran } = params;
+
+  // get current pathname
+  const currentPathname = useLocation().pathname;
+
+  // navigate
+  const navigate = useNavigate();
+
+  // get id
+  const { transactionId } = useParams<{ transactionId: string }>();
+  const validatedTransactionIdFromCompleted = parseId(transactionId);
 
   // transaction id from cart
   const {
@@ -102,6 +113,10 @@ const usePembayaran = (params: {
       if (transactionIdFromCart !== null) {
         return TransactionServices.findTransaksiDraftCartById({
           id: transactionIdFromCart,
+        });
+      } else if (validatedTransactionIdFromCompleted !== null) {
+        return TransactionServices.findTransaksiComplateById({
+          id: validatedTransactionIdFromCompleted,
         });
       } else {
         return TransactionServices.findTransaksiDraft();
@@ -220,7 +235,8 @@ const usePembayaran = (params: {
     handleCancel,
     handleConfirm,
     modalRef: modalConfirmRef,
-  } = useConfirm();
+    data: dataConfirm,
+  } = useConfirm<{ bigTitle: string; smallTitle: string }>();
 
   // Simpan nominal yang dibayarkan (dari modal kalkulator) ke state & localStorage
   const handlePay = (value: number) => {
@@ -271,7 +287,7 @@ const usePembayaran = (params: {
           resetNext();
         }
 
-        handleToast("created_transaction");
+        handleToast?.("created_transaction");
         handleSteps(3);
       },
       onError: (err) => {
@@ -333,12 +349,48 @@ const usePembayaran = (params: {
       });
 
       // Minta konfirmasi user sebelum transaksi benar-benar dikirim
-      const isConfirm = await confirm();
+      const isConfirm = await confirm({
+        bigTitle: "Apakah Anda yakin ingin memproses transaksi ini?",
+        smallTitle:
+          "Pastikan data transaksi telah sesuai. Setelah diproses, transaksi akan disimpan dan siap untuk dicetak.",
+      });
       if (!isConfirm) return;
 
       await mutateTransaction({
         ...data,
         id: dataTransaksi?.data?.id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // handle back
+  const handleBack = () => {
+    if (ubahPembayaran) {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.DI_BAYAR);
+      navigate(
+        currentPathname.substring(0, currentPathname.lastIndexOf("/")) || "/",
+      );
+    } else {
+      handleSteps(1);
+    }
+  };
+
+  // mutation update pembayaran
+  const { mutateUpdatePembayaran, isPendingUpdatePembayaran } =
+    useUpdatePembayaran({
+      handleRedirect: () => handleBack(),
+    });
+
+  // handle mutate
+  const handleUpdatePembayaran = async () => {
+    try {
+      if (!validateBeforeTransaction()) return;
+
+      await mutateUpdatePembayaran({
+        nominal: dataDiBayar,
+        transactionId: dataTransaksi?.data?.id ?? 0,
       });
     } catch (error) {
       console.log(error);
@@ -378,9 +430,14 @@ const usePembayaran = (params: {
     isLoadingTransaksi,
     isRefetchingTransaksi,
 
-    handleSteps,
-
     isPendingUpdateMetodePembayaran,
+
+    handleBack,
+
+    dataConfirm,
+
+    isPendingUpdatePembayaran,
+    handleUpdatePembayaran,
   };
 };
 

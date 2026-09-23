@@ -43,6 +43,7 @@ const StatistikDetail = () => {
     toast,
     handleSetAlert,
     handleSetToast,
+    role,
   } = useStatistikDetail();
 
   return (
@@ -92,7 +93,7 @@ const StatistikDetail = () => {
                   className={cn(
                     "lg:w-full h-12 rounded-2xl md:rounded-xl border flex flex-row justify-start items-center gap-2.5 px-2.5 transition-all duration-100 ease-in-out shrink-0",
                     selectedLaporan === item.key
-                      ? "border-custom-secondary bg-custom-primary shadow-md text-custom-secondary"
+                      ? "border-custom-secondary bg-custom-primary shadow-md text-text-custom-secondary"
                       : "border-base-content/10 hover:border-custom-secondary text-base-content hover:bg-custom-primary/10",
                   )}
                   onClick={() => setSelectedLaporan(item.key)}
@@ -193,12 +194,13 @@ const StatistikDetail = () => {
                         ref={grafikLineRef}
                         windowSize={windowSize}
                         pilihan={selectedLaporan}
+                        role={role}
                       />
 
                       {/* graifk  */}
                       {(selectedLaporan === "barang" ||
                         selectedLaporan === "semua") && (
-                        <GrafikBatang windowSize={windowSize} />
+                        <GrafikBatang windowSize={windowSize} role={role} />
                       )}
 
                       {/* grafik pie */}

@@ -12,8 +12,7 @@
 @theme {
   --font-poppins: "Poppins", sans-serif;
   --font-inter: "Inter", sans-serif;
-  --color-custom-primary: #cdde00;
-  --color-custom-secondary: #28484b;
+
   --color-custom-surface: #315659;
   --color-custom-border: #3a6265;
 
@@ -26,6 +25,30 @@
   --color-custom-yellow: oklch(82.8% 0.189 84.429);
   --color-custom-purple: oklch(71.4% 0.203 305.504);
   --color-custom-red: oklch(58.6% 0.253 17.585);
+
+  /* tambahkan ini, ini yang bikin bg-custom-primary jadi class valid */
+  --color-custom-primary: #cdde00;
+  --color-custom-secondary: #28484b;
+
+  --color-text-custom-secondary: #28484b;
+  --color-text-custom-primary: #cdde00;
+
+  --color-custom-primary-brand: #cdde00;
+  --color-custom-secondary-brand: #28484b;
+}
+
+[data-role="KASIR"] {
+  --color-custom-primary: #cdde00;
+  --color-custom-secondary: #28484b;
+  --color-text-custom-secondary: #28484b;
+  --color-text-custom-primary: #cdde00;
+}
+
+[data-role="OWNER"] {
+  --color-custom-primary: #3b82c4;
+  --color-custom-secondary: #245f91;
+  --color-text-custom-secondary: #f8f8f8;
+  --color-text-custom-primary: #f8f8f8;
 }
 
 @layer daisyui.l1.l2 {
@@ -408,4 +431,119 @@ input:-webkit-autofill:active {
   animation: none !important;
   transition: none !important;
   transform: none !important;
+}
+
+@import "tailwindcss";
+
+/* =========================================================
+   SHADOW MODE ANIMATION
+   ========================================================= */
+@keyframes shadow-overlay {
+  0% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  62.5% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes shadow-object {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  20% {
+    opacity: 1;
+    transform: scale(0.8);
+  }
+
+  28% {
+    transform: scale(1.08);
+  }
+
+  35% {
+    transform: scale(1);
+  }
+
+  /* DIAM */
+  62.5% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* MULAI MENGHILANG */
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes shadow-glow {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+
+  20% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  62.5% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes shadow-corner {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  20% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  62.5% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+.animate-shadow-overlay {
+  animation: shadow-overlay 4000ms ease-in-out forwards;
+}
+
+.animate-shadow-object {
+  animation: shadow-object 4000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-shadow-glow {
+  animation: shadow-glow 4000ms ease-in-out forwards;
+}
+
+.animate-shadow-corner {
+  animation: shadow-corner 4000ms ease-out forwards;
 }

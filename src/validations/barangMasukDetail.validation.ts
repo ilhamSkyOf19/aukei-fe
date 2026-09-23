@@ -17,17 +17,10 @@ export class BarangMasukDetailValidation {
         )
         .min(1, "Mohon pilih produk"),
 
-      jumlahBox: z
-        .number("Jumlah box tidak valid")
-        .int()
-        .min(1, "Mohon isi jumlah box")
-        .max(2147483647)
-        .optional(),
+      jumlahBox: z.number("Jumlah box tidak valid").max(2147483647).optional(),
 
       jumlahStok: z
         .number("Jumlah stok tidak valid")
-        .int()
-        .min(1, "Mohon isi jumlah stok")
         .max(2147483647)
         .optional(),
 
@@ -38,8 +31,9 @@ export class BarangMasukDetailValidation {
         .optional(),
     })
     .superRefine((data, ctx) => {
-      const hasJumlahBox = data.jumlahBox !== undefined;
-      const hasJumlahStok = data.jumlahStok !== undefined;
+      const hasJumlahBox = data.jumlahBox !== undefined && data.jumlahBox > 0;
+      const hasJumlahStok =
+        data.jumlahStok !== undefined && data.jumlahStok > 0;
 
       // Keduanya diisi
       if (hasJumlahBox && hasJumlahStok) {

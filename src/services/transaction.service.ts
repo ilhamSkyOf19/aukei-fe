@@ -334,4 +334,23 @@ export class TransactionServices {
 
     return result.data;
   }
+
+  // update pembayaran
+  static async updatePembayaran(params: {
+    transactionId: number;
+    data: { nominal: number };
+  }): Promise<
+    ResponseStructure<{
+      nominal: number;
+    } | null>
+  > {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<{
+        nominal: number;
+      } | null>
+    >(`/transaction/${params.transactionId}/update-pembayaran`, params.data);
+
+    return result.data;
+  }
 }

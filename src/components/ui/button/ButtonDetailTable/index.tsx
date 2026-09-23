@@ -14,7 +14,7 @@ const ButtonDetailTable: FC<Props> = ({ handleRedirect, customDataTip }) => {
         className="w-7 h-7 bg-custom-primary rounded-md flex flex-row justify-center items-center hover-overlay"
         onClick={() => handleRedirect()}
       >
-        <Eye className="size-3.5 text-custom-secondary" />
+        <Eye className="size-3.5 text-text-custom-secondary" />
       </button>
     </div>
   );

@@ -133,21 +133,29 @@ const useLaporanPenjualanProduk = () => {
     totalLaba: number;
     totalOmzet: number;
   } = useMemo(() => {
-    if (dataPenjualanProduk?.data) {
+    if (dataPenjualanProduk?.data && kategori.id === 0) {
       return {
         totalProdukTerjual: dataPenjualanProduk.data?.totalProdukTerjual,
         totalQtyTerjual: dataPenjualanProduk.data?.totalQtyTerjual,
         totalLaba: dataPenjualanProduk.data?.totalLaba,
         totalOmzet: dataPenjualanProduk.data?.totalOmzet,
       };
+    } else if (dataPenjualanProdukByKategori?.data && kategori.id !== 0) {
+      return {
+        totalProdukTerjual: dataPenjualanProdukByKategori.data?.produk.length,
+        totalQtyTerjual: dataPenjualanProdukByKategori.data?.totalQtyTerjual,
+        totalLaba: dataPenjualanProdukByKategori.data?.totalLaba,
+        totalOmzet: dataPenjualanProdukByKategori.data?.totalOmzet,
+      };
     }
+
     return {
       totalProdukTerjual: 0,
       totalQtyTerjual: 0,
       totalLaba: 0,
       totalOmzet: 0,
     };
-  }, [dataPenjualanProduk]);
+  }, [dataPenjualanProduk, dataPenjualanProdukByKategori]);
 
   const handleRefresh = async () => {
     if (kategori.id !== 0)

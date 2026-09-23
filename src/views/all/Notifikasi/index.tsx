@@ -64,7 +64,7 @@ const Notifikasi = () => {
                   className={cn(
                     "md:w-full h-12 rounded-2xl md:rounded-xl border flex flex-row justify-start items-center gap-2.5 px-2.5 transition-all duration-100 ease-in-out shrink-0 ",
                     selectedNotifikasi === item.key
-                      ? "border-custom-secondary bg-custom-primary shadow-md text-custom-secondary"
+                      ? "border-custom-secondary bg-custom-primary shadow-md text-text-custom-secondary"
                       : "border-base-content/10 hover:border-custom-secondary text-base-content hover:bg-custom-primary/10",
                   )}
                   onClick={() => handleSelected(item.key)}

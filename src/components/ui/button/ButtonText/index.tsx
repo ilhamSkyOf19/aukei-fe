@@ -29,7 +29,7 @@ const ButtonText: FC<Props> = ({
         " h-10.5 md:h-9 text-xs px-4 font-semibold  disabled:opacity-50 rounded-xl shadow-sm",
         customWidth ?? "w-auto",
         bgColor ?? " bg-custom-primary",
-        textColor ?? "text-custom-secondary ",
+        textColor ?? "text-text-custom-secondary ",
         (!isLoading || !disable) && "hover-overlay",
       )}
       disabled={disable || isLoading}

@@ -1,8 +1,11 @@
+import gear from "../../assets/gear.svg";
 const MaintenancePage = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-5">
       <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-10 text-center shadow-sm">
-        <div className="mb-5 text-5xl">⚙</div>
+        <div className="w-full flex justify-center items-center">
+          <img src={gear} alt="" width={100} />
+        </div>
 
         <h1 className="mb-4 text-2xl font-bold text-gray-900">
           Website Sedang Maintenance

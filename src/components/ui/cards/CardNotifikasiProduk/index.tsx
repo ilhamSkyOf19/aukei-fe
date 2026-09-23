@@ -60,7 +60,7 @@ const CardNotifikasiProduk: FC<Props> = ({
                   <span className="text-[0.625rem] text-base-content/70">
                     Kategori
                   </span>
-                  <span className="text-[0.625rem] font-medium pr-4">
+                  <span className="text-[0.625rem] font-medium pr-4 text-base-content">
                     {produk.kategori.nama}
                   </span>
                 </div>

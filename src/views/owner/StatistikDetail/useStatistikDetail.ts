@@ -24,6 +24,7 @@ import useDownloadStatistikBooking from "../../../hooks/useDownloadStatistikBook
 import { useToastAnimation } from "../../../hooks/useToast";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { useKategoriChooseStore } from "../../../stores/kategoriChooseStore";
+import { useAuthStore } from "../../../stores/authStore";
 
 const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
   [
@@ -81,6 +82,9 @@ const useStatistikDetail = () => {
 
   // grafik line
   const grafikLineRef = useRef<ChildRef | null>(null);
+
+  // get role
+  const role = useAuthStore((state) => state.pengguna?.role);
 
   // handle set toast
   const { handleSetToast, toast } = useToastAnimation();
@@ -184,6 +188,7 @@ const useStatistikDetail = () => {
     handleSetAlert,
     toast,
     alert,
+    role,
   };
 };
 

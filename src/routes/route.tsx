@@ -34,6 +34,7 @@ import DaftarReturBarangPage from "../pages/DaftarReturBarangPage";
 import ReturBarangDetailPage from "../pages/ReturBarangDetailPage";
 import StockOpnamePage from "../pages/StockOpnamePage";
 import StockOpnameDetailPage from "../pages/StockOpnameDetailPage";
+import UbahPembayaranPage from "../pages/UbahPembayaranPage";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -305,6 +306,10 @@ const route = createBrowserRouter([
               {
                 path: "ubah-produk",
                 element: <KasirPage isUpdateTransaction />,
+              },
+              {
+                path: "ubah-pembayaran",
+                element: <UbahPembayaranPage />,
               },
             ],
           },

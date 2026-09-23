@@ -385,7 +385,8 @@ const DaftarDetailProduk: FC<Props> = ({
                           <div className="flex justify-end items-end">
                             <span className="text-xs font-semibold text-base-content">
                               {formatRupiah(
-                                dataTransaction?.data?.totalBayar ?? 0,
+                                (dataTransaction?.data?.totalBayar ?? 0) -
+                                  (dataTransaction?.data?.ongkir ?? 0),
                               )}
                             </span>
                           </div>
@@ -480,8 +481,6 @@ const DaftarDetailProduk: FC<Props> = ({
               <ButtonWithIcon
                 label="Lihat Daftar Retur Barang"
                 icon={Eye}
-                bgColor="bg-info"
-                textColor="text-primary-white"
                 handleBtn={() =>
                   handleDaftarReturBarang(dataTransaction?.data?.id)
                 }

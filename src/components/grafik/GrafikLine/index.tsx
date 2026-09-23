@@ -17,14 +17,19 @@ import type { ChildRef } from "../../../types/ref.type";
 import DataEmpty from "../../messages/DataEmpty";
 import { ChartLine } from "lucide-react";
 import type { LaporanPilihanType } from "../../../stores/laporanStore";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+} from "../../../types/constant.type";
 
 // grafik line
 type GrafikLineProps = {
   windowSize: "sm" | "md" | "lg";
   pilihan: LaporanPilihanType;
+  role?: RoleInternalType;
 };
 const GrafikLine = forwardRef<ChildRef, GrafikLineProps>(
-  ({ windowSize, pilihan }, ref) => {
+  ({ windowSize, pilihan, role }, ref) => {
     const {
       isChoose,
       handleSetIsChoose,
@@ -99,8 +104,20 @@ const GrafikLine = forwardRef<ChildRef, GrafikLineProps>(
           >
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#cdde00" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#cdde00" stopOpacity={0} />
+                <stop
+                  offset="5%"
+                  stopColor={
+                    role === ROLE_INTERNAL_TYPE.OWNER ? "#3b82c4" : "#cdde00"
+                  }
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={
+                    role === ROLE_INTERNAL_TYPE.OWNER ? "#3b82c4" : "#cdde00"
+                  }
+                  stopOpacity={0}
+                />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
@@ -146,7 +163,7 @@ const GrafikLine = forwardRef<ChildRef, GrafikLineProps>(
             <Area
               type="monotone"
               dataKey="value"
-              stroke="#28484b"
+              stroke={role === ROLE_INTERNAL_TYPE.OWNER ? "#245f91" : "#28484b"}
               fillOpacity={1}
               fill="url(#colorValue)"
               isAnimationActive={true}

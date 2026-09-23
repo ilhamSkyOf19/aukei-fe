@@ -82,7 +82,7 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
             {/* filter sort qty */}
             <FilterSort
               setSort={handleSortQty}
-              customWidth="w-full"
+              customWidth="w-full shrink-0 md:w-40"
               value={sortQty}
               customLabel={["Tersedikit", "Terbanyak"]}
               customTitle="Urutkan Qty"

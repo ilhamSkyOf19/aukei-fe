@@ -110,12 +110,10 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     }
 
     let totalQuantity = 0;
-    let totalPembayaran = 0;
+    let totalPembayaran = dataTransaction?.data?.totalBayar;
 
     for (const item of dataTransaction.data.details) {
       totalQuantity += item.quantity;
-
-      totalPembayaran += item.subtotal - item.diskon;
     }
 
     const totalDiBayar =
@@ -137,7 +135,7 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
 
     return {
       totalQuantity,
-      totalPembayaran,
+      totalPembayaran: dataTransaction?.data?.totalBayar,
       totalDiBayar,
       totalKembalian,
       sisaTagihan,

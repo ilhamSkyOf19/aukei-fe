@@ -8,6 +8,9 @@ import {
 } from "../../../../../helpers/helpers";
 import { CircleCheckIcon } from "lucide-react";
 import ButtonWithIcon from "../../../../../components/ui/button/ButtonWithIcon";
+import Toast from "../../../../../components/messages/Toast";
+import { useToastAnimation } from "../../../../../hooks/useToast";
+import { TOAST_CONFIG_ONGKIR } from "../../../../../types/toast.type";
 
 type Props = {
   transactionId: number;
@@ -15,6 +18,9 @@ type Props = {
 };
 const FormOngkir: FC<Props> = ({ transactionId, queryKey }) => {
   const [displayValue, setDisplayValue] = useState<string>("");
+
+  // toast
+  const { handleSetToast, toast } = useToastAnimation();
 
   //   query client
   const queryClient = useQueryClient();
@@ -25,12 +31,16 @@ const FormOngkir: FC<Props> = ({ transactionId, queryKey }) => {
       mutationFn: (data: { ongkir: number }) =>
         TransactionServices.updateOngkir({ transactionId, data }),
       onSuccess: () => {
+        handleSetToast?.("updated_ongkir");
+
         queryClient.invalidateQueries({
           queryKey: [queryKey ?? "transaksi-draft"],
         });
 
         // reset
         setDisplayValue("");
+
+        // toast
       },
 
       onError: (err) => {
@@ -49,6 +59,14 @@ const FormOngkir: FC<Props> = ({ transactionId, queryKey }) => {
 
   return (
     <div className="flex gap-2.5 flex-row justify-between items-center w-full">
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_ONGKIR[toast.type].message}
+          color={TOAST_CONFIG_ONGKIR[toast.type].color}
+        />
+      )}
       <div className="flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 h-12 px-3">
         <input
           type="text"

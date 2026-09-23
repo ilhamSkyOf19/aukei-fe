@@ -73,6 +73,9 @@ const useRangeDate = ({
     params.set("start-date", defaultStartDate);
     params.set("end-date", defaultEndDate);
 
+    // Pastikan page dimulai dari halaman pertama
+    params.set("page", "1");
+
     setSearchParams(params, {
       replace: true,
     });
@@ -105,6 +108,9 @@ const useRangeDate = ({
 
   /**
    * Set range tanggal.
+   *
+   * Setiap kali range tanggal berubah,
+   * pagination akan kembali ke page 1.
    */
   const setRangeDate = (startDate?: string, endDate?: string) => {
     if (isControlled && state?.onChange) {
@@ -130,6 +136,9 @@ const useRangeDate = ({
       params.delete("end-date");
     }
 
+    // Reset pagination ketika tanggal berubah
+    params.set("page", "1");
+
     setSearchParams(params, {
       replace: true,
     });
@@ -137,6 +146,8 @@ const useRangeDate = ({
 
   /**
    * Reset ke tanggal default.
+   *
+   * Pagination juga kembali ke page 1.
    */
   const resetRangeDate = () => {
     if (isControlled && state?.onChange) {
@@ -153,6 +164,9 @@ const useRangeDate = ({
     params.set("start-date", defaultStartDate);
     params.set("end-date", defaultEndDate);
 
+    // Reset pagination
+    params.set("page", "1");
+
     setSearchParams(params, {
       replace: true,
     });
@@ -162,21 +176,29 @@ const useRangeDate = ({
    * Handle dropdown tanggal.
    */
   const handleOnChangeDropDown = (value: string) => {
+    /**
+     * Buka modal custom tanggal.
+     */
     if (value === "aturTanggal") {
       handleShowModalDate();
       return;
     }
 
+    /**
+     * Reset tanggal.
+     *
+     * Tidak perlu setSelected secara manual karena
+     * selected akan mengikuti startDate dan endDate
+     * melalui useEffect.
+     */
     if (value === "reset") {
-      setSelected({
-        from: new Date(defaultStartDate),
-        to: new Date(defaultEndDate),
-      });
-
       resetRangeDate();
       return;
     }
 
+    /**
+     * Preset tanggal.
+     */
     const range = JSON.parse(value) as RangeDateState;
 
     setRangeDate(range.startDate, range.endDate);
@@ -190,7 +212,7 @@ const useRangeDate = ({
    * from = 16 September
    * to   = undefined
    *
-   * maka otomatis:
+   * maka:
    *
    * startDate = 16 September
    * endDate   = 16 September
@@ -215,10 +237,14 @@ const useRangeDate = ({
    * maka dianggap sebagai tanggal custom.
    */
   const selectedOption = useMemo(() => {
-    if (!startDate || !endDate) return "";
+    if (!startDate || !endDate) {
+      return "";
+    }
 
     const found = listDate.find((item) => {
-      if (item.value === "reset") return false;
+      if (item.value === "reset") {
+        return false;
+      }
 
       try {
         const range = JSON.parse(item.value) as RangeDateState;
@@ -232,6 +258,9 @@ const useRangeDate = ({
     return found?.value ?? "aturTanggal";
   }, [listDate, startDate, endDate]);
 
+  /**
+   * Modal tanggal.
+   */
   const {
     modalRef: modalDateRef,
     handleShowModal: handleShowModalDate,

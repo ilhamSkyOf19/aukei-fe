@@ -11,6 +11,7 @@ import {
   ShoppingBag,
   TrendingDown,
   TrendingUp,
+  Truck,
   Undo2,
   type LucideIcon,
 } from "lucide-react";
@@ -76,33 +77,6 @@ const useDataStatistik = (params: {
     },
 
     {
-      key: "totalRefund",
-      category: "penjualan",
-      icon: {
-        icon: Undo2,
-        bgColor: "bg-rose-100",
-        iconColor: "text-rose-400",
-      },
-      label: windowSize === "sm" ? "Refund" : "Total Refund",
-      value:
-        windowSize === "sm"
-          ? formatRupiahShort(statistik?.data?.totalRefund.total ?? 0) || "0"
-          : formatRupiah(statistik?.data?.totalRefund.total ?? 0) || "0",
-      caption: "Jumlah refund berdasarkan tanggal",
-      detail: {
-        ...(statistik?.data?.totalRefund?.trend === "down" && {
-          down: statistik?.data?.totalRefund?.persentase,
-        }),
-        ...(statistik?.data?.totalRefund?.trend === "up" && {
-          up: statistik?.data?.totalRefund?.persentase,
-        }),
-        ...(statistik?.data?.totalRefund?.trend === "same" && {
-          same: statistik?.data?.totalRefund?.persentase,
-        }),
-      },
-    },
-
-    {
       key: "omzetSelesai",
       category: "penjualan",
       icon: {
@@ -128,6 +102,34 @@ const useDataStatistik = (params: {
         }),
       },
     },
+
+    {
+      key: "modalSelesai",
+      category: "penjualan",
+      icon: {
+        icon: Package,
+        bgColor: "bg-amber-100",
+        iconColor: "text-amber-400",
+      },
+      label: windowSize === "sm" ? "Modal" : "Total Modal Selesai",
+      value:
+        windowSize === "sm"
+          ? formatRupiahShort(statistik?.data?.totalModalSelesai.total ?? 0)
+          : formatRupiah(statistik?.data?.totalModalSelesai.total ?? 0),
+      caption: "Total biaya modal untuk transaksi selesai",
+      detail: {
+        ...(statistik?.data?.totalModalSelesai?.trend === "down" && {
+          down: statistik?.data?.totalModalSelesai?.persentase,
+        }),
+        ...(statistik?.data?.totalModalSelesai?.trend === "up" && {
+          up: statistik?.data?.totalModalSelesai?.persentase,
+        }),
+        ...(statistik?.data?.totalModalSelesai?.trend === "same" && {
+          same: statistik?.data?.totalModalSelesai?.persentase,
+        }),
+      },
+    },
+
     {
       key: "labaSelesai",
       category: "penjualan",
@@ -212,34 +214,50 @@ const useDataStatistik = (params: {
         }),
       },
     },
+
     {
-      key: "modalSelesai",
+      key: "ongkir",
       category: "penjualan",
       icon: {
-        icon: Package,
-        bgColor: "bg-amber-100",
-        iconColor: "text-amber-400",
+        icon: Truck,
+        bgColor: "bg-rose-100",
+        iconColor: "text-rose-400",
       },
-      label: windowSize === "sm" ? "Modal" : "Total Modal Selesai",
+      label: windowSize === "sm" ? "Ongkir" : "Total Ongkir",
       value:
         windowSize === "sm"
-          ? formatRupiahShort(statistik?.data?.totalModalSelesai.total ?? 0)
-          : formatRupiah(statistik?.data?.totalModalSelesai.total ?? 0),
-      caption: "Total biaya modal untuk transaksi selesai",
+          ? formatRupiahShort(statistik?.data?.totalOngkir.total ?? 0)
+          : formatRupiah(statistik?.data?.totalOngkir.total ?? 0),
+      caption: "Total ongkir dari transaksi yang sudah selesai",
+    },
+
+    {
+      key: "totalRefund",
+      category: "penjualan",
+      icon: {
+        icon: Undo2,
+        bgColor: "bg-rose-100",
+        iconColor: "text-rose-400",
+      },
+      label: windowSize === "sm" ? "Refund" : "Total Refund",
+      value:
+        windowSize === "sm"
+          ? formatRupiahShort(statistik?.data?.totalRefund.total ?? 0) || "0"
+          : formatRupiah(statistik?.data?.totalRefund.total ?? 0) || "0",
+      caption: "Jumlah refund berdasarkan tanggal",
       detail: {
-        ...(statistik?.data?.totalModalSelesai?.trend === "down" && {
-          down: statistik?.data?.totalModalSelesai?.persentase,
+        ...(statistik?.data?.totalRefund?.trend === "down" && {
+          down: statistik?.data?.totalRefund?.persentase,
         }),
-        ...(statistik?.data?.totalModalSelesai?.trend === "up" && {
-          up: statistik?.data?.totalModalSelesai?.persentase,
+        ...(statistik?.data?.totalRefund?.trend === "up" && {
+          up: statistik?.data?.totalRefund?.persentase,
         }),
-        ...(statistik?.data?.totalModalSelesai?.trend === "same" && {
-          same: statistik?.data?.totalModalSelesai?.persentase,
+        ...(statistik?.data?.totalRefund?.trend === "same" && {
+          same: statistik?.data?.totalRefund?.persentase,
         }),
       },
     },
 
-    // ==== ⚠ PERLU PERHATIAN ====
     {
       key: "piutang",
       category: "penjualan",

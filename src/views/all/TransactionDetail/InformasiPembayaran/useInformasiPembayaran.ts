@@ -344,6 +344,11 @@ const useInformasiPembayaran = ({
     );
   };
 
+  // handle pembayaran
+  const handleRedirectPembayaran = () => {
+    return navigate(`${currentPathname}/ubah-pembayaran`);
+  };
+
   return {
     isOpenHistory,
     setIsOpenHistory,
@@ -392,6 +397,8 @@ const useInformasiPembayaran = ({
     totalAfterDiskon,
 
     tempoDpPayment,
+
+    handleRedirectPembayaran,
   };
 };
 

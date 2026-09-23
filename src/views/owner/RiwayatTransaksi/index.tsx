@@ -10,6 +10,7 @@ import {
   PackageCheck,
   QrCode,
   ReceiptText,
+  Truck,
 } from "lucide-react";
 import { Fragment, type FC } from "react";
 import { cn } from "../../../utils/cn";
@@ -149,6 +150,23 @@ const RiwayatTransaksi = () => {
               caption={"Jumlah item terjual"}
             />
 
+            {/* total kas masuk */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: BanknoteArrowDown,
+                bgColor: "bg-emerald-100",
+                iconColor: "text-emerald-400",
+              }}
+              label={"Total Kas Masuk"}
+              value={
+                formatNumber(
+                  dataRiwayatTransaksi?.data?.statistik?.totalKasMasuk ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah kas masuk"}
+            />
+
             {/* total omzet */}
             <CardStatistik
               isLoading={isLoadingRiwayatTransaksi}
@@ -202,23 +220,6 @@ const RiwayatTransaksi = () => {
               </>
             )}
 
-            {/* total kas masuk */}
-            <CardStatistik
-              isLoading={isLoadingRiwayatTransaksi}
-              icon={{
-                icon: BanknoteArrowDown,
-                bgColor: "bg-emerald-100",
-                iconColor: "text-emerald-400",
-              }}
-              label={"Total Kas Masuk"}
-              value={
-                formatNumber(
-                  dataRiwayatTransaksi?.data?.statistik?.totalKasMasuk ?? 0,
-                ) || "0"
-              }
-              caption={"Jumlah kas masuk"}
-            />
-
             {/* total piutang */}
             <CardStatistik
               isLoading={isLoadingRiwayatTransaksi}
@@ -234,6 +235,23 @@ const RiwayatTransaksi = () => {
                 ) || "0"
               }
               caption={"Jumlah piutang"}
+            />
+
+            {/* total ongkir */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: Truck,
+                bgColor: "bg-rose-100",
+                iconColor: "text-rose-400",
+              }}
+              label={"Total Ongkir"}
+              value={
+                formatRupiah(
+                  dataRiwayatTransaksi?.data?.statistik?.totalOngkir ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah Ongkir"}
             />
           </div>
         </div>

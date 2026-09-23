@@ -126,6 +126,7 @@ export interface ResponseRiwayatTransactionType {
     totalModal: number;
     totalKasMasuk: number;
     totalPiutang: number;
+    totalOngkir: number;
   };
 }
 

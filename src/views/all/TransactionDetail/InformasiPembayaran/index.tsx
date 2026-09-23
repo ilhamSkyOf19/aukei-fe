@@ -18,6 +18,7 @@ import {
   Eye,
   FileDown,
   Landmark,
+  PencilLine,
   Printer,
   QrCode,
 } from "lucide-react";
@@ -107,11 +108,16 @@ const InformasiPembayaran: FC<Props> = ({
     isPendingUpdateMetodePembayaran,
 
     tempoDpPayment,
+
+    handleRedirectPembayaran,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
     siapKirim,
   });
+
+  console.log(transactionSummary.totalDiBayar);
+  console.log(transactionSummary.totalPembayaran);
 
   return (
     <div className="w-full md:w-1/2 flex-1 flex flex-col justify-start items-start gap-2.5">
@@ -136,9 +142,24 @@ const InformasiPembayaran: FC<Props> = ({
       {/* informasi booking */}
       <div className="w-full flex flex-col justify-start items-start p-4 rounded-lg border border-transparent dark:border-base-content/10 bg-base-100 shadow-sm">
         {/* header */}
-        <h3 className="text-base-content font-medium text-xs">
-          Informasi Pembayaran
-        </h3>
+        <div className="w-full flex flex-row justify-between items-start">
+          <h3 className="text-base-content font-medium text-xs">
+            Informasi Pembayaran
+          </h3>
+
+          {dataTransaction?.data?.status ===
+            TRANSACTION_STATUS_TYPE.COMPLETED &&
+            pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+              <ButtonWithIcon
+                customHeight="h-8"
+                icon={PencilLine}
+                bgColor="bg-info"
+                textColor="text-primary-white"
+                label="Ubah Pembayaran"
+                handleBtn={() => handleRedirectPembayaran()}
+              />
+            )}
+        </div>
         <div className="w-full h-auto flex flex-col justify-evenly items-start py-4 border-b border-dashed border-base-content/30">
           <div className="w-full flex flex-col justify-start items-start gap-2 pb-2 border-b border-dashed border-base-content/30">
             <div className="w-full flex flex-row justify-between items-center">
@@ -194,10 +215,7 @@ const InformasiPembayaran: FC<Props> = ({
                 <div className="w-30 h-4 skeleton" />
               ) : (
                 <span className="text-xs text-info font-semibold">
-                  {formatRupiah(
-                    (dataTransaction?.data?.totalBayar ?? 0) +
-                      (dataTransaction?.data?.ongkir ?? 0),
-                  )}
+                  {formatRupiah(dataTransaction?.data?.totalBayar ?? 0)}
                 </span>
               )}
             </div>

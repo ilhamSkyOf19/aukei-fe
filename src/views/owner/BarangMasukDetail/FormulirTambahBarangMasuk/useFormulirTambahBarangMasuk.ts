@@ -141,6 +141,9 @@ const useFormulirTambahBarangMasuk = (params: {
 
   const onSubmit = async (data: CreateBarangMasukDetailType) => {
     try {
+      if (data.jumlahBox === 0) delete data.jumlahBox;
+
+      if (data.jumlahStok === 0) delete data.jumlahStok;
       await mutateBarangMasukDetail(data);
     } catch (error) {
       console.log(error);

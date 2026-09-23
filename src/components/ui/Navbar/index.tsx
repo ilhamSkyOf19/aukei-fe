@@ -67,8 +67,10 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
 
           {/* nama & role */}
           <div className="hidden md:flex flex-col justify-start items-start border-r border-base-content/30 pr-4">
-            <span className="text-xs font-semibold">{pengguna?.nama}</span>
-            <span className="text-xs capitalize">
+            <span className="text-xs font-semibold text-base-content">
+              {pengguna?.nama}
+            </span>
+            <span className="text-xs capitalize text-base-content">
               {pengguna?.role.toLowerCase()}
             </span>
           </div>

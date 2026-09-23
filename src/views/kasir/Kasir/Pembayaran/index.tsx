@@ -1,4 +1,6 @@
 import {
+  AlertCircle,
+  ArrowLeft,
   Banknote,
   CalendarClock,
   CircleCheck,
@@ -6,6 +8,7 @@ import {
   Minus,
   PackageX,
   QrCode,
+  TriangleAlert,
 } from "lucide-react";
 import TitleModalFormulir from "../../../../components/ui/TitleModalFormulir";
 import usePembayaran from "./usePembayaran";
@@ -30,15 +33,17 @@ import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import ButtonBackText from "../../../../components/ui/button/ButtonBackText";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import FormOngkir from "./FormOngkir";
+import AlertLabel from "../../../../components/messages/AlertLabel";
 
 // SESUAIKAN DENGAN PILIH PRODUK
 
 type Props = {
-  handleToast: (value: string) => void;
+  handleToast?: (value: string) => void;
   kasir?: PayloadPenggunaInternalType | null;
+  ubahPembayaran?: boolean;
 };
 
-const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
+const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
   // call use
   const {
     handleMetodePembayaran,
@@ -69,12 +74,19 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
     isLoadingTransaksi,
     isRefetchingTransaksi,
 
-    handleSteps,
     isPendingUpdateMetodePembayaran,
 
     totalProduk,
     totalQuantity,
+
+    handleBack,
+
+    dataConfirm,
+
+    isPendingUpdatePembayaran,
+    handleUpdatePembayaran,
   } = usePembayaran({
+    ubahPembayaran,
     handleToast,
     kasir,
   });
@@ -85,7 +97,12 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
   const metodePembayaranUangMuka = paymentTransaction?.metodePembayaran ?? null;
 
   return (
-    <div className="w-full h-full grid grid-rows-9 gap-4 relative">
+    <div
+      className={cn(
+        "w-full h-full grid grid-rows-9 gap-4 relative",
+        ubahPembayaran && "p-2.5",
+      )}
+    >
       {/* loading */}
       {(isLoadingTransaksi ||
         isRefetchingTransaksi ||
@@ -105,19 +122,18 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
         <div
           className={cn(
             "w-full h-15 flex flex-row justify-center items-center bg-base-100 p-4 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm  transition-all duration-300 ease-in-out col-span-5 relative",
-            // metodePembayaran === PAYMENT_METHOD_TYPE.TEMPO
-            // ? "col-span-5"
-            // : "col-span-3",
           )}
         >
           {/* title */}
           <h3 className="text-base font-medium text-base-content">
-            Pembayaran
+            {ubahPembayaran ? "Ubah Pembayaran" : "Pembayaran"}
           </h3>
 
           <div className="flex flex-row justify-end items-center gap-4 absolute left-4">
             {/* button update transaksi */}
-            <ButtonBackText handleClick={() => handleSteps(1)} />
+            {!ubahPembayaran && (
+              <ButtonBackText handleClick={() => handleBack()} />
+            )}
           </div>
         </div>
 
@@ -237,7 +253,6 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
             <div className="w-full flex flex-col justify-start items-start rounded-xl bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm p-4 overflow-y-auto h-[85vh] scrollbar-thin">
               {/* title */}
               <TitleModalFormulir title="Ringkasan Pembayaran" keterangan="" />
-
               <div
                 className={cn(
                   "w-full flex flex-col justify-start items-start gap-2.5 mt-4  border-base-content/10 pb-2.5",
@@ -541,7 +556,6 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                   </>
                 )}
               </div>
-
               {/* uang ongkir */}
               <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
                 <span className="text-sm font-medium text-base-content">
@@ -549,11 +563,9 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                 </span>
 
                 <div className="w-full flex flex-col justify-start items-start gap-1">
-                  {/* form uang dp */}
                   <FormOngkir transactionId={dataTransaksi?.data?.id ?? 0} />
                 </div>
               </div>
-
               {/* metode pembayaran */}
               <div className="w-full flex flex-col justify-start items-start mt-4 gap-2">
                 {/* header */}
@@ -606,17 +618,19 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                     />
 
                     {/* tempo */}
-                    <CardMetodePembayaran
-                      icon={CalendarClock}
-                      bgColor="bg-amber-50"
-                      iconColor="text-amber-500"
-                      label="Kredit / Cicilan"
-                      description="Bayar melalui kredit atau cicilan."
-                      handleClick={() => handleMetodePembayaran("TEMPO")}
-                      isActive={metodePembayaran === "TEMPO"}
-                      isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
-                      noDeskripsi
-                    />
+                    {!ubahPembayaran && (
+                      <CardMetodePembayaran
+                        icon={CalendarClock}
+                        bgColor="bg-amber-50"
+                        iconColor="text-amber-500"
+                        label="Kredit / Cicilan"
+                        description="Bayar melalui kredit atau cicilan."
+                        handleClick={() => handleMetodePembayaran("TEMPO")}
+                        isActive={metodePembayaran === "TEMPO"}
+                        isError={isErrors.includes("METODE_PEMBAYARAN_KOSONG")}
+                        noDeskripsi
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -625,7 +639,6 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                   <ErrorMessage errorMessage="Harap pilih metode pembayaran" />
                 )}
               </div>
-
               {/* button bayar */}
               {metodePembayaran === "CASH" && (
                 <div className="w-full flex flex-col justify-start items-start">
@@ -660,7 +673,6 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                   )}
                 </div>
               )}
-
               {/* button tempo */}
               {metodePembayaran === "TEMPO" && (
                 <div className="w-full flex flex-col justify-start items-start">
@@ -695,7 +707,6 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
                   )}
                 </div>
               )}
-
               {/* selesaikan transaksi */}
               <div
                 className={cn(
@@ -707,13 +718,20 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
               >
                 <ButtonWithIcon
                   ref={buttonBayarRef}
-                  label="Selesaikan Transaksi"
-                  handleBtn={handleTransaction}
+                  label={ubahPembayaran ? "Kembali" : "Selesaikan Transaksi"}
+                  handleBtn={
+                    ubahPembayaran ? handleUpdatePembayaran : handleTransaction
+                  }
                   customWidth="w-full"
-                  icon={CircleCheck}
-                  isLoading={isPendingTransaction}
+                  icon={ubahPembayaran ? ArrowLeft : CircleCheck}
+                  isLoading={isPendingTransaction || isPendingUpdatePembayaran}
                 />
               </div>
+              {ubahPembayaran && (
+                <div className="mt-4">
+                  <AlertLabel message="Fitur update untuk metode pembayaran Tempo masih dalam pengembangan." />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -727,15 +745,15 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir }) => {
         total={totalAfterDiskon}
       />
 
-      {/* modal confirm */}
       <ModalAlert
         modalRef={modalConfirmRef}
+        bigTitle={dataConfirm?.bigTitle ?? ""}
+        smallTitle={dataConfirm?.smallTitle ?? ""}
         handleCloseModal={handleCancel}
         handleConfirm={handleConfirm}
-        bigTitle={"Apakah Anda yakin ingin memproses transaksi ini?"}
-        smallTitle={
-          "Pastikan data transaksi telah sesuai. Setelah diproses, transaksi akan disimpan dan siap untuk dicetak."
-        }
+        labelNext="Lanjutkan"
+        iconColor="text-warning"
+        icon={ubahPembayaran ? TriangleAlert : AlertCircle}
       />
 
       {/* modal formulir tempo */}

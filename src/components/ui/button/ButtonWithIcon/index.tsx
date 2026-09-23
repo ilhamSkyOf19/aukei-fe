@@ -77,7 +77,7 @@ const ButtonWithIcon: FC<Props> = ({
               <div
                 className={cn(
                   "loading loading-sm md:loading-xs",
-                  textColor ?? "text-custom-secondary",
+                  textColor ?? "text-text-custom-secondary",
                 )}
               />
             </div>
@@ -87,7 +87,7 @@ const ButtonWithIcon: FC<Props> = ({
                 <Icon
                   className={cn(
                     " shrink-0",
-                    textColor ?? "text-custom-secondary",
+                    textColor ?? "text-text-custom-secondary",
                     reverse && "order-2",
                     customIconSize ?? "size-4.5 md:size-3.5",
                   )}
@@ -98,7 +98,7 @@ const ButtonWithIcon: FC<Props> = ({
                 <span
                   className={cn(
                     "font-medium text-xs md:text-[0.7rem]",
-                    textColor ?? "text-custom-secondary",
+                    textColor ?? "text-text-custom-secondary",
                     reverse && "order-1",
                   )}
                 >

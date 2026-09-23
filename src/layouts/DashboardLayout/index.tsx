@@ -7,9 +7,12 @@ import { useNetworkStatus } from "../../hooks/useNetworkStatus";
 import Navbar from "../../components/ui/Navbar";
 import Sidebar from "../../components/ui/SideBar";
 import { useStepStore } from "../../stores/stepStore";
+import { useAuthStore } from "../../stores/authStore";
 
 const DashboardLayout: FC = () => {
   const { handleSidebar, isClose } = useDashboardLayout();
+
+  const role = useAuthStore((state) => state.pengguna?.role);
 
   // current pathname
   const currentPathname = useLocation().pathname;
@@ -35,7 +38,7 @@ const DashboardLayout: FC = () => {
   }, [currentPathname, step]);
 
   return (
-    <div className="drawer lg:drawer-open font-poppins">
+    <div data-role={role} className="drawer lg:drawer-open font-poppins">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
       {/* content */}
@@ -51,7 +54,7 @@ const DashboardLayout: FC = () => {
         <Navbar handleSidebar={handleSidebar} isClose={isClose} title={title} />
 
         {/* content */}
-        <Outlet context={{ handleTitle }} />
+        <Outlet data-role={role} context={{ handleTitle }} />
 
         {/* toast offline */}
         <div

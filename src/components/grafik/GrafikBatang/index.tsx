@@ -17,6 +17,10 @@ import { formatTanggalPanjang } from "../../../helpers/formatDate";
 import useGrafikBatang from "./useGrafikBatang";
 import DataEmpty from "../../messages/DataEmpty";
 import { ChartLine } from "lucide-react";
+import {
+  ROLE_INTERNAL_TYPE,
+  type RoleInternalType,
+} from "../../../types/constant.type";
 
 const renderCustomizedLabel = (props: LabelProps) => {
   // window size
@@ -49,8 +53,9 @@ const renderCustomizedLabel = (props: LabelProps) => {
 // grafik batang
 type GrafikBatangProps = {
   windowSize: "sm" | "md" | "lg";
+  role?: RoleInternalType;
 };
-const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
+const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize, role }) => {
   const {
     isChoose,
     handleSetIsChoose,
@@ -167,8 +172,8 @@ const GrafikBatang: FC<GrafikBatangProps> = ({ windowSize }) => {
             }}
           />
           <Bar
-            fill="#cdde00"
-            stroke="#28484b"
+            fill={role === ROLE_INTERNAL_TYPE.OWNER ? "#3b82c4" : "#cdde00"}
+            stroke={role === ROLE_INTERNAL_TYPE.OWNER ? "#245f91" : "#28484b"}
             dataKey="value"
             isAnimationActive={true}
             barSize={windowSize === "sm" ? 25 : 40}

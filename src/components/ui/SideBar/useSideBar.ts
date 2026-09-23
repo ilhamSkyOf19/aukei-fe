@@ -107,7 +107,8 @@ const useSideBar = () => {
     }
 
     if (isUpdateTransaction) {
-      if (link === "/dashboard/riwayat-transaksi/:id/ubah-produk") return;
+      if (link === "/dashboard/riwayat-transaksi/:transactionId/ubah-produk")
+        return;
 
       const isConfirm = await confirm({
         bigTitle: "Peringatan",

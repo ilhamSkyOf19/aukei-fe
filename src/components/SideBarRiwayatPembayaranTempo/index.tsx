@@ -67,8 +67,8 @@ const SideBarRiwayatPembayaranTempo: FC<Props> = ({
             customBtnWidth ?? "w-auto",
           )}
         >
-          <History className="size-4 text-custom-secondary" />
-          <span className="text-xs md:text-[0.7rem] font-medium text-custom-secondary">
+          <History className="size-4 text-text-custom-secondary" />
+          <span className="text-xs md:text-[0.7rem] font-medium text-text-custom-secondary">
             Lihat Riwayat Pembayaran Cicilan
           </span>
         </button>

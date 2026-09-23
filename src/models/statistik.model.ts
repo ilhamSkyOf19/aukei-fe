@@ -106,6 +106,8 @@ export interface ResponseStatistikWithPersentaseType {
 
   /** Total refund */
   totalRefund: StatistikTrendType;
+
+  totalOngkir: StatistikTrendType;
 }
 
 export interface ResponseChartType {
