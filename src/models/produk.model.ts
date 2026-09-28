@@ -30,7 +30,9 @@ export interface CreateProdukType extends Pick<
 }
 
 // update
-export interface UpdateProdukType extends Partial<CreateProdukType> {}
+export interface UpdateProdukType extends Partial<CreateProdukType> {
+  hargaModalRataRata?: number;
+}
 
 export type ResponseUpdateHargaPpnType = {
   updated: number;

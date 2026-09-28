@@ -81,7 +81,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
           </div>
 
           {/* data  */}
-          <div className="w-full flex flex-row justify-start items-start gap-4">
+          <div className="w-full flex flex-col md:flex-row justify-start items-start gap-4">
             <div className="flex-3 flex flex-col justify-start items-start gap-4 mt-4">
               {/* img */}
               {data?.img && (
@@ -97,9 +97,9 @@ const ModalFormulirTransaksi: FC<Props> = ({
 
               {/* data */}
               <div className="w-full flex flex-col justify-start items-start gap-2.5">
-                <div className="w-full flex flex-row justify-around items-start gap-2.5 pb-4 border-b border-base-content/10">
+                <div className="w-full flex flex-row justify-around items-stretch gap-2.5 pb-4 border-b border-base-content/10">
                   {/* nama produk */}
-                  <Label label={`Nama Produk`} value={data?.nama || ""} />
+                  <Label label={`Nama Produk`} value={data?.nama || ""} small />
 
                   {/* kode produk */}
                   <Label

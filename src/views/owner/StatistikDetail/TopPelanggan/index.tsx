@@ -22,8 +22,13 @@ import { Fragment, type FC } from "react";
 type Props = {
   handleSetAlert: (value: string) => void;
   handleSetToast: (value: string) => void;
+  shadowId?: number | null;
 };
-const TopPelanggan: FC<Props> = ({ handleSetAlert, handleSetToast }) => {
+const TopPelanggan: FC<Props> = ({
+  handleSetAlert,
+  handleSetToast,
+  shadowId,
+}) => {
   const {
     isLoading,
     handleLimit,
@@ -42,7 +47,7 @@ const TopPelanggan: FC<Props> = ({ handleSetAlert, handleSetToast }) => {
     isLoadingDownloadLaporanTopPelangganPdf,
 
     refetchTopPelanggan,
-  } = useStatistikTopPelanggan({ handleSetAlert, handleSetToast });
+  } = useStatistikTopPelanggan({ handleSetAlert, handleSetToast, shadowId });
 
   return (
     <div className="w-full flex flex-col justify-start items-start">

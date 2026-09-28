@@ -1,4 +1,5 @@
 import {
+  Banknote,
   Box,
   CalendarDays,
   CircleCheck,
@@ -87,6 +88,7 @@ const ProdukDetail = () => {
     modalDeleteImgRef,
 
     handleBack,
+    hargaModalRataRataController,
   } = useProdukDetail();
 
   return (
@@ -587,10 +589,10 @@ const ProdukDetail = () => {
                       {/* label and value */}
                       <div
                         className={cn(
-                          "w-full flex flex-row justify-between pb-3 border-b border-base-content/10",
+                          "w-full flex justify-between pb-3 border-b border-base-content/10",
                           keyUpdate === "isiPerBox"
-                            ? "items-start"
-                            : "items-center",
+                            ? "items-start flex-col"
+                            : "items-center flex-row",
                         )}
                       >
                         {/* label */}
@@ -625,7 +627,7 @@ const ProdukDetail = () => {
                             btnAksiPosition="top"
                           >
                             {/* input text */}
-                            <div className="w-15">
+                            <div className="w-30">
                               <InputNumber<UpdateProdukType>
                                 controller={isiPerBoxController}
                                 placeholder="Masukkan isi per box produk"
@@ -646,10 +648,10 @@ const ProdukDetail = () => {
                       {/* label and value */}
                       <div
                         className={cn(
-                          "w-full flex flex-row justify-between pb-3 border-b border-base-content/10",
+                          "w-full flex justify-between pb-3 border-b border-base-content/10",
                           keyUpdate === "stokMinimum"
-                            ? "items-start"
-                            : "items-center",
+                            ? "items-start flex-col"
+                            : "items-center flex-row",
                         )}
                       >
                         {/* label */}
@@ -684,7 +686,7 @@ const ProdukDetail = () => {
                             btnAksiPosition="top"
                           >
                             {/* input text */}
-                            <div className="w-15">
+                            <div className="w-30">
                               <InputNumber<UpdateProdukType>
                                 controller={stokMinimumController}
                                 placeholder="Masukkan stok minimum produk"
@@ -733,6 +735,65 @@ const ProdukDetail = () => {
 
                   {/* content status */}
                   <div className="w-full flex flex-col justify-start items-start gap-5 border border-base-content/10 card px-3 py-4 mt-2">
+                    {/* harga modal rata rata  */}
+                    <div className="w-full flex flex-row justify-between items-start gap-3">
+                      {/* icon */}
+                      <Banknote className="size-5 text-warning" />
+
+                      {/* label and value */}
+                      <div
+                        className={cn(
+                          "w-full flex justify-between pb-3 border-b border-base-content/10",
+                          keyUpdate === "modalRataRata"
+                            ? "items-start flex-col"
+                            : "items-center flex-row",
+                        )}
+                      >
+                        {/* label */}
+                        <span className="text-xs text-base-content/90 text-medium">
+                          Modal Rata Rata
+                        </span>
+
+                        {/* stok */}
+                        {keyUpdate !== "modalRataRata" ? (
+                          <div className="flex flex-row justify-end items-center gap-4">
+                            <span className={"text-xs font-medium"}>
+                              {formatNumber(
+                                dataProduk?.data?.hargaModalRataRata ?? 0,
+                              )}
+                            </span>
+
+                            {/* btn update */}
+                            <div className="border-l hidden lg:block border-base-content/30 pl-4">
+                              <ButtonInline
+                                handleKeyUpdate={() =>
+                                  handleKeyUpdate("modalRataRata")
+                                }
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <CardForm
+                            handleResetForm={handleResetForm}
+                            handleSubmit={handleSubmit}
+                            onSubmit={onSubmit}
+                            isPending={isPendingUpdateProduk}
+                            btnAksiPosition="top"
+                          >
+                            {/* input text */}
+                            <div className="w-full">
+                              <InputPrice<UpdateProdukType>
+                                controller={hargaModalRataRataController}
+                                placeholder="Modal rata rata"
+                                required
+                                xs
+                              />
+                            </div>
+                          </CardForm>
+                        )}
+                      </div>
+                    </div>
+
                     {/* is active */}
                     <div className="w-full flex flex-row justify-between items-start gap-3">
                       {/* icon */}

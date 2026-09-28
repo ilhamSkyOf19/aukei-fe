@@ -69,10 +69,10 @@ const ShowProduk: FC<Props> = ({
           </div>
 
           {/* filter */}
-          <div className="w-full sm:flex-1 flex flex-row justify-end items-start flex-wrap">
+          <div className="w-full flex flex-row justify-end items-start flex-wrap">
             <FilterKategori
               setKategori={handleKategori}
-              customWidth="w-50"
+              customWidth="w-full md:w-50"
               noLabel
               withIcon
               value={kategori}
@@ -84,7 +84,7 @@ const ShowProduk: FC<Props> = ({
         <div
           ref={produkContainerRef}
           className={cn(
-            "grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 h-full overflow-y-auto scrollbar-thumb-custom-secondary pb-2.5 scrollbar-thin",
+            "grid w-full grid-cols-3 lg:grid-cols-5 gap-2.5 h-full overflow-y-auto scrollbar-thumb-custom-secondary pb-2.5 scrollbar-thin",
           )}
         >
           {/* loading pertama */}
@@ -147,12 +147,12 @@ const ShowProduk: FC<Props> = ({
                     <div className="w-full h-80 flex flex-col justify-start items-start gap-3">
                       <div className="w-full flex flex-col justify-start items-start gap-0.5">
                         {/* kategori */}
-                        <span className="text-[0.625rem] text-base-content/80 mb-0.5">
+                        <span className="text-[0.625rem] font-medium text-base-content/80">
                           {item.kategori?.nama}
                         </span>
 
                         {/* nama */}
-                        <p className="text-xs text-start font-semibold text-base-content">
+                        <p className="text-[0.7rem] md:text-xs text-start font-semibold text-base-content">
                           {`${item.nama}`.length > 30
                             ? item.nama.slice(0, 30) + "..."
                             : item.nama}

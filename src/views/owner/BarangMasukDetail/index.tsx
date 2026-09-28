@@ -167,20 +167,22 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                       <div className="hidden lg:flex flex-row justify-start items-center gap-2">
                         <div className="status status-success status-sm" />
 
-                        <span className="text-xs text-base-content">
-                          {isExpired
-                            ? "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
-                            : `Anda dapat membatalkan postingan sebelum waktu habis : `}
-                        </span>
-                        {!isExpired && (
-                          <CountDown
-                            expiredAt={subtractMinutes(
-                              dataBarangMasukDetail?.data?.postedAt ??
-                                new Date(),
-                              1,
-                            )}
-                          />
-                        )}
+                        <div className="flex flex-row justify-start items-start flex-wrap gap-1">
+                          <span className="text-xs text-base-content">
+                            {isExpired
+                              ? "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
+                              : `Anda dapat membatalkan postingan sebelum waktu habis : `}
+                          </span>
+                          {!isExpired && (
+                            <CountDown
+                              expiredAt={subtractMinutes(
+                                dataBarangMasukDetail?.data?.postedAt ??
+                                  new Date(),
+                                1,
+                              )}
+                            />
+                          )}
+                        </div>
                       </div>
                     )}
                 </div>

@@ -351,16 +351,30 @@ export const TOAST_CONFIG_TRANSACTION: Record<
   },
 };
 
-export const TOAST_CONFIG_ONGKIR: Record<
+export const TOAST_CONFIG_MODAL_SHADOW_FEATURE: Record<
   string,
   {
     message: string;
     color: "success" | "error" | "info" | "warning" | "neutral";
   }
 > = {
-  updated_ongkir: {
-    color: "info",
-    message: "Ongkir berhasil diperbarui",
+  created_nilai: {
+    color: "success",
+    message: "Nilai berhasil ditambahkan",
+  },
+};
+
+// toast dashboard
+export const TOAST_CONFIG_DASHBOARD: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  created_shadow_transaction: {
+    color: "success",
+    message: "Nilai bayangan berhasil diterapkan",
   },
 };
 

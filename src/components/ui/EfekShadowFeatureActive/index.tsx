@@ -114,9 +114,10 @@ const EfekShadowFeatureActive = ({
         <div
           className="
             flex
-            h-24
-            w-24
+            h-34
+            w-34
             animate-shadow-object
+            flex-col
             items-center
             justify-center
             rounded-3xl
@@ -125,6 +126,10 @@ const EfekShadowFeatureActive = ({
           "
         >
           <HatGlasses strokeWidth={2.5} className="size-12 text-base-content" />
+
+          <span className=" mt-2 text-sm text-center font-medium text-base-content">
+            Mode Bayangan
+          </span>
         </div>
       </div>
     </div>

@@ -1,18 +1,19 @@
-import { useEffect, useMemo, useState, type ForwardedRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useQueries } from "@tanstack/react-query";
 import { StatistikServices } from "../../../services/statistik.service";
-import type { ChildRef } from "../../../types/ref.type";
+import { ShadowStatistikServices } from "../../../services/shadowStatistik.service";
 
 const useGrafikLine = (params: {
   pilihan: string;
-  ref: ForwardedRef<ChildRef>;
+  shadowId?: number | null;
 }) => {
+  const { pilihan, shadowId } = params;
   // state isChoose grafik
   const [isChoose, setIsChoose] = useState<string>("omzet");
 
   useEffect(() => {
-    switch (params.pilihan) {
+    switch (pilihan) {
       case "semua":
         setIsChoose("omzet");
         break;
@@ -23,7 +24,7 @@ const useGrafikLine = (params: {
         setIsChoose("kerugian");
         break;
     }
-  }, [params.pilihan]);
+  }, [pilihan]);
 
   // date
   const { endDate, startDate } = useFilterRangeDate();
@@ -32,45 +33,89 @@ const useGrafikLine = (params: {
   const data = useQueries({
     queries: [
       {
-        queryKey: ["chart-omzet", startDate, endDate, isChoose],
-        queryFn: () =>
-          StatistikServices.chartOmzet({
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-          }),
+        queryKey: ["chart-omzet", startDate, endDate, isChoose, shadowId],
+        queryFn: () => {
+          if (shadowId) {
+            return ShadowStatistikServices.chartShadowOmzet({
+              shadowId,
+              query: {
+                ...(startDate && { startDate }),
+                ...(endDate && { endDate }),
+              },
+            });
+          } else {
+            return StatistikServices.chartOmzet({
+              ...(startDate && { startDate }),
+              ...(endDate && { endDate }),
+            });
+          }
+        },
         retry: false,
         refetchOnWindowFocus: false,
         enabled: isChoose === "omzet" && !!startDate && !!endDate,
       },
       {
-        queryKey: ["chart-modal", startDate, endDate, isChoose],
-        queryFn: () =>
-          StatistikServices.chartModal({
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-          }),
+        queryKey: ["chart-modal", startDate, endDate, isChoose, shadowId],
+        queryFn: () => {
+          if (shadowId) {
+            return ShadowStatistikServices.chartShadowModal({
+              shadowId,
+              query: {
+                ...(startDate && { startDate }),
+                ...(endDate && { endDate }),
+              },
+            });
+          } else {
+            return StatistikServices.chartModal({
+              ...(startDate && { startDate }),
+              ...(endDate && { endDate }),
+            });
+          }
+        },
         retry: false,
         refetchOnWindowFocus: false,
         enabled: isChoose === "modal" && !!startDate && !!endDate,
       },
       {
-        queryKey: ["chart-laba", startDate, endDate, isChoose],
-        queryFn: () =>
-          StatistikServices.chartLaba({
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-          }),
+        queryKey: ["chart-laba", startDate, endDate, isChoose, shadowId],
+        queryFn: () => {
+          if (shadowId) {
+            return ShadowStatistikServices.chartShadowLaba({
+              shadowId,
+              query: {
+                ...(startDate && { startDate }),
+                ...(endDate && { endDate }),
+              },
+            });
+          } else {
+            return StatistikServices.chartLaba({
+              ...(startDate && { startDate }),
+              ...(endDate && { endDate }),
+            });
+          }
+        },
         retry: false,
         refetchOnWindowFocus: false,
         enabled: isChoose === "laba" && !!startDate && !!endDate,
       },
       {
-        queryKey: ["chart-kas-masuk", startDate, endDate, isChoose],
-        queryFn: () =>
-          StatistikServices.chartKasMasuk({
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-          }),
+        queryKey: ["chart-kas-masuk", startDate, endDate, isChoose, shadowId],
+        queryFn: () => {
+          if (shadowId) {
+            return ShadowStatistikServices.chartShadowKasMasuk({
+              shadowId,
+              query: {
+                ...(startDate && { startDate }),
+                ...(endDate && { endDate }),
+              },
+            });
+          } else {
+            StatistikServices.chartLaba({
+              ...(startDate && { startDate }),
+              ...(endDate && { endDate }),
+            });
+          }
+        },
         retry: false,
         refetchOnWindowFocus: false,
         enabled: isChoose === "kasMasuk" && !!startDate && !!endDate,
@@ -179,7 +224,7 @@ const useGrafikLine = (params: {
     }
   };
 
-  const filteredOpsiGrafik = getOpsiGrafik(params.pilihan);
+  const filteredOpsiGrafik = getOpsiGrafik(pilihan);
 
   // const activeQuery = useMemo(() => {
   //   switch (isChoose) {

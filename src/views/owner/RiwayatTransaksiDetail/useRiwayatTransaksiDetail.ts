@@ -13,10 +13,15 @@ import useDownloadRiwayatTransaksiByPelangganPdf from "../../../hooks/useDownloa
 import useDownloadRiwayatTransaksiByPelangganExcel from "../../../hooks/useDownloadRiwayatTransaksiByPelangganExcel";
 import { useToastAnimation } from "../../../hooks/useToast";
 import { useAlertAnimation } from "../../../hooks/useAlert";
+import { useShadowStore } from "../../../stores/shadowStore";
+import { ShadowTransactionServices } from "../../../services/shadowTransaction.service";
 
 const useRiwayatTransaksiDetail = () => {
   // window size
   const windowSize = useSizeWindows();
+
+  // get shadow active
+  const { shadowId, shadowIsActive } = useShadowStore((state) => state);
 
   // get id from params
   const { pelangganId } = useParams<{ pelangganId: string }>();
@@ -78,22 +83,46 @@ const useRiwayatTransaksiDetail = () => {
         limit,
         search,
         sort,
+        shadowId,
       ],
-      queryFn: () =>
-        TransactionServices.findRiwayatTransaksiCompletedNotTempoByPelanggan({
-          id: validatedId!,
-          query: {
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-            ...(metodePembayaran && {
-              metodePembayaran: metodePembayaran.toLowerCase(),
-            }),
-            ...(page && { page }),
-            ...(limit && { limit }),
-            ...(search && { search }),
-            ...(sort && { sort }),
-          },
-        }),
+      queryFn: () => {
+        if (shadowIsActive && shadowId) {
+          return ShadowTransactionServices.findRiwayatTransaksiCompletedNotTempoByPelanggan(
+            {
+              shadowId,
+              id: validatedId!,
+              query: {
+                ...(startDate && { startDate }),
+                ...(endDate && { endDate }),
+                ...(metodePembayaran && {
+                  metodePembayaran: metodePembayaran.toLowerCase(),
+                }),
+                ...(page && { page }),
+                ...(limit && { limit }),
+                ...(search && { search }),
+                ...(sort && { sort }),
+              },
+            },
+          );
+        } else {
+          return TransactionServices.findRiwayatTransaksiCompletedNotTempoByPelanggan(
+            {
+              id: validatedId!,
+              query: {
+                ...(startDate && { startDate }),
+                ...(endDate && { endDate }),
+                ...(metodePembayaran && {
+                  metodePembayaran: metodePembayaran.toLowerCase(),
+                }),
+                ...(page && { page }),
+                ...(limit && { limit }),
+                ...(search && { search }),
+                ...(sort && { sort }),
+              },
+            },
+          );
+        }
+      },
       retry: false,
       refetchOnWindowFocus: false,
       enabled: !!startDate && !!endDate && !!validatedId,

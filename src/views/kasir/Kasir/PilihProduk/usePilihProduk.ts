@@ -519,6 +519,16 @@ const usePilihProduk = () => {
     resetUpdateTransaksiComplate();
   };
 
+  // is loading
+  const isGlobalLoading =
+    isLoadingTransaksi ||
+    isRefetchingTransaksi ||
+    isPendingRemoveAll ||
+    isPendingSimpanPerubahanTransactionComplete ||
+    isPendingCancelUpdateTransactionComplete ||
+    isPendingUpdateMetodePembayaran ||
+    isPendingPilihPelanggan;
+
   return {
     produkDetails,
     handleStepsNext,
@@ -554,13 +564,9 @@ const usePilihProduk = () => {
 
     handleRedirectBooking,
 
-    // query state, berguna untuk loading indicator di UI
-    isLoadingTransaksi: isLoadingTransaksi || isPendingPilihPelanggan,
-    isRefetchingTransaksi,
     variablesRemoveDetail,
 
     handleRemoveAll,
-    isPendingRemoveAll,
 
     formActive,
     setFormActive,
@@ -573,15 +579,16 @@ const usePilihProduk = () => {
 
     transactionIdFromCart,
 
-    isUpdateTransaksiComplate,
-
     handleCancelUpdateTransactionComplete,
     isPendingCancelUpdateTransactionComplete,
 
     handleSimpanPerubahanTransactionComplete,
-    isPendingSimpanPerubahanTransactionComplete,
 
     transactionIdFromTransactionComplate,
+
+    isGlobalLoading,
+
+    isUpdateTransaksiComplate,
   };
 };
 

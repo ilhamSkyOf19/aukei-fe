@@ -32,7 +32,6 @@ const StatistikDetail = () => {
     setSelectedLaporan,
     filteredStatistik,
     handleRefresh,
-    grafikLineRef,
     endDate,
     startDate,
     handleExportPdf,
@@ -44,6 +43,7 @@ const StatistikDetail = () => {
     handleSetAlert,
     handleSetToast,
     role,
+    shadowId,
   } = useStatistikDetail();
 
   return (
@@ -191,10 +191,10 @@ const StatistikDetail = () => {
                   {selectedLaporan !== "booking" && (
                     <>
                       <GrafikLine
-                        ref={grafikLineRef}
                         windowSize={windowSize}
                         pilihan={selectedLaporan}
                         role={role}
+                        shadowId={shadowId}
                       />
 
                       {/* graifk  */}
@@ -220,6 +220,7 @@ const StatistikDetail = () => {
                                   endDate,
                                 }}
                                 customHeight="md:h-full"
+                                shadowId={shadowId}
                               />
                             )}
 
@@ -231,6 +232,7 @@ const StatistikDetail = () => {
                                     handleSetToast={handleSetToast}
                                     rangeDate={{ startDate, endDate }}
                                     customHeight="h-full"
+                                    shadowId={shadowId}
                                   />
                                 </>
                               )}
@@ -245,6 +247,7 @@ const StatistikDetail = () => {
                                   handleSetAlert={handleSetAlert}
                                   handleSetToast={handleSetToast}
                                   rangeDate={{ startDate, endDate }}
+                                  shadowId={shadowId}
                                 />
                               </>
                             )}
@@ -257,7 +260,9 @@ const StatistikDetail = () => {
               </>
             )}
 
-          {selectedLaporan === "penjualanProduk" && <LaporanPenjualanProduk />}
+          {selectedLaporan === "penjualanProduk" && (
+            <LaporanPenjualanProduk shadowId={shadowId} />
+          )}
 
           {selectedLaporan === "booking" && (
             <DataBooking pilihan={selectedLaporan} />
@@ -277,6 +282,7 @@ const StatistikDetail = () => {
             <TopProduk
               handleSetAlert={handleSetAlert}
               handleSetToast={handleSetToast}
+              shadowId={shadowId}
             />
           )}
 

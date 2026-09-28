@@ -6,16 +6,19 @@ import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useAuthStore } from "../../../stores/authStore";
 import { savePreviousPath } from "../../../helpers/previousPath";
+import { useShadowStore } from "../../../stores/shadowStore";
+import { ShadowTransactionServices } from "../../../services/shadowTransaction.service";
 
 const useRiwayatTransaksi = () => {
   // navigate
   const navigate = useNavigate();
 
+  // get shadow is active
+  const { shadowIsActive, shadowId } = useShadowStore((state) => state);
+
   // current pathname
   const { pathname: currentPathname, search: searchParamsTransaksi } =
     useLocation();
-
-  // search params
 
   // filter metode pembayaran
   const { filter: metodePembayaran, setFilter: handleSetMetodePembayaran } =
@@ -67,18 +70,36 @@ const useRiwayatTransaksi = () => {
           search,
           sort,
         ],
-        queryFn: () =>
-          TransactionServices.findRiwayatTransaksi({
-            ...(startDate && { startDate }),
-            ...(endDate && { endDate }),
-            ...(metodePembayaran && {
-              metodePembayaran: metodePembayaran.toLowerCase(),
-            }),
-            ...(page && { page }),
-            ...(limit && { limit }),
-            ...(search && { search }),
-            ...(sort && { sort }),
-          }),
+        queryFn: () => {
+          if (shadowIsActive && shadowId) {
+            return ShadowTransactionServices.findRiwayatTransaksiShadow({
+              shadowFeatureId: shadowId,
+              query: {
+                ...(startDate && { startDate }),
+                ...(endDate && { endDate }),
+                ...(metodePembayaran && {
+                  metodePembayaran: metodePembayaran.toLowerCase(),
+                }),
+                ...(page && { page }),
+                ...(limit && { limit }),
+                ...(search && { search }),
+                ...(sort && { sort }),
+              },
+            });
+          } else {
+            return TransactionServices.findRiwayatTransaksi({
+              ...(startDate && { startDate }),
+              ...(endDate && { endDate }),
+              ...(metodePembayaran && {
+                metodePembayaran: metodePembayaran.toLowerCase(),
+              }),
+              ...(page && { page }),
+              ...(limit && { limit }),
+              ...(search && { search }),
+              ...(sort && { sort }),
+            });
+          }
+        },
         retry: false,
         refetchOnWindowFocus: false,
         enabled: !!startDate && !!endDate,

@@ -10,7 +10,7 @@ import { CircleCheckIcon } from "lucide-react";
 import ButtonWithIcon from "../../../../../components/ui/button/ButtonWithIcon";
 import Toast from "../../../../../components/messages/Toast";
 import { useToastAnimation } from "../../../../../hooks/useToast";
-import { TOAST_CONFIG_ONGKIR } from "../../../../../types/toast.type";
+import { TOAST_CONFIG_TRANSACTION } from "../../../../../types/toast.type";
 
 type Props = {
   transactionId: number;
@@ -63,8 +63,8 @@ const FormOngkir: FC<Props> = ({ transactionId, queryKey }) => {
         <Toast
           toast={toast?.id !== null}
           isAnimationOut={toast?.isAnimationOut || false}
-          label={TOAST_CONFIG_ONGKIR[toast.type].message}
-          color={TOAST_CONFIG_ONGKIR[toast.type].color}
+          label={TOAST_CONFIG_TRANSACTION[toast.type].message}
+          color={TOAST_CONFIG_TRANSACTION[toast.type].color}
         />
       )}
       <div className="flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 h-12 px-3">

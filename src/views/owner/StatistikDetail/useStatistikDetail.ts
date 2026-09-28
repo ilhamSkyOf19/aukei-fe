@@ -2,7 +2,7 @@ import useSizeWindows from "../../../hooks/useSizeWindows";
 import { useQuery } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { StatistikServices } from "../../../services/statistik.service";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import {
   Banknote,
   CalendarClock,
@@ -14,7 +14,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import useDataStatistik from "./useDataStatistik";
-import type { ChildRef } from "../../../types/ref.type";
 import {
   useLaporanStore,
   type LaporanPilihanType,
@@ -25,6 +24,8 @@ import { useToastAnimation } from "../../../hooks/useToast";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { useKategoriChooseStore } from "../../../stores/kategoriChooseStore";
 import { useAuthStore } from "../../../stores/authStore";
+import { useShadowStore } from "../../../stores/shadowStore";
+import { ShadowStatistikServices } from "../../../services/shadowStatistik.service";
 
 const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
   [
@@ -80,8 +81,8 @@ const useStatistikDetail = () => {
   // window size
   const windowSize = useSizeWindows();
 
-  // grafik line
-  const grafikLineRef = useRef<ChildRef | null>(null);
+  // get shadow is active
+  const { shadowId, shadowIsActive } = useShadowStore((state) => state);
 
   // get role
   const role = useAuthStore((state) => state.pengguna?.role);
@@ -113,12 +114,23 @@ const useStatistikDetail = () => {
     isLoading: isLoadingStatistik,
     refetch,
   } = useQuery({
-    queryKey: ["statistik", startDate, endDate],
-    queryFn: () =>
-      StatistikServices.findStatistikWithPersentase({
-        ...(startDate && { startDate }),
-        ...(endDate && { endDate }),
-      }),
+    queryKey: ["statistik", startDate, endDate, shadowId],
+    queryFn: () => {
+      if (shadowIsActive && shadowId) {
+        return ShadowStatistikServices.findShadowStatistikWithPersentase({
+          shadowId,
+          query: {
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+          },
+        });
+      } else {
+        return StatistikServices.findStatistikWithPersentase({
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+        });
+      }
+    },
     retry: false,
     refetchOnWindowFocus: false,
     enabled: !!startDate && !!endDate,
@@ -173,7 +185,6 @@ const useStatistikDetail = () => {
     setSelectedLaporan: handleSetSelestedLaporan,
     filteredStatistik,
     handleRefresh,
-    grafikLineRef,
 
     startDate,
     endDate,
@@ -189,6 +200,7 @@ const useStatistikDetail = () => {
     toast,
     alert,
     role,
+    shadowId,
   };
 };
 

@@ -6,10 +6,16 @@ import { TempoService } from "../../../services/tempo.service";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../stores/authStore";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
+import { useShadowStore } from "../../../stores/shadowStore";
+import { ShadowTempoServices } from "../../../services/shadowTempo.service";
+import { ShadowStatistikServices } from "../../../services/shadowStatistik.service";
 
 const useKredit = () => {
   // window size
   const windowSize = useSizeWindows();
+
+  // get shadow active
+  const { shadowId, shadowIsActive } = useShadowStore((state) => state);
 
   // navigate
   const navigate = useNavigate();
@@ -53,22 +59,42 @@ const useKredit = () => {
   const data = useQueries({
     queries: [
       {
-        queryKey: ["statistik-tempo"],
-        queryFn: () => TempoService.statistik(),
+        queryKey: ["statistik-tempo", shadowId],
+        queryFn: () => {
+          if (shadowIsActive && shadowId) {
+            return ShadowStatistikServices.shadowStatistikTempo({ shadowId });
+          } else {
+            return TempoService.statistik();
+          }
+        },
         enabled: pengguna?.role === ROLE_INTERNAL_TYPE.OWNER,
         retry: false,
         refetchOnWindowFocus: false,
       },
       {
-        queryKey: ["tempo", limit, page, search, status, sort],
-        queryFn: () =>
-          TempoService.findAll({
-            ...(search && { search }),
-            ...(page && { page }),
-            ...(limit && { limit }),
-            ...(status && { status }),
-            ...(sort && { sort }),
-          }),
+        queryKey: ["tempo", limit, page, search, status, sort, shadowId],
+        queryFn: () => {
+          if (shadowIsActive && shadowId) {
+            return ShadowTempoServices.findAll({
+              shadowId,
+              query: {
+                ...(search && { search }),
+                ...(page && { page }),
+                ...(limit && { limit }),
+                ...(status && { status }),
+                ...(sort && { sort }),
+              },
+            });
+          } else {
+            return TempoService.findAll({
+              ...(search && { search }),
+              ...(page && { page }),
+              ...(limit && { limit }),
+              ...(status && { status }),
+              ...(sort && { sort }),
+            });
+          }
+        },
         retry: false,
         refetchOnWindowFocus: false,
       },

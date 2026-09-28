@@ -56,7 +56,6 @@ const ModalAlert: FC<Props> = ({
             <ButtonText
               label={labelNext ?? "Lanjutkan"}
               bgColor="bg-custom-primary"
-              textColor="text-custom-secondary"
               handleClick={handleConfirm}
               isLoading={isLoading}
             />

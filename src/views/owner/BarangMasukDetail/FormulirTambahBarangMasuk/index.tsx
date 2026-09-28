@@ -117,6 +117,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
                 placeholder="Harga Beli Custom"
                 max={1000000}
                 caption="Berlaku untuk produk yang dipilih"
+                undefined
               />
             )}
 

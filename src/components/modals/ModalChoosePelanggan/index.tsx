@@ -15,12 +15,14 @@ type Props = {
   handleCloseModal: () => void;
   handleShowModal: () => void;
   transactionIdFromCart?: number;
+  handleFormActive: () => void;
 };
 const ModalChoosePelanggan: FC<Props> = ({
   modalRef,
   handleCloseModal,
   handleShowModal,
   transactionIdFromCart,
+  handleFormActive,
 }) => {
   // call use
   const {
@@ -43,6 +45,7 @@ const ModalChoosePelanggan: FC<Props> = ({
   } = useModalChoosePelanggan({
     handleCloseModalChoosePelanggan: handleCloseModal,
     handleShowModalChoosePelanggan: handleShowModal,
+    handleFormActive,
   });
 
   return (
@@ -91,23 +94,22 @@ const ModalChoosePelanggan: FC<Props> = ({
         {/* content */}
         <div className="w-full flex flex-col justify-start items-start mt-6">
           {/* search and btn add */}
-          <div className="w-full flex flex-row justify-between items-start gap-2">
+          <div className="w-full flex flex-col md:flex-row justify-between items-start gap-2">
             {/* search */}
-            <div className="w-full">
+            <div className="w-full order-2 md:order-1">
               <InputSearch
                 handleSearch={handleSearch}
                 placeholder="Cari nomor / nama. Contoh: Annas"
               />
             </div>
 
-            <div className="w-55 flex flex-row justify-end items-start">
-              {/* btn */}
-              <ButtonWithIcon
-                icon={UserRoundPlus}
-                label="Pelanggan Baru"
-                handleBtn={handleShowModalFormulirPelanggan}
-              />
-            </div>
+            {/* btn */}
+            <ButtonWithIcon
+              icon={UserRoundPlus}
+              label="Pelanggan Baru"
+              handleBtn={handleShowModalFormulirPelanggan}
+              customWidth="w-full md:w-35 order-1 md:order-2"
+            />
           </div>
 
           {/* daftar pelanggan */}
@@ -137,7 +139,7 @@ const ModalChoosePelanggan: FC<Props> = ({
                     <Avatar index={index} nama={item.nama} sm />
                     {/* nama and no wa */}
                     <div className="flex flex-col justify-start items-start gap-0.5">
-                      <span className="text-xs font-medium text-base-content">
+                      <span className="text-[0.7rem] md:text-xs text-left font-medium text-base-content">
                         {item.nama}
                       </span>
                       <span className="text-[0.7rem] font-medium text-base-content/50">
@@ -172,11 +174,11 @@ const ModalChoosePelanggan: FC<Props> = ({
         <div className="w-full flex flex-row justify-between items-center mt-4">
           {/* informasi */}
           <div className="flex-1 flex flex-row justify-start items-center">
-            <p className="text-xs">
-              Menampilkan <span>1</span> -{" "}
-              <span>{dataPelanggan?.data?.data?.length}</span> dari{" "}
-              <span>{dataPelanggan?.data?.meta.totalData}</span> pelanggan
-            </p>
+            <div className="text-[0.625rem] flex flex-row justify-start items-start flex-wrap gap-1">
+              <span className="hidden md:block">Menampilkan</span>{" "}
+              <span>1</span> - <span>{dataPelanggan?.data?.data?.length}</span>{" "}
+              dari <span>{dataPelanggan?.data?.meta.totalData}</span> pelanggan
+            </div>
           </div>
 
           <div className="flex flex-1 flex-row justify-end items-center">

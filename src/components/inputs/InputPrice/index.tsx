@@ -18,6 +18,7 @@ type Props<T extends FieldValues = any> = {
   caption?: string;
   max?: number;
   name?: string;
+  undefined?: boolean;
 };
 
 export default function InputPrice<T extends FieldValues = any>({
@@ -30,6 +31,7 @@ export default function InputPrice<T extends FieldValues = any>({
   caption,
   max,
   name,
+  undefined: allowUndefined = false,
 }: Props<T>) {
   const { field, fieldState } = controller;
 
@@ -63,7 +65,7 @@ export default function InputPrice<T extends FieldValues = any>({
       <div
         className={cn(
           "flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full",
-          "focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out bg-base-100 h-10.5 lg:h-9 px-2.5 ",
+          "focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out bg-base-100 h-10.5 lg:h-9 px-2.5",
           fieldState.error && "border-error",
           label && "mt-2",
         )}
@@ -88,6 +90,11 @@ export default function InputPrice<T extends FieldValues = any>({
             const value = maxValue(raw, max ?? 10000000);
 
             setDisplayValue(formatNumber(value));
+
+            if (allowUndefined && Number(value) === 0) {
+              field.onChange(undefined);
+              return;
+            }
 
             field.onChange(value === "" ? null : Number(value));
           }}

@@ -8,9 +8,13 @@ import { TransactionServices } from "../../../services/transaction.service";
 const useModalChoosePelanggan = (params: {
   handleCloseModalChoosePelanggan: () => void;
   handleShowModalChoosePelanggan: () => void;
+  handleFormActive: () => void;
 }) => {
-  const { handleCloseModalChoosePelanggan, handleShowModalChoosePelanggan } =
-    params;
+  const {
+    handleCloseModalChoosePelanggan,
+    handleShowModalChoosePelanggan,
+    handleFormActive,
+  } = params;
 
   // use modal formulir pelanggan
   const {
@@ -79,6 +83,8 @@ const useModalChoosePelanggan = (params: {
 
       // invalidate
       queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+
+      handleFormActive();
     },
     onError: (err) => {
       console.log(err);

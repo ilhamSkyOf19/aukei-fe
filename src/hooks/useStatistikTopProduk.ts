@@ -4,6 +4,7 @@ import { StatistikServices } from "../services/statistik.service";
 import useFilterState from "../services/useFilterState";
 import { useLaporanStore } from "../stores/laporanStore";
 import useDownloadLaporanTopProduk from "./useDownloadLaporanTopProduk";
+import { ShadowStatistikServices } from "../services/shadowStatistik.service";
 
 const useStatistikTopProduk = (params: {
   customLimit?: number;
@@ -11,6 +12,7 @@ const useStatistikTopProduk = (params: {
     startDate?: string;
     endDate?: string;
   };
+  shadowId?: number | null;
   handleSetToast: (value: string) => void;
   handleSetAlert: (value: string) => void;
 }) => {
@@ -19,6 +21,7 @@ const useStatistikTopProduk = (params: {
     customStartDateEndDate,
     handleSetAlert,
     handleSetToast,
+    shadowId,
   } = params;
 
   // use filter state
@@ -69,42 +72,83 @@ const useStatistikTopProduk = (params: {
         kategori,
         sortQty,
         sortOmzet,
+        shadowId,
       },
     ],
-    queryFn: () =>
-      StatistikServices.statistikTopProduk({
-        ...(finalStartDate && {
-          startDate: finalStartDate,
-        }),
+    queryFn: () => {
+      if (shadowId) {
+        return ShadowStatistikServices.statistikShadowTopProduk({
+          shadowId,
+          query: {
+            ...(finalStartDate && {
+              startDate: finalStartDate,
+            }),
 
-        ...(finalEndDate && {
-          endDate: finalEndDate,
-        }),
+            ...(finalEndDate && {
+              endDate: finalEndDate,
+            }),
 
-        ...(sortOmzet && {
-          sortOmzet,
-        }),
+            ...(sortOmzet && {
+              sortOmzet,
+            }),
 
-        ...(sortQty && {
-          sortQty,
-        }),
+            ...(sortQty && {
+              sortQty,
+            }),
 
-        ...(page && {
-          page,
-        }),
+            ...(page && {
+              page,
+            }),
 
-        ...(search && {
-          search,
-        }),
+            ...(search && {
+              search,
+            }),
 
-        ...(kategori && {
-          kategori,
-        }),
+            ...(kategori && {
+              kategori,
+            }),
 
-        ...(finalLimit && {
-          limit: finalLimit,
-        }),
-      }),
+            ...(finalLimit && {
+              limit: "100",
+            }),
+          },
+        });
+      } else {
+        return StatistikServices.statistikTopProduk({
+          ...(finalStartDate && {
+            startDate: finalStartDate,
+          }),
+
+          ...(finalEndDate && {
+            endDate: finalEndDate,
+          }),
+
+          ...(sortOmzet && {
+            sortOmzet,
+          }),
+
+          ...(sortQty && {
+            sortQty,
+          }),
+
+          ...(page && {
+            page,
+          }),
+
+          ...(search && {
+            search,
+          }),
+
+          ...(kategori && {
+            kategori,
+          }),
+
+          ...(finalLimit && {
+            limit: finalLimit,
+          }),
+        });
+      }
+    },
 
     retry: false,
     refetchOnWindowFocus: false,

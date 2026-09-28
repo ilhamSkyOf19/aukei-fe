@@ -1,12 +1,12 @@
 export interface CreateShadowFeatureType {
-  nama?: string;
+  nama?: string | null;
   nilai: number;
 }
 
 // update is active
 export interface UpdateIsActiveShadowFeatureType {
-  activedAt?: Date;
-  deactivedAt?: Date;
+  activedAt?: boolean;
+  deactivedAt?: boolean;
 }
 
 // response

@@ -172,7 +172,10 @@ const InstallmentsDetail = () => {
                 iconColor: "text-blue-400",
               }}
               label="Total Transaksi"
-              value={formatRupiah(dataInstallments?.data?.totalTagihan ?? 0)}
+              value={formatRupiah(
+                (dataInstallments?.data?.totalTagihan ?? 0) +
+                  (dataInstallments?.data?.uangMuka ?? 0),
+              )}
               caption="Total nilai transaksi."
               isLoading={isLoadingDataInstallments}
             />
@@ -186,6 +189,18 @@ const InstallmentsDetail = () => {
               label="Total Diskon"
               value={formatRupiah(dataInstallments?.data?.diskon ?? 0)}
               caption="Total diskon."
+              isLoading={isLoadingDataInstallments}
+            />
+
+            <CardStatistik
+              icon={{
+                icon: HandCoins,
+                bgColor: "bg-purple-50",
+                iconColor: "text-purple-400",
+              }}
+              label="Uang Muka (DP)"
+              value={formatRupiah(dataInstallments?.data?.uangMuka ?? 0)}
+              caption="Total uang muka yang dibayarkan."
               isLoading={isLoadingDataInstallments}
             />
 
@@ -205,17 +220,6 @@ const InstallmentsDetail = () => {
               withAlert="Total tagihan setelah DP"
             />
 
-            <CardStatistik
-              icon={{
-                icon: HandCoins,
-                bgColor: "bg-purple-50",
-                iconColor: "text-purple-400",
-              }}
-              label="Uang Muka (DP)"
-              value={formatRupiah(dataInstallments?.data?.uangMuka ?? 0)}
-              caption="Total uang muka yang dibayarkan."
-              isLoading={isLoadingDataInstallments}
-            />
             <CardStatistik
               icon={{
                 icon: CircleCheck,

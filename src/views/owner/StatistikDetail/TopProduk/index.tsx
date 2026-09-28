@@ -25,8 +25,9 @@ import ButtonRefresh from "../../../../components/ui/button/ButtonRefresh";
 type Props = {
   handleSetToast: (value: string) => void;
   handleSetAlert: (value: string) => void;
+  shadowId?: number | null;
 };
-const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
+const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert, shadowId }) => {
   const {
     dataTopProduk,
     isLoading,
@@ -46,7 +47,7 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert }) => {
     isLoadingDownloadLaporanTopProdukPdf,
 
     refetchTopProduk,
-  } = useStatistikTopProduk({ handleSetAlert, handleSetToast });
+  } = useStatistikTopProduk({ handleSetAlert, handleSetToast, shadowId });
 
   return (
     <div className="w-full flex flex-col justify-start items-start">

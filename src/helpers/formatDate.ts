@@ -24,3 +24,13 @@ export const formatTanggalLengkap = (iso: Date | string) => {
 
   return `${tanggal} - ${waktu}`;
 };
+
+export const formatTanggalShort = (iso: Date | string) => {
+  const date = new Date(iso);
+
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};

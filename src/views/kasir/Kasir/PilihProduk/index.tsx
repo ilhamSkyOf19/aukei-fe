@@ -75,13 +75,10 @@ const PilihProduk: FC = () => {
 
     handleRedirectBooking,
 
-    isLoadingTransaksi,
     isPendingRemoveDetail,
     variablesRemoveDetail,
-    isRefetchingTransaksi,
 
     handleRemoveAll,
-    isPendingRemoveAll,
 
     formActive,
     setFormActive,
@@ -102,10 +99,11 @@ const PilihProduk: FC = () => {
     handleSetAlert,
 
     handleSimpanPerubahanTransactionComplete,
-    isPendingSimpanPerubahanTransactionComplete,
     transactionIdFromTransactionComplate,
 
     isPendingUpdateMetodePembayaran,
+
+    isGlobalLoading,
   } = usePilihProduk();
 
   return (
@@ -122,12 +120,7 @@ const PilihProduk: FC = () => {
       )}
 
       {/* loading */}
-      {(isLoadingTransaksi ||
-        isRefetchingTransaksi ||
-        isPendingRemoveAll ||
-        isPendingSimpanPerubahanTransactionComplete ||
-        isPendingCancelUpdateTransactionComplete ||
-        isPendingUpdateMetodePembayaran) && (
+      {isGlobalLoading && (
         <div className="absolute w-full h-full flex flex-row justify-center items-center z-20">
           <div className="w-full h-full bg-base-100 opacity-70 absolute" />
           <LoadingFetch />
@@ -138,8 +131,6 @@ const PilihProduk: FC = () => {
       {/* PREVIEW PRODUK TRANSAKSI */}
       <div
         className={cn(
-          // MOBILE: w-full h-auto sebagai default (tinggi mengikuti konten),
-          // lg:flex-3 lg:h-full mengembalikan proporsi & tinggi penuh di desktop.
           "w-full h-auto lg:h-full lg:flex-4 flex flex-col justify-start items-start rounded-xl bg-base-100 shadow-sm border border-transparent",
           isErrorsFormState.includes("details")
             ? "border-error"
@@ -152,7 +143,7 @@ const PilihProduk: FC = () => {
             {/* MOBILE: dibungkus flex-wrap supaya info pelanggan (bisa panjang)
               tidak mendorong/menabrak card kasir di layar sempit. */}
             <div className="w-full flex flex-row flex-wrap justify-between items-center gap-2.5">
-              <div className="flex flex-row justify-start items-center gap-2.5">
+              <div className="w-full md:w-auto flex flex-row justify-start items-center gap-2.5">
                 {/* input floating */}
                 {formActive && (
                   <>
@@ -173,32 +164,34 @@ const PilihProduk: FC = () => {
                 )}
 
                 {pelanggan && !formActive ? (
-                  <div className="flex flex-row justify-start items-center gap-6 flex-wrap">
-                    <div className="flex flex-row justify-start items-center gap-2 min-w-0">
-                      <Avatar
-                        nama={pelanggan?.nama ?? ""}
-                        index={pelanggan?.id}
-                        xs
-                      />
-                      <div className="flex flex-col justify-start items-start gap-0.5 min-w-0">
-                        {/* name */}
-                        <span className="text-base-content font-semibold text-xs truncate max-w-36 sm:max-w-none">
-                          {pelanggan?.nama}
-                        </span>
-                        {/* no telp */}
-                        <span className="text-base-content/80 text-[0.625rem]">
-                          {formatNumberPhone(pelanggan?.noWa ?? "")}
-                        </span>
+                  <div className="w-full flex flex-row justify-between items-center gap-6 flex-wrap">
+                    <div className="flex flex-row justify-start items-center gap-6">
+                      <div className="flex flex-row justify-start items-center gap-2 min-w-0">
+                        <Avatar
+                          nama={pelanggan?.nama ?? ""}
+                          index={pelanggan?.id}
+                          xs
+                        />
+                        <div className="flex flex-col justify-start items-start gap-0.5 min-w-0">
+                          {/* name */}
+                          <span className="text-base-content font-semibold text-xs truncate max-w-36 sm:max-w-none">
+                            {pelanggan?.nama}
+                          </span>
+                          {/* no telp */}
+                          <span className="text-base-content/80 text-[0.625rem]">
+                            {formatNumberPhone(pelanggan?.noWa ?? "")}
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    <ButtonWithIcon
-                      noLabel
-                      icon={X}
-                      bgColor="bg-rose-500"
-                      textColor="text-primary-white"
-                      handleBtn={() => setFormActive(true)}
-                    />
+                      <ButtonWithIcon
+                        noLabel
+                        icon={X}
+                        bgColor="bg-rose-500"
+                        textColor="text-primary-white"
+                        handleBtn={() => setFormActive(true)}
+                      />
+                    </div>
 
                     {/* button ganti pelanggan */}
                     <ButtonWithIcon
@@ -221,9 +214,7 @@ const PilihProduk: FC = () => {
               {/* kasir */}
               <div
                 className={cn(
-                  // MOBILE: min-w-24 sedikit lebih sempit di layar kecil,
-                  // sm:min-w-28 mengembalikan lebar asli di layar >=640px.
-                  "flex flex-row justify-start items-center gap-2 h-10 min-w-24 sm:min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10",
+                  "flex-row justify-start items-center gap-2 h-10 min-w-24 sm:min-w-28 px-2 rounded-xl border transition-all duration-300 ease-in-out border-base-content/10 hidden md:flex",
                 )}
               >
                 <div
@@ -633,6 +624,7 @@ const PilihProduk: FC = () => {
         modalRef={modalChoosePelangganRef}
         handleCloseModal={handleCloseModalChoosePelanggan}
         transactionIdFromCart={transactionIdFromCart ?? undefined}
+        handleFormActive={() => setFormActive(false)}
       />
 
       {/* modal add trasaksi */}
@@ -683,10 +675,7 @@ const CardData: FC<CardDataProps> = ({
   ...produk
 }) => {
   return (
-    // MOBILE: flex-col di layar sempit (gambar+nama di atas, detail
-    // qty/subtotal/aksi di bawah), sm:flex-row mengembalikan tampilan
-    // satu baris seperti desktop mulai dari 640px ke atas.
-    <div className="w-full flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0 border-b border-base-content/10 pb-2.5">
+    <div className="w-full flex flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0 border-b border-base-content/10 pb-2.5">
       {/* content 1 */}
       <div className="flex-1 flex flex-row justify-start items-center gap-4 min-w-0">
         {/* img */}

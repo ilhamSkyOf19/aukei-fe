@@ -35,6 +35,8 @@ import ReturBarangDetailPage from "../pages/ReturBarangDetailPage";
 import StockOpnamePage from "../pages/StockOpnamePage";
 import StockOpnameDetailPage from "../pages/StockOpnameDetailPage";
 import UbahPembayaranPage from "../pages/UbahPembayaranPage";
+import { ShadowFeatureServices } from "../services/shadowFeature.service";
+import { useShadowStore } from "../stores/shadowStore";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -45,6 +47,16 @@ const dashboardLoader = async () => {
     const result = await AuthServices.me();
     if (result && result.meta.statusCode === 200) {
       useAuthStore.getState().setPengguna(result.data);
+
+      // check shadow transaction
+      const shadow = await ShadowFeatureServices.findIsActive();
+
+      if (shadow && shadow.meta.statusCode === 200) {
+        useShadowStore.getState().setShadowIsActive({
+          shadowIsActive: shadow.data?.isActive ?? false,
+          shadowId: shadow.data?.id ?? null,
+        });
+      }
     }
 
     return null;

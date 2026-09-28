@@ -13,12 +13,14 @@ type Props = {
   customHeight?: string;
   handleSetAlert: (data: string) => void;
   handleSetToast: (data: string) => void;
+  shadowId?: number | null;
 };
 const StatistikTopPelanggan: FC<Props> = ({
   rangeDate,
   customHeight,
   handleSetAlert,
   handleSetToast,
+  shadowId,
 }) => {
   const {
     dataTopPelanggan,
@@ -30,6 +32,7 @@ const StatistikTopPelanggan: FC<Props> = ({
     handleSetToast,
     customLimit: 5,
     customStartDateEndDate: rangeDate,
+    shadowId,
   });
   return (
     <div

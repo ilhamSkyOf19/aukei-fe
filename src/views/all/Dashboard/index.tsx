@@ -21,6 +21,10 @@ import { cn } from "../../../utils/cn";
 import type { FC } from "react";
 import useDashboard from "./useDashboard";
 import ModalChooseIsActiveShadowFeature from "../../../components/modals/ModalChooseIsActiveShadowFeature";
+import EfekShadowFeatureActive from "../../../components/ui/EfekShadowFeatureActive";
+import ModalAddShadowFeature from "../../../components/modals/ModalShadowTransaction";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_DASHBOARD } from "../../../types/toast.type";
 const Dashboard = () => {
   // get use
   const {
@@ -29,6 +33,18 @@ const Dashboard = () => {
     modalShadowFeatureRef,
     pengguna,
     handleRedirectWa,
+    handleisActiveAnimationShadow,
+    isActiveAnimationShadow,
+
+    shadowId,
+    shadowIsActive,
+
+    handleCloseModalShadowTransaction,
+    handleShowModalShadowTransaction,
+    modalShadowTransactionRef,
+
+    handleSetToast,
+    toast,
   } = useDashboard();
 
   return (
@@ -37,21 +53,41 @@ const Dashboard = () => {
         "w-full pt-4 px-4 pb-2.5 flex flex-col justify-center items-center",
       )}
     >
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          color={TOAST_CONFIG_DASHBOARD[toast.type].color}
+          label={TOAST_CONFIG_DASHBOARD[toast.type].message}
+          isAnimationOut={toast?.isAnimationOut || false}
+        />
+      )}
+
       <div
         className={cn(
-          "w-full bg-base-100 rounded-2xl md:rounded-xl border border-base-content/10 shadow-xl flex flex-col justify-between items-center pt-8 px-4 pb-4 mb:pb-0 relative overflow-hidden",
+          "w-full bg-base-100 rounded-2xl md:rounded-xl border border-base-content/10 shadow-xl flex flex-col justify-between items-center pt-8 px-4 mb:pb-0 relative overflow-hidden  pb-20",
           pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-            ? "min-h-[85vh] lg:h-[85vh] pb-20"
-            : "h-[90vh]",
+            ? "min-h-[85vh] lg:h-[85vh]"
+            : "h-full",
         )}
       >
         {/* button shadow feature */}
         {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
-          <button
-            type="button"
-            className="absolute bottom-1 left-1 z-10 w-9 h-9 cursor-default!"
-            onClick={() => handleShowModalFeature()}
-          />
+          <>
+            <button
+              type="button"
+              className="absolute bottom-1 left-1 z-10 w-12 h-12 cursor-default!"
+              onClick={() => handleShowModalFeature()}
+            />
+
+            {/* button shadow feature */}
+            {shadowIsActive === true && (
+              <button
+                type="button"
+                className="absolute top-1 right-1 z-10 w-12 h-12 cursor-default!"
+                onClick={() => handleShowModalShadowTransaction()}
+              />
+            )}
+          </>
         )}
 
         {/* wave */}
@@ -69,21 +105,21 @@ const Dashboard = () => {
 
         <div className="w-full flex flex-col justify-start items-center md:justify-center lg:justify-start">
           {/* icon */}
-          <Store className="size-20 text-base stroke-1 z-1 shrink-0" />
+          <Store className="size-20 text-base-content stroke-1 z-1 shrink-0" />
 
           {/* title */}
           <div className="w-full flex flex-col justify-start items-center mt-2.5 z-1">
-            <h1 className="text-base font-medium">Selamat datang di</h1>
+            <h1 className="text-base-content font-medium">Selamat datang di</h1>
 
             <h2 className="text-7xl font-black text-custom-primary-brand [-webkit-text-stroke:1px_#263d3f]">
               AUKEI
             </h2>
 
-            <span className="mt-2.5 text-xl font-medium capitalize">
+            <span className="mt-2.5 text-xl font-medium capitalize text-base-content">
               Halo, {pengguna?.nama}!
             </span>
 
-            <span className=" mt-2.5 text-xs text-center">
+            <span className=" mt-2.5 text-xs text-center text-base-content">
               Kelola bisnis Anda dengan lebih mudah, cepat, dan efisien. <br />{" "}
               Pantau transaksi, kelola produk, dan kembangkan usaha Anda bersama
               AUKEI.
@@ -257,6 +293,25 @@ const Dashboard = () => {
       <ModalChooseIsActiveShadowFeature
         modalRef={modalShadowFeatureRef}
         handleCloseModal={handleCloseModalFeature}
+        handleShowModal={handleShowModalFeature}
+        handleActive={handleisActiveAnimationShadow}
+        role={pengguna?.role}
+      />
+
+      {/* efek shadow fature */}
+      <EfekShadowFeatureActive
+        show={isActiveAnimationShadow}
+        onComplete={() => {
+          handleisActiveAnimationShadow(false);
+        }}
+      />
+
+      {/* formulir shadow transaction */}
+      <ModalAddShadowFeature
+        modalRef={modalShadowTransactionRef}
+        handleCloseModal={handleCloseModalShadowTransaction}
+        handleSetToast={handleSetToast}
+        shadowFeatureId={shadowId ?? undefined}
       />
     </div>
   );

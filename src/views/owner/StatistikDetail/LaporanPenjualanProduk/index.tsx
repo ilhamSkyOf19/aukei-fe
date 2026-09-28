@@ -21,7 +21,10 @@ import FilterSort from "../../../../components/filters/Sort";
 import RangeDate from "../../../../components/filters/RangeDate";
 import ModalHitungPendapatanProduk from "../../../../components/modals/ModalHitungPendapatanProduk";
 
-const LaporanPenjualanProduk: FC = () => {
+type Props = {
+  shadowId?: number | null;
+};
+const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
   const {
     handleRefresh,
     statistik,
@@ -54,7 +57,7 @@ const LaporanPenjualanProduk: FC = () => {
     handleCloseModalHitungPendapatanProduk,
     handleShowModalHitungPendapatanProduk,
     modalHitungPendapatanProdukRef,
-  } = useLaporanPenjualanProduk();
+  } = useLaporanPenjualanProduk({ shadowId });
 
   const isLoadingLaporanGlobal =
     isLoadingLaporanProduk || isRefetchingLaporanPenjualanProduk;

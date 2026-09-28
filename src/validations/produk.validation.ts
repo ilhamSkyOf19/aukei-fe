@@ -94,6 +94,11 @@ export class ProdukValidation {
         .min(0, "Mohon isi harga jual")
         .optional(),
 
+      hargaModalRataRata: z
+        .number("Mohon isi harga modal rata rata")
+        .min(0, "Mohon isi harga modal rata rata")
+        .optional(),
+
       isiPerBox: z
         .number("Mohon isi per box")
         .min(0, "Mohon isi per box")

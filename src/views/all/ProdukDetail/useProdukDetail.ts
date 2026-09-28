@@ -117,6 +117,12 @@ const useProdukDetail = () => {
     control,
   });
 
+  // controller harga modal rata rata
+  const hargaModalRataRataController = useController({
+    name: "hargaModalRataRata",
+    control,
+  });
+
   // reset
   useEffect(() => {
     if (!keyUpdate || !dataProduk?.data) return;
@@ -148,6 +154,10 @@ const useProdukDetail = () => {
 
       case "stokMinimum":
         reset({ stokMinimum: dataProduk.data.stokMinimum });
+        break;
+
+      case "modalRataRata":
+        reset({ stokMinimum: dataProduk.data.hargaModalRataRata });
         break;
     }
   }, [keyUpdate, dataProduk, reset]);
@@ -256,6 +266,14 @@ const useProdukDetail = () => {
       // check img
       if (data.img) {
         formData.append("img", data.img);
+      }
+
+      // harga modal rata rata
+      if (data.hargaModalRataRata) {
+        formData.append(
+          "hargaModalRataRata",
+          data.hargaModalRataRata.toString(),
+        );
       }
 
       await mutateUpdateProduk(formData);
@@ -370,6 +388,8 @@ const useProdukDetail = () => {
     isPendingDeleteImg,
     modalDeleteImgRef,
     handleBack,
+
+    hargaModalRataRataController,
   };
 };
 

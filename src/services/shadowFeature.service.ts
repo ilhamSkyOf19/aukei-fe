@@ -11,7 +11,7 @@ export class ShadowFeatureServices {
   static async create(
     req: CreateShadowFeatureType,
   ): Promise<ResponseStructure<ResponseShadowFeatureType | null>> {
-    const result = await instanceAxios.patch<
+    const result = await instanceAxios.post<
       ResponseStructure<ResponseShadowFeatureType | null>
     >(`/shadow-feature`, req);
 
@@ -33,7 +33,7 @@ export class ShadowFeatureServices {
   static async findIsActive(): Promise<
     ResponseStructure<ResponseShadowFeatureType | null>
   > {
-    const result = await instanceAxios.patch<
+    const result = await instanceAxios.get<
       ResponseStructure<ResponseShadowFeatureType | null>
     >(`/shadow-feature/is-active`);
 

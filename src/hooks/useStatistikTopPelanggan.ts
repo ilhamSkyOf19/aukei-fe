@@ -4,6 +4,7 @@ import { StatistikServices } from "../services/statistik.service";
 import useFilterState from "../services/useFilterState";
 import { useLaporanStore } from "../stores/laporanStore";
 import useDownloadLaporanTopPelanggan from "./useDownloadLaporanTopPelanggan";
+import { ShadowStatistikServices } from "../services/shadowStatistik.service";
 
 const useStatistikTopPelanggan = (params: {
   customLimit?: number;
@@ -11,6 +12,7 @@ const useStatistikTopPelanggan = (params: {
     startDate?: string;
     endDate?: string;
   };
+  shadowId?: number | null;
   handleSetToast: (value: string) => void;
   handleSetAlert: (value: string) => void;
 }) => {
@@ -19,6 +21,7 @@ const useStatistikTopPelanggan = (params: {
     customStartDateEndDate,
     handleSetAlert,
     handleSetToast,
+    shadowId,
   } = params;
 
   // use filter state
@@ -66,37 +69,73 @@ const useStatistikTopPelanggan = (params: {
         search,
         sortTotalNilaiTransaksi,
         sortTotalTransaksi,
+        shadowId,
       },
     ],
-    queryFn: () =>
-      StatistikServices.statistikTopPelanggan({
-        ...(finalStartDate && {
-          startDate: finalStartDate,
-        }),
+    queryFn: () => {
+      if (shadowId) {
+        return ShadowStatistikServices.statistikShadowTopPelanggan({
+          shadowId,
+          query: {
+            ...(finalStartDate && {
+              startDate: finalStartDate,
+            }),
 
-        ...(finalEndDate && {
-          endDate: finalEndDate,
-        }),
+            ...(finalEndDate && {
+              endDate: finalEndDate,
+            }),
 
-        ...(sortTotalNilaiTransaksi && {
-          sortTotalNilaiTransaksi,
-        }),
+            ...(sortTotalNilaiTransaksi && {
+              sortTotalNilaiTransaksi,
+            }),
 
-        ...(sortTotalTransaksi && {
-          sortTotalTransaksi,
-        }),
-        ...(page && {
-          page,
-        }),
+            ...(sortTotalTransaksi && {
+              sortTotalTransaksi,
+            }),
+            ...(page && {
+              page,
+            }),
 
-        ...(search && {
-          search,
-        }),
+            ...(search && {
+              search,
+            }),
 
-        ...(finalLimit && {
-          limit: finalLimit,
-        }),
-      }),
+            ...(finalLimit && {
+              limit: finalLimit,
+            }),
+          },
+        });
+      } else {
+        return StatistikServices.statistikTopPelanggan({
+          ...(finalStartDate && {
+            startDate: finalStartDate,
+          }),
+
+          ...(finalEndDate && {
+            endDate: finalEndDate,
+          }),
+
+          ...(sortTotalNilaiTransaksi && {
+            sortTotalNilaiTransaksi,
+          }),
+
+          ...(sortTotalTransaksi && {
+            sortTotalTransaksi,
+          }),
+          ...(page && {
+            page,
+          }),
+
+          ...(search && {
+            search,
+          }),
+
+          ...(finalLimit && {
+            limit: finalLimit,
+          }),
+        });
+      }
+    },
 
     retry: false,
     refetchOnWindowFocus: false,

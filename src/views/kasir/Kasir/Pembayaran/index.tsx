@@ -121,7 +121,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
         {/* header */}
         <div
           className={cn(
-            "w-full h-15 flex flex-row justify-center items-center bg-base-100 p-4 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm  transition-all duration-300 ease-in-out col-span-5 relative",
+            "w-full h-15 flex flex-row justify-center items-center bg-base-100 p-4 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm  transition-all duration-300 ease-in-out col-span-7 md:col-span-5 relative",
           )}
         >
           {/* title */}
@@ -140,16 +140,16 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
         {/* data pelanggan */}
         <div
           className={
-            "w-full  col-span-2 row-span-1 flex flex-col justify-start items-start gap-2"
+            "w-full col-span-2 flex-col justify-start items-start gap-2 hidden md:flex"
           }
         >
           <HeaderPelangganForKasir kasir={kasir} pelanggan={pelanggan} />
         </div>
       </div>
 
-      <div className={cn("h-full grid gap-2.5 grid-cols-7")}>
+      <div className={cn("h-full grid gap-2.5 grid-cols-1 md:grid-cols-7")}>
         {/* daftar produk */}
-        <div className={cn("h-full col-span-5")}>
+        <div className={cn("h-full col-span-1 md:col-span-5")}>
           <div
             className={cn(
               "w-full h-[85vh] scrollbar-thin overflow-y-auto row-span-2 rounded-xl border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 pb-6",
@@ -244,8 +244,16 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
         </div>
 
         <div
+          className={
+            "w-full col-span-1 flex-col justify-start items-start gap-2 flex md:hidden"
+          }
+        >
+          <HeaderPelangganForKasir kasir={kasir} pelanggan={pelanggan} />
+        </div>
+
+        <div
           className={cn(
-            "h-full col-span-2 gap-4 transition-all duration-200 ease-in-out flex-2",
+            "h-full col-span-1 md:col-span-2 gap-4 transition-all duration-200 ease-in-out flex-2 mb-12 md:mb-0",
           )}
         >
           {/* metode pembayaran */}

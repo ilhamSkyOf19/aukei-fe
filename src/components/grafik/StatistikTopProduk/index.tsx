@@ -13,12 +13,14 @@ type Props = {
   customHeight?: string;
   handleSetAlert: (value: string) => void;
   handleSetToast: (value: string) => void;
+  shadowId?: number | null;
 };
 const StatistikTopProduk: FC<Props> = ({
   rangeDate,
   customHeight,
   handleSetAlert,
   handleSetToast,
+  shadowId,
 }) => {
   const {
     dataTopProduk,
@@ -30,6 +32,7 @@ const StatistikTopProduk: FC<Props> = ({
     handleSetToast,
     customLimit: 5,
     customStartDateEndDate: rangeDate,
+    shadowId,
   });
   return (
     <div

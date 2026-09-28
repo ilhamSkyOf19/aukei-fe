@@ -6,8 +6,10 @@ import useFilterState from "../../../../services/useFilterState";
 import { endOfDay, format, startOfDay } from "date-fns";
 import type { ResponseDaftarLaporanProdukDetailByKategoriType } from "../../../../models/statistik.model";
 import useModal from "../../../../hooks/useModal";
+import { ShadowStatistikServices } from "../../../../services/shadowStatistik.service";
 
-const useLaporanPenjualanProduk = () => {
+const useLaporanPenjualanProduk = (params: { shadowId?: number | null }) => {
+  const { shadowId } = params;
   // kategori store
   const { kategori, resetKategori, setKategori } = useKategoriChooseStore(
     (state) => state,
@@ -65,18 +67,36 @@ const useLaporanPenjualanProduk = () => {
           startDateEndDate?.startDate,
           startDateEndDate?.endDate,
         ],
-        queryFn: async () =>
-          StatistikServices.laporanPenjualanProduk({
-            startDate:
-              startDateEndDate?.startDate ??
-              startOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
-            endDate:
-              startDateEndDate?.endDate ??
-              endOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
-            sortOmzet,
-            sortLaba,
-            sortQty,
-          }),
+        queryFn: async () => {
+          if (shadowId) {
+            return ShadowStatistikServices.laporanShadowPenjualanProduk({
+              shadowId,
+              query: {
+                startDate:
+                  startDateEndDate?.startDate ??
+                  startOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
+                endDate:
+                  startDateEndDate?.endDate ??
+                  endOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
+                sortOmzet,
+                sortLaba,
+                sortQty,
+              },
+            });
+          } else {
+            return StatistikServices.laporanPenjualanProduk({
+              startDate:
+                startDateEndDate?.startDate ??
+                startOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
+              endDate:
+                startDateEndDate?.endDate ??
+                endOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
+              sortOmzet,
+              sortLaba,
+              sortQty,
+            });
+          }
+        },
         enabled: kategori.id === 0,
         retry: false,
         refetchOnWindowFocus: false,
@@ -91,19 +111,40 @@ const useLaporanPenjualanProduk = () => {
           startDateEndDate?.startDate,
           startDateEndDate?.endDate,
         ],
-        queryFn: async () =>
-          StatistikServices.laporanPenjualanProdukByKategori({
-            kategoriId: kategori.id,
-            startDate:
-              startDateEndDate?.startDate ??
-              startOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
-            endDate:
-              startDateEndDate?.endDate ??
-              endOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
-            sortOmzet,
-            sortLaba,
-            sortQty,
-          }),
+        queryFn: async () => {
+          if (shadowId) {
+            return ShadowStatistikServices.laporanShadowPenjualanProdukByKategori(
+              {
+                kategoriId: kategori.id,
+                shadowId,
+                query: {
+                  startDate:
+                    startDateEndDate?.startDate ??
+                    startOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
+                  endDate:
+                    startDateEndDate?.endDate ??
+                    endOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
+                  sortOmzet,
+                  sortLaba,
+                  sortQty,
+                },
+              },
+            );
+          } else {
+            return StatistikServices.laporanPenjualanProdukByKategori({
+              kategoriId: kategori.id,
+              startDate:
+                startDateEndDate?.startDate ??
+                startOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
+              endDate:
+                startDateEndDate?.endDate ??
+                endOfDay(format(new Date(), "yyyy-MM-dd")).toString(),
+              sortOmzet,
+              sortLaba,
+              sortQty,
+            });
+          }
+        },
         enabled: kategori.id !== 0,
         retry: false,
         refetchOnWindowFocus: false,
