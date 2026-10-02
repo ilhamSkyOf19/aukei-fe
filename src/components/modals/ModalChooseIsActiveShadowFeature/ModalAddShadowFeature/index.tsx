@@ -1,14 +1,10 @@
 import type { FC, RefObject } from "react";
 import { HatGlasses } from "lucide-react";
-import type {
-  CreateShadowFeatureType,
-  ResponseShadowFeatureType,
-} from "../../../../models/shadowFeature.model";
+import type { ResponseShadowFeatureType } from "../../../../models/shadowFeature.model";
 import useModalAddShadowFeature from "./useModalAddShadowFeature";
 import TitleModalFormulir from "../../../ui/TitleModalFormulir";
 import { cn } from "../../../../utils/cn";
 import InputTextNonIcon from "../../../inputs/InputTextNonIcon";
-import InputNumber from "../../../inputs/InputNumber";
 import ButtonCloseText from "../../../ui/button/ButtonCloseText";
 import ButtonText from "../../../ui/button/ButtonText";
 
@@ -37,7 +33,6 @@ const ModalAddShadowFeature: FC<Props> = ({
     register,
     isDirty,
     isPendingAddShadowFeature,
-    nilaiController,
   } = useModalAddShadowFeature({
     id,
     data,
@@ -76,15 +71,6 @@ const ModalAddShadowFeature: FC<Props> = ({
               name="nama"
               placeholder={`Masukan nama nilai`}
               errorMessage={errors.nama?.message}
-            />
-
-            {/* input nilai */}
-            <InputNumber<CreateShadowFeatureType>
-              controller={nilaiController}
-              label="Nilai Potongan (%)"
-              required
-              name="nilai"
-              placeholder="Masukan Nilai"
             />
 
             {/* action */}

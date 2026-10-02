@@ -1,9 +1,7 @@
 import { useController, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import type { CreateShadowTransactionType } from "../../../models/shadowTransaction.model";
 import { ShadowTransactionValidation } from "../../../validations/shadowTransaction.validation";
-import { ShadowTransactionServices } from "../../../services/shadowTransaction.service";
 
 const useModalShadowTransaction = (params: {
   handleCloseModal: () => void;
@@ -11,10 +9,10 @@ const useModalShadowTransaction = (params: {
   shadowFeatureId?: number;
 }) => {
   // get params
-  const { handleCloseModal, handleSetToast, shadowFeatureId } = params;
+  const { shadowFeatureId } = params;
 
   // use form
-  const { handleSubmit, reset, control, setValue } = useForm<
+  const { handleSubmit, control, setValue } = useForm<
     Pick<CreateShadowTransactionType, "startDate" | "endDate">
   >({
     resolver: zodResolver(ShadowTransactionValidation.CREATE),
@@ -50,28 +48,6 @@ const useModalShadowTransaction = (params: {
     setValue("endDate", params.endDate);
   };
 
-  //   mutation
-  const {
-    mutateAsync: handleMutateAddShadowTransaction,
-    isPending: isPendingAddShadowTransaction,
-  } = useMutation({
-    mutationFn: (data: CreateShadowTransactionType) => {
-      return ShadowTransactionServices.create(data);
-    },
-    onSuccess: () => {
-      // close modal
-      handleCloseModal();
-
-      // reset
-      reset();
-
-      handleSetToast("created_shadow_transaction");
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
-
   //   on submit
   const onSubmit = async (
     data: Pick<CreateShadowTransactionType, "startDate" | "endDate">,
@@ -79,10 +55,7 @@ const useModalShadowTransaction = (params: {
     try {
       if (!shadowFeatureId) return;
 
-      await handleMutateAddShadowTransaction({
-        ...data,
-        shadowFeatureId,
-      });
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -91,7 +64,7 @@ const useModalShadowTransaction = (params: {
   return {
     handleSubmit,
     onSubmit,
-    isPendingAddShadowTransaction,
+    isPendingAddShadowTransaction: false,
 
     startDateController,
     endDateController,

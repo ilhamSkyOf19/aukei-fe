@@ -11,15 +11,10 @@ import usePrintInvoiceKredit from "../../../hooks/usePrintInvoiceKredit";
 import usePrintTempoPayment from "../../../hooks/usePrintInvoiceTempoPayment";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { useToastAnimation } from "../../../hooks/useToast";
-import { useShadowStore } from "../../../stores/shadowStore";
-import { ShadowTempoServices } from "../../../services/shadowTempo.service";
 
 const useInstallmentsDetail = () => {
   // alert
   const { alert, handleSetAlert } = useAlertAnimation();
-
-  // get shadow active
-  const { shadowIsActive, shadowId } = useShadowStore((state) => state);
 
   // toast
   const { toast, handleSetToast } = useToastAnimation();
@@ -54,16 +49,9 @@ const useInstallmentsDetail = () => {
     useQuery({
       queryKey: ["installments-detail", validatedId],
       queryFn: () => {
-        if (shadowId && shadowIsActive) {
-          return ShadowTempoServices.findWithInstallmenstByTempoId({
-            shadowId,
-            id: validatedId!,
-          });
-        } else {
-          return TempoService.findWithInstallmenstByTempoId({
-            id: validatedId!,
-          });
-        }
+        return TempoService.findWithInstallmenstByTempoId({
+          id: validatedId!,
+        });
       },
       enabled: !!validatedId,
       retry: false,

@@ -49,6 +49,7 @@ type Props = {
   handleSetAlert?: (value: string) => void;
   showShortTagihan?: boolean;
   maxHeightForScroll?: boolean;
+  notRedirectToDetailPayment?: boolean;
 };
 const RowJadwaTempo: FC<Props> = ({
   aksi,
@@ -67,6 +68,7 @@ const RowJadwaTempo: FC<Props> = ({
   handleSetAlert,
   handleSetToast,
   maxHeightForScroll,
+  notRedirectToDetailPayment,
 }) => {
   const {
     handleDownloadInvoiceKreditPdf,
@@ -137,18 +139,19 @@ const RowJadwaTempo: FC<Props> = ({
 
         {/* transaction detail */}
         {(currentPathname.includes("transaksi") ||
-          currentPathname.includes("kasir")) && (
-          <button
-            type="button"
-            onClick={() => navigate(`/dashboard/kredit/${tempoId}`)}
-            className="hidden md:flex flex-row justify-start items-center gap-1.5 hover:underline transition-all duration-150 ease-in-out"
-          >
-            <WalletIcon className="size-3.5 text-info" />
-            <span className="text-[0.7rem] text-info">
-              Lihat Detail Pembayaran
-            </span>
-          </button>
-        )}
+          currentPathname.includes("kasir")) &&
+          !notRedirectToDetailPayment && (
+            <button
+              type="button"
+              onClick={() => navigate(`/dashboard/kredit/${tempoId}`)}
+              className="hidden md:flex flex-row justify-start items-center gap-1.5 hover:underline transition-all duration-150 ease-in-out"
+            >
+              <WalletIcon className="size-3.5 text-info" />
+              <span className="text-[0.7rem] text-info">
+                Lihat Detail Pembayaran
+              </span>
+            </button>
+          )}
 
         {handleCustomTanggal && (
           <button

@@ -1,30 +1,17 @@
 import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
+import type { ResponsePelangganWithRiwayatAndMetaType } from "../models/pelanggan.model";
 import type {
   CreateShadowCutTransactionType,
-  CreateShadowTransactionType,
   ResponseCreateShadowTransactionType,
 } from "../models/shadowTransaction.model";
 import type {
   ResponseRiwayatTransactionType,
   ResponseRiwayatTransaksiPelangganType,
-  ResponseTransactionType,
 } from "../models/transaction.model";
 import type { ResponseStructure } from "../types/response.type";
 
 export class ShadowTransactionServices {
-  // create
-  static async create(
-    data: CreateShadowTransactionType,
-  ): Promise<ResponseStructure<ResponseCreateShadowTransactionType | null>> {
-    // call api
-    const result = await instanceAxios.post<
-      ResponseStructure<ResponseCreateShadowTransactionType | null>
-    >(`/shadow-transaction/`, data);
-
-    return result.data;
-  }
-
   // cut all
   static async cutAll(
     data: CreateShadowCutTransactionType,
@@ -57,21 +44,6 @@ export class ShadowTransactionServices {
     return result.data;
   }
 
-  // find shadow transaction by transaction id
-  static async findShadowTransactionByTransactionId(params: {
-    transactionId: number;
-    shadowId: number;
-  }): Promise<ResponseStructure<ResponseTransactionType | null>> {
-    // call api
-    const result = await instanceAxios.get<
-      ResponseStructure<ResponseTransactionType | null>
-    >(
-      `/shadow-transaction/transaction/${params.transactionId}/shadow/${params.shadowId}`,
-    );
-
-    return result.data;
-  }
-
   // find shadow transaction by pelanggan and shadow id
   static async findRiwayatTransaksiCompletedNotTempoByPelanggan(params: {
     shadowId: number;
@@ -91,6 +63,23 @@ export class ShadowTransactionServices {
         params: params.query,
       },
     );
+
+    return result.data;
+  }
+
+  // find all with riwayat
+  static async findAllWithRiwayat(params: {
+    query: PaginationType;
+    shadowId: number;
+  }): Promise<
+    ResponseStructure<ResponsePelangganWithRiwayatAndMetaType | null>
+  > {
+    // call api
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponsePelangganWithRiwayatAndMetaType | null>
+    >(`/shadow-transaction/pelanggan-with-riwayat/shadow/${params.shadowId}`, {
+      params: params.query,
+    });
 
     return result.data;
   }

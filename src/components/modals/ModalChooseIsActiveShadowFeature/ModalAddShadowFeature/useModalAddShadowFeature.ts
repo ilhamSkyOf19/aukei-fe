@@ -1,4 +1,4 @@
-import { useController, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -29,7 +29,6 @@ const useModalAddShadowFeature = (params: {
     handleSubmit,
     formState: { errors, isDirty },
     reset,
-    control,
   } = useForm<CreateShadowFeatureType>({
     resolver: zodResolver(ShadowFeatureValidation.CREATE),
   });
@@ -38,15 +37,8 @@ const useModalAddShadowFeature = (params: {
   useEffect(() => {
     reset({
       nama: data?.nama ?? undefined,
-      nilai: data?.nilai ?? undefined,
     });
   }, [data, reset]);
-
-  //   nilai controller
-  const nilaiController = useController({
-    control,
-    name: "nilai",
-  });
 
   //   mutation
   const {
@@ -91,7 +83,6 @@ const useModalAddShadowFeature = (params: {
     onSubmit,
     isPendingAddShadowFeature,
     isDirty,
-    nilaiController,
   };
 };
 

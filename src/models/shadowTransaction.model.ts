@@ -4,6 +4,12 @@ export type CreateShadowTransactionType = {
   endDate: string;
 };
 
+export type CreateShadowCutTransactionType = {
+  shadowFeatureId: number;
+  periode: number;
+  customOmzet: number;
+};
+
 export type ShadowTransactionDetailResponseType = {
   id: number;
   transactionDetailId: number;
@@ -119,8 +125,36 @@ export type ResponseCreateShadowTransactionType = {
   transactions: ShadowTransactionResponseType[];
 };
 
-export type CreateShadowCutTransactionType = {
+export type CandidateTransaction = {
+  id: number;
+  completedAt: Date | null;
+  omzet: number;
+};
+
+export type SelectedTransaction = CandidateTransaction;
+
+export type ShadowTransactionSelectionResponseType = {
+  id: number;
+  shadowFeatureId: number;
+  transactionId: number;
+  createdAt: Date;
+};
+
+export type CustomShadowTransactionResponseType = {
   shadowFeatureId: number;
   periode: number;
-  customOmzet: number;
+
+  targetOmzet: number;
+  actualOmzet: number;
+  selisihOmzet: number;
+
+  actualModal: number;
+  actualLaba: number;
+
+  totalTransaction: number;
+  totalAvailable: number;
+  totalSelected: number;
+  totalSkipped: number;
+
+  transactions: ShadowTransactionSelectionResponseType[];
 };

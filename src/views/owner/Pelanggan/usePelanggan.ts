@@ -10,10 +10,15 @@ import useDeletePelanggan from "../../../hooks/useDeletePelanggan";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 import { useNavigate } from "react-router-dom";
+import { useShadowStore } from "../../../stores/shadowStore";
+import { ShadowTransactionServices } from "../../../services/shadowTransaction.service";
 
 const usePelanggan = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  // get shadow
+  const { shadowIsActive, shadowId } = useShadowStore((state) => state);
 
   // Daftar pelanggan yang dicentang untuk aksi hapus massal
   const [choosePelanggan, setChoosePelanggan] = useState<
@@ -92,14 +97,27 @@ const usePelanggan = () => {
     isLoading: isLoadingPelanggan,
     isFetching: isFetchingPelanggan,
   } = useQuery({
-    queryKey: ["pelanggan", search, sort, page, limit],
-    queryFn: () =>
-      PelangganServices.findAllWithRiwayat({
-        ...(search && { search }),
-        ...(sort && { sort }),
-        ...(limit && { limit }),
-        ...(page && { page }),
-      }),
+    queryKey: ["pelanggan", search, sort, page, limit, shadowId],
+    queryFn: () => {
+      if (shadowIsActive && shadowId) {
+        return ShadowTransactionServices.findAllWithRiwayat({
+          shadowId,
+          query: {
+            ...(search && { search }),
+            ...(sort && { sort }),
+            ...(limit && { limit }),
+            ...(page && { page }),
+          },
+        });
+      } else {
+        return PelangganServices.findAllWithRiwayat({
+          ...(search && { search }),
+          ...(sort && { sort }),
+          ...(limit && { limit }),
+          ...(page && { page }),
+        });
+      }
+    },
     retry: false,
     refetchOnWindowFocus: false,
   });

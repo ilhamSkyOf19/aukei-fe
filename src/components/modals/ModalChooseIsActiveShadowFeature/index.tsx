@@ -115,7 +115,7 @@ const ModalChooseIsActiveShadowFeature: FC<Props> = ({
                     variablesIsActive.req.activedAt === true)
                 }
                 className={cn(
-                  "w-28 lg:w-30 gap-2.5 rounded-2xl md:rounded-xl flex flex-col justify-between items-center p-1.5  ",
+                  "w-28 lg:w-30 gap-2.5 rounded-2xl md:rounded-xl flex flex-col justify-center items-center p-1.5 h-16 ",
                   item.isActive === true
                     ? "bg-custom-primary text-text-custom-primary"
                     : "hover:border-custom-primary hover:-translate-y-0.5 transition-all duration-150 ease-in-out text-base-content border border-base-content",
@@ -134,10 +134,7 @@ const ModalChooseIsActiveShadowFeature: FC<Props> = ({
                   </div>
                 ) : (
                   <>
-                    <span className="text-lg font-semibold">{item.nilai}%</span>
-                    <span className="text-[0.625rem] lg:text-xs">
-                      Potongan {item.nilai}%
-                    </span>
+                    <span className="text-sm font-semibold">{item.nama}</span>
                   </>
                 )}
               </button>

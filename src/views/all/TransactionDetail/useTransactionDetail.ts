@@ -13,14 +13,9 @@ import { useStepStore } from "../../../stores/stepStore";
 import { useToastAnimation } from "../../../hooks/useToast";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { getPreviousPath } from "../../../helpers/previousPath";
-import { useShadowStore } from "../../../stores/shadowStore";
-import { ShadowTransactionServices } from "../../../services/shadowTransaction.service";
 
 const useTransactionDetail = (params: { transactionId?: number }) => {
   const { transactionId: transactionIdProps } = params;
-
-  // get shadow id
-  const { shadowId, shadowIsActive } = useShadowStore((state) => state);
 
   // handle steps
   const { setStep: handleSteps, step } = useStepStore((state) => state);
@@ -74,19 +69,10 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
 
   // query
   const { data: dataTransaction, isLoading: isLoadingTransaction } = useQuery({
-    queryKey: ["transaction", validatedId, shadowId],
+    queryKey: ["transaction", validatedId],
     queryFn: () => {
       if (validatedId) {
-        if (shadowId && shadowIsActive && !transactionIdProps) {
-          return ShadowTransactionServices.findShadowTransactionByTransactionId(
-            {
-              transactionId: validatedId!,
-              shadowId,
-            },
-          );
-        } else {
-          return TransactionServices.findById({ id: validatedId! });
-        }
+        return TransactionServices.findById({ id: validatedId! });
       }
     },
     retry: false,

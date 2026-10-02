@@ -340,6 +340,7 @@ const ModalTempoPayment: FC<Props> = ({
 
           {/* jadwal tempo */}
           <RowJadwaTempo
+            notRedirectToDetailPayment
             maxHeightForScroll
             showShortTagihan
             dataTempo={dataTempo}
