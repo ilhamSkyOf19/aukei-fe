@@ -726,7 +726,7 @@ const ProdukDetail = () => {
                           )}
                         >
                           {(dataProduk?.data?.hargaPpn ?? 0) > 0
-                            ? formatNumber(dataProduk?.data?.hargaPpn ?? 0)
+                            ? formatRupiah(dataProduk?.data?.hargaPpn ?? 0)
                             : "Belum dibuat"}
                         </span>
                       </div>

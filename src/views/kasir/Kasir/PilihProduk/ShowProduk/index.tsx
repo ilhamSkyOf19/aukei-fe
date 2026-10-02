@@ -69,7 +69,7 @@ const ShowProduk: FC<Props> = ({
           </div>
 
           {/* filter */}
-          <div className="w-full flex flex-row justify-end items-start flex-wrap">
+          <div className="w-full md:w-auto flex flex-row justify-end items-start flex-wrap">
             <FilterKategori
               setKategori={handleKategori}
               customWidth="w-full md:w-50"
@@ -130,9 +130,10 @@ const ShowProduk: FC<Props> = ({
                     <div className="w-full h-100 rounded-xl flex flex-row justify-center items-center overflow-hidden relative">
                       {/* stok */}
                       <div className="px-2.5 h-5 flex flex-row justify-center items-center absolute bg-custom-primary rounded-full top-2 right-2">
-                        <span className="text-[0.625rem] font-medium text-custom-secondary">
-                          {formatNumber(item.stok)} STOK
-                        </span>
+                        <div className="flex flex-row justify-start items-center gap-1 text-[0.625rem] font-medium text-custom-secondary">
+                          <span>{formatNumber(item.stok)} </span>
+                          <span className="hidden md:block">STOK</span>
+                        </div>
                       </div>
 
                       <img

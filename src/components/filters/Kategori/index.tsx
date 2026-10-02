@@ -36,7 +36,9 @@ const FilterKategori: FC<Props> = ({
       )}
 
       {/* with icon */}
-      {withIcon && <Settings2 className="size-8 stroke-1 text-base-content" />}
+      {withIcon && (
+        <Settings2 className="hidden md:block size-8 stroke-1 text-base-content" />
+      )}
       <DropDown
         handleChange={(e) => setKategori(e.target.value)}
         listChoose={[

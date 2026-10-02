@@ -24,6 +24,7 @@ import { useAlertAnimation } from "../../../../hooks/useAlert";
 import usePrintInvoiceTransaksi from "../../../../hooks/usePrintInvoiceTransaksi";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import usePrintInvoiceKirimBarang from "../../../../hooks/usePrintInvoiceKirimBarang";
+import { isMoreThanDays } from "../../../../helpers/helpers";
 
 const LOCAL_STORAGE_DI_BAYAR_KEY = "di-bayar";
 
@@ -349,6 +350,10 @@ const useInformasiPembayaran = ({
     return navigate(`${currentPathname}/ubah-pembayaran`);
   };
 
+  const isExpired =
+    dataTransaction?.data?.completedAt &&
+    isMoreThanDays(dataTransaction?.data?.completedAt, 3);
+
   return {
     isOpenHistory,
     setIsOpenHistory,
@@ -399,6 +404,8 @@ const useInformasiPembayaran = ({
     tempoDpPayment,
 
     handleRedirectPembayaran,
+
+    isExpired,
   };
 };
 

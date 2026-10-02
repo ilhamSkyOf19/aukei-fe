@@ -157,7 +157,7 @@ const useProdukDetail = () => {
         break;
 
       case "modalRataRata":
-        reset({ stokMinimum: dataProduk.data.hargaModalRataRata });
+        reset({ hargaModalRataRata: dataProduk.data.hargaModalRataRata });
         break;
     }
   }, [keyUpdate, dataProduk, reset]);
@@ -269,7 +269,7 @@ const useProdukDetail = () => {
       }
 
       // harga modal rata rata
-      if (data.hargaModalRataRata) {
+      if (data.hargaModalRataRata !== undefined) {
         formData.append(
           "hargaModalRataRata",
           data.hargaModalRataRata.toString(),

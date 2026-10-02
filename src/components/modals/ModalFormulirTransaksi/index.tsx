@@ -82,14 +82,14 @@ const ModalFormulirTransaksi: FC<Props> = ({
 
           {/* data  */}
           <div className="w-full flex flex-col md:flex-row justify-start items-start gap-4">
-            <div className="flex-3 flex flex-col justify-start items-start gap-4 mt-4">
+            <div className="flex-3 w-full flex flex-col justify-start items-start gap-4 mt-4">
               {/* img */}
               {data?.img && (
                 <div className="w-full flex justify-center items-center">
                   <img
                     src={data.img}
                     alt="wall panel"
-                    className="w-full h-60 object-contain"
+                    className="w-full h-40 md:h-60 object-contain"
                     loading="lazy"
                   />
                 </div>
@@ -97,24 +97,25 @@ const ModalFormulirTransaksi: FC<Props> = ({
 
               {/* data */}
               <div className="w-full flex flex-col justify-start items-start gap-2.5">
-                <div className="w-full flex flex-row justify-around items-stretch gap-2.5 pb-4 border-b border-base-content/10">
+                <div className="w-full flex flex-col md:flex-row justify-around items-stretch gap-2.5 pb-4 border-b border-base-content/10">
                   {/* nama produk */}
                   <Label label={`Nama Produk`} value={data?.nama || ""} small />
-
-                  {/* kode produk */}
-                  <Label
-                    label={`Kode Produk`}
-                    value={data?.kode || "-"}
-                    small
-                  />
-                  <Label
-                    label={`Stok Produk`}
-                    value={data?.stok.toString() || ""}
-                    small
-                  />
+                  <div className="w-full md:w-[200%] flex flex-row justify-start items-stretch gap-2.5">
+                    {/* kode produk */}
+                    <Label
+                      label={`Kode Produk`}
+                      value={data?.kode || "-"}
+                      small
+                    />
+                    <Label
+                      label={`Stok Produk`}
+                      value={data?.stok.toString() || ""}
+                      small
+                    />
+                  </div>
                 </div>
 
-                <div className="w-full flex flex-row justify-around items-stretch gap-2.5">
+                <div className="w-full flex flex-col md:flex-row justify-around items-stretch gap-2.5">
                   {/* harga jual */}
                   <Label
                     label={`Hrg. Jual`}
@@ -124,19 +125,23 @@ const ModalFormulirTransaksi: FC<Props> = ({
                     small
                   />
 
-                  {/* harga jual */}
-                  <Label
-                    label={`Hrg. Jual + PPN`}
-                    value={formatRupiah(data?.hargaPpn ?? "")}
-                    small
-                  />
+                  <div className="w-full md:w-[200%] flex flex-row justify-start items-stretch gap-2.5">
+                    {/* harga jual */}
+                    <Label
+                      label={`Hrg. Jual + PPN`}
+                      value={formatRupiah(data?.hargaPpn ?? "")}
+                      small
+                    />
 
-                  {/* harga terakhir transaksi */}
-                  <Label
-                    label={`Hrg. Terakhir Transaksi`}
-                    value={formatRupiah(data?.hargaJualTerakhirTransaksi ?? "")}
-                    small
-                  />
+                    {/* harga terakhir transaksi */}
+                    <Label
+                      label={`Hrg. Terakhir Transaksi`}
+                      value={formatRupiah(
+                        data?.hargaJualTerakhirTransaksi ?? "",
+                      )}
+                      small
+                    />
+                  </div>
                 </div>
               </div>
             </div>

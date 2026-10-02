@@ -87,11 +87,17 @@ const useFilterState = (defaultStartDate?: {
     setSortTotalNilaiTransaksi(undefined);
   };
 
+  // handle limit riset page
+  const handleLimit = (value: string) => {
+    setLimit(value);
+    setPage(undefined);
+  };
+
   return {
     sort,
     setSort,
     limit,
-    setLimit,
+    setLimit: handleLimit,
     page,
     setPage,
     search,

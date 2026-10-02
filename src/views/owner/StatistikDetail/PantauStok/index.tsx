@@ -49,6 +49,10 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
     handleRefresh,
 
     isLoading,
+
+    limit,
+
+    page,
   } = usePantauStok({ pilihan, handleSetAlert, handleSetToast });
   return (
     <div className="w-full flex flex-col justify-start items-start">
@@ -160,6 +164,7 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
           {/* head */}
           <thead>
             <tr className="h-12 bg-base-200 text-[0.7rem]">
+              <th>No</th>
               <th>Foto</th>
               <th>Kode</th>
               <th>Nama</th>
@@ -186,6 +191,7 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
                 <Fragment key={produk.id}>
                   {index > 0 && index % 25 === 0 && (
                     <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                      <th>No</th>
                       <th>Foto</th>
                       <th>Kode</th>
                       <th>Nama</th>
@@ -204,6 +210,9 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
                     )}
                   >
                     {/* foto */}
+                    <th>
+                      {index + 1 + (Number(page ?? 1) - 1) * Number(limit ?? 8)}
+                    </th>
                     <td>
                       <div className="flex items-center gap-3">
                         <div className="avatar">

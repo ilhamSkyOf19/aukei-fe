@@ -87,7 +87,7 @@ export default function InputPrice<T extends FieldValues = any>({
           onChange={(e) => {
             const raw = unformatRupiah(e.target.value);
 
-            const value = maxValue(raw, max ?? 10000000);
+            const value = maxValue(raw, max ?? 100000000000);
 
             setDisplayValue(formatNumber(value));
 

@@ -29,6 +29,17 @@ export class ShadowFeatureServices {
     return result.data;
   }
 
+  static async updateShowNavigation(params: {
+    id: number;
+    req: { showNavigation: boolean };
+  }): Promise<ResponseStructure<ResponseShadowFeatureType | null>> {
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponseShadowFeatureType | null>
+    >(`/shadow-feature/${params.id}/show-navigation`, params.req);
+
+    return result.data;
+  }
+
   //   find is active
   static async findIsActive(): Promise<
     ResponseStructure<ResponseShadowFeatureType | null>

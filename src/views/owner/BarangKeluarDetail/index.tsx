@@ -302,7 +302,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                     }
                     textColor={
                       isStatusDraft || isStatusRejected
-                        ? "text-custom-secondary"
+                        ? "text-text-custom-secondary"
                         : "text-primary-white"
                     }
                     label={

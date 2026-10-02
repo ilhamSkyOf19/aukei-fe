@@ -77,10 +77,13 @@ const DaftarDetailProduk: FC<Props> = ({
     handleUbahProduk,
 
     isPendingTransactionOld,
+
+    isExpired,
   } = useDaftarDetailProduk({
     transactionId: dataTransaction?.data?.id,
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
+    completedAt: dataTransaction?.data?.completedAt,
   });
 
   return (
@@ -445,16 +448,30 @@ const DaftarDetailProduk: FC<Props> = ({
           </div>
         )}
       {/* alert label */}
-      <AlertLabel
-        isLoading={isLoadingTransaction}
-        message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur."
-      />
+      {dataTransaction?.data?.metodePembayaran !== PAYMENT_METHOD_TYPE.TEMPO ? (
+        <>
+          <AlertLabel
+            isLoading={isLoadingTransaction}
+            message="Quantity retur merupakan total barang yang telah memperoleh persetujuan owner dan berhasil diproses sebagai retur."
+          />
+
+          <AlertLabel
+            isLoading={isLoadingTransaction}
+            message="Transaksi hanya dapat diperbarui dalam waktu 3 hari sejak transaksi selesai."
+          />
+        </>
+      ) : (
+        <AlertLabel
+          isLoading={isLoadingTransaction}
+          message="Mohon maaf, fitur ubah transaksi dan retur belum tersedia untuk metode pembayaran tempo. Silahkan tunggu untuk update selanjutnya."
+        />
+      )}
       {/* button retur */}
       {!isLoadingTransaction && (
         <div
           className={cn(
             "w-full flex flex-row items-end gap-2.5",
-            role === ROLE_INTERNAL_TYPE.KASIR
+            role === ROLE_INTERNAL_TYPE.KASIR && !isExpired
               ? "justify-between"
               : "justify-end",
           )}
@@ -462,7 +479,9 @@ const DaftarDetailProduk: FC<Props> = ({
           {role === ROLE_INTERNAL_TYPE.KASIR &&
             !isPageBookingKasir &&
             dataTransaction?.data?.metodePembayaran !==
-              PAYMENT_METHOD_TYPE.TEMPO && (
+              PAYMENT_METHOD_TYPE.TEMPO &&
+            dataTransaction?.data?.completedAt &&
+            !isExpired && (
               <ButtonWithIcon
                 label="Ubah Transaksi"
                 icon={PencilLine}
@@ -475,28 +494,30 @@ const DaftarDetailProduk: FC<Props> = ({
                 customWidth="flex-3 md:flex-none"
               />
             )}
-          {dataTransaction?.data?.status !==
-            TRANSACTION_STATUS_TYPE.BOOKING && (
-            <div className="flex flex-row justify-end items-end gap-2.5">
-              <ButtonWithIcon
-                label="Lihat Daftar Retur Barang"
-                icon={Eye}
-                handleBtn={() =>
-                  handleDaftarReturBarang(dataTransaction?.data?.id)
-                }
-                customWidth="flex-3 md:flex-none"
-              />
 
-              <ButtonWithIcon
-                label="Retur Barang"
-                icon={Undo}
-                bgColor="bg-error"
-                textColor="text-primary-white"
-                handleBtn={() => handleToRetur()}
-                customWidth="flex-2 md:flex-none"
-              />
-            </div>
-          )}
+          {dataTransaction?.data?.status !== TRANSACTION_STATUS_TYPE.BOOKING &&
+            dataTransaction?.data?.metodePembayaran !==
+              PAYMENT_METHOD_TYPE.TEMPO && (
+              <div className="flex flex-row justify-end items-end gap-2.5">
+                <ButtonWithIcon
+                  label="Lihat Daftar Retur Barang"
+                  icon={Eye}
+                  handleBtn={() =>
+                    handleDaftarReturBarang(dataTransaction?.data?.id)
+                  }
+                  customWidth="flex-3 md:flex-none"
+                />
+
+                <ButtonWithIcon
+                  label="Retur Barang"
+                  icon={Undo}
+                  bgColor="bg-error"
+                  textColor="text-primary-white"
+                  handleBtn={() => handleToRetur()}
+                  customWidth="flex-2 md:flex-none"
+                />
+              </div>
+            )}
         </div>
       )}
       {isExistDataKebutuhanBarang &&

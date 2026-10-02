@@ -40,8 +40,8 @@ const SideBarRiwayatPengajuan = () => {
           onClick={handleOpen}
           className="drawer-button h-10 md:h-10.5 rounded-xl bg-custom-primary shadow-xs flex flex-row justify-start items-center gap-2 px-3 hover-overlay"
         >
-          <Eye className="size-4 text-custom-secondary" />
-          <span className="text-xs font-medium text-custom-secondary">
+          <Eye className="size-4 text-text-custom-secondary" />
+          <span className="text-xs font-medium text-text-custom-secondary">
             Lihat
           </span>
         </button>

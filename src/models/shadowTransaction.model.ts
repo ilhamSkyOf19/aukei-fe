@@ -118,3 +118,9 @@ export type ResponseCreateShadowTransactionType = {
 
   transactions: ShadowTransactionResponseType[];
 };
+
+export type CreateShadowCutTransactionType = {
+  shadowFeatureId: number;
+  periode: number;
+  customOmzet: number;
+};

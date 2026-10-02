@@ -147,7 +147,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                 {/* avatar */}
                 <div className="avatar avatar-placeholder">
                   <div className="bg-custom-primary text-neutral-content w-10 rounded-full">
-                    <span className="text-base lg:text-sm text-custom-secondary font-semibold uppercase">
+                    <span className="text-base lg:text-sm text-text-custom-secondary font-semibold uppercase">
                       {highlightName(pengguna?.nama ?? "")}
                     </span>
                   </div>
@@ -178,7 +178,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                   {/* avatar */}
                   <div className="avatar avatar-placeholder">
                     <div className="bg-custom-primary text-neutral-content w-10 rounded-full">
-                      <span className="text-base text-custom-secondary uppercase   font-medium">
+                      <span className="text-base text-text-custom-secondary uppercase   font-medium">
                         {highlightName(pengguna?.nama ?? "")}
                       </span>
                     </div>

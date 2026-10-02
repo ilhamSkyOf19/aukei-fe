@@ -1,6 +1,7 @@
 import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
+  CreateShadowCutTransactionType,
   CreateShadowTransactionType,
   ResponseCreateShadowTransactionType,
 } from "../models/shadowTransaction.model";
@@ -20,6 +21,18 @@ export class ShadowTransactionServices {
     const result = await instanceAxios.post<
       ResponseStructure<ResponseCreateShadowTransactionType | null>
     >(`/shadow-transaction/`, data);
+
+    return result.data;
+  }
+
+  // cut all
+  static async cutAll(
+    data: CreateShadowCutTransactionType,
+  ): Promise<ResponseStructure<ResponseCreateShadowTransactionType | null>> {
+    // call api
+    const result = await instanceAxios.post<
+      ResponseStructure<ResponseCreateShadowTransactionType | null>
+    >(`/shadow-transaction/cut-all`, data);
 
     return result.data;
   }

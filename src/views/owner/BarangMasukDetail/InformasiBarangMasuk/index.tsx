@@ -312,7 +312,7 @@ const InformasiBarangMasuk: FC<Props> = ({
             </div>
 
             {/* total nilai */}
-            {totalNilai && (
+            {totalNilai !== undefined && (
               <div className="w-full flex flex-row justify-between items-start gap-3 mt-6">
                 {/* icon */}
                 <div className="h-full flex flex-row justify-start items-start">

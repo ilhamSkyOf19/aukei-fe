@@ -15,10 +15,7 @@ const ButtonUpdateTable: FC<Props> = ({
   handleClick,
 }) => {
   return (
-    <div
-      className="tooltip z-10"
-      data-tip={!noTip ? (customDataTip ?? "ubah") : ""}
-    >
+    <div className="tooltip" data-tip={!noTip ? (customDataTip ?? "ubah") : ""}>
       <button
         type="button"
         className={cn(

@@ -157,7 +157,7 @@ const LaporanSisa: FC = () => {
                       "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                     )}
                   >
-                    <td>{index + 1}</td>
+                    <th>{index + 1}</th>
 
                     <td className="font-semibold">{item.namaKategori}</td>
 

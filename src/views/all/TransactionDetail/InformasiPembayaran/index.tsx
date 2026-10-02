@@ -110,14 +110,13 @@ const InformasiPembayaran: FC<Props> = ({
     tempoDpPayment,
 
     handleRedirectPembayaran,
+
+    isExpired,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
     siapKirim,
   });
-
-  console.log(transactionSummary.totalDiBayar);
-  console.log(transactionSummary.totalPembayaran);
 
   return (
     <div className="w-full md:w-1/2 flex-1 flex flex-col justify-start items-start gap-2.5">
@@ -149,7 +148,10 @@ const InformasiPembayaran: FC<Props> = ({
 
           {dataTransaction?.data?.status ===
             TRANSACTION_STATUS_TYPE.COMPLETED &&
-            pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+            pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
+            !isExpired &&
+            dataTransaction?.data?.metodePembayaran !==
+              PAYMENT_METHOD_TYPE.TEMPO && (
               <ButtonWithIcon
                 customHeight="h-8"
                 icon={PencilLine}
@@ -339,7 +341,7 @@ const InformasiPembayaran: FC<Props> = ({
                   <span className="text-xs text-base-content/70 font-medium">
                     Uang Muka Tempo
                   </span>
-                  <span className="text-[0.7rem] font-medium text-base-content">
+                  <span className="text-xs md:text-[0.7rem] font-medium text-base-content">
                     {dataTempo?.uangMuka
                       ? formatRupiah(dataTempo.uangMuka)
                       : formatRupiah(0)}
@@ -351,7 +353,7 @@ const InformasiPembayaran: FC<Props> = ({
                   <span className="text-xs text-base-content/70 font-medium">
                     Metode Pembayaran Uang Muka
                   </span>
-                  <span className="text-[0.7rem] font-medium text-base-content">
+                  <span className="text-xs md:text-[0.7rem] font-medium text-base-content">
                     {tempoDpPayment?.metodePembayaran ?? "-"}
                   </span>
                 </div>
@@ -365,7 +367,7 @@ const InformasiPembayaran: FC<Props> = ({
                         Dibayar
                       </span>
 
-                      <span className="text-[0.7rem] font-medium text-base-content">
+                      <span className="text-xs md:text-[0.7rem] font-medium text-base-content">
                         {formatRupiah(tempoDpPayment?.diBayar ?? 0)}
                       </span>
                     </div>
@@ -375,7 +377,7 @@ const InformasiPembayaran: FC<Props> = ({
                         Kembalian
                       </span>
 
-                      <span className="text-[0.7rem] font-medium text-base-content">
+                      <span className="text-xs md:text-[0.7rem] font-medium text-base-content">
                         {formatRupiah(tempoDpPayment?.kembalian ?? 0)}
                       </span>
                     </div>
@@ -388,7 +390,7 @@ const InformasiPembayaran: FC<Props> = ({
                 <span className="text-xs text-base-content/70 font-medium">
                   Tenor
                 </span>
-                <span className="text-[0.7rem] font-medium text-base-content">
+                <span className="text-xs md:text-[0.7rem] font-medium text-base-content">
                   {dataTempo?.periode
                     ? `${dataTempo.periode * dataTempo.jumlahCicilan} Hari / ${getWeekFromPeriod(
                         dataTempo.periode * dataTempo.jumlahCicilan,
@@ -402,7 +404,7 @@ const InformasiPembayaran: FC<Props> = ({
                 <span className="text-xs text-base-content/70 font-medium">
                   Jumlah Cicilan
                 </span>
-                <span className="text-[0.7rem] font-medium text-base-content">
+                <span className="text-xs md:text-[0.7rem] font-medium text-base-content">
                   {dataTempo?.periode ? `${dataTempo.jumlahCicilan} Kali` : "-"}
                 </span>
               </div>
@@ -436,14 +438,14 @@ const InformasiPembayaran: FC<Props> = ({
                         </div>
                         {/* tanggal */}
                         <div className="col-span-3 flex flex-row justify-start items-center">
-                          <span className="text-[0.625rem] font-semibold text-base-content">
+                          <span className="text-xs md:text-[0.625rem] font-semibold text-base-content">
                             {formatTanggalPanjang(item.jatuhTempo)}
                           </span>
                         </div>
 
                         {/* nominal */}
                         <div className="col-span-3 flex flex-row justify-end items-center pr-2.5">
-                          <span className="text-[0.625rem] font-semibold text-base-content">
+                          <span className="text-xs md:text-[0.625rem] font-semibold text-base-content">
                             {formatRupiah(item.nominal)}
                           </span>
                         </div>

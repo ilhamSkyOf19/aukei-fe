@@ -17,6 +17,7 @@ export interface ResponseShadowFeatureType {
   isActive: boolean;
   activedAt?: Date | null;
   deactivedAt?: Date | null;
+  showNavigation: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

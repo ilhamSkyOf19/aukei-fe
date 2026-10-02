@@ -75,7 +75,8 @@ const RingkasanKredit: FC<Props> = ({
             {/* jadwal cicilan */}
             <div className="w-full mt-4">
               <RowJadwaTempo
-                pelangganId={dataTransaction.data.pelanggan.id}
+                maxHeightForScroll
+                showShortTagihan
                 tempoId={dataTransaction?.data?.tempo?.id}
                 dataTempo={dataTransaction?.data?.tempo?.installments ?? []}
                 maxHeight="max-h-80"

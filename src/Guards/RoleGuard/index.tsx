@@ -6,9 +6,10 @@ import type { RoleInternalType } from "../../types/constant.type";
 type Props = {
   children: JSX.Element;
   allowedRoles: RoleInternalType[];
+  link?: string;
 };
 
-const RoleGuard: FC<Props> = ({ children, allowedRoles }) => {
+const RoleGuard: FC<Props> = ({ children, allowedRoles, link }) => {
   const pengguna = useAuthStore((s) => s.pengguna);
   const isInitialized = useAuthStore((s) => s.isInitialized);
 
@@ -24,7 +25,7 @@ const RoleGuard: FC<Props> = ({ children, allowedRoles }) => {
 
   // Role tidak sesuai
   if (!allowedRoles.includes(pengguna.role)) {
-    return <Navigate to="/404" replace />;
+    return <Navigate to={link ?? "/404"} replace />;
   }
 
   return children;

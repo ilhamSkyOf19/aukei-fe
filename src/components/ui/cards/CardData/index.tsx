@@ -67,9 +67,11 @@ type Props = {
     isLoading?: boolean;
   };
   handleSendMessage?: () => void;
+  showShortTagihan?: boolean;
 };
 const CardData: FC<Props> = ({
   nomorReferensi,
+  showShortTagihan,
   metodePembayaran,
   status,
   tanggal,
@@ -205,6 +207,13 @@ const CardData: FC<Props> = ({
               {formatTanggalLengkap(tanggal)}
             </span>
           )}
+
+          {tagihan && showShortTagihan && (
+            <span className="text-[0.625rem] font-medium mt-1">
+              {formatRupiah(tagihan)}
+            </span>
+          )}
+
           {pelanggan && (
             <span className="text-[0.625rem] text-base-content/80">
               {formatNumberPhone(pelanggan.noWa)}

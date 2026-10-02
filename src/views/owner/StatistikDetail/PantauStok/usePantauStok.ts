@@ -114,6 +114,10 @@ const usePantauStok = (params: {
     handleRefresh,
 
     isLoading,
+
+    page,
+
+    limit,
   };
 };
 

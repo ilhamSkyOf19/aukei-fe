@@ -17,10 +17,14 @@ import { useTransactionComplate } from "../../../stores/useTransactionComplate";
 import useConfirm from "../../../hooks/useConfirm";
 import useCancelUpdateTransactionComplate from "../../../hooks/useCancelTransactionUpdateComplate";
 import { removePreviousPath } from "../../../helpers/previousPath";
+import { useShadowStore } from "../../../stores/shadowStore";
 
 const useSideBar = () => {
   // get auth context
   const pengguna = useAuthStore((state) => state.pengguna);
+
+  // get shadow is active
+  const { shadowIsActive, showNavigation } = useShadowStore((state) => state);
 
   // currentPathname
   const pathname = useLocation().pathname;
@@ -199,7 +203,11 @@ const useSideBar = () => {
     if (pengguna?.role) {
       switch (pengguna.role) {
         case ROLE_INTERNAL_TYPE.OWNER:
-          setIsNavigation(NAVIGATION_LIST_OWNER);
+          setIsNavigation(
+            shadowIsActive && showNavigation
+              ? NAVIGATION_LIST_OWNER
+              : NAVIGATION_LIST_OWNER.filter((item) => item.label !== "Shadow"),
+          );
           break;
 
         default:
@@ -207,11 +215,36 @@ const useSideBar = () => {
           break;
       }
     }
-  }, [pengguna?.role]);
+  }, [pengguna?.role, shadowIsActive, showNavigation]);
 
   // auth
 
-  const { handleLogout } = useLogOut({ redirectUrl: true });
+  const { handleLogout: logOut } = useLogOut({ redirectUrl: true });
+
+  const handleLogout = async () => {
+    const isUpdateTransaction: boolean = transactionIdFormTransaction !== null;
+
+    if (isUpdateTransaction) {
+      const isConfirm = await confirm({
+        bigTitle: "Peringatan",
+        smallTitle:
+          "Apakah anda yakin ingin logout, semua data yang belum disimpan akan hilang?",
+      });
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await handleCancelUpdateTransactionComplete(
+        transactionIdFormTransaction ?? 0,
+      );
+
+      // clear keranjang
+      resetUpdateTransaction();
+    }
+
+    logOut();
+  };
 
   // use has scroll
   const { divRef, hasScroll } = useHasScroll();

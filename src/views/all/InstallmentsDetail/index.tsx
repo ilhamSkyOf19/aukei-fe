@@ -211,10 +211,7 @@ const InstallmentsDetail = () => {
                 iconColor: "text-blue-400",
               }}
               label="Total Tagihan"
-              value={formatRupiah(
-                (dataInstallments?.data?.totalTagihan ?? 0) -
-                  (dataInstallments?.data?.uangMuka ?? 0),
-              )}
+              value={formatRupiah(dataInstallments?.data?.totalTagihan ?? 0)}
               caption="Total tagihan keseluruhan."
               isLoading={isLoadingDataInstallments}
               withAlert="Total tagihan setelah DP"

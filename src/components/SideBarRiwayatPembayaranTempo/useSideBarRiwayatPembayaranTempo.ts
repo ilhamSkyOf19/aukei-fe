@@ -31,7 +31,7 @@ const useSideBarRiwayatPembayaranTempo = () => {
           ...(page && { page }),
         },
       }),
-    enabled: !!validatedId,
+    enabled: !!validatedId && cicilanKe !== "dp",
     retry: false,
     refetchOnWindowFocus: false,
   });

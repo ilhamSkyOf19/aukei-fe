@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useTransactionComplate } from "../../../../stores/useTransactionComplate";
 import useCreateTransactionOld from "../../../../hooks/useCreateTransactionOld";
 import { useStepStore } from "../../../../stores/stepStore";
+import { isMoreThanDays } from "../../../../helpers/helpers";
 
 const useDaftarDetailProduk = (params: {
   transactionId?: number | null;
@@ -18,9 +19,14 @@ const useDaftarDetailProduk = (params: {
     ResponseStatistikKebutuhanBarang[] | null
   >;
   isLoadingKebutuhanBarang?: boolean;
+  completedAt?: Date | null;
 }) => {
-  const { transactionId, dataKebutuhanBarang, isLoadingKebutuhanBarang } =
-    params;
+  const {
+    transactionId,
+    dataKebutuhanBarang,
+    isLoadingKebutuhanBarang,
+    completedAt,
+  } = params;
   // query client
   const queryClient = useQueryClient();
 
@@ -170,6 +176,9 @@ const useDaftarDetailProduk = (params: {
     return navigate(`/dashboard/riwayat-transaksi/${params.id}/ubah-produk`);
   };
 
+  // is expired
+  const isExpired = completedAt && isMoreThanDays(completedAt, 3);
+
   return {
     isFromActive,
     handleSetIsFromActive,
@@ -189,6 +198,8 @@ const useDaftarDetailProduk = (params: {
     handleUbahProduk,
 
     isPendingTransactionOld,
+
+    isExpired,
   };
 };
 

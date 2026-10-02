@@ -21,7 +21,6 @@ import ModalInputTanggalTempo from "../ModalInputTanggalTempo";
 import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
 import CardMetodePembayaranSmall from "../../ui/cards/CardMetodePembayaranSmall";
 import { PAYMENT_METHOD_TYPE } from "../../../types/constant.type";
-import { cn } from "../../../utils/cn";
 import ModalCashPayment from "../ModalCashPayment";
 import ErrorMessage from "../../messages/ErrorMessage";
 import ButtonText from "../../ui/button/ButtonText";
@@ -120,7 +119,7 @@ const ModalTempoPayment: FC<Props> = ({
               )}
 
               {/* total tagihan */}
-              <div className="w-full flex flex-row justify-start items-center gap-4 p-2 rounded-xl border border-base-content/10 hover:bg-custom-primary/5 hover:border-custom-primary transition-all duration-150 ease-in-out">
+              <div className="flex-1 flex flex-row justify-start items-center gap-4 p-2 rounded-xl border border-base-content/10 hover:bg-custom-primary/5 hover:border-custom-primary transition-all duration-150 ease-in-out">
                 {/* icon */}
                 <div className="w-10 h-10 bg-custom-primary/50 rounded-lg flex flex-row justify-center items-center">
                   <ReceiptText className="size-4 text-custom-secondary" />
@@ -132,14 +131,14 @@ const ModalTempoPayment: FC<Props> = ({
                   <span className="text-[0.625rem] font-semibold text-base-content/50">
                     Total Tagihan
                   </span>
-                  <span className="text-sm font-semibold text-base-content">
+                  <span className="text-xs md:text-sm font-semibold text-base-content">
                     {formatRupiah(finalTotal.totalTagihan)}
                   </span>
                 </div>
               </div>
 
               {/* sisa belum terjadwal */}
-              <div className="w-full flex flex-row justify-start items-center gap-4 p-2 rounded-xl border border-base-content/10 hover:bg-custom-primary/5 hover:border-custom-primary transition-all duration-150 ease-in-out">
+              <div className="flex-1 flex flex-row justify-start items-center gap-4 p-2 rounded-xl border border-base-content/10 hover:bg-custom-primary/5 hover:border-custom-primary transition-all duration-150 ease-in-out">
                 {/* icon */}
                 <div className="w-10 h-10 bg-custom-primary/50 rounded-lg flex flex-row justify-center items-center">
                   <ReceiptText className="size-4 text-custom-secondary" />
@@ -151,14 +150,14 @@ const ModalTempoPayment: FC<Props> = ({
                   <span className="text-[0.625rem] font-semibold text-base-content/50">
                     Sisa Tagihan
                   </span>
-                  <span className="text-sm font-semibold text-base-content">
+                  <span className="text-xs md:text-sm font-semibold text-base-content">
                     {formatRupiah(finalTotal.sisa)}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="w-full flex flex-row justify-between items-start gap-4">
+            <div className="w-full flex flex-col md:flex-row justify-between items-start md:gap-4">
               {/* input uang muka */}
               {!booking && (
                 <InputPrice<CreateTempoType>
@@ -201,16 +200,12 @@ const ModalTempoPayment: FC<Props> = ({
 
           {debouncedUangMuka > 0 && (
             <>
-              <div className="w-full flex flex-col justify-start items-start mb-2.5 gap-2.5">
+              <div className="w-full mt-2.5 md:mt-0 flex flex-col justify-start items-start mb-2.5 gap-2.5">
                 {/* label */}
                 <span className="text-xs font-medium text-base-content">
                   Pilih Metode Pembayaran Uang Muka
                 </span>
-                <div
-                  className={cn(
-                    "w-full flex flex-row justify-start items-center gap-2.5",
-                  )}
-                >
+                <div className="w-full flex flex-col md:flex-row justify-start items-center gap-2.5">
                   {/* cash */}
                   <CardMetodePembayaranSmall
                     icon={Banknote}
@@ -231,47 +226,51 @@ const ModalTempoPayment: FC<Props> = ({
                     noDeskripsi
                   />
 
-                  {/* transfer */}
-                  <CardMetodePembayaranSmall
-                    icon={Landmark}
-                    bgColor="bg-blue-50"
-                    iconColor="text-blue-500"
-                    label="Transfer Bank"
-                    description="Bayar melalui transfer bank."
-                    handleClick={() =>
-                      metodePembayaranUangMukaController.field.onChange(
-                        "TRANSFER",
-                      )
-                    }
-                    isActive={
-                      metodePembayaranUangUangMukaWatch ===
-                      PAYMENT_METHOD_TYPE.TRANSFER
-                    }
-                    isError={
-                      errors?.metodePembayaranUangDp?.message !== undefined
-                    }
-                    noDeskripsi
-                  />
+                  <div className="w-full md:w-[200%] flex flex-row justify-start items-center gap-2.5">
+                    {/* transfer */}
+                    <CardMetodePembayaranSmall
+                      icon={Landmark}
+                      bgColor="bg-blue-50"
+                      iconColor="text-blue-500"
+                      label="Transfer Bank"
+                      description="Bayar melalui transfer bank."
+                      handleClick={() =>
+                        metodePembayaranUangMukaController.field.onChange(
+                          "TRANSFER",
+                        )
+                      }
+                      isActive={
+                        metodePembayaranUangUangMukaWatch ===
+                        PAYMENT_METHOD_TYPE.TRANSFER
+                      }
+                      isError={
+                        errors?.metodePembayaranUangDp?.message !== undefined
+                      }
+                      noDeskripsi
+                    />
 
-                  {/* qris */}
-                  <CardMetodePembayaranSmall
-                    icon={QrCode}
-                    bgColor="bg-purple-50"
-                    iconColor="text-purple-500"
-                    label="QRIS"
-                    description="Bayar melalui QRIS."
-                    handleClick={() =>
-                      metodePembayaranUangMukaController.field.onChange("QRIS")
-                    }
-                    isActive={
-                      metodePembayaranUangUangMukaWatch ===
-                      PAYMENT_METHOD_TYPE.QRIS
-                    }
-                    isError={
-                      errors?.metodePembayaranUangDp?.message !== undefined
-                    }
-                    noDeskripsi
-                  />
+                    {/* qris */}
+                    <CardMetodePembayaranSmall
+                      icon={QrCode}
+                      bgColor="bg-purple-50"
+                      iconColor="text-purple-500"
+                      label="QRIS"
+                      description="Bayar melalui QRIS."
+                      handleClick={() =>
+                        metodePembayaranUangMukaController.field.onChange(
+                          "QRIS",
+                        )
+                      }
+                      isActive={
+                        metodePembayaranUangUangMukaWatch ===
+                        PAYMENT_METHOD_TYPE.QRIS
+                      }
+                      isError={
+                        errors?.metodePembayaranUangDp?.message !== undefined
+                      }
+                      noDeskripsi
+                    />
+                  </div>
                 </div>
 
                 {errors?.metodePembayaranUangDp?.message && (
@@ -295,8 +294,8 @@ const ModalTempoPayment: FC<Props> = ({
                     </div>
 
                     {/* ringkasan pembayaran cash uang masuk */}
-                    <div className="flex flex-col justify-start items-center gap-1.5">
-                      <div className="w-full grid grid-cols-3 gap-12">
+                    <div className="flex flex-col justify-start items-center gap-1">
+                      <div className="w-full flex flex-row justify-start items-start gap-12 border-b pb-1 border-base-content/30">
                         {/* label */}
                         <span className="text-[0.625rem] col-span-1 text-base-content">
                           Uang Pembayaran
@@ -307,7 +306,7 @@ const ModalTempoPayment: FC<Props> = ({
                           {formatRupiah(pembayaranUangMukaCash)}
                         </span>
                       </div>
-                      <div className="w-full grid grid-cols-3 gap-12">
+                      <div className="w-full flex flex-row justify-between items-start gap-12">
                         {/* label */}
                         <span className="text-[0.625rem] col-span-1 text-base-content">
                           Kembalian
@@ -341,6 +340,8 @@ const ModalTempoPayment: FC<Props> = ({
 
           {/* jadwal tempo */}
           <RowJadwaTempo
+            maxHeightForScroll
+            showShortTagihan
             dataTempo={dataTempo}
             handleCustomTanggal={() => {
               handleCloseModal();

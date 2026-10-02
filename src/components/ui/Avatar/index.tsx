@@ -23,7 +23,7 @@ const avatarColors = [
 
 const defaultColor = {
   bg: "bg-custom-primary",
-  text: "text-custom-secondary",
+  text: "text-text-custom-secondary",
 };
 
 const Avatar: FC<Props> = ({ index, nama, xs, sm, isActive }) => {

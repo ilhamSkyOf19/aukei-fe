@@ -158,7 +158,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
             <table className="table  table-zebra">
               {/* head */}
               <thead>
-                <tr className="text-[0.7rem] h-12 bg-base-200 sticky top-0 z-10">
+                <tr className="text-[0.7rem] h-12 bg-base-200 sticky top-0 z-1">
                   <th>Gambar</th>
                   <th>Nama Produk</th>
                   <th>Harga (Rp)</th>
@@ -258,7 +258,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
         >
           {/* metode pembayaran */}
           <div className="w-full flex flex-col justify-start items-start">
-            <div className="w-full flex flex-col justify-start items-start rounded-xl bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm p-4 overflow-y-auto h-[85vh] scrollbar-thin">
+            <div className="w-full flex flex-col justify-start items-start rounded-xl bg-base-100 border border-transparent dark:border-base-content/10 shadow-sm p-4 overflow-y-auto h-auto md:h-[85vh] scrollbar-thin">
               {/* title */}
               <TitleModalFormulir title="Ringkasan Pembayaran" keterangan="" />
               <div
@@ -403,7 +403,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
                                 <span className="text-xs text-base-content/70 font-medium">
                                   Uang Muka
                                 </span>
-                                <span className="text-[0.7rem] font-medium text-error">
+                                <span className="text-xs font-medium text-error">
                                   {" "}
                                   {dataTempo?.uangMuka
                                     ? `-${formatRupiah(dataTempo.uangMuka)}`
@@ -439,7 +439,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
                                     <span className="text-xs text-base-content/70 font-medium">
                                       Dibayar
                                     </span>
-                                    <span className="text-[0.7rem] font-medium text-base-content">
+                                    <span className="text-xs font-medium text-base-content">
                                       {formatRupiah(
                                         dataTempo?.paymentTransactions?.[0]
                                           .diBayar ?? 0,
@@ -450,7 +450,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
                                     <span className="text-xs text-base-content/70 font-medium">
                                       Kembalian
                                     </span>
-                                    <span className="text-[0.7rem] font-medium text-base-content">
+                                    <span className="text-xs font-medium text-base-content">
                                       {formatRupiah(
                                         dataTempo?.paymentTransactions?.[0]
                                           .kembalian ?? 0,
@@ -459,7 +459,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
                                   </div>
 
                                   {/* sisa tagihan */}
-                                  <div className="w-full flex flex-row justify-between items-center">
+                                  <div className="w-full flex flex-row justify-between items-center pb-2.5">
                                     <span className="text-xs text-base-content/80">
                                       Sisa Tagihan
                                     </span>
@@ -533,7 +533,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
                                       </div>
                                       {/* tanggal */}
                                       <div className="col-span-3 flex flex-row justify-start items-center">
-                                        <span className="text-[0.625rem] font-semibold text-base-content">
+                                        <span className="text-[0.7rem] md:text-[0.625rem] font-semibold text-base-content">
                                           {formatTanggalPanjang(
                                             item.jatuhTempo,
                                           )}
@@ -542,7 +542,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
 
                                       {/* nominal */}
                                       <div className="col-span-3 flex flex-row justify-end items-center pr-2.5">
-                                        <span className="text-[0.625rem] font-semibold text-base-content">
+                                        <span className="text-[0.7rem] md:text-[0.625rem] font-semibold text-base-content">
                                           {formatRupiah(item.nominal)}
                                         </span>
                                       </div>

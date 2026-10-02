@@ -15,6 +15,7 @@ type Props = {
   handleShowModal: () => void;
   handleActive: (value: boolean) => void;
   role?: RoleInternalType;
+  handleSetToastFormParent: (value: string) => void;
 };
 
 const ModalChooseIsActiveShadowFeature: FC<Props> = ({
@@ -23,6 +24,7 @@ const ModalChooseIsActiveShadowFeature: FC<Props> = ({
   handleShowModal,
   handleActive,
   role,
+  handleSetToastFormParent,
 }) => {
   const {
     dataShadowFeature,
@@ -37,10 +39,17 @@ const ModalChooseIsActiveShadowFeature: FC<Props> = ({
     toast,
     handleNonActive,
     variablesIsActive,
+
+    showNavigation,
+
+    handleMutateShowNavigation,
+    isPendingShowNavigation,
+    variablesShowNavigation,
   } = useModalChooseIsActiveShadowFeature({
     handleCloseModal,
     handleActive,
     role,
+    handleSetToastFormParent,
   });
 
   return (
@@ -117,8 +126,12 @@ const ModalChooseIsActiveShadowFeature: FC<Props> = ({
                   })
                 }
               >
-                {isPendingIsActive ? (
-                  <div className="loading loading-sm" />
+                {isPendingIsActive &&
+                variablesIsActive?.id === item.id &&
+                variablesIsActive.req.activedAt === true ? (
+                  <div className="h-full flex justify-center items-center">
+                    <div className="loading loading-sm" />
+                  </div>
                 ) : (
                   <>
                     <span className="text-lg font-semibold">{item.nilai}%</span>
@@ -138,7 +151,7 @@ const ModalChooseIsActiveShadowFeature: FC<Props> = ({
         </div>
 
         {/* button non aktif */}
-        <div className="w-full mt-4 flex flex-row justify-center items-center">
+        <div className="w-full mt-4 flex flex-col gap-2.5 justify-center items-center">
           <ButtonWithIcon
             disabled={dataShadowFeature?.data?.every(
               (item) => item.isActive === false,
@@ -152,6 +165,43 @@ const ModalChooseIsActiveShadowFeature: FC<Props> = ({
             }
             handleBtn={() => handleNonActive()}
           />
+
+          {dataShadowFeature?.data?.some((item) => item.isActive === true) &&
+            (showNavigation ? (
+              <ButtonWithIcon
+                disabled={isPendingIsActive}
+                customWidth="w-[80%]"
+                label="Sembunyikan Halaman"
+                bgColor="bg-error"
+                textColor="text-primary-white"
+                isLoading={
+                  isPendingShowNavigation &&
+                  variablesShowNavigation?.showNavigation === false
+                }
+                handleBtn={() =>
+                  handleMutateShowNavigation({
+                    showNavigation: false,
+                  })
+                }
+              />
+            ) : (
+              <ButtonWithIcon
+                disabled={isPendingIsActive}
+                customWidth="w-[80%]"
+                label="Tampilkan Halaman"
+                bgColor="bg-emerald-500"
+                textColor="text-primary-white"
+                isLoading={
+                  isPendingShowNavigation &&
+                  variablesShowNavigation?.showNavigation === true
+                }
+                handleBtn={() =>
+                  handleMutateShowNavigation({
+                    showNavigation: true,
+                  })
+                }
+              />
+            ))}
         </div>
 
         {/* button */}

@@ -376,6 +376,36 @@ export const TOAST_CONFIG_DASHBOARD: Record<
     color: "success",
     message: "Nilai bayangan berhasil diterapkan",
   },
+  close_navigation: {
+    color: "success",
+    message: "Navigasi berhasil ditutup",
+  },
+  open_navigation: {
+    color: "success",
+    message: "Navigasi berhasil dibuka",
+  },
+};
+
+// toast dashboard
+export const TOAST_CONFIG_PERIODE_SHADOW: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  created: {
+    color: "success",
+    message: "Periode berhasil ditambahkan",
+  },
+  updated: {
+    color: "info",
+    message: "Periode berhasil diperbarui",
+  },
+  generate: {
+    color: "success",
+    message: "Nilai berhasil di generate, silahkan cek dilaporan",
+  },
 };
 
 // toast keranjang

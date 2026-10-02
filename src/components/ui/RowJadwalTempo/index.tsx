@@ -38,7 +38,6 @@ type Props = {
   customEmptyMessage?: string;
   handleCustomTanggal?: () => void;
   startDateWatch?: string;
-  pelangganId?: number;
   tempoId?: number;
   transactionId?: number;
   nomorTransaksi?: string;
@@ -48,15 +47,17 @@ type Props = {
 
   handleSetToast?: (value: string) => void;
   handleSetAlert?: (value: string) => void;
+  showShortTagihan?: boolean;
+  maxHeightForScroll?: boolean;
 };
 const RowJadwaTempo: FC<Props> = ({
   aksi,
+  showShortTagihan,
   dataTempo,
   maxHeight,
   customEmptyMessage,
   handleCustomTanggal,
   startDateWatch,
-  pelangganId,
   tempoId,
   transactionId,
   withInvoice,
@@ -65,6 +66,7 @@ const RowJadwaTempo: FC<Props> = ({
   noAksi,
   handleSetAlert,
   handleSetToast,
+  maxHeightForScroll,
 }) => {
   const {
     handleDownloadInvoiceKreditPdf,
@@ -120,11 +122,11 @@ const RowJadwaTempo: FC<Props> = ({
     <div className="w-full flex flex-col justify-start items-start gap-2">
       {/* title */}
       <div className="w-full flex flex-row justify-between items-center">
-        <div className="flex flex-row justify-start items-center gap-1.5">
+        <div className="flex flex-col md:flex-row justify-start items-start md:items-center gap-1.5">
           <h3 className="text-xs font-medium text-base-content">
             Jadwal Cicilan Tempo
           </h3>
-          <span className="text-[0.7rem]">-</span>
+          <span className="text-[0.7rem] hidden md:block">-</span>
           <span className="text-[0.7rem] text-base-content">
             Terhitung dari :{" "}
             <span className="font-medium">
@@ -134,7 +136,8 @@ const RowJadwaTempo: FC<Props> = ({
         </div>
 
         {/* transaction detail */}
-        {currentPathname.includes("transaksi") && (
+        {(currentPathname.includes("transaksi") ||
+          currentPathname.includes("kasir")) && (
           <button
             type="button"
             onClick={() => navigate(`/dashboard/kredit/${tempoId}`)}
@@ -159,13 +162,19 @@ const RowJadwaTempo: FC<Props> = ({
         )}
       </div>
       {/* FOR SM */}
-      <div className="w-full flex flex-col justify-start items-start gap-2.5 md:hidden">
+      <div
+        className={cn(
+          "w-full flex flex-col justify-start items-start gap-2.5 md:hidden",
+          maxHeightForScroll && `max-h-80 overflow-y-scroll py-4`,
+        )}
+      >
         {isLoading ? (
           <LoadingFetch />
         ) : dataTempo && dataTempo.length > 0 ? (
           dataTempo?.map((item) => (
             <CardData
               key={item.id}
+              showShortTagihan={showShortTagihan}
               statusTempo={item.status}
               titleTanggal={item.jatuhTempo}
               tagihan={item.nominal}
@@ -295,7 +304,7 @@ const RowJadwaTempo: FC<Props> = ({
         </div>
       </div>
       {/* button print */}
-      {transactionId && (
+      {currentPathname.includes("kasir") && transactionId && (
         <div className="w-full flex flex-row justify-end items-end gap-2.5 mt-2.5">
           <div className="w-auto block md:hidden">
             <ButtonWithIcon
@@ -303,11 +312,7 @@ const RowJadwaTempo: FC<Props> = ({
               bgColor={"bg-info"}
               textColor="text-primary-white"
               label="Lihat Pembayaran"
-              handleBtn={() =>
-                navigate(
-                  `/dashboard/kredit/pelanggan/${pelangganId}/tempo/${tempoId}`,
-                )
-              }
+              handleBtn={() => navigate(`/dashboard/kredit/${tempoId}`)}
             />
           </div>
 

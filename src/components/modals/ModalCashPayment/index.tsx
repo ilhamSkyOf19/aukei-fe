@@ -32,7 +32,7 @@ const ModalCashPayment: FC<Props> = ({
 
   return (
     <dialog ref={modalRef} id="my_modal_3" className="modal">
-      <div className="modal-box max-w-3xl rounded-xl max-h-[95vh] p-0 overflow-hidden">
+      <div className="modal-box max-w-3xl rounded-xl max-h-[95vh] pb-12 md:pb-0 p-0 md:overflow-hidden">
         {/* HEADER */}
         <div className="border-b  border-base-content/10 px-6 py-3">
           <div className="flex items-center gap-4">
@@ -46,48 +46,48 @@ const ModalCashPayment: FC<Props> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-2">
           {/* LEFT */}
-          <div className="p-6 border-r border-base-content/10">
+          <div className="p-6 pb-0 md:p-6 border-r border-base-content/10">
             {/* total tagihan */}
             <div className="flex items-center gap-3 border-b-2 border-base-content/30 border-dashed pb-4">
-              <div className="flex-1 flex flex-row justify-start items-center gap-4">
-                <ReceiptText className="size-6 text-base-content" />
-                <p className="text-sm font-medium">TOTAL TAGIHAN</p>
+              <div className="flex-1 flex flex-row justify-start items-center gap-2.5 md:gap-4">
+                <ReceiptText className="size-5 md:size-6 text-base-content" />
+                <p className="text-xs md:text-sm font-medium">TOTAL TAGIHAN</p>
               </div>
 
               <div className="flex-1 flex flex-row justify-end items-center">
-                <span className="font-semibold text-xl">
+                <span className="font-semibold text-md md:text-xl">
                   {formatRupiah(total)}
                 </span>
               </div>
             </div>
 
             <div className="w-full flex flex-col justify-start items-start mt-2.5">
-              <div className="w-full flex flex-row  justify-between items-center py-2">
+              <div className="w-full flex flex-row  justify-between items-center py-1 md:py-2">
                 <div className=" flex flex-row justify-start items-center gap-4">
                   {/*icon  */}
-                  <BanknoteArrowDownIcon className="size-6 text-base-content/80" />
-                  <span className="text-sm font-medium text-base-content/80">
+                  <BanknoteArrowDownIcon className="size-5 md:size-6 text-base-content/80" />
+                  <span className="text-xs md:text-sm font-medium text-base-content/80">
                     Uang diterima
                   </span>
                 </div>
 
-                <span className="text-lg font-medium text-info">
+                <span className="text-sm md:text-lg font-medium text-info">
                   {formatRupiah(amount)}
                 </span>
               </div>
 
-              <div className="w-full flex flex-row  justify-between items-center py-2">
+              <div className="w-full flex flex-row  justify-between items-center py-1 md:py-2">
                 <div className="flex flex-row justify-start items-center gap-4">
                   {/*icon  */}
-                  <Coins className="size-6 text-base-content/80" />
-                  <span className="text-sm font-medium text-base-content/80">
+                  <Coins className="size-5 md:size-6 text-base-content/80" />
+                  <span className="text-xs md:text-sm font-medium text-base-content/80">
                     Kembalian
                   </span>
                 </div>
 
-                <span className="text-lg font-medium text-success">
+                <span className="text-sm md:text-lg font-medium text-success">
                   {formatRupiah(change)}
                 </span>
               </div>
@@ -95,20 +95,20 @@ const ModalCashPayment: FC<Props> = ({
           </div>
 
           {/* RIGHT */}
-          <div className="p-4 pt-2">
+          <div className="p-4 md:pt-2">
             {/* INPUT */}
             <div className="mb-5">
               <label className="label">
-                <span className="label-text text-sm font-semibold">
+                <span className="label-text text-xs md:text-sm font-semibold">
                   Uang Diterima
                 </span>
               </label>
 
-              <div className="flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 mt-1 h-14 overflow-hidden">
+              <div className="flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 mt-1 h-12 md:h-14 overflow-hidden">
                 <input
                   readOnly
                   value={`${formatRupiah(amount)}`}
-                  className="input w-full h-full text-xl font-semibold text-base-content border-none outline-none"
+                  className="input w-full h-full text-base md:text-xl font-semibold text-base-content border-none outline-none"
                 />
               </div>
             </div>
@@ -118,7 +118,7 @@ const ModalCashPayment: FC<Props> = ({
               {[7, 8, 9].map((n) => (
                 <button
                   key={n}
-                  className="btn h-14 text-xl"
+                  className="btn h-12 md:h-14 text-lg md:text-xl"
                   onClick={() => append(String(n))}
                 >
                   {n}
@@ -126,7 +126,7 @@ const ModalCashPayment: FC<Props> = ({
               ))}
 
               <button
-                className="btn btn-error btn-outline h-14"
+                className="btn btn-error btn-outline h-12 md:h-14"
                 onClick={backspace}
               >
                 <Delete />
@@ -135,7 +135,7 @@ const ModalCashPayment: FC<Props> = ({
               {[4, 5, 6].map((n) => (
                 <button
                   key={n}
-                  className="btn h-14 text-xl"
+                  className="btn h-12 md:h-14 text-lg md:text-xl"
                   onClick={() => append(String(n))}
                 >
                   {n}
@@ -143,7 +143,7 @@ const ModalCashPayment: FC<Props> = ({
               ))}
 
               <button
-                className="btn btn-warning btn-outline h-14"
+                className="btn btn-warning btn-outline h-12 md:h-14"
                 onClick={clear}
               >
                 CE
@@ -152,7 +152,7 @@ const ModalCashPayment: FC<Props> = ({
               {[1, 2, 3].map((n) => (
                 <button
                   key={n}
-                  className="btn h-14 text-xl"
+                  className="btn h-12 md:h-14 text-lg md:text-xl"
                   onClick={() => append(String(n))}
                 >
                   {n}
@@ -170,21 +170,21 @@ const ModalCashPayment: FC<Props> = ({
               </button>
 
               <button
-                className="btn h-20 text-2xl col-span-2"
+                className="btn h-16 md:h-20 text-xl md:text-2xl col-span-2"
                 onClick={() => append("0")}
               >
                 0
               </button>
 
               <button
-                className="btn h-20 text-2xl"
+                className="btn h-16 md:h-20 text-xl md:text-2xl"
                 onClick={() => append("000")}
               >
                 000
               </button>
             </div>
 
-            <div className="mt-2.5 text-xs opacity-60">
+            <div className="hidden md:block mt-2.5 text-xs opacity-60">
               Gunakan keyboard angka 0-9, Backspace untuk hapus, Enter untuk
               konfirmasi.
             </div>

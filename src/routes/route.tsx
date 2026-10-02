@@ -37,6 +37,7 @@ import StockOpnameDetailPage from "../pages/StockOpnameDetailPage";
 import UbahPembayaranPage from "../pages/UbahPembayaranPage";
 import { ShadowFeatureServices } from "../services/shadowFeature.service";
 import { useShadowStore } from "../stores/shadowStore";
+import ShadowPages from "../pages/ShadowPages";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -55,6 +56,7 @@ const dashboardLoader = async () => {
         useShadowStore.getState().setShadowIsActive({
           shadowIsActive: shadow.data?.isActive ?? false,
           shadowId: shadow.data?.id ?? null,
+          showNavigation: shadow.data?.showNavigation ?? false,
         });
       }
     }
@@ -358,7 +360,14 @@ const route = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <KasirPage />,
+            element: (
+              <RoleGuard
+                allowedRoles={[ROLE_INTERNAL_TYPE.KASIR]}
+                link="/dashboard"
+              >
+                <KasirPage />
+              </RoleGuard>
+            ),
           },
         ],
       },
@@ -470,6 +479,10 @@ const route = createBrowserRouter([
       {
         path: "notifikasi",
         element: <NotifikasiPage />,
+      },
+      {
+        path: "shadow",
+        element: <ShadowPages />,
       },
     ],
   },

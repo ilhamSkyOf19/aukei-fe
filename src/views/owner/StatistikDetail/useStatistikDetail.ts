@@ -177,10 +177,20 @@ const useStatistikDetail = () => {
     }
   };
 
+  const finalPilihan = shadowIsActive
+    ? pilihan.filter(
+        (item) =>
+          item.key !== "booking" &&
+          item.key !== "pantauanStok" &&
+          item.key !== "topPelanggan" &&
+          item.key !== "topProduk",
+      )
+    : pilihan;
+
   return {
     windowSize,
     isLoadingStatistik,
-    pilihan,
+    pilihan: finalPilihan,
     selectedLaporan,
     setSelectedLaporan: handleSetSelestedLaporan,
     filteredStatistik,

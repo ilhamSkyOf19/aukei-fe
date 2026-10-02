@@ -47,6 +47,10 @@ const TopPelanggan: FC<Props> = ({
     isLoadingDownloadLaporanTopPelangganPdf,
 
     refetchTopPelanggan,
+
+    limit,
+
+    page,
   } = useStatistikTopPelanggan({ handleSetAlert, handleSetToast, shadowId });
 
   return (
@@ -195,6 +199,7 @@ const TopPelanggan: FC<Props> = ({
           {/* head */}
           <thead>
             <tr className="h-12 bg-base-200 text-[0.7rem]">
+              <th>No</th>
               <th>Nama</th>
               <th>No. Wa</th>
               <th>Total Transaksi</th>
@@ -219,6 +224,7 @@ const TopPelanggan: FC<Props> = ({
                   {/* header setiap 25 data */}
                   {index > 0 && index % 25 === 0 && (
                     <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                      <th>No</th>
                       <th>Nama</th>
                       <th>No. Wa</th>
                       <th>Total Transaksi</th>
@@ -233,6 +239,10 @@ const TopPelanggan: FC<Props> = ({
                       "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                     )}
                   >
+                    {/* no */}
+                    <th>
+                      {index + 1 + (Number(page ?? 1) - 1) * Number(limit ?? 8)}
+                    </th>
                     {/* nama */}
                     <td>
                       <div className="flex flex-col justify-start items-start gap-1">

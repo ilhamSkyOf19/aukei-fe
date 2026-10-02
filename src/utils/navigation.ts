@@ -6,6 +6,7 @@ import {
   ChartLine,
   ClipboardCheck,
   HandCoins,
+  HatGlasses,
   LayoutDashboard,
   LucideArrowLeftSquare,
   LucideArrowRightSquare,
@@ -75,6 +76,11 @@ export const NAVIGATION_LIST_OWNER: {
     label: "Notifikasi",
     icon: Bell,
     link: "/dashboard/notifikasi",
+  },
+  {
+    label: "Shadow",
+    icon: HatGlasses,
+    link: "/dashboard/shadow",
   },
 ];
 

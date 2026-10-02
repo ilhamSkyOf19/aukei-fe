@@ -23,7 +23,7 @@ const EfekShadowFeatureActive = ({
     const timer = setTimeout(() => {
       setVisible(false);
       onComplete?.();
-    }, 4000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [show, onComplete]);

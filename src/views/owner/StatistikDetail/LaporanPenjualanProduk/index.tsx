@@ -278,8 +278,8 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
                   <td colSpan={6}>
                     <div className="w-full h-full flex flex-col justify-center items-center">
                       <DataEmpty
-                        title="Data Kategori Tidak Tersedia"
-                        description="Belum ada data kategori yang dapat ditampilkan saat ini."
+                        title="Data Tidak Tersedia"
+                        description="Belum ada data yang dapat ditampilkan saat ini."
                         xs
                       />
                     </div>

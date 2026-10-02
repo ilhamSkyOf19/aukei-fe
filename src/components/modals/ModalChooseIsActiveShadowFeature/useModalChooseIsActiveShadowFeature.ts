@@ -8,16 +8,21 @@ import {
   type RoleInternalType,
 } from "../../../types/constant.type";
 import { useShadowStore } from "../../../stores/shadowStore";
+import useShowNavigationShadow from "../../../hooks/useShowNavigationShadow";
 
 const useModalChooseIsActiveShadowFeature = (params: {
   handleCloseModal: () => void;
   handleActive: (value: boolean) => void;
+  handleSetToastFormParent: (value: string) => void;
   role?: RoleInternalType;
 }) => {
-  const { handleCloseModal, handleActive, role } = params;
+  const { handleCloseModal, handleActive, role, handleSetToastFormParent } =
+    params;
 
   // get shadow feature
-  const setShadowIsActive = useShadowStore((state) => state.setShadowIsActive);
+  const { setShadowIsActive, showNavigation, shadowId } = useShadowStore(
+    (state) => state,
+  );
 
   // toast
   const { handleSetToast, toast } = useToastAnimation();
@@ -59,6 +64,7 @@ const useModalChooseIsActiveShadowFeature = (params: {
           setShadowIsActive({
             shadowId: data.data?.id,
             shadowIsActive: data.data?.isActive,
+            showNavigation: data.data?.showNavigation,
           });
         } else {
           setShadowIsActive({
@@ -110,6 +116,27 @@ const useModalChooseIsActiveShadowFeature = (params: {
     handleCloseModal: handleCloseModalAddShadowFeature,
   } = useModal();
 
+  // use show navigation
+  const {
+    isPendingShowNavigation,
+    mutateShowNavigation,
+    variablesShowNavigation,
+  } = useShowNavigationShadow({
+    handleSetToast: handleSetToastFormParent,
+    callBack: () => handleCloseModal(),
+  });
+
+  const handleMutateShowNavigation = async (data: {
+    showNavigation: boolean;
+  }) => {
+    if (shadowId) {
+      await mutateShowNavigation({
+        id: shadowId!,
+        showNavigation: data.showNavigation,
+      });
+    }
+  };
+
   return {
     dataShadowFeature,
     isLoadingShadowFeature,
@@ -123,6 +150,11 @@ const useModalChooseIsActiveShadowFeature = (params: {
     handleSetToast,
     handleNonActive,
     variablesIsActive,
+    showNavigation,
+
+    handleMutateShowNavigation,
+    isPendingShowNavigation,
+    variablesShowNavigation,
   };
 };
 

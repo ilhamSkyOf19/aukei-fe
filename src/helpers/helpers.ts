@@ -435,3 +435,15 @@ export const formatTanggalLine = (date: Date | string): string => {
 
   return `${day}-${month}-${year}`;
 };
+
+export const isMoreThanDays = (date: Date | string, days: number): boolean => {
+  const targetDate = new Date(date);
+
+  const now = new Date();
+
+  const diffTime = now.getTime() - targetDate.getTime();
+
+  const diffDays = days * 24 * 60 * 60 * 1000;
+
+  return diffTime > diffDays;
+};

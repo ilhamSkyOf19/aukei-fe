@@ -109,7 +109,7 @@ const useStatistikTopProduk = (params: {
             }),
 
             ...(finalLimit && {
-              limit: "100",
+              limit,
             }),
           },
         });

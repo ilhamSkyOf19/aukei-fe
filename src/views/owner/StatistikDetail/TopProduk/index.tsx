@@ -47,6 +47,8 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert, shadowId }) => {
     isLoadingDownloadLaporanTopProdukPdf,
 
     refetchTopProduk,
+    limit,
+    page,
   } = useStatistikTopProduk({ handleSetAlert, handleSetToast, shadowId });
 
   return (
@@ -195,6 +197,7 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert, shadowId }) => {
           {/* head */}
           <thead>
             <tr className="h-12 bg-base-200 text-[0.7rem]">
+              <th>No</th>
               <th>Foto</th>
               <th>Nama</th>
               <th>Kategori</th>
@@ -221,6 +224,7 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert, shadowId }) => {
                   {/* header setiap 25 data */}
                   {index > 0 && index % 25 === 0 && (
                     <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
+                      <th>No</th>
                       <th>Foto</th>
                       <th>Nama</th>
                       <th>Kategori</th>
@@ -237,6 +241,10 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert, shadowId }) => {
                       "transition-all duration-75 ease-in-out h-18 text-[0.7rem] text-base-content",
                     )}
                   >
+                    {/* no */}
+                    <th>
+                      {index + 1 + (Number(page ?? 1) - 1) * Number(limit ?? 8)}
+                    </th>
                     {/* foto */}
                     <td>
                       <div className="flex items-center gap-3">
@@ -325,7 +333,7 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert, shadowId }) => {
         totalPage={dataTopProduk?.meta?.totalPage ?? 1}
         setPage={handlePage}
         setLimit={handleLimit}
-        limit={dataTopProduk?.meta?.limit ?? 8}
+        limit={Number(limit) ?? 8}
         isLoading={isLoading}
         emptyData={!isExistData}
         totalData={dataTopProduk?.meta?.totalData}

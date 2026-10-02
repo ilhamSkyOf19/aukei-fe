@@ -87,8 +87,8 @@ const FormOngkir: FC<Props> = ({ transactionId, queryKey }) => {
         bgColor="bg-success"
         icon={CircleCheckIcon}
         noLabel
+        customHeight="h-12"
         textColor="text-primary-white"
-        customHeight="h-full"
         customWidth="w-14"
         customIconSize="size-5.5"
         isLoading={isPendingOngkir}

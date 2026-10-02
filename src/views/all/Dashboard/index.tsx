@@ -37,10 +37,8 @@ const Dashboard = () => {
     isActiveAnimationShadow,
 
     shadowId,
-    shadowIsActive,
 
     handleCloseModalShadowTransaction,
-    handleShowModalShadowTransaction,
     modalShadowTransactionRef,
 
     handleSetToast,
@@ -80,13 +78,13 @@ const Dashboard = () => {
             />
 
             {/* button shadow feature */}
-            {shadowIsActive === true && (
+            {/* {shadowIsActive === true && (
               <button
                 type="button"
                 className="absolute top-1 right-1 z-10 w-12 h-12 cursor-default!"
                 onClick={() => handleShowModalShadowTransaction()}
               />
-            )}
+            )} */}
           </>
         )}
 
@@ -291,6 +289,7 @@ const Dashboard = () => {
 
       {/* modal */}
       <ModalChooseIsActiveShadowFeature
+        handleSetToastFormParent={handleSetToast}
         modalRef={modalShadowFeatureRef}
         handleCloseModal={handleCloseModalFeature}
         handleShowModal={handleShowModalFeature}

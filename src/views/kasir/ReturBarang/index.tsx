@@ -294,7 +294,10 @@ const ReturBarang = () => {
                                   <button
                                     disabled={
                                       item.quantity <= item.totalRetur ||
-                                      returnDetails?.some((item) => item.id)
+                                      returnDetails?.some(
+                                        (r) =>
+                                          r.transactionDetailId === item.id,
+                                      )
                                     }
                                     type="button"
                                     className="text-[0.625rem] font-medium px-2 py-1 border border-rose-600 rounded-md flex flex-row justify-start items-center gap-1 not-disabled:hover:text-primary-white not-disabled:transition-all not-disabled:duration-150 not-disabled:ease-in-out not-disabled:hover:bg-rose-600"
