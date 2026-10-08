@@ -6,14 +6,25 @@ import InputTextWithIcon from "../../../components/inputs/InputTextWithIcon";
 import InputPasswordWithIcon from "../../../components/inputs/InputPasswordWithIcon";
 import ButtonTheme from "../../../components/ui/button/ButtonTheme";
 import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_LOGIN } from "../../../types/toast.type";
 
 const Login: FC = () => {
   // call use
-  const { errors, handleSubmit, isPendingLogin, onSubmit, register } =
+  const { errors, handleSubmit, isPendingLogin, onSubmit, register, toast } =
     useLogin();
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center gap-4 lg:flex-row">
+      {toast && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_LOGIN[toast.type].message}
+          color={TOAST_CONFIG_LOGIN[toast.type].color}
+        />
+      )}
+
       {/* button dark mode */}
       <div className="absolute top-2 hover:scale-105 transition-all duration-300 ease-in-out right-2 w-12 h-12 bg-base-100 rounded-full flex justify-center items-center shadow-sm border border-transparent dark:border-base-content/10">
         <ButtonTheme />

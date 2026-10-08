@@ -47,7 +47,6 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     produk: {
       id: number;
       nama: string;
-      kode?: string | null;
       img: string;
       stok: number;
       hargaModalRataRata: number;

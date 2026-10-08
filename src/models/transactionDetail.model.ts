@@ -4,7 +4,7 @@ export interface ITransactionDetailType {
   id: number;
   produk: Pick<
     IProduk,
-    "id" | "nama" | "kode" | "img" | "hargaModalRataRata" | "hargaPpn"
+    "id" | "nama" | "img" | "hargaModalRataRata" | "hargaPpn"
   >;
   quantity: number;
   totalHarga: number;

@@ -253,9 +253,6 @@ const ReturBarang = () => {
                                     <p className="xl:text-[0.7rem] text-base-content font-semibold">
                                       {item.produk.nama}
                                     </p>
-                                    <span className="xl:text-[0.7rem] font-medium text-base-content/70">
-                                      {item.produk.kode}
-                                    </span>
                                   </div>
                                 </td>
                                 <td>
@@ -397,9 +394,6 @@ const ReturBarang = () => {
                           {/* nama */}
                           <span className="text-xs font-semibold text-base-content">
                             {item?.produk?.nama}
-                          </span>
-                          <span className="text-[0.625rem] font-medium text-base-content/70">
-                            {item?.produk?.kode ?? "-"}
                           </span>
                         </div>
                         <div className="flex flex-col justify-start items-start gap-0.5">

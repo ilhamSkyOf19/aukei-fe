@@ -8,6 +8,7 @@ import { useAuthStore } from "../../../stores/authStore";
 import { savePreviousPath } from "../../../helpers/previousPath";
 import { useShadowStore } from "../../../stores/shadowStore";
 import { ShadowTransactionServices } from "../../../services/shadowTransaction.service";
+import { useToastAnimation } from "../../../hooks/useToast";
 
 const useRiwayatTransaksi = () => {
   // navigate
@@ -15,6 +16,9 @@ const useRiwayatTransaksi = () => {
 
   // get shadow is active
   const { shadowIsActive, shadowId } = useShadowStore((state) => state);
+
+  // toast
+  const { toast } = useToastAnimation();
 
   // current pathname
   const { pathname: currentPathname, search: searchParamsTransaksi } =
@@ -138,6 +142,7 @@ const useRiwayatTransaksi = () => {
     pengguna,
     setSort,
     sort,
+    toast,
   };
 };
 

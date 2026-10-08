@@ -185,14 +185,9 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
                         </div>
                       </td>
                       <td>
-                        <div className="flex flex-col justify-start items-start gap-px">
-                          <p className="xl:text-[0.7rem] font-medium">
-                            {item.produk.nama}
-                          </p>
-                          <span className="xl:text-[0.625rem] font-medium text-base-content/70">
-                            {item.produk.kode}
-                          </span>
-                        </div>
+                        <p className="xl:text-[0.7rem] font-medium">
+                          {item.produk.nama}
+                        </p>
                       </td>
                       <td>
                         <span className="xl:text-[0.7rem] text-base-content">
@@ -505,7 +500,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
                           <div className="w-full h-60 flex flex-col justify-start items-start rounded-xl border border-transparent bg-base-100 shadow-sm dark:border-base-content/10 px-3 py-4 mt-2.5">
                             {/* header */}
                             <div className="w-full flex flex-col justify-start items-start">
-                              <span className="text-xs font-medium">
+                              <span className="text-xs font-medium text-base-content">
                                 Jadwal Cicilan
                               </span>
                             </div>

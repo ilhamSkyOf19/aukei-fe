@@ -261,12 +261,7 @@ const TopProduk: FC<Props> = ({ handleSetToast, handleSetAlert, shadowId }) => {
                     </td>
 
                     {/* nama */}
-                    <td>
-                      <div className="flex flex-col">
-                        <span>{produk.nama}</span>
-                        <span>{produk.kode ?? "-"}</span>
-                      </div>
-                    </td>
+                    <td>{produk.nama}</td>
 
                     {/* kategori */}
                     <td>{produk.kategori}</td>

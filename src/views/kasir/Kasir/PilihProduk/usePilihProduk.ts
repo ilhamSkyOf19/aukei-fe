@@ -190,7 +190,6 @@ const usePilihProduk = () => {
       hargaJualOld: findDetail.hargaJualOld,
       hargaJual: findDetail.hargaJual,
       img: findDetail.produk.img,
-      kode: findDetail.produk.kode,
       nama: findDetail.produk.nama,
       hargaModalRataRata: findDetail.produk.hargaModalRataRata,
       hargaPpn: findDetail.produk.hargaPpn,
@@ -199,7 +198,7 @@ const usePilihProduk = () => {
       // ResponseProdukForKasirType). Kalau modal butuh nilai stok terkini,
       // ambil dari data produk asli (mis. dari daftar produk kasir), bukan
       // dari draft transaksi ini.
-      stok: 0,
+      stok: findDetail.stokTersisa,
       diskon: findDetail.diskon,
     });
   };
@@ -451,7 +450,7 @@ const usePilihProduk = () => {
     const pelangganId = dataPelangganTanpaNama?.data?.id;
 
     // belum ada data / masih loading -> jangan lanjut
-    if (!pelangganId) return;
+    if (!pelangganId || dataTransaksi?.data !== null) return;
 
     // sudah pernah dipanggil / sedang berjalan -> jangan panggil lagi
     if (hasTriggeredRef.current || isPendingPilihPelanggan) return;
@@ -459,7 +458,12 @@ const usePilihProduk = () => {
     hasTriggeredRef.current = true;
 
     handlePilihPelanggan({ pelangganId });
-  }, [dataPelangganTanpaNama, isPendingPilihPelanggan, handlePilihPelanggan]);
+  }, [
+    dataPelangganTanpaNama,
+    isPendingPilihPelanggan,
+    handlePilihPelanggan,
+    dataTransaksi,
+  ]);
 
   // get use cancel update transaction complate
   const {

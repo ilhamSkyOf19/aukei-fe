@@ -94,7 +94,11 @@ const HeaderTransactionDetail: FC<Props> = ({
         largeValue={{
           value: pelanggan?.nama,
         }}
-        smallValue={formatNumberPhone(pelanggan?.noWa ?? "")}
+        smallValue={
+          pelanggan?.noWa !== "-" && pelanggan?.noWa !== undefined
+            ? formatNumberPhone(pelanggan?.noWa)
+            : "-"
+        }
         customWidth="col-span-1"
         isActive={pelanggan?.isActive}
       />

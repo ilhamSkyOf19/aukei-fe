@@ -122,9 +122,6 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
                           <p className="xl:text-[0.625rem] text-base-content">
                             {item.produk.nama}
                           </p>
-                          <span className="xl:text-[0.625rem] font-medium text-base-content/50">
-                            {item.produk.kode ?? "-"}
-                          </span>
                         </div>
                       </td>
                       <td>

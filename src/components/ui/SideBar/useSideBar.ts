@@ -18,6 +18,7 @@ import useConfirm from "../../../hooks/useConfirm";
 import useCancelUpdateTransactionComplate from "../../../hooks/useCancelTransactionUpdateComplate";
 import { removePreviousPath } from "../../../helpers/previousPath";
 import { useShadowStore } from "../../../stores/shadowStore";
+import { useStepStore } from "../../../stores/stepStore";
 
 const useSideBar = () => {
   // get auth context
@@ -25,6 +26,9 @@ const useSideBar = () => {
 
   // get shadow is active
   const { shadowIsActive, showNavigation } = useShadowStore((state) => state);
+
+  // get store step
+  const { step, setStep } = useStepStore((state) => state);
 
   // currentPathname
   const pathname = useLocation().pathname;
@@ -147,8 +151,14 @@ const useSideBar = () => {
     // }
 
     // jika sedang berada di halaman yang sama
-    if (link === "/dashboard/kasir" && pathname === "/dashboard/kasir") {
-      return;
+    if (link === "/dashboard/kasir") {
+      if (pathname === "/dashboard/kasir") {
+        return;
+      } else {
+        if (step > 2) {
+          return setStep(1);
+        }
+      }
     }
 
     if (pathname === "/dashboard/kasir") {
@@ -206,7 +216,9 @@ const useSideBar = () => {
           setIsNavigation(
             shadowIsActive && showNavigation
               ? NAVIGATION_LIST_OWNER
-              : NAVIGATION_LIST_OWNER.filter((item) => item.label !== "Shadow"),
+              : NAVIGATION_LIST_OWNER.filter(
+                  (item) => item.label !== "Bayangan",
+                ),
           );
           break;
 

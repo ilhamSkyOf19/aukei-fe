@@ -177,7 +177,7 @@ const useDaftarDetailProduk = (params: {
   };
 
   // is expired
-  const isExpired = completedAt && isMoreThanDays(completedAt, 3);
+  const isExpired3Days = completedAt ? isMoreThanDays(completedAt, 3) : false;
 
   return {
     isFromActive,
@@ -199,7 +199,7 @@ const useDaftarDetailProduk = (params: {
 
     isPendingTransactionOld,
 
-    isExpired,
+    isExpired3Days,
   };
 };
 

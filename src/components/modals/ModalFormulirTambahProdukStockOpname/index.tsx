@@ -223,10 +223,6 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
                               </div>
                               <div className="flex flex-col justify-start items-start">
                                 <p className="font-medium">{produk.nama}</p>
-
-                                <p className="text-base-content/60">
-                                  {produk.kode ?? "-"}
-                                </p>
                               </div>
                             </div>
                           </td>

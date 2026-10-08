@@ -38,6 +38,10 @@ import UbahPembayaranPage from "../pages/UbahPembayaranPage";
 import { ShadowFeatureServices } from "../services/shadowFeature.service";
 import { useShadowStore } from "../stores/shadowStore";
 import ShadowPages from "../pages/ShadowPages";
+import ForgetPasswordPage from "../pages/ForgetPasswordPage";
+import ActivationCodePage from "../pages/ActivationCodePage";
+import ResetPasswordPage from "../pages/ResetPasswordPage";
+import { ActivationCodeService } from "../services/activationCode.service";
 
 // ============================================================
 // LOADER: cek auth di setiap masuk dashboard
@@ -100,6 +104,21 @@ const dashboardLoader = async () => {
 //     return null;
 //   };
 
+const authLoader = async () => {
+  try {
+    await ActivationCodeService.checkToken();
+
+    return null;
+  } catch (error: any) {
+    if (error?.response?.status === 401) {
+      throw new Response("Not Found", {
+        status: 404,
+      });
+    }
+
+    throw error;
+  }
+};
 // ============================================================
 // ROUTE
 // ============================================================
@@ -120,6 +139,23 @@ const route = createBrowserRouter([
   {
     path: "*",
     element: <NotFoundPage />,
+  },
+
+  //  ─── Forget Password───────────────────────────────────────────────────────────
+  {
+    path: "/forget-password",
+    element: <ForgetPasswordPage />,
+  },
+
+  {
+    path: "/reset-password",
+    loader: authLoader,
+    element: <ResetPasswordPage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/activation-code",
+    element: <ActivationCodePage />,
   },
 
   // ── Dashboard (protected) ────────────────────────────────

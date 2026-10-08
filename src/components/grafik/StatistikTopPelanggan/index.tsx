@@ -15,6 +15,7 @@ type Props = {
   handleSetToast: (data: string) => void;
   shadowId?: number | null;
 };
+
 const StatistikTopPelanggan: FC<Props> = ({
   rangeDate,
   customHeight,

@@ -26,6 +26,7 @@ import { useKategoriChooseStore } from "../../../stores/kategoriChooseStore";
 import { useAuthStore } from "../../../stores/authStore";
 import { useShadowStore } from "../../../stores/shadowStore";
 import { ShadowStatistikServices } from "../../../services/shadowStatistik.service";
+import useDownloadStatistikAllShadow from "../../../hooks/useDownloadStatistikAllShadow";
 
 const pilihan: { key: LaporanPilihanType; label: string; icon: LucideIcon }[] =
   [
@@ -161,6 +162,15 @@ const useStatistikDetail = () => {
       handleSetToast,
     });
 
+  // all shadow
+  const {
+    handleDownloadStatistikAllShadowPdf,
+    isLoadingDownloadStatistikAllShadowPdf,
+  } = useDownloadStatistikAllShadow({
+    handleSetAlert,
+    handleSetToast,
+  });
+
   // download pdf booking
   const {
     handleDownloadStatistikBookingPdf,
@@ -169,11 +179,25 @@ const useStatistikDetail = () => {
 
   // handle download pdf
   const handleExportPdf = async () => {
-    switch (selectedLaporan) {
-      case "semua":
-        return await handleDownloadStatistikAllPdf({ startDate, endDate });
-      case "booking":
-        return await handleDownloadStatistikBookingPdf({ startDate, endDate });
+    if (shadowIsActive && shadowId) {
+      switch (selectedLaporan) {
+        case "semua":
+          return await handleDownloadStatistikAllShadowPdf({
+            startDate,
+            endDate,
+            shadowId,
+          });
+      }
+    } else {
+      switch (selectedLaporan) {
+        case "semua":
+          return await handleDownloadStatistikAllPdf({ startDate, endDate });
+        case "booking":
+          return await handleDownloadStatistikBookingPdf({
+            startDate,
+            endDate,
+          });
+      }
     }
   };
 
@@ -182,8 +206,7 @@ const useStatistikDetail = () => {
         (item) =>
           item.key !== "booking" &&
           item.key !== "pantauanStok" &&
-          item.key !== "topPelanggan" &&
-          item.key !== "topProduk",
+          item.key !== "laporanSisa",
       )
     : pilihan;
 
@@ -199,7 +222,9 @@ const useStatistikDetail = () => {
     startDate,
     endDate,
 
-    isLoadingDownloadStatistikAllPdf,
+    isLoadingDownloadStatistikAllPdf:
+      isLoadingDownloadStatistikAllPdf ||
+      isLoadingDownloadStatistikAllShadowPdf,
 
     isLoadingDownloadStatistikBookingPdf,
 

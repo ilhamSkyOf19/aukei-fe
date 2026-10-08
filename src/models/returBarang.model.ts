@@ -234,7 +234,7 @@ export type ResponseDataFindAllReturnDetailType = Pick<
     ITransactionDetailType,
     "id" | "quantity" | "hargaJual"
   > & {
-    produk: Pick<IProduk, "id" | "kode" | "nama">;
+    produk: Pick<IProduk, "id" | "nama">;
   };
 };
 

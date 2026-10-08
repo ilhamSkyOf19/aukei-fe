@@ -118,9 +118,6 @@ const ShowDataBarangMasuk: FC<Props> = ({
                       <p className="text-base-content text-sm font-semibold">
                         {item.produk.nama}
                       </p>
-                      <p className="text-base-content/50 text-[0.625rem]">
-                        {item.produk.kode}
-                      </p>
                     </div>
 
                     {/* button aksi */}
@@ -146,8 +143,8 @@ const ShowDataBarangMasuk: FC<Props> = ({
                             textColor="text-primary-white"
                             handleBtn={() =>
                               handleShowModalUbahProduk(item.id, {
-                                jumlahBox: item.jumlahBox,
                                 produk: item.produk,
+                                jumlahBox: item.jumlahBox,
                                 hargaBeli: item.produk.hargaBeli,
                                 jumlahStok: item.jumlahStok,
                               })
@@ -233,7 +230,6 @@ const ShowDataBarangMasuk: FC<Props> = ({
                 <th>No</th>
                 <th>Foto</th>
                 <th>Nama</th>
-                <th>Kode</th>
                 <th>Kategori</th>
                 {roleOwner && <th>Hrg. Beli Terakhir</th>}
                 <th>Jml. Box</th>
@@ -278,9 +274,6 @@ const ShowDataBarangMasuk: FC<Props> = ({
                       </td>
                       {/* nama */}
                       <td>{item.produk.nama}</td>
-
-                      {/* kode */}
-                      <td>{item.produk.kode ?? "-"}</td>
 
                       {/* kategori */}
                       <td>{item.produk.kategori.nama}</td>

@@ -120,21 +120,22 @@ const StatistikDetail = () => {
               <>
                 <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
                   {/* aksi */}
-                  <div className="w-full flex flex-row justify-between items-start gap-2">
+                  <div className="w-full flex flex-col md:flex-row justify-between items-start gap-2">
                     {/* button filter */}
                     <RangeDate
-                      customWidth="w-50 lg:w-70"
+                      customWidth="w-full lg:w-70 order-2 md:order-1"
                       labelDown
                       noLabel
                       noLabelAll
                     />
                     {/* button export */}
-                    <div className="md:flex flex-row justify-start items-center gap-2 hidden">
+                    <div className="w-full md:w-auto order-1 md:order-2 flex flex-row justify-start items-center gap-2 ">
                       <ButtonWithIcon
                         icon={FileText}
                         label="Export PDF"
                         bgColor="bg-error"
                         textColor="text-primary-white"
+                        customWidth="flex-1 md:flex-none"
                         isLoading={
                           isLoadingDownloadStatistikAllPdf ||
                           isLoadingDownloadStatistikBookingPdf
@@ -143,7 +144,10 @@ const StatistikDetail = () => {
                       />
 
                       {/* refresh */}
-                      <ButtonRefresh handleRefresh={handleRefresh} />
+                      <ButtonRefresh
+                        handleRefresh={handleRefresh}
+                        customWidth="flex-1 md:flex-none"
+                      />
                     </div>
                   </div>
                   <div
@@ -290,6 +294,7 @@ const StatistikDetail = () => {
             <TopPelanggan
               handleSetAlert={handleSetAlert}
               handleSetToast={handleSetToast}
+              shadowId={shadowId}
             />
           )}
         </div>

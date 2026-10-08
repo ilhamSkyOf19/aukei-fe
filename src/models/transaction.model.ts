@@ -127,6 +127,7 @@ export interface ResponseRiwayatTransactionType {
     totalKasMasuk: number;
     totalPiutang: number;
     totalOngkir: number;
+    totalDiskon: number;
   };
 }
 
@@ -171,7 +172,6 @@ export interface DetailsType {
   diskon: number;
   img: string;
   nama: string;
-  kode?: string | null;
 }
 
 export interface DataTransaksiBookingForResponseType {
@@ -219,13 +219,7 @@ export interface ResponseStatistikBookingType {
 // type for produk detail item choose
 export type ProdukDetailItem = Pick<
   ResponseProdukForKasirType,
-  | "nama"
-  | "img"
-  | "hargaJual"
-  | "kode"
-  | "hargaJualTerakhirTransaksi"
-  | "id"
-  | "stok"
+  "nama" | "img" | "hargaJual" | "hargaJualTerakhirTransaksi" | "id" | "stok"
 > & { subTotal: number; diskon: number; quantity: number };
 
 export interface ResponseStatistikKebutuhanBarang {

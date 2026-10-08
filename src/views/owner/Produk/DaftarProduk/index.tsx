@@ -164,7 +164,6 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                   img: produk.img,
                   isiPerBox: produk.isiPerBox,
                   kategori: produk.kategori.nama,
-                  kode: produk.kode,
                   stok: produk.stok,
                   isActive: produk.isActive,
                   hargaPpn: produk.hargaPpn,
@@ -181,7 +180,6 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                       img: produk.img,
                       kategori: produk.kategori,
                       nama: produk.nama,
-                      kode: produk.kode,
                       hargaModalRataRata: produk.hargaModalRataRata,
                     },
                   })
@@ -211,7 +209,6 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
             <thead>
               <tr className="h-12 bg-base-200 text-[0.7rem]">
                 <th>Foto</th>
-                <th>Kode</th>
                 <th>Nama</th>
                 <th>Kategori</th>
                 <th>Hrg. Mdl. Terakhir</th>
@@ -240,7 +237,6 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                     {index > 0 && index % 25 === 0 && (
                       <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
                         <th>Foto</th>
-                        <th>Kode</th>
                         <th>Nama</th>
                         <th>Kategori</th>
                         <th>Hrg. Beli Terakhir</th>
@@ -273,9 +269,6 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                           </div>
                         </div>
                       </td>
-
-                      {/* kode */}
-                      <td className="font-medium">{produk.kode ?? "-"}</td>
 
                       {/* nama */}
                       <td>{produk.nama}</td>
@@ -345,7 +338,6 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
                                   img: produk.img,
                                   kategori: produk.kategori,
                                   nama: produk.nama,
-                                  kode: produk.kode,
                                   hargaModalRataRata: produk.hargaModalRataRata,
                                 },
                               })
@@ -428,7 +420,6 @@ const DaftarProduk: FC<Props> = ({ handleSetToast }) => {
 type CardProdukProps = {
   produk: {
     id: number;
-    kode?: string | null;
     nama: string;
     kategori: string;
     hargaBeli: number;
@@ -479,10 +470,6 @@ const CardProduk: FC<CardProdukProps> = ({
             {/* kode produk */}
             <span className="text-[0.7rem] font-medium text-base-content dark:text-base-content">
               {produk.nama}
-            </span>
-            {/* nama produk */}
-            <span className="text-sm font-medium text-base-content">
-              {produk.kode ?? "-"}
             </span>
 
             {/* kategori produk */}

@@ -108,6 +108,8 @@ export interface ResponseStatistikWithPersentaseType {
   totalRefund: StatistikTrendType;
 
   totalOngkir: StatistikTrendType;
+
+  totalDiskon: StatistikTrendType;
 }
 
 export interface ResponseChartType {
@@ -176,6 +178,7 @@ export type ResponseStatistikKategoriStokType = {
   totalProduk: number;
   totalStok: number;
   totalEstimasiOmzet: number;
+  totalEstimasiModal: number;
 };
 
 export type ResponseStatistikStokModalType = {

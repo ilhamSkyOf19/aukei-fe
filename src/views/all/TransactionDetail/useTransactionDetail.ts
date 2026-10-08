@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
 import { useMemo } from "react";
 import {
@@ -6,13 +6,14 @@ import {
   TRANSACTION_STATUS_TYPE,
 } from "../../../types/constant.type";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { parseId } from "../../../helpers/helpers";
+import { isMoreThanDays, parseId } from "../../../helpers/helpers";
 import { useAuthStore } from "../../../stores/authStore";
 import { LOCAL_STORAGE_KEYS } from "../../../utils/localStorageKeys";
 import { useStepStore } from "../../../stores/stepStore";
 import { useToastAnimation } from "../../../hooks/useToast";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { getPreviousPath } from "../../../helpers/previousPath";
+import useConfirm from "../../../hooks/useConfirm";
 
 const useTransactionDetail = (params: { transactionId?: number }) => {
   const { transactionId: transactionIdProps } = params;
@@ -20,11 +21,14 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
   // handle steps
   const { setStep: handleSteps, step } = useStepStore((state) => state);
 
+  const queryClient = useQueryClient();
+
   // toast
   const { toast, handleSetToast } = useToastAnimation();
 
   // alert
   const { alert, handleSetAlert } = useAlertAnimation();
+
   // get pengguna
   const pengguna = useAuthStore((state) => state.pengguna);
 
@@ -37,11 +41,11 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
   // navigate
   const navigate = useNavigate();
 
+  const previousPath = getPreviousPath();
+
   // handle back transaksi
   const handleBackTransaksi = () => {
     if (!currentPathname.includes("kasir")) {
-      const previousPath = getPreviousPath();
-
       // kembali ke riwayat transaksi
       if (currentPathname.includes("riwayat-transaksi") && previousPath) {
         return navigate(previousPath);
@@ -151,6 +155,58 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     currentPathname.includes("booking") &&
     pengguna?.role === ROLE_INTERNAL_TYPE.KASIR;
 
+  // is expired
+  const isExpired3Days =
+    dataTransaction?.data?.completedAt &&
+    isMoreThanDays(dataTransaction?.data?.completedAt, 3);
+
+  // modal confirm
+  const {
+    modalRef: modalConfirmRef,
+    confirm,
+    data: dataConfirm,
+    handleCancel: handleCancelModalConfirm,
+    handleConfirm,
+  } = useConfirm<{ bigTitle: string; smallTitle: string }>();
+
+  // cancel mutation
+  const {
+    mutateAsync: mutateCancelTransaksi,
+    isPending: isPendingCancelTransaksi,
+  } = useMutation({
+    mutationFn: (data: { transactionId: number }) => {
+      return TransactionServices.cancelTransaction(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transaction"],
+      });
+
+      handleSetToast?.("cancelled_transaction");
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // handle cancel transaksi
+  const handleCancelTransaksi = async () => {
+    try {
+      if (validatedId) {
+        const isConfirm = await confirm({
+          bigTitle: "Apakah Anda yakin ingin membatalkan transaksi ini?",
+          smallTitle: "Quantity produk akan dikembalikan ke inventori",
+        });
+
+        if (!isConfirm) return;
+
+        await mutateCancelTransaksi({ transactionId: validatedId });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     dataTransaction,
     isLoadingTransaction,
@@ -168,6 +224,14 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
     alert,
     handleSetToast,
     handleSetAlert,
+
+    isExpired3Days,
+    modalConfirmRef,
+    dataConfirm,
+    handleCancelModalConfirm,
+    handleConfirm,
+    isPendingCancelTransaksi,
+    handleCancelTransaksi,
   };
 };
 

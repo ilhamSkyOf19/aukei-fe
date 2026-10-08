@@ -81,21 +81,20 @@ export class BarangMasukDetailValidation {
       jumlahBox: z
         .number("Jumlah box tidak valid")
         .int()
-        .positive("Jumlah box harus lebih dari 0")
         .max(2147483647, "Jumlah box terlalu besar")
         .optional(),
 
       jumlahStok: z
         .number("Jumlah stok tidak valid")
         .int()
-        .positive("Jumlah stok harus lebih dari 0")
         .max(2147483647, "Jumlah stok terlalu besar")
         .optional(),
     })
     .superRefine((data, ctx) => {
-      const hasJumlahBox = data.jumlahBox !== undefined;
+      const hasJumlahBox = data.jumlahBox !== undefined && data.jumlahBox > 0;
 
-      const hasJumlahStok = data.jumlahStok !== undefined;
+      const hasJumlahStok =
+        data.jumlahStok !== undefined && data.jumlahStok > 0;
 
       if (hasJumlahBox && hasJumlahStok) {
         ctx.addIssue({

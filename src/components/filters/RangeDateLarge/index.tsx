@@ -10,6 +10,7 @@ import listDateRangeLong from "../../../utils/listDateRangeLong";
 import { DayPicker } from "react-day-picker";
 import useRangeDate from "../../../hooks/useRangeDate";
 import ButtonText from "../../ui/button/ButtonText";
+import listDateRange from "../../../utils/listDateRange";
 
 type Props = {
   customWidth?: string;
@@ -55,15 +56,15 @@ const RangeDateLarge: FC<Props> = ({
 
         <select
           value={selectedOption}
-          className="select select-sm mt-1 w-full h-10 shadow-none text-base-content rounded-xl outline-none"
+          className="select select-sm mt-1 w-full h-10 shadow-none text-base-content rounded-xl outline-none "
           onChange={(e) => handleOnChangeDropDown(e.target.value)}
         >
           <option value="" disabled>
             Filter Tanggal
           </option>
 
-          {listDateRangeLong.map((item, index) => (
-            <option key={index} value={item.value}>
+          {listDateRange.map((item, index) => (
+            <option className="py-2" key={index} value={item.value}>
               {item.label}
             </option>
           ))}

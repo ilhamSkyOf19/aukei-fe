@@ -162,7 +162,6 @@ const DataBooking: FC<Props> = ({ pilihan }) => {
           <thead>
             <tr className="h-12 bg-base-200 text-[0.7rem]">
               <th>Foto</th>
-              <th>Kode</th>
               <th>Nama</th>
               <th>Kategori</th>
               <th>Stok Tersedia</th>
@@ -188,7 +187,6 @@ const DataBooking: FC<Props> = ({ pilihan }) => {
                   {index > 0 && index % 25 === 0 && (
                     <tr className="h-12 bg-base-200 text-[0.7rem] text-base-content/60">
                       <th>Foto</th>
-                      <th>Kode</th>
                       <th>Nama</th>
                       <th>Kategori</th>
                       <th>Stok Tersedia</th>
@@ -218,9 +216,6 @@ const DataBooking: FC<Props> = ({ pilihan }) => {
                         </div>
                       </div>
                     </td>
-
-                    {/* kode */}
-                    <td className="font-medium text-info">{produk.kode}</td>
 
                     {/* nama */}
                     <td>{produk.nama}</td>

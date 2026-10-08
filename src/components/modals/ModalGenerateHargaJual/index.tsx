@@ -17,13 +17,7 @@ type Props = {
   data?: Partial<
     Pick<
       IProduk,
-      | "id"
-      | "nama"
-      | "img"
-      | "hargaJual"
-      | "kategori"
-      | "kode"
-      | "hargaModalRataRata"
+      "id" | "nama" | "img" | "hargaJual" | "kategori" | "hargaModalRataRata"
     >
   >;
   handleSetToast: (toast: string) => void;
@@ -95,13 +89,6 @@ const ModalGenerateHargaJual: FC<Props> = ({
                     {/* nama produk */}
                     <div className="w-full flex flex-row justify-start items-start gap-2.5">
                       <Label label={`Nama Produk`} value={data?.nama || ""} />
-
-                      {/* kode produk */}
-                      <Label
-                        label={`Kode Produk`}
-                        value={data?.kode || "-"}
-                        small
-                      />
                     </div>
 
                     {/* harga jual */}

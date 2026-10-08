@@ -87,6 +87,7 @@ export const TRANSACTION_STATUS_TYPE = {
   CART: "CART",
   BOOKING: "BOOKING",
   COMPLETED: "COMPLETED",
+  CANCELLED: "CANCELLED",
 } as const;
 
 export type TransactionStatusType =

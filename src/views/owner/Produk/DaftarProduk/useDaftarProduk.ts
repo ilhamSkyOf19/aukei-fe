@@ -46,13 +46,7 @@ const useDaftarProduk = (params: {
   } = useModal<{
     produk: Pick<
       IProduk,
-      | "id"
-      | "nama"
-      | "img"
-      | "hargaJual"
-      | "kategori"
-      | "kode"
-      | "hargaModalRataRata"
+      "id" | "nama" | "img" | "hargaJual" | "kategori" | "hargaModalRataRata"
     >;
   }>();
 

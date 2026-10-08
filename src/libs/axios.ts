@@ -43,7 +43,7 @@ instanceAxios.interceptors.response.use(
       !error.config.url?.includes("/auth/me")
     ) {
       clearLocalStorage();
-      window.location.href = "/login";
+      // window.location.href = "/login";
       return;
     }
 

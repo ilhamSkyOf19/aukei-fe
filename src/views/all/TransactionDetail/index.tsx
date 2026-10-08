@@ -4,17 +4,27 @@ import useTransactionDetail from "./useTransactionDetail";
 import ButtonBackText from "../../../components/ui/button/ButtonBackText";
 import HeaderTransactionDetail from "./HeaderTransactionDetail";
 import DaftarDetailProduk from "./DaftarDetailProduk";
-import { PAYMENT_METHOD_TYPE } from "../../../types/constant.type";
+import {
+  PAYMENT_METHOD_TYPE,
+  TRANSACTION_STATUS_TYPE,
+} from "../../../types/constant.type";
 import InformasiPembayaran from "./InformasiPembayaran";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_TRANSACTION_DETAIL } from "../../../types/toast.type";
 import Alert from "../../../components/messages/Alert";
 import { ALERT_CONFIG_TRANSACTION_DETAIL } from "../../../types/alert.types";
+import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
+import { AlertTriangle, X } from "lucide-react";
+import ModalAlert from "../../../components/modals/ModalAlert";
 
 type Props = {
   transactionId?: number;
+  handleSetToast?: (value: string) => void;
 };
-const TransactionDetail: FC<Props> = ({ transactionId }) => {
+const TransactionDetail: FC<Props> = ({
+  transactionId,
+  handleSetToast: handleSetToastFormProps,
+}) => {
   // call use
   const {
     dataTransaction,
@@ -33,6 +43,13 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
     alert,
     handleSetAlert,
     handleSetToast,
+    dataConfirm,
+    handleCancelModalConfirm,
+    handleCancelTransaksi,
+    handleConfirm,
+    isExpired3Days,
+    isPendingCancelTransaksi,
+    modalConfirmRef,
   } = useTransactionDetail({ transactionId });
 
   return (
@@ -42,8 +59,22 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
         isKasirPage ? "pb-2.5" : "pt-2.5 px-2.5",
       )}
     >
-      {/* back */}
-      <ButtonBackText handleClick={() => handleBackTransaksi()} />
+      <div className="w-full flex flex-row justify-between items-center">
+        {/* back */}
+        <ButtonBackText handleClick={() => handleBackTransaksi()} />
+
+        {!isExpired3Days &&
+          dataTransaction?.data?.status ===
+            TRANSACTION_STATUS_TYPE.COMPLETED && (
+            <ButtonWithIcon
+              label="Batalkan Transaksi"
+              icon={X}
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              handleBtn={() => handleCancelTransaksi()}
+            />
+          )}
+      </div>
       {/* toast */}
       {toast && (
         <Toast
@@ -91,7 +122,7 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
           dataKebutuhanBarang={dataKebutuhanBarang}
           isLoadingKebutuhanBarang={isLoadingKebutuhanBarang}
           handleSetAlert={handleSetAlert}
-          handleSetToast={handleSetToast}
+          handleSetToast={handleSetToastFormProps ?? handleSetToast}
         />
         <InformasiPembayaran
           dataTransaction={dataTransaction}
@@ -102,6 +133,18 @@ const TransactionDetail: FC<Props> = ({ transactionId }) => {
           siapKirim={dataKebutuhanBarang?.data?.some((item) => item.siapKirim)}
         />
       </div>
+
+      {/* modal alert */}
+      <ModalAlert
+        icon={AlertTriangle}
+        bigTitle={dataConfirm?.bigTitle ?? ""}
+        smallTitle={dataConfirm?.smallTitle ?? ""}
+        modalRef={modalConfirmRef}
+        handleCloseModal={handleCancelModalConfirm}
+        handleConfirm={handleConfirm}
+        iconColor={"text-warning"}
+        isLoading={isPendingCancelTransaksi}
+      />
     </div>
   );
 };

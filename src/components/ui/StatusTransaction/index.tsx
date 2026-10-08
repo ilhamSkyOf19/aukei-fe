@@ -36,13 +36,16 @@ const StatusTransaction: FC<Props> = ({
             "bg-amber-100 text-amber-600",
           statusTempo === TEMPO_STATUS_TYPE.PAID &&
             "bg-green-100 text-green-600",
-          (statusTempo === TEMPO_STATUS_TYPE.OVERDUE || statusTempoDueToday) &&
+          (status === TRANSACTION_STATUS_TYPE.CANCELLED ||
+            statusTempo === TEMPO_STATUS_TYPE.OVERDUE ||
+            statusTempoDueToday) &&
             "bg-red-100 text-red-600",
         )}
       >
         {status === TRANSACTION_STATUS_TYPE.COMPLETED &&
           !statusTempo &&
           "Lunas"}
+        {status === TRANSACTION_STATUS_TYPE.CANCELLED && "Dibatalkan"}
         {status === TRANSACTION_STATUS_TYPE.BOOKING &&
           !statusTempo &&
           "Booking"}

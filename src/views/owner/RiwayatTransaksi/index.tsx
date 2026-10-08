@@ -5,6 +5,7 @@ import {
   CalendarClock,
   ChartLine,
   ChartNoAxesCombined,
+  CirclePercent,
   History,
   Landmark,
   PackageCheck,
@@ -22,6 +23,7 @@ import {
 import { formatTanggalLengkap } from "../../../helpers/formatDate";
 import {
   ROLE_INTERNAL_TYPE,
+  TRANSACTION_STATUS_TYPE,
   type PaymentMethodType,
 } from "../../../types/constant.type";
 import PaginationAndLimit from "../../../components/filters/PaginationAndLimit";
@@ -32,6 +34,8 @@ import CardData from "../../../components/ui/cards/CardData";
 import StatusTransaction from "../../../components/ui/StatusTransaction";
 import useRiwayatTransaksi from "./useRiwayatTransaksi";
 import CardStatistik from "../../../components/ui/cards/CardStatistik";
+import Toast from "../../../components/messages/Toast";
+import { TOAST_CONFIG_RIWAYAT_TRANSACTION } from "../../../types/toast.type";
 
 // PERBAIKI , BERIKAN STATISTIK NYA DAN UNTUK DAFTAR RIWAYAT TIDAK PERLU BERDASARKAN PELANGGAN , JIKA PELANGGAN DOBLE TIDAK APA MEMANG HARI ITU ADA 2 TRANSAKSI, PERBAIKI SERVICE NYA JUGA
 const RiwayatTransaksi = () => {
@@ -48,10 +52,20 @@ const RiwayatTransaksi = () => {
     setPage,
     setSort,
     sort,
+    toast,
   } = useRiwayatTransaksi();
 
   return (
     <div className="w-full">
+      {toast !== null && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={TOAST_CONFIG_RIWAYAT_TRANSACTION[toast.type].message}
+          color={TOAST_CONFIG_RIWAYAT_TRANSACTION[toast.type].color}
+        />
+      )}
+
       <div className="w-full  flex flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5">
         <FilterStatistik
           handleSearch={handleSearch}
@@ -73,9 +87,7 @@ const RiwayatTransaksi = () => {
           ) : isExistDataRiwayatTransaksi && dataRiwayatTransaksi ? (
             dataRiwayatTransaksi?.data?.data.map((item) => (
               <CardData
-                handleRedirectDetail={() =>
-                  handleRedirectDetail(item.pelanggan.id)
-                }
+                handleRedirectDetail={() => handleRedirectDetail(item.id)}
                 key={item.id}
                 nomorReferensi={item.nomorTransaksi || ""}
                 tanggal={item?.completedAt || new Date()}
@@ -237,6 +249,23 @@ const RiwayatTransaksi = () => {
               caption={"Jumlah piutang"}
             />
 
+            {/* total diskon */}
+            <CardStatistik
+              isLoading={isLoadingRiwayatTransaksi}
+              icon={{
+                icon: CirclePercent,
+                bgColor: "bg-rose-100",
+                iconColor: "text-rose-400",
+              }}
+              label={"Total Diskon"}
+              value={
+                formatRupiah(
+                  dataRiwayatTransaksi?.data?.statistik?.totalDiskon ?? 0,
+                ) || "0"
+              }
+              caption={"Jumlah Diskon"}
+            />
+
             {/* total ongkir */}
             <CardStatistik
               isLoading={isLoadingRiwayatTransaksi}
@@ -305,7 +334,8 @@ const RiwayatTransaksi = () => {
                     <tr
                       className={cn(
                         "transition-all duration-75 ease-in-out h-12 text-base-content text-[0.7rem]",
-                        // false === true && "bg-base-200",
+                        item.status === TRANSACTION_STATUS_TYPE.CANCELLED &&
+                          "bg-error/30",
                       )}
                     >
                       <td>
@@ -417,8 +447,9 @@ const RiwayatTransaksi = () => {
             {/* foot */}
           </table>
         </div>
+
         {/* pagination */}
-        <div className="w-full -mt-2">
+        <div className="w-full -mt-2 order-4">
           <PaginationAndLimit
             currentPage={dataRiwayatTransaksi?.data?.meta?.currentPage || 1}
             setPage={setPage}

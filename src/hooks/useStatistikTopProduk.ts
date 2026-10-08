@@ -5,6 +5,7 @@ import useFilterState from "../services/useFilterState";
 import { useLaporanStore } from "../stores/laporanStore";
 import useDownloadLaporanTopProduk from "./useDownloadLaporanTopProduk";
 import { ShadowStatistikServices } from "../services/shadowStatistik.service";
+import useDownloadLaporanTopProdukShadow from "./useDownloadLaporanTopProdukShadow";
 
 const useStatistikTopProduk = (params: {
   customLimit?: number;
@@ -109,7 +110,7 @@ const useStatistikTopProduk = (params: {
             }),
 
             ...(finalLimit && {
-              limit,
+              limit: finalLimit,
             }),
           },
         });
@@ -167,9 +168,39 @@ const useStatistikTopProduk = (params: {
 
   // downlaod pdf
   const {
-    handleDownloadLaporanTopProdukPdf,
-    isLoadingDownloadLaporanTopProdukPdf,
+    handleDownloadLaporanTopProdukPdf:
+      handleDownloadLaporanTopProdukPdfOriginal,
+    isLoadingDownloadLaporanTopProdukPdf:
+      isLoadingDownloadLaporanTopProdukPdfOriginal,
   } = useDownloadLaporanTopProduk({ handleSetAlert, handleSetToast });
+
+  const {
+    handleDownloadLaporanTopProdukShadowPdf,
+    isLoadingDownloadLaporanTopProdukShadowPdf,
+  } = useDownloadLaporanTopProdukShadow({ handleSetAlert, handleSetToast });
+
+  // handle download laporan top produk pdf (global)
+  const handleDownloadLaporanTopProdukPdf = async (params: {
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    try {
+      if (shadowId) {
+        return handleDownloadLaporanTopProdukShadowPdf({
+          shadowId,
+          startDate: params.startDate,
+          endDate: params.endDate,
+        });
+      } else {
+        return handleDownloadLaporanTopProdukPdfOriginal({
+          startDate: params.startDate,
+          endDate: params.endDate,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return {
     startDateEndDate: {
@@ -205,7 +236,9 @@ const useStatistikTopProduk = (params: {
 
     handleDownloadLaporanTopProdukPdf,
 
-    isLoadingDownloadLaporanTopProdukPdf,
+    isLoadingDownloadLaporanTopProdukPdf:
+      isLoadingDownloadLaporanTopProdukPdfOriginal ||
+      isLoadingDownloadLaporanTopProdukShadowPdf,
 
     refetchTopProduk,
   };

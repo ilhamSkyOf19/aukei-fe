@@ -50,14 +50,6 @@ const CardNotifikasiProduk: FC<Props> = ({
               <div className="flex flex-row justify-start items-center gap-4">
                 <div className="flex flex-col justify-start items-start pr-4 border-r border-base-content/30">
                   <span className="text-[0.625rem] text-base-content/70">
-                    Kode
-                  </span>
-                  <span className="text-[0.625rem] text-base-content font-medium">
-                    {produk.kode}
-                  </span>
-                </div>
-                <div className="flex flex-col justify-start items-start pr-4 border-r border-base-content/30">
-                  <span className="text-[0.625rem] text-base-content/70">
                     Kategori
                   </span>
                   <span className="text-[0.625rem] font-medium pr-4 text-base-content">
@@ -123,9 +115,6 @@ const CardNotifikasiProduk: FC<Props> = ({
               <div className="flex flex-col justify-start items-start gap-0.5">
                 <span className="font-semibold text-xs text-base-content">
                   {produk.nama}
-                </span>
-                <span className="text-[0.625rem] font-medium text-base-content">
-                  {produk.kode}
                 </span>
                 <div className="flex flex-row justify-start items-center gap-2.5">
                   <span className="text-[0.625rem] text-base-content/70 pr-4 md:border-r md:border-base-content/30">

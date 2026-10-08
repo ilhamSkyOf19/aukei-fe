@@ -104,20 +104,6 @@ const FormulirProduk = () => {
                 )}
 
                 <div className="w-full flex flex-col lg:flex-row justify-start items-start gap-2 lg:gap-6">
-                  {/* kode produk */}
-                  {isLoadingProdukDetail ? (
-                    <div className="w-full h-10 skeleton my-3" />
-                  ) : (
-                    <InputTextNonIcon
-                      register={register("kode")}
-                      name="kode"
-                      label="Kode Produk (Opsional)"
-                      placeholder="Kode Produk"
-                      max={50}
-                      errorMessage={errors?.kode?.message}
-                    />
-                  )}
-
                   {/* kategori */}
 
                   {isLoadingProdukDetail ? (

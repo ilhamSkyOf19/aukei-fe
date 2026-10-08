@@ -14,7 +14,6 @@ export interface IBarangMasukDetailType {
   produk: Pick<
     IProduk,
     | "nama"
-    | "kode"
     | "kategori"
     | "img"
     | "hargaBeli"

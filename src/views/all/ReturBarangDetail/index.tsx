@@ -302,9 +302,6 @@ const ReturBarangDetail = () => {
                                   <p className="xl:text-[0.7rem] text-base-content font-semibold">
                                     {item.produk.nama}
                                   </p>
-                                  <span className="xl:text-[0.7rem] font-medium text-base-content/70">
-                                    {item.produk.kode}
-                                  </span>
                                 </div>
                               </td>
 
@@ -461,9 +458,6 @@ const ReturBarangDetail = () => {
                                 <p className="xl:text-[0.7rem] text-base-content font-semibold">
                                   {item.produk.nama}
                                 </p>
-                                <span className="xl:text-[0.7rem] font-medium text-base-content/70">
-                                  {item.produk.kode}
-                                </span>
                               </div>
                             </td>
                             <td>

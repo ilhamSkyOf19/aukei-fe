@@ -29,7 +29,7 @@ const CardMetodePembayaran: FC<CardMetodePembayaranProps> = ({
     <button
       type="button"
       className={cn(
-        "w-full flex flex-row justify-between items-center rounded-xl shadow-sm p-3 border  transition-all duration-150 ease-in-out",
+        "w-full flex flex-row justify-between items-center rounded-xl shadow-md p-3 border transition-all duration-150 ease-in-out dark:border dark:border-base-content/10",
         isActive
           ? "border-emerald-600 bg-emerald-600/10"
           : isError

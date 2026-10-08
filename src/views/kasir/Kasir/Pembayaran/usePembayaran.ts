@@ -288,6 +288,7 @@ const usePembayaran = (params: {
         }
 
         handleToast?.("created_transaction");
+
         handleSteps(3);
       },
       onError: (err) => {
@@ -337,7 +338,6 @@ const usePembayaran = (params: {
           nama: item.produk.nama,
           produkId: item.produk.id,
           quantity: item.quantity,
-          kode: item.produk.kode,
           stokTersedia: item.stokTersisa,
         })),
         dataDiBayar,

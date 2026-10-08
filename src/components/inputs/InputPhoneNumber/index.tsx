@@ -41,7 +41,10 @@ export default function InputPhoneNumber<T extends FieldValues = any>({
   return (
     <div className="w-full">
       <div className="flex-2 relative">
-        <label htmlFor={name} className={cn("capitalize", "text-xs")}>
+        <label
+          htmlFor={name}
+          className={cn("capitalize", "text-xs text-base-content")}
+        >
           {label}
         </label>
 

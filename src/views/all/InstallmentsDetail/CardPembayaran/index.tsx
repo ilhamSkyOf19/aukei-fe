@@ -10,19 +10,14 @@ import type { FC } from "react";
 import useCardPembayaran from "./useCardPembayaran";
 import InputPrice from "../../../../components/inputs/InputPrice";
 import type { CreateTempoPaymentType } from "../../../../models/tempoPayment.model";
-import {
-  Banknote,
-  Landmark,
-  QrCode,
-  Wallet,
-  type LucideIcon,
-} from "lucide-react";
+import { Banknote, Landmark, QrCode, Wallet } from "lucide-react";
 import { PAYMENT_METHOD_TYPE } from "../../../../types/constant.type";
 import InputTextAreaNonIcon from "../../../../components/inputs/InputTextAreaNonIcon";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ButtonSubmitWithIcon from "../../../../components/ui/button/ButtonSubmitWithIcon";
 import ModalAlert from "../../../../components/modals/ModalAlert";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
+import CardMetodePembayaran from "../../../../components/ui/cards/CardMetodePembayaran";
 
 type Props = {
   jumlahCicilan?: number;
@@ -140,11 +135,10 @@ const CardPembayaran: FC<Props> = ({
               <div className="col-span-1">
                 <CardMetodePembayaran
                   label="Transfer"
-                  icon={{
-                    icon: Landmark,
-                    bgColor: "bg-blue-50",
-                    iconColor: "text-blue-500",
-                  }}
+                  icon={Landmark}
+                  iconColor={"text-blue-500"}
+                  bgColor={"bg-blue-50"}
+                  description=""
                   isActive={metodePembayaran === PAYMENT_METHOD_TYPE.TRANSFER}
                   handleClick={() => handleMetodePembayaran("TRANSFER")}
                   isError={isError.METODE_PEMBAYARAN}
@@ -153,11 +147,10 @@ const CardPembayaran: FC<Props> = ({
               <div className="col-span-1">
                 <CardMetodePembayaran
                   label="QRIS"
-                  icon={{
-                    icon: QrCode,
-                    bgColor: "bg-purple-50",
-                    iconColor: "text-purple-500",
-                  }}
+                  icon={QrCode}
+                  iconColor={"text-purple-500"}
+                  bgColor={"bg-purple-50"}
+                  description=""
                   isActive={metodePembayaran === PAYMENT_METHOD_TYPE.QRIS}
                   handleClick={() => handleMetodePembayaran("QRIS")}
                   isError={isError.METODE_PEMBAYARAN}
@@ -166,11 +159,10 @@ const CardPembayaran: FC<Props> = ({
               <div className="col-span-2">
                 <CardMetodePembayaran
                   label="CASH"
-                  icon={{
-                    icon: Banknote,
-                    bgColor: "bg-emerald-50",
-                    iconColor: "text-emerald-500",
-                  }}
+                  icon={Banknote}
+                  iconColor={"text-emerald-500"}
+                  bgColor={"bg-emerald-50"}
+                  description=""
                   isActive={metodePembayaran === PAYMENT_METHOD_TYPE.CASH}
                   handleClick={() => handleMetodePembayaran("CASH")}
                   isError={isError.METODE_PEMBAYARAN}
@@ -247,79 +239,6 @@ const CardPembayaran: FC<Props> = ({
         smallTitle={dataConfirm?.deskripsi ?? ""}
       />
     </div>
-  );
-};
-
-// card metode pembayaran
-
-type CardMetodePembayaranProps = {
-  isActive?: boolean;
-  isError?: boolean;
-  handleClick: () => void;
-  icon: {
-    icon: LucideIcon;
-    bgColor: string;
-    iconColor: string;
-  };
-  label: string;
-};
-
-const CardMetodePembayaran: FC<CardMetodePembayaranProps> = ({
-  isActive,
-  isError,
-  handleClick,
-  icon,
-  label,
-}) => {
-  return (
-    <button
-      type="button"
-      className={cn(
-        "w-full flex flex-row justify-between items-center rounded-xl shadow-sm p-2.5 border  transition-all duration-150 ease-in-out",
-        isActive
-          ? "border-emerald-600 bg-emerald-600/10"
-          : isError
-            ? "border-rose-600 bg-rose-600/10"
-            : "border-transparent hover:border-emerald-600",
-      )}
-      onClick={handleClick}
-    >
-      {/* content */}
-      <div className="flex-2 flex flex-row justify-start items-center gap-4">
-        {/* icon */}
-        <div
-          className={cn(
-            "w-9 h-9 shrink-0 rounded-full flex flex-row justify-center items-center",
-            icon.bgColor,
-          )}
-        >
-          <icon.icon className={cn("size-4", icon.iconColor)} />
-        </div>
-
-        {/* label */}
-        <div className="flex flex-col justify-start items-start gap-1">
-          <span className="text-xs font-medium text-base-content text-left">
-            {label}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex-1 flex flex-row justify-end items-center">
-        <div
-          className={cn(
-            "w-6 h-6 rounded-full border flex flex-col justify-center items-center",
-            isActive ? "border-emerald-600" : "border-base-content",
-          )}
-        >
-          <div
-            className={cn(
-              "w-3 h-3 bg-emerald-600 rounded-full transition-all duration-150 ease-in-out",
-              isActive ? "animate-radio-active" : "opacity-0 scale-0",
-            )}
-          />
-        </div>
-      </div>
-    </button>
   );
 };
 

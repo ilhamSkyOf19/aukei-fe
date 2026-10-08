@@ -75,7 +75,7 @@ export interface ResponseStockOpnameDetailType extends Omit<
   IStockOpnameDetailType,
   "produkId"
 > {
-  produk: Pick<IProduk, "id" | "kode" | "nama" | "hargaModalRataRata" | "img">;
+  produk: Pick<IProduk, "id" | "nama" | "hargaModalRataRata" | "img">;
 }
 
 // ==================================================

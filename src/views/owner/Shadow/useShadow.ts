@@ -1,5 +1,5 @@
 import { Scissors, type LucideIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ResponsePeriodeShadowType } from "../../../models/periodeShadow.model";
 import { useShadowStore } from "../../../stores/shadowStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,13 +30,20 @@ const pilihan: {
 
 const useShadow = () => {
   // get shadow is active
-  const { shadowIsActive, shadowId } = useShadowStore((state) => state);
-
-  // query client
-  const queryClient = useQueryClient();
+  const { shadowIsActive, shadowId, showNavigation } = useShadowStore(
+    (state) => state,
+  );
 
   // navigate
   const navigate = useNavigate();
+
+  // use effect
+  useEffect(() => {
+    if (!shadowIsActive && !showNavigation) navigate("/404");
+  }, [shadowIsActive, showNavigation]);
+
+  // query client
+  const queryClient = useQueryClient();
 
   // toast
   const { handleSetToast, toast } = useToastAnimation();

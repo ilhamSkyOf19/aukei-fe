@@ -211,7 +211,7 @@ const RowJadwaTempo: FC<Props> = ({
       {/* FOR MD & LG */}
       <div className="w-full flex-col justify-start items-start border overflow-hidden border-base-content/10 rounded-xl hidden md:flex">
         {/* header */}
-        <div className="w-full grid grid-cols-10 gap-2 px-4 py-3 bg-gray-200 sticky top-0 z-10">
+        <div className="w-full grid grid-cols-10 gap-2 px-4 py-3 dark:bg-base-300 sticky top-0 z-10">
           <div className="col-span-1 flex items-center">
             <span className="text-xs font-semibold text-base-content/80">
               No
@@ -426,7 +426,7 @@ const Rows: FC<RowsType> = ({
       <div className="col-span-3 flex items-center gap-2">
         <CalendarDaysIcon className="size-4 text-warning" />
 
-        <span className="text-xs font-medium">
+        <span className="text-xs font-medium text-base-content">
           {formatTanggalPanjang(jatuhTempo)}
         </span>
       </div>
@@ -435,7 +435,9 @@ const Rows: FC<RowsType> = ({
       <div className="col-span-2 flex items-center gap-2">
         <CircleDollarSign className="size-4 text-success" />
 
-        <span className="text-xs font-semibold">{formatRupiah(nominal)}</span>
+        <span className="text-xs font-semibold text-base-content">
+          {formatRupiah(nominal)}
+        </span>
       </div>
 
       {/* Status */}

@@ -6,7 +6,7 @@ import type { IProduk } from "./produk.model";
 
 export interface INotifikasiProdukType {
   id: number;
-  produk: Pick<IProduk, "id" | "nama" | "kode" | "img" | "kategori" | "stok">;
+  produk: Pick<IProduk, "id" | "nama" | "img" | "kategori" | "stok">;
   jenisNotifikasiProduk: JenisNotifikasiProdukType;
   createdAt: Date;
   updatedAt: Date;

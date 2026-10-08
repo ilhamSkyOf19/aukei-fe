@@ -13,7 +13,6 @@ export interface IBarangKeluarDetailType {
     IProduk,
     | "id"
     | "nama"
-    | "kode"
     | "kategori"
     | "img"
     | "stok"

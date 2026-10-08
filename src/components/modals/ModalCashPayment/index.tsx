@@ -53,11 +53,13 @@ const ModalCashPayment: FC<Props> = ({
             <div className="flex items-center gap-3 border-b-2 border-base-content/30 border-dashed pb-4">
               <div className="flex-1 flex flex-row justify-start items-center gap-2.5 md:gap-4">
                 <ReceiptText className="size-5 md:size-6 text-base-content" />
-                <p className="text-xs md:text-sm font-medium">TOTAL TAGIHAN</p>
+                <p className="text-xs md:text-sm font-medium text-base-content">
+                  TOTAL TAGIHAN
+                </p>
               </div>
 
               <div className="flex-1 flex flex-row justify-end items-center">
-                <span className="font-semibold text-md md:text-xl">
+                <span className="font-semibold text-md md:text-xl text-base-content">
                   {formatRupiah(total)}
                 </span>
               </div>
@@ -99,7 +101,7 @@ const ModalCashPayment: FC<Props> = ({
             {/* INPUT */}
             <div className="mb-5">
               <label className="label">
-                <span className="label-text text-xs md:text-sm font-semibold">
+                <span className="label-text text-xs md:text-sm font-semibold text-base-content">
                   Uang Diterima
                 </span>
               </label>
@@ -184,7 +186,7 @@ const ModalCashPayment: FC<Props> = ({
               </button>
             </div>
 
-            <div className="hidden md:block mt-2.5 text-xs opacity-60">
+            <div className="hidden md:block mt-2.5 text-xs opacity-60 text-base-content">
               Gunakan keyboard angka 0-9, Backspace untuk hapus, Enter untuk
               konfirmasi.
             </div>

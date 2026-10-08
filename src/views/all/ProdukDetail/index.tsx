@@ -256,78 +256,7 @@ const ProdukDetail = () => {
                 </div>
               )
             )}
-            {/* kode produk */}
-            <div className="flex w-full flex-col justify-start items-start gap-1.5">
-              {isLoadingDataProduk ? (
-                <div className="w-40 h-7.5 skeleton" />
-              ) : (
-                <>
-                  {/* sm */}
-                  <div className="flex flex-col justify-start items-start lg:hidden gap-1.5">
-                    {/* label */}
-                    <span className="text-xs text-base-content/70">
-                      Kode Produk
-                    </span>
 
-                    {/* value */}
-                    <span className="text-sm font-medium text-base-content">
-                      {dataProduk?.data?.kode && dataProduk?.data?.kode !== ""
-                        ? dataProduk?.data?.kode
-                        : "-"}
-                    </span>
-                  </div>
-
-                  {/* lg */}
-                  <div className="w-full hidden flex-row gap-2.5 justify-start items-start lg:flex">
-                    {/* label */}
-                    <div className="flex-1 flex flex-row justify-between items-center">
-                      <span className="text-sm text-base-content/70">
-                        Kode Produk
-                      </span>
-                      <span className="text-sm font-medium text-base-content/70">
-                        :
-                      </span>
-                    </div>
-
-                    {/* value */}
-                    <div className="flex-4 flex flex-row justify-start items-center gap-3">
-                      {keyUpdate !== "kode" ? (
-                        <>
-                          <span className="text-sm font-medium text-base-content">
-                            {dataProduk?.data?.kode ?? "-"}
-                          </span>
-
-                          {/* button pencil */}
-                          <ButtonInline
-                            handleKeyUpdate={() => handleKeyUpdate("kode")}
-                          />
-                        </>
-                      ) : (
-                        <CardForm
-                          handleResetForm={handleResetForm}
-                          handleSubmit={handleSubmit}
-                          onSubmit={onSubmit}
-                          isPending={isPendingUpdateProduk}
-                          btnAksiPosition="top"
-                        >
-                          {/* input text */}
-                          <div className="w-80">
-                            <InputTextNonIcon
-                              register={register("kode")}
-                              name="kode"
-                              placeholder="Masukan kode produk"
-                              errorMessage={errors?.kode?.message}
-                              required
-                              xs
-                            />
-                          </div>
-                        </CardForm>
-                      )}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
             {/* kategori produk */}
             <div className="flex w-full flex-col justify-start items-start gap-1.5">
               {isLoadingDataProduk ? (

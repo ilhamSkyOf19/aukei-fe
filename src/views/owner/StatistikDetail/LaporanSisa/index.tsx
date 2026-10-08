@@ -135,6 +135,7 @@ const LaporanSisa: FC = () => {
                 <th>Total Produk</th>
                 <th>Total Stok</th>
                 <th>Total Estimasi Omzet</th>
+                <th>Total Estimasi Modal</th>
                 <th align="center">Aksi</th>
               </tr>
             </thead>
@@ -166,6 +167,8 @@ const LaporanSisa: FC = () => {
                     <td>{formatNumber(item.totalStok)}</td>
 
                     <td>{formatNumber(item.totalEstimasiOmzet)}</td>
+
+                    <td>{formatNumber(item.totalEstimasiModal)}</td>
 
                     <td align="center">
                       <ButtonDetailTable
@@ -216,6 +219,7 @@ const LaporanSisa: FC = () => {
                 totalProduk={item.totalProduk}
                 totalStok={item.totalStok}
                 totalEstimasiOmzet={item.totalEstimasiOmzet}
+                totalEstimasiModal={item.totalEstimasiModal}
                 handleClick={() =>
                   setKategori({
                     id: item.kategoriId,
@@ -299,13 +303,7 @@ const LaporanSisa: FC = () => {
                       </td>
 
                       <td>
-                        <div className="flex flex-col justify-start items-start">
-                          <p className="font-medium">{item.nama}</p>
-
-                          <p className="text-base-content/60">
-                            {item.kode ?? "-"}
-                          </p>
-                        </div>
+                        <p className="font-medium">{item.nama}</p>
                       </td>
 
                       <td>{formatNumber(item.hargaModalRataRata)}</td>
@@ -539,6 +537,7 @@ type CardKategoriProps = {
   totalProduk: number;
   totalStok: number;
   totalEstimasiOmzet: number;
+  totalEstimasiModal: number;
   handleClick: () => void;
 };
 
@@ -551,6 +550,7 @@ const CardKategori: FC<CardKategoriProps> = ({
   nama,
   totalProduk,
   totalStok,
+  totalEstimasiModal,
   totalEstimasiOmzet,
   handleClick,
 }) => {
@@ -578,7 +578,7 @@ const CardKategori: FC<CardKategoriProps> = ({
       </div>
 
       {/* statistik */}
-      <div className="w-full grid grid-cols-3 divide-x divide-base-content/10 border-y border-base-content/10 py-3">
+      <div className="w-full grid grid-cols-2 divide-x divide-base-content/10 border-y border-base-content/10 py-3">
         <div className="flex flex-col items-center px-2 gap-1">
           <span className="text-[0.58rem] text-center text-base-content/60">
             Produk
@@ -598,7 +598,9 @@ const CardKategori: FC<CardKategoriProps> = ({
             {formatNumber(totalStok)}
           </span>
         </div>
+      </div>
 
+      <div className="w-full grid grid-cols-2 divide-x divide-base-content/10 border-b border-base-content/10 pb-3">
         <div className="flex flex-col items-center px-2 gap-1">
           <span className="text-[0.58rem] text-center text-base-content/60">
             Est. Omzet
@@ -606,6 +608,15 @@ const CardKategori: FC<CardKategoriProps> = ({
 
           <span className="text-xs text-center font-semibold text-primary">
             {formatNumber(totalEstimasiOmzet)}
+          </span>
+        </div>
+        <div className="flex flex-col items-center px-2 gap-1">
+          <span className="text-[0.58rem] text-center text-base-content/60">
+            Est. Modal
+          </span>
+
+          <span className="text-xs text-center font-semibold text-primary">
+            {formatNumber(totalEstimasiModal)}
           </span>
         </div>
       </div>

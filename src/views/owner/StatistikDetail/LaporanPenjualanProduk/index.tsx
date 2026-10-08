@@ -421,10 +421,6 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
                       <td>
                         <div className="flex flex-col justify-start items-start">
                           <p className="font-medium">{item.nama}</p>
-
-                          <p className="text-base-content/60">
-                            {item.kode ?? "-"}
-                          </p>
                         </div>
                       </td>
 

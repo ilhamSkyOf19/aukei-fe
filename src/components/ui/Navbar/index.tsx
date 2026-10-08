@@ -1,24 +1,36 @@
-import { LogOut, PanelRightClose } from "lucide-react";
+import { KeyRound, LogOut, PanelRightClose, UserPen } from "lucide-react";
 import { type FC } from "react";
-import { useAuthStore } from "../../../stores/authStore";
 import { cn } from "../../../utils/cn";
 import ButtonTheme from "../button/ButtonTheme";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import Notifikasi from "./Notifikasi";
-import useLogOut from "../../../hooks/useLogOut";
 import ButtonWithIcon from "../button/ButtonWithIcon";
+import useNavbar from "./useNavbar";
+import ModalFormulirUpdatePassword from "../../modals/ModalUpdatePassword";
+import ModalUpdateDataPengguna from "../../modals/ModalUpdateDataPengguna";
+import Toast from "../../messages/Toast";
 type Props = {
   handleSidebar: () => void;
   isClose: boolean;
   title: string;
 };
 const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
-  // auth
-  const pengguna = useAuthStore((state) => state.pengguna);
+  const {
+    handleLogout,
+    isPendingLogout,
+    pengguna,
+    handleCloseModalUpdatePassword,
+    handleShowModalUpdatePassowrd,
+    modalUpdatePasswordRef,
 
-  // handle logout
-  const { handleLogout, isPendingLogout } = useLogOut({ redirectUrl: true });
+    handleCloseModalUpdateDdataPengguna,
+    handleShowModalUpdateDataPengguna,
+    modalUpdateDataPenggunaRef,
 
+    handleSetToast,
+
+    toast,
+  } = useNavbar();
   return (
     <nav
       className={cn(
@@ -31,6 +43,15 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
       )}
       style={{ minHeight: "2.5rem" }}
     >
+      {toast && toast.type === "updated_data_pengguna" && (
+        <Toast
+          toast={toast?.id !== null}
+          isAnimationOut={toast?.isAnimationOut || false}
+          label={"Data Anda berhasil diperbarui."}
+          color={"info"}
+        />
+      )}
+
       <div className="w-full flex flex-row justify-between items-center">
         <div className="flex-2 flex flex-row justify-start items-center">
           <label
@@ -52,11 +73,6 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           </h1>
         </div>
         <div className="flex-1 flex flex-row justify-end items-center gap-2 lg:gap-6 pr-2">
-          {/* beta */}
-          <div className="w-14 h-7 flex justify-center items-center border border-amber-600 bg-amber-100 rounded-lg">
-            <span className="text-amber-600 font-medium text-xs">Beta</span>
-          </div>
-
           {/* notifikasi */}
           {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
             <Notifikasi pengguna={pengguna} />
@@ -65,9 +81,68 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           {/* button theme */}
           <ButtonTheme />
 
+          {/* button ubah password  */}
+          {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
+            <>
+              <div className="hidden md:flex flex-row justify-start items-center gap-2.5">
+                <button
+                  type="button"
+                  className="cursor-pointer p-2 hover:bg-custom-primary/50 rounded-full transition-all duration-150 ease-in-out relative"
+                  onClick={() => handleShowModalUpdatePassowrd()}
+                >
+                  <KeyRound className="text-base-content size-5" />
+                </button>
+
+                <button
+                  type="button"
+                  className="cursor-pointer p-2 hover:bg-custom-primary/50 rounded-full transition-all duration-150 ease-in-out relative"
+                  onClick={() => handleShowModalUpdateDataPengguna()}
+                >
+                  <UserPen className="text-base-content size-5" />
+                </button>
+              </div>
+
+              <div className="dropdown dropdown-bottom dropdown-left">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="cursor-pointer p-2 hover:bg-custom-primary/50 rounded-full transition-all duration-150 ease-in-out relative flex justify-center items-center md:hidden"
+                >
+                  <UserPen className="text-base-content size-5" />
+                </div>
+
+                <ul
+                  tabIndex={-1}
+                  className="dropdown-content menu bg-base-100 rounded-box z-1 w-50 p-2 shadow-sm"
+                >
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => handleShowModalUpdatePassowrd()}
+                      className="flex flex-row justify-start items-center "
+                    >
+                      <KeyRound className="text-base-content size-4" />
+                      <span className="text-sm">Ubah Password</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => handleShowModalUpdateDataPengguna()}
+                      className="flex flex-row justify-start items-center"
+                    >
+                      <UserPen className="text-base-content size-4" />
+                      <span className="text-sm">Ubah Data</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </>
+          )}
+
           {/* nama & role */}
           <div className="hidden md:flex flex-col justify-start items-start border-r border-base-content/30 pr-4">
-            <span className="text-xs font-semibold text-base-content">
+            <span className="text-xs font-semibold text-base-content capitalize">
               {pengguna?.nama}
             </span>
             <span className="text-xs capitalize text-base-content">
@@ -88,6 +163,18 @@ const Navbar: FC<Props> = ({ handleSidebar, isClose, title }: Props) => {
           </div>
         </div>
       </div>
+
+      {/* modal formulir ubah password  */}
+      <ModalFormulirUpdatePassword
+        handleCloseModal={handleCloseModalUpdatePassword}
+        modalRef={modalUpdatePasswordRef}
+      />
+
+      <ModalUpdateDataPengguna
+        handleCloseModal={handleCloseModalUpdateDdataPengguna}
+        modalRef={modalUpdateDataPenggunaRef}
+        handleSetToast={handleSetToast}
+      />
     </nav>
   );
 };

@@ -16,7 +16,10 @@ import type {
   TambahProdukDetailForReqeustType,
   UpdateProdukDetail,
 } from "../models/transaction.model";
-import type { PaymentMethodType } from "../types/constant.type";
+import type {
+  PaymentMethodType,
+  TransactionStatusType,
+} from "../types/constant.type";
 import type { ResponseStructure } from "../types/response.type";
 
 export class TransactionServices {
@@ -350,6 +353,20 @@ export class TransactionServices {
         nominal: number;
       } | null>
     >(`/transaction/${params.transactionId}/update-pembayaran`, params.data);
+
+    return result.data;
+  }
+
+  // cancel transaction
+  static async cancelTransaction(params: {
+    transactionId: number;
+  }): Promise<
+    ResponseStructure<{ id: number; status: TransactionStatusType } | null>
+  > {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<{ id: number; status: TransactionStatusType } | null>
+    >(`/transaction/${params.transactionId}/cancel`);
 
     return result.data;
   }

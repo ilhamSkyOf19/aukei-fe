@@ -12,7 +12,6 @@ import {
   ArrowLeftRight,
   CalendarClock,
   CreditCard,
-  Dot,
   Minus,
   PackageX,
   Save,
@@ -284,7 +283,6 @@ const PilihProduk: FC = () => {
                 quantity={item.quantity}
                 stok={item.stokTersisa}
                 subTotal={item.subtotal}
-                kode={item.produk.kode}
                 isLoadingRemove={
                   isPendingRemoveDetail && variablesRemoveDetail === item.id
                 }
@@ -561,7 +559,9 @@ const PilihProduk: FC = () => {
                   disabled={
                     produkDetails.length === 0 ||
                     !pelanggan ||
-                    produkDetails.some((detail) => detail.stokTersisa === 0)
+                    produkDetails.some(
+                      (detail) => detail.quantity > detail.stokTersisa,
+                    )
                   }
                   className={cn(
                     "flex flex-row justify-center items-center h-full border border-custom-primary flex-1 rounded-xl bg-custom-primary disabled:opacity-50",
@@ -574,7 +574,9 @@ const PilihProduk: FC = () => {
                     cursor:
                       produkDetails.length === 0 ||
                       !pelanggan ||
-                      produkDetails.some((detail) => detail.stokTersisa === 0)
+                      produkDetails.some(
+                        (detail) => detail.quantity > detail.stokTersisa,
+                      )
                         ? "not-allowed"
                         : "pointer",
                   }}
@@ -614,7 +616,6 @@ const PilihProduk: FC = () => {
           stok: item.quantity,
           subTotal: item.subtotal,
           hargaJualTerakhirTransaksi: item.hargaJualTerakhir,
-          kode: item.produk.kode,
         }))}
       />
 
@@ -658,7 +659,6 @@ type CardDataProps = {
   id: number;
   img: string;
   nama: string;
-  kode?: string | null;
   stok: number;
   quantity: number;
   hargaJual: number;
@@ -689,22 +689,17 @@ const CardData: FC<CardDataProps> = ({
             <span className="text-[0.7rem] font-semibold text-base-content">
               {produk.nama}
             </span>
+          </div>
+          <div className="flex flex-col justify-start items-start gap-0.5">
+            <span className="text-[0.625rem] font-medium text-base-content">
+              {formatRupiah(produk.hargaJual)}
+            </span>
+
             {produk.stok < produk.quantity && (
               <span className="text-[0.625rem] font-medium text-error">
                 stok kurang
               </span>
             )}
-          </div>
-          <div className="flex flex-row justify-start items-center gap-0.5">
-            <span className="text-[0.625rem] font-medium text-base-content/50">
-              {produk.kode ?? "-"}
-            </span>
-            <span className="text-xs font-medium text-base-content/50">
-              <Dot className="size-4" />
-            </span>
-            <span className="text-[0.625rem] font-medium text-base-content">
-              {formatRupiah(produk.hargaJual)}
-            </span>
           </div>
         </div>
       </div>

@@ -166,7 +166,6 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
             <tr className="h-12 bg-base-200 text-[0.7rem]">
               <th>No</th>
               <th>Foto</th>
-              <th>Kode</th>
               <th>Nama</th>
               <th>Kategori</th>
               <th>Stok Tersedia</th>
@@ -226,9 +225,6 @@ const PantauStok: FC<Props> = ({ pilihan, handleSetAlert, handleSetToast }) => {
                         </div>
                       </div>
                     </td>
-
-                    {/* kode */}
-                    <td className="font-medium text-info">{produk.kode}</td>
 
                     {/* nama */}
                     <td>{produk.nama}</td>
@@ -363,10 +359,6 @@ const CardProdukStok: FC<CardProdukStokProps> = ({ produk }) => {
 
           {/* deskripsi */}
           <div className="flex flex-col justify-start items-start gap-1.5">
-            {/* kode produk */}
-            <span className="text-[0.7rem] font-medium text-base-content/70 dark:text-base-content">
-              {produk.kode}
-            </span>
             {/* nama produk */}
             <span className="text-sm font-medium text-base-content">
               {produk.nama}

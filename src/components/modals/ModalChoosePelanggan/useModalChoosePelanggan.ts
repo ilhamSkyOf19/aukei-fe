@@ -40,8 +40,10 @@ const useModalChoosePelanggan = (params: {
     // close modal formulir pelanggan
     closeModalFormulirPelanggan();
 
-    // show modal choose pelanggan
-    handleShowModalChoosePelanggan();
+    // tunggu sebentar agar modal sebelumnya selesai ditutup
+    setTimeout(() => {
+      handleShowModalChoosePelanggan();
+    }, 300);
   };
 
   // filter search

@@ -174,7 +174,7 @@ const ModalChoosePelanggan: FC<Props> = ({
         <div className="w-full flex flex-row justify-between items-center mt-4">
           {/* informasi */}
           <div className="flex-1 flex flex-row justify-start items-center">
-            <div className="text-[0.625rem] flex flex-row justify-start items-start flex-wrap gap-1">
+            <div className="text-[0.625rem] flex flex-row justify-start items-start flex-wrap gap-1 text-base-content">
               <span className="hidden md:block">Menampilkan</span>{" "}
               <span>1</span> - <span>{dataPelanggan?.data?.data?.length}</span>{" "}
               dari <span>{dataPelanggan?.data?.meta.totalData}</span> pelanggan

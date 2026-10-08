@@ -142,10 +142,6 @@ const DaftarKeranjang = () => {
                           <td>
                             <div className="flex flex-col justify-start items-start gap-px">
                               <p>{item.produk.nama}</p>
-
-                              <span className="font-medium text-base-content/70">
-                                {item.produk.kode}
-                              </span>
                             </div>
                           </td>
 

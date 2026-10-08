@@ -32,8 +32,8 @@ const Pagination: FC<Props> = ({
           "flex items-center justify-center rounded-lg border transition-all duration-150",
           xs ? "w-6.5 h-6.5 lg:w-7.5 lg:h-7.5" : "w-8 h-8",
           isPrev
-            ? "hover:text-text-custom-primary hover:bg-custom-secondary active:scale-95"
-            : " cursor-not-allowed border-base-content/10 text-base-content/10",
+            ? "hover:text-text-custom-primary hover:bg-custom-secondary active:scale-95 text-base-content"
+            : " cursor-not-allowed border-base-content/10 text-base-content/10 dark:text-base-content",
         ].join(" ")}
       >
         <ChevronLeft size={16} strokeWidth={2.2} />
@@ -83,7 +83,7 @@ const Pagination: FC<Props> = ({
           "flex border-primary-purple text-primary-purple  items-center justify-center rounded-lg border transition-all duration-150",
           xs ? "w-6.5 h-6.5 lg:w-7.5 lg:h-7.5" : "w-8 h-8",
           isNext
-            ? " hover:text-text-custom-primary hover:bg-custom-secondary active:scale-95"
+            ? " hover:text-text-custom-primary hover:bg-custom-secondary active:scale-95 text-base-content"
             : "  cursor-not-allowed border-base-content/10 text-base-content/10",
         ].join(" ")}
       >

@@ -78,7 +78,7 @@ const DaftarDetailProduk: FC<Props> = ({
 
     isPendingTransactionOld,
 
-    isExpired,
+    isExpired3Days,
   } = useDaftarDetailProduk({
     transactionId: dataTransaction?.data?.id,
     dataKebutuhanBarang,
@@ -189,14 +189,9 @@ const DaftarDetailProduk: FC<Props> = ({
                             </div>
                           </td>
                           <td>
-                            <div className="flex flex-col justify-start items-start gap-px">
-                              <p className="xl:text-[0.7rem] text-base-content font-semibold">
-                                {item.produk.nama}
-                              </p>
-                              <span className="xl:text-[0.7rem] font-medium text-base-content/70">
-                                {item.produk.kode}
-                              </span>
-                            </div>
+                            <p className="xl:text-[0.7rem] text-base-content font-semibold">
+                              {item.produk.nama}
+                            </p>
                           </td>
                           <td>
                             {isFromActive?.detailId === item.id &&
@@ -359,7 +354,14 @@ const DaftarDetailProduk: FC<Props> = ({
                             : 8
                         }
                       >
-                        <div className="h-10 flex flex-row justify-between items-center">
+                        <div
+                          className={cn(
+                            "h-10 flex flex-row justify-between items-center",
+                            dataTransaction?.data?.status !==
+                              TRANSACTION_STATUS_TYPE.BOOKING &&
+                              "border-b border-base-content/30",
+                          )}
+                        >
                           <span className="text-xs font-medium text-base-content/80">
                             Total {dataTransaction?.data?.details.length} Item
                           </span>
@@ -394,6 +396,29 @@ const DaftarDetailProduk: FC<Props> = ({
                             </span>
                           </div>
                         </div>
+
+                        {/* total nilai retur */}
+                        {dataTransaction?.data?.status !==
+                          TRANSACTION_STATUS_TYPE.BOOKING && (
+                          <div className="h-10 flex flex-row justify-between items-center">
+                            <span className="text-xs font-medium text-base-content/80">
+                              Total Nilai Retur
+                            </span>
+
+                            <div className="flex justify-end items-end">
+                              <span className="text-xs font-semibold text-base-content">
+                                {formatRupiah(
+                                  dataTransaction?.data?.details.reduce(
+                                    (acc, curr) =>
+                                      acc +
+                                      (curr.totalRetur ?? 0) * curr.hargaJual,
+                                    0,
+                                  ) ?? 0,
+                                )}
+                              </span>
+                            </div>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   </>
@@ -447,6 +472,20 @@ const DaftarDetailProduk: FC<Props> = ({
             )}
           </div>
         )}
+
+      {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.COMPLETED &&
+        (!isExpired3Days ? (
+          <AlertLabel
+            isLoading={isLoadingTransaction}
+            message="Transaksi hanya dapat dibatalkan dalam waktu maksimal 3 hari setelah transaksi selesai."
+          />
+        ) : (
+          <AlertLabel
+            isLoading={isLoadingTransaction}
+            message="Transaksi tidak dapat dibatalkan karena telah melewati batas waktu 3 hari."
+          />
+        ))}
+
       {/* alert label */}
       {dataTransaction?.data?.metodePembayaran !== PAYMENT_METHOD_TYPE.TEMPO ? (
         <>
@@ -471,17 +510,20 @@ const DaftarDetailProduk: FC<Props> = ({
         <div
           className={cn(
             "w-full flex flex-row items-end gap-2.5",
-            role === ROLE_INTERNAL_TYPE.KASIR && !isExpired
+            role === ROLE_INTERNAL_TYPE.KASIR && !isExpired3Days
               ? "justify-between"
               : "justify-end",
           )}
         >
+          {/* ubah transaksi */}
           {role === ROLE_INTERNAL_TYPE.KASIR &&
             !isPageBookingKasir &&
             dataTransaction?.data?.metodePembayaran !==
               PAYMENT_METHOD_TYPE.TEMPO &&
             dataTransaction?.data?.completedAt &&
-            !isExpired && (
+            dataTransaction?.data?.status ===
+              TRANSACTION_STATUS_TYPE.COMPLETED &&
+            !isExpired3Days && (
               <ButtonWithIcon
                 label="Ubah Transaksi"
                 icon={PencilLine}
@@ -491,7 +533,6 @@ const DaftarDetailProduk: FC<Props> = ({
                 handleBtn={() =>
                   handleUbahProduk({ id: dataTransaction?.data?.id })
                 }
-                customWidth="flex-3 md:flex-none"
               />
             )}
 
@@ -507,15 +548,17 @@ const DaftarDetailProduk: FC<Props> = ({
                   }
                   customWidth="flex-3 md:flex-none"
                 />
-
-                <ButtonWithIcon
-                  label="Retur Barang"
-                  icon={Undo}
-                  bgColor="bg-error"
-                  textColor="text-primary-white"
-                  handleBtn={() => handleToRetur()}
-                  customWidth="flex-2 md:flex-none"
-                />
+                {dataTransaction?.data?.status ===
+                  TRANSACTION_STATUS_TYPE.COMPLETED && (
+                  <ButtonWithIcon
+                    label="Retur Barang"
+                    icon={Undo}
+                    bgColor="bg-error"
+                    textColor="text-primary-white"
+                    handleBtn={() => handleToRetur()}
+                    customWidth="flex-2 md:flex-none"
+                  />
+                )}
               </div>
             )}
         </div>

@@ -21,7 +21,7 @@ type Props = {
     createdAt?: Date | undefined;
     updatedAt?: Date | undefined;
     hargaJual: number;
-    produk: Pick<IProduk, "id" | "img" | "nama" | "kode">;
+    produk: Pick<IProduk, "id" | "img" | "nama">;
     totalRetur: number;
     diskon: number;
     quantity: number;
@@ -70,9 +70,6 @@ const CardProdukRetur: FC<Props> = ({
               )}
             </div>
           </div>
-          <span className="text-base-content/70 font-medium text-xs">
-            {produk.kode}
-          </span>
         </div>
       </div>
 

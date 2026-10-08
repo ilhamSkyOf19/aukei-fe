@@ -1,6 +1,7 @@
 import z from "zod";
 import type { LoginType, RegisterType } from "../models/auth.model";
 import { ROLE_INTERNAL_TYPE } from "../types/constant.type";
+import type { UpdateDataPenggunaType } from "../models/penggunaInternal.model";
 
 export class AuthValidations {
   // create
@@ -54,4 +55,51 @@ export class AuthValidations {
         .max(100, "Password maksimal 100 karakter"),
     })
     .strict() satisfies z.ZodType<LoginType>;
+
+  // update password
+  static readonly UPDATE_PASSWORD = z
+    .object({
+      password: z
+        .string("Password harap diisi")
+        .trim()
+        .min(1, "Password harap diisi")
+        .max(100, "Password maksimal 100 karakter"),
+      confirmPassword: z
+        .string("Password harap diisi")
+        .trim()
+        .min(1, "Password harap diisi")
+        .max(100, "Password maksimal 100 karakter"),
+    })
+    .superRefine((data, ctx) => {
+      if (data.password !== data.confirmPassword) {
+        ctx.addIssue({
+          code: "custom",
+          message: "password tidak sama",
+          path: ["confirmPassword"],
+        });
+      }
+    })
+    .strict() satisfies z.ZodType<{ password: string }>;
+
+  static readonly UPDATE_DATA_PENGGUNA = z
+    .object({
+      email: z.email("Email tidak valid").or(z.literal("")).optional(),
+
+      nama: z
+        .string("Nama harap diisi")
+        .trim()
+        .min(1, "Nama harap diisi")
+        .max(100, "Nama maksimal 100 karakter")
+        .or(z.literal(""))
+        .optional(),
+
+      username: z
+        .string("Nama harap diisi")
+        .trim()
+        .min(1, "Nama harap diisi")
+        .max(100, "Nama maksimal 100 karakter")
+        .or(z.literal(""))
+        .optional(),
+    })
+    .strict() satisfies z.ZodType<Partial<UpdateDataPenggunaType>>;
 }

@@ -7,6 +7,7 @@ export interface IPenggunaInternalType {
   username: string;
   password: string;
   isActive: boolean;
+  email?: string | null;
   role: RoleInternalType;
   createdAt: Date;
   updatedAt: Date;
@@ -16,3 +17,14 @@ export interface PayloadPenggunaInternalType extends Omit<
   IPenggunaInternalType,
   "password" | "createdAt" | "updatedAt"
 > {}
+
+// update password
+export interface UpdatePasswordType {
+  password: string;
+}
+
+export interface UpdateDataPenggunaType {
+  username: string;
+  nama: string;
+  email: string;
+}

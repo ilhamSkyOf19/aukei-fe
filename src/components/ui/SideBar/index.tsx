@@ -6,6 +6,7 @@ import { highlightName } from "../../../helpers/helpers";
 import { AlertTriangle, ChevronRight, LogOut } from "lucide-react";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import ModalAlert from "../../modals/ModalAlert";
+import ButtonTheme from "../button/ButtonTheme";
 
 type Props = {
   isClose: boolean;
@@ -80,10 +81,27 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                     })}
                     data-tooltip-place="right"
                     className={cn(
-                      "hover:bg-custom-primary group rounded-2xl md:rounded-xl",
-                      item.link === "/dashboard"
-                        ? pathname === "/dashboard" && "bg-custom-primary"
-                        : pathname.startsWith(item.link) && "bg-custom-primary",
+                      "group rounded-2xl md:rounded-xl transition-all duration-150 ease-in-out",
+
+                      // Shadow
+                      item.link === "/dashboard/shadow"
+                        ? cn(
+                            "hover:bg-error hover:text-white",
+                            pathname === "/dashboard/shadow" &&
+                              "bg-error text-white",
+                          )
+                        : // Dashboard
+                          item.link === "/dashboard"
+                          ? cn(
+                              "hover:bg-custom-primary",
+                              pathname === "/dashboard" && "bg-custom-primary",
+                            )
+                          : // Menu lainnya
+                            cn(
+                              "hover:bg-custom-primary",
+                              pathname.startsWith(item.link) &&
+                                "bg-custom-primary",
+                            ),
                     )}
                     onClick={() => {
                       handleLink(item.link);
@@ -91,26 +109,57 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                   >
                     <item.icon
                       className={cn(
-                        "my-1.5 inline-block size-5 text-base-content group-hover:text-text-custom-secondary transition-all duration-150 ease-in-out",
-                        item.link === "/dashboard"
-                          ? pathname === "/dashboard"
-                            ? "text-text-custom-secondary"
-                            : "text-primary-white"
-                          : pathname.startsWith(item.link)
-                            ? "text-text-custom-secondary"
-                            : "text-primary-white",
+                        "my-1.5 inline-block size-5 transition-all duration-150 ease-in-out",
+
+                        // Shadow
+                        item.link === "/dashboard/shadow"
+                          ? cn(
+                              "text-error group-hover:text-white",
+                              pathname === "/dashboard/shadow" && "text-white",
+                            )
+                          : // Dashboard
+                            item.link === "/dashboard"
+                            ? cn(
+                                pathname === "/dashboard"
+                                  ? "text-text-custom-secondary"
+                                  : "text-primary-white",
+                                "group-hover:text-text-custom-secondary",
+                              )
+                            : // Menu lainnya
+                              cn(
+                                pathname.startsWith(item.link)
+                                  ? "text-text-custom-secondary"
+                                  : "text-primary-white",
+                                "group-hover:text-text-custom-secondary",
+                              ),
                       )}
                     />
+
                     <span
                       className={cn(
-                        "is-drawer-close:hidden group-hover:text-text-custom-secondary text-base-content capitalize transition-all duration-150 ease-in-out",
-                        item.link === "/dashboard"
-                          ? pathname === "/dashboard"
-                            ? "text-text-custom-secondary"
-                            : "text-primary-white"
-                          : pathname.startsWith(item.link)
-                            ? "text-text-custom-secondary"
-                            : "text-primary-white",
+                        "is-drawer-close:hidden capitalize transition-all duration-150 ease-in-out",
+
+                        // Shadow
+                        item.link === "/dashboard/shadow"
+                          ? cn(
+                              "text-error group-hover:text-white",
+                              pathname === "/dashboard/shadow" && "text-white",
+                            )
+                          : // Dashboard
+                            item.link === "/dashboard"
+                            ? cn(
+                                pathname === "/dashboard"
+                                  ? "text-text-custom-secondary"
+                                  : "text-primary-white",
+                                "group-hover:text-text-custom-secondary",
+                              )
+                            : // Menu lainnya
+                              cn(
+                                pathname.startsWith(item.link)
+                                  ? "text-text-custom-secondary"
+                                  : "text-primary-white",
+                                "group-hover:text-text-custom-secondary",
+                              ),
                       )}
                     >
                       {item.label}
@@ -123,15 +172,23 @@ const Sidebar: FC<Props> = ({ isClose }) => {
         </div>
 
         {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
-          <div className="w-full flex-row justify-center items-center pb-6 hidden lg:flex">
-            <button
-              type="button"
-              className="border border-transparent p-2.5 hover:border-error rounded-xl transition-all duration-150 ease-in-out"
-              onClick={() => handleLogout()}
-            >
-              <LogOut className="text-error size-6" />
-            </button>
-          </div>
+          <>
+            <li className="w-full flex-row justify-center items-center my-2">
+              <div className="w-full flex-row justify-center items-center hidden lg:flex">
+                <ButtonTheme />
+              </div>
+            </li>
+
+            <div className="w-full flex-row justify-center items-center mt-8 pb-6 hidden lg:flex">
+              <button
+                type="button"
+                className="border border-transparent p-2.5 hover:border-error rounded-xl transition-all duration-150 ease-in-out"
+                onClick={() => handleLogout()}
+              >
+                <LogOut className="text-error size-6" />
+              </button>
+            </div>
+          </>
         )}
 
         <div className="w-full px-2 py-4 md:hidden">
@@ -161,7 +218,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
                   <p className="text-xs text-primary-white">
                     {pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
                       ? "Owner"
-                      : "Admin"}
+                      : "Kasir"}
                   </p>
                 </div>
               </div>

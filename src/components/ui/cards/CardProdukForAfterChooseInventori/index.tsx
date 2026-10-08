@@ -51,9 +51,6 @@ const CardProdukForAfterChooseInventori: FC<Props> = ({
                 {data.kategori}
               </p> */}
             </div>
-            <p className="text-[0.625rem] text-base-content/70 font-medium">
-              {data.kode}
-            </p>
             <p className="text-[0.625rem] gap-1.5 flex flex-row justify-start items-center text-base-content/70">
               <span>Stok: </span>
               <span className="font-medium">{formatNumber(data.stok)}</span>

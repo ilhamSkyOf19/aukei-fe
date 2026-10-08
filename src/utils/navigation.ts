@@ -78,7 +78,7 @@ export const NAVIGATION_LIST_OWNER: {
     link: "/dashboard/notifikasi",
   },
   {
-    label: "Shadow",
+    label: "Bayangan",
     icon: HatGlasses,
     link: "/dashboard/shadow",
   },

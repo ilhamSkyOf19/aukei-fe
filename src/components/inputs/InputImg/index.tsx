@@ -99,7 +99,7 @@ export default function InputImg<T extends FieldValues = any>({
                 rounded-full bg-custom-secondary
               "
             >
-              <ImageIcon className="size-6 text-custom-primary" />
+              <ImageIcon className="size-6 text-text-custom-primary" />
             </div>
 
             <p className="font-semibold text-sm text-base-content">

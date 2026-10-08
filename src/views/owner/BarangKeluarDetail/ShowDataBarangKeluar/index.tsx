@@ -117,10 +117,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       </p>
 
                       <div className="flex flex-row justify-start items-start gap-2">
-                        <p className="text-base-content/50 text-[0.7rem] font-medium border-r border-base-content/10 pr-2.5">
-                          {item.produk.kode ?? "-"}
-                        </p>
-
                         <p className="text-base-content/50 text-[0.7rem] font-medium">
                           {item.produk.kategori.nama}
                         </p>
@@ -226,7 +222,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
                 <th>No</th>
                 <th>Foto</th>
                 <th>Nama</th>
-                <th>Kode</th>
                 <th>Kategori</th>
                 {role === ROLE_INTERNAL_TYPE.OWNER && <th>Harga Modal</th>}
                 <th>Stok Saat Ini</th>
@@ -269,8 +264,6 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       </td>
                       {/* nama */}
                       <td>{item.produk.nama}</td>
-                      {/* kode */}
-                      <td>{item.produk.kode ?? "-"}</td>
                       {/* kategori */}
                       <td>{item.produk.kategori.nama}</td>
 

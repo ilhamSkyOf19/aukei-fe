@@ -7,8 +7,6 @@ import { StockOpnameDetailServices } from "../services/stockOpnameDetail.service
 type DataDeleteType = {
   namaProduk?: string;
 
-  kodeProduk?: string;
-
   kodeReferensi?: string;
 };
 

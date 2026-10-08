@@ -132,10 +132,6 @@ const useProdukDetail = () => {
         reset({ nama: dataProduk.data.nama });
         break;
 
-      case "kode":
-        reset({ kode: dataProduk.data.kode });
-        break;
-
       case "kategoriId":
         reset({ kategoriId: dataProduk.data.kategori.id });
         break;

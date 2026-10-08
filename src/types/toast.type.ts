@@ -94,6 +94,20 @@ export const TOAST_CONFIG_BARANG_MASUK: Record<
   },
 };
 
+// login
+export const TOAST_CONFIG_LOGIN: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  login_again: {
+    color: "success",
+    message: "Password berhasil diperbarui, silahkan login kembali",
+  },
+};
+
 // toast barang keluar
 export const TOAST_CONFIG_BARANG_KELUAR: Record<
   string,
@@ -136,6 +150,7 @@ export const TOAST_CONFIG_BARANG_MASUK_DETAIL: Record<
     color: "success",
     message: "Barang masuk berhasil ditambahkan",
   },
+
   barang_masuk_detail_add_success: {
     color: "success",
     message: "Barang berhasil ditambahkan",
@@ -303,6 +318,10 @@ export const TOAST_CONFIG_TRANSACTION: Record<
     color: "success" | "error" | "info" | "warning" | "neutral";
   }
 > = {
+  cancelled_transaction: {
+    color: "error",
+    message: "Transaksi berhasil dibatalkan",
+  },
   created_transaction_booking_success: {
     color: "success",
     message: "Transaksi berhasil disimpan",
@@ -376,6 +395,7 @@ export const TOAST_CONFIG_DASHBOARD: Record<
     color: "success",
     message: "Nilai bayangan berhasil diterapkan",
   },
+
   close_navigation: {
     color: "success",
     message: "Navigasi berhasil ditutup",
@@ -511,6 +531,10 @@ export const TOAST_CONFIG_TRANSACTION_DETAIL: Record<
     color: "info",
     message: "Data berhasil diperbarui",
   },
+  cancelled_transaction: {
+    color: "error",
+    message: "Transaksi berhasil dibatalkan",
+  },
   created_transaction_booking_success: {
     color: "success",
     message: "Transaksi berhasil disimpan",
@@ -530,6 +554,19 @@ export const TOAST_CONFIG_TRANSACTION_DETAIL: Record<
   updated_ongkir: {
     color: "info",
     message: "Ongkir berhasil diperbarui",
+  },
+};
+
+export const TOAST_CONFIG_RIWAYAT_TRANSACTION: Record<
+  string,
+  {
+    message: string;
+    color: "success" | "error" | "info" | "warning" | "neutral";
+  }
+> = {
+  cancelled_transaction: {
+    color: "error",
+    message: "Transaksi berhasil dibatalkan",
   },
 };
 

@@ -138,10 +138,6 @@ const ShowStockOpname: FC<Props> = ({
                     <p className="text-base-content text-sm font-semibold">
                       {item.produk.nama}
                     </p>
-
-                    <p className="text-base-content text-xs">
-                      {item.produk.kode ? item.produk.kode : "-"}
-                    </p>
                   </div>
                 </div>
 
@@ -367,10 +363,6 @@ const ShowStockOpname: FC<Props> = ({
                           </div>
                           <div className="flex flex-col justify-start items-start">
                             {item.produk.nama}
-
-                            <p className="font-medium">
-                              {item.produk.kode ?? "-"}
-                            </p>
                           </div>
                         </div>
                       </td>
@@ -559,7 +551,6 @@ const ShowStockOpname: FC<Props> = ({
                               handleShowModalDelete={() =>
                                 handleShowModalDelete(item.id, {
                                   namaProduk: item.produk.nama,
-                                  kodeProduk: item.produk.kode ?? "-",
                                   kodeReferensi:
                                     dataStockOpnameDetail?.kodeReferensi,
                                 })

@@ -15,8 +15,7 @@ export class PelangganValidations {
       .string(`${field} harap diisi`)
       .trim()
       .min(min, `${field} harap diisi`)
-      .max(max, `${field} maksimal ${max} karakter`)
-      .regex(/^[A-Za-z\s.,]+$/, `${field} hanya boleh huruf`);
+      .max(max, `${field} maksimal ${max} karakter`);
   }
 
   // nomor whatsapp schema

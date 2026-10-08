@@ -46,9 +46,6 @@ const CardProdukTransaksi: FC<Props> = ({
           <span className="text-base-content font-semibold text-sm">
             {produk.nama}
           </span>
-          <span className="text-base-content/70 font-medium text-xs">
-            {produk.kode}
-          </span>
         </div>
       </div>
 
@@ -128,7 +125,6 @@ const CardProdukTransaksi: FC<Props> = ({
               handleAppend({
                 detailId: id,
                 nama: produk.nama,
-                kode: produk.kode,
                 img: produk.img,
                 hargaJual: hargaJual,
                 maxQuantity: quantity,

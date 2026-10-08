@@ -107,7 +107,6 @@ const ShowProduk: FC<Props> = ({
                       nama: item.nama,
                       img: item.img,
                       hargaJual: item.hargaJual,
-                      kode: item.kode,
                       hargaJualTerakhirTransaksi:
                         item.hargaJualTerakhirTransaksi,
                       diskon: 0,
@@ -128,14 +127,6 @@ const ShowProduk: FC<Props> = ({
                   >
                     {/* image */}
                     <div className="w-full h-100 rounded-xl flex flex-row justify-center items-center overflow-hidden relative">
-                      {/* stok */}
-                      <div className="px-2.5 h-5 flex flex-row justify-center items-center absolute bg-custom-primary rounded-full top-2 right-2">
-                        <div className="flex flex-row justify-start items-center gap-1 text-[0.625rem] font-medium text-custom-secondary">
-                          <span>{formatNumber(item.stok)} </span>
-                          <span className="hidden md:block">STOK</span>
-                        </div>
-                      </div>
-
                       <img
                         src={item.img}
                         alt="foto produk"
@@ -145,7 +136,7 @@ const ShowProduk: FC<Props> = ({
                     </div>
 
                     {/* informasi produk */}
-                    <div className="w-full h-80 flex flex-col justify-start items-start gap-3">
+                    <div className="w-full h-80 flex flex-col justify-start items-start gap-2">
                       <div className="w-full flex flex-col justify-start items-start gap-0.5">
                         {/* kategori */}
                         <span className="text-[0.625rem] font-medium text-base-content/80">
@@ -159,15 +150,13 @@ const ShowProduk: FC<Props> = ({
                             : item.nama}
                         </p>
 
-                        {/* kode */}
-                        <div className="flex gap-1.5 flex-row justify-start items-start">
-                          <span className="text-[0.625rem] text-base-content/80">
-                            Kode :
-                          </span>
-
-                          <span className="text-[0.625rem] font-medium text-base-content/80">
-                            {item.kode ?? "-"}
-                          </span>
+                        <div className="px-2.5 h-5 flex flex-row justify-center items-center bg-custom-primary rounded-full mt-1.5">
+                          <div className="flex flex-row justify-start items-center gap-1 text-[0.625rem] font-medium text-custom-secondary">
+                            <span className="hidden md:block">STOK :</span>
+                            <span className="font-semibold">
+                              {formatNumber(item.stok)}{" "}
+                            </span>
+                          </div>
                         </div>
                       </div>
 

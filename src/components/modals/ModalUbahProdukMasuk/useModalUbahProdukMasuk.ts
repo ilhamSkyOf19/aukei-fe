@@ -229,6 +229,10 @@ const useModalUbahProdukMasuk = (params: {
         return;
       }
 
+      if (data.jumlahBox === 0) delete data.jumlahBox;
+
+      if (data.jumlahStok === 0) delete data.jumlahStok;
+
       const payload: UpdateBarangMasukDetailType = {
         produkId: isProdukChanged ? data.produkId : undefined,
         jumlahBox: isJumlahChanged ? data.jumlahBox : undefined,

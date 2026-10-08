@@ -33,7 +33,7 @@ const Kasir = () => {
         )}
 
         {/* struk */}
-        {step === 3 && <Struk />}
+        {step === 3 && <Struk handleSetToast={handleSetToast} />}
 
         {/* booking */}
         {step === 4 && <Booking handleToast={handleSetToast} kasir={kasir} />}

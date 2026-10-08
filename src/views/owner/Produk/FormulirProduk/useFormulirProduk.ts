@@ -57,7 +57,6 @@ const useFormulirProduk = () => {
       reset({
         nama: dataProdukDetail.data.nama,
         kategoriId: dataProdukDetail.data.kategori.id,
-        kode: dataProdukDetail.data.kode ?? undefined,
         hargaJual: dataProdukDetail.data.hargaJual,
         hargaBeli: dataProdukDetail.data.hargaBeli,
         isiPerBox: dataProdukDetail.data.isiPerBox,

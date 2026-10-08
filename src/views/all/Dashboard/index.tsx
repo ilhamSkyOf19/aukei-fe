@@ -23,8 +23,6 @@ import useDashboard from "./useDashboard";
 import ModalChooseIsActiveShadowFeature from "../../../components/modals/ModalChooseIsActiveShadowFeature";
 import EfekShadowFeatureActive from "../../../components/ui/EfekShadowFeatureActive";
 import ModalAddShadowFeature from "../../../components/modals/ModalShadowTransaction";
-import Toast from "../../../components/messages/Toast";
-import { TOAST_CONFIG_DASHBOARD } from "../../../types/toast.type";
 const Dashboard = () => {
   // get use
   const {
@@ -42,30 +40,17 @@ const Dashboard = () => {
     modalShadowTransactionRef,
 
     handleSetToast,
-    toast,
   } = useDashboard();
 
   return (
     <div
       className={cn(
-        "w-full pt-4 px-4 pb-2.5 flex flex-col justify-center items-center",
+        "w-full pt-4 px-4 pb-2.5 flex flex-col justify-start items-center",
       )}
     >
-      {toast && (
-        <Toast
-          toast={toast?.id !== null}
-          color={TOAST_CONFIG_DASHBOARD[toast.type].color}
-          label={TOAST_CONFIG_DASHBOARD[toast.type].message}
-          isAnimationOut={toast?.isAnimationOut || false}
-        />
-      )}
-
       <div
         className={cn(
-          "w-full bg-base-100 rounded-2xl md:rounded-xl border border-base-content/10 shadow-xl flex flex-col justify-between items-center pt-8 px-4 mb:pb-0 relative overflow-hidden  pb-20",
-          pengguna?.role === ROLE_INTERNAL_TYPE.OWNER
-            ? "min-h-[85vh] lg:h-[85vh]"
-            : "h-full",
+          "w-full bg-base-100 rounded-2xl md:rounded-xl border border-base-content/10 shadow-xl flex flex-col justify-between items-center pt-8 px-4 mb:pb-0 relative overflow-hidden pb-20 h-auto lg:h-[95vh]",
         )}
       >
         {/* button shadow feature */}

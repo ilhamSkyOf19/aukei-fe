@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import notFoundImg from "../../assets/404.svg";
 const NotFoundPage = () => {
   return (
@@ -21,6 +22,14 @@ const NotFoundPage = () => {
           Maaf, halaman yang Anda cari tidak tersedia
         </span>
       </div>
+
+      {/* button back */}
+      <Link
+        to={"/dashboard"}
+        className="rounded-2xl md:rounded-xl bg-custom-secondary text-custom-primary py-2 px-4 text-xs font-medium mt-4 hover-overlay"
+      >
+        Kembali
+      </Link>
     </div>
   );
 };

@@ -264,7 +264,11 @@ const TopPelanggan: FC<Props> = ({
                     </td>
 
                     {/* no wa */}
-                    <td>{formatNumberPhone(pelanggan.noWa)}</td>
+                    <td>
+                      {pelanggan.noWa !== undefined && pelanggan.noWa !== "-"
+                        ? formatNumberPhone(pelanggan.noWa)
+                        : "-"}
+                    </td>
 
                     {/* total transaksi */}
                     <td className="font-medium">

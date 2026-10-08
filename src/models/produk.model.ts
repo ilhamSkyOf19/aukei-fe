@@ -5,7 +5,6 @@ export interface IProduk {
   id: number;
   nama: string;
   kategori: Pick<IKategoriProdukType, "id" | "nama" | "keterangan">;
-  kode?: string | null;
   hargaBeli: number;
   hargaJual: number;
   stok: number;
@@ -75,7 +74,6 @@ export interface ResponseProdukForKasirType extends Pick<
   IProduk,
   | "id"
   | "nama"
-  | "kode"
   | "hargaJual"
   | "stok"
   | "img"

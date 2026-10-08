@@ -2,6 +2,7 @@ import {
   BanknoteArrowDown,
   CalendarClock,
   ChartColumn,
+  CirclePercent,
   Clock3,
   Package,
   PackageMinus,
@@ -213,6 +214,22 @@ const useDataStatistik = (params: {
           same: statistik?.data?.rataRataTransaksiSelesai?.persentase,
         }),
       },
+    },
+
+    {
+      key: "diskon",
+      category: "penjualan",
+      icon: {
+        icon: CirclePercent,
+        bgColor: "bg-rose-100",
+        iconColor: "text-rose-400",
+      },
+      label: windowSize === "sm" ? "Diskon" : "Total Diskon",
+      value:
+        windowSize === "sm"
+          ? formatRupiahShort(statistik?.data?.totalDiskon.total ?? 0)
+          : formatRupiah(statistik?.data?.totalDiskon.total ?? 0),
+      caption: "Total diskon dari transaksi yang sudah selesai",
     },
 
     {

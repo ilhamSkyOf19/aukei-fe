@@ -5,6 +5,7 @@ import useFilterState from "../services/useFilterState";
 import { useLaporanStore } from "../stores/laporanStore";
 import useDownloadLaporanTopPelanggan from "./useDownloadLaporanTopPelanggan";
 import { ShadowStatistikServices } from "../services/shadowStatistik.service";
+import useDownloadLaporanTopPelangganShadow from "./useDownloadLaporanTopPelangganShadow";
 
 const useStatistikTopPelanggan = (params: {
   customLimit?: number;
@@ -154,12 +155,45 @@ const useStatistikTopPelanggan = (params: {
 
   // download
   const {
-    handleDownloadLaporanTopPelangganPdf,
-    isLoadingDownloadLaporanTopPelangganPdf,
+    handleDownloadLaporanTopPelangganPdf:
+      handleDownloadLaporanTopPelangganPdfOriginal,
+    isLoadingDownloadLaporanTopPelangganPdf:
+      isLoadingDownloadLaporanTopPelangganPdfOriginal,
   } = useDownloadLaporanTopPelanggan({
     handleSetAlert,
     handleSetToast,
   });
+
+  const {
+    handleDownloadLaporanTopPelangganShadowPdf,
+    isLoadingDownloadLaporanTopPelangganShadowPdf,
+  } = useDownloadLaporanTopPelangganShadow({
+    handleSetAlert,
+    handleSetToast,
+  });
+
+  // handle download laporan top pengguna pdf (global)
+  const handleDownloadLaporanTopPelangganPdf = async (params: {
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    try {
+      if (shadowId) {
+        return handleDownloadLaporanTopPelangganShadowPdf({
+          shadowId,
+          startDate: params.startDate,
+          endDate: params.endDate,
+        });
+      } else {
+        return handleDownloadLaporanTopPelangganPdfOriginal({
+          startDate: params.startDate,
+          endDate: params.endDate,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return {
     startDateEndDate: {
@@ -190,7 +224,9 @@ const useStatistikTopPelanggan = (params: {
     handleSelectedLaporan,
 
     handleDownloadLaporanTopPelangganPdf,
-    isLoadingDownloadLaporanTopPelangganPdf,
+    isLoadingDownloadLaporanTopPelangganPdf:
+      isLoadingDownloadLaporanTopPelangganPdfOriginal ||
+      isLoadingDownloadLaporanTopPelangganShadowPdf,
 
     refetchTopPelanggan,
   };

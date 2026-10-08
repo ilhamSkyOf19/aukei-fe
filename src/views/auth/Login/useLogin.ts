@@ -6,8 +6,10 @@ import { useMutation } from "@tanstack/react-query";
 import { AuthServices } from "../../../services/auth.service";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
+import { useToastAnimation } from "../../../hooks/useToast";
 
 const useLogin = () => {
+  const { toast } = useToastAnimation();
   // use form
   const {
     register,
@@ -58,6 +60,7 @@ const useLogin = () => {
     errors,
     onSubmit,
     isPendingLogin,
+    toast,
   };
 };
 
