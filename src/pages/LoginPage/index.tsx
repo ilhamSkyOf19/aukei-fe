@@ -7,7 +7,7 @@ const LoginPage: FC = () => {
     <main className="bg-base-100 w-screen h-screen">
       <div className="container mx-auto min-h-screen flex justify-center items-center px-4">
         {/* header page */}
-        <HeaderPage title="Login | Sistem Manajemen Borang Akreditasi" />
+        <HeaderPage title="Login | AUKEI" />
 
         {/* view login */}
         <Login />

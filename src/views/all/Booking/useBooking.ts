@@ -78,13 +78,25 @@ const useBooking = () => {
   });
 
   const [
-    { data: dataStatistikBooking, isLoading: isLoadingStatistikBooking },
-    { data: dataTransaksiBooking, isLoading: isLoadingDataTransaksiBooking },
+    {
+      data: dataStatistikBooking,
+      isLoading: isLoadingStatistikBooking,
+      refetch: refetchStatistikBooking,
+      isRefetching: isRefetchingStatistikBooking,
+    },
+    {
+      data: dataTransaksiBooking,
+      isLoading: isLoadingDataTransaksiBooking,
+      refetch: refetchDataTransaksiBooking,
+      isRefetching: isRefetchingDataTransaksiBooking,
+    },
   ] = data;
 
   // is existing data tempo
   const isExistDataTransaksiBooking: boolean =
-    !isLoadingDataTransaksiBooking && dataTransaksiBooking?.data?.data
+    !isLoadingDataTransaksiBooking &&
+    !isRefetchingDataTransaksiBooking &&
+    dataTransaksiBooking?.data?.data
       ? dataTransaksiBooking?.data?.data?.length > 0
         ? true
         : false
@@ -95,21 +107,41 @@ const useBooking = () => {
     return navigate(`${currentPathname}/${transactionId}`);
   };
 
-  const { data: dataKebutuhanBarang, isLoading: isLoadingKebutuhanBarang } =
-    useQuery({
-      queryKey: ["kebutuhan-barang"],
-      queryFn: () => TransactionServices.kebutuhanBarang({}),
-      retry: false,
-      refetchOnWindowFocus: false,
-    });
+  const {
+    data: dataKebutuhanBarang,
+    isLoading: isLoadingKebutuhanBarang,
+    refetch: refetchKebutuhanBarang,
+    isRefetching: isRefetchingKebutuhanBarang,
+  } = useQuery({
+    queryKey: ["kebutuhan-barang"],
+    queryFn: () => TransactionServices.kebutuhanBarang({}),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
 
   // is existing data kebutuhan barang
   const isExistDataKebutuhanBarang: boolean =
-    !isLoadingKebutuhanBarang && dataKebutuhanBarang?.data
+    !isLoadingKebutuhanBarang &&
+    !isRefetchingKebutuhanBarang &&
+    dataKebutuhanBarang?.data
       ? dataKebutuhanBarang?.data?.length > 0
         ? true
         : false
       : false;
+
+  const handleRefresh = async () => {
+    Promise.allSettled([
+      refetchStatistikBooking({
+        throwOnError: true,
+      }),
+      refetchDataTransaksiBooking({
+        throwOnError: true,
+      }),
+      refetchKebutuhanBarang({
+        throwOnError: true,
+      }),
+    ]);
+  };
 
   return {
     windowSize,
@@ -121,13 +153,17 @@ const useBooking = () => {
     isExistDataTransaksiBooking,
     pengguna,
     dataTransaksiBooking,
-    isLoadingDataTransaksiBooking,
+    isLoadingDataTransaksiBooking:
+      isLoadingDataTransaksiBooking || isRefetchingDataTransaksiBooking,
     handleRedirect,
     dataStatistikBooking,
-    isLoadingStatistikBooking,
+    isLoadingStatistikBooking:
+      isLoadingStatistikBooking || isRefetchingStatistikBooking,
     isExistDataKebutuhanBarang,
     dataKebutuhanBarang,
-    isLoadingKebutuhanBarang,
+    isLoadingKebutuhanBarang:
+      isLoadingKebutuhanBarang || isRefetchingKebutuhanBarang,
+    handleRefresh,
   };
 };
 

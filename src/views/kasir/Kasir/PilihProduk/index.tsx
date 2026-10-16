@@ -387,9 +387,9 @@ const PilihProduk: FC = () => {
                 className="w-full flex flex-row justify-center items-center gap-1.5 sm:gap-2.5 h-9.5 rounded-xl border border-custom-primary hover-overlay disabled:opacity-50 bg-custom-primary"
                 onClick={handleBackKeranjang}
               >
-                <ArrowLeft className="size-4 lg:size-4 xl:size-5 text-base-content" />
+                <ArrowLeft className="size-4 lg:size-4 xl:size-5 text-text-base-content" />
 
-                <span className="text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
+                <span className="text-text-base-content text-[0.6rem] lg:text-[0.625rem] xl:text-xs font-semibold">
                   Kembali
                 </span>
               </button>

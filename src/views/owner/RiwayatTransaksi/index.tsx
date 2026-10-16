@@ -37,7 +37,6 @@ import CardStatistik from "../../../components/ui/cards/CardStatistik";
 import Toast from "../../../components/messages/Toast";
 import { TOAST_CONFIG_RIWAYAT_TRANSACTION } from "../../../types/toast.type";
 
-// PERBAIKI , BERIKAN STATISTIK NYA DAN UNTUK DAFTAR RIWAYAT TIDAK PERLU BERDASARKAN PELANGGAN , JIKA PELANGGAN DOBLE TIDAK APA MEMANG HARI ITU ADA 2 TRANSAKSI, PERBAIKI SERVICE NYA JUGA
 const RiwayatTransaksi = () => {
   const {
     metodePembayaran,
@@ -53,6 +52,7 @@ const RiwayatTransaksi = () => {
     setSort,
     sort,
     toast,
+    handleRefresh,
   } = useRiwayatTransaksi();
 
   return (
@@ -76,6 +76,10 @@ const RiwayatTransaksi = () => {
           filterMetodePembayaran={{
             handleMetodePembayaran: handleSetMetodePembayaran,
             value: metodePembayaran,
+          }}
+          handleRefresh={{
+            refresh: handleRefresh,
+            notLoadingGlobal: true,
           }}
         />
         {/* data untuk mobile */}

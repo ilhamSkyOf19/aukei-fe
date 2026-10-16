@@ -1,6 +1,5 @@
 import {
   AlertCircle,
-  ArrowLeft,
   Banknote,
   CalendarClock,
   CircleCheck,
@@ -8,6 +7,7 @@ import {
   Minus,
   PackageX,
   QrCode,
+  Save,
   TriangleAlert,
 } from "lucide-react";
 import TitleModalFormulir from "../../../../components/ui/TitleModalFormulir";
@@ -85,6 +85,9 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
 
     isPendingUpdatePembayaran,
     handleUpdatePembayaran,
+
+    handleCancelUpdatePembayaran,
+    isPendingCancelUpdateTransactionPayment,
   } = usePembayaran({
     ubahPembayaran,
     handleToast,
@@ -128,12 +131,17 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
           <h3 className="text-base font-medium text-base-content">
             {ubahPembayaran ? "Ubah Pembayaran" : "Pembayaran"}
           </h3>
-
           <div className="flex flex-row justify-end items-center gap-4 absolute left-4">
             {/* button update transaksi */}
-            {!ubahPembayaran && (
-              <ButtonBackText handleClick={() => handleBack()} />
-            )}
+            <ButtonBackText
+              handleClick={() => {
+                if (ubahPembayaran) {
+                  handleCancelUpdatePembayaran();
+                } else {
+                  handleBack();
+                }
+              }}
+            />
           </div>
         </div>
 
@@ -721,12 +729,12 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
               >
                 <ButtonWithIcon
                   ref={buttonBayarRef}
-                  label={ubahPembayaran ? "Kembali" : "Selesaikan Transaksi"}
+                  label={ubahPembayaran ? "Simpan" : "Selesaikan Transaksi"}
                   handleBtn={
                     ubahPembayaran ? handleUpdatePembayaran : handleTransaction
                   }
                   customWidth="w-full"
-                  icon={ubahPembayaran ? ArrowLeft : CircleCheck}
+                  icon={ubahPembayaran ? Save : CircleCheck}
                   isLoading={isPendingTransaction || isPendingUpdatePembayaran}
                 />
               </div>
@@ -757,6 +765,7 @@ const Pembayaran: FC<Props> = ({ handleToast, kasir, ubahPembayaran }) => {
         labelNext="Lanjutkan"
         iconColor="text-warning"
         icon={ubahPembayaran ? TriangleAlert : AlertCircle}
+        isLoading={isPendingCancelUpdateTransactionPayment}
       />
 
       {/* modal formulir tempo */}

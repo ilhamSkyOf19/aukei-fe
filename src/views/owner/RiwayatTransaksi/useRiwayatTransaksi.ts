@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFilter } from "../../../hooks/useFilter";
 import { TransactionServices } from "../../../services/transaction.service";
-import { useQueries } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import useFilterRangeDate from "../../../hooks/useFilterRangeDate";
 import { useFilterSearch } from "../../../hooks/useFilterSearch";
 import { useAuthStore } from "../../../stores/authStore";
@@ -61,62 +61,62 @@ const useRiwayatTransaksi = () => {
   const { endDate, startDate } = useFilterRangeDate();
 
   // query ringkasan statistik
-  const data = useQueries({
-    queries: [
-      {
-        queryKey: [
-          "riwayat-transaksi",
-          startDate,
-          endDate,
-          metodePembayaran,
-          page,
-          limit,
-          search,
-          sort,
-        ],
-        queryFn: () => {
-          if (shadowIsActive && shadowId) {
-            return ShadowTransactionServices.findRiwayatTransaksiShadow({
-              shadowFeatureId: shadowId,
-              query: {
-                ...(startDate && { startDate }),
-                ...(endDate && { endDate }),
-                ...(metodePembayaran && {
-                  metodePembayaran: metodePembayaran.toLowerCase(),
-                }),
-                ...(page && { page }),
-                ...(limit && { limit }),
-                ...(search && { search }),
-                ...(sort && { sort }),
-              },
-            });
-          } else {
-            return TransactionServices.findRiwayatTransaksi({
-              ...(startDate && { startDate }),
-              ...(endDate && { endDate }),
-              ...(metodePembayaran && {
-                metodePembayaran: metodePembayaran.toLowerCase(),
-              }),
-              ...(page && { page }),
-              ...(limit && { limit }),
-              ...(search && { search }),
-              ...(sort && { sort }),
-            });
-          }
-        },
-        retry: false,
-        refetchOnWindowFocus: false,
-        enabled: !!startDate && !!endDate,
-      },
+  const {
+    data: dataRiwayatTransaksi,
+    isLoading: isLoadingRiwayatTransaksi,
+    refetch,
+    isRefetching,
+  } = useQuery({
+    queryKey: [
+      "riwayat-transaksi",
+      startDate,
+      endDate,
+      metodePembayaran,
+      page,
+      limit,
+      search,
+      sort,
     ],
+    queryFn: () => {
+      if (shadowIsActive && shadowId) {
+        return ShadowTransactionServices.findRiwayatTransaksiShadow({
+          shadowFeatureId: shadowId,
+          query: {
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+            ...(metodePembayaran && {
+              metodePembayaran: metodePembayaran.toLowerCase(),
+            }),
+            ...(page && { page }),
+            ...(limit && { limit }),
+            ...(search && { search }),
+            ...(sort && { sort }),
+          },
+        });
+      } else {
+        return TransactionServices.findRiwayatTransaksi({
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+          ...(metodePembayaran && {
+            metodePembayaran: metodePembayaran.toLowerCase(),
+          }),
+          ...(page && { page }),
+          ...(limit && { limit }),
+          ...(search && { search }),
+          ...(sort && { sort }),
+        });
+      }
+    },
+    retry: false,
+    refetchOnWindowFocus: false,
+    enabled: !!startDate && !!endDate,
   });
-
-  const [{ data: dataRiwayatTransaksi, isLoading: isLoadingRiwayatTransaksi }] =
-    data;
 
   // is existing data riwayat transaksi
   const isExistDataRiwayatTransaksi: boolean =
-    !isLoadingRiwayatTransaksi && dataRiwayatTransaksi?.data?.data
+    !isLoadingRiwayatTransaksi &&
+    !isRefetching &&
+    dataRiwayatTransaksi?.data?.data
       ? dataRiwayatTransaksi?.data?.data?.length > 0
         ? true
         : false
@@ -129,13 +129,19 @@ const useRiwayatTransaksi = () => {
     navigate(`/dashboard/riwayat-transaksi/${id}`);
   };
 
+  // handle refresh
+  const handleRefresh = async () => {
+    await refetch({
+      throwOnError: true,
+    });
+  };
   return {
     metodePembayaran,
     handleSetMetodePembayaran,
     handleRedirectDetail,
     isExistDataRiwayatTransaksi,
     dataRiwayatTransaksi,
-    isLoadingRiwayatTransaksi,
+    isLoadingRiwayatTransaksi: isLoadingRiwayatTransaksi || isRefetching,
     handleSearch,
     setPage,
     setLimit,
@@ -143,6 +149,7 @@ const useRiwayatTransaksi = () => {
     setSort,
     sort,
     toast,
+    handleRefresh,
   };
 };
 

@@ -159,7 +159,7 @@ const useDaftarDetailProduk = (params: {
 
   // get use create transaction old
   const { handleCreateTransactionOld, isPendingTransactionOld } =
-    useCreateTransactionOld();
+    useCreateTransactionOld({});
 
   const setStep = useStepStore((state) => state.setStep);
 

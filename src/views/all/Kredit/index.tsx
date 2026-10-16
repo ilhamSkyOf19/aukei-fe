@@ -32,6 +32,7 @@ import {
 import CardData from "../../../components/ui/cards/CardData";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
 import { Fragment } from "react/jsx-runtime";
+import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
 
 const Kredit = () => {
   const {
@@ -50,6 +51,7 @@ const Kredit = () => {
     isLoadingStatistikTempo,
     handelRedirectDetail,
     pengguna,
+    handleRefresh,
   } = useKredit();
   return (
     <div className="w-full">
@@ -59,6 +61,45 @@ const Kredit = () => {
           pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && "pt-2.5",
         )}
       >
+        {/* filter */}
+        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl lg:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mb-2.5 ">
+          <div className="w-full md:flex-1 flex flex-row justify-start items-center">
+            {/* input search */}
+            <InputSearch
+              handleSearch={setSearch}
+              placeholder="Cari berdasarkan pelanggan ..."
+              withLabel
+            />
+          </div>
+
+          <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-end gap-2.5 mt-3 md:mt-0">
+            {/* filter sort */}
+            <FilterSort
+              setSort={setSort}
+              customWidth="w-full md:w-40"
+              value={sort}
+            />
+            <StatusTempo
+              setStatusTempo={setStatus}
+              customWidth="w-full md:w-40"
+              value={status}
+            />
+
+            {/* button refresh */}
+            <div className="md:flex hidden">
+              <ButtonRefresh handleRefresh={handleRefresh} notLoadingGlobal />
+            </div>
+          </div>
+          {/* button refresh */}
+          <div className="w-full fflex md:hidden mt-2.5">
+            <ButtonRefresh
+              handleRefresh={handleRefresh}
+              notLoadingGlobal
+              customWidth="w-full"
+            />
+          </div>
+        </div>
+
         {/* statistik */}
         {pengguna?.role === "OWNER" && (
           <div className="w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 md:rounded-xl p-2.5">
@@ -181,33 +222,6 @@ const Kredit = () => {
             />
           </div>
         )}
-
-        {/* filter */}
-        <div className=" w-full flex flex-col md:flex-row justify-start items-start md:items-start bg-base-100 p-2.5 rounded-2xl lg:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 mt-2.5 ">
-          <div className="w-full md:flex-1 flex flex-row justify-start items-center">
-            {/* input search */}
-            <InputSearch
-              handleSearch={setSearch}
-              placeholder="Cari berdasarkan pelanggan ..."
-              withLabel
-            />
-          </div>
-
-          <div className="w-full  md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-2.5 mt-3 md:mt-0">
-            {/* filter sort */}
-            <FilterSort
-              setSort={setSort}
-              customWidth="w-full md:w-40"
-              value={sort}
-            />
-
-            <StatusTempo
-              setStatusTempo={setStatus}
-              customWidth="w-full md:w-40"
-              value={status}
-            />
-          </div>
-        </div>
 
         {/* DATA SM */}
         <div className="w-full mt-2.5 flex flex-col justify-start items-start gap-2.5 md:hidden">

@@ -18,6 +18,14 @@ export class AuthServices {
     return result.data;
   }
 
+  static async refresh(): Promise<ResponseStructure<null>> {
+    // call api
+    const result =
+      await instanceAxios.post<ResponseStructure<null>>("/auth/refresh");
+
+    return result.data;
+  }
+
   // update password
   static async updatePassword(req: {
     password: string;

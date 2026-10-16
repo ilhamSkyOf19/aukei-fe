@@ -99,14 +99,14 @@ const InputPasswordNonIcon: FC<Props> = ({
               type="button"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <Eye className="w-5 h-5 pointer-events-none" />
+              <Eye className="w-5 h-5 pointer-events-none text-base-content" />
             </button>
           ) : (
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <EyeOff className="w-5 h-5 pointer-events-none" />
+              <EyeOff className="w-5 h-5 pointer-events-none text-base-content" />
             </button>
           )}
         </div>

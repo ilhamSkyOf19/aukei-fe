@@ -1,6 +1,6 @@
 import { useEffect, useState, type ElementType } from "react";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../../../stores/authStore";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import {
@@ -19,6 +19,8 @@ import useCancelUpdateTransactionComplate from "../../../hooks/useCancelTransact
 import { removePreviousPath } from "../../../helpers/previousPath";
 import { useShadowStore } from "../../../stores/shadowStore";
 import { useStepStore } from "../../../stores/stepStore";
+import { parseId } from "../../../helpers/helpers";
+import useCancelUpdateTransactionPayment from "../../../hooks/useCancelUpdateTransactionPayment";
 
 const useSideBar = () => {
   // get auth context
@@ -29,6 +31,14 @@ const useSideBar = () => {
 
   // get store step
   const { step, setStep } = useStepStore((state) => state);
+
+  // get transaction id
+  const { transactionId: transactionIdParams } = useParams<{
+    transactionId: string;
+  }>();
+
+  // validated transaction id params
+  const transactionIdFormParams = parseId(transactionIdParams);
 
   // currentPathname
   const pathname = useLocation().pathname;
@@ -70,6 +80,12 @@ const useSideBar = () => {
   } = useCancelUpdateTransactionComplate({
     linkBack: `/dashboard/riwayat-transaksi/${transactionIdFormTransaction}`,
   });
+
+  // get use cancel update transaction payment complate
+  const {
+    handleCancelUpdateTransactionPayment,
+    isPendingCancelUpdateTransactionPayment,
+  } = useCancelUpdateTransactionPayment({});
 
   // get method in notifikasi store
   const resetNotifikasi = useNotifikasiStore((state) => state.resetNotifikasi);
@@ -115,8 +131,7 @@ const useSideBar = () => {
     }
 
     if (isUpdateTransaction) {
-      if (link === "/dashboard/riwayat-transaksi/:transactionId/ubah-produk")
-        return;
+      if (link === `/dashboard/riwayat-transaksi`) return;
 
       const isConfirm = await confirm({
         bigTitle: "Peringatan",
@@ -134,6 +149,28 @@ const useSideBar = () => {
 
       // clear keranjang
       resetUpdateTransaction();
+    }
+
+    // for cancel update pembayaran
+    if (
+      transactionIdFormParams &&
+      pathname.includes(
+        `/dashboard/riwayat-transaksi/${transactionIdFormParams}/ubah-pembayaran`,
+      )
+    ) {
+      if (link === `/dashboard/riwayat-transaksi`) return;
+
+      const isConfirm = await confirm({
+        bigTitle: "Peringatan",
+        smallTitle:
+          "Apakah anda yakin ingin keluar dari ubah pembayaran ini, semua data yang belum disimpan akan hilang?",
+      });
+
+      if (!isConfirm) {
+        return;
+      }
+
+      await handleCancelUpdateTransactionPayment(transactionIdFormParams);
     }
 
     if (isKeranjangUpdate || isUpdateTransaction) {
@@ -276,6 +313,8 @@ const useSideBar = () => {
     dataConfirm,
 
     isPendingCancelUpdateTransactionComplete,
+
+    isPendingCancelUpdateTransactionPayment,
   };
 };
 

@@ -19,6 +19,7 @@ import ButtonDetailTable from "../../../components/ui/button/ButtonDetailTable";
 import CardPelanggan from "../../../components/ui/cards/CardPelanggan";
 import LoadingFetch from "../../../components/ui/LoadingFetch";
 import { Fragment } from "react/jsx-runtime";
+import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
 
 const Pelanggan = () => {
   // call use
@@ -58,6 +59,7 @@ const Pelanggan = () => {
     isPendingUpdateIsActive,
     variablesUpdateIsActive,
     handleRedirectRiwayatTransaksiDetail,
+    handleRefresh,
   } = usePelanggan();
 
   return (
@@ -90,28 +92,26 @@ const Pelanggan = () => {
               withLabel
             />
           </div>
-
-          <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-start gap-2.5 mt-3 md:mt-0">
+          <div className="w-full md:flex-wrap md:flex-2 flex flex-row justify-start md:justify-end items-center md:items-end gap-2.5 mt-3 md:mt-0">
             {/* filter sort */}
             <FilterSort
               setSort={handleSort}
               customWidth="w-full md:w-40"
               value={sort}
             />
-
             {/* button add Pelanggan */}
             <div className="flex-col justify-start items-start gap-1.5 hidden md:flex">
               <span className="text-xs text-base-content/80 font-medium">
                 Aksi
               </span>
-
               <ButtonWithIcon
                 icon={PackagePlus}
                 label="Tambah Pelanggan"
                 handleBtn={() => handleShowModalFormulirPelanggan()}
-                // customClass="hidden md:flex"
               />
             </div>
+
+            <ButtonRefresh handleRefresh={handleRefresh} notLoadingGlobal />
           </div>
         </div>
 

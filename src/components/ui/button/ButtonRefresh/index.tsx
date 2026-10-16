@@ -7,12 +7,14 @@ type Props = {
   handleRefresh: () => Promise<void>;
   customWidth?: string;
   classHidden?: string;
+  notLoadingGlobal?: boolean;
 };
 
 const ButtonRefresh: FC<Props> = ({
   handleRefresh,
   customWidth,
   classHidden,
+  notLoadingGlobal,
 }) => {
   const { disabled, isLoading, refresh } = useRefresh({
     onRefresh: handleRefresh,
@@ -21,7 +23,7 @@ const ButtonRefresh: FC<Props> = ({
   return (
     <>
       {/* global loading */}
-      {isLoading && (
+      {!notLoadingGlobal && isLoading && (
         <div className="flex-col gap-2.5 absolute inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-[2px]">
           <span className="loading loading-spinner loading-xl text-custom-secondary" />
           <span className="text-custom-secondary text-xs">

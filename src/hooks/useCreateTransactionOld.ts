@@ -1,13 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { TransactionDetailOldServices } from "../services/transactionDetailOld.service";
 
-const useCreateTransactionOld = () => {
+const useCreateTransactionOld = (params: { callback?: () => void }) => {
   // use mutation
   const { mutateAsync: mutateCreate, isPending: isPendingTransactionOld } =
     useMutation({
       mutationFn: (transactionId: number) =>
         TransactionDetailOldServices.create({ transactionId }),
-      onSuccess: () => {},
+      onSuccess: () => {
+        params.callback?.();
+      },
       onError: (err) => {
         console.log(err);
       },

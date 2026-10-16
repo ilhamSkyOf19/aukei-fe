@@ -95,7 +95,8 @@ const usePelanggan = () => {
   const {
     data: dataPelanggan,
     isLoading: isLoadingPelanggan,
-    isFetching: isFetchingPelanggan,
+    refetch: refetchPelanggan,
+    isRefetching: isRefetchingPelanggan,
   } = useQuery({
     queryKey: ["pelanggan", search, sort, page, limit, shadowId],
     queryFn: () => {
@@ -124,7 +125,9 @@ const usePelanggan = () => {
 
   // Apakah data pelanggan sudah selesai dimuat dan tidak kosong
   const isExistDataPelanggan: boolean =
-    !isLoadingPelanggan && !!dataPelanggan?.data?.data?.length;
+    !isLoadingPelanggan &&
+    !isRefetchingPelanggan &&
+    !!dataPelanggan?.data?.data?.length;
 
   // Buka modal formulir pelanggan; jika id diberikan, isi data pelanggan untuk mode edit
   const handleShowModalFormulirPelanggan = (id?: number) => {
@@ -252,11 +255,17 @@ const usePelanggan = () => {
     handleToast: handleSetToast,
   });
 
+  const handleRefresh = async () => {
+    await refetchPelanggan({
+      throwOnError: true,
+    });
+  };
+
   // Ekspos state & handler yang dibutuhkan oleh komponen UI daftar pelanggan
   return {
     toast,
     dataPelanggan,
-    isLoadingPelanggan: isLoadingPelanggan || isFetchingPelanggan,
+    isLoadingPelanggan: isLoadingPelanggan || isRefetchingPelanggan,
     handleSearch,
     handleSort,
     handlePage,
@@ -289,6 +298,7 @@ const usePelanggan = () => {
     isPendingUpdateIsActive,
     variablesUpdateIsActive,
     handleRedirectRiwayatTransaksiDetail,
+    handleRefresh,
   };
 };
 

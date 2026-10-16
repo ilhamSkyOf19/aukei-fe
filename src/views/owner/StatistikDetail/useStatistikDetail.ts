@@ -152,7 +152,6 @@ const useStatistikDetail = () => {
     await refetch({
       throwOnError: true,
     });
-    // await grafikLineRef.current?.refetchActive();
   };
 
   // all

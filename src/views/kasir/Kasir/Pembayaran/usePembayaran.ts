@@ -23,6 +23,7 @@ import { useCartStore } from "../../../../stores/useCartStore";
 import useUpdateMetodePembayaran from "../../../../hooks/useUpdateMetodePembayaran";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useUpdatePembayaran from "../../../../hooks/useUpdatePembayaran";
+import useCancelUpdateTransactionPayment from "../../../../hooks/useCancelUpdateTransactionPayment";
 
 // Delay debounce saat menyimpan metode pembayaran non-CASH ke localStorage
 const METODE_PEMBAYARAN_SYNC_DEBOUNCE_MS = 500;
@@ -102,6 +103,12 @@ const usePembayaran = (params: {
     resetCart,
     resetNext,
   } = useCartStore((state) => state);
+
+  // cancel transaction payment
+  const {
+    handleCancelUpdateTransactionPayment,
+    isPendingCancelUpdateTransactionPayment,
+  } = useCancelUpdateTransactionPayment({});
 
   const {
     data: dataTransaksi,
@@ -397,6 +404,27 @@ const usePembayaran = (params: {
     }
   };
 
+  // handle cancel update pembayaran
+  const handleCancelUpdatePembayaran = async () => {
+    if (!validatedTransactionIdFromCompleted) return;
+
+    const isConfirm = await confirm({
+      bigTitle: "Peringatan",
+      smallTitle:
+        "Apakah anda yakin ingin keluar dari ubah pembayaran ini, semua data yang belum disimpan akan hilang?",
+    });
+
+    if (!isConfirm) {
+      return;
+    }
+
+    await handleCancelUpdateTransactionPayment(
+      validatedTransactionIdFromCompleted,
+    );
+
+    handleBack();
+  };
+
   // Ekspos state & handler yang dibutuhkan oleh komponen UI pembayaran
   return {
     metodePembayaran,
@@ -438,6 +466,9 @@ const usePembayaran = (params: {
 
     isPendingUpdatePembayaran,
     handleUpdatePembayaran,
+
+    handleCancelUpdatePembayaran,
+    isPendingCancelUpdateTransactionPayment,
   };
 };
 

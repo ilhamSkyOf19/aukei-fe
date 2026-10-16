@@ -9,6 +9,7 @@ import MetodePembayaran from "../MetodePembayaran";
 import StatusTempo from "../StatusTempo";
 import { cn } from "../../../utils/cn";
 import listDateRange from "../../../utils/listDateRange";
+import ButtonRefresh from "../../ui/button/ButtonRefresh";
 
 type Props = {
   handleSearch: (value: string) => void;
@@ -31,6 +32,11 @@ type Props = {
   handleDownloadPdf?: () => void;
 
   handleDownloadExcel?: () => void;
+
+  handleRefresh?: {
+    refresh: () => Promise<void>;
+    notLoadingGlobal?: boolean;
+  };
 };
 
 const FilterStatistik: FC<Props> = ({
@@ -40,6 +46,7 @@ const FilterStatistik: FC<Props> = ({
   filterTempo,
   handleDownloadExcel,
   handleDownloadPdf,
+  handleRefresh,
 }) => {
   /**
    * Kondisi ketika hanya ada:
@@ -163,6 +170,16 @@ const FilterStatistik: FC<Props> = ({
             bgColor="bg-success"
             textColor="text-primary-white"
             handleBtn={handleDownloadExcel}
+          />
+        </div>
+      )}
+
+      {handleRefresh && (
+        <div className="w-full flex flex-row justify-end items-center">
+          <ButtonRefresh
+            handleRefresh={handleRefresh.refresh}
+            customWidth="flex-1 md:flex-none"
+            notLoadingGlobal={handleRefresh.notLoadingGlobal}
           />
         </div>
       )}

@@ -350,10 +350,10 @@ const ProdukDetail = () => {
                 isExistData && (
                   <>
                     {/* harga jual */}
-                    <div className="flex-1 min-h-20 rounded-md bg-emerald-50 border border-emerald-500 py-2 px-2.5 gap-2 flex flex-col justify-start items-start">
+                    <div className="flex-1 min-h-20 rounded-md bg-emerald-50 dark:bg-emerald-100 border border-emerald-500 py-2 px-2.5 gap-2 flex flex-col justify-start items-start">
                       {/* label */}
                       <div className="w-full flex flex-row justify-between items-center">
-                        <span className="text-xs text-base-content">
+                        <span className="text-xs text-base-content dark:text-black">
                           Harga Jual
                         </span>
 
@@ -409,10 +409,10 @@ const ProdukDetail = () => {
                     </div>
 
                     {/* harga beli */}
-                    <div className="flex-1 min-h-20 rounded-md bg-indigo-50 border border-indigo-500 py-2 px-2.5 gap-2 flex flex-col justify-start items-start">
+                    <div className="flex-1 min-h-20 rounded-md bg-indigo-50 dark:bg-indigo-100 border border-indigo-500 py-2 px-2.5 gap-2 flex flex-col justify-start items-start">
                       {/* label */}
                       <div className="w-full flex flex-row justify-between items-center">
-                        <span className="text-xs text-base-content">
+                        <span className="text-xs text-base-content dark:text-black">
                           Harga Modal
                         </span>
 
@@ -532,7 +532,11 @@ const ProdukDetail = () => {
                         {/* stok */}
                         {keyUpdate !== "isiPerBox" ? (
                           <div className="flex flex-row justify-end items-center gap-4">
-                            <span className={"text-xs font-medium"}>
+                            <span
+                              className={
+                                "text-xs font-medium text-base-content"
+                              }
+                            >
                               {formatNumber(
                                 (dataProduk?.data?.isiPerBox ?? 0).toString(),
                               )}
@@ -591,7 +595,11 @@ const ProdukDetail = () => {
                         {/* stok */}
                         {keyUpdate !== "stokMinimum" ? (
                           <div className="flex flex-row justify-end items-center gap-4">
-                            <span className={"text-xs font-medium"}>
+                            <span
+                              className={
+                                "text-xs font-medium text-base-content"
+                              }
+                            >
                               {formatNumber(
                                 (dataProduk?.data?.stokMinimum ?? 0).toString(),
                               )}
@@ -643,14 +651,15 @@ const ProdukDetail = () => {
                       >
                         {/* label */}
                         <span className="text-xs text-base-content/90 text-medium">
-                          Harga Jual + PPN (11%)
+                          Harga Jual + PPN (0.5%)
                         </span>
 
                         {/* harga ppn*/}
                         <span
                           className={cn(
-                            (dataProduk?.data?.hargaPpn ?? 0) > 0
-                              ? "text-xs font-medium"
+                            "text-base-content",
+                            (dataProduk?.data?.hargaPpn ?? 0 > 0)
+                              ? "text-xs font-medium "
                               : "italic text-xs",
                           )}
                         >
@@ -686,7 +695,11 @@ const ProdukDetail = () => {
                         {/* stok */}
                         {keyUpdate !== "modalRataRata" ? (
                           <div className="flex flex-row justify-end items-center gap-4">
-                            <span className={"text-xs font-medium"}>
+                            <span
+                              className={
+                                "text-xs font-medium text-base-content"
+                              }
+                            >
                               {formatNumber(
                                 dataProduk?.data?.hargaModalRataRata ?? 0,
                               )}

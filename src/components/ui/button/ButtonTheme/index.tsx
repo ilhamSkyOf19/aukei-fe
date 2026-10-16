@@ -1,14 +1,18 @@
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const THEME_KEY = "theme";
+
 const ButtonTheme = () => {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(
+    () => localStorage.getItem(THEME_KEY) === "dark",
+  );
 
   useEffect(() => {
-    document.documentElement.setAttribute(
-      "data-theme",
-      isDark ? "dark" : "light",
-    );
+    const theme = isDark ? "dark" : "light";
+
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem(THEME_KEY, theme);
   }, [isDark]);
 
   return (
@@ -17,12 +21,11 @@ const ButtonTheme = () => {
         type="checkbox"
         checked={isDark}
         onChange={() => setIsDark((prev) => !prev)}
+        aria-label="Toggle dark mode"
       />
 
-      {/* icon saat dark mode */}
       <Sun className="swap-on size-6 fill-current text-base-content" />
 
-      {/* icon saat light mode */}
       <Moon className="swap-off size-6 fill-current text-base-content" />
     </label>
   );

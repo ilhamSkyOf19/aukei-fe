@@ -102,13 +102,23 @@ const useKredit = () => {
   });
 
   const [
-    { data: dataStatistikTempo, isLoading: isLoadingStatistikTempo },
-    { data: dataTempo, isLoading: isLoadingDataTempo },
+    {
+      data: dataStatistikTempo,
+      isLoading: isLoadingStatistikTempo,
+      refetch: refetchStatistikTempo,
+      isFetching: isFetchingStatistikTempo,
+    },
+    {
+      data: dataTempo,
+      isLoading: isLoadingDataTempo,
+      refetch: refetchDataTempo,
+      isFetching: isFetchingDataTempo,
+    },
   ] = data;
 
   // is existing data tempo
   const isExistDataTempo: boolean =
-    !isLoadingDataTempo && dataTempo?.data?.data
+    !isLoadingDataTempo && !isFetchingDataTempo && dataTempo?.data?.data
       ? dataTempo?.data?.data?.length > 0
         ? true
         : false
@@ -117,6 +127,18 @@ const useKredit = () => {
   // handle redirect
   const handelRedirectDetail = (id: number) => {
     return navigate(`${currentPahtname}/${id}`);
+  };
+
+  // handle refresh
+  const handleRefresh = async () => {
+    Promise.allSettled([
+      refetchStatistikTempo({
+        throwOnError: true,
+      }),
+      refetchDataTempo({
+        throwOnError: true,
+      }),
+    ]);
   };
 
   return {
@@ -130,11 +152,13 @@ const useKredit = () => {
     handlePage,
     dataTempo,
     dataStatistikTempo,
-    isLoadingDataTempo,
-    isLoadingStatistikTempo,
+    isLoadingDataTempo: isLoadingDataTempo || isFetchingDataTempo,
+    isLoadingStatistikTempo:
+      isLoadingStatistikTempo || isFetchingStatistikTempo,
     isExistDataTempo,
     handelRedirectDetail,
     pengguna,
+    handleRefresh,
   };
 };
 

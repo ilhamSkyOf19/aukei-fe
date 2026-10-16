@@ -25,6 +25,7 @@ import usePrintInvoiceTransaksi from "../../../../hooks/usePrintInvoiceTransaksi
 import { useToastAnimation } from "../../../../hooks/useToast";
 import usePrintInvoiceKirimBarang from "../../../../hooks/usePrintInvoiceKirimBarang";
 import { isMoreThanDays } from "../../../../helpers/helpers";
+import useCreateTransactionPaymentOld from "../../../../hooks/useCreateTransactionPaymentOld";
 
 const LOCAL_STORAGE_DI_BAYAR_KEY = "di-bayar";
 
@@ -345,8 +346,16 @@ const useInformasiPembayaran = ({
     );
   };
 
+  // get use create transaction payment old
+  const { handleCreateTransactionPaymentOld, isPendingTransactionPaymentOld } =
+    useCreateTransactionPaymentOld({});
+
   // handle pembayaran
-  const handleRedirectPembayaran = () => {
+  const handleRedirectPembayaran = async () => {
+    if (!dataTransaction?.data?.id) return;
+
+    await handleCreateTransactionPaymentOld(dataTransaction.data.id);
+
     return navigate(`${currentPathname}/ubah-pembayaran`);
   };
 
@@ -406,6 +415,8 @@ const useInformasiPembayaran = ({
     handleRedirectPembayaran,
 
     isExpired,
+
+    isPendingTransactionPaymentOld,
   };
 };
 

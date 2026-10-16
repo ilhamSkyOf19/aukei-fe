@@ -2,6 +2,7 @@ import type { FC } from "react";
 import {
   PAYMENT_METHOD_TYPE,
   TEMPO_STATUS_TYPE,
+  TRANSACTION_STATUS_TYPE,
   type PaymentMethodType,
   type TempoStatusType,
   type TransactionStatusType,
@@ -140,8 +141,11 @@ const CardData: FC<Props> = ({
         withBg &&
           "bg-base-100 shadow-sm border border-transparent dark:border-base-content/10",
         !disabled &&
+          status !== TRANSACTION_STATUS_TYPE.CANCELLED &&
           "hover:border-emerald-600 hover:bg-emerald-600/10 transition-all duration-150 ease-in-out",
         customHeight,
+        status === TRANSACTION_STATUS_TYPE.CANCELLED &&
+          "border-rose-600 bg-rose-600/10",
       )}
       onClick={handleRedirectDetail}
     >

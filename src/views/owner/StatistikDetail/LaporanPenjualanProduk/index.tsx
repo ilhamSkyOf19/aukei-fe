@@ -20,6 +20,7 @@ import useLaporanPenjualanProduk from "./laporanPenjualanProduk";
 import FilterSort from "../../../../components/filters/Sort";
 import RangeDate from "../../../../components/filters/RangeDate";
 import ModalHitungPendapatanProduk from "../../../../components/modals/ModalHitungPendapatanProduk";
+import type { ResponseDaftarLaporanProdukDetailByKategoriType } from "../../../../models/statistik.model";
 
 type Props = {
   shadowId?: number | null;
@@ -73,7 +74,6 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
           <ButtonBackText label="Kembali" handleClick={() => handleBack()} />
         </div>
       )}
-
       {/* filter */}
       <div className="w-full flex flex-col md:flex-row justify-start items-start md:justify-between md:items-end bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 gap-2.5 mb-2.5">
         <div className="w-full md:flex-wrap md:flex-2 flex flex-col md:flex-row flex-start justify-start items-center md:justify-start gap-3 md:gap-2.5 mt-3 md:mt-0">
@@ -130,9 +130,9 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
           handleRefresh={async () => {
             await handleRefresh();
           }}
+          classHidden="hidden md:flex"
         />
       </div>
-
       {/* header */}
       <div className="w-full flex flex-col justify-start items-start bg-base-100 p-2.5 rounded-2xl md:rounded-xl shadow-sm border border-transparent dark:border-base-content/10 gap-2.5">
         {/* title */}
@@ -212,7 +212,6 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
           />
         </div>
       </div>
-
       {/* ============================================================
           DAFTAR KATEGORI - DESKTOP
       ============================================================ */}
@@ -290,7 +289,6 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
           </table>
         </div>
       )}
-
       {/* ============================================================
           DAFTAR KATEGORI - MOBILE
       ============================================================ */}
@@ -330,7 +328,6 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
           )}
         </div>
       )}
-
       {/* ============================================================
           DAFTAR PRODUK - DESKTOP
       ============================================================ */}
@@ -449,7 +446,6 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
           </table>
         </div>
       )}
-
       {/* ============================================================
           DAFTAR PRODUK - MOBILE
       ============================================================ */}
@@ -462,7 +458,14 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
           ) : dataPenjualanProdukByKategori?.data?.produk &&
             dataPenjualanProdukByKategori.data.produk.length > 0 ? (
             dataPenjualanProdukByKategori.data.produk.map((item) => (
-              <CardProduk key={item.id} produk={item} />
+              <CardProduk
+                key={item.id}
+                produk={item}
+                isActive={selectedProducts.some(
+                  (selected) => selected.id === item.id,
+                )}
+                handlePilihProduk={handlePilihProduk}
+              />
             ))
           ) : (
             <div className="w-full bg-base-100 rounded-2xl border border-transparent dark:border-base-content/10 shadow-sm py-10">
@@ -475,7 +478,6 @@ const LaporanPenjualanProduk: FC<Props> = ({ shadowId }) => {
           )}
         </div>
       )}
-
       {/* modal hitung  */}
       <ModalHitungPendapatanProduk
         dataChooses={selectedProducts}
@@ -501,28 +503,45 @@ type CardProdukProps = {
     totalOmzet: number;
     totalLaba: number;
   };
+
+  handlePilihProduk: (
+    product: ResponseDaftarLaporanProdukDetailByKategoriType,
+  ) => void;
+  isActive: boolean;
 };
 
 /* ============================================================
     CARD PRODUK MOBILE
 ============================================================ */
 
-const CardProduk: FC<CardProdukProps> = ({ produk }) => {
+const CardProduk: FC<CardProdukProps> = ({
+  produk,
+  handlePilihProduk,
+  isActive,
+}) => {
   return (
     <div className="w-full bg-base-100 rounded-2xl flex flex-col justify-start items-start p-4 border border-transparent dark:border-base-content/10 shadow-sm gap-3">
       {/* ========================================================
           HEADER PRODUK
       ======================================================== */}
       <div className="w-full flex justify-between items-start gap-3 pb-3 border-b border-base-content/10">
-        <div className="flex items-start gap-3 min-w-0">
+        <div className="flex-2 flex items-start gap-3 min-w-0">
           {/* foto */}
-          <div className="w-14 h-14 shrink-0 overflow-hidden rounded-xl bg-base-200">
-            <img
-              src={produk.img}
-              alt={produk.nama}
-              loading="lazy"
-              className="w-full h-full object-cover"
+          <div className="flex flex-row justify-start items-start gap-2">
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={isActive}
+              onChange={() => handlePilihProduk(produk)}
             />
+            <div className="w-14 h-14 shrink-0 overflow-hidden rounded-xl bg-base-200">
+              <img
+                src={produk.img}
+                alt={produk.nama}
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
 
           {/* informasi produk */}
@@ -530,14 +549,10 @@ const CardProduk: FC<CardProdukProps> = ({ produk }) => {
             <span className="text-sm font-semibold text-base-content line-clamp-2">
               {produk.nama}
             </span>
-
-            <span className="text-[0.65rem] text-base-content/60">
-              {produk.kode ?? "-"}
-            </span>
           </div>
         </div>
 
-        <div className="flex flex-col items-end">
+        <div className="flex-1 flex flex-col items-end">
           <span className="text-[0.6rem] text-base-content/60">
             Total Qty Terjual
           </span>
@@ -549,7 +564,7 @@ const CardProduk: FC<CardProdukProps> = ({ produk }) => {
       </div>
 
       <div className="w-full grid grid-cols-2 gap-2">
-        <div className="bg-base-200/60 rounded-xl p-2.5 flex flex-col gap-1">
+        <div className="bg-base-200 rounded-xl p-2.5 flex flex-col gap-1">
           <div className="flex items-center gap-1.5">
             <div className="w-5 h-5 rounded-full bg-emerald-100 flex justify-center items-center">
               <Banknote className="size-3 text-emerald-600" />
@@ -565,7 +580,7 @@ const CardProduk: FC<CardProdukProps> = ({ produk }) => {
           </span>
         </div>
 
-        <div className="bg-base-200/60 rounded-xl p-2.5 flex flex-col gap-1">
+        <div className="bg-base-200 rounded-xl p-2.5 flex flex-col gap-1">
           <div className="flex items-center gap-1.5">
             <div className="w-5 h-5 rounded-full bg-blue-100 flex justify-center items-center">
               <Banknote className="size-3 text-blue-600" />

@@ -505,11 +505,10 @@ const DaftarDetailProduk: FC<Props> = ({
           message="Mohon maaf, fitur ubah transaksi dan retur belum tersedia untuk metode pembayaran tempo. Silahkan tunggu untuk update selanjutnya."
         />
       )}
-      {/* button retur */}
       {!isLoadingTransaction && (
         <div
           className={cn(
-            "w-full flex flex-row items-end gap-2.5",
+            "w-full flex flex-col md:flex-row items-end gap-2.5",
             role === ROLE_INTERNAL_TYPE.KASIR && !isExpired3Days
               ? "justify-between"
               : "justify-end",
@@ -529,6 +528,7 @@ const DaftarDetailProduk: FC<Props> = ({
                 icon={PencilLine}
                 bgColor="bg-info"
                 textColor="text-primary-white"
+                customWidth="w-full md:w-auto"
                 isLoading={isPendingTransactionOld}
                 handleBtn={() =>
                   handleUbahProduk({ id: dataTransaction?.data?.id })
@@ -539,15 +539,16 @@ const DaftarDetailProduk: FC<Props> = ({
           {dataTransaction?.data?.status !== TRANSACTION_STATUS_TYPE.BOOKING &&
             dataTransaction?.data?.metodePembayaran !==
               PAYMENT_METHOD_TYPE.TEMPO && (
-              <div className="flex flex-row justify-end items-end gap-2.5">
+              <div className="w-full md:w-auto flex flex-row justify-start items-center gap-2.5">
                 <ButtonWithIcon
                   label="Lihat Daftar Retur Barang"
                   icon={Eye}
                   handleBtn={() =>
                     handleDaftarReturBarang(dataTransaction?.data?.id)
                   }
-                  customWidth="flex-3 md:flex-none"
+                  customWidth="flex-1md:flex-none"
                 />
+
                 {dataTransaction?.data?.status ===
                   TRANSACTION_STATUS_TYPE.COMPLETED && (
                   <ButtonWithIcon
@@ -556,7 +557,7 @@ const DaftarDetailProduk: FC<Props> = ({
                     bgColor="bg-error"
                     textColor="text-primary-white"
                     handleBtn={() => handleToRetur()}
-                    customWidth="flex-2 md:flex-none"
+                    customWidth="flex-1 md:flex-none"
                   />
                 )}
               </div>

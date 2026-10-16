@@ -370,4 +370,15 @@ export class TransactionServices {
 
     return result.data;
   }
+
+  static async cancelUpdatePembayaran(params: {
+    transactionId: number;
+  }): Promise<ResponseStructure<{ success: boolean } | null>> {
+    // call api
+    const result = await instanceAxios.patch<
+      ResponseStructure<{ success: boolean } | null>
+    >(`/transaction/${params.transactionId}/cancel-update-pembayaran`);
+
+    return result.data;
+  }
 }

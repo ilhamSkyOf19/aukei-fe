@@ -28,6 +28,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
     dataConfirm,
 
     isPendingCancelUpdateTransactionComplete,
+    isPendingCancelUpdateTransactionPayment,
   } = useSideBar();
 
   return (
@@ -40,7 +41,7 @@ const Sidebar: FC<Props> = ({ isClose }) => {
       <div
         ref={divRef}
         className={cn(
-          "flex h-screen overflow-hidden overflow-y-auto flex-col items-start justify-between is-drawer-close:w-15 lg:is-drawer-open:w-50 is-drawer-open:w-70 bg-custom-secondary",
+          "flex h-screen overflow-hidden overflow-y-auto flex-col items-start justify-between is-drawer-close:w-15 lg:is-drawer-open:w-50 is-drawer-open:w-70 bg-custom-secondary scrollbar-thin scrollbar-thumb-custom-primary!",
           hasScroll && "is-drawer-close:w-18",
         )}
       >
@@ -293,7 +294,10 @@ const Sidebar: FC<Props> = ({ isClose }) => {
         handleConfirm={handleConfirmConfirm}
         bigTitle={dataConfirm?.bigTitle ?? ""}
         smallTitle={dataConfirm?.smallTitle ?? ""}
-        isLoading={isPendingCancelUpdateTransactionComplete}
+        isLoading={
+          isPendingCancelUpdateTransactionComplete ||
+          isPendingCancelUpdateTransactionPayment
+        }
         icon={AlertTriangle}
         iconColor="text-warning"
       />

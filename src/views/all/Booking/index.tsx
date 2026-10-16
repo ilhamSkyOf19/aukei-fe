@@ -23,6 +23,7 @@ import CardStatistik from "../../../components/ui/cards/CardStatistik";
 import CardDataTransaksiBooking from "../../../components/ui/cards/CardDataTransaksiBooking";
 import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import { Fragment } from "react/jsx-runtime";
+import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
 
 const RiwayatTransaksi = () => {
   const {
@@ -41,6 +42,7 @@ const RiwayatTransaksi = () => {
     isLoadingStatistikBooking,
     dataKebutuhanBarang,
     isLoadingKebutuhanBarang,
+    handleRefresh,
   } = useBooking();
 
   // sesuiakan lagi dengan ui yang sudah diperbarui
@@ -48,6 +50,35 @@ const RiwayatTransaksi = () => {
   return (
     <div className="w-full">
       <div className="w-full flex flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5">
+        {/* filter */}
+        <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl md:hidden flex flex-col justify-start items-start gap-4">
+          <InputSearch handleSearch={setSearch} />
+          <FilterSort setSort={setSort} customWidth="w-full" value={sort} />
+          <ButtonRefresh
+            handleRefresh={handleRefresh}
+            customWidth="w-full"
+            notLoadingGlobal
+          />
+        </div>
+
+        {/* filter */}
+        <div className="hidden w-full md:flex md:flex-row md:justify-between md:items-center bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-2 lg:gap-12">
+          <div
+            className={cn("md:w-80 flex-col justify-start items-start gap-2")}
+          >
+            <InputSearch handleSearch={setSearch} withLabel />
+          </div>
+
+          <div className="flex flex-row justify-end items-end gap-2.5">
+            <FilterSort setSort={setSort} value={sort} />
+            <ButtonRefresh
+              handleRefresh={handleRefresh}
+              customWidth="flex-1 md:flex-none"
+              notLoadingGlobal
+            />
+          </div>
+        </div>
+
         {/* statistik */}
         <div
           className={cn(
@@ -177,26 +208,6 @@ const RiwayatTransaksi = () => {
               />
             </>
           )}
-        </div>
-
-        {/* filter */}
-        <div className="w-full bg-base-100 p-2.5 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl md:hidden flex flex-col justify-start items-start gap-4">
-          <InputSearch handleSearch={setSearch} />
-        </div>
-
-        {/* filter */}
-        <div className="w-full grid grid-cols-2 md:flex md:flex-row md:justify-between md:items-center bg-base-100 shadow-sm border border-transparent dark:border-base-content/10 rounded-2xl md:rounded-xl p-2.5 gap-2 lg:gap-12">
-          <div
-            className={cn(
-              " hidden md:flex md:w-80 flex-col justify-start items-start gap-2",
-            )}
-          >
-            <InputSearch handleSearch={setSearch} withLabel />
-          </div>
-
-          <div className="col-span-1 md:w-40">
-            <FilterSort setSort={setSort} customWidth="w-full" value={sort} />
-          </div>
         </div>
 
         {/* DATA SM */}

@@ -549,7 +549,7 @@ export const TOAST_CONFIG_TRANSACTION_DETAIL: Record<
   },
   cancel_updated: {
     color: "error",
-    message: "Ubah produk berhasil dibatalkan",
+    message: "Perubahan berhasil dibatalkan",
   },
   updated_ongkir: {
     color: "info",

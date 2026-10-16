@@ -112,6 +112,8 @@ const InformasiPembayaran: FC<Props> = ({
     handleRedirectPembayaran,
 
     isExpired,
+
+    isPendingTransactionPaymentOld,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
@@ -158,7 +160,9 @@ const InformasiPembayaran: FC<Props> = ({
                 bgColor="bg-info"
                 textColor="text-primary-white"
                 label="Ubah Pembayaran"
+                isLoading={isPendingTransactionPaymentOld}
                 handleBtn={() => handleRedirectPembayaran()}
+                classHidden="hidden md:flex"
               />
             )}
         </div>
@@ -759,6 +763,24 @@ const InformasiPembayaran: FC<Props> = ({
             </>
           )}
         </div>
+
+        {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.COMPLETED &&
+          pengguna?.role === ROLE_INTERNAL_TYPE.KASIR &&
+          !isExpired &&
+          dataTransaction?.data?.metodePembayaran !==
+            PAYMENT_METHOD_TYPE.TEMPO && (
+            <ButtonWithIcon
+              icon={PencilLine}
+              bgColor="bg-info"
+              textColor="text-primary-white"
+              label="Ubah Pembayaran"
+              isLoading={isPendingTransactionPaymentOld}
+              handleBtn={() => handleRedirectPembayaran()}
+              customWidth="w-full mt-2.5"
+              classHidden="flex md:hidden"
+            />
+          )}
+
         {/* cetak sturuk */}
         {dataTransaction?.data?.status ===
           TRANSACTION_STATUS_TYPE.COMPLETED && (

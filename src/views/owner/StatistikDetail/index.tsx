@@ -142,7 +142,6 @@ const StatistikDetail = () => {
                         }
                         handleBtn={() => handleExportPdf()}
                       />
-
                       {/* refresh */}
                       <ButtonRefresh
                         handleRefresh={handleRefresh}

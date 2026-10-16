@@ -95,7 +95,7 @@
 
 /* Firefox */
 * {
-  scrollbar-color: var(--color-custom-secondary) var(--color-primary-white);
+  scrollbar-color: var(--color-custom-secondary) var(--color-base-100);
 }
 
 /* Chrome, Edge, Safari */
