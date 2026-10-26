@@ -271,7 +271,7 @@ const InstallmentsDetail = () => {
         {/* DATA SM */}
         <div className="w-full mt-2.5 flex flex-col justify-start items-start gap-2.5 md:hidden">
           {/* title */}
-          <h3 className="w-full text-center my-2.5 font-medium text-lg">
+          <h3 className="w-full text-center my-2.5 font-medium text-lg text-base-content">
             Jadwal Cicilan
           </h3>
           {isLoadingDataInstallments ? (
@@ -344,7 +344,7 @@ const InstallmentsDetail = () => {
         </div>
 
         {/* for lg */}
-        <div className="w-full flex flex-row justify-between items-start gap-2.5">
+        <div className="w-full flex flex-col lg:flex-row justify-between items-start gap-2.5">
           {/* informasi installment */}
           <div className="flex-2 flex flex-col justify-start items-start gap-2.5">
             {/* jadwal */}

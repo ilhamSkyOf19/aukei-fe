@@ -13,4 +13,5 @@ export const LOCAL_STORAGE_KEYS = {
   FROM_PENGAJUAN_BARANG: "from-pengajuan-barang",
   FROM_PENGAJUAN_STOCK_OPNAME: "from-pengajuan-stock-opname",
   DATA_PELANGGAN_FOR_RIWAYAT: "data-pelanggan-for-riwayat",
+  DISKON_TYPE: "diskon-type",
 } as const;

@@ -15,6 +15,7 @@ import { useToastAnimation } from "../../../hooks/useToast";
 import { useAlertAnimation } from "../../../hooks/useAlert";
 import { useShadowStore } from "../../../stores/shadowStore";
 import { ShadowTransactionServices } from "../../../services/shadowTransaction.service";
+import { useRefresh } from "../../../hooks/useRefresh";
 
 const useRiwayatTransaksiDetail = () => {
   // window size
@@ -71,62 +72,64 @@ const useRiwayatTransaksiDetail = () => {
   const { endDate, startDate } = useFilterRangeDate();
 
   // query ringkasan statistik
-  const { data: dataRiwayatTransaksi, isLoading: isLoadingRiwayatTransaksi } =
-    useQuery({
-      queryKey: [
-        "riwayat-transaksi",
-        validatedId,
-        startDate,
-        endDate,
-        metodePembayaran,
-        page,
-        limit,
-        search,
-        sort,
-        shadowId,
-      ],
-      queryFn: () => {
-        if (shadowIsActive && shadowId) {
-          return ShadowTransactionServices.findRiwayatTransaksiCompletedNotTempoByPelanggan(
-            {
-              shadowId,
-              id: validatedId!,
-              query: {
-                ...(startDate && { startDate }),
-                ...(endDate && { endDate }),
-                ...(metodePembayaran && {
-                  metodePembayaran: metodePembayaran.toLowerCase(),
-                }),
-                ...(page && { page }),
-                ...(limit && { limit }),
-                ...(search && { search }),
-                ...(sort && { sort }),
-              },
+  const {
+    data: dataRiwayatTransaksi,
+    isLoading: isLoadingRiwayatTransaksi,
+    refetch: refetchRiwayatTransaksi,
+    isRefetching: isRefetchingRiwayatTransaksi,
+  } = useQuery({
+    queryKey: [
+      "riwayat-transaksi",
+      validatedId,
+      startDate,
+      endDate,
+      metodePembayaran,
+      page,
+      limit,
+      search,
+      sort,
+      shadowId,
+    ],
+    queryFn: () => {
+      if (shadowIsActive && shadowId) {
+        return ShadowTransactionServices.findRiwayatTransaksiCompletedNotTempoByPelanggan(
+          {
+            shadowId,
+            id: validatedId!,
+            query: {
+              ...(startDate && { startDate }),
+              ...(endDate && { endDate }),
+              ...(metodePembayaran && {
+                metodePembayaran: metodePembayaran.toLowerCase(),
+              }),
+              ...(page && { page }),
+              ...(limit && { limit }),
+              ...(search && { search }),
+              ...(sort && { sort }),
             },
-          );
-        } else {
-          return TransactionServices.findRiwayatTransaksiCompletedNotTempoByPelanggan(
-            {
-              id: validatedId!,
-              query: {
-                ...(startDate && { startDate }),
-                ...(endDate && { endDate }),
-                ...(metodePembayaran && {
-                  metodePembayaran: metodePembayaran.toLowerCase(),
-                }),
-                ...(page && { page }),
-                ...(limit && { limit }),
-                ...(search && { search }),
-                ...(sort && { sort }),
-              },
+          },
+        );
+      } else {
+        return TransactionServices.findRiwayatTransaksiCompletedNotTempoByPelanggan(
+          {
+            id: validatedId!,
+            query: {
+              ...(metodePembayaran && {
+                metodePembayaran: metodePembayaran.toLowerCase(),
+              }),
+              ...(page && { page }),
+              ...(limit && { limit }),
+              ...(search && { search }),
+              ...(sort && { sort }),
             },
-          );
-        }
-      },
-      retry: false,
-      refetchOnWindowFocus: false,
-      enabled: !!startDate && !!endDate && !!validatedId,
-    });
+          },
+        );
+      }
+    },
+    retry: false,
+    refetchOnWindowFocus: false,
+    enabled: !!validatedId,
+  });
 
   const [dataPelanggan, setDataPelanggan] = useState<Pick<
     IPelangganType,
@@ -215,13 +218,25 @@ const useRiwayatTransaksiDetail = () => {
     handleSetToast,
   });
 
+  // hande refresh
+  const handleRefresh = async () => {
+    await refetchRiwayatTransaksi({
+      throwOnError: true,
+    });
+  };
+
+  const { disabled: disabledRefresh, refresh } = useRefresh({
+    onRefresh: handleRefresh,
+  });
+
   return {
     metodePembayaran,
     handleSetMetodePembayaran,
     windowSize,
     isExistDataRiwayatTransaksi,
     dataRiwayatTransaksi,
-    isLoadingRiwayatTransaksi,
+    isLoadingRiwayatTransaksi:
+      isLoadingRiwayatTransaksi || isRefetchingRiwayatTransaksi,
     handleSearch,
     setPage,
     setLimit,
@@ -239,6 +254,8 @@ const useRiwayatTransaksiDetail = () => {
 
     toast,
     alert,
+    handleRefresh: refresh,
+    disabledRefresh,
   };
 };
 

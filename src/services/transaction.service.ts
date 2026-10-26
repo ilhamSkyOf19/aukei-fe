@@ -66,8 +66,6 @@ export class TransactionServices {
   static async findRiwayatTransaksiCompletedNotTempoByPelanggan(params: {
     id: number;
     query: PaginationType & {
-      startDate?: string;
-      endDate?: string;
       metodePembayaran?: string;
     };
   }): Promise<ResponseStructure<ResponseRiwayatTransaksiPelangganType | null>> {

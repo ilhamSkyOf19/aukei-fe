@@ -16,6 +16,7 @@ import {
   ALERT_CONFIG_TRANSACTION,
   type Alert as AlertType,
 } from "../../../types/alert.types";
+import InputNumber from "../../inputs/InputNumber";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -54,6 +55,10 @@ const ModalFormulirTransaksi: FC<Props> = ({
     totalDiskon,
     hargaJual,
     isPendingTambahProduk,
+    diskonPersenController,
+    diskonType,
+    handleDiskonType,
+    totalDiskonPersen,
   } = useModalTransaksi({ handleCloseModal, data, handleSetAlert });
 
   return (
@@ -157,16 +162,27 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 placeholder={`Masukan harga jual`}
                 name="hargaJual"
               />
-
               <div className="w-full gap-2.5 flex flex-row justify-between items-start">
                 {/* diskon */}
-                <InputPrice<DetailsForCreate>
-                  label={`Diskon`}
-                  controller={diskonController}
-                  placeholder={`Masukan diskon`}
-                  name="diskon"
-                  max={hargaJual}
-                />
+                {diskonType === "RP" && (
+                  <InputPrice<DetailsForCreate>
+                    label={`Diskon - Rp`}
+                    controller={diskonController}
+                    placeholder={`Masukan diskon`}
+                    name="diskon"
+                    max={hargaJual}
+                  />
+                )}
+
+                {diskonType === "PERCENT" && (
+                  <InputNumber<DetailsForCreate>
+                    label="Diskon - %"
+                    placeholder="Diskon"
+                    controller={diskonPersenController}
+                    name="diskonPersen"
+                    max={100}
+                  />
+                )}
 
                 {/* input quantity  */}
                 <InputQty<DetailsForCreate>
@@ -175,32 +191,56 @@ const ModalFormulirTransaksi: FC<Props> = ({
                   controller={quantityController}
                 />
               </div>
+              <div className="w-full flex flex-row justify-start items-start pb-2 border-b border-base-content/30">
+                <button
+                  type="button"
+                  className="text-base-content hover:text-info text-xs font-medium"
+                  onClick={() =>
+                    handleDiskonType(
+                      diskonType === "PERCENT" ? "RP" : "PERCENT",
+                    )
+                  }
+                >
+                  Ganti ke{" "}
+                  {diskonType === "PERCENT" ? "Diskon Rp" : " Diskon %"}
+                </button>
+              </div>
 
               {/* total diskon */}
-              <div className="w-full flex flex-row gap-2.5">
-                <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
-                  <span className="text-xs text-base-content">
-                    Total Diskon
-                  </span>
-                  <span className="text-base font-semibold text-base-content">
-                    {formatRupiah(totalDiskon)}
-                  </span>
+              <div className="w-full flex flex-row gap-2.5 mt-1">
+                <div className="w-full flex flex-col justify-start items-start gap-2 ">
+                  <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
+                    <span className="text-xs text-base-content font-medium">
+                      Total Diskon - Rp
+                    </span>
+                    <span className="text-sm font-semibold text-base-content">
+                      {formatRupiah(totalDiskon)}
+                    </span>
+                  </div>
+                  <div className="w-full flex flex-col justify-start items-start gap-2 pt-2 border-t border-base-content/30">
+                    <span className="text-xs text-base-content font-medium">
+                      Total Diskon - %
+                    </span>
+                    <span className="text-sm font-semibold text-base-content">
+                      {totalDiskonPersen} %
+                    </span>
+                  </div>
                 </div>
 
                 {/* sub total */}
-                <div className="w-full flex flex-col justify-start items-start gap-2 mt-2">
-                  <span className="text-xs text-base-content">Sub Total</span>
+                <div className="w-full flex flex-col justify-start items-start gap-2 pl-2 mt-2 border-l border-base-content/30">
+                  <span className="text-xs text-base-content font-medium">
+                    Sub Total
+                  </span>
                   <span className="text-base font-semibold text-base-content">
                     {formatRupiah(subTotal)}
                   </span>
                 </div>
               </div>
-
               {/* alert */}
               <div className="w-full mt-4">
                 <AlertLabel message="Pastikan data yang diinputkan sudah benar" />
               </div>
-
               {/* action */}
               <div className="w-full mt-6 flex flex-row justify-end items-center gap-4">
                 {/* button close */}

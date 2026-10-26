@@ -37,6 +37,8 @@ type Props = {
     refresh: () => Promise<void>;
     notLoadingGlobal?: boolean;
   };
+
+  hiddenRangeDate?: boolean;
 };
 
 const FilterStatistik: FC<Props> = ({
@@ -47,6 +49,7 @@ const FilterStatistik: FC<Props> = ({
   handleDownloadExcel,
   handleDownloadPdf,
   handleRefresh,
+  hiddenRangeDate,
 }) => {
   /**
    * Kondisi ketika hanya ada:
@@ -96,9 +99,11 @@ const FilterStatistik: FC<Props> = ({
         {/* ===================================================
             RANGE DATE MOBILE
         ==================================================== */}
-        <div className="col-span-2 md:hidden">
-          <RangeDateLarge />
-        </div>
+        {!hiddenRangeDate && (
+          <div className="col-span-2 md:hidden">
+            <RangeDateLarge />
+          </div>
+        )}
 
         {/* ===================================================
             RANGE DATE DESKTOP
@@ -109,7 +114,9 @@ const FilterStatistik: FC<Props> = ({
             hasThreeFilters ? "col-span-2" : "col-span-1",
           )}
         >
-          <RangeDate listDate={listDateRange} customWidth="w-full" />
+          {!hiddenRangeDate && (
+            <RangeDate listDate={listDateRange} customWidth="w-full" />
+          )}
         </div>
 
         {/* ===================================================

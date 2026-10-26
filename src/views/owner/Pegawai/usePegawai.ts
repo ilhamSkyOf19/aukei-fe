@@ -86,7 +86,7 @@ const usePegawai = () => {
   const {
     data: dataPegawai,
     isLoading: isLoadingPegawai,
-    isFetching: isFetchingPegawai,
+    isRefetching: isFetchingPegawai,
   } = useQuery({
     queryKey: ["pegawai", search, sort, page, limit],
     queryFn: () =>

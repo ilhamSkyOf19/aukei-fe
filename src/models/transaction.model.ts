@@ -61,6 +61,7 @@ export interface DetailsForCreate extends Pick<
   ITransactionDetailType,
   "diskon" | "hargaJual" | "quantity"
 > {
+  diskonPersen?: number;
   produkId: number;
 }
 

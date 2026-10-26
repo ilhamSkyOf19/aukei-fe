@@ -356,6 +356,8 @@ const CardData: FC<Props> = ({
               )}
             <StatusTransaction status={status} statusTempo={statusTempo} />
           </div>
+
+          
           {progresCicilan && (
             <span className="text-[0.625rem] text-base-content font-medium">
               {(progresCicilan.jumlahCicilan ?? 0) -

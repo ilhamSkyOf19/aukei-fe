@@ -9,6 +9,7 @@ import {
   Package,
   QrCode,
   Receipt,
+  RefreshCcw,
   Sheet,
   ShoppingBag,
 } from "lucide-react";
@@ -63,6 +64,8 @@ const RiwayatTransaksiDetail = () => {
 
     alert,
     toast,
+    handleRefresh,
+    disabledRefresh,
   } = useRiwayatTransaksiDetail();
 
   return (
@@ -89,6 +92,7 @@ const RiwayatTransaksiDetail = () => {
       <div className="w-full flex flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5">
         <ButtonBackText handleClick={() => handleBack()} />
         <FilterStatistik
+          hiddenRangeDate
           handleSearch={handleSearch}
           filterSort={{
             handleSort: setSort,
@@ -112,9 +116,19 @@ const RiwayatTransaksiDetail = () => {
           }
         />
 
+        <ButtonWithIcon
+          bgColor="bg-info"
+          textColor="text-primary-white"
+          icon={RefreshCcw}
+          label="Refresh"
+          handleBtn={() => handleRefresh()}
+          isLoading={isLoadingRiwayatTransaksi}
+          customWidth="w-full"
+          classHidden="md:hidden flex"
+          disabled={disabledRefresh}
+        />
         {/* alert  */}
         <AlertLabel message="Export PDF menampilkan seluruh data sesuai filter tanggal yang dipilih." />
-
         {/* data */}
         <div className="bg-base-100 w-full shadow-sm border border-transparent dark:border-base-content/10  rounded-2xl md:rounded-xl p-2.5 gap-4 flex flex-col justify-start items-start">
           <div className="w-full flex flex-row justify-between items-start">
@@ -162,7 +176,10 @@ const RiwayatTransaksiDetail = () => {
                   label="Export PDF"
                   bgColor="bg-error"
                   textColor="text-primary-white"
-                  isLoading={isLoadingDownloadRiwayatTransaksiByPelangganPdf}
+                  isLoading={
+                    isLoadingDownloadRiwayatTransaksiByPelangganPdf ||
+                    isLoadingRiwayatTransaksi
+                  }
                   handleBtn={() =>
                     handleDownloadRiwayatTransaksiByPelangganPdf({
                       id: dataPelanggan?.id,
@@ -170,18 +187,32 @@ const RiwayatTransaksiDetail = () => {
                     })
                   }
                 />
+
                 <ButtonWithIcon
                   icon={Sheet}
                   label="Export Excel"
                   bgColor="bg-success"
                   textColor="text-primary-white"
-                  isLoading={isLoadingDownloadRiwayatTransaksiByPelangganExcel}
+                  isLoading={
+                    isLoadingDownloadRiwayatTransaksiByPelangganExcel ||
+                    isLoadingRiwayatTransaksi
+                  }
                   handleBtn={() =>
                     handleDownloadRiwayatTransaksiByPelangganExcel({
                       id: dataPelanggan?.id,
                       namaPelanggan: dataPelanggan?.nama,
                     })
                   }
+                />
+
+                <ButtonWithIcon
+                  bgColor="bg-info"
+                  textColor="text-primary-white"
+                  icon={RefreshCcw}
+                  label="Refresh"
+                  handleBtn={() => handleRefresh()}
+                  isLoading={isLoadingRiwayatTransaksi}
+                  disabled={disabledRefresh}
                 />
               </div>
             </div>
@@ -301,7 +332,6 @@ const RiwayatTransaksiDetail = () => {
             />
           </div>
         </div>
-
         {/* data untuk mobile */}
         <div className="w-full flex flex-col justify-start items-start bg-base-100 shadow-sm rounded-lg border border-transparent dark:border-base-content/10 p-2 gap-2 order-3 lg:hidden">
           {isLoadingRiwayatTransaksi ? (
@@ -309,8 +339,8 @@ const RiwayatTransaksiDetail = () => {
               <div key={i} className="w-full h-14 skeleton" />
             ))
           ) : isExistDataRiwayatTransaksi &&
-            dataRiwayatTransaksi &&
-            dataRiwayatTransaksi?.data?.data.transaksi !== undefined ? (
+            dataRiwayatTransaksi?.data?.data.transaksi !== undefined &&
+            dataRiwayatTransaksi?.data?.data?.transaksi?.length > 0 ? (
             dataRiwayatTransaksi.data.data.transaksi?.map((item) => (
               <CardData
                 key={item.id}
@@ -334,7 +364,6 @@ const RiwayatTransaksiDetail = () => {
             </div>
           )}
         </div>
-
         {/* data untuk > mobile */}
         <div className="overflow-x-auto w-full bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm hidden lg:flex order-3">
           <table className="w-full table table-xs table-zebra lg:table-sm mb-2">
@@ -361,7 +390,6 @@ const RiwayatTransaksiDetail = () => {
                   </tr>
                 ))
               ) : isExistDataRiwayatTransaksi &&
-                dataRiwayatTransaksi?.data?.data.transaksi !== undefined &&
                 dataRiwayatTransaksi?.data?.data.transaksi !== undefined &&
                 dataRiwayatTransaksi?.data?.data?.transaksi?.length > 0 ? (
                 dataRiwayatTransaksi?.data?.data.transaksi.map(
@@ -442,7 +470,6 @@ const RiwayatTransaksiDetail = () => {
             </tbody>
           </table>
         </div>
-
         {/* pagination */}
         {dataRiwayatTransaksi?.data?.data?.transaksi && (
           <div className="w-full order-4 -mt-2">

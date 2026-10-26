@@ -12,6 +12,8 @@ import { TransactionServices } from "../../../services/transaction.service";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
 
+type DiskonType = "PERCENT" | "RP";
+
 const useModalTransaksi = (params: {
   handleCloseModal: () => void;
   data?: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
@@ -31,9 +33,18 @@ const useModalTransaksi = (params: {
   // state total diskon
   const [totalDiskon, setTotalDiskon] = useState<number>(0);
 
+  // state total diskon persen
+  const [totalDiskonPersen, setTotalDiskonPersen] = useState<number>(0);
+
   // use form
-  const { control, handleSubmit, reset } = useForm<DetailsForCreate>({
+  const { control, handleSubmit, reset, setValue } = useForm<DetailsForCreate>({
     resolver: zodResolver(TransactionValidation.DETAILS),
+  });
+
+  const [diskonType, setDiskonType] = useState<DiskonType>(() => {
+    const value = localStorage.getItem("diskon-type");
+
+    return value === "PERCENT" || value === "RP" ? value : "RP";
   });
 
   // set default value
@@ -63,15 +74,32 @@ const useModalTransaksi = (params: {
     name: "diskon",
   });
 
+  const diskonPersen = useWatch({
+    control,
+    name: "diskonPersen",
+  });
+
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const totalDiskon = (diskon ?? data?.diskon ?? 0) * quantity;
+      const harga = Number(hargaJual ?? data?.hargaJual ?? 0);
+      const qty = Number(quantity ?? data?.quantity ?? 0);
+      const nominalDiskon = Number(diskon ?? data?.diskon ?? 0);
 
-      const total = hargaJual * (quantity ?? data?.quantity ?? 0) - totalDiskon;
+      // Total diskon rupiah
+      const totalDiskon = nominalDiskon * qty;
 
-      // set total diskon
+      // Subtotal sebelum diskon
+      const totalHarga = harga * qty;
+
+      // Subtotal setelah diskon
+      const total = totalHarga - totalDiskon;
+
+      // Total diskon dalam persen
+      const totalDiskonPersen =
+        totalHarga > 0 ? Math.trunc((totalDiskon / totalHarga) * 100) : 0;
+
       setTotalDiskon(totalDiskon);
-
+      setTotalDiskonPersen(totalDiskonPersen);
       setSubTotal(total);
     }, 100);
 
@@ -102,6 +130,32 @@ const useModalTransaksi = (params: {
     control,
     name: "quantity",
   });
+
+  // diskon persen controller
+  const diskonPersenController = useController({
+    control,
+    name: "diskonPersen",
+  });
+
+  useEffect(() => {
+    const harga = Number(hargaJual ?? 0);
+
+    if (diskonType === "PERCENT") {
+      const persen = Number(diskonPersen ?? 0);
+      const nominal = harga > 0 ? (persen / 100) * harga : 0;
+
+      if (Number(diskon ?? 0) !== nominal) {
+        setValue("diskon", nominal);
+      }
+    } else {
+      const nominal = Number(diskon ?? 0);
+      const persen = harga > 0 ? Math.trunc((nominal / harga) * 100) : 0;
+
+      if (Number(diskonPersen ?? 0) !== persen) {
+        setValue("diskonPersen", persen);
+      }
+    }
+  }, [diskonType, diskon, diskonPersen, hargaJual, setValue]);
 
   // query client
   const queryClient = useQueryClient();
@@ -157,6 +211,27 @@ const useModalTransaksi = (params: {
     handleCloseModal();
   };
 
+  const handleDiskonType = (value: DiskonType) => {
+    const harga = Number(hargaJual ?? 0);
+
+    if (value === diskonType) return;
+
+    if (value === "PERCENT") {
+      const nominal = Number(diskon ?? 0);
+      const persen = harga > 0 ? Math.trunc((nominal / harga) * 100) : 0;
+
+      setValue("diskonPersen", persen);
+    } else {
+      const persen = Number(diskonPersen ?? 0);
+      const nominal = (persen / 100) * harga;
+
+      setValue("diskon", nominal);
+    }
+
+    localStorage.setItem("diskon-type", value);
+    setDiskonType(value);
+  };
+
   return {
     hargaJualController,
     diskonController,
@@ -167,6 +242,10 @@ const useModalTransaksi = (params: {
     totalDiskon,
     isPendingTambahProduk,
     hargaJual,
+    handleDiskonType,
+    diskonPersenController,
+    diskonType,
+    totalDiskonPersen,
   };
 };
 

@@ -201,7 +201,9 @@ const Pelanggan = () => {
                         "transition-all duration-75 ease-in-out h-12",
                       )}
                     >
-                      <th>{index + 1}</th>
+                      <th className="font-semibold text-base-content">
+                        {index + 1}
+                      </th>
                       <th>
                         <label>
                           <input

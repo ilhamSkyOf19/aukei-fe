@@ -46,6 +46,11 @@ export class TransactionValidation {
     .object({
       produkId: this.numberSchema("produk", 1, 2147483647),
       diskon: this.numberSchema("diskon", 0, 2147483647),
+      diskonPersen: this.numberSchema(
+        "diskon persen",
+        0,
+        2147483647,
+      ).optional(),
       hargaJual: this.numberSchema("harga jual", 0, 2147483647),
       quantity: this.numberSchema("quantity", 1, 2147483647),
     })
