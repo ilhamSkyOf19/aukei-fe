@@ -63,7 +63,7 @@ const CardPembayaran: FC<Props> = ({
   } = useCardPembayaran({ dataPembayaran, handleResetDataPembayaran, tempoId });
 
   return (
-    <div className="flex-1 bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm flex mt-2.5 p-2.5 flex-col justify-start items-start min-h-70">
+    <div className="w-full md:flex-1 bg-base-100 rounded-xl border border-transparent dark:border-base-content/10 shadow-sm flex mt-2.5 p-2.5 flex-col justify-start items-start min-h-70">
       {/* title */}
       <span className="text-xs font-semibold text-base-content">
         Bayar Angsuran

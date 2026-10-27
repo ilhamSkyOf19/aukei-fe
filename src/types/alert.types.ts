@@ -106,6 +106,9 @@ export const ALERT_CONFIG_TRANSACTION: Record<
   stock_not_enough: {
     message: "Mohon maaf, stok tidak mencukupi.",
   },
+  empty_transaction_id: {
+    message: "Mohon maaf, id transaksi tidak ditemukan.",
+  },
 };
 
 export const ALERT_CONFIG_STATISTIK: Record<

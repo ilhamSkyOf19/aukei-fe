@@ -37,6 +37,7 @@ import { TOAST_CONFIG_TRANSACTION } from "../../../../types/toast.type";
 import ModalTempoPayment from "../../../../components/modals/ModalTempoPayment";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import FormOngkir from "../../../kasir/Kasir/Pembayaran/FormOngkir";
+import ModalChooseViewDiskon from "../../../../components/modals/ModalChooseViewDiskon";
 
 type Props = {
   dataTransaction?: ResponseStructure<ResponseTransactionType | null>;
@@ -80,16 +81,11 @@ const InformasiPembayaran: FC<Props> = ({
     buttonAturTempoRef,
     handleTransaction,
     isPendingTransaction,
-    handleDownloadPdf,
-    isLoadingDownloadInvoicePdf,
 
     dataConfirm,
     handleCancelModalConfirm,
     handleConfirm,
     modalConfirmRef,
-
-    handlePrintInvoiceTransaksi,
-    isLoadingPrintInvoiceTransaksi,
 
     alert,
     toast,
@@ -114,6 +110,14 @@ const InformasiPembayaran: FC<Props> = ({
     isExpired,
 
     isPendingTransactionPaymentOld,
+
+    dataModalPrintInvoiceOrDownload,
+    handleCloseModalPrintInvoiceOrDownload,
+    handleShowModalPrintInvoiceOrDownload,
+    modalPrintInvoiceOrDownloadRef,
+    handleSetToast,
+
+    handleSetAlert,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
@@ -715,15 +719,18 @@ const InformasiPembayaran: FC<Props> = ({
             bgColor="bg-info"
             textColor="text-primary-white"
             label="Cetak Struk"
-            isLoading={isLoadingPrintInvoiceTransaksi}
             handleBtn={() =>
-              handlePrintInvoiceTransaksi({
+              handleShowModalPrintInvoiceOrDownload(undefined, {
                 id: dataTransaction?.data?.id ?? 0,
+                namaPelanggan: dataTransaction?.data?.pelanggan.nama ?? "",
+                tanggal: dataTransaction?.data?.completedAt ?? new Date(),
+                type: "PRINT",
               })
             }
             skeleton={isLoadingTransaction}
             classHidden="hidden lg:flex"
           />
+
           {isPageBookingKasir ? (
             <>
               {/* selesaikan */}
@@ -751,12 +758,12 @@ const InformasiPembayaran: FC<Props> = ({
                 label="Download Struk"
                 textColor="text-primary-white"
                 skeleton={isLoadingTransaction}
-                isLoading={isLoadingDownloadInvoicePdf}
                 handleBtn={() =>
-                  handleDownloadPdf({
+                  handleShowModalPrintInvoiceOrDownload(undefined, {
                     id: dataTransaction?.data?.id ?? 0,
                     namaPelanggan: dataTransaction?.data?.pelanggan?.nama ?? "",
                     tanggal: dataTransaction?.data?.completedAt ?? new Date(),
+                    type: "DOWNLOAD",
                   })
                 }
               />
@@ -828,12 +835,12 @@ const InformasiPembayaran: FC<Props> = ({
                 label="Download PDF"
                 textColor="text-primary-white"
                 skeleton={isLoadingTransaction}
-                isLoading={isLoadingDownloadInvoicePdf}
                 handleBtn={() =>
-                  handleDownloadPdf({
+                  handleShowModalPrintInvoiceOrDownload(undefined, {
                     id: dataTransaction?.data?.id ?? 0,
                     namaPelanggan: dataTransaction?.data?.pelanggan?.nama ?? "",
                     tanggal: dataTransaction?.data?.completedAt ?? new Date(),
+                    type: "DOWNLOAD",
                   })
                 }
               />
@@ -881,6 +888,20 @@ const InformasiPembayaran: FC<Props> = ({
         handleCloseModal={handleCancelModalConfirm}
         handleConfirm={handleConfirm}
         iconColor={"text-warning"}
+      />
+
+      {/* modal print invoice */}
+      <ModalChooseViewDiskon
+        modalRef={modalPrintInvoiceOrDownloadRef}
+        handleCloseModal={handleCloseModalPrintInvoiceOrDownload}
+        handleSetAlert={handleSetAlert}
+        handleSetToast={handleSetToast}
+        type={dataModalPrintInvoiceOrDownload?.type ?? "PRINT"}
+        dataDownload={{
+          id: dataModalPrintInvoiceOrDownload?.id ?? 0,
+          namaPelanggan: dataModalPrintInvoiceOrDownload?.namaPelanggan ?? "",
+          tanggal: dataModalPrintInvoiceOrDownload?.tanggal ?? new Date(),
+        }}
       />
     </div>
   );

@@ -49,15 +49,40 @@ const useModalTransaksi = (params: {
 
   // set default value
   useEffect(() => {
-    if (data) {
-      reset({
-        produkId: data.produkId,
-        hargaJual: data.hargaJual,
-        quantity: data.quantity,
-        diskon: (data.diskon ?? 0) / data.quantity,
-      });
-    }
-  }, [data]);
+    if (!data) return;
+
+    const harga = Number(data.hargaJual ?? 0);
+    const qty = Number(data.quantity ?? 0);
+    const totalDiskonData = Number(data.diskon ?? 0);
+
+    // Diskon per unit, karena diskon yang disimpan adalah total diskon
+    const diskonPerUnit = qty > 0 ? totalDiskonData / qty : 0;
+
+    // Hitung persentase diskon
+    const diskonPersen = harga > 0 ? (diskonPerUnit / harga) * 100 : 0;
+
+    // Reset nilai form
+    reset({
+      produkId: data.produkId,
+      hargaJual: harga,
+      quantity: qty,
+      diskon: diskonPerUnit,
+      diskonPersen,
+    });
+
+    // Hitung ulang total transaksi
+    const totalHarga = harga * qty;
+    const subtotal = totalHarga - totalDiskonData;
+    const totalDiskonPersen =
+      totalHarga > 0
+        ? Number(((totalDiskonData / totalHarga) * 100).toFixed(2))
+        : 0;
+
+    // Pertahankan dan perbarui state
+    setSubTotal(subtotal);
+    setTotalDiskon(totalDiskonData);
+    setTotalDiskonPersen(totalDiskonPersen);
+  }, [data, reset]);
 
   const hargaJual = useWatch({
     control,
@@ -81,37 +106,26 @@ const useModalTransaksi = (params: {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const harga = Number(hargaJual ?? data?.hargaJual ?? 0);
-      const qty = Number(quantity ?? data?.quantity ?? 0);
-      const nominalDiskon = Number(diskon ?? data?.diskon ?? 0);
+      const harga = Number(hargaJual ?? 0);
+      const qty = Number(quantity ?? 0);
+      const nominalDiskon = Number(diskon ?? 0);
 
-      // Total diskon rupiah
-      const totalDiskon = nominalDiskon * qty;
-
-      // Subtotal sebelum diskon
+      const totalDiskonBaru = nominalDiskon * qty;
       const totalHarga = harga * qty;
+      const subtotal = totalHarga - totalDiskonBaru;
 
-      // Subtotal setelah diskon
-      const total = totalHarga - totalDiskon;
+      const totalDiskonPersenBaru =
+        totalHarga > 0
+          ? Number(((totalDiskonBaru / totalHarga) * 100).toFixed(2))
+          : 0;
 
-      // Total diskon dalam persen
-      const totalDiskonPersen =
-        totalHarga > 0 ? Math.trunc((totalDiskon / totalHarga) * 100) : 0;
-
-      setTotalDiskon(totalDiskon);
-      setTotalDiskonPersen(totalDiskonPersen);
-      setSubTotal(total);
+      setTotalDiskon(totalDiskonBaru);
+      setSubTotal(subtotal);
+      setTotalDiskonPersen(totalDiskonPersenBaru);
     }, 100);
 
     return () => clearTimeout(timeout);
-  }, [
-    hargaJual,
-    quantity,
-    diskon,
-    data?.hargaJual,
-    data?.quantity,
-    data?.diskon,
-  ]);
+  }, [hargaJual, quantity, diskon]);
 
   // harga controller
   const hargaJualController = useController({
@@ -218,7 +232,7 @@ const useModalTransaksi = (params: {
 
     if (value === "PERCENT") {
       const nominal = Number(diskon ?? 0);
-      const persen = harga > 0 ? Math.trunc((nominal / harga) * 100) : 0;
+      const persen = harga > 0 ? (nominal / harga) * 100 : 0;
 
       setValue("diskonPersen", persen);
     } else {

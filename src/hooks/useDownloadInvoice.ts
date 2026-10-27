@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { InvoiceServices } from "../services/invoice.service";
 import { formatTanggalLine } from "../helpers/helpers";
+import type { DiskonType } from "../models/transaction.model";
 
 type DownloadInvoiceParams = {
   id: number;
@@ -11,6 +12,7 @@ type DownloadInvoiceParams = {
 const useDownloadInvoice = (params: {
   handleSetToast: (value: string) => void;
   handleSetAlert: (value: string) => void;
+  diskonType?: DiskonType;
 }) => {
   const {
     mutateAsync: downloadInvoicePdf,
@@ -21,7 +23,10 @@ const useDownloadInvoice = (params: {
       namaPelanggan,
       tanggal,
     }: DownloadInvoiceParams) => {
-      const blob = await InvoiceServices.downloadInvoiceTransaksiPdf(id);
+      const blob = await InvoiceServices.downloadInvoiceTransaksiPdf(
+        id,
+        params.diskonType,
+      );
 
       const url = window.URL.createObjectURL(blob);
 

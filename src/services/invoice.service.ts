@@ -1,11 +1,15 @@
 import instanceAxios from "../libs/axios";
+import type { DiskonType } from "../models/transaction.model";
 
 export class InvoiceServices {
   // print invoice
-  static async printInvoice(params: { id: number }) {
-    const response = await instanceAxios.get(`/invoice/print/${params.id}`, {
-      responseType: "text",
-    });
+  static async printInvoice(params: { id: number; diskonType?: DiskonType }) {
+    const response = await instanceAxios.get(
+      `/invoice/print/${params.id}?diskonType=${params.diskonType}`,
+      {
+        responseType: "text",
+      },
+    );
 
     const iframe = document.createElement("iframe");
 
@@ -185,10 +189,16 @@ export class InvoiceServices {
 
   // DOWNLOAD
   // download pdf
-  static async downloadInvoiceTransaksiPdf(id: number): Promise<Blob> {
-    const response = await instanceAxios.get(`/invoice/${id}/transaksi-pdf`, {
-      responseType: "blob",
-    });
+  static async downloadInvoiceTransaksiPdf(
+    id: number,
+    diskonType?: DiskonType,
+  ): Promise<Blob> {
+    const response = await instanceAxios.get(
+      `/invoice/${id}/transaksi-pdf?diskonType=${diskonType}`,
+      {
+        responseType: "blob",
+      },
+    );
 
     return response.data;
   }

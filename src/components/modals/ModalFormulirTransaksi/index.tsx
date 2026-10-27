@@ -16,7 +16,8 @@ import {
   ALERT_CONFIG_TRANSACTION,
   type Alert as AlertType,
 } from "../../../types/alert.types";
-import InputNumber from "../../inputs/InputNumber";
+import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
+import InputDiskonPersen from "../../inputs/InputDiskonPersen";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -152,7 +153,9 @@ const ModalFormulirTransaksi: FC<Props> = ({
             {/* form */}
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className={cn("flex-2 flex flex-col justify-start items-center")}
+              className={cn(
+                "w-full lg:flex-2 flex flex-col justify-start items-center",
+              )}
             >
               {/* harga jual */}
               <InputPrice<DetailsForCreate>
@@ -175,11 +178,9 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 )}
 
                 {diskonType === "PERCENT" && (
-                  <InputNumber<DetailsForCreate>
-                    label="Diskon - %"
-                    placeholder="Diskon"
+                  <InputDiskonPersen
                     controller={diskonPersenController}
-                    name="diskonPersen"
+                    label="Diskon - %"
                     max={100}
                   />
                 )}
@@ -192,18 +193,18 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 />
               </div>
               <div className="w-full flex flex-row justify-start items-start pb-2 border-b border-base-content/30">
-                <button
-                  type="button"
-                  className="text-base-content hover:text-info text-xs font-medium"
-                  onClick={() =>
+                <ButtonWithIcon
+                  customHeight="h-7.5"
+                  label={`Ganti ke
+                  ${diskonType === "PERCENT" ? "Diskon Rp" : " Diskon %"}`}
+                  bgColor="bg-info"
+                  textColor="text-primary-white"
+                  handleBtn={() =>
                     handleDiskonType(
                       diskonType === "PERCENT" ? "RP" : "PERCENT",
                     )
                   }
-                >
-                  Ganti ke{" "}
-                  {diskonType === "PERCENT" ? "Diskon Rp" : " Diskon %"}
-                </button>
+                />
               </div>
 
               {/* total diskon */}
@@ -253,7 +254,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 />
                 {/* button submit */}
                 <ButtonText
-                  label={`Tambahkan`}
+                  label={`Simpan`}
                   isLoading={isPendingTambahProduk}
                 />
               </div>

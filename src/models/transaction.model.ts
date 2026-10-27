@@ -18,6 +18,8 @@ import type {
 import type { ITempoInstallmentType } from "./tempoInstallment.model";
 import type { ITransactionDetailType } from "./transactionDetail.model";
 
+export type DiskonType = "PERSEN" | "RUPIAH";
+
 export interface ITransactionType {
   id: number;
   nomorTransaksi: string | null;

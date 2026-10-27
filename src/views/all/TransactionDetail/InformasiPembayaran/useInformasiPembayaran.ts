@@ -18,14 +18,13 @@ import triggerAnimation from "../../../../hooks/triggerAnimation";
 import type { ResponseStructure } from "../../../../types/response.type";
 import { useAuthStore } from "../../../../stores/authStore";
 import { useLocation, useNavigate } from "react-router-dom";
-import useDownloadInvoice from "../../../../hooks/useDownloadInvoice";
 import useConfirm from "../../../../hooks/useConfirm";
 import { useAlertAnimation } from "../../../../hooks/useAlert";
-import usePrintInvoiceTransaksi from "../../../../hooks/usePrintInvoiceTransaksi";
 import { useToastAnimation } from "../../../../hooks/useToast";
 import usePrintInvoiceKirimBarang from "../../../../hooks/usePrintInvoiceKirimBarang";
 import { isMoreThanDays } from "../../../../helpers/helpers";
 import useCreateTransactionPaymentOld from "../../../../hooks/useCreateTransactionPaymentOld";
+import useModal from "../../../../hooks/useModal";
 
 const LOCAL_STORAGE_DI_BAYAR_KEY = "di-bayar";
 
@@ -95,6 +94,18 @@ const useInformasiPembayaran = ({
     handleCancel: handleCancelModalConfirm,
     handleConfirm,
   } = useConfirm<{ bigTitle: string; smallTitle: string }>();
+
+  const {
+    dataModal: dataModalPrintInvoiceOrDownload,
+    modalRef: modalPrintInvoiceOrDownloadRef,
+    handleCloseModal: handleCloseModalPrintInvoiceOrDownload,
+    handleShowModal: handleShowModalPrintInvoiceOrDownload,
+  } = useModal<{
+    id: number;
+    namaPelanggan: string;
+    tanggal: Date;
+    type: "PRINT" | "DOWNLOAD";
+  }>();
 
   const { handleCloseModalTempo, handleShowModalTempo, modalTempoRef } =
     useModalTempo({ setIsErrors });
@@ -266,15 +277,6 @@ const useInformasiPembayaran = ({
     }
   };
 
-  // handle download
-  const { handleDownloadPdf, isLoadingDownloadInvoicePdf } = useDownloadInvoice(
-    { handleSetAlert, handleSetToast },
-  );
-
-  // handle print
-  const { handlePrintInvoiceTransaksi, isLoadingPrintInvoiceTransaksi } =
-    usePrintInvoiceTransaksi({ handleSetAlert });
-
   // handle print invoice kirim barang
   const { handlePrintInvoiceKirimBarang, isLoadingPrintInvoiceKirimBarang } =
     usePrintInvoiceKirimBarang({ handleSetAlert });
@@ -383,8 +385,6 @@ const useInformasiPembayaran = ({
     buttonAturTempoRef,
     handleTransaction,
     isPendingTransaction,
-    handleDownloadPdf,
-    isLoadingDownloadInvoicePdf,
 
     // confirm
     handleCancelModalConfirm,
@@ -394,10 +394,6 @@ const useInformasiPembayaran = ({
 
     alert,
     toast,
-
-    // print
-    handlePrintInvoiceTransaksi,
-    isLoadingPrintInvoiceTransaksi,
 
     handleRedirectDetailBooking,
 
@@ -417,6 +413,14 @@ const useInformasiPembayaran = ({
     isExpired,
 
     isPendingTransactionPaymentOld,
+
+    dataModalPrintInvoiceOrDownload,
+    handleCloseModalPrintInvoiceOrDownload,
+    handleShowModalPrintInvoiceOrDownload,
+    modalPrintInvoiceOrDownloadRef,
+
+    handleSetAlert,
+    handleSetToast,
   };
 };
 

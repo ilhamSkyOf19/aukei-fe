@@ -309,6 +309,10 @@ const InstallmentsDetail = () => {
                       tglJatuhTempo: item.jatuhTempo,
                     }),
                 })}
+                bayar={{
+                  isActive: dataPembayaran?.id === item.id,
+                  handleBayar: () => setDataPembayaran(item),
+                }}
               />
             ))
           ) : (
@@ -343,7 +347,6 @@ const InstallmentsDetail = () => {
           />
         </div>
 
-        {/* for lg */}
         <div className="w-full flex flex-col lg:flex-row justify-between items-start gap-2.5">
           {/* informasi installment */}
           <div className="flex-2 flex flex-col justify-start items-start gap-2.5">
@@ -444,8 +447,9 @@ const InstallmentsDetail = () => {
                                 (pengguna?.role === ROLE_INTERNAL_TYPE.KASIR ? (
                                   <button
                                     type="button"
-                                    className="text-[0.625rem] font-medium px-2 py-1 border border-emerald-600 rounded-md flex flex-row justify-start items-center gap-1 group hover:text-primary-white transition-all duration-150 ease-in-out hover:bg-emerald-600"
+                                    className="text-[0.625rem] font-medium px-2 py-1 border border-emerald-600 rounded-md flex flex-row justify-start items-center gap-1 group not-disabled:hover:text-primary-white transition-all duration-150 ease-in-out not-disabled:hover:bg-emerald-600"
                                     onClick={() => setDataPembayaran(item)}
+                                    disabled={dataPembayaran?.id === item.id}
                                   >
                                     <CreditCard className="size-3" />
 
@@ -585,7 +589,7 @@ const InstallmentsDetail = () => {
 
             {/* peringatan */}
             {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
-              <div className="w-full mt-2.5 md:mt-0">
+              <div className="w-full mt-2.5 md:mt-0 hidden md:flex">
                 <AlertLabelList
                   message={[
                     "Periksa jadwal jatuh tempo setiap angsuran agar pembayaran dapat dilakukan tepat waktu.",
@@ -606,6 +610,19 @@ const InstallmentsDetail = () => {
               jumlahCicilan={dataInstallments?.data?.jumlahCicilan}
               handleResetDataPembayaran={handleResetDataPembayaran}
             />
+          )}
+
+          {pengguna?.role === ROLE_INTERNAL_TYPE.KASIR && (
+            <div className="w-full mt-2.5 md:mt-0 md:hidden">
+              <AlertLabelList
+                message={[
+                  "Periksa jadwal jatuh tempo setiap angsuran agar pembayaran dapat dilakukan tepat waktu.",
+                  "Pilih cicilan yang ingin dibayar, kemudian masukkan nominal pembayaran dan metode pembayaran pada panel di sebelah kanan.",
+                  "Setiap pembayaran akan otomatis memperbarui status cicilan, sisa tagihan, dan riwayat pembayaran transaksi.",
+                  "Pastikan nominal pembayaran tidak melebihi sisa tagihan pada cicilan yang dipilih untuk menjaga data tetap akurat.",
+                ]}
+              />
+            </div>
           )}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { InvoiceServices } from "../services/invoice.service";
+import type { DiskonType } from "../models/transaction.model";
 
 type PrintInvoiceTransaksiParams = {
   id: number;
@@ -7,6 +8,7 @@ type PrintInvoiceTransaksiParams = {
 
 const usePrintInvoiceTransaksi = (params: {
   handleSetAlert: (value: string) => void;
+  diskonType?: DiskonType;
 }) => {
   const {
     mutateAsync: printInvoiceTransaksi,
@@ -15,6 +17,7 @@ const usePrintInvoiceTransaksi = (params: {
     mutationFn: async ({ id }: PrintInvoiceTransaksiParams) => {
       await InvoiceServices.printInvoice({
         id,
+        diskonType: params.diskonType,
       });
     },
     onError: () => {
