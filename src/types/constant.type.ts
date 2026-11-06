@@ -123,7 +123,8 @@ export const MAX_FILE_SIZE_IMG = 3 * 1024 * 1024;
 export type ErrorType =
   | "METODE_PEMBAYARAN_KOSONG"
   | "DATA_DI_BAYAR_KOSONG"
-  | "DATA_TEMPO_KOSONG";
+  | "DATA_TEMPO_KOSONG"
+  | "TIPE_PEMBAYARAN_AWAL";
 
 export const STATUS_PERGERAKAN = {
   CEPAT: "CEPAT",

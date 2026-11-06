@@ -10,6 +10,7 @@ import { formatRupiah } from "../../../helpers/helpers";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import useModalCashPayment from "./useModalCashPayment";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
+import CurrencyInput from "./CurrentInput";
 
 type Props = {
   total: number;
@@ -24,11 +25,12 @@ const ModalCashPayment: FC<Props> = ({
   handlePay,
   modalRef,
 }) => {
-  const { change, amount, append, backspace, clear } = useModalCashPayment({
-    handlePay,
-    total,
-    modalRef,
-  });
+  const { change, amount, append, backspace, clear, handleChange } =
+    useModalCashPayment({
+      handlePay,
+      total,
+      modalRef,
+    });
 
   return (
     <dialog ref={modalRef} id="my_modal_3" className="modal">
@@ -107,10 +109,9 @@ const ModalCashPayment: FC<Props> = ({
               </label>
 
               <div className="flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 mt-1 h-12 md:h-14 overflow-hidden">
-                <input
-                  readOnly
-                  value={`${formatRupiah(amount)}`}
-                  className="input w-full h-full text-base md:text-xl font-semibold text-base-content border-none outline-none"
+                <CurrencyInput
+                  value={amount}
+                  onChange={(nominal) => handleChange(String(nominal))}
                 />
               </div>
             </div>

@@ -8,13 +8,11 @@ import {
   type PaymentMethodType,
 } from "../../../../types/constant.type";
 import useModalCalculator from "../../../../hooks/useModalCalculator";
-import triggerAnimation from "../../../../hooks/triggerAnimation";
 import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TransactionServices } from "../../../../services/transaction.service";
 import useConfirm from "../../../../hooks/useConfirm";
 import { LOCAL_STORAGE_KEYS } from "../../../../utils/localStorageKeys";
-import { getLocalStorageJSON } from "../../../../helpers/helpers";
 import { useStepStore } from "../../../../stores/stepStore";
 import type { ITransactionDetailType } from "../../../../models/transactionDetail.model";
 
@@ -52,14 +50,15 @@ const useBooking = (params: {
   const [isErrors, setIsErrors] = useState<ErrorType[]>([]);
 
   // Nominal uang yang dibayarkan
-  const [dataDiBayar, setDataDiBayar] = useState<number>(0);
+  const [dataDiBayar, setDataDiBayar] = useState<number | null>(null);
+  const [dataDiBayarCash, setDataDiBayarCash] = useState<number | null>(null);
 
-  // nominla custom dp
-  const [dataCustomDp, setDataCustomDp] = useState<number>(0);
+  // bayar lunas
+  const [bayarLunas, stateBayarLunas] = useState<boolean | null>(null);
 
   // handle set data dibayar
   const handleSetCustomDp = (value: number) => {
-    setDataCustomDp(value);
+    setDataDiBayar(value);
   };
 
   // Metode pembayaran terpilih, diambil dari draft transaksi server
@@ -69,18 +68,21 @@ const useBooking = (params: {
 
   // Nilai DP yang tersimpan di server (tempo.uangMuka pada draft transaksi)
   const dataDp = useMemo<number | null>(() => {
-    if (dataCustomDp) {
-      return dataCustomDp;
-    } else {
-      return dataTransaksi?.data?.tempo?.uangMuka ?? null;
-    }
-  }, [dataTransaksi, dataCustomDp]);
+    return dataTransaksi?.data?.tempo?.uangMuka ?? null;
+  }, [dataTransaksi]);
 
   // Nilai ongkir yang tersimpan di draft transaksi server
   const dataOngkir = useMemo<number>(() => {
     return dataTransaksi?.data?.ongkir ?? 0;
   }, [dataTransaksi]);
 
+  console.log("data ongkir", dataTransaksi?.data?.ongkir);
+
+  const dataTotalBayar = useMemo<number>(() => {
+    return dataTransaksi?.data?.totalBayar ?? 0;
+  }, [dataTransaksi]);
+
+  console.log("data total bayar", dataTotalBayar);
   // Modal konfirmasi sebelum transaksi booking diproses
   const {
     confirm,
@@ -130,7 +132,7 @@ const useBooking = (params: {
   // Simpan nominal yang dibayarkan (dari modal kalkulator) ke state & localStorage
   const handlePay = (value: number) => {
     setLocalStorageJSON(LOCAL_STORAGE_KEYS.DI_BAYAR, value);
-    setDataDiBayar(value);
+    setDataDiBayarCash(value);
     handleCloseModalCalculator();
   };
 
@@ -188,8 +190,12 @@ const useBooking = (params: {
         totalUangSubTotal: 0,
         totalUangDiskon: 0,
         totalOngkir: dataOngkir,
-        totalUangTransaksi: dataOngkir,
-        saranDp: dataOngkir * MINIMAL_DP_PERCENTAGE,
+        totalUangTransaksi: dataTotalBayar + dataOngkir,
+        saranDp: bayarLunas
+          ? dataTotalBayar
+          : dataDiBayar !== null
+            ? dataDiBayar
+            : dataTotalBayar * MINIMAL_DP_PERCENTAGE,
       };
     }
 
@@ -210,7 +216,11 @@ const useBooking = (params: {
       totalUangTransaksi += quantity * item.hargaJual - item.diskon;
     }
 
-    const saranDp = totalUangTransaksi * MINIMAL_DP_PERCENTAGE;
+    const saranDp = bayarLunas
+      ? totalUangTransaksi
+      : dataDiBayar !== null
+        ? dataDiBayar
+        : dataTotalBayar * MINIMAL_DP_PERCENTAGE;
 
     return {
       totalQuantity,
@@ -220,7 +230,7 @@ const useBooking = (params: {
       totalUangTransaksi,
       saranDp,
     };
-  }, [dataDetails, dataOngkir]);
+  }, [dataDetails, dataOngkir, dataTotalBayar, bayarLunas]);
 
   // Ref tombol Bayar, dipakai untuk trigger animasi saat validasi gagal
   const buttonBayarRef = useRef<HTMLButtonElement>(null);
@@ -249,13 +259,20 @@ const useBooking = (params: {
 
   // Validasi form booking sebelum transaksi dikirim; return false + set error jika tidak valid
   const validateBeforeTransaction = (): boolean => {
+    if (bayarLunas === null) {
+      setIsErrors((prev) => [...prev, "TIPE_PEMBAYARAN_AWAL"]);
+      return false;
+    }
+
     if (!metodePembayaran) {
       setIsErrors((prev) => [...prev, "METODE_PEMBAYARAN_KOSONG"]);
       return false;
     }
 
-    if (!dataDiBayar && metodePembayaran !== "TEMPO") {
-      triggerAnimation(buttonBayarRef);
+    if (
+      metodePembayaran === "CASH" &&
+      (!dataDiBayarCash || dataDiBayarCash < (dataDiBayar ?? 0))
+    ) {
       setIsErrors((prev) => [...prev, "DATA_DI_BAYAR_KOSONG"]);
       return false;
     }
@@ -272,7 +289,7 @@ const useBooking = (params: {
       // DP yang dipakai: nilai yang sudah tersimpan di server (input manual, sudah
       // memperhitungkan ongkir lewat transactionSummary.saranDp), jika belum ada
       // input sama sekali pakai saran DP otomatis
-      const nilaiDp = dataDp ?? transactionSummary.saranDp;
+      const nilaiDp = dataDp !== null ? dataDp : transactionSummary.saranDp;
 
       const dataTransaction: CreateTransactionForRequestType = {
         id: dataTransaksi?.data?.id,
@@ -290,10 +307,10 @@ const useBooking = (params: {
           produkId: item.produk.id,
           quantity: item.quantity,
         })),
-        diBayar: dataDiBayar,
+        diBayar: dataDiBayar ?? 0,
         kembalian:
           metodePembayaran === PAYMENT_METHOD_TYPE.CASH
-            ? Math.max(0, dataDiBayar - nilaiDp)
+            ? Math.max(0, (dataDiBayar ?? 0) - nilaiDp)
             : 0,
         metodePembayaran,
         pelangganId: pelanggan.id,
@@ -319,15 +336,43 @@ const useBooking = (params: {
   // Sinkronkan dataDiBayar setiap kali metode pembayaran / DP / saranDp berubah:
   // - CASH: ambil nominal dari localStorage (input manual)
   // - non-CASH: otomatis set sebesar DP (nilai server / saran, yang sudah mencakup ongkir)
+
   useEffect(() => {
-    if (metodePembayaran === "CASH") {
-      const diBayar = getLocalStorageJSON<number>(LOCAL_STORAGE_KEYS.DI_BAYAR);
-      setDataDiBayar(diBayar ?? 0);
-      return;
+    // Tunggu sampai request transaksi selesai.
+    if (isLoadingTransaksi) return;
+
+    // Tunggu sampai metode pembayaran tersedia.
+    if (!metodePembayaran) return;
+
+    // Untuk non-CASH, nominal mengikuti DP atau saran DP.
+    setDataDiBayar(
+      dataDiBayar !== null
+        ? dataDiBayar
+        : (dataDp ?? transactionSummary.saranDp),
+    );
+  }, [
+    isLoadingTransaksi,
+    metodePembayaran,
+    dataDp,
+    transactionSummary.saranDp,
+  ]);
+
+  // hadle bayar lunas
+  const handleBayarLunas = (value: boolean) => {
+    if (value) {
+      stateBayarLunas(true);
+      setDataDiBayar(transactionSummary.totalUangTransaksi);
+    } else {
+      stateBayarLunas(false);
+      setDataDiBayar(
+        transactionSummary.totalUangTransaksi * MINIMAL_DP_PERCENTAGE,
+      );
     }
 
-    setDataDiBayar(dataDiBayar ?? dataDp ?? transactionSummary.saranDp);
-  }, [metodePembayaran, dataDp, dataDiBayar, transactionSummary.saranDp]);
+    setIsErrors((prev) =>
+      prev.filter((item) => item !== "TIPE_PEMBAYARAN_AWAL"),
+    );
+  };
 
   // Ekspos state & handler yang dibutuhkan oleh komponen UI booking
   return {
@@ -345,6 +390,8 @@ const useBooking = (params: {
     handleCloseModalCalculator,
 
     handlePay,
+
+    dataDiBayarCash,
 
     handleTransaction,
 
@@ -367,6 +414,9 @@ const useBooking = (params: {
     isRefetchingTransaksi,
 
     isPendingUpdateMetodePembayaran,
+
+    handleBayarLunas,
+    bayarLunas,
   };
 };
 

@@ -115,13 +115,6 @@ const useInformasiPembayaran = ({
       mutationFn: (data: CreateTransactionForRequestType) =>
         TransactionServices.create(data),
       onSuccess: (data) => {
-        // invlaidated query
-        if (data?.data) {
-          queryClient.invalidateQueries({
-            queryKey: ["transaction", data?.data?.id],
-          });
-        }
-
         navigate(`/dashboard/riwayat-transaksi/${data?.data?.id}`, {
           state: {
             toast: "created_transaction_booking_success",

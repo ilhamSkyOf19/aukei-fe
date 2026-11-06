@@ -11,7 +11,15 @@ import {
   unformatRupiah,
 } from "../../../../helpers/helpers";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
-import { ArrowLeft, Banknote, Check, Landmark, QrCode } from "lucide-react";
+import {
+  ArrowLeft,
+  Banknote,
+  Check,
+  CheckCircle,
+  Landmark,
+  QrCode,
+  XCircle,
+} from "lucide-react";
 import CardMetodePembayaran from "../../../../components/ui/cards/CardMetodePembayaran";
 import ModalCashPayment from "../../../../components/modals/ModalCashPayment";
 import ErrorMessage from "../../../../components/messages/ErrorMessage";
@@ -38,6 +46,7 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
     handleShowModalCalculator,
     modalCalculatorRef,
     handlePay,
+    dataDiBayarCash,
 
     handleTransaction,
 
@@ -53,9 +62,10 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
     dataDp,
 
     handleSetCustomDp,
+    bayarLunas,
+    handleBayarLunas,
   } = useBooking({ handleToast, kasir });
 
-  console.log(dataDiBayar);
   return (
     <div className="w-full h-[95vh]  grid grid-cols-3 gap-2.5">
       <div className="col-span-2 grid grid-rows-10 min-h-0 gap-2.5">
@@ -260,32 +270,98 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
           </div>
         </div>
 
-        <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
+        <div className="w-full flex flex-col justify-start items-start gap-2.5">
           <span className="text-sm font-medium text-base-content">
-            Masukkan Uang DP
+            Silahkan Pilih
           </span>
+          <div className="w-full flex flex-row justify-start items-center gap-2.5">
+            <button
+              type="button"
+              className={cn(
+                "flex flex-row justify-center items-center gap-2.5 rounded-xl h-10.5 md:h-9 flex-1 border text-base-content ",
+                isErrors?.includes("TIPE_PEMBAYARAN_AWAL")
+                  ? "border-error"
+                  : " border-emerald-500",
+                bayarLunas === false
+                  ? "bg-emerald-500 text-primary-white"
+                  : "hover:bg-emerald-500  hover:text-primary-white transition-all ease-in-out duration-200",
+              )}
+              onClick={() => handleBayarLunas(false)}
+            >
+              {bayarLunas === false ? (
+                <CheckCircle className="size-4.5 md:size-3.5" />
+              ) : (
+                <XCircle className="size-4.5 md:size-3.5" />
+              )}
+              <span className="text-xs font-medium md:text-[0.7rem]">
+                Bayar DP
+              </span>
+            </button>
 
-          <div className="w-full flex flex-col justify-start items-start gap-1">
-            {/* form uang dp */}
-            <FormUangDp
-              defaultValue={
-                transactionSummary.saranDp > 0
-                  ? transactionSummary.saranDp
-                  : undefined
-              }
-              maxTotal={
-                transactionSummary.totalUangTransaksi > 0
-                  ? transactionSummary.totalUangTransaksi
-                  : undefined
-              }
-              handleBayar={handleSetCustomDp}
-            />
-
-            <span className="text-[0.7rem] text-base-content">
-              Anda dapat mengatur uang DP sesuai kesepakatan dengan customer
-            </span>
+            <button
+              type="button"
+              className={cn(
+                "flex flex-row justify-center items-center gap-2.5 rounded-xl h-10.5 md:h-9 flex-1 border border-emerald-500 text-base-content ",
+                isErrors?.includes("TIPE_PEMBAYARAN_AWAL")
+                  ? "border-error"
+                  : " border-emerald-500",
+                bayarLunas === true
+                  ? "bg-emerald-500 text-primary-white"
+                  : "hover:bg-emerald-500  hover:text-primary-white transition-all ease-in-out duration-200",
+              )}
+              onClick={() => handleBayarLunas(true)}
+            >
+              {bayarLunas === true ? (
+                <CheckCircle className="size-4.5 md:size-3.5" />
+              ) : (
+                <XCircle className="size-4.5 md:size-3.5" />
+              )}
+              <span className="text-xs font-medium md:text-[0.7rem]">
+                Bayar Lunas
+              </span>
+            </button>
           </div>
         </div>
+
+        {bayarLunas !== null ? (
+          <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
+            <span className="text-sm font-medium text-base-content">
+              {bayarLunas ? "Bayar Lunas" : "Uang DP"}
+            </span>
+
+            <div className="w-full flex flex-col justify-start items-start gap-1">
+              {/* form uang dp */}
+              <FormUangDp
+                readonly={bayarLunas === true}
+                defaultValue={dataDiBayar && dataDiBayar > 0 ? dataDiBayar : 0}
+                maxTotal={
+                  transactionSummary.totalUangTransaksi > 0
+                    ? transactionSummary.totalUangTransaksi
+                    : undefined
+                }
+                handleBayar={handleSetCustomDp}
+              />
+
+              <span className="text-[0.7rem] text-base-content">
+                Anda dapat mengatur uang DP sesuai kesepakatan dengan customer
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="w-full flex justify-center items-center mt-2.5">
+            <span
+              className={cn(
+                "text-xs",
+                isErrors?.includes("TIPE_PEMBAYARAN_AWAL")
+                  ? "text-error"
+                  : "text-base-content",
+              )}
+            >
+              Silahkan Pilih <span className="font-medium">Bayar Lunas</span>{" "}
+              atau <span className="font-medium">Uang DP</span>
+            </span>
+          </div>
+        )}
 
         <div className="flex flex-col justify-start items-start gap-2.5 w-full mt-2.5">
           <span className="text-sm font-medium text-base-content">
@@ -351,7 +427,7 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
                   </span>
                   {/* total */}
                   <span className="text-xs font-semibold text-info">
-                    {formatRupiah(dataDiBayar)}
+                    {formatRupiah(dataDiBayarCash ?? 0)}
                   </span>
                 </div>
                 <div className="w-full flex flex-row justify-between items-center">
@@ -360,9 +436,10 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
                   </span>
                   {/* total */}
                   <span className="text-xs font-semibold text-emerald-600">
-                    {dataDiBayar !== 0
+                    {dataDiBayarCash && dataDiBayarCash !== 0
                       ? formatRupiah(
-                          dataDiBayar - (dataDp ?? transactionSummary.saranDp),
+                          (dataDiBayarCash ?? 0) -
+                            (dataDp ?? transactionSummary.saranDp),
                         )
                       : formatRupiah(0)}
                   </span>
@@ -441,7 +518,7 @@ const Booking: FC<Props> = ({ handleToast, kasir }) => {
         modalRef={modalCalculatorRef}
         handleCloseModal={handleCloseModalCalculator}
         handlePay={handlePay}
-        total={dataDp ?? transactionSummary.saranDp}
+        total={dataDiBayar ?? 0}
       />
 
       {/* modal confirm */}
@@ -461,12 +538,14 @@ type FormUangDpProps = {
   defaultValue?: number;
   maxTotal?: number;
   handleBayar: (value: number) => void;
+  readonly?: boolean;
 };
 
 const FormUangDp: FC<FormUangDpProps> = ({
   defaultValue,
   maxTotal,
   handleBayar,
+  readonly,
 }) => {
   const [displayValue, setDisplayValue] = useState<string>("");
 
@@ -482,6 +561,7 @@ const FormUangDp: FC<FormUangDpProps> = ({
     <div className="flex gap-2.5 flex-row justify-between items-center w-full">
       <div className="flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 h-12 px-3">
         <input
+          readOnly={readonly}
           type="text"
           inputMode="numeric"
           className="w-full font-semibold text-base-content h-full border-none outline-none placeholder:text-base-content/50 placeholder:font-light text-sm"

@@ -65,7 +65,14 @@ const useModalCashPayment = (params: {
     return () => window.removeEventListener("keydown", handler);
   }, [modalRef?.current?.open, amount]);
 
-  return { change, amount, append, backspace, clear };
+  const handleChange = (rawValue: string) => {
+    // Ambil angka saja
+    const numericValue = rawValue.replace(/\D/g, "");
+
+    setValue(numericValue);
+  };
+
+  return { change, amount, append, backspace, clear, handleChange };
 };
 
 export default useModalCashPayment;

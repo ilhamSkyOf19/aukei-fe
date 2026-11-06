@@ -25,7 +25,7 @@ import { ROLE_INTERNAL_TYPE } from "../../../types/constant.type";
 import { Fragment } from "react/jsx-runtime";
 import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
 
-const RiwayatTransaksi = () => {
+const Booking = () => {
   const {
     windowSize,
     setSort,
@@ -372,4 +372,4 @@ const RiwayatTransaksi = () => {
   );
 };
 
-export default RiwayatTransaksi;
+export default Booking;

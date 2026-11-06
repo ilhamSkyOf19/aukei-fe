@@ -322,21 +322,22 @@ const InformasiPembayaran: FC<Props> = ({
         </div>
 
         {/* uang ongkir */}
-        {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
-          <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
-            <span className="text-sm font-medium text-base-content">
-              Ongkir (Opsional)
-            </span>
+        {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING &&
+          isPageBookingKasir && (
+            <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
+              <span className="text-sm font-medium text-base-content">
+                Ongkir (Opsional)
+              </span>
 
-            <div className="w-full flex flex-col justify-start items-start gap-1 h-14">
-              {/* form uang dp */}
-              <FormOngkir
-                transactionId={dataTransaction?.data?.id ?? 0}
-                queryKey={"transaction"}
-              />
+              <div className="w-full flex flex-col justify-start items-start gap-1 h-14">
+                {/* form uang dp */}
+                <FormOngkir
+                  transactionId={dataTransaction?.data?.id ?? 0}
+                  queryKey={"transaction"}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* ringkasan pembayaran tempo */}
         {/* tempo */}
@@ -504,7 +505,7 @@ const InformasiPembayaran: FC<Props> = ({
             </div>
           )}
         {/* metode pembayaran pelunasan */}
-        {isPageBookingKasir && (
+        {isPageBookingKasir && (transactionSummary.sisaTagihan ?? 0) > 0 && (
           <div className="flex flex-col justify-start items-start gap-2.5 w-full mt-4">
             <div className="flex flex-col justify-start items-start gap-1">
               <span className="text-xs font-medium text-base-content">
