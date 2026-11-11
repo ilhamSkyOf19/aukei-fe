@@ -23,7 +23,8 @@ export interface ResponseTransactionDetailType extends Omit<
   "createdAt" | "updatedAt"
 > {}
 
-export interface UpdateHargaAndDiskonForRequestType {
+export interface UpdateHargaAndDiskonAndQuantityForRequestType {
   hargaJual?: number;
   diskon?: number;
+  quantity?: number;
 }

@@ -6,11 +6,22 @@ import {
   ShoppingBasket,
   Undo2,
 } from "lucide-react";
+import type { UseControllerReturn, UseFormHandleSubmit } from "react-hook-form";
+
 import LabelCardPelanggan from "../../LabelCardPelanggan";
-import type { ITransactionDetailType } from "../../../../models/transactionDetail.model";
-import { formatNumber } from "../../../../helpers/helpers";
-import { cn } from "../../../../utils/cn";
 import ButtonWithIcon from "../../button/ButtonWithIcon";
+import ButtonUpdateTable from "../../button/ButtonUpdateTable";
+
+import type {
+  ITransactionDetailType,
+  UpdateHargaAndDiskonAndQuantityForRequestType,
+} from "../../../../models/transactionDetail.model";
+
+import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
+import { cn } from "../../../../utils/cn";
+import CardForm from "../../../inputs/CardForm";
+import InputPrice from "../../../inputs/InputPrice";
+import InputQty from "../../../inputs/InputQty";
 
 type Props = {
   data: Omit<ITransactionDetailType, "createdAt" | "updatedAt" | "laba">;
@@ -24,24 +35,121 @@ type Props = {
     maxQuantity: number;
     quantityWasRetur: number;
   }) => void;
+  updateBooking: {
+    isFromActive?: {
+      detailId: number;
+      hargaJual: boolean;
+      diskon: boolean;
+      quantity: boolean;
+    } | null;
+    isPageBookingKasir: boolean;
+    isUbahData: boolean;
+    handleSetIsFromActive: (params: {
+      detailId?: number | undefined;
+      hargaJual?:
+        | {
+            data: number;
+          }
+        | undefined;
+      diskon?:
+        | {
+            data: number;
+          }
+        | undefined;
+      quantity?:
+        | {
+            data: number;
+          }
+        | undefined;
+      reset?: boolean | undefined;
+    }) => void;
+    handleSubmit: UseFormHandleSubmit<
+      UpdateHargaAndDiskonAndQuantityForRequestType,
+      UpdateHargaAndDiskonAndQuantityForRequestType
+    >;
+    onSubmit: (
+      data: UpdateHargaAndDiskonAndQuantityForRequestType,
+    ) => Promise<void>;
+    isPendingUpdate: boolean;
+    formDiskon: {
+      diskonController: UseControllerReturn<
+        UpdateHargaAndDiskonAndQuantityForRequestType,
+        "diskon"
+      >;
+      placeholder: string;
+    };
+    formHargaJual: {
+      hargaJualController: UseControllerReturn<
+        UpdateHargaAndDiskonAndQuantityForRequestType,
+        "hargaJual"
+      >;
+      placeholder: string;
+    };
+    formQuantity: {
+      quantityController: UseControllerReturn<
+        UpdateHargaAndDiskonAndQuantityForRequestType,
+        "quantity"
+      >;
+      placeholder: string;
+    };
+  };
 };
+
 const CardProdukTransaksi: FC<Props> = ({
-  handleAppend,
+  data,
   disabled,
-  data: { id, diskon, hargaJual, produk, quantity, totalHarga, totalRetur },
+  handleAppend,
+  updateBooking,
 }) => {
+  const { id, diskon, hargaJual, produk, quantity, totalHarga, totalRetur } =
+    data;
+
+  const {
+    isFromActive,
+    isPageBookingKasir,
+    isUbahData,
+    handleSetIsFromActive,
+    handleSubmit,
+    onSubmit,
+    isPendingUpdate,
+    formHargaJual: { hargaJualController, placeholder: placeholderHargaJual },
+    formDiskon: { diskonController, placeholder: placeholderDiskon },
+    formQuantity: { quantityController },
+  } = updateBooking;
+
+  const isActiveHargaJual =
+    isFromActive?.detailId === id &&
+    isFromActive.hargaJual &&
+    isPageBookingKasir &&
+    isUbahData;
+
+  const isActiveDiskon =
+    isFromActive?.detailId === id &&
+    isFromActive.diskon &&
+    isPageBookingKasir &&
+    isUbahData;
+
+  const isActiveQuantity =
+    isFromActive?.detailId === id &&
+    isFromActive.quantity &&
+    isPageBookingKasir &&
+    isUbahData;
+
   return (
     <div className="w-full flex flex-col justify-start items-start bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 p-4 shrink-0 snap-center snap-always">
-      {/* content 1 */}
-      <div className="w-full flex flex-row gap-4 justify-start items-center pb-4 borde border-b border-base-content/10">
+      {/* CONTENT 1 */}
+      <div className="w-full flex flex-row gap-4 justify-start items-center pb-4 border-b border-base-content/10">
         <div className="flex justify-start items-start gap-4">
-          {/* foto */}
           <div className="w-12 h-12 overflow-hidden rounded-2xl">
-            <img src={produk.img} alt="foto produk" loading="lazy" />
+            <img
+              src={produk.img}
+              alt={produk.nama}
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 
-        {/* aksi */}
         <div className="flex flex-col justify-start items-start gap-0.5">
           <span className="text-base-content font-semibold text-sm">
             {produk.nama}
@@ -49,14 +157,14 @@ const CardProdukTransaksi: FC<Props> = ({
         </div>
       </div>
 
-      {/* content 2 */}
+      {/* CONTENT 2 */}
       <div
         className={cn(
           "w-full flex flex-col md:flex-row justify-start items-start gap-2 py-2",
           handleAppend && "border-b border-base-content/10",
         )}
       >
-        {/* harga jual */}
+        {/* HARGA JUAL */}
         <LabelCardPelanggan
           label="Harga Jual"
           icon={{
@@ -64,10 +172,47 @@ const CardProdukTransaksi: FC<Props> = ({
             bgColor: "bg-blue-100",
             iconColor: "text-blue-400",
           }}
-          valuePrice={hargaJual}
-        />
+        >
+          {isActiveHargaJual ? (
+            <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
+              handleResetForm={() => handleSetIsFromActive({ reset: true })}
+              handleSubmit={handleSubmit}
+              onSubmit={onSubmit}
+              isPending={isPendingUpdate}
+              showForSm
+            >
+              <div className="w-35">
+                <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
+                  controller={hargaJualController}
+                  placeholder={placeholderHargaJual}
+                  required
+                  xs
+                />
+              </div>
+            </CardForm>
+          ) : (
+            <div className="flex flex-row justify-start items-center gap-1.5">
+              <span className="text-xs font-medium text-base-content">
+                {formatRupiah(hargaJual)}
+              </span>
 
-        {/* diskon */}
+              {isUbahData && isPageBookingKasir && (
+                <ButtonUpdateTable
+                  handleClick={() =>
+                    handleSetIsFromActive({
+                      detailId: id,
+                      hargaJual: {
+                        data: hargaJual,
+                      },
+                    })
+                  }
+                />
+              )}
+            </div>
+          )}
+        </LabelCardPelanggan>
+
+        {/* DISKON */}
         <LabelCardPelanggan
           label="Diskon"
           icon={{
@@ -75,10 +220,48 @@ const CardProdukTransaksi: FC<Props> = ({
             bgColor: "bg-rose-100",
             iconColor: "text-rose-400",
           }}
-          valuePrice={diskon}
-        />
+        >
+          {isActiveDiskon ? (
+            <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
+              handleResetForm={() => handleSetIsFromActive({ reset: true })}
+              handleSubmit={handleSubmit}
+              onSubmit={onSubmit}
+              isPending={isPendingUpdate}
+              showForSm
+            >
+              <div className="w-35">
+                <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
+                  controller={diskonController}
+                  placeholder={placeholderDiskon}
+                  max={hargaJual}
+                  required
+                  xs
+                />
+              </div>
+            </CardForm>
+          ) : (
+            <div className="flex flex-row justify-start items-center gap-1.5">
+              <span className="text-xs font-medium text-base-content">
+                {formatRupiah(diskon)}
+              </span>
 
-        {/* Qty pesan */}
+              {isUbahData && isPageBookingKasir && (
+                <ButtonUpdateTable
+                  handleClick={() =>
+                    handleSetIsFromActive({
+                      detailId: id,
+                      diskon: {
+                        data: diskon,
+                      },
+                    })
+                  }
+                />
+              )}
+            </div>
+          )}
+        </LabelCardPelanggan>
+
+        {/* QTY PESAN */}
         <LabelCardPelanggan
           label="Qty. Pesan"
           icon={{
@@ -86,10 +269,49 @@ const CardProdukTransaksi: FC<Props> = ({
             bgColor: "bg-emerald-100",
             iconColor: "text-emerald-400",
           }}
-          valueSting={`${formatNumber(quantity)} Pcs`}
-        />
+        >
+          {isActiveQuantity ? (
+            <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
+              handleResetForm={() => handleSetIsFromActive({ reset: true })}
+              handleSubmit={handleSubmit}
+              onSubmit={onSubmit}
+              isPending={isPendingUpdate}
+              btnAksiPosition="top"
+              showForSm
+            >
+              <div className="w-auto">
+                <InputQty<UpdateHargaAndDiskonAndQuantityForRequestType>
+                  controller={quantityController}
+                  required
+                  customHeight="h-10"
+                  customWidth="w-25"
+                  noButton
+                />
+              </div>
+            </CardForm>
+          ) : (
+            <div className="flex flex-row justify-start items-center gap-1.5">
+              <span className="text-xs font-medium text-base-content">
+                {formatNumber(quantity)} Pcs
+              </span>
 
-        {/* Qty retur */}
+              {isUbahData && isPageBookingKasir && (
+                <ButtonUpdateTable
+                  handleClick={() =>
+                    handleSetIsFromActive({
+                      detailId: id,
+                      quantity: {
+                        data: quantity,
+                      },
+                    })
+                  }
+                />
+              )}
+            </div>
+          )}
+        </LabelCardPelanggan>
+
+        {/* QTY RETUR */}
         <LabelCardPelanggan
           label="Qty. Retur"
           icon={{
@@ -100,7 +322,7 @@ const CardProdukTransaksi: FC<Props> = ({
           valueSting={`${formatNumber(totalRetur)} Pcs`}
         />
 
-        {/* Subtotal */}
+        {/* TOTAL HARGA */}
         <LabelCardPelanggan
           label="Total Harga"
           icon={{
@@ -112,9 +334,9 @@ const CardProdukTransaksi: FC<Props> = ({
         />
       </div>
 
-      {/* handleAppend */}
+      {/* HANDLE APPEND */}
       {handleAppend && (
-        <div className="w-full mt-2.5 flex flex-row justify-end  items-end gap-2.5">
+        <div className="w-full mt-2.5 flex flex-row justify-end items-end gap-2.5">
           <ButtonWithIcon
             disabled={disabled}
             label="Retur"
@@ -126,7 +348,7 @@ const CardProdukTransaksi: FC<Props> = ({
                 detailId: id,
                 nama: produk.nama,
                 img: produk.img,
-                hargaJual: hargaJual,
+                hargaJual,
                 maxQuantity: quantity,
                 quantityWasRetur: totalRetur,
               })

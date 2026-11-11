@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import { cn } from "../../../utils/cn";
 import { formatNumber, formatRupiah } from "../../../helpers/helpers";
 
@@ -13,6 +13,7 @@ type Props = {
   value?: number;
   valueSting?: string;
   valuePrice?: number;
+  children?: ReactNode;
 };
 
 // label card pelanggan
@@ -22,6 +23,7 @@ const LabelCardPelanggan: FC<Props> = ({
   value,
   valueSting,
   valuePrice,
+  children,
 }) => {
   return (
     <div className="w-full md:flex-1 flex flex-row md:flex-col justify-between md:justify-start items-center md:items-start shrink-0">
@@ -61,19 +63,23 @@ const LabelCardPelanggan: FC<Props> = ({
 
       {/* value */}
       <div className="flex-1 flex flex-row justify-end items-center md:hidden">
-        <span className="text-xs text-medium text-base-content">
-          {value || valueSting || valuePrice ? (
-            <>
-              {valueSting && valueSting}
-              {value && formatNumber(value)}
-              {valuePrice && formatRupiah(valuePrice)}
-            </>
-          ) : (
-            <span className="text-base-content text-xs italic font-light">
-              -
-            </span>
-          )}
-        </span>
+        {children ? (
+          children
+        ) : (
+          <span className="text-xs text-medium text-base-content">
+            {value || valueSting || valuePrice ? (
+              <>
+                {valueSting && valueSting}
+                {value && formatNumber(value)}
+                {valuePrice && formatRupiah(valuePrice)}
+              </>
+            ) : (
+              <span className="text-base-content text-xs italic font-light">
+                -
+              </span>
+            )}
+          </span>
+        )}
       </div>
     </div>
   );

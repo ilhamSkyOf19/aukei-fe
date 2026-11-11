@@ -1,5 +1,5 @@
 import z from "zod";
-import type { UpdateHargaAndDiskonForRequestType } from "../models/transactionDetail.model";
+import type { UpdateHargaAndDiskonAndQuantityForRequestType } from "../models/transactionDetail.model";
 
 export class TransactionDetailValidations {
   // update
@@ -15,33 +15,59 @@ export class TransactionDetailValidations {
         .int()
         .max(2147483647, "diskon terlalu besar")
         .optional(),
+      quantity: z
+        .number("quantity tidak valid")
+        .int()
+        .max(2147483647, "quantity terlalu besar")
+        .optional(),
     })
     .superRefine((data, ctx) => {
-      if (data.hargaJual !== undefined && data.diskon !== undefined) {
+      if (
+        data.hargaJual !== undefined &&
+        data.diskon !== undefined &&
+        data.quantity !== undefined
+      ) {
         ctx.addIssue({
           code: "custom",
-          message: "harga jual dan diskon tidak boleh diisi bersamaan",
+          message:
+            "harga jual dan diskon dan quantity tidak boleh diisi bersamaan",
           path: ["hargaJual"],
         });
         ctx.addIssue({
           code: "custom",
-          message: "harga jual dan diskon tidak boleh diisi bersamaan",
+          message:
+            "harga jual dan diskon dan quantity tidak boleh diisi bersamaan",
           path: ["diskon"],
+        });
+        ctx.addIssue({
+          code: "custom",
+          message:
+            "harga jual dan diskon dan quantity tidak boleh diisi bersamaan",
+          path: ["quantity"],
         });
       }
 
-      if (data.hargaJual === undefined && data.diskon === undefined) {
+      if (
+        data.hargaJual === undefined &&
+        data.diskon === undefined &&
+        data.quantity === undefined
+      ) {
         ctx.addIssue({
           code: "custom",
-          message: "harga jual atau diskon harus diisi",
+          message: "harga jual atau diskon atau quantity harus diisi",
           path: ["hargaJual"],
         });
         ctx.addIssue({
           code: "custom",
-          message: "harga jual atau diskon harus diisi",
+          message: "harga jual atau diskon atau quantity harus diisi",
           path: ["diskon"],
+        });
+        ctx.addIssue({
+          code: "custom",
+          message: "harga jual atau diskon atau quantity harus diisi",
+          path: ["quantity"],
         });
       }
     })
-    .strict() satisfies z.ZodType<UpdateHargaAndDiskonForRequestType>;
+    .strict() satisfies z.ZodType<UpdateHargaAndDiskonAndQuantityForRequestType>;
 }

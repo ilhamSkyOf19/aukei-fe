@@ -10,23 +10,25 @@ import { Minus, Plus } from "lucide-react";
 type Props<T extends FieldValues = any> = {
   required?: boolean;
   controller: UseControllerReturn<T>;
-  label: string;
+  label?: string;
+  customHeight?: string;
+  customWidth?: string;
+  noButton?: boolean;
 };
 
 const InputQty = <T extends FieldValues = any>({
   required,
   controller,
   label,
+  customHeight,
+  customWidth,
+  noButton = false,
 }: Props<T>) => {
   const { field, fieldState } = controller;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [displayValue, setDisplayValue] = useState("");
-
-  // =========================
-  // SYNC VALUE
-  // =========================
 
   useEffect(() => {
     const value = field.value;
@@ -38,23 +40,14 @@ const InputQty = <T extends FieldValues = any>({
     }
   }, [field.value]);
 
-  // =========================
-  // AUTO FOCUS & SELECT
-  // =========================
-
   useEffect(() => {
     const input = inputRef.current;
 
     if (!input) return;
 
-    // Fokus dan blok seluruh angka
     input.focus();
     input.select();
   }, []);
-
-  // =========================
-  // HANDLE PLUS
-  // =========================
 
   const handlePlus = () => {
     const currentValue = Number(field.value) || 0;
@@ -62,24 +55,15 @@ const InputQty = <T extends FieldValues = any>({
     field.onChange(currentValue + 1);
   };
 
-  // =========================
-  // HANDLE MINUS
-  // =========================
-
   const handleMin = () => {
     const currentValue = Number(field.value) || 0;
 
     field.onChange(Math.max(currentValue - 1, 0));
   };
 
-  // =========================
-  // HANDLE CHANGE
-  // =========================
-
   const handleChange = (value: string) => {
     const numericValue = value.replace(/\D/g, "");
 
-    // Izinkan input kosong saat mengetik
     if (!numericValue) {
       setDisplayValue("");
       field.onChange(0);
@@ -95,12 +79,7 @@ const InputQty = <T extends FieldValues = any>({
     field.onChange(qty);
   };
 
-  // =========================
-  // HANDLE BLUR
-  // =========================
-
   const handleBlur = () => {
-    // Kembalikan angka 0 jika input kosong
     if (!displayValue) {
       setDisplayValue("0");
       field.onChange(0);
@@ -116,7 +95,6 @@ const InputQty = <T extends FieldValues = any>({
         fieldState.error && "mb-3",
       )}
     >
-      {/* LABEL */}
       {label && (
         <div className="flex-2 relative">
           <label
@@ -132,23 +110,24 @@ const InputQty = <T extends FieldValues = any>({
         </div>
       )}
 
-      {/* INPUT CONTAINER */}
       <div
         className={clsx(
-          "flex flex-row justify-between items-center gap-2 border border-base-content/20 rounded-md w-30 focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 h-full mt-2 overflow-hidden",
+          "flex flex-row justify-between items-center gap-2 border border-base-content/20 rounded-md focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 mt-2 overflow-hidden",
           fieldState.error && "border-error",
+          customHeight ?? "h-full",
+          customWidth ?? "w-30",
         )}
       >
-        {/* BUTTON MINUS */}
-        <button
-          type="button"
-          className="w-full h-full flex flex-row justify-center items-center bg-error hover-overlay"
-          onClick={handleMin}
-        >
-          <Minus className="size-4 text-primary-white" />
-        </button>
+        {!noButton && (
+          <button
+            type="button"
+            className="w-full h-full flex flex-row justify-center items-center bg-error hover-overlay"
+            onClick={handleMin}
+          >
+            <Minus className="size-4 text-primary-white" />
+          </button>
+        )}
 
-        {/* INPUT QUANTITY */}
         <input
           ref={(element) => {
             inputRef.current = element;
@@ -160,29 +139,27 @@ const InputQty = <T extends FieldValues = any>({
           autoComplete="off"
           value={displayValue}
           required={required}
-          onFocus={(e) => {
-            e.target.select();
-          }}
-          onChange={(e) => {
-            handleChange(e.target.value);
-          }}
+          onClick={(e) => e.currentTarget.select()}
+          onFocus={(e) => e.currentTarget.select()}
+          onChange={(e) => handleChange(e.target.value)}
           onBlur={handleBlur}
           className={cn(
             "font-medium text-sm rounded-md w-full h-full text-center outline-none text-base-content placeholder:text-base-content/50 placeholder:font-light bg-transparent",
+            noButton && "px-3",
           )}
         />
 
-        {/* BUTTON PLUS */}
-        <button
-          type="button"
-          className="w-full h-full flex flex-row justify-center items-center bg-success hover-overlay"
-          onClick={handlePlus}
-        >
-          <Plus className="size-4 text-primary-white" />
-        </button>
+        {!noButton && (
+          <button
+            type="button"
+            className="w-full h-full flex flex-row justify-center items-center bg-success hover-overlay"
+            onClick={handlePlus}
+          >
+            <Plus className="size-4 text-primary-white" />
+          </button>
+        )}
       </div>
 
-      {/* ERROR MESSAGE */}
       <ErrorMessage errorMessage={fieldState.error?.message} />
     </div>
   );

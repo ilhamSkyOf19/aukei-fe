@@ -10,7 +10,7 @@ import RingkasanKredit from "../RingkasanKredit";
 import useDaftarDetailProduk from "./useDaftarDetailProduk";
 import CardForm from "../../../../components/inputs/CardForm";
 import InputPrice from "../../../../components/inputs/InputPrice";
-import type { UpdateHargaAndDiskonForRequestType } from "../../../../models/transactionDetail.model";
+import type { UpdateHargaAndDiskonAndQuantityForRequestType } from "../../../../models/transactionDetail.model";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import AlertLabelList from "../../../../components/messages/AlertLabelList";
 import {
@@ -32,6 +32,7 @@ import {
 import CardProdukTransaksi from "../../../../components/ui/cards/CardProdukTransaksi";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
+import InputQty from "../../../../components/inputs/InputQty";
 
 type Props = {
   isLoadingTransaction: boolean;
@@ -62,6 +63,7 @@ const DaftarDetailProduk: FC<Props> = ({
     isPendingUpdate,
     diskonController,
     hargaJualController,
+    quantityController,
     onSubmit,
     isFromActive,
     handleSetIsFromActive,
@@ -98,7 +100,31 @@ const DaftarDetailProduk: FC<Props> = ({
           <LoadingFetch />
         ) : isExistingDataTransaction ? (
           dataTransaction?.data?.details?.map((item) => (
-            <CardProdukTransaksi key={item.id} data={item} />
+            <CardProdukTransaksi
+              key={item.id}
+              data={item}
+              updateBooking={{
+                isFromActive,
+                isPageBookingKasir,
+                isUbahData,
+                handleSetIsFromActive,
+                handleSubmit,
+                onSubmit,
+                isPendingUpdate,
+                formDiskon: {
+                  diskonController,
+                  placeholder: "Diskon produk",
+                },
+                formHargaJual: {
+                  hargaJualController,
+                  placeholder: "Harga jual produk",
+                },
+                formQuantity: {
+                  quantityController,
+                  placeholder: "Jumlah produk",
+                },
+              }}
+            />
           ))
         ) : (
           <div className="w-full h-full flex flex-col justify-center items-center">
@@ -198,7 +224,7 @@ const DaftarDetailProduk: FC<Props> = ({
                             isFromActive.hargaJual &&
                             isPageBookingKasir &&
                             isUbahData ? (
-                              <CardForm<UpdateHargaAndDiskonForRequestType>
+                              <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
                                 handleResetForm={() =>
                                   handleSetIsFromActive({ reset: true })
                                 }
@@ -209,7 +235,7 @@ const DaftarDetailProduk: FC<Props> = ({
                               >
                                 {/* input text */}
                                 <div className="w-40">
-                                  <InputPrice<UpdateHargaAndDiskonForRequestType>
+                                  <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
                                     controller={hargaJualController}
                                     placeholder="harga jual produk"
                                     required
@@ -246,7 +272,7 @@ const DaftarDetailProduk: FC<Props> = ({
                             isFromActive.diskon &&
                             isPageBookingKasir &&
                             isUbahData ? (
-                              <CardForm<UpdateHargaAndDiskonForRequestType>
+                              <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
                                 handleResetForm={() =>
                                   handleSetIsFromActive({ reset: true })
                                 }
@@ -257,7 +283,7 @@ const DaftarDetailProduk: FC<Props> = ({
                               >
                                 {/* input text */}
                                 <div className="w-30">
-                                  <InputPrice<UpdateHargaAndDiskonForRequestType>
+                                  <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
                                     controller={diskonController}
                                     placeholder="diskon"
                                     required
@@ -288,10 +314,49 @@ const DaftarDetailProduk: FC<Props> = ({
                             )}
                           </td>
                           <td>
-                            <span className="xl:text-[0.7rem] text-base-content">
-                              {/* qty */}
-                              {formatNumber(item.quantity)} Pcs
-                            </span>
+                            {isFromActive?.detailId === item.id &&
+                            isFromActive.quantity &&
+                            isPageBookingKasir &&
+                            isUbahData ? (
+                              <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
+                                handleResetForm={() =>
+                                  handleSetIsFromActive({ reset: true })
+                                }
+                                handleSubmit={handleSubmit}
+                                onSubmit={onSubmit}
+                                isPending={false}
+                                btnAksiPosition="top"
+                              >
+                                {/* input text */}
+                                <div className="w-auto h-16">
+                                  <InputQty<UpdateHargaAndDiskonAndQuantityForRequestType>
+                                    controller={quantityController}
+                                    required
+                                    customHeight="h-8"
+                                    customWidth="w-20"
+                                    noButton
+                                  />
+                                </div>
+                              </CardForm>
+                            ) : (
+                              <div className="flex flex-row justify-start items-center gap-1.5">
+                                {/* qty */}
+                                {formatNumber(item.quantity)} Pcs
+                                {/* button pencil */}
+                                {isPageBookingKasir && isUbahData && (
+                                  <ButtonUpdateTable
+                                    handleClick={() =>
+                                      handleSetIsFromActive({
+                                        detailId: item.id,
+                                        quantity: {
+                                          data: item.quantity,
+                                        },
+                                      })
+                                    }
+                                  />
+                                )}
+                              </div>
+                            )}
                           </td>
                           <td>
                             <span className="xl:text-[0.7rem] text-base-content">
@@ -465,7 +530,7 @@ const DaftarDetailProduk: FC<Props> = ({
                 bgColor="bg-info"
                 textColor="text-primary-white"
                 customWidth="flex-1"
-                label="Ubah Harga / Diskon"
+                label="Ubah Harga / Diskon / Quantity"
                 handleBtn={() => setIsUbahData(true)}
                 skeleton={isLoadingTransaction}
               />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useController, useForm } from "react-hook-form";
-import type { UpdateHargaAndDiskonForRequestType } from "../../../../models/transactionDetail.model";
+import type { UpdateHargaAndDiskonAndQuantityForRequestType } from "../../../../models/transactionDetail.model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TransactionDetailValidations } from "../../../../validations/transactionDetail.validation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -44,11 +44,12 @@ const useDaftarDetailProduk = (params: {
     detailId: number;
     hargaJual: boolean;
     diskon: boolean;
+    quantity: boolean;
   } | null>(null);
 
   // get use form
   const { control, handleSubmit, reset } =
-    useForm<UpdateHargaAndDiskonForRequestType>({
+    useForm<UpdateHargaAndDiskonAndQuantityForRequestType>({
       resolver: zodResolver(TransactionDetailValidations.UPDATE),
     });
 
@@ -64,11 +65,17 @@ const useDaftarDetailProduk = (params: {
     name: "diskon",
   });
 
+  // quantity controller
+  const quantityController = useController({
+    control,
+    name: "quantity",
+  });
+
   // mutate
   const { mutateAsync: mutateUpdate, isPending: isPendingUpdate } = useMutation(
     {
       mutationFn: (
-        data: UpdateHargaAndDiskonForRequestType & {
+        data: UpdateHargaAndDiskonAndQuantityForRequestType & {
           transactionDetailId: number;
         },
       ) =>
@@ -77,6 +84,7 @@ const useDaftarDetailProduk = (params: {
           req: {
             diskon: data.diskon,
             hargaJual: data.hargaJual,
+            quantity: data.quantity,
           },
         }),
       onSuccess: () => {
@@ -97,7 +105,9 @@ const useDaftarDetailProduk = (params: {
   );
 
   // on submit
-  const onSubmit = async (data: UpdateHargaAndDiskonForRequestType) => {
+  const onSubmit = async (
+    data: UpdateHargaAndDiskonAndQuantityForRequestType,
+  ) => {
     try {
       if (isFromActive === null) return;
 
@@ -118,6 +128,9 @@ const useDaftarDetailProduk = (params: {
     diskon?: {
       data: number;
     };
+    quantity?: {
+      data: number;
+    };
     reset?: boolean;
   }) => {
     if (params.reset) {
@@ -125,18 +138,20 @@ const useDaftarDetailProduk = (params: {
       return;
     }
 
-    const { detailId, diskon, hargaJual } = params;
+    const { detailId, diskon, hargaJual, quantity } = params;
 
     // reset value
     reset({
       hargaJual: hargaJual?.data ?? undefined,
       diskon: diskon?.data ?? undefined,
+      quantity: quantity?.data ?? undefined,
     });
 
     setIsFromActive({
       detailId: detailId ?? 0,
       hargaJual: hargaJual ? true : false,
       diskon: diskon ? true : false,
+      quantity: quantity ? true : false,
     });
   };
 
@@ -200,6 +215,8 @@ const useDaftarDetailProduk = (params: {
     isPendingTransactionOld,
 
     isExpired3Days,
+
+    quantityController,
   };
 };
 

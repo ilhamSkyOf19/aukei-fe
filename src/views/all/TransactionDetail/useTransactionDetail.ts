@@ -117,33 +117,29 @@ const useTransactionDetail = (params: { transactionId?: number }) => {
       };
     }
 
-    let totalQuantity = 0;
-    let totalPembayaran = dataTransaction?.data?.totalBayar;
+    const transaction = dataTransaction.data;
 
-    for (const item of dataTransaction.data.details) {
-      totalQuantity += item.quantity;
-    }
+    const totalQuantity = transaction.details.reduce(
+      (total, item) => total + item.quantity,
+      0,
+    );
+
+    // totalBayar sudah termasuk ongkir
+    const totalPembayaran = transaction.totalBayar;
 
     const totalDiBayar =
-      dataTransaction.data.paymentTransactions?.reduce(
+      transaction.paymentTransactions?.reduce(
         (total, item) => total + item.diBayar,
         0,
       ) ?? 0;
 
-    const totalKembalian =
-      dataTransaction.data.paymentTransactions?.reduce(
-        (total, item) => total + item.kembalian,
-        0,
-      ) ?? 0;
+    const totalKembalian = Math.max(totalDiBayar - totalPembayaran, 0);
 
-    const sisaTagihan =
-      totalPembayaran -
-      (totalDiBayar - totalKembalian) +
-      dataTransaction?.data?.ongkir;
+    const sisaTagihan = Math.max(totalPembayaran - totalDiBayar, 0);
 
     return {
       totalQuantity,
-      totalPembayaran: dataTransaction?.data?.totalBayar,
+      totalPembayaran,
       totalDiBayar,
       totalKembalian,
       sisaTagihan,
