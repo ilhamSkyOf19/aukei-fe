@@ -10,6 +10,7 @@ type Props = {
   value?: string;
   noLabel?: boolean;
   withIcon?: boolean;
+  enabled?: boolean;
 };
 const FilterKategori: FC<Props> = ({
   setKategori,
@@ -17,9 +18,12 @@ const FilterKategori: FC<Props> = ({
   value,
   noLabel,
   withIcon,
+  enabled,
 }) => {
   //   query kategori
-  const { dataKategori, isLoadingKategori } = useKategoriForChoose();
+  const { dataKategori, isLoadingKategori } = useKategoriForChoose({
+    enabled,
+  });
 
   return (
     <div

@@ -35,7 +35,7 @@ type Props = {
     maxQuantity: number;
     quantityWasRetur: number;
   }) => void;
-  updateBooking: {
+  updateBooking?: {
     isFromActive?: {
       detailId: number;
       hargaJual: boolean;
@@ -45,23 +45,17 @@ type Props = {
     isPageBookingKasir: boolean;
     isUbahData: boolean;
     handleSetIsFromActive: (params: {
-      detailId?: number | undefined;
-      hargaJual?:
-        | {
-            data: number;
-          }
-        | undefined;
-      diskon?:
-        | {
-            data: number;
-          }
-        | undefined;
-      quantity?:
-        | {
-            data: number;
-          }
-        | undefined;
-      reset?: boolean | undefined;
+      detailId?: number;
+      hargaJual?: {
+        data: number;
+      };
+      diskon?: {
+        data: number;
+      };
+      quantity?: {
+        data: number;
+      };
+      reset?: boolean;
     }) => void;
     handleSubmit: UseFormHandleSubmit<
       UpdateHargaAndDiskonAndQuantityForRequestType,
@@ -104,36 +98,19 @@ const CardProdukTransaksi: FC<Props> = ({
   const { id, diskon, hargaJual, produk, quantity, totalHarga, totalRetur } =
     data;
 
-  const {
-    isFromActive,
-    isPageBookingKasir,
-    isUbahData,
-    handleSetIsFromActive,
-    handleSubmit,
-    onSubmit,
-    isPendingUpdate,
-    formHargaJual: { hargaJualController, placeholder: placeholderHargaJual },
-    formDiskon: { diskonController, placeholder: placeholderDiskon },
-    formQuantity: { quantityController },
-  } = updateBooking;
+  const activeField = updateBooking?.isFromActive;
+
+  const isEditable =
+    !!updateBooking?.isPageBookingKasir && !!updateBooking?.isUbahData;
 
   const isActiveHargaJual =
-    isFromActive?.detailId === id &&
-    isFromActive.hargaJual &&
-    isPageBookingKasir &&
-    isUbahData;
+    activeField?.detailId === id && activeField.hargaJual && isEditable;
 
   const isActiveDiskon =
-    isFromActive?.detailId === id &&
-    isFromActive.diskon &&
-    isPageBookingKasir &&
-    isUbahData;
+    activeField?.detailId === id && activeField.diskon && isEditable;
 
   const isActiveQuantity =
-    isFromActive?.detailId === id &&
-    isFromActive.quantity &&
-    isPageBookingKasir &&
-    isUbahData;
+    activeField?.detailId === id && activeField.quantity && isEditable;
 
   return (
     <div className="w-full flex flex-col justify-start items-start bg-base-100 rounded-2xl shadow-sm border border-transparent dark:border-base-content/10 p-4 shrink-0 snap-center snap-always">
@@ -173,18 +150,20 @@ const CardProdukTransaksi: FC<Props> = ({
             iconColor: "text-blue-400",
           }}
         >
-          {isActiveHargaJual ? (
+          {isActiveHargaJual && updateBooking ? (
             <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
-              handleResetForm={() => handleSetIsFromActive({ reset: true })}
-              handleSubmit={handleSubmit}
-              onSubmit={onSubmit}
-              isPending={isPendingUpdate}
+              handleResetForm={() =>
+                updateBooking.handleSetIsFromActive({ reset: true })
+              }
+              handleSubmit={updateBooking.handleSubmit}
+              onSubmit={updateBooking.onSubmit}
+              isPending={updateBooking.isPendingUpdate}
               showForSm
             >
               <div className="w-35">
                 <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
-                  controller={hargaJualController}
-                  placeholder={placeholderHargaJual}
+                  controller={updateBooking.formHargaJual.hargaJualController}
+                  placeholder={updateBooking.formHargaJual.placeholder}
                   required
                   xs
                 />
@@ -196,10 +175,10 @@ const CardProdukTransaksi: FC<Props> = ({
                 {formatRupiah(hargaJual)}
               </span>
 
-              {isUbahData && isPageBookingKasir && (
+              {isEditable && updateBooking && (
                 <ButtonUpdateTable
                   handleClick={() =>
-                    handleSetIsFromActive({
+                    updateBooking.handleSetIsFromActive({
                       detailId: id,
                       hargaJual: {
                         data: hargaJual,
@@ -221,18 +200,20 @@ const CardProdukTransaksi: FC<Props> = ({
             iconColor: "text-rose-400",
           }}
         >
-          {isActiveDiskon ? (
+          {isActiveDiskon && updateBooking ? (
             <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
-              handleResetForm={() => handleSetIsFromActive({ reset: true })}
-              handleSubmit={handleSubmit}
-              onSubmit={onSubmit}
-              isPending={isPendingUpdate}
+              handleResetForm={() =>
+                updateBooking.handleSetIsFromActive({ reset: true })
+              }
+              handleSubmit={updateBooking.handleSubmit}
+              onSubmit={updateBooking.onSubmit}
+              isPending={updateBooking.isPendingUpdate}
               showForSm
             >
               <div className="w-35">
                 <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
-                  controller={diskonController}
-                  placeholder={placeholderDiskon}
+                  controller={updateBooking.formDiskon.diskonController}
+                  placeholder={updateBooking.formDiskon.placeholder}
                   max={hargaJual}
                   required
                   xs
@@ -245,10 +226,10 @@ const CardProdukTransaksi: FC<Props> = ({
                 {formatRupiah(diskon)}
               </span>
 
-              {isUbahData && isPageBookingKasir && (
+              {isEditable && updateBooking && (
                 <ButtonUpdateTable
                   handleClick={() =>
-                    handleSetIsFromActive({
+                    updateBooking.handleSetIsFromActive({
                       detailId: id,
                       diskon: {
                         data: diskon,
@@ -270,18 +251,20 @@ const CardProdukTransaksi: FC<Props> = ({
             iconColor: "text-emerald-400",
           }}
         >
-          {isActiveQuantity ? (
+          {isActiveQuantity && updateBooking ? (
             <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
-              handleResetForm={() => handleSetIsFromActive({ reset: true })}
-              handleSubmit={handleSubmit}
-              onSubmit={onSubmit}
-              isPending={isPendingUpdate}
+              handleResetForm={() =>
+                updateBooking.handleSetIsFromActive({ reset: true })
+              }
+              handleSubmit={updateBooking.handleSubmit}
+              onSubmit={updateBooking.onSubmit}
+              isPending={updateBooking.isPendingUpdate}
               btnAksiPosition="top"
               showForSm
             >
               <div className="w-auto">
                 <InputQty<UpdateHargaAndDiskonAndQuantityForRequestType>
-                  controller={quantityController}
+                  controller={updateBooking.formQuantity.quantityController}
                   required
                   customHeight="h-10"
                   customWidth="w-25"
@@ -295,10 +278,10 @@ const CardProdukTransaksi: FC<Props> = ({
                 {formatNumber(quantity)} Pcs
               </span>
 
-              {isUbahData && isPageBookingKasir && (
+              {isEditable && updateBooking && (
                 <ButtonUpdateTable
                   handleClick={() =>
-                    handleSetIsFromActive({
+                    updateBooking.handleSetIsFromActive({
                       detailId: id,
                       quantity: {
                         data: quantity,

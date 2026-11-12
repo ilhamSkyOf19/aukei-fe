@@ -7,7 +7,7 @@ import type { ResponseStructure } from "../types/response.type";
 
 export class TransactionDetailServices {
   // payment
-  static async updateHargaOrDiskon(params: {
+  static async updateTransaksiDetail(params: {
     transactionDetailId: number;
     req: UpdateHargaAndDiskonAndQuantityForRequestType;
   }): Promise<ResponseStructure<ResponseTransactionDetailType | null>> {
@@ -24,6 +24,17 @@ export class TransactionDetailServices {
     const result = await instanceAxios.patch<
       ResponseStructure<ResponseTransactionDetailType | null>
     >(`/transaction-detail/old/${params.transactionId}`);
+
+    return result.data;
+  }
+
+  // delete
+  static async delete(params: {
+    transactionDetailId: number;
+  }): Promise<ResponseStructure<null>> {
+    const result = await instanceAxios.delete<ResponseStructure<null>>(
+      `/transaction-detail/${params.transactionDetailId}`,
+    );
 
     return result.data;
   }

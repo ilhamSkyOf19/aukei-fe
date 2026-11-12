@@ -8,9 +8,6 @@ import { cn } from "../../../../utils/cn";
 import { formatNumber, formatRupiah } from "../../../../helpers/helpers";
 import RingkasanKredit from "../RingkasanKredit";
 import useDaftarDetailProduk from "./useDaftarDetailProduk";
-import CardForm from "../../../../components/inputs/CardForm";
-import InputPrice from "../../../../components/inputs/InputPrice";
-import type { UpdateHargaAndDiskonAndQuantityForRequestType } from "../../../../models/transactionDetail.model";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import AlertLabelList from "../../../../components/messages/AlertLabelList";
 import {
@@ -32,7 +29,9 @@ import {
 import CardProdukTransaksi from "../../../../components/ui/cards/CardProdukTransaksi";
 import DataEmpty from "../../../../components/messages/DataEmpty";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
-import InputQty from "../../../../components/inputs/InputQty";
+import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
+import ModalFormulirTransaksi from "../../../../components/modals/ModalFormulirTransaksi";
+import ModalDelete from "../../../../components/modals/ModalDelete";
 
 type Props = {
   isLoadingTransaction: boolean;
@@ -81,6 +80,19 @@ const DaftarDetailProduk: FC<Props> = ({
     isPendingTransactionOld,
 
     isExpired3Days,
+
+    dataModalUpdateProduk,
+    handleCloseModalUpdateProduk,
+    handleShowModalUpdateProduk,
+    idModalUpdateProduk,
+    modalUpdateProdukRef,
+
+    handleCloseModalDelete,
+    modalDeleteRef,
+    handleShowModalDelete,
+    isPendingDeleteProduk,
+    handleDeleteProduk,
+    dataModalDelete,
   } = useDaftarDetailProduk({
     transactionId: dataTransaction?.data?.id,
     dataKebutuhanBarang,
@@ -88,8 +100,11 @@ const DaftarDetailProduk: FC<Props> = ({
     completedAt: dataTransaction?.data?.completedAt,
   });
 
+  const statusIsBooking =
+    dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING;
+
   return (
-    <div className="w-full flex-2 flex flex-col justify-start items-start gap-2.5">
+    <div className="w-full flex-5 flex flex-col justify-start items-start gap-2.5">
       {/* for SM */}
       <div
         className={cn(
@@ -151,7 +166,7 @@ const DaftarDetailProduk: FC<Props> = ({
       >
         {/* data */}
         <div className="w-full flex flex-col justify-start items-start">
-          <div className="overflow-x-auto w-full">
+          <div className="overflow-x-hidden w-full">
             <table className="table table-xs">
               {/* head */}
               <thead>
@@ -162,9 +177,12 @@ const DaftarDetailProduk: FC<Props> = ({
                   <th>Harga (Rp)</th>
                   <th>Diskon (Rp)</th>
                   <th>Qty. Pesan</th>
-                  <th>Qty. Retur</th>
-                  {dataTransaction?.data?.status ===
-                    TRANSACTION_STATUS_TYPE.BOOKING && (
+                  {!statusIsBooking && (
+                    <>
+                      <th>Qty. Retur</th>
+                    </>
+                  )}
+                  {statusIsBooking && (
                     <>
                       <th>Stok Tersedia</th>
                       <th>Status</th>
@@ -175,6 +193,13 @@ const DaftarDetailProduk: FC<Props> = ({
                       <span>Subtotal</span>
                     </div>
                   </th>
+                  {isPageBookingKasir && (
+                    <th>
+                      <div className="flex justify-center items-center">
+                        <span>Aksi</span>
+                      </div>
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -182,14 +207,7 @@ const DaftarDetailProduk: FC<Props> = ({
                 {isLoadingTransaction ? (
                   Array.from({ length: 4 }, (_, i) => i).map((item) => (
                     <tr key={item} className="h-18">
-                      <td
-                        colSpan={
-                          dataTransaction?.data?.status ===
-                          TRANSACTION_STATUS_TYPE.BOOKING
-                            ? 10
-                            : 8
-                        }
-                      >
+                      <td colSpan={10}>
                         <div className="w-full skeleton h-12" />
                       </td>
                     </tr>
@@ -220,150 +238,29 @@ const DaftarDetailProduk: FC<Props> = ({
                             </p>
                           </td>
                           <td>
-                            {isFromActive?.detailId === item.id &&
-                            isFromActive.hargaJual &&
-                            isPageBookingKasir &&
-                            isUbahData ? (
-                              <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
-                                handleResetForm={() =>
-                                  handleSetIsFromActive({ reset: true })
-                                }
-                                handleSubmit={handleSubmit}
-                                onSubmit={onSubmit}
-                                isPending={false}
-                                btnAksiPosition="top"
-                              >
-                                {/* input text */}
-                                <div className="w-40">
-                                  <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
-                                    controller={hargaJualController}
-                                    placeholder="harga jual produk"
-                                    required
-                                    xs
-                                  />
-                                </div>
-                              </CardForm>
-                            ) : (
-                              <div className="flex flex-row justify-start items-center gap-1.5">
-                                <span className="xl:text-[0.7rem] text-base-content">
-                                  {/* harga jual */}
-                                  {formatRupiah(item.hargaJual)}
-                                </span>
-
-                                {/* button pencil */}
-                                {isPageBookingKasir && isUbahData && (
-                                  <ButtonUpdateTable
-                                    handleClick={() =>
-                                      handleSetIsFromActive({
-                                        detailId: item.id,
-                                        hargaJual: {
-                                          data: item.hargaJual,
-                                        },
-                                      })
-                                    }
-                                  />
-                                )}
-                              </div>
-                            )}
-                          </td>
-
-                          <td>
-                            {isFromActive?.detailId === item.id &&
-                            isFromActive.diskon &&
-                            isPageBookingKasir &&
-                            isUbahData ? (
-                              <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
-                                handleResetForm={() =>
-                                  handleSetIsFromActive({ reset: true })
-                                }
-                                handleSubmit={handleSubmit}
-                                onSubmit={onSubmit}
-                                isPending={isPendingUpdate}
-                                btnAksiPosition="top"
-                              >
-                                {/* input text */}
-                                <div className="w-30">
-                                  <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
-                                    controller={diskonController}
-                                    placeholder="diskon"
-                                    required
-                                    xs
-                                  />
-                                </div>
-                              </CardForm>
-                            ) : (
-                              <div className="flex flex-row justify-start items-center gap-1.5">
-                                <span className="xl:text-[0.7rem] text-base-content">
-                                  {formatRupiah(item.diskon)}
-                                </span>
-
-                                {/* button pencil */}
-                                {isPageBookingKasir && isUbahData && (
-                                  <ButtonUpdateTable
-                                    handleClick={() =>
-                                      handleSetIsFromActive({
-                                        detailId: item.id,
-                                        diskon: {
-                                          data: item.diskon,
-                                        },
-                                      })
-                                    }
-                                  />
-                                )}
-                              </div>
-                            )}
-                          </td>
-                          <td>
-                            {isFromActive?.detailId === item.id &&
-                            isFromActive.quantity &&
-                            isPageBookingKasir &&
-                            isUbahData ? (
-                              <CardForm<UpdateHargaAndDiskonAndQuantityForRequestType>
-                                handleResetForm={() =>
-                                  handleSetIsFromActive({ reset: true })
-                                }
-                                handleSubmit={handleSubmit}
-                                onSubmit={onSubmit}
-                                isPending={false}
-                                btnAksiPosition="top"
-                              >
-                                {/* input text */}
-                                <div className="w-auto h-16">
-                                  <InputQty<UpdateHargaAndDiskonAndQuantityForRequestType>
-                                    controller={quantityController}
-                                    required
-                                    customHeight="h-8"
-                                    customWidth="w-20"
-                                    noButton
-                                  />
-                                </div>
-                              </CardForm>
-                            ) : (
-                              <div className="flex flex-row justify-start items-center gap-1.5">
-                                {/* qty */}
-                                {formatNumber(item.quantity)} Pcs
-                                {/* button pencil */}
-                                {isPageBookingKasir && isUbahData && (
-                                  <ButtonUpdateTable
-                                    handleClick={() =>
-                                      handleSetIsFromActive({
-                                        detailId: item.id,
-                                        quantity: {
-                                          data: item.quantity,
-                                        },
-                                      })
-                                    }
-                                  />
-                                )}
-                              </div>
-                            )}
-                          </td>
-                          <td>
                             <span className="xl:text-[0.7rem] text-base-content">
-                              {/* qty */}
-                              {formatNumber(item.totalRetur)} Pcs
+                              {/* harga jual */}
+                              {formatRupiah(item.hargaJual)}
                             </span>
                           </td>
+
+                          <td>
+                            <span className="xl:text-[0.7rem] text-base-content">
+                              {formatRupiah(item.diskon)}
+                            </span>
+                          </td>
+                          <td>
+                            {/* qty */}
+                            {formatNumber(item.quantity)} Pcs
+                          </td>
+                          {!statusIsBooking && (
+                            <td>
+                              <span className="xl:text-[0.7rem] text-base-content">
+                                {/* qty */}
+                                {formatNumber(item.totalRetur)} Pcs
+                              </span>
+                            </td>
+                          )}
                           {dataTransaction?.data?.status ===
                             TRANSACTION_STATUS_TYPE.BOOKING && (
                             <>
@@ -406,24 +303,60 @@ const DaftarDetailProduk: FC<Props> = ({
                               </span>
                             </div>
                           </td>
+
+                          {isPageBookingKasir && (
+                            <td>
+                              <div className="flex flex-row justify-center items-center gap-1">
+                                <ButtonUpdateTable
+                                  customDataTip="ubah"
+                                  handleClick={() =>
+                                    handleShowModalUpdateProduk(item.id, {
+                                      hargaJual: item.hargaJual,
+                                      hargaModalRataRata:
+                                        item.produk.hargaModalRataRata,
+                                      hargaPpn: item.produk.hargaPpn,
+                                      img: item.produk.img,
+                                      nama: item.produk.nama,
+                                      produkId: item.produk.id,
+                                      quantity: item.quantity,
+                                      stok:
+                                        kebutuhanBarang?.produk.stokTersedia ??
+                                        0,
+                                      detailId: item.id,
+                                      diskon: item.diskon,
+                                      hargaJualOld: item.hargaJualOld,
+                                      hargaJualTerakhirTransaksi:
+                                        item.hargaJualTerakhir ?? undefined,
+                                      transactionId: dataTransaction?.data?.id,
+                                    })
+                                  }
+                                />
+
+                                <ButtonDeleteTable
+                                  disabled={
+                                    dataTransaction?.data?.details.length === 1
+                                  }
+                                  customDataTip="hapus"
+                                  handleShowModalDelete={() =>
+                                    handleShowModalDelete(item.id, {
+                                      namaProduk: item.produk.nama,
+                                    })
+                                  }
+                                  isLoading={isPendingDeleteProduk}
+                                />
+                              </div>
+                            </td>
+                          )}
                         </tr>
                       );
                     })}
 
                     <tr>
-                      <td
-                        colSpan={
-                          dataTransaction?.data?.status ===
-                          TRANSACTION_STATUS_TYPE.BOOKING
-                            ? 10
-                            : 8
-                        }
-                      >
+                      <td colSpan={10}>
                         <div
                           className={cn(
                             "h-10 flex flex-row justify-between items-center",
-                            dataTransaction?.data?.status !==
-                              TRANSACTION_STATUS_TYPE.BOOKING &&
+                            !statusIsBooking &&
                               "border-b border-base-content/30",
                           )}
                         >
@@ -431,8 +364,7 @@ const DaftarDetailProduk: FC<Props> = ({
                             Total {dataTransaction?.data?.details.length} Item
                           </span>
 
-                          {dataTransaction?.data?.status ===
-                            TRANSACTION_STATUS_TYPE.BOOKING && (
+                          {statusIsBooking && (
                             <div className="flex flex-row justify-center items-center">
                               <div className="flex flex-row justify-start items-center gap-2.5">
                                 <span className="text-[0.7rem] font-medium text-base-content">
@@ -463,8 +395,7 @@ const DaftarDetailProduk: FC<Props> = ({
                         </div>
 
                         {/* total nilai retur */}
-                        {dataTransaction?.data?.status !==
-                          TRANSACTION_STATUS_TYPE.BOOKING && (
+                        {!statusIsBooking && (
                           <div className="h-10 flex flex-row justify-between items-center">
                             <span className="text-xs font-medium text-base-content/80">
                               Total Nilai Retur
@@ -489,14 +420,7 @@ const DaftarDetailProduk: FC<Props> = ({
                   </>
                 ) : (
                   <tr>
-                    <td
-                      colSpan={
-                        dataTransaction?.data?.status ===
-                        TRANSACTION_STATUS_TYPE.BOOKING
-                          ? 10
-                          : 8
-                      }
-                    >
+                    <td colSpan={10}>
                       <div className="w-full flex flex-row justify-center items-center pt-10">
                         <span className="text-sm text-base-content/70">
                           Produk tidak tersedia
@@ -512,7 +436,7 @@ const DaftarDetailProduk: FC<Props> = ({
       </div>
       {isPageBookingKasir &&
         dataTransaction?.data?.metodePembayaran !== PAYMENT_METHOD_TYPE.TEMPO &&
-        dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
+        statusIsBooking && (
           <div className="w-full flex flex-row justify-end items-end">
             {isUbahData ? (
               <ButtonWithIcon
@@ -530,6 +454,7 @@ const DaftarDetailProduk: FC<Props> = ({
                 bgColor="bg-info"
                 textColor="text-primary-white"
                 customWidth="flex-1"
+                classHidden="md:hidden"
                 label="Ubah Harga / Diskon / Quantity"
                 handleBtn={() => setIsUbahData(true)}
                 skeleton={isLoadingTransaction}
@@ -601,7 +526,7 @@ const DaftarDetailProduk: FC<Props> = ({
               />
             )}
 
-          {dataTransaction?.data?.status !== TRANSACTION_STATUS_TYPE.BOOKING &&
+          {!statusIsBooking &&
             dataTransaction?.data?.metodePembayaran !==
               PAYMENT_METHOD_TYPE.TEMPO && (
               <div className="w-full md:w-auto flex flex-row justify-start items-center gap-2.5">
@@ -639,7 +564,7 @@ const DaftarDetailProduk: FC<Props> = ({
           />
         )}
       {/* transaksi booking */}
-      {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING && (
+      {statusIsBooking && (
         <AlertLabelList
           isLoading={isLoadingTransaction}
           message={[
@@ -656,6 +581,29 @@ const DaftarDetailProduk: FC<Props> = ({
         isLoadingTransaction={isLoadingTransaction}
         handleSetToast={handleSetToast}
         handleSetAlert={handleSetAlert}
+      />
+
+      <ModalFormulirTransaksi
+        modalRef={modalUpdateProdukRef}
+        data={dataModalUpdateProduk}
+        index={idModalUpdateProduk}
+        handleCloseModal={handleCloseModalUpdateProduk}
+        handleSetAlert={handleSetAlert}
+        existProduks={dataTransaction?.data?.details.map((item) => ({
+          produkId: item.produk.id,
+        }))}
+        pelangganId={dataTransaction?.data?.pelanggan?.id}
+        isBooking
+      />
+
+      {/* modal delete */}
+      <ModalDelete
+        modalRef={modalDeleteRef}
+        handleCloseModal={handleCloseModalDelete}
+        handleDelete={handleDeleteProduk}
+        isLoadingDelete={isPendingDeleteProduk}
+        bigTitle="Apakah anda yakin ingin menghapus produk ini dari transaksi booking?"
+        highlightData={dataModalDelete?.namaProduk}
       />
     </div>
   );

@@ -45,8 +45,6 @@ const Booking = () => {
     handleRefresh,
   } = useBooking();
 
-  // sesuiakan lagi dengan ui yang sudah diperbarui
-
   return (
     <div className="w-full">
       <div className="w-full flex flex-col justify-start items-start gap-2.5 px-2.5 pt-2.5">

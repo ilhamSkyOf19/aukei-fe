@@ -84,7 +84,7 @@ const ShowProduk: FC<Props> = ({
         <div
           ref={produkContainerRef}
           className={cn(
-            "grid w-full grid-cols-3 lg:grid-cols-5 gap-2.5 h-full overflow-y-auto scrollbar-thumb-custom-secondary pb-2.5 scrollbar-thin",
+            "grid w-full grid-cols-3 lg:grid-cols-5 gap-2.5 h-full overflow-y-auto scrollbar-thumb-custom-secondary pb-2.5 scrollbar-thin pr-1",
           )}
         >
           {/* loading pertama */}
@@ -119,14 +119,14 @@ const ShowProduk: FC<Props> = ({
                 >
                   <div
                     className={cn(
-                      "w-full h-full flex flex-col justify-start items-start rounded-xl shadow-sm overflow-hidden gap-2 bg-base-100 p-1.5 border border-transparent transition-colors",
+                      "w-full h-full flex flex-col justify-start items-start rounded-lg shadow-xs overflow-hidden gap-2 bg-base-100 p-1.5 border border-transparent transition-colors",
                       dataChooseProduk?.some((produk) => produk.id === item.id)
                         ? "border-custom-secondary"
                         : "hover:border-custom-secondary",
                     )}
                   >
                     {/* image */}
-                    <div className="w-full h-100 rounded-xl flex flex-row justify-center items-center overflow-hidden relative">
+                    <div className="w-full h-90 rounded-xl flex flex-row justify-center items-center overflow-hidden relative">
                       <img
                         src={item.img}
                         alt="foto produk"
@@ -172,7 +172,7 @@ const ShowProduk: FC<Props> = ({
                         {/* stok / quantity */}
                         <div
                           className={cn(
-                            "h-5 flex flex-row justify-center items-center rounded-full transition-all ease-in-out duration-300",
+                            "h-5 flex flex-row justify-center items-center rounded-full",
                             dataChooseProduk?.some(
                               (produk) => produk.id === item.id,
                             )

@@ -11,32 +11,104 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TransactionServices } from "../../../services/transaction.service";
 import axios from "axios";
 import type { ErrorResponse } from "../../../types/response.type";
+import { TransactionDetailServices } from "../../../services/transactionDetail.service";
+import type { UpdateHargaAndDiskonAndQuantityForRequestType } from "../../../models/transactionDetail.model";
+import useInfinityGetProduk from "../../../hooks/useInfinityGetProduk";
+import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
+import { useFilterSearch } from "../../../hooks/useFilterSearch";
+import { useFilter } from "../../../hooks/useFilter";
 
 type DiskonType = "PERCENT" | "RP";
 
+type ModalProdukData = Pick<
+  DetailsForCreate,
+  "produkId" | "hargaJual" | "quantity"
+> &
+  Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
+    diskon?: number;
+    detailId?: number;
+    hargaModalRataRata: number;
+    hargaJualOld?: number;
+    transactionId?: number;
+  };
+
+type UpdateBookingRequest = UpdateHargaAndDiskonAndQuantityForRequestType & {
+  produkId: number;
+};
+
 const useModalTransaksi = (params: {
   handleCloseModal: () => void;
-  data?: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
-    Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
-      diskon?: number;
-      detailId?: number;
-    } & {
-      transactionId?: number;
-    };
-  handleSetAlert: (data: string) => void;
+  data?: ModalProdukData;
+  handleSetAlert?: (data: string) => void;
+  isBooking?: boolean;
+  pelangganId?: number;
+  existProduks?: { produkId: number }[];
 }) => {
-  const { handleCloseModal, data, handleSetAlert } = params;
+  const {
+    handleCloseModal,
+    data,
+    handleSetAlert,
+    isBooking,
+    pelangganId,
+    existProduks,
+  } = params;
 
-  // state sub total
+  const [isShowChooseProduk, setIsShowChooseProduk] = useState<boolean>(false);
+
+  // STATE SUB TOTAL
   const [subTotal, setSubTotal] = useState<number>(0);
 
-  // state total diskon
+  // STATE TOTAL DISKON
   const [totalDiskon, setTotalDiskon] = useState<number>(0);
 
-  // state total diskon persen
+  // STATE TOTAL DISKON PERSEN
   const [totalDiskonPersen, setTotalDiskonPersen] = useState<number>(0);
 
-  // use form
+  // search filter
+  const { search, setSearch } = useFilterSearch("search", "page");
+
+  // kategori filter
+  const { filter: kategori, setFilter: handleKategori } = useFilter({
+    paramName: "kategori",
+    isNumber: true,
+    resetPage: true,
+  });
+
+  const [existingProdukIds, setExistingProdukIds] = useState<number[]>(
+    () => existProduks?.map((item) => item.produkId) ?? [],
+  );
+
+  useEffect(() => {
+    setExistingProdukIds(existProduks?.map((item) => item.produkId) ?? []);
+  }, [existProduks]);
+
+  // STATE DATA PRODUK BOOKING
+  const [bookingProduk, setBookingProduk] = useState<
+    ModalProdukData | undefined
+  >(data);
+
+  // QUERY PRODUK
+  const {
+    dataProduk,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoadingProduk,
+  } = useInfinityGetProduk({
+    pelangganId,
+    disabled: !isBooking || !isShowChooseProduk,
+    kategori,
+    search,
+  });
+
+  const { containerRef: produkContainerRef, loadMoreRef } = useInfiniteScroll({
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    rootMargin: "200px",
+  });
+
+  // USE FORM
   const { control, handleSubmit, reset, setValue } = useForm<DetailsForCreate>({
     resolver: zodResolver(TransactionValidation.DETAILS),
   });
@@ -47,21 +119,21 @@ const useModalTransaksi = (params: {
     return value === "PERCENT" || value === "RP" ? value : "RP";
   });
 
-  // set default value
+  // SET DEFAULT VALUE
   useEffect(() => {
     if (!data) return;
+
+    // Sinkronisasi data parameter ke state booking
+    setBookingProduk(data);
 
     const harga = Number(data.hargaJual ?? 0);
     const qty = Number(data.quantity ?? 0);
     const totalDiskonData = Number(data.diskon ?? 0);
 
-    // Diskon per unit, karena diskon yang disimpan adalah total diskon
     const diskonPerUnit = qty > 0 ? totalDiskonData / qty : 0;
 
-    // Hitung persentase diskon
     const diskonPersen = harga > 0 ? (diskonPerUnit / harga) * 100 : 0;
 
-    // Reset nilai form
     reset({
       produkId: data.produkId,
       hargaJual: harga,
@@ -70,15 +142,14 @@ const useModalTransaksi = (params: {
       diskonPersen,
     });
 
-    // Hitung ulang total transaksi
     const totalHarga = harga * qty;
     const subtotal = totalHarga - totalDiskonData;
+
     const totalDiskonPersen =
       totalHarga > 0
         ? Number(((totalDiskonData / totalHarga) * 100).toFixed(2))
         : 0;
 
-    // Pertahankan dan perbarui state
     setSubTotal(subtotal);
     setTotalDiskon(totalDiskonData);
     setTotalDiskonPersen(totalDiskonPersen);
@@ -104,6 +175,7 @@ const useModalTransaksi = (params: {
     name: "diskonPersen",
   });
 
+  // HITUNG TOTAL TRANSAKSI
   useEffect(() => {
     const timeout = setTimeout(() => {
       const harga = Number(hargaJual ?? 0);
@@ -127,30 +199,31 @@ const useModalTransaksi = (params: {
     return () => clearTimeout(timeout);
   }, [hargaJual, quantity, diskon]);
 
-  // harga controller
+  // CONTROLLER HARGA
   const hargaJualController = useController({
     control,
     name: "hargaJual",
   });
 
-  // diskon controller
+  // CONTROLLER DISKON
   const diskonController = useController({
     control,
     name: "diskon",
   });
 
-  // quantity controller
+  // CONTROLLER QUANTITY
   const quantityController = useController({
     control,
     name: "quantity",
   });
 
-  // diskon persen controller
+  // CONTROLLER DISKON PERSEN
   const diskonPersenController = useController({
     control,
     name: "diskonPersen",
   });
 
+  // SINKRONISASI DISKON
   useEffect(() => {
     const harga = Number(hargaJual ?? 0);
 
@@ -171,25 +244,66 @@ const useModalTransaksi = (params: {
     }
   }, [diskonType, diskon, diskonPersen, hargaJual, setValue]);
 
-  // query client
+  // HANDLE GANTI PRODUK BOOKING
+  const handleGantiProduk = (produk: ResponseProdukForKasirType) => {
+    setBookingProduk((prev) => {
+      if (!prev) return prev;
+
+      setExistingProdukIds((current) => [
+        ...current.filter((id) => id !== prev.produkId),
+        produk.id,
+      ]);
+
+      return {
+        ...prev,
+        ...produk,
+
+        produkId: produk.id,
+
+        // Harga master produk baru
+        hargaJualOld: Number(produk.hargaJual),
+
+        // Harga transaksi di-reset ke harga master
+        hargaJual: Number(produk.hargaJual),
+      };
+    });
+
+    const hargaBaru = Number(produk.hargaJual);
+    const qty = Number(quantity ?? bookingProduk?.quantity ?? 1);
+
+    reset({
+      produkId: produk.id,
+      hargaJual: hargaBaru,
+      quantity: qty,
+      diskon: 0,
+      diskonPersen: 0,
+    });
+
+    setTotalDiskon(0);
+    setTotalDiskonPersen(0);
+    setSubTotal(hargaBaru * qty);
+  };
+
+  // QUERY CLIENT
   const queryClient = useQueryClient();
 
-  // mutate pilih produk
+  // MUTATION PILIH PRODUK BIASA
   const { mutateAsync: handleTambahProduk, isPending: isPendingTambahProduk } =
     useMutation({
       mutationFn: (req: TambahProdukDetailForReqeustType) => {
         if (data?.detailId) {
           return TransactionServices.updateProduk({
-            detailId: data?.detailId ?? 0,
+            detailId: data.detailId,
             data: {
               diskon: req.detail.diskon,
               hargaJual: req.detail.hargaJual,
               qty: req.detail.quantity,
+              produkId: req.detail.produkId,
             },
           });
         } else if (data?.transactionId) {
           return TransactionServices.tambahProdukByTransactionId({
-            transactionId: data?.transactionId,
+            transactionId: data.transactionId,
             data: req,
           });
         } else {
@@ -197,34 +311,73 @@ const useModalTransaksi = (params: {
         }
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["transaksi-draft"] });
+        queryClient.invalidateQueries({
+          queryKey: ["transaksi-draft"],
+        });
       },
       onError: (err) => {
         if (axios.isAxiosError<ErrorResponse>(err)) {
           if (
             err.response?.data.meta.message.includes("stok tidak mencukupi")
           ) {
-            handleSetAlert("stock_not_enough");
+            handleSetAlert?.("stock_not_enough");
           }
         }
       },
     });
 
-  //   on submit
+  // MUTATION UPDATE BOOKING
+  const {
+    mutateAsync: mutateUpdateBooking,
+    isPending: isPendingUpdateBooking,
+  } = useMutation({
+    mutationFn: (params: { detailId: number; req: UpdateBookingRequest }) => {
+      return TransactionDetailServices.updateTransaksiDetail({
+        transactionDetailId: params.detailId,
+        req: params.req,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transaction", data?.transactionId],
+      });
+
+      handleCloseModal();
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  // ON SUBMIT
   const onSubmit = async (req: DetailsForCreate) => {
-    if (req) {
-      await handleTambahProduk({
-        detail: {
-          produkId: req.produkId,
-          diskon: (req?.diskon ?? 0) * req.quantity,
+    if (!req) return;
+
+    if (isBooking && bookingProduk?.detailId) {
+      return await mutateUpdateBooking({
+        detailId: bookingProduk.detailId,
+        req: {
+          produkId: bookingProduk.produkId,
+          diskon: (req.diskon ?? 0) * req.quantity,
           hargaJual: req.hargaJual,
           quantity: req.quantity,
         },
       });
     }
+
+    await handleTambahProduk({
+      detail: {
+        produkId: req.produkId,
+        diskon: (req.diskon ?? 0) * req.quantity,
+        hargaJual: req.hargaJual,
+        quantity: req.quantity,
+      },
+    });
+
     handleCloseModal();
   };
 
+  // HANDLE GANTI TIPE DISKON
   const handleDiskonType = (value: DiskonType) => {
     const harga = Number(hargaJual ?? 0);
 
@@ -246,6 +399,8 @@ const useModalTransaksi = (params: {
     setDiskonType(value);
   };
 
+  const isExistDataProduk = dataProduk.length > 0;
+
   return {
     hargaJualController,
     diskonController,
@@ -260,6 +415,27 @@ const useModalTransaksi = (params: {
     diskonPersenController,
     diskonType,
     totalDiskonPersen,
+    isPendingUpdateBooking,
+
+    // DATA PRODUK BOOKING
+    bookingProduk,
+    handleGantiProduk,
+
+    // DATA INFINITE PRODUK
+    dataProduk,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoadingProduk,
+    produkContainerRef,
+    loadMoreRef,
+    isExistDataProduk,
+    existingProdukIds,
+    setSearch,
+    handleKategori,
+    kategori,
+    setIsShowChooseProduk,
+    isShowChooseProduk,
   };
 };
 

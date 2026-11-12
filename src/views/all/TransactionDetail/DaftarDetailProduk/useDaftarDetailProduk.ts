@@ -5,13 +5,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TransactionDetailValidations } from "../../../../validations/transactionDetail.validation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TransactionDetailServices } from "../../../../services/transactionDetail.service";
-import type { ResponseStatistikKebutuhanBarang } from "../../../../models/transaction.model";
+import type {
+  DetailsForCreate,
+  ResponseStatistikKebutuhanBarang,
+} from "../../../../models/transaction.model";
 import type { ResponseStructure } from "../../../../types/response.type";
 import { useNavigate } from "react-router-dom";
 import { useTransactionComplate } from "../../../../stores/useTransactionComplate";
 import useCreateTransactionOld from "../../../../hooks/useCreateTransactionOld";
 import { useStepStore } from "../../../../stores/stepStore";
 import { isMoreThanDays } from "../../../../helpers/helpers";
+import useModal from "../../../../hooks/useModal";
+import type { ResponseProdukForKasirType } from "../../../../models/produk.model";
 
 const useDaftarDetailProduk = (params: {
   transactionId?: number | null;
@@ -32,6 +37,33 @@ const useDaftarDetailProduk = (params: {
 
   // navigate
   const navigate = useNavigate();
+
+  const {
+    modalRef: modalUpdateProdukRef,
+    handleShowModal: handleShowModalUpdateProduk,
+    handleCloseModal: handleCloseModalUpdateProduk,
+    dataModal: dataModalUpdateProduk,
+    idModal: idModalUpdateProduk,
+  } = useModal<
+    Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
+      Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
+        diskon?: number;
+        detailId?: number;
+        hargaModalRataRata: number;
+        hargaJualOld?: number;
+      } & {
+        transactionId?: number;
+      }
+  >();
+
+  // modal delete
+  const {
+    modalRef: modalDeleteRef,
+    handleShowModal: handleShowModalDelete,
+    handleCloseModal: handleCloseModalDelete,
+    idModal: idModalDelete,
+    dataModal: dataModalDelete,
+  } = useModal<{ namaProduk: string }>();
 
   // store update transaksi
   const setUpdateTransaksi = useTransactionComplate((state) => state.setUpdate);
@@ -79,7 +111,7 @@ const useDaftarDetailProduk = (params: {
           transactionDetailId: number;
         },
       ) =>
-        TransactionDetailServices.updateHargaOrDiskon({
+        TransactionDetailServices.updateTransaksiDetail({
           transactionDetailId: data.transactionDetailId,
           req: {
             diskon: data.diskon,
@@ -194,6 +226,33 @@ const useDaftarDetailProduk = (params: {
   // is expired
   const isExpired3Days = completedAt ? isMoreThanDays(completedAt, 3) : false;
 
+  // mutation delete
+  const { mutateAsync: mutateDeleteProduk, isPending: isPendingDeleteProduk } =
+    useMutation({
+      mutationFn: (transactionDetailId: number) =>
+        TransactionDetailServices.delete({ transactionDetailId }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["transaction", transactionId],
+        });
+
+        handleCloseModalDelete();
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    });
+
+  const handleDeleteProduk = async () => {
+    try {
+      if (idModalDelete) {
+        await mutateDeleteProduk(idModalDelete);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     isFromActive,
     handleSetIsFromActive,
@@ -217,6 +276,20 @@ const useDaftarDetailProduk = (params: {
     isExpired3Days,
 
     quantityController,
+
+    modalUpdateProdukRef,
+    handleShowModalUpdateProduk,
+    handleCloseModalUpdateProduk,
+    dataModalUpdateProduk,
+    idModalUpdateProduk,
+
+    modalDeleteRef,
+    handleShowModalDelete,
+    handleCloseModalDelete,
+    isPendingDeleteProduk,
+    handleDeleteProduk,
+
+    dataModalDelete,
   };
 };
 

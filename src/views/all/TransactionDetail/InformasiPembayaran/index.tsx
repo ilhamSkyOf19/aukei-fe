@@ -125,7 +125,7 @@ const InformasiPembayaran: FC<Props> = ({
   });
 
   return (
-    <div className="w-full md:w-1/2 flex-1 flex flex-col justify-start items-start gap-2.5">
+    <div className="w-full md:w-1/2 flex-2 flex flex-col justify-start items-start gap-2.5">
       {/* toast */}
       {toast && (
         <Toast

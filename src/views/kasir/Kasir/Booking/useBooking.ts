@@ -307,7 +307,7 @@ const useBooking = (params: {
           produkId: item.produk.id,
           quantity: item.quantity,
         })),
-        diBayar: dataDiBayar ?? 0,
+        diBayar: Math.trunc(dataDiBayar ?? 0),
         kembalian:
           metodePembayaran === PAYMENT_METHOD_TYPE.CASH
             ? Math.max(0, (dataDiBayar ?? 0) - nilaiDp)

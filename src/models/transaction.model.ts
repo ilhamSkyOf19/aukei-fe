@@ -95,8 +95,15 @@ export interface ResponseFieldTempo extends Pick<
 // response
 export interface ResponseTransactionType extends Omit<
   ITransactionType,
-  "tempo" | "pelangganId" | "kasirId"
+  "tempo" | "pelangganId" | "kasirId" | "details"
 > {
+  details: Array<
+    Omit<ITransactionDetailType, "createdAt" | "updatedAt"> & {
+      hargaJualOld: number;
+      kategori: string;
+      hargaJualTerakhir?: number | null;
+    }
+  >;
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa" | "isActive">;
   kasir: Pick<
     IPenggunaInternalType,
@@ -286,6 +293,7 @@ export interface UpdateProdukDetail {
   hargaJual?: number;
   diskon?: number;
   qty?: number;
+  produkId?: number;
 }
 
 export interface ResponseTransaksiDraftType extends Pick<
