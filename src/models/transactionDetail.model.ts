@@ -27,4 +27,5 @@ export interface UpdateHargaAndDiskonAndQuantityForRequestType {
   hargaJual?: number;
   diskon?: number;
   quantity?: number;
+  produkId?: number;
 }

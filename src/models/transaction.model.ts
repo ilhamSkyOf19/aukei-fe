@@ -281,6 +281,7 @@ export interface ResponsePilihPelangganType extends Pick<
 // tambah produk detail
 export interface TambahProdukDetailForReqeustType {
   detail: DetailsForCreate;
+  fromUpdateBooking?: boolean;
 }
 
 // response tambah produk detail
@@ -293,7 +294,6 @@ export interface UpdateProdukDetail {
   hargaJual?: number;
   diskon?: number;
   qty?: number;
-  produkId?: number;
 }
 
 export interface ResponseTransaksiDraftType extends Pick<
@@ -311,4 +311,16 @@ export interface ResponseTransaksiDraftType extends Pick<
   pelanggan: Pick<IPelangganType, "id" | "nama" | "noWa"> | null;
   kasir: Pick<IPenggunaInternalType, "id" | "nama" | "username">;
   tempo?: ResponseTempoWithInstallment | null;
+}
+
+export interface RequestUpdateUangMukaBookingType {
+  transactionId: number;
+  uangMuka: number;
+  metodePembayaran?: PaymentMethodType;
+}
+
+export interface ResponseUpdateUangMukaBookingType {
+  id: number;
+  uangMuka: number;
+  kembalian: number;
 }

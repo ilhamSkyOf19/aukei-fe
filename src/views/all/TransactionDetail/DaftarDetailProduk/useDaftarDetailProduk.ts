@@ -44,17 +44,17 @@ const useDaftarDetailProduk = (params: {
     handleCloseModal: handleCloseModalUpdateProduk,
     dataModal: dataModalUpdateProduk,
     idModal: idModalUpdateProduk,
-  } = useModal<
-    Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
+  } = useModal<{
+    transactionId?: number;
+    data?: Pick<DetailsForCreate, "produkId" | "hargaJual" | "quantity"> &
       Omit<ResponseProdukForKasirType, "id" | "kategori"> & {
         diskon?: number;
         detailId?: number;
         hargaModalRataRata: number;
         hargaJualOld?: number;
-      } & {
         transactionId?: number;
-      }
-  >();
+      };
+  }>();
 
   // modal delete
   const {
@@ -64,6 +64,14 @@ const useDaftarDetailProduk = (params: {
     idModal: idModalDelete,
     dataModal: dataModalDelete,
   } = useModal<{ namaProduk: string }>();
+
+  // modal pilihan produk
+  const {
+    modalRef: modalPilihanProdukRef,
+    handleShowModal: handleShowModalPilihanProduk,
+    handleCloseModal: handleCloseModalPilihanProduk,
+    dataModal: dataModalPilihanProduk,
+  } = useModal<{ detailId?: number; transactionId?: number }>();
 
   // store update transaksi
   const setUpdateTransaksi = useTransactionComplate((state) => state.setUpdate);
@@ -236,6 +244,10 @@ const useDaftarDetailProduk = (params: {
           queryKey: ["transaction", transactionId],
         });
 
+        queryClient.invalidateQueries({
+          queryKey: ["kebutuhan-barang", transactionId],
+        });
+
         handleCloseModalDelete();
       },
       onError: (err) => {
@@ -290,6 +302,11 @@ const useDaftarDetailProduk = (params: {
     handleDeleteProduk,
 
     dataModalDelete,
+
+    modalPilihanProdukRef,
+    handleShowModalPilihanProduk,
+    handleCloseModalPilihanProduk,
+    dataModalPilihanProduk,
   };
 };
 

@@ -17,6 +17,7 @@ import {
   CreditCard,
   Eye,
   FileDown,
+  HandCoins,
   Landmark,
   PencilLine,
   Printer,
@@ -38,6 +39,7 @@ import ModalTempoPayment from "../../../../components/modals/ModalTempoPayment";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import FormOngkir from "../../../kasir/Kasir/Pembayaran/FormOngkir";
 import ModalChooseViewDiskon from "../../../../components/modals/ModalChooseViewDiskon";
+import ModalUpdateUangMuka from "../../../../components/modals/ModalUpdateUangMuka";
 
 type Props = {
   dataTransaction?: ResponseStructure<ResponseTransactionType | null>;
@@ -118,6 +120,10 @@ const InformasiPembayaran: FC<Props> = ({
     handleSetToast,
 
     handleSetAlert,
+
+    handleCloseModalUpdateUangMukaBooking,
+    handleShowModalUpdateUangMukaBooking,
+    modalUpdateUangMukaBookingRef,
   } = useInformasiPembayaran({
     dataTransaction,
     transactionSummary,
@@ -324,17 +330,29 @@ const InformasiPembayaran: FC<Props> = ({
         {/* uang ongkir */}
         {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.BOOKING &&
           isPageBookingKasir && (
-            <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
-              <span className="text-sm font-medium text-base-content">
-                Ongkir (Opsional)
-              </span>
-
-              <div className="w-full flex flex-col justify-start items-start gap-1 h-14">
-                {/* form uang dp */}
-                <FormOngkir
-                  transactionId={dataTransaction?.data?.id ?? 0}
-                  queryKey={"transaction"}
+            <div className="w-full flex flex-col justify-start items-start gap-2.5">
+              <div className="w-full mt-2.5">
+                <ButtonWithIcon
+                  icon={HandCoins}
+                  label="Ubah Uang Muka"
+                  customWidth="w-full"
+                  bgColor="bg-info"
+                  textColor="text-primary-white"
+                  handleBtn={() => handleShowModalUpdateUangMukaBooking()}
                 />
+              </div>
+              <div className="w-full flex flex-col justify-start items-start gap-2.5 mt-2.5">
+                <span className="text-sm font-medium text-base-content">
+                  Ongkir (Opsional)
+                </span>
+
+                <div className="w-full flex flex-col justify-start items-start gap-1 h-14">
+                  {/* form uang dp */}
+                  <FormOngkir
+                    transactionId={dataTransaction?.data?.id ?? 0}
+                    queryKey={"transaction"}
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -902,6 +920,17 @@ const InformasiPembayaran: FC<Props> = ({
           id: dataModalPrintInvoiceOrDownload?.id ?? 0,
           namaPelanggan: dataModalPrintInvoiceOrDownload?.namaPelanggan ?? "",
           tanggal: dataModalPrintInvoiceOrDownload?.tanggal ?? new Date(),
+        }}
+      />
+
+      <ModalUpdateUangMuka
+        modalRef={modalUpdateUangMukaBookingRef}
+        handleCloseModal={handleCloseModalUpdateUangMukaBooking}
+        transactionId={dataTransaction?.data?.id}
+        data={{
+          uangMuka: dataTransaction?.data?.totalDiBayar ?? 0,
+          metodePembayaran:
+            dataTransaction?.data?.metodePembayaran ?? PAYMENT_METHOD_TYPE.CASH,
         }}
       />
     </div>

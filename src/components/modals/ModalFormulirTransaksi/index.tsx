@@ -7,9 +7,9 @@ import type { DetailsForCreate } from "../../../models/transaction.model";
 import type { ResponseProdukForKasirType } from "../../../models/produk.model";
 import InputQty from "../../inputs/InputQty";
 import InputPrice from "../../inputs/InputPrice";
-import { formatNumber, formatRupiah } from "../../../helpers/helpers";
+import { formatRupiah } from "../../../helpers/helpers";
 import AlertLabel from "../../messages/AlertLabel";
-import { Repeat, ShoppingBasket, X } from "lucide-react";
+import { PackagePlus, Repeat, ShoppingBasket, X } from "lucide-react";
 import ButtonText from "../../ui/button/ButtonText";
 import Alert from "../../messages/Alert";
 import {
@@ -20,6 +20,7 @@ import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
 import InputDiskonPersen from "../../inputs/InputDiskonPersen";
 import InputSearch from "../../inputs/InputSearch";
 import FilterKategori from "../../filters/Kategori";
+import CardSimpleProduk from "../../inputs/CardSimpleProduk";
 
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
@@ -41,6 +42,7 @@ type Props = {
   existProduks?: { produkId: number }[];
   isBooking?: boolean;
   pelangganId?: number;
+  transactionIdForAddProdukForUpdateTransaksi?: number;
 };
 
 const ModalFormulirTransaksi: FC<Props> = ({
@@ -53,6 +55,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
   isBooking,
   existProduks,
   pelangganId,
+  transactionIdForAddProdukForUpdateTransaksi,
 }) => {
   // call use
   const {
@@ -92,6 +95,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
     isBooking,
     pelangganId,
     existProduks,
+    transactionIdForAddProdukForUpdateTransaksi,
   });
 
   return (
@@ -144,7 +148,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
               <div className="w-full flex flex-col md:flex-row justify-start items-start gap-4">
                 <div className="flex-3 w-full flex flex-col justify-start items-start gap-4 mt-4">
                   {/* img */}
-                  {bookingProduk?.img && (
+                  {bookingProduk?.img ? (
                     <div className="w-full flex justify-center items-center">
                       <img
                         src={bookingProduk.img}
@@ -152,6 +156,12 @@ const ModalFormulirTransaksi: FC<Props> = ({
                         className="w-full h-40 md:h-60 object-contain"
                         loading="lazy"
                       />
+                    </div>
+                  ) : (
+                    <div className="w-full h-30 flex justify-center items-center">
+                      <span className="text-xs font-medium">
+                        Silahkan pilih produk
+                      </span>
                     </div>
                   )}
 
@@ -162,13 +172,13 @@ const ModalFormulirTransaksi: FC<Props> = ({
                       <div className="w-full md:w-[200%] flex flex-row justify-start items-stretch gap-2.5">
                         <Label
                           label={`Nama Produk`}
-                          value={bookingProduk?.nama || ""}
+                          value={bookingProduk?.nama || "-"}
                           small
                         />
                       </div>
                       <Label
                         label={`Stok Produk`}
-                        value={bookingProduk?.stok.toString() || ""}
+                        value={bookingProduk?.stok.toString() || "-"}
                         small
                       />
                     </div>
@@ -314,6 +324,7 @@ const ModalFormulirTransaksi: FC<Props> = ({
                       isLoading={
                         isPendingTambahProduk || isPendingUpdateBooking
                       }
+                      disable={bookingProduk === undefined}
                     />
                   </div>
                 </form>
@@ -362,60 +373,26 @@ const ModalFormulirTransaksi: FC<Props> = ({
                               existingProdukIds.some((id) => id === item.id);
 
                             return (
-                              <div
+                              <CardSimpleProduk
                                 key={item.id}
-                                className=" shrink-0 flex rounded-xl flex-row justify-between items-center gap-2.5 p-2.5 bg-primary-white shadow-sm w-full"
-                              >
-                                <div className="flex flex-row justify-start items-start gap-2">
-                                  <div className="w-12 h-12 rounded-xl overflow-hidden">
-                                    <img
-                                      src={item.img}
-                                      alt="foto produk"
-                                      loading="lazy"
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-
-                                  <div className="flex flex-col justify-start items-start">
-                                    <span className="text-xs font-medium text-base-content ">
-                                      {item.nama}
-                                    </span>
-                                    <span className="text-[0.625rem] text-base-content ">
-                                      {item.kategori.nama}
-                                    </span>
-
-                                    <div className="flex flex-row justify-start items-center gap-8 mt-2">
-                                      <span className="text-[0.625rem] font-medium text-base-content ">
-                                        {formatRupiah(item.hargaJual)}
-                                      </span>
-                                      <span className="text-[0.625rem] font-medium text-base-content ">
-                                        Stok : {formatNumber(item.stok)}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <ButtonText
-                                  disable={terpilih}
-                                  label={terpilih ? "Terpilih" : "Pilih"}
-                                  handleClick={() =>
-                                    handleGantiProduk({
-                                      id: item.id,
-                                      kategori: item.kategori,
-                                      hargaJual: item.hargaJual,
-                                      hargaModalRataRata:
-                                        item.hargaModalRataRata,
-                                      hargaPpn: item.hargaPpn,
-                                      img: item.img,
-                                      nama: item.nama,
-                                      stok: item.stok,
-                                      hargaJualTerakhirTransaksi:
-                                        item.hargaJualTerakhirTransaksi ??
-                                        undefined,
-                                    })
-                                  }
-                                />
-                              </div>
+                                item={item}
+                                terpilih={terpilih}
+                                handleGantiProduk={() =>
+                                  handleGantiProduk({
+                                    id: item.id,
+                                    kategori: item.kategori,
+                                    hargaJual: item.hargaJual,
+                                    hargaModalRataRata: item.hargaModalRataRata,
+                                    hargaPpn: item.hargaPpn,
+                                    img: item.img,
+                                    nama: item.nama,
+                                    stok: item.stok,
+                                    hargaJualTerakhirTransaksi:
+                                      item.hargaJualTerakhirTransaksi ??
+                                      undefined,
+                                  })
+                                }
+                              />
                             );
                           })}
                           {/* trigger infinite scroll */}
@@ -440,8 +417,16 @@ const ModalFormulirTransaksi: FC<Props> = ({
                 ) : (
                   <div className="w-full h-full flex flex-col justify-center items-center">
                     <ButtonWithIcon
-                      icon={Repeat}
-                      label="Ganti Produk"
+                      icon={
+                        transactionIdForAddProdukForUpdateTransaksi
+                          ? PackagePlus
+                          : Repeat
+                      }
+                      label={
+                        transactionIdForAddProdukForUpdateTransaksi
+                          ? "Pilih Produk"
+                          : "Ganti Produk"
+                      }
                       handleBtn={() => setIsShowChooseProduk(true)}
                     />
                   </div>

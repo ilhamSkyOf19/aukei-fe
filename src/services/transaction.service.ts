@@ -2,6 +2,7 @@ import instanceAxios from "../libs/axios";
 import type { PaginationType } from "../models/pagination.model";
 import type {
   CreateTransactionForRequestType,
+  RequestUpdateUangMukaBookingType,
   ResponseForReturBarang,
   ResponsePilihPelangganType,
   ResponseProdukDetailType,
@@ -13,6 +14,7 @@ import type {
   ResponseTransaksiBookingByPelangganType,
   ResponseTransaksiBookingWithPelangganWithMetaType,
   ResponseTransaksiDraftType,
+  ResponseUpdateUangMukaBookingType,
   TambahProdukDetailForReqeustType,
   UpdateProdukDetail,
 } from "../models/transaction.model";
@@ -376,6 +378,24 @@ export class TransactionServices {
     const result = await instanceAxios.patch<
       ResponseStructure<{ success: boolean } | null>
     >(`/transaction/${params.transactionId}/cancel-update-pembayaran`);
+
+    return result.data;
+  }
+
+  // update uang muka booking
+  static async updateUangMukaBooking(params: {
+    transactionId: number;
+    req: Pick<
+      RequestUpdateUangMukaBookingType,
+      "uangMuka" | "metodePembayaran"
+    >;
+  }): Promise<ResponseStructure<ResponseUpdateUangMukaBookingType | null>> {
+    const result = await instanceAxios.patch<
+      ResponseStructure<ResponseUpdateUangMukaBookingType | null>
+    >(
+      `/transaction/${params.transactionId}/update-uang-muka-booking`,
+      params.req,
+    );
 
     return result.data;
   }

@@ -3,7 +3,9 @@ import {
   CircleDollarSign,
   CirclePercent,
   ReceiptText,
+  Repeat,
   ShoppingBasket,
+  Trash2,
   Undo2,
 } from "lucide-react";
 import type { UseControllerReturn, UseFormHandleSubmit } from "react-hook-form";
@@ -86,6 +88,11 @@ type Props = {
       >;
       placeholder: string;
     };
+
+    disabledDelete?: boolean;
+
+    handleDelete?: () => void;
+    handleGantiProduk?: () => void;
   };
 };
 
@@ -159,6 +166,7 @@ const CardProdukTransaksi: FC<Props> = ({
               onSubmit={updateBooking.onSubmit}
               isPending={updateBooking.isPendingUpdate}
               showForSm
+              hAuto
             >
               <div className="w-35">
                 <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
@@ -209,6 +217,7 @@ const CardProdukTransaksi: FC<Props> = ({
               onSubmit={updateBooking.onSubmit}
               isPending={updateBooking.isPendingUpdate}
               showForSm
+              hAuto
             >
               <div className="w-35">
                 <InputPrice<UpdateHargaAndDiskonAndQuantityForRequestType>
@@ -261,6 +270,7 @@ const CardProdukTransaksi: FC<Props> = ({
               isPending={updateBooking.isPendingUpdate}
               btnAksiPosition="top"
               showForSm
+              hAuto
             >
               <div className="w-auto">
                 <InputQty<UpdateHargaAndDiskonAndQuantityForRequestType>
@@ -318,25 +328,49 @@ const CardProdukTransaksi: FC<Props> = ({
       </div>
 
       {/* HANDLE APPEND */}
-      {handleAppend && (
+      {(handleAppend || updateBooking) && (
         <div className="w-full mt-2.5 flex flex-row justify-end items-end gap-2.5">
-          <ButtonWithIcon
-            disabled={disabled}
-            label="Retur"
-            icon={Undo2}
-            bgColor="bg-error"
-            textColor="text-primary-white"
-            handleBtn={() =>
-              handleAppend({
-                detailId: id,
-                nama: produk.nama,
-                img: produk.img,
-                hargaJual,
-                maxQuantity: quantity,
-                quantityWasRetur: totalRetur,
-              })
-            }
-          />
+          {handleAppend && (
+            <ButtonWithIcon
+              disabled={disabled}
+              label="Retur"
+              icon={Undo2}
+              bgColor="bg-error"
+              textColor="text-primary-white"
+              handleBtn={() =>
+                handleAppend({
+                  detailId: id,
+                  nama: produk.nama,
+                  img: produk.img,
+                  hargaJual,
+                  maxQuantity: quantity,
+                  quantityWasRetur: totalRetur,
+                })
+              }
+            />
+          )}
+
+          {updateBooking &&
+            updateBooking.handleGantiProduk &&
+            updateBooking.handleDelete && (
+              <>
+                <ButtonWithIcon
+                  label="Ganti Produk"
+                  icon={Repeat}
+                  bgColor="bg-info"
+                  textColor="text-primary-white"
+                  handleBtn={() => updateBooking.handleGantiProduk?.()}
+                />
+                <ButtonWithIcon
+                  disabled={updateBooking.disabledDelete}
+                  label="Hapus"
+                  icon={Trash2}
+                  bgColor="bg-error"
+                  textColor="text-primary-white"
+                  handleBtn={() => updateBooking.handleDelete?.()}
+                />
+              </>
+            )}
         </div>
       )}
     </div>

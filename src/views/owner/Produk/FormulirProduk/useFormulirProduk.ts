@@ -210,7 +210,7 @@ const useFormulirProduk = () => {
   };
 
   //   query kategori
-  const { dataKategori, isLoadingKategori } = useKategoriForChoose();
+  const { dataKategori, isLoadingKategori } = useKategoriForChoose({});
 
   // handle back
   const handleBack = () => {

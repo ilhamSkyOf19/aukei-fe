@@ -19,8 +19,10 @@ import {
 import AlertLabel from "../../../../components/messages/AlertLabel";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import {
+  ChevronsLeftIcon,
   ChevronsRightIcon,
   Eye,
+  PackagePlus,
   Pencil,
   PencilLine,
   Undo,
@@ -32,6 +34,7 @@ import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 import ModalFormulirTransaksi from "../../../../components/modals/ModalFormulirTransaksi";
 import ModalDelete from "../../../../components/modals/ModalDelete";
+import ModalPilihanProduk from "../../../../components/modals/ModalPilihanProduk";
 
 type Props = {
   isLoadingTransaction: boolean;
@@ -93,6 +96,11 @@ const DaftarDetailProduk: FC<Props> = ({
     isPendingDeleteProduk,
     handleDeleteProduk,
     dataModalDelete,
+
+    dataModalPilihanProduk,
+    handleCloseModalPilihanProduk,
+    handleShowModalPilihanProduk,
+    modalPilihanProdukRef,
   } = useDaftarDetailProduk({
     transactionId: dataTransaction?.data?.id,
     dataKebutuhanBarang,
@@ -114,7 +122,7 @@ const DaftarDetailProduk: FC<Props> = ({
         {isLoadingTransaction ? (
           <LoadingFetch />
         ) : isExistingDataTransaction ? (
-          dataTransaction?.data?.details?.map((item) => (
+          dataTransaction?.data?.details?.map((item, index) => (
             <CardProdukTransaksi
               key={item.id}
               data={item}
@@ -138,6 +146,20 @@ const DaftarDetailProduk: FC<Props> = ({
                   quantityController,
                   placeholder: "Jumlah produk",
                 },
+                disabledDelete:
+                  index + 1 === (dataTransaction?.data?.details.length ?? 0),
+
+                ...(isUbahData && {
+                  handleDelete: () =>
+                    handleShowModalDelete(item.id, {
+                      namaProduk: item.produk.nama,
+                    }),
+
+                  handleGantiProduk: () =>
+                    handleShowModalPilihanProduk(undefined, {
+                      detailId: item.id,
+                    }),
+                }),
               }}
             />
           ))
@@ -150,14 +172,16 @@ const DaftarDetailProduk: FC<Props> = ({
           </div>
         )}
       </div>
-      {!isLoadingTransaction && (
-        <div className="md:hidden flex mb-4 flex-row justify-center items-center w-full gap-1.5">
-          <span className="text-xs text-base-content">
-            Silahkan Geser ke kanan
-          </span>
-          <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
-        </div>
-      )}
+      {!isLoadingTransaction &&
+        (dataTransaction?.data?.details?.length ?? 0) > 1 && (
+          <div className="md:hidden flex mb-4 flex-row justify-center items-center w-full gap-1.5">
+            <ChevronsLeftIcon className="size-5 text-base-content stroke-1" />
+            <span className="text-xs text-base-content">
+              Silahkan Geser ke kanan atau ke kiri
+            </span>
+            <ChevronsRightIcon className="size-5 text-base-content stroke-1" />
+          </div>
+        )}
       {/* data for MD & LG  */}
       <div
         className={cn(
@@ -311,23 +335,26 @@ const DaftarDetailProduk: FC<Props> = ({
                                   customDataTip="ubah"
                                   handleClick={() =>
                                     handleShowModalUpdateProduk(item.id, {
-                                      hargaJual: item.hargaJual,
-                                      hargaModalRataRata:
-                                        item.produk.hargaModalRataRata,
-                                      hargaPpn: item.produk.hargaPpn,
-                                      img: item.produk.img,
-                                      nama: item.produk.nama,
-                                      produkId: item.produk.id,
-                                      quantity: item.quantity,
-                                      stok:
-                                        kebutuhanBarang?.produk.stokTersedia ??
-                                        0,
-                                      detailId: item.id,
-                                      diskon: item.diskon,
-                                      hargaJualOld: item.hargaJualOld,
-                                      hargaJualTerakhirTransaksi:
-                                        item.hargaJualTerakhir ?? undefined,
-                                      transactionId: dataTransaction?.data?.id,
+                                      data: {
+                                        hargaJual: item.hargaJual,
+                                        hargaModalRataRata:
+                                          item.produk.hargaModalRataRata,
+                                        hargaPpn: item.produk.hargaPpn,
+                                        img: item.produk.img,
+                                        nama: item.produk.nama,
+                                        produkId: item.produk.id,
+                                        quantity: item.quantity,
+                                        stok:
+                                          kebutuhanBarang?.produk
+                                            .stokTersedia ?? 0,
+                                        detailId: item.id,
+                                        diskon: item.diskon,
+                                        hargaJualOld: item.hargaJualOld,
+                                        hargaJualTerakhirTransaksi:
+                                          item.hargaJualTerakhir ?? undefined,
+                                        transactionId:
+                                          dataTransaction?.data?.id,
+                                      },
                                     })
                                   }
                                 />
@@ -437,13 +464,41 @@ const DaftarDetailProduk: FC<Props> = ({
       {isPageBookingKasir &&
         dataTransaction?.data?.metodePembayaran !== PAYMENT_METHOD_TYPE.TEMPO &&
         statusIsBooking && (
-          <div className="w-full flex flex-row justify-end items-end">
+          <div className="w-full flex flex-col md:flex-row justify-end items-end gap-2.5 md:gap-0">
+            <ButtonWithIcon
+              icon={PackagePlus}
+              bgColor="bg-success"
+              textColor="text-primary-white"
+              customWidth="hidden md:flex w-full"
+              label="Tambah Produk"
+              handleBtn={() =>
+                handleShowModalUpdateProduk(undefined, {
+                  transactionId: dataTransaction?.data?.id,
+                })
+              }
+              skeleton={isLoadingTransaction}
+            />
+
+            <ButtonWithIcon
+              icon={PackagePlus}
+              bgColor="bg-success"
+              textColor="text-primary-white"
+              customWidth="flex md:hidden w-full"
+              label="Tambah Produk"
+              handleBtn={() =>
+                handleShowModalPilihanProduk(undefined, {
+                  transactionId: dataTransaction?.data?.id,
+                })
+              }
+              skeleton={isLoadingTransaction}
+            />
+
             {isUbahData ? (
               <ButtonWithIcon
                 icon={X}
                 bgColor="bg-error"
                 textColor="text-primary-white"
-                customWidth="w-full md:flex-1"
+                customWidth="w-full"
                 label="Tutup"
                 handleBtn={() => setIsUbahData(false)}
                 skeleton={isLoadingTransaction}
@@ -453,8 +508,8 @@ const DaftarDetailProduk: FC<Props> = ({
                 icon={Pencil}
                 bgColor="bg-info"
                 textColor="text-primary-white"
-                customWidth="flex-1"
-                classHidden="md:hidden"
+                customWidth="w-full"
+                classHidden="md:hidden flex"
                 label="Ubah Harga / Diskon / Quantity"
                 handleBtn={() => setIsUbahData(true)}
                 skeleton={isLoadingTransaction}
@@ -462,7 +517,6 @@ const DaftarDetailProduk: FC<Props> = ({
             )}
           </div>
         )}
-
       {dataTransaction?.data?.status === TRANSACTION_STATUS_TYPE.COMPLETED &&
         (!isExpired3Days ? (
           <AlertLabel
@@ -475,7 +529,6 @@ const DaftarDetailProduk: FC<Props> = ({
             message="Transaksi tidak dapat dibatalkan karena telah melewati batas waktu 3 hari."
           />
         ))}
-
       {/* alert label */}
       {dataTransaction?.data?.metodePembayaran !== PAYMENT_METHOD_TYPE.TEMPO ? (
         <>
@@ -582,10 +635,12 @@ const DaftarDetailProduk: FC<Props> = ({
         handleSetToast={handleSetToast}
         handleSetAlert={handleSetAlert}
       />
-
       <ModalFormulirTransaksi
         modalRef={modalUpdateProdukRef}
-        data={dataModalUpdateProduk}
+        data={dataModalUpdateProduk?.data}
+        transactionIdForAddProdukForUpdateTransaksi={
+          dataModalUpdateProduk?.transactionId
+        }
         index={idModalUpdateProduk}
         handleCloseModal={handleCloseModalUpdateProduk}
         handleSetAlert={handleSetAlert}
@@ -595,7 +650,21 @@ const DaftarDetailProduk: FC<Props> = ({
         pelangganId={dataTransaction?.data?.pelanggan?.id}
         isBooking
       />
-
+      {/* modal pilihan produk */}
+      <ModalPilihanProduk
+        modalRef={modalPilihanProdukRef}
+        handleCloseModal={handleCloseModalPilihanProduk}
+        detailId={dataModalPilihanProduk?.detailId}
+        transactionId={dataTransaction?.data?.id}
+        enabled={statusIsBooking}
+        existProduks={dataTransaction?.data?.details.map((item) => ({
+          produkId: item.produk.id,
+        }))}
+        transactionIdForAddProdukForUpdateTransaksi={
+          dataModalPilihanProduk?.transactionId
+        }
+        pelangganId={dataTransaction?.data?.pelanggan?.id}
+      />
       {/* modal delete */}
       <ModalDelete
         modalRef={modalDeleteRef}

@@ -32,10 +32,6 @@ type ModalProdukData = Pick<
     transactionId?: number;
   };
 
-type UpdateBookingRequest = UpdateHargaAndDiskonAndQuantityForRequestType & {
-  produkId: number;
-};
-
 const useModalTransaksi = (params: {
   handleCloseModal: () => void;
   data?: ModalProdukData;
@@ -43,6 +39,7 @@ const useModalTransaksi = (params: {
   isBooking?: boolean;
   pelangganId?: number;
   existProduks?: { produkId: number }[];
+  transactionIdForAddProdukForUpdateTransaksi?: number;
 }) => {
   const {
     handleCloseModal,
@@ -51,6 +48,7 @@ const useModalTransaksi = (params: {
     isBooking,
     pelangganId,
     existProduks,
+    transactionIdForAddProdukForUpdateTransaksi,
   } = params;
 
   const [isShowChooseProduk, setIsShowChooseProduk] = useState<boolean>(false);
@@ -246,27 +244,26 @@ const useModalTransaksi = (params: {
 
   // HANDLE GANTI PRODUK BOOKING
   const handleGantiProduk = (produk: ResponseProdukForKasirType) => {
-    setBookingProduk((prev) => {
-      if (!prev) return prev;
+    setBookingProduk((prev) => ({
+      ...prev,
+      ...produk,
 
-      setExistingProdukIds((current) => [
-        ...current.filter((id) => id !== prev.produkId),
-        produk.id,
-      ]);
+      produkId: produk.id,
 
-      return {
-        ...prev,
-        ...produk,
+      // Harga master produk baru
+      hargaJualOld: Number(produk.hargaJual),
 
-        produkId: produk.id,
+      // Harga transaksi di-reset ke harga master
+      hargaJual: Number(produk.hargaJual),
 
-        // Harga master produk baru
-        hargaJualOld: Number(produk.hargaJual),
+      // Pertahankan quantity sebelumnya
+      quantity: Number(prev?.quantity ?? quantity ?? 1),
+    }));
 
-        // Harga transaksi di-reset ke harga master
-        hargaJual: Number(produk.hargaJual),
-      };
-    });
+    setExistingProdukIds((current) => [
+      ...current.filter((id) => id !== bookingProduk?.produkId),
+      produk.id,
+    ]);
 
     const hargaBaru = Number(produk.hargaJual);
     const qty = Number(quantity ?? bookingProduk?.quantity ?? 1);
@@ -291,34 +288,58 @@ const useModalTransaksi = (params: {
   const { mutateAsync: handleTambahProduk, isPending: isPendingTambahProduk } =
     useMutation({
       mutationFn: (req: TambahProdukDetailForReqeustType) => {
-        if (data?.detailId) {
+        if (data?.detailId && !transactionIdForAddProdukForUpdateTransaksi) {
           return TransactionServices.updateProduk({
             detailId: data.detailId,
             data: {
               diskon: req.detail.diskon,
               hargaJual: req.detail.hargaJual,
               qty: req.detail.quantity,
-              produkId: req.detail.produkId,
             },
           });
-        } else if (data?.transactionId) {
+        } else if (
+          data?.transactionId ||
+          transactionIdForAddProdukForUpdateTransaksi
+        ) {
           return TransactionServices.tambahProdukByTransactionId({
-            transactionId: data.transactionId,
-            data: req,
+            transactionId:
+              (data?.transactionId ||
+                transactionIdForAddProdukForUpdateTransaksi) ??
+              0,
+            data: {
+              ...req,
+              fromUpdateBooking:
+                transactionIdForAddProdukForUpdateTransaksi !== undefined,
+            },
           });
         } else {
           return TransactionServices.tambahProduk(req);
         }
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["transaksi-draft"],
-        });
+        if (transactionIdForAddProdukForUpdateTransaksi) {
+          queryClient.invalidateQueries({
+            queryKey: [
+              "transaction",
+              transactionIdForAddProdukForUpdateTransaksi,
+            ],
+          });
+          queryClient.invalidateQueries({
+            queryKey: [
+              "kebutuhan-barang",
+              transactionIdForAddProdukForUpdateTransaksi,
+            ],
+          });
+        } else {
+          queryClient.invalidateQueries({
+            queryKey: ["transaksi-draft"],
+          });
+        }
       },
       onError: (err) => {
         if (axios.isAxiosError<ErrorResponse>(err)) {
           if (
-            err.response?.data.meta.message.includes("stok tidak mencukupi")
+            err.response?.data.meta?.customField?.includes("stock_not_enough")
           ) {
             handleSetAlert?.("stock_not_enough");
           }
@@ -331,7 +352,10 @@ const useModalTransaksi = (params: {
     mutateAsync: mutateUpdateBooking,
     isPending: isPendingUpdateBooking,
   } = useMutation({
-    mutationFn: (params: { detailId: number; req: UpdateBookingRequest }) => {
+    mutationFn: (params: {
+      detailId: number;
+      req: UpdateHargaAndDiskonAndQuantityForRequestType;
+    }) => {
       return TransactionDetailServices.updateTransaksiDetail({
         transactionDetailId: params.detailId,
         req: params.req,
@@ -340,6 +364,10 @@ const useModalTransaksi = (params: {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["transaction", data?.transactionId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["kebutuhan-barang", data?.transactionId],
       });
 
       handleCloseModal();
@@ -353,7 +381,11 @@ const useModalTransaksi = (params: {
   const onSubmit = async (req: DetailsForCreate) => {
     if (!req) return;
 
-    if (isBooking && bookingProduk?.detailId) {
+    if (
+      isBooking &&
+      bookingProduk?.detailId &&
+      !transactionIdForAddProdukForUpdateTransaksi
+    ) {
       return await mutateUpdateBooking({
         detailId: bookingProduk.detailId,
         req: {

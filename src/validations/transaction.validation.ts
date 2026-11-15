@@ -1,5 +1,9 @@
 import z from "zod";
-import type { DetailsForCreate } from "../models/transaction.model";
+import type {
+  DetailsForCreate,
+  RequestUpdateUangMukaBookingType,
+} from "../models/transaction.model";
+import { PAYMENT_METHOD_TYPE } from "../types/constant.type";
 
 export class TransactionValidation {
   private static numberSchema(
@@ -12,34 +16,6 @@ export class TransactionValidation {
       .min(min, `Mohon isi ${fieldName}`)
       .max(max, `Mohon isi ${fieldName}`);
   }
-
-  // private static readonly detailsSchema = z
-  //   .object({
-  //     produkId: this.numberSchema("produk", 1, 2147483647),
-  //     diskon: this.numberSchema("diskon", 0, 2147483647),
-  //     hargaJual: this.numberSchema("harga jual", 0, 2147483647),
-  //     quantity: this.numberSchema("quantity", 1, 2147483647),
-  //   })
-  //   .strict() satisfies z.ZodType<DetailsForCreate>;
-
-  // static readonly CREATE = z
-  //   .object({
-  //     details: z.array(this.detailsSchema).min(1),
-  //   })
-  //   .superRefine((data, ctx) => {
-  //     // check details produk id
-  //     const produkIds = data.details.map((detail) => detail.produkId);
-  //     if (produkIds.length !== new Set(produkIds).size) {
-  //       ctx.addIssue({
-  //         code: "custom",
-  //         message: "produk id tidak boleh sama",
-  //         path: ["details"],
-  //       });
-  //     }
-  //   })
-  //   .strict() satisfies z.ZodType<{
-  //   details: DetailsForCreate[];
-  // }>;
 
   // detail
   static readonly DETAILS = z
@@ -63,21 +39,19 @@ export class TransactionValidation {
     })
     .strict() satisfies z.ZodType<{ nama: string }>;
 
-  // static readonly CREATE_FOR_KERANJANG = z
-  //   .object({
-  //     pelangganId: z.number().int().positive().max(2147483647),
-  //     details: z.array(this.detailsSchema).min(1),
-  //   })
-  //   .superRefine((data, ctx) => {
-  //     // check details produk id
-  //     const produkIds = data.details.map((detail) => detail.produkId);
-  //     if (produkIds.length !== new Set(produkIds).size) {
-  //       ctx.addIssue({
-  //         code: "custom",
-  //         message: "produk id tidak boleh sama",
-  //         path: ["details"],
-  //       });
-  //     }
-  //   })
-  //   .strict() satisfies z.ZodType<CreateTransactionForKeranjangType>;
+  static readonly UPDATE_UANG_MUKA_BOOKING = z
+    .object({
+      uangMuka: this.numberSchema("uang muka", 0, 2147483647),
+      metodePembayaran: z
+        .enum([
+          PAYMENT_METHOD_TYPE.CASH,
+          PAYMENT_METHOD_TYPE.QRIS,
+          PAYMENT_METHOD_TYPE.TRANSFER,
+          PAYMENT_METHOD_TYPE.TEMPO,
+        ])
+        .optional(),
+    })
+    .strict() satisfies z.ZodType<
+    Pick<RequestUpdateUangMukaBookingType, "metodePembayaran" | "uangMuka">
+  >;
 }

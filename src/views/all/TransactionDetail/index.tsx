@@ -130,7 +130,11 @@ const TransactionDetail: FC<Props> = ({
           isLoadingTransaction={isLoadingTransaction}
           isStatusBooking={isStatusBooking}
           isPageBookingKasir={isPageBookingKasir}
-          siapKirim={dataKebutuhanBarang?.data?.some((item) => item.siapKirim)}
+          siapKirim={
+            dataKebutuhanBarang?.data?.every(
+              (item) => item.siapKirim === true,
+            ) ?? false
+          }
         />
       </div>
 

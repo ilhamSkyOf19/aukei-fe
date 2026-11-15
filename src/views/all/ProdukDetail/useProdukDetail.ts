@@ -55,7 +55,7 @@ const useProdukDetail = () => {
   const {
     dataKategori: dataKategoriForChoose,
     isLoadingKategori: isLoadingKategoriForChoose,
-  } = useKategoriForChoose();
+  } = useKategoriForChoose({});
 
   // handle redirect formulir
   const handleRedirectFormulir = () => {

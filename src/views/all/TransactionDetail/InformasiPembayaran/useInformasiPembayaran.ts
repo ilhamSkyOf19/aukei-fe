@@ -110,6 +110,12 @@ const useInformasiPembayaran = ({
   const { handleCloseModalTempo, handleShowModalTempo, modalTempoRef } =
     useModalTempo({ setIsErrors });
 
+  const {
+    modalRef: modalUpdateUangMukaBookingRef,
+    handleCloseModal: handleCloseModalUpdateUangMukaBooking,
+    handleShowModal: handleShowModalUpdateUangMukaBooking,
+  } = useModal();
+
   const { mutateAsync: mutateTransaction, isPending: isPendingTransaction } =
     useMutation({
       mutationFn: (data: CreateTransactionForRequestType) =>
@@ -414,6 +420,10 @@ const useInformasiPembayaran = ({
 
     handleSetAlert,
     handleSetToast,
+
+    modalUpdateUangMukaBookingRef,
+    handleShowModalUpdateUangMukaBooking,
+    handleCloseModalUpdateUangMukaBooking,
   };
 };
 

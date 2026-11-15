@@ -1,7 +1,6 @@
 import { type FC, type RefObject } from "react";
 import {
   ReceiptText,
-  Delete,
   Calculator,
   BanknoteArrowDownIcon,
   Coins,
@@ -10,7 +9,7 @@ import { formatRupiah } from "../../../helpers/helpers";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import useModalCashPayment from "./useModalCashPayment";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import CurrencyInput from "./CurrentInput";
+import CalculatorInput from "../../inputs/Calculator";
 
 type Props = {
   total: number;
@@ -25,12 +24,7 @@ const ModalCashPayment: FC<Props> = ({
   handlePay,
   modalRef,
 }) => {
-  const { change, amount, append, backspace, clear, handleChange } =
-    useModalCashPayment({
-      handlePay,
-      total,
-      modalRef,
-    });
+  const { payment, handleSetPayment } = useModalCashPayment();
 
   return (
     <dialog ref={modalRef} id="my_modal_3" className="modal">
@@ -78,7 +72,7 @@ const ModalCashPayment: FC<Props> = ({
                 </div>
 
                 <span className="text-sm md:text-lg font-medium text-info">
-                  {formatRupiah(amount)}
+                  {formatRupiah(payment.amount)}
                 </span>
               </div>
 
@@ -92,106 +86,19 @@ const ModalCashPayment: FC<Props> = ({
                 </div>
 
                 <span className="text-sm md:text-lg font-medium text-success">
-                  {formatRupiah(change)}
+                  {formatRupiah(payment.change)}
                 </span>
               </div>
             </div>
           </div>
 
           {/* RIGHT */}
-          <div className="p-4 md:pt-2">
-            {/* INPUT */}
-            <div className="mb-5">
-              <label className="label">
-                <span className="label-text text-xs md:text-sm font-semibold text-base-content">
-                  Uang Diterima
-                </span>
-              </label>
-
-              <div className="flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-base-content focus-within:border-base-content transition-all duration-300 ease-in-out bg-base-100 mt-1 h-12 md:h-14 overflow-hidden">
-                <CurrencyInput
-                  value={amount}
-                  onChange={(nominal) => handleChange(String(nominal))}
-                />
-              </div>
-            </div>
-
-            {/* CALCULATOR */}
-            <div className="grid grid-cols-4 gap-2">
-              {[7, 8, 9].map((n) => (
-                <button
-                  key={n}
-                  className="btn h-12 md:h-14 text-lg md:text-xl"
-                  onClick={() => append(String(n))}
-                >
-                  {n}
-                </button>
-              ))}
-
-              <button
-                className="btn btn-error btn-outline h-12 md:h-14"
-                onClick={backspace}
-              >
-                <Delete />
-              </button>
-
-              {[4, 5, 6].map((n) => (
-                <button
-                  key={n}
-                  className="btn h-12 md:h-14 text-lg md:text-xl"
-                  onClick={() => append(String(n))}
-                >
-                  {n}
-                </button>
-              ))}
-
-              <button
-                className="btn btn-warning btn-outline h-12 md:h-14"
-                onClick={clear}
-              >
-                CE
-              </button>
-
-              {[1, 2, 3].map((n) => (
-                <button
-                  key={n}
-                  className="btn h-12 md:h-14 text-lg md:text-xl"
-                  onClick={() => append(String(n))}
-                >
-                  {n}
-                </button>
-              ))}
-
-              <button
-                className=" font-semibold bg-custom-primary rounded-lg text-custom-secondary row-span-2 h-full disabled:opacity-50 not-disabled:hover-overlay"
-                disabled={amount < total}
-                onClick={() => {
-                  handlePay(amount);
-                }}
-              >
-                OK
-              </button>
-
-              <button
-                className="btn h-16 md:h-20 text-xl md:text-2xl col-span-2"
-                onClick={() => append("0")}
-              >
-                0
-              </button>
-
-              <button
-                className="btn h-16 md:h-20 text-xl md:text-2xl"
-                onClick={() => append("000")}
-              >
-                000
-              </button>
-            </div>
-
-            <div className="hidden md:block mt-2.5 text-xs opacity-60 text-base-content">
-              Gunakan keyboard angka 0-9, Backspace untuk hapus, Enter untuk
-              konfirmasi.
-            </div>
-          </div>
+          <CalculatorInput
+            total={total}
+            isOpen={modalRef.current?.open ?? false}
+            handlePay={handlePay}
+            onPaymentChange={handleSetPayment}
+          />
         </div>
 
         {/* FOOTER */}
