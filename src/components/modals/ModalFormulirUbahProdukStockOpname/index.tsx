@@ -25,7 +25,7 @@ type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
 
-  status?: StatusStockOpnameType;
+  status?: StatusStockOpnameType | null;
 
   dataUpdate: {
     detailId?: number;

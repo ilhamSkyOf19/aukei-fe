@@ -7,19 +7,25 @@ const useDataProdukForChoose = (params: {
 }) => {
   const { search, kategori } = params;
 
+  const searchValue = search.trim();
+
   const { data: dataProdukForChoose, isLoading: isLoadingProdukForChoose } =
     useQuery({
-      queryKey: ["produk-for-choose", search, kategori],
+      queryKey: ["produk-for-choose", searchValue, kategori],
       queryFn: () =>
         ProdukServices.findAllForChoose({
-          search: search.trim(),
+          search: searchValue,
           kategori: kategori?.toString(),
         }),
+      enabled: !!searchValue,
       retry: false,
       refetchOnWindowFocus: false,
     });
 
-  return { dataProdukForChoose, isLoadingProdukForChoose };
+  return {
+    dataProdukForChoose,
+    isLoadingProdukForChoose,
+  };
 };
 
 export default useDataProdukForChoose;

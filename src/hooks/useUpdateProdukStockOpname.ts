@@ -12,7 +12,7 @@ import type { ErrorResponse } from "../types/response.type";
 import { useEffect } from "react";
 
 const useUpdateProdukStockOpname = (params: {
-  status?: StatusStockOpnameType;
+  status?: StatusStockOpnameType | null;
 
   dataUpdate?: {
     produkId?: number;

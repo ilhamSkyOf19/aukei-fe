@@ -107,7 +107,31 @@ export interface ResponseStockOpnameWithDetailType extends ResponseStockOpnameTy
     "id" | "nama" | "username" | "role" | "isActive"
   > | null;
 
-  details: ResponseStockOpnameDetailType[];
+  riwayat: ResponseRiwayatStockOpnameType[];
+}
+
+export interface ResponseStockOpnameWithDetailAndStatistikType extends ResponseStockOpnameType {
+  adminOpname: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "username" | "role" | "isActive"
+  >;
+
+  verifiedBy: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "username" | "role" | "isActive"
+  > | null;
 
   riwayat: ResponseRiwayatStockOpnameType[];
+  totalProduk: number;
+  totalItem: number;
+  totalItemMinus: number;
+  totalItemSurplus: number;
+  totalNilaiMinus: number;
+  totalNilaiSurplus: number;
+  produkIdChooses: number[];
+}
+
+export interface ResponseDaftarProdukStockOpnameType {
+  details: ResponseStockOpnameDetailType[];
+  meta: MetaType;
 }

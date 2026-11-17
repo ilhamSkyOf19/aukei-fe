@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useImperativeHandle, useState, type ForwardedRef } from "react";
 
 import type { UpdateStockOpnameDetailType } from "../../../../models/stockOpnameDetail.model";
 
@@ -9,18 +9,43 @@ import type {
 import useDeleteStockOpnameDetail from "../../../../hooks/useDeleteStockOpnameDetail";
 import useUpdateProdukStockOpname from "../../../../hooks/useUpdateProdukStockOpname";
 import useModal from "../../../../hooks/useModal";
+import { useQuery } from "@tanstack/react-query";
+import { StockOpnameServices } from "../../../../services/stockOpname.service";
+import type { ChildRef } from "../../../../types/ref.type";
 
 const useShowStockOpname = (params: {
-  status?: StatusStockOpnameType;
+  status?: StatusStockOpnameType | null;
   handleSetToast: (value: string) => void;
-  stockOpnameId?: number;
+  stockOpnameId?: number | null;
+  ref: ForwardedRef<ChildRef>;
 }) => {
-  const { status, handleSetToast, stockOpnameId } = params;
+  const { status, handleSetToast, stockOpnameId, ref } = params;
 
   // field update active
   const [activeField, setActiveField] = useState<
     "stokFisik" | "jenisPenyesuaian" | null
   >(null);
+
+  const {
+    data: dataDaftarProduk,
+    isLoading: isLoadingDaftarProduk,
+    isFetching: isFetchingDaftarProduk,
+    refetch: refetchDaftarProduk,
+  } = useQuery({
+    queryKey: ["daftar-produk-stock-opname", stockOpnameId],
+
+    queryFn: () =>
+      StockOpnameServices.getDaftarProduk({
+        id: stockOpnameId!,
+        query: {},
+      }),
+
+    enabled: !!stockOpnameId,
+
+    retry: false,
+
+    refetchOnWindowFocus: false,
+  });
 
   // ============================================================
   // HIGHLIGHT
@@ -152,6 +177,16 @@ const useShowStockOpname = (params: {
     }
   };
 
+  const handleRefresh = async () => {
+    await refetchDaftarProduk({
+      throwOnError: true,
+    });
+  };
+
+  useImperativeHandle(ref, () => ({
+    refetchActive: handleRefresh,
+  }));
+
   return {
     // delete
     modalDeleteRef,
@@ -179,6 +214,10 @@ const useShowStockOpname = (params: {
     handleShowModalUpdate,
     handleCloseModalUpdate,
     dataUpdateModal,
+
+    // daftar produk
+    dataDaftarProduk,
+    isLoadingDaftarProduk: isLoadingDaftarProduk || isFetchingDaftarProduk,
   };
 };
 

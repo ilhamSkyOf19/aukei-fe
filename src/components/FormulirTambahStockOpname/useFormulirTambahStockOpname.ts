@@ -344,6 +344,10 @@ const useFormulirTambahStockOpname = (params: {
         queryKey: ["stock-opname-detail", validatedId],
       });
 
+      queryClient.invalidateQueries({
+        queryKey: ["daftar-produk-stock-opname", validatedId],
+      });
+
       reset({
         details: [],
       });

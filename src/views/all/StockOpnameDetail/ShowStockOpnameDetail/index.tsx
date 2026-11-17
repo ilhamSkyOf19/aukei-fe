@@ -1,4 +1,4 @@
-import { Fragment, type FC } from "react";
+import { forwardRef, Fragment } from "react";
 
 import DataEmpty from "../../../../components/messages/DataEmpty";
 
@@ -19,9 +19,8 @@ import {
   ROLE_INTERNAL_TYPE,
   STATUS_STOCK_OPNAME_TYPE,
   type RoleInternalType,
+  type StatusStockOpnameType,
 } from "../../../../types/constant.type";
-
-import type { ResponseStockOpnameWithDetailType } from "../../../../models/stockOpname.model";
 
 import type { UpdateStockOpnameDetailType } from "../../../../models/stockOpnameDetail.model";
 
@@ -33,35 +32,34 @@ import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
 import InputChoose from "../../../../components/inputs/InputChoose";
 import ModalFormulirUbahProdukStockOpname from "../../../../components/modals/ModalFormulirUbahProdukStockOpname";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
+import type { ChildRef } from "../../../../types/ref.type";
 
 // ============================================================
 // TYPE
 // ============================================================
 
 type Props = {
-  isLoadingStockOpnameDetail?: boolean;
-
-  dataStockOpnameDetail?: ResponseStockOpnameWithDetailType | null;
-
   isCanUpdate?: boolean;
-
   handleSetToast: (value: string) => void;
   role?: RoleInternalType;
-
-  stockOpnameId: number;
+  stockOpnameId?: number | null;
+  status?: StatusStockOpnameType | null;
+  produkIdChoose: number[];
 };
 
 // ============================================================
 // COMPONENT
 // ============================================================
 
-const ShowStockOpname: FC<Props> = ({
-  dataStockOpnameDetail,
-  isLoadingStockOpnameDetail,
-  isCanUpdate,
-  handleSetToast,
-  role,
-}) => {
+const ShowStockOpname = forwardRef<ChildRef, Props>((props, ref) => {
+  const {
+    handleSetToast,
+    stockOpnameId,
+    isCanUpdate,
+    role,
+    status,
+    produkIdChoose,
+  } = props;
   const {
     modalDeleteRef,
     handleCloseModalDelete,
@@ -85,10 +83,13 @@ const ShowStockOpname: FC<Props> = ({
     handleCloseModalUpdate,
     handleShowModalUpdate,
     modalUpdateRef,
+    dataDaftarProduk,
+    isLoadingDaftarProduk,
   } = useShowStockOpname({
-    status: dataStockOpnameDetail?.status,
+    status,
     handleSetToast,
-    stockOpnameId: dataStockOpnameDetail?.id,
+    stockOpnameId,
+    ref,
   });
 
   // ============================================================
@@ -96,14 +97,13 @@ const ShowStockOpname: FC<Props> = ({
   // ============================================================
 
   const isExistData =
-    dataStockOpnameDetail && dataStockOpnameDetail.details.length > 0;
+    dataDaftarProduk?.data && dataDaftarProduk.data?.details?.length > 0;
 
   // ============================================================
   // STATUS
   // ============================================================
 
-  const isStatusApproved =
-    dataStockOpnameDetail?.status === STATUS_STOCK_OPNAME_TYPE.APPROVED;
+  const isStatusApproved = status === STATUS_STOCK_OPNAME_TYPE.APPROVED;
 
   return (
     <>
@@ -112,10 +112,10 @@ const ShowStockOpname: FC<Props> = ({
       {/* ====================================================== */}
 
       <div className="w-full flex flex-col justify-start items-center mt-2 gap-3 lg:hidden">
-        {isLoadingStockOpnameDetail ? (
+        {isLoadingDaftarProduk ? (
           <LoadingFetch />
         ) : isExistData ? (
-          dataStockOpnameDetail?.details.map((item) => (
+          dataDaftarProduk?.data?.details.map((item) => (
             <div
               key={item.id}
               className="flex flex-col p-3 justify-start items-start w-full rounded-2xl md:rounded-xl bg-base-100 shadow-xs min-h-20 gap-3"
@@ -162,7 +162,11 @@ const ShowStockOpname: FC<Props> = ({
                       bgColor="bg-error"
                       textColor="text-primary-white"
                       label="Hapus"
-                      handleBtn={() => handleShowModalDelete(item.id)}
+                      handleBtn={() =>
+                        handleShowModalDelete(item.id, {
+                          namaProduk: item.produk.nama,
+                        })
+                      }
                       customHeight="h-8"
                     />
                   </div>
@@ -308,7 +312,7 @@ const ShowStockOpname: FC<Props> = ({
 
             <tbody>
               {/* LOADING */}
-              {isLoadingStockOpnameDetail ? (
+              {isLoadingDaftarProduk ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <tr key={index}>
                     <td colSpan={10}>
@@ -317,7 +321,7 @@ const ShowStockOpname: FC<Props> = ({
                   </tr>
                 ))
               ) : isExistData ? (
-                dataStockOpnameDetail?.details.map((item, index) => (
+                dataDaftarProduk?.data?.details.map((item, index) => (
                   <Fragment key={item.id}>
                     {/* HEADER SETIAP 25 DATA */}
                     {index > 0 && index % 25 === 0 && (
@@ -551,8 +555,6 @@ const ShowStockOpname: FC<Props> = ({
                               handleShowModalDelete={() =>
                                 handleShowModalDelete(item.id, {
                                   namaProduk: item.produk.nama,
-                                  kodeReferensi:
-                                    dataStockOpnameDetail?.kodeReferensi,
                                 })
                               }
                             />
@@ -602,13 +604,11 @@ const ShowStockOpname: FC<Props> = ({
           jenisPenyesuaian: dataUpdateModal?.jenisPenyesuaian,
           produkId: dataUpdateModal?.produkId,
         }}
-        status={dataStockOpnameDetail?.status}
-        dataChooseIds={dataStockOpnameDetail?.details?.map(
-          (item) => item.produk.id,
-        )}
+        status={status}
+        dataChooseIds={produkIdChoose}
       />
     </>
   );
-};
+});
 
 export default ShowStockOpname;

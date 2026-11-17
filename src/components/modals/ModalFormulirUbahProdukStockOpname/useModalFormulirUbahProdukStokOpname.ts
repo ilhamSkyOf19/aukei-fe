@@ -12,7 +12,7 @@ import { useClickOutside } from "../../../hooks/useClickOutside";
 const useModalFormulirUbahProdukStokOpname = (params: {
   handleCloseModal: () => void;
 
-  status?: StatusStockOpnameType;
+  status?: StatusStockOpnameType | null;
 
   dataUpdate: {
     detailId?: number;

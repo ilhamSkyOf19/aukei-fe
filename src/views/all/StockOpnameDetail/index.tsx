@@ -1,35 +1,18 @@
-import { Check, Download, Printer, Send, Trash2, X } from "lucide-react";
 import type { FC } from "react";
 
-import ButtonBackText from "../../../components/ui/button/ButtonBackText";
-import ButtonWithIcon from "../../../components/ui/button/ButtonWithIcon";
 import Alert from "../../../components/messages/Alert";
 import Toast from "../../../components/messages/Toast";
-import ModalDelete from "../../../components/modals/ModalDelete";
-import ModalAlert from "../../../components/modals/ModalAlert";
-
-import {
-  ROLE_INTERNAL_TYPE,
-  STATUS_STOCK_OPNAME_TYPE,
-} from "../../../types/constant.type";
 
 import { ALERT_CONFIG_STOCK_OPNAME_DETAIL } from "../../../types/alert.types";
 
 import { TOAST_CONFIG_STOCK_OPNAME_DETAIL } from "../../../types/toast.type";
 
-import { formatTanggalLengkap } from "../../../helpers/formatDate";
 import { cn } from "../../../utils/cn";
 
 import useStockOpnameDetail from "./useStockOpnameDetail";
 
-import StatusStockOpname from "../../../components/ui/StatusStockOpname";
 import InformasiStockOpnameDetail from "./InformasiStockOpnameDetail";
-import FormulirTambahProdukStockOpnameDetail from "./FormulirTambahProdukStockOpnameDetail";
 import ShowStockOpname from "./ShowStockOpnameDetail";
-import ModalFormulirVerifikasiOrPengajuanStockOpname from "../../../components/modals/ModalFormulirVerifikasiOrPengajuanStockOpname";
-import { subtractMinutes } from "../../../helpers/helpers";
-import CountDown from "../../../components/ui/CountDown";
-import ButtonRefresh from "../../../components/ui/button/ButtonRefresh";
 
 type Props = {
   fromPengajuan?: boolean;
@@ -37,23 +20,7 @@ type Props = {
 
 const StockOpnameDetail: FC<Props> = ({ fromPengajuan }) => {
   const {
-    // DATA
-    stockOpname,
     pengguna,
-
-    // LOADING
-    isLoadingStockOpnameDetail,
-
-    // STATUS
-    isStatusDraft,
-    isStatusPending,
-    isStatusRejected,
-    isStatusApproved,
-
-    // PERMISSION
-    isCanManageDetail,
-    isCanAjukan,
-    isCanVerifikasi,
 
     // ALERT
     alert,
@@ -62,60 +29,12 @@ const StockOpnameDetail: FC<Props> = ({ fromPengajuan }) => {
     // TOAST
     toast,
     handleSetToast,
-
-    // CONFIRM
-    modalKonfirmasiRef,
-    handleConfirm,
-    handleCancel,
-    dataConfirm,
-
-    // PENGAJUAN / PENOLAKAN
-    modalFormulirRef,
-    handleCloseModalFormulir,
-    idModalFormulir,
-    dataModalFormulir,
-    handleAjukan,
-    handleTolak,
-
-    // VERIFIKASI
-    handleSetuju,
-    isPendingSetuju,
-
-    // DELETE DETAIL
-    modalDeleteRef,
-    handleCloseModalDelete,
-    handleDelete,
-    dataDelete,
-    isPendingDelete,
-
-    // OTHER
-
-    handlePosting,
-    isPendingPosting,
-
-    isExpired,
-
-    dataDeleteStockOpname,
-    handleCloseModalDeleteStockOpname,
-    handleDeleteStockOpname,
-    handleShowModalDeleteStockOpname,
-    isPendingDeleteStockOpname,
-    modalDeleteStockOpnameRef,
-
-    handleCancelPosting,
-
-    handleCancelVerifikasi,
-    isPendingCancelPosting,
-    isPendingCancelVerifikasi,
-
-    informasiStockOpnameDetail,
-
-    handleRefresh,
-  } = useStockOpnameDetail({
-    fromPengajuan,
-  });
-
-  const canShowFormTambahBarang = isCanManageDetail;
+    stockOpnameIdFromParams,
+    dataRef,
+    setDataRef,
+    refreshDaftarProdukStockOpname,
+    showStockRef,
+  } = useStockOpnameDetail();
 
   return (
     <main className="w-full">
@@ -149,372 +68,34 @@ const StockOpnameDetail: FC<Props> = ({ fromPengajuan }) => {
           />
         )}
 
-        {/* ============================================================
-        HEADER
-    ============================================================ */}
-
-        <div
-          className={cn(
-            "bg-base-100 rounded-2xl md:rounded-xl",
-            "shadow-sm border border-transparent",
-            "dark:border-base-content/10",
-            "w-full flex flex-col justify-start p-2 lg:p-4",
-          )}
-        >
-          {/* BUTTON BACK */}
-
-          <div className="w-full flex flex-row justify-between items-center">
-            <div className="w-30">
-              <ButtonBackText label="Kembali" />
-            </div>
-
-            {/* button refetch */}
-            <ButtonRefresh handleRefresh={() => handleRefresh()} />
-          </div>
-
-          {isLoadingStockOpnameDetail ? (
-            <>
-              <div className="w-80 h-8 skeleton mt-4" />
-
-              <div className="w-50 h-4 skeleton mt-2" />
-            </>
-          ) : (
-            <div
-              className={cn(
-                "w-full flex flex-col lg:flex-row",
-                "justify-start items-start lg:items-end",
-              )}
-            >
-              {/* INFORMASI */}
-
-              <div
-                className={cn(
-                  "flex flex-col justify-start items-start",
-                  "lg:flex-3",
-                )}
-              >
-                <div
-                  className={cn(
-                    "w-full px-2 flex flex-row",
-                    "justify-start items-start gap-2 mt-4",
-                  )}
-                >
-                  <h2
-                    className={cn(
-                      "text-base-content",
-                      "text-lg lg:text-xl",
-                      "font-semibold",
-                    )}
-                  >
-                    {stockOpname?.kodeReferensi}
-                  </h2>
-
-                  <StatusStockOpname
-                    status={
-                      stockOpname?.status ?? STATUS_STOCK_OPNAME_TYPE.DRAFT
-                    }
-                  />
-                </div>
-
-                <div
-                  className={cn(
-                    "px-2 mt-2 flex flex-row",
-                    "justify-start items-center gap-2",
-                  )}
-                >
-                  <p className="text-xs text-base-content">
-                    Dibuat pada tanggal{" "}
-                    <span className="font-medium">
-                      {formatTanggalLengkap(
-                        stockOpname?.createdAt ?? new Date(),
-                      )}
-                    </span>
-                  </p>
-                  {isStatusApproved &&
-                    pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
-                      <div className="hidden lg:flex flex-row justify-start items-center gap-2">
-                        <div className="status status-success status-sm" />
-
-                        <span className="text-xs text-base-content">
-                          {isExpired
-                            ? "Anda tidak dapat membatalkan postingan karena sudah melewati batas waktu"
-                            : `Anda dapat membatalkan postingan sebelum waktu habis : `}
-                        </span>
-                        {!isExpired && (
-                          <CountDown
-                            expiredAt={subtractMinutes(
-                              stockOpname?.verifiedAt ?? new Date(),
-                              1,
-                            )}
-                          />
-                        )}
-                      </div>
-                    )}
-                </div>
-              </div>
-
-              {/* ACTION */}
-
-              <div
-                className={cn(
-                  "w-full lg:flex-1",
-                  "flex flex-col lg:flex-row",
-                  "justify-start items-start",
-                  "lg:items-center lg:justify-end",
-                  "gap-3 px-2 lg:px-0",
-                  "pb-2 lg:pb-0",
-                )}
-              >
-                <div
-                  className={cn(
-                    "w-full lg:w-auto",
-                    "flex flex-row",
-                    "justify-start items-start",
-                    "gap-2 mt-6 lg:mt-0",
-                  )}
-                >
-                  {/* CETAK / DOWNLOAD */}
-
-                  {isStatusApproved && (
-                    <div
-                      className={cn(
-                        "flex flex-row",
-                        "justify-start items-start",
-                        "gap-2.5",
-                      )}
-                    >
-                      <ButtonWithIcon
-                        textColor="text-primary-white"
-                        label="Cetak"
-                        icon={Printer}
-                        bgColor="bg-info"
-                        isLoading={false}
-                        handleBtn={() => {}}
-                        classHidden="hidden lg:flex"
-                      />
-
-                      <ButtonWithIcon
-                        label="Download"
-                        icon={Download}
-                        bgColor="bg-gray-400"
-                        textColor="text-primary-white"
-                        isLoading={false}
-                        handleBtn={() => {}}
-                      />
-                    </div>
-                  )}
-
-                  {/* VERIFIKASI */}
-
-                  {isCanVerifikasi &&
-                    isStatusPending &&
-                    pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
-                      <>
-                        <ButtonWithIcon
-                          textColor="text-primary-white"
-                          label="Tolak"
-                          icon={X}
-                          bgColor="bg-error"
-                          handleBtn={handleTolak}
-                        />
-
-                        <ButtonWithIcon
-                          textColor="text-primary-white"
-                          label="Setuju"
-                          icon={Check}
-                          bgColor="bg-success"
-                          isLoading={isPendingSetuju}
-                          handleBtn={handleSetuju}
-                        />
-                      </>
-                    )}
-
-                  {/* HAPUS */}
-
-                  {isCanManageDetail &&
-                    (isStatusDraft || isStatusRejected) &&
-                    stockOpname?.adminOpname?.id === pengguna?.id && (
-                      <>
-                        <ButtonWithIcon
-                          textColor="text-primary-white"
-                          label="Hapus"
-                          icon={Trash2}
-                          bgColor="bg-error"
-                          isLoading={isPendingDelete}
-                          handleBtn={() =>
-                            handleShowModalDeleteStockOpname(stockOpname?.id, {
-                              kodeReferensi: stockOpname?.kodeReferensi,
-                            })
-                          }
-                        />
-
-                        {isStatusDraft &&
-                          pengguna?.role === ROLE_INTERNAL_TYPE.OWNER && (
-                            <ButtonWithIcon
-                              disabled={isPendingPosting}
-                              label="Posting"
-                              icon={Check}
-                              handleBtn={() => handlePosting(stockOpname?.id)}
-                            />
-                          )}
-                      </>
-                    )}
-                </div>
-
-                {isStatusApproved &&
-                  !isExpired &&
-                  pengguna?.role === ROLE_INTERNAL_TYPE.OWNER &&
-                  (stockOpname?.adminOpname?.id === pengguna?.id ? (
-                    <ButtonWithIcon
-                      label="Batalkan Posting"
-                      icon={Check}
-                      isLoading={isPendingCancelPosting}
-                      handleBtn={() => handleCancelPosting(stockOpname?.id)}
-                    />
-                  ) : (
-                    <ButtonWithIcon
-                      label="Batalkan Verifikasi"
-                      icon={Check}
-                      isLoading={isPendingCancelVerifikasi}
-                      handleBtn={() => handleCancelVerifikasi(stockOpname?.id)}
-                    />
-                  ))}
-
-                {/* AJUKAN */}
-
-                {isCanAjukan && (
-                  <div
-                    className={cn(
-                      "w-full lg:w-auto",
-                      "flex flex-col",
-                      "justify-start items-start",
-                      "gap-2",
-                    )}
-                  >
-                    <ButtonWithIcon
-                      handleBtn={handleAjukan}
-                      icon={Send}
-                      bgColor="bg-custom-primary"
-                      textColor="text-custom-secondary"
-                      label="Ajukan Sekarang"
-                      customWidth="w-full lg:w-auto"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================================
-        INFORMASI STOCK OPNAME
-    ============================================================ */}
-
         <InformasiStockOpnameDetail
-          author={informasiStockOpnameDetail.author}
-          tanggalDiajukan={informasiStockOpnameDetail.tanggalDiajukan}
-          isUpdate={informasiStockOpnameDetail.isUpdate}
           handleSetToast={handleSetToast}
-          totalProduk={informasiStockOpnameDetail.totalProduk}
-          totalItem={informasiStockOpnameDetail.totalItem}
-          totalItemMinus={informasiStockOpnameDetail.totalItemMinus}
-          totalItemSurplus={informasiStockOpnameDetail.totalItemSurplus}
-          totalNilaiMinus={informasiStockOpnameDetail.totalNilaiMinus}
-          totalNilaiSurplus={informasiStockOpnameDetail.totalNilaiSurplus}
-          idStockOpnameDetail={informasiStockOpnameDetail.idStockOpnameDetail}
-          isLoadingStocOpnameDetail={
-            informasiStockOpnameDetail.isLoadingStocOpnameDetail
-          }
-          keterangan={informasiStockOpnameDetail.keterangan}
-          status={informasiStockOpnameDetail.status}
-          tanggal={informasiStockOpnameDetail.tanggal}
-          role={pengguna?.role}
+          idStockOpnameDetail={stockOpnameIdFromParams}
+          fromPengajuan={fromPengajuan}
+          handleSetAlert={handleSetAlert}
+          pengguna={pengguna}
+          alert={alert}
+          handleSetData={setDataRef}
+          refreshDaftarProdukStockOpname={refreshDaftarProdukStockOpname}
         />
-
-        {/* ============================================================
-        FORM TAMBAH PRODUK
-    ============================================================ */}
-
-        {canShowFormTambahBarang && (
-          <FormulirTambahProdukStockOpnameDetail
-            handleSetToast={handleSetToast}
-            handleSetAlert={handleSetAlert}
-            alert={alert}
-            role={pengguna?.role}
-            produkChooseIds={
-              stockOpname?.details.map((detail) => detail.produk.id) ?? []
-            }
-            isGlobalLoading={isLoadingStockOpnameDetail}
-          />
-        )}
 
         {/* ============================================================
         DATA PRODUK
     ============================================================ */}
 
         <ShowStockOpname
-          dataStockOpnameDetail={stockOpname}
-          isCanUpdate={isCanManageDetail}
-          isLoadingStockOpnameDetail={isLoadingStockOpnameDetail}
+          ref={showStockRef}
+          isCanUpdate={dataRef?.isCanUpdate}
+          status={dataRef?.status}
           handleSetToast={handleSetToast}
           role={pengguna?.role}
-          stockOpnameId={stockOpname?.id ?? 0}
+          stockOpnameId={stockOpnameIdFromParams}
+          produkIdChoose={dataRef?.produkIdChoose ?? []}
         />
 
         {/* ============================================================
         MODAL CONFIRM SETUJU
     ============================================================ */}
-
-        <ModalAlert
-          modalRef={modalKonfirmasiRef}
-          handleCloseModal={handleCancel}
-          handleConfirm={handleConfirm}
-          bigTitle={dataConfirm?.bigTitle ?? ""}
-          smallTitle={dataConfirm?.smallTitle ?? ""}
-          isLoading={isPendingSetuju}
-          icon={Check}
-          iconColor="text-success"
-        />
-
-        {/* ============================================================
-        MODAL PENGAJUAN / PENOLAKAN
-    ============================================================ */}
-
-        <ModalFormulirVerifikasiOrPengajuanStockOpname
-          modalRef={modalFormulirRef}
-          handleCloseModal={handleCloseModalFormulir}
-          stockOpnameId={idModalFormulir ?? 0}
-          kodeReferensi={stockOpname?.kodeReferensi ?? ""}
-          type={dataModalFormulir?.type}
-          role={pengguna?.role}
-          handleSetAlert={handleSetAlert}
-        />
-
-        {/* ============================================================
-        MODAL DELETE DETAIL
-    ============================================================ */}
-
-        <ModalDelete
-          modalRef={modalDeleteRef}
-          handleCloseModal={handleCloseModalDelete}
-          handleDelete={handleDelete}
-          bigTitle={
-            "Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?"
-          }
-          highlightData={dataDelete?.kodeReferensi}
-          isLoadingDelete={isPendingDelete}
-        />
-
-        <ModalDelete
-          modalRef={modalDeleteStockOpnameRef}
-          handleCloseModal={handleCloseModalDeleteStockOpname}
-          handleDelete={handleDeleteStockOpname}
-          bigTitle={
-            "Apakah anda yakin ingin menghapus data dengan kode referensi dibawah ini?"
-          }
-          highlightData={dataDeleteStockOpname?.kodeReferensi}
-          isLoadingDelete={isPendingDeleteStockOpname}
-        />
       </div>
     </main>
   );

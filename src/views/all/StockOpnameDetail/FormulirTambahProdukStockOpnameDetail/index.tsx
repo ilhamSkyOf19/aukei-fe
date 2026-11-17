@@ -52,7 +52,6 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
         )}
       </div>
 
-      {/* modal formulir barang masuk */}
       <ModalFormulirTambahProdukStockOpname
         modalRef={modalFormulirTambahBarangRef}
         handleCloseModal={handleCloseModalFormulirTambahBarang}

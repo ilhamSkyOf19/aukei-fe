@@ -2,7 +2,9 @@ import instanceAxios from "../libs/axios";
 
 import type {
   CreateStockOpnameForRequestType,
+  ResponseDaftarProdukStockOpnameType,
   ResponseStockOpnameType,
+  ResponseStockOpnameWithDetailAndStatistikType,
   ResponseStockOpnameWithDetailType,
   ResponseStockOpnameWithMetaType,
   UpdateStockOpnameForRequestType,
@@ -135,10 +137,25 @@ export class StockOpnameServices {
 
   static async detail(params: {
     id: number;
-  }): Promise<ResponseStructure<ResponseStockOpnameWithDetailType | null>> {
+  }): Promise<
+    ResponseStructure<ResponseStockOpnameWithDetailAndStatistikType | null>
+  > {
     const result = await instanceAxios.get<
-      ResponseStructure<ResponseStockOpnameWithDetailType | null>
+      ResponseStructure<ResponseStockOpnameWithDetailAndStatistikType | null>
     >(`/stock-opname/${params.id}`);
+
+    return result.data;
+  }
+
+  static async getDaftarProduk(params: {
+    id: number;
+    query: Pick<PaginationType, "page" | "limit" | "sort">;
+  }): Promise<ResponseStructure<ResponseDaftarProdukStockOpnameType | null>> {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseDaftarProdukStockOpnameType | null>
+    >(`/stock-opname/${params.id}/daftar-produk`, {
+      params: params.query,
+    });
 
     return result.data;
   }

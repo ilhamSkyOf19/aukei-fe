@@ -3,17 +3,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useModal from "./useModal";
 
 import { StockOpnameDetailServices } from "../services/stockOpnameDetail.service";
+import type { StatusStockOpnameType } from "../types/constant.type";
 
 type DataDeleteType = {
   namaProduk?: string;
-
-  kodeReferensi?: string;
 };
 
 type Params = {
-  stockOpnameId?: number;
+  stockOpnameId?: number | null;
 
-  status?: string;
+  status?: StatusStockOpnameType | null;
 
   handleSetToast?: (type: string) => void;
 };
