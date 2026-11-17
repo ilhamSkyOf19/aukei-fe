@@ -3,7 +3,7 @@ import { parseId } from "../../helpers/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import axios from "axios";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import type { ResponseProdukForChooseType } from "../../models/produk.model";
 import type { ErrorResponse } from "../../types/response.type";
@@ -76,8 +76,6 @@ const useFormulirTambahStockOpname = (params: {
 
   const {
     control,
-    getValues,
-    setValue,
     reset,
     setError,
     clearErrors,
@@ -88,6 +86,9 @@ const useFormulirTambahStockOpname = (params: {
       details: [],
     },
   });
+
+  // watch
+  const watchDetails = useWatch({ control, name: "details" });
 
   // ============================================================
   // FIELD ARRAY
@@ -159,56 +160,6 @@ const useFormulirTambahStockOpname = (params: {
     }
 
     handleAppend(produk);
-  };
-
-  // ============================================================
-  // GET DETAIL
-  // ============================================================
-
-  const getDetail = (produkId: number) => {
-    const index = getFieldIndex(produkId);
-
-    if (index === -1) {
-      return undefined;
-    }
-
-    return getValues(`details.${index}`);
-  };
-
-  // ============================================================
-  // GET SELISIH
-  // ============================================================
-
-  const getSelisih = (produk: ResponseProdukForChooseType) => {
-    const detail = getDetail(produk.id);
-
-    if (!detail) {
-      return 0;
-    }
-
-    return detail.stokFisik - produk.stok;
-  };
-
-  // ============================================================
-  // CHANGE STOK FISIK
-  // ============================================================
-
-  const handleChangeStokFisik = (
-    produk: ResponseProdukForChooseType,
-    value: string,
-  ) => {
-    const index = getFieldIndex(produk.id);
-
-    if (index === -1) {
-      return;
-    }
-
-    const stokFisik = value === "" ? 0 : Number(value);
-
-    setValue(`details.${index}.stokFisik`, stokFisik, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
   };
 
   // ============================================================
@@ -340,14 +291,6 @@ const useFormulirTambahStockOpname = (params: {
     // ==========================================================
 
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["stock-opname-detail", validatedId],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["daftar-produk-stock-opname", validatedId],
-      });
-
       reset({
         details: [],
       });
@@ -355,6 +298,16 @@ const useFormulirTambahStockOpname = (params: {
       handleCloseModal();
 
       handleSetToast("stock_opname_detail_add_success");
+
+      Promise.allSettled([
+        queryClient.invalidateQueries({
+          queryKey: ["stock-opname-detail", validatedId],
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey: ["daftar-produk-stock-opname", validatedId],
+        }),
+      ]);
     },
 
     // ==========================================================
@@ -436,16 +389,6 @@ const useFormulirTambahStockOpname = (params: {
     }
   });
 
-  // ============================================================
-  // RESET FORM
-  // ============================================================
-
-  const handleReset = () => {
-    reset({
-      details: [],
-    });
-  };
-
   // use infinity scroll
   const { containerRef, loadMoreRef } = useInfiniteScroll({
     fetchNextPage,
@@ -459,88 +402,36 @@ const useFormulirTambahStockOpname = (params: {
   // ============================================================
 
   return {
-    // ========================================================
-    // PRODUK
-    // ========================================================
-
     dataProduk,
     isLoadingDataProduk,
 
-    // ========================================================
-    // FORM
-    // ========================================================
-
     control,
     fields,
-    errors,
-    getValues,
-    setValue,
-    setError,
-    clearErrors,
 
-    // ========================================================
-    // FIELD ARRAY
-    // ========================================================
-
-    append,
-    remove,
-
-    // ========================================================
-    // CHECK PRODUK
-    // ========================================================
-
-    isChecked,
-
-    // ========================================================
-    // PRODUK ACTION
-    // ========================================================
-
-    handleAppend,
-    handleRemove,
     handleToggleProduct,
-
-    // ========================================================
-    // STOK FISIK
-    // ========================================================
-
-    handleChangeStokFisik,
-    getSelisih,
-
-    // ========================================================
-    // PENYESUAIAN
-    // ========================================================
-
-    // ========================================================
-    // SELECT ALL
-    // ========================================================
 
     isAllChecked,
     handleToggleSelectAll,
 
-    // ========================================================
-    // SUBMIT
-    // ========================================================
-
     handleSubmit,
-    handleReset,
-
-    // ========================================================
-    // MUTATION
-    // ========================================================
 
     isPendingStockOpnameDetail,
+
+    errors,
 
     containerRef,
 
     loadMoreRef,
 
-    setSearch,
-
     handleKategori,
 
     kategori,
 
+    setSearch,
+
     isFetchingNextPage,
+
+    watchDetails,
   };
 };
 

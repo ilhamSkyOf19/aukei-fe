@@ -33,6 +33,8 @@ import InputChoose from "../../../../components/inputs/InputChoose";
 import ModalFormulirUbahProdukStockOpname from "../../../../components/modals/ModalFormulirUbahProdukStockOpname";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import type { ChildRef } from "../../../../types/ref.type";
+import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
+import FilterSort from "../../../../components/filters/Sort";
 
 // ============================================================
 // TYPE
@@ -85,6 +87,10 @@ const ShowStockOpname = forwardRef<ChildRef, Props>((props, ref) => {
     modalUpdateRef,
     dataDaftarProduk,
     isLoadingDaftarProduk,
+    handlePage,
+    handleLimit,
+    handleSort,
+    sort,
   } = useShowStockOpname({
     status,
     handleSetToast,
@@ -107,10 +113,17 @@ const ShowStockOpname = forwardRef<ChildRef, Props>((props, ref) => {
 
   return (
     <>
+      <div className="w-full flex flex-row justify-start items-start gap-2.5">
+        <FilterSort
+          setSort={handleSort}
+          value={sort}
+          customLabel={["A-Z", "Z-A"]}
+        />
+      </div>
+
       {/* ====================================================== */}
       {/* MOBILE */}
       {/* ====================================================== */}
-
       <div className="w-full flex flex-col justify-start items-center mt-2 gap-3 lg:hidden">
         {isLoadingDaftarProduk ? (
           <LoadingFetch />
@@ -281,7 +294,6 @@ const ShowStockOpname = forwardRef<ChildRef, Props>((props, ref) => {
           </div>
         )}
       </div>
-
       {/* ====================================================== */}
       {/* DESKTOP */}
       {/* ====================================================== */}
@@ -580,11 +592,18 @@ const ShowStockOpname = forwardRef<ChildRef, Props>((props, ref) => {
           </table>
         </div>
       </div>
-
+      <PaginationAndLimit
+        currentPage={dataDaftarProduk?.data?.meta.currentPage || null}
+        totalPage={dataDaftarProduk?.data?.meta.totalPage || null}
+        setPage={handlePage}
+        setLimit={handleLimit}
+        emptyData={!isExistData}
+        limit={dataDaftarProduk?.data?.meta?.limit}
+        totalData={dataDaftarProduk?.data?.meta?.totalData}
+      />
       {/* ====================================================== */}
       {/* MODAL DELETE */}
       {/* ====================================================== */}
-
       <ModalDelete
         modalRef={modalDeleteRef}
         handleCloseModal={handleCloseModalDelete}
@@ -592,7 +611,6 @@ const ShowStockOpname = forwardRef<ChildRef, Props>((props, ref) => {
         isLoadingDelete={isPendingDelete}
         bigTitle={`Apakah anda yakin ingin menghapus produk "${dataDelete?.namaProduk}" dari stok opname ini?`}
       />
-
       {/* modal update  */}
       <ModalFormulirUbahProdukStockOpname
         role={role}

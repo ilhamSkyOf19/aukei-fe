@@ -16,7 +16,7 @@ import { StockOpnameServices } from "../../../../services/stockOpname.service";
 import type { PayloadPenggunaInternalType } from "../../../../models/penggunaInternal.model";
 import { PengajuanStockOpnameServices } from "../../../../services/pengajuanStockOpname.service";
 import useConfirm from "../../../../hooks/useConfirm";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import type { ErrorResponse } from "../../../../types/response.type";
 
@@ -48,6 +48,8 @@ const useInformasiStockOpnameDetail = (params: {
   const [keyUpdate, setKeyUpdate] = useState<"tanggal" | "keterangan" | "">("");
 
   const navigate = useNavigate();
+
+  const currentPathname = useLocation().pathname;
 
   const {
     confirm,
@@ -81,10 +83,12 @@ const useInformasiStockOpnameDetail = (params: {
   });
 
   const handleRefresh = async () => {
-    await refreshDaftarProdukStockOpname();
-    await refetchStockOpnameDetail({
-      throwOnError: true,
-    });
+    Promise.allSettled([
+      refreshDaftarProdukStockOpname(),
+      refetchStockOpnameDetail({
+        throwOnError: true,
+      }),
+    ]);
   };
 
   const status = dataStockOpnameDetail?.data?.status;
@@ -305,51 +309,60 @@ const useInformasiStockOpnameDetail = (params: {
   };
 
   const handleTolak = () => {
-    console.log(dataStockOpnameDetail?.data?.id, isCanVerifikasi);
-    if (!dataStockOpnameDetail?.data?.id || !isCanVerifikasi) {
+    console.log(idStockOpnameDetail, isCanVerifikasi);
+    if (!idStockOpnameDetail || !isCanVerifikasi) {
       return;
     }
-    handleShowModalFormulir(dataStockOpnameDetail.data.id, "tolak");
+    handleShowModalFormulir(idStockOpnameDetail, "tolak");
   };
 
   const invalidateQueries = async () => {
-    await queryClient.invalidateQueries({
-      queryKey: ["stock-opname-detail", dataStockOpnameDetail?.data?.id],
-    });
+    Promise.allSettled([
+      queryClient.invalidateQueries({
+        queryKey: ["stock-opname-detail", idStockOpnameDetail],
+      }),
 
-    await queryClient.invalidateQueries({
-      queryKey: ["stock-opname"],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["daftar-produk-stock-opname", idStockOpnameDetail],
+      }),
 
-    await queryClient.invalidateQueries({
-      queryKey: ["notifikasi-global"],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["stock-opname"],
+      }),
 
-    await queryClient.invalidateQueries({
-      queryKey: [
-        "riwayat-pengajuan-stock-opname",
-        dataStockOpnameDetail?.data?.id,
-      ],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-global"],
+      }),
+
+      queryClient.invalidateQueries({
+        queryKey: ["riwayat-pengajuan-stock-opname", idStockOpnameDetail],
+      }),
+    ]);
   };
 
   const invalidateStockOpnameQueries = () => {
-    queryClient.invalidateQueries({
-      queryKey: ["stock-opname-detail", dataStockOpnameDetail?.data?.id],
-    });
+    Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: ["stock-opname-detail", idStockOpnameDetail],
+      }),
 
-    queryClient.invalidateQueries({
-      queryKey: ["notifikasi-global"],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["daftar-produk-stock-opname", idStockOpnameDetail],
+      }),
 
-    queryClient.invalidateQueries({
-      queryKey: ["notifikasi-produk"],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-global"],
+      }),
 
-    // invalidated riwayat
-    queryClient.invalidateQueries({
-      queryKey: ["riwayat-stock-opname", dataStockOpnameDetail?.data?.id],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-produk"],
+      }),
+
+      // invalidated riwayat
+      queryClient.invalidateQueries({
+        queryKey: ["riwayat-stock-opname", idStockOpnameDetail],
+      }),
+    ]);
   };
 
   const {
@@ -372,7 +385,7 @@ const useInformasiStockOpnameDetail = (params: {
   });
 
   const handleSetuju = async () => {
-    if (!dataStockOpnameDetail?.data?.id || !isCanVerifikasi) {
+    if (!idStockOpnameDetail || !isCanVerifikasi) {
       return;
     }
 
@@ -387,7 +400,7 @@ const useInformasiStockOpnameDetail = (params: {
       return;
     }
 
-    await mutateSetuju({ stokOpnameId: dataStockOpnameDetail.data.id });
+    await mutateSetuju({ stokOpnameId: idStockOpnameDetail });
   };
 
   const {
@@ -577,10 +590,10 @@ const useInformasiStockOpnameDetail = (params: {
   };
 
   const handleAjukan = () => {
-    if (!dataStockOpnameDetail?.data?.id || !isCanAjukan) {
+    if (!idStockOpnameDetail || !isCanAjukan) {
       return;
     }
-    handleShowModalFormulir(dataStockOpnameDetail?.data?.id, "pengajuan");
+    handleShowModalFormulir(idStockOpnameDetail, "pengajuan");
   };
 
   // Sinkronisasi data query ke parent
@@ -592,6 +605,10 @@ const useInformasiStockOpnameDetail = (params: {
       produkIdChoose: dataStockOpnameDetail.data.produkIdChooses,
     });
   }, [dataStockOpnameDetail?.data, handleSetData, isCanUpdate]);
+
+  const handleBack = () => {
+    return navigate(currentPathname.split("/").slice(0, -1).join("/"));
+  };
 
   return {
     errors,
@@ -642,6 +659,8 @@ const useInformasiStockOpnameDetail = (params: {
     modalKonfirmasiRef,
     idModalFormulir,
     dataModalFormulir,
+
+    handleBack,
   };
 };
 

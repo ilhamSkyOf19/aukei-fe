@@ -120,6 +120,7 @@ const InformasiStockOpnameDetail: FC<Props> = ({
     modalKonfirmasiRef,
     idModalFormulir,
     dataModalFormulir,
+    handleBack,
   } = useInformasiStockOpnameDetail({
     handleSetToast,
     idStockOpnameDetail,
@@ -144,11 +145,14 @@ const InformasiStockOpnameDetail: FC<Props> = ({
 
         <div className="w-full flex flex-row justify-between items-center">
           <div className="w-30">
-            <ButtonBackText label="Kembali" />
+            <ButtonBackText label="Kembali" handleClick={handleBack} />
           </div>
 
           {/* button refetch */}
-          <ButtonRefresh handleRefresh={() => handleRefresh()} />
+          <ButtonRefresh
+            handleRefresh={() => handleRefresh()}
+            notLoadingGlobal
+          />
         </div>
 
         {isLoadingStockOpnameDetail ? (

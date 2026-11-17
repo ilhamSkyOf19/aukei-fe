@@ -12,6 +12,7 @@ import useModal from "../../../../hooks/useModal";
 import { useQuery } from "@tanstack/react-query";
 import { StockOpnameServices } from "../../../../services/stockOpname.service";
 import type { ChildRef } from "../../../../types/ref.type";
+import { useFilter } from "../../../../hooks/useFilter";
 
 const useShowStockOpname = (params: {
   status?: StatusStockOpnameType | null;
@@ -26,18 +27,43 @@ const useShowStockOpname = (params: {
     "stokFisik" | "jenisPenyesuaian" | null
   >(null);
 
+  const { filter: sort, setFilter: handleSort } = useFilter({
+    paramName: "sort",
+    allowQuery: ["asc", "desc"],
+    defaultValueCustom: "asc",
+  });
+
+  const { filter: page, setFilter: handlePage } = useFilter({
+    paramName: "page",
+    isNumber: true,
+  });
+
+  // Filter jumlah data per halaman (query param "limit")
+  const { filter: limit, setFilter: handleLimit } = useFilter({
+    paramName: "limit",
+    isNumber: true,
+  });
+
   const {
     data: dataDaftarProduk,
     isLoading: isLoadingDaftarProduk,
     isFetching: isFetchingDaftarProduk,
     refetch: refetchDaftarProduk,
   } = useQuery({
-    queryKey: ["daftar-produk-stock-opname", stockOpnameId],
+    queryKey: [
+      "daftar-produk-stock-opname",
+      stockOpnameId,
+      { sort, page, limit },
+    ],
 
     queryFn: () =>
       StockOpnameServices.getDaftarProduk({
         id: stockOpnameId!,
-        query: {},
+        query: {
+          ...(sort && { sort }),
+          ...(page && { page }),
+          ...(limit && { limit }),
+        },
       }),
 
     enabled: !!stockOpnameId,
@@ -218,6 +244,11 @@ const useShowStockOpname = (params: {
     // daftar produk
     dataDaftarProduk,
     isLoadingDaftarProduk: isLoadingDaftarProduk || isFetchingDaftarProduk,
+
+    handlePage,
+    handleLimit,
+    handleSort,
+    sort,
   };
 };
 

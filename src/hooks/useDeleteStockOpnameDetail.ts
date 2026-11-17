@@ -34,13 +34,18 @@ const useDeleteStockOpnameDetail = (params: Params) => {
       }),
 
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["stock-opname-detail", stockOpnameId],
-      });
+      handleCloseModal();
 
       handleSetToast?.("deleted_stock_opname_detail");
 
-      handleCloseModal();
+      await Promise.allSettled([
+        queryClient.invalidateQueries({
+          queryKey: ["stock-opname-detail", stockOpnameId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["daftar-produk-stock-opname", stockOpnameId],
+        }),
+      ]);
     },
   });
 

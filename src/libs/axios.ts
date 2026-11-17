@@ -27,6 +27,7 @@ let refreshPromise: Promise<unknown> | null = null;
 
 instanceAxios.interceptors.response.use(
   async (response) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return response;
   },
   async (error) => {

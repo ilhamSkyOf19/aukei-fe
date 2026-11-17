@@ -285,7 +285,7 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
 
   // handle redirect
   const handleRedirectDetail = (id: number) => {
-    return navigate(`${currentPathname}/${id}`);
+    return navigate(`${currentPathname}/${id}?page=1`);
   };
 
   return {

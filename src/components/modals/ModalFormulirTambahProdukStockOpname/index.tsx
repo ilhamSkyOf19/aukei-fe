@@ -40,6 +40,8 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
 
     handleToggleProduct,
 
+    watchDetails,
+
     isAllChecked,
     handleToggleSelectAll,
 
@@ -311,6 +313,7 @@ const ModalFormulirTambahProdukStockOpname: FC<Props> = ({
             label="Simpan"
             isLoading={isPendingStockOpnameDetail}
             handleBtn={handleSubmit}
+            disabled={watchDetails.length === 0}
           />
         </div>
       </div>

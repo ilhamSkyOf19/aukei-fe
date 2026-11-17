@@ -81,9 +81,14 @@ const useUpdateProdukStockOpname = (params: {
         }),
 
       onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["stock-opname-detail"],
-        });
+        Promise.allSettled([
+          queryClient.invalidateQueries({
+            queryKey: ["stock-opname-detail"],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: ["daftar-produk-stock-opname"],
+          }),
+        ]);
 
         navigate(currentPathname, {
           state: {
