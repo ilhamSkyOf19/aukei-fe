@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAlertAnimation } from "../../../hooks/useAlert";
@@ -33,6 +33,13 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   // navigate
   const navigate = useNavigate();
 
+  const currentPathname = useLocation().pathname;
+
+  const linkBack = currentPathname
+    .split("/")
+    .slice(0, pengguna?.role === ROLE_INTERNAL_TYPE.KASIR ? -1 : -2)
+    .join("/");
+
   // show modal konfirmasi posting
   const {
     modalRef: modalKonfirmasiPostingRef,
@@ -60,18 +67,8 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
         }
       | undefined,
   ) => {
-    if (dataBarangKeluarDetail?.data?.detailBarangKeluars.length === 0) {
+    if (dataBarangKeluarDetail?.data?.totalBarangKeluar === 0) {
       handleSetAlert("empty_barang_keluar");
-      return;
-    }
-
-    // check some stok keluar > current stok
-    if (
-      dataBarangKeluarDetail?.data?.detailBarangKeluars.some(
-        (item) => item.jumlahStok > item.produk.stok,
-      )
-    ) {
-      handleSetAlert("stok_not_enough");
       return;
     }
 
@@ -80,25 +77,31 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
   // invalidate
   const invalidateQueries = () => {
-    // revalidated
-    queryClient.invalidateQueries({
-      queryKey: ["barang-keluar-detail", validatedId],
-    });
+    Promise.allSettled([
+      // revalidated
+      queryClient.invalidateQueries({
+        queryKey: ["barang-keluar-detail", barangMasukIdFromParams],
+      }),
 
-    // revalidated
-    queryClient.invalidateQueries({
-      queryKey: ["notifikasi-global"],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["daftar-barang-keluar", barangMasukIdFromParams],
+      }),
 
-    // revalidated
-    queryClient.invalidateQueries({
-      queryKey: ["notifikasi-produk"],
-    });
+      // revalidated
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-global"],
+      }),
 
-    // invalidated riwayat
-    queryClient.invalidateQueries({
-      queryKey: ["riwayat-pengajuan-barang-keluar", validatedId],
-    });
+      // revalidated
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-produk"],
+      }),
+
+      // invalidated riwayat
+      queryClient.invalidateQueries({
+        queryKey: ["riwayat-pengajuan-barang-keluar", barangMasukIdFromParams],
+      }),
+    ]);
   };
 
   // use alert
@@ -110,17 +113,17 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   // get id from params
   const { id } = useParams<{ id: string }>();
   // parse
-  const validatedId = parseId(id);
+  const barangMasukIdFromParams = parseId(id);
 
   // use query
   const {
     data: dataBarangKeluarDetail,
-    isLoading: isLoadingBarangKeluarDetail,
     isFetching: isFetchingBarangKeluarDetail,
   } = useQuery({
-    queryKey: ["barang-keluar-detail", validatedId],
-    queryFn: () => BarangKeluarServices.detail({ id: validatedId! }),
-    enabled: !!validatedId,
+    queryKey: ["barang-keluar-detail", barangMasukIdFromParams],
+    queryFn: () =>
+      BarangKeluarServices.detail({ id: barangMasukIdFromParams! }),
+    enabled: !!barangMasukIdFromParams,
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -164,18 +167,8 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
       )
         return;
 
-      if (dataBarangKeluarDetail?.data?.detailBarangKeluars.length === 0) {
+      if (dataBarangKeluarDetail?.data?.totalBarangKeluar === 0) {
         handleSetAlert("empty_barang_keluar");
-        return;
-      }
-
-      // check some stok keluar > current stok
-      if (
-        dataBarangKeluarDetail?.data?.detailBarangKeluars.some(
-          (item) => item.jumlahStok > item.produk.stok,
-        )
-      ) {
-        handleSetAlert("stok_not_enough");
         return;
       }
 
@@ -337,7 +330,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     modalDeleteRef,
   } = useDeleteBarangKeluar({
     redirect: () => {
-      navigate("/dashboard/inventori", {
+      navigate(linkBack, {
         state: {
           toast: "deleted_barang_keluar",
         },
@@ -371,7 +364,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
   const handleSetuju = async () => {
     try {
       // check validated id
-      if (!validatedId || !fromPengajuanBarang) return;
+      if (!barangMasukIdFromParams || !fromPengajuanBarang) return;
 
       // confirm
       const isConfirm = await confirm({
@@ -385,7 +378,7 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
       }
 
       await mutateVerifikasiPengajuanBarang({
-        barangKeluarId: validatedId,
+        barangKeluarId: barangMasukIdFromParams,
         status: STATUS_INVENTORI_TYPE.POSTED,
       });
     } catch (error) {
@@ -419,16 +412,9 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     usePrintInvoiceBarangKeluar({ handleSetAlert });
 
   const informasiBarangKeluar = useMemo(() => {
-    const detailBarangKeluars =
-      dataBarangKeluarDetail?.data?.detailBarangKeluars ?? [];
-
     return {
-      isLoadingBarangKeluarDetail,
-      totalItemKeluar: detailBarangKeluars.reduce(
-        (acc, item) => acc + item.jumlahStok,
-        0,
-      ),
-      totalBarangKeluar: detailBarangKeluars.length,
+      totalItemKeluar: dataBarangKeluarDetail?.data?.jumlahStokKeluar,
+      totalBarangKeluar: dataBarangKeluarDetail?.data?.totalBarangKeluar,
       tanggalKeluar: dataBarangKeluarDetail?.data?.tanggalKeluar,
       keterangan: dataBarangKeluarDetail?.data?.keterangan ?? undefined,
       totalNilai: dataBarangKeluarDetail?.data?.totalNilai ?? undefined,
@@ -441,17 +427,15 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
         dataBarangKeluarDetail?.data?.tanggalDiajukan ?? undefined,
       isUpdate: isCanUpdate,
     };
-  }, [
-    dataBarangKeluarDetail,
-    isLoadingBarangKeluarDetail,
-    handleSetToast,
-    isCanUpdate,
-  ]);
+  }, [dataBarangKeluarDetail, handleSetToast, isCanUpdate]);
+
+  const handleBack = () => {
+    return navigate(linkBack);
+  };
 
   return {
     dataBarangKeluarDetail,
-    isLoadingBarangKeluarDetail:
-      isLoadingBarangKeluarDetail || isFetchingBarangKeluarDetail,
+    isLoadingBarangKeluarDetail: isFetchingBarangKeluarDetail,
     alert,
     toast,
     handlePosting,
@@ -502,6 +486,9 @@ const useBarangKeluarDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isPendingDownloadInvoiceBarangKeluar,
 
     informasiBarangKeluar,
+
+    barangMasukIdFromParams,
+    handleBack,
   };
 };
 

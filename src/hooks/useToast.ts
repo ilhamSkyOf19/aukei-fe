@@ -1,26 +1,31 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import type { Toast } from "../types/toast.type";
 
 export const useToastAnimation = (
   duration: number = 3000,
   fadeOut: number = 500,
 ) => {
-  const navigate = useNavigate();
   const location = useLocation();
   const [toast, setToast] = useState<Toast | null>(null);
   const fadeOutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const removeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const handledKeyRef = useRef<string | null>(null);
+
   useEffect(() => {
-    if (location.state?.toast) {
-      addToast(location.state.toast);
-      navigate(location.pathname + location.search, {
-        replace: true,
-        state: null,
-      });
-    }
-  }, [location.state, location.pathname]);
+    const toastType = location.state?.toast;
+
+    // cegah toast muncul dua kali untuk navigasi yang sama
+    if (!toastType || handledKeyRef.current === location.key) return;
+
+    handledKeyRef.current = location.key;
+
+    addToast(toastType);
+
+    // hapus state tanpa menyentuh URL (tanpa argumen ke-3)
+    window.history.replaceState({ ...window.history.state, usr: null }, "");
+  }, [location.key, location.state]);
 
   // cleanup saat unmount
   useEffect(() => {

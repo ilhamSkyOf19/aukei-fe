@@ -91,7 +91,25 @@ export interface ResponseBarangMasukWithMetaType {
 // RESPONSE WITH DETAIL
 // ============================================================
 
-export interface ResponseBarangMasukWithDetailType extends ResponseBarangMasukType {
+export interface ResponseBarangMasukWithDetailType extends Omit<
+  ResponseBarangMasukType,
+  "detailBarangMasuks"
+> {
+  totalBarangMasuk: number;
+  totalBox: number;
+  totalPcs: number;
+  produkIdChooses?: number[];
+  ownerAuthor?: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "username" | "role"
+  > | null;
+  tanggalDiajukan?: Date | null;
+}
+
+export interface ResponseBarangMasukForInvoiceType extends Omit<
+  ResponseBarangMasukType,
+  "detailBarangMasuks"
+> {
   detailBarangMasuks: Array<
     Omit<IBarangMasukDetailType, "barangMasukId"> & {
       stokMinimum?: number;
@@ -102,27 +120,19 @@ export interface ResponseBarangMasukWithDetailType extends ResponseBarangMasukTy
     IPenggunaInternalType,
     "id" | "nama" | "username" | "role"
   > | null;
-
   tanggalDiajukan?: Date | null;
 }
 
-// ============================================================
-// POSTED SERVICE
-// ============================================================
-//
-// Tidak lagi menerima:
-// - barangMasukDetails
-// - jumlahStok
-// - sisaStok
-// - stok dari request
-// - hargaBeliTerakhir dari request
-//
-// Semua data costing dan stok diambil dari database oleh service.
-//
-// Status tetap dikirim karena merupakan bagian dari lifecycle
-// BarangMasuk.
-//
-// ============================================================
+export interface ResponseBarangMasukWithDaftarProdukType extends Pick<
+  ResponseBarangMasukType,
+  "status" | "postedAt" | "updatedAt"
+> {
+  produkDetails: Array<{
+    produkId: number;
+    currentStok: number;
+    stokMinimum: number;
+  }>;
+}
 
 export interface PostedBarangMasukForServiceType {
   barangMasukId: number;

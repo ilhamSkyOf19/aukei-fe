@@ -25,8 +25,8 @@ type Props = {
   isLoadingBarangKeluarDetail?: boolean;
   tanggalKeluar?: Date;
   keterangan?: string;
-  totalBarangKeluar: number;
-  totalItemKeluar: number;
+  totalBarangKeluar?: number;
+  totalItemKeluar?: number;
   totalNilai?: number;
   idBarangKeluarDetail?: number;
   handleSetToast: (data: string) => void;

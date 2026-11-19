@@ -2,12 +2,29 @@ import instanceAxios from "../libs/axios";
 import type {
   CreateBarangKeluarDetailType,
   ResponseBarangKeluarDetailType,
+  ResponseBarangKeluarDetailWithMetaType,
   UpdateBarangKeluarDetailType,
 } from "../models/barangKeluarDetail.model";
+import type { PaginationType } from "../models/pagination.model";
 import type { StatusInventoriType } from "../types/constant.type";
 import type { ResponseStructure } from "../types/response.type";
 
 export class BarangKeluarDetailServices {
+  static async findByBarangKeluarId(params: {
+    barangKeluarId: number;
+    query: PaginationType;
+  }): Promise<
+    ResponseStructure<ResponseBarangKeluarDetailWithMetaType | null>
+  > {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseBarangKeluarDetailWithMetaType | null>
+    >(`/barang-keluar-detail/barang-keluar/${params.barangKeluarId}`, {
+      params: params.query,
+    });
+
+    return result.data;
+  }
+
   // add barang
   static async addBarangKeluar(
     req: CreateBarangKeluarDetailType,

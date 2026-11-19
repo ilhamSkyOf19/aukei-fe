@@ -148,19 +148,24 @@ const ModalUbahProdukKeluar: FC<Props> = ({
                         </div>
                       ) : dataProdukForChoose?.data &&
                         dataProdukForChoose?.data?.length > 0 ? (
-                        dataProdukForChoose?.data?.map((item, _) => (
-                          <CardProdukForChooseInventori
-                            disabled={
-                              dataChooseIds?.some(
-                                (produk) => produk === item.id,
-                              ) || produkChoose?.id === item.id
-                            }
-                            hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
-                            key={item.id}
-                            data={item}
-                            handleSetValueProdukId={handleSetValueProdukId}
-                          />
-                        ))
+                        dataProdukForChoose?.data?.map((item, _) => {
+                          const isChoose =
+                            dataChooseIds?.some(
+                              (produk) => produk === item.id,
+                            ) || produkChoose?.id === item.id;
+
+                          const isStockNotEnough = item.stok === 0;
+                          return (
+                            <CardProdukForChooseInventori
+                              disabled={isChoose}
+                              stockNotEnoughDisabled={isStockNotEnough}
+                              hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
+                              key={item.id}
+                              data={item}
+                              handleSetValueProdukId={handleSetValueProdukId}
+                            />
+                          );
+                        })
                       ) : (
                         <div className="w-full h-full flex flex-col justify-center items-center">
                           <p className="text-xs font-medium text-base-content/50">

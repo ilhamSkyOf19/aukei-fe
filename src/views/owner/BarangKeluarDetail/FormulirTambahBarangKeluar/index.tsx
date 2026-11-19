@@ -19,6 +19,7 @@ type Props = {
   handleSetAlert: (data: string) => void;
   isGlobalLoading?: boolean;
   role?: RoleInternalType;
+  produkIdChooses?: number[];
 };
 const FormulirTambahBarangKeluar: FC<Props> = ({
   totalBarang,
@@ -26,6 +27,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
   handleSetAlert,
   isGlobalLoading,
   role,
+  produkIdChooses,
 }) => {
   const {
     dataProdukForChoose,
@@ -52,6 +54,10 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
     handleSetToast,
     handleSetAlert,
   });
+
+  const allProdukIdChooses: number[] = [
+    ...new Set([produkChoose?.id ?? 0, ...(produkIdChooses || [])]),
+  ];
 
   return (
     <div
@@ -105,6 +111,8 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
             dataProdukForChoose={dataProdukForChoose}
             error={errors.produkId?.message}
             isLoadingProdukForChoose={isLoadingProdukForChoose}
+            produkIdChooses={allProdukIdChooses}
+            stockNotEnoughDisabled
           />
 
           {/* input jumlah stok */}
@@ -153,6 +161,7 @@ const FormulirTambahBarangKeluar: FC<Props> = ({
         modalRef={modalFormulirTambahBarangKeluarRef}
         handleCloseModal={handleCloseModalFormulirTambahBarangKeluar}
         role={role}
+        produkIdChooses={produkIdChooses}
       />
     </div>
   );

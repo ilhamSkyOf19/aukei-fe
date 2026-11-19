@@ -147,9 +147,14 @@ const useModalUbahProdukMasuk = (params: {
       }),
 
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ["barang-masuk-detail", validatedId],
-      });
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["barang-masuk-detail", validatedId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["daftar-barang-masuk", validatedId],
+        }),
+      ]);
 
       if (data?.data) {
         reset({

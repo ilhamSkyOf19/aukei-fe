@@ -75,6 +75,9 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     isLoadingPrintInvoiceBarangKeluar,
 
     informasiBarangKeluar,
+
+    barangMasukIdFromParams,
+    handleBack,
   } = useBarangKeluarDetail({ fromPengajuanBarang });
 
   return (
@@ -102,7 +105,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       <div className="rounded-2xl md:rounded-xl bg-base-100 shadow-xs dark:border dark:border-base-content/10 w-full flex flex-col justify-start p-2 lg:p-4">
         {/* button back */}
         <div className="w-30">
-          <ButtonBackText label="Kembali" />
+          <ButtonBackText label="Kembali" handleClick={handleBack} />
         </div>
 
         {isLoadingBarangKeluarDetail ? (
@@ -323,7 +326,6 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
                   />
 
                   {/* caption */}
-                  {/* buat count down */}
                   {isStatusPosted && (
                     <span className="text-[0.635rem] lg:hidden text-base-content/50">
                       {`Anda dapat membatalkan postingan sebelum ${formatTanggalLengkap(
@@ -342,9 +344,7 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
 
       {/* informasi tanggal dan keterangan */}
       <InformasiBarangKeluar
-        isLoadingBarangKeluarDetail={
-          informasiBarangKeluar.isLoadingBarangKeluarDetail
-        }
+        isLoadingBarangKeluarDetail={isLoadingBarangKeluarDetail}
         totalItemKeluar={informasiBarangKeluar.totalItemKeluar}
         totalBarangKeluar={informasiBarangKeluar.totalBarangKeluar}
         tanggalKeluar={informasiBarangKeluar.tanggalKeluar}
@@ -367,21 +367,20 @@ const BarangKeluarDetail: FC<Props> = ({ fromPengajuanBarang }) => {
       {canShowFormTambahBarang && (
         <FormulirTambahBarangKeluar
           role={pengguna?.role}
-          totalBarang={
-            dataBarangKeluarDetail?.data?.detailBarangKeluars?.length ?? 0
-          }
+          totalBarang={dataBarangKeluarDetail?.data?.totalBarangKeluar ?? 0}
           handleSetToast={handleSetToast}
           handleSetAlert={handleSetAlert}
           isGlobalLoading={isPendingPosting}
+          produkIdChooses={dataBarangKeluarDetail?.data?.produkIdChooses}
         />
       )}
 
       {/* show data */}
       <ShowDataBarangKeluar
-        isLoadingBarangKeluarDetail={isLoadingBarangKeluarDetail}
-        dataBarangKeluarDetail={dataBarangKeluarDetail}
         role={pengguna?.role}
         handleSetAlert={handleSetAlert}
+        barangKeluarId={barangMasukIdFromParams}
+        status={dataBarangKeluarDetail?.data?.status}
       />
 
       {/* modal konfirmasi */}

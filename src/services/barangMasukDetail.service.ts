@@ -1,13 +1,30 @@
 import instanceAxios from "../libs/axios";
 import type {
   CreateBarangMasukDetailType,
+  ResponseBarangMasukDaftarProdukWithMetaType,
   ResponseBarangMasukDetailType,
   UpdateBarangMasukDetailType,
 } from "../models/barangMasukDetail.model";
+import type { PaginationType } from "../models/pagination.model";
 import type { StatusInventoriType } from "../types/constant.type";
 import type { ResponseStructure } from "../types/response.type";
 
 export class BarangMasukDetailServices {
+  static async findByBarangMasukId(params: {
+    barangMasukId: number;
+    query: PaginationType;
+  }): Promise<
+    ResponseStructure<ResponseBarangMasukDaftarProdukWithMetaType | null>
+  > {
+    const result = await instanceAxios.get<
+      ResponseStructure<ResponseBarangMasukDaftarProdukWithMetaType | null>
+    >(`/barang-masuk-detail/barang-masuk/${params.barangMasukId}`, {
+      params: params.query,
+    });
+
+    return result.data;
+  }
+
   // add barang
   static async addBarang(
     req: CreateBarangMasukDetailType,

@@ -22,6 +22,7 @@ type Props = {
   handleCloseModal: () => void;
   fromPengajuanBarang?: boolean;
   role?: RoleInternalType;
+  produkIdChooses?: number[];
 };
 
 const ModalFormulirTambahBarangMasuk: FC<Props> = ({
@@ -29,6 +30,7 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
   handleCloseModal,
   role,
   fromPengajuanBarang,
+  produkIdChooses,
 }) => {
   const {
     handleSubmit,
@@ -54,6 +56,13 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
   } = useModalFormulirTambahBarangMasuk({
     handleCloseModal,
   });
+
+  const allProdukIdChooses: number[] = [
+    ...new Set([
+      ...produkChoose.map((item) => item.id),
+      ...(produkIdChooses || []),
+    ]),
+  ];
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal lg:hidden">
@@ -127,14 +136,20 @@ const ModalFormulirTambahBarangMasuk: FC<Props> = ({
                         </div>
                       ) : dataProdukForChoose?.data &&
                         dataProdukForChoose?.data?.length > 0 ? (
-                        dataProdukForChoose?.data?.map((item, _) => (
-                          <CardProdukForChooseInventori
-                            hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
-                            key={item.id}
-                            data={item}
-                            handleSetValueProdukId={handleSetValueProdukId}
-                          />
-                        ))
+                        dataProdukForChoose?.data?.map((item, _) => {
+                          const isChoose = allProdukIdChooses?.includes(
+                            item.id,
+                          );
+                          return (
+                            <CardProdukForChooseInventori
+                              hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
+                              key={item.id}
+                              data={item}
+                              handleSetValueProdukId={handleSetValueProdukId}
+                              disabled={isChoose}
+                            />
+                          );
+                        })
                       ) : (
                         <div className="w-full h-full flex flex-col justify-center items-center">
                           <p className="text-xs font-medium text-base-content/50">

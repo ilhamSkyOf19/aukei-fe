@@ -120,9 +120,14 @@ const useModalUbahProdukKeluar = (params: {
       }),
 
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ["barang-keluar-detail", validatedId],
-      });
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["barang-keluar-detail", validatedId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["daftar-barang-keluar", validatedId],
+        }),
+      ]);
 
       if (data?.data) {
         reset({

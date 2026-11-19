@@ -5,9 +5,9 @@ import { usePaginationWindow } from "../../../hooks/usePaginationWindows";
 import Pagination from "../../ui/Pagination";
 
 interface PaginationAndLimitProps {
-  currentPage: number | null;
+  currentPage?: number | null;
   setPage: (value: string) => void;
-  totalPage: number | null;
+  totalPage?: number | null;
   setLimit?: (value: string) => void;
   emptyData?: boolean;
   customWindowSize?: 3 | 5 | 7;

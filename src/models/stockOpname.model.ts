@@ -110,6 +110,19 @@ export interface ResponseStockOpnameWithDetailType extends ResponseStockOpnameTy
   riwayat: ResponseRiwayatStockOpnameType[];
 }
 
+export interface ResponseStockOpnameForCancelPostedType extends ResponseStockOpnameType {
+  adminOpname: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "username" | "role" | "isActive"
+  >;
+  verifiedBy: Pick<
+    IPenggunaInternalType,
+    "id" | "nama" | "username" | "role" | "isActive"
+  > | null;
+  riwayat: ResponseRiwayatStockOpnameType[];
+  details: { produkId: number; stokSistem: number; stokMinimum: number }[];
+}
+
 export interface ResponseStockOpnameWithDetailAndStatistikType extends ResponseStockOpnameType {
   adminOpname: Pick<
     IPenggunaInternalType,

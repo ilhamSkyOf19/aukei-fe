@@ -46,7 +46,6 @@ const useShowStockOpname = (params: {
 
   const {
     data: dataDaftarProduk,
-    isLoading: isLoadingDaftarProduk,
     isFetching: isFetchingDaftarProduk,
     refetch: refetchDaftarProduk,
   } = useQuery({
@@ -243,7 +242,7 @@ const useShowStockOpname = (params: {
 
     // daftar produk
     dataDaftarProduk,
-    isLoadingDaftarProduk: isLoadingDaftarProduk || isFetchingDaftarProduk,
+    isLoadingDaftarProduk: isFetchingDaftarProduk,
 
     handlePage,
     handleLimit,

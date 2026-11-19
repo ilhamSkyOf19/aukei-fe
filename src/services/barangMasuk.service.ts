@@ -69,10 +69,10 @@ export class BarangMasukServices {
   // posted
   static async posted(
     barangMasukId: number,
-  ): Promise<ResponseStructure<ResponseBarangMasukWithMetaType | null>> {
+  ): Promise<ResponseStructure<ResponseBarangMasukWithDetailType | null>> {
     // call api
     const result = await instanceAxios.put<
-      ResponseStructure<ResponseBarangMasukWithMetaType | null>
+      ResponseStructure<ResponseBarangMasukWithDetailType | null>
     >(`/barang-masuk/${barangMasukId}/posted`);
 
     return result.data;
@@ -81,10 +81,10 @@ export class BarangMasukServices {
   // cancel posted
   static async cancelPosted(
     barangMasukId: number,
-  ): Promise<ResponseStructure<ResponseBarangMasukWithMetaType | null>> {
+  ): Promise<ResponseStructure<ResponseBarangMasukWithDetailType | null>> {
     // call api
     const result = await instanceAxios.put<
-      ResponseStructure<ResponseBarangMasukWithMetaType | null>
+      ResponseStructure<ResponseBarangMasukWithDetailType | null>
     >(`/barang-masuk/${barangMasukId}/cancel-posted`);
 
     return result.data;

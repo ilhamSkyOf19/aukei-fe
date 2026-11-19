@@ -2,6 +2,7 @@
 // BARANG KELUAR DETAIL
 // ============================================================
 
+import type { MetaType } from "../types/constant.type";
 import type { IProduk } from "./produk.model";
 
 export interface IBarangKeluarDetailType {
@@ -65,3 +66,12 @@ export interface ResponseBarangKeluarDetailType extends IBarangKeluarDetailType 
 export const toResponseBarangKeluarDetail = (
   barangKeluarDetail: ResponseBarangKeluarDetailType,
 ): ResponseBarangKeluarDetailType => barangKeluarDetail;
+
+export interface ResponseBarangKeluarDetailWithMetaType {
+  detailBarangKeluars: Array<
+    Omit<IBarangKeluarDetailType, "barangKeluarId"> & {
+      stokMinimum?: number;
+    }
+  >;
+  meta: MetaType;
+}

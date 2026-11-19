@@ -113,7 +113,7 @@ const useInformasiBarangMasuk = (params: {
         }
 
         // refetch
-        queryClient.refetchQueries({
+        queryClient.invalidateQueries({
           queryKey: ["barang-masuk-detail", idBarangMasukDetail],
         });
 

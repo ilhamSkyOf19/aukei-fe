@@ -142,7 +142,11 @@ const ShowStockOpname = forwardRef<ChildRef, Props>((props, ref) => {
                   <div className="flex items-center gap-3">
                     <div className="avatar">
                       <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
-                        <img src={item.produk.img} alt="Foto Produk" />
+                        <img
+                          src={item.produk.img}
+                          alt="Foto Produk"
+                          loading="lazy"
+                        />
                       </div>
                     </div>
                   </div>
@@ -600,6 +604,7 @@ const ShowStockOpname = forwardRef<ChildRef, Props>((props, ref) => {
         emptyData={!isExistData}
         limit={dataDaftarProduk?.data?.meta?.limit}
         totalData={dataDaftarProduk?.data?.meta?.totalData}
+        isLoading={isLoadingDaftarProduk}
       />
       {/* ====================================================== */}
       {/* MODAL DELETE */}

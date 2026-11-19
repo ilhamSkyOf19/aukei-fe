@@ -105,9 +105,14 @@ const useModalFormulirTambahBarangMasuk = (params: {
       BarangMasukDetailServices.addBarang(req),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["barang-masuk-detail", validatedId],
-      });
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["barang-masuk-detail", validatedId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["daftar-barang-masuk", validatedId],
+        }),
+      ]);
 
       reset({
         barangMasukId: validatedId!,

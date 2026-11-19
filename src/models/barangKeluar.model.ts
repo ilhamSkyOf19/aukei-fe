@@ -68,11 +68,9 @@ export interface ResponseBarangKeluarWithMetaType {
 
 // find by id
 export interface ResponseBarangKeluarWithDetailType extends ResponseBarangKeluarType {
-  detailBarangKeluars: Array<
-    Omit<IBarangKeluarDetailType, "barangKeluarId"> & {
-      stokMinimum?: number;
-    }
-  >;
+  totalBarangKeluar: number;
+  jumlahStokKeluar: number;
+  produkIdChooses?: number[];
   ownerAuthor?: Pick<
     IPenggunaInternalType,
     "id" | "nama" | "username" | "role"

@@ -1,5 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useHighlight from "../../../../hooks/useHighlight";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useModal from "../../../../hooks/useModal";
 import { BarangMasukDetailServices } from "../../../../services/barangMasukDetail.service";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,12 +10,19 @@ import type { UpdateBarangMasukDetailType } from "../../../../models/barangMasuk
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useController, useForm } from "react-hook-form";
 import { BarangMasukDetailValidation } from "../../../../validations/barangMasukDetail.validation";
-import { useState } from "react";
+import { useImperativeHandle, useState, type ForwardedRef } from "react";
 import axios from "axios";
 import type { ErrorResponse } from "../../../../types/response.type";
+import type { ChildRef } from "../../../../types/ref.type";
+import { useFilter } from "../../../../hooks/useFilter";
+import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 
-const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
-  const { status } = params;
+const useShowBarangMasuk = (params: {
+  status?: StatusInventoriType;
+  barangMasukId?: number | null;
+  ref: ForwardedRef<ChildRef>;
+}) => {
+  const { status, barangMasukId, ref } = params;
 
   // query client
   const queryClient = useQueryClient();
@@ -26,6 +32,25 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
 
   // current pathname
   const currentPathname = useLocation().pathname;
+
+  const { filter: sort, setFilter: handleSort } = useFilter({
+    paramName: "sort",
+    allowQuery: ["asc", "desc"],
+    defaultValueCustom: "asc",
+  });
+
+  const { filter: page, setFilter: handlePage } = useFilter({
+    paramName: "page",
+    isNumber: true,
+  });
+
+  // Filter jumlah data per halaman (query param "limit")
+  const { filter: limit, setFilter: handleLimit } = useFilter({
+    paramName: "limit",
+    isNumber: true,
+  });
+
+  const { search, setSearch: handleSearch } = useFilterSearch("search");
 
   // use modal
   const {
@@ -56,6 +81,48 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     hargaBeli: number;
   }>();
 
+  const invalidatedQueries = () => {
+    Promise.allSettled([
+      queryClient.invalidateQueries({ queryKey: ["barang-masuk-detail"] }),
+      queryClient.invalidateQueries({ queryKey: ["daftar-barang-masuk"] }),
+    ]);
+  };
+
+  const {
+    data: daftarBarangMasukDetail,
+    refetch: refetchBarangMasukDetail,
+    isFetching: isFetchingBarangMasukDetail,
+  } = useQuery({
+    queryKey: [
+      "daftar-barang-masuk",
+      barangMasukId,
+      { sort, page, limit, search },
+    ],
+    queryFn: () =>
+      BarangMasukDetailServices.findByBarangMasukId({
+        barangMasukId: barangMasukId!,
+        query: {
+          ...(sort && { sort }),
+          ...(page && { page }),
+          ...(limit && { limit }),
+          ...(search && { search }),
+        },
+      }),
+    enabled: !!barangMasukId,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const handleRefresh = async () => {
+    await refetchBarangMasukDetail({
+      throwOnError: true,
+    });
+  };
+
+  useImperativeHandle(ref, () => ({
+    refetchActive: handleRefresh,
+  }));
+
   //   use mutation
   const { mutateAsync: mutateDelete, isPending: isPendingDelete } = useMutation(
     {
@@ -63,7 +130,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
         BarangMasukDetailServices.delete(data),
       onSuccess: () => {
         // invalidate
-        queryClient.invalidateQueries({ queryKey: ["barang-masuk-detail"] });
+        invalidatedQueries();
 
         // set toast
         navigate(currentPathname, {
@@ -219,9 +286,7 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
         }),
       onSuccess: () => {
         // invalidate
-        queryClient.invalidateQueries({
-          queryKey: ["barang-masuk-detail"],
-        });
+        invalidatedQueries();
 
         // set toast
         navigate(currentPathname, {
@@ -267,18 +332,16 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     }
   };
 
-  // highlight
-  const {
-    handleSetIsHighlight: handleSetIsActiveAksi,
-    isHighlight: isActiveAksi,
-  } = useHighlight();
-
   // status
   const isStatusPosted = status === STATUS_INVENTORI_TYPE.POSTED;
 
+  const isExistData =
+    daftarBarangMasukDetail?.data &&
+    daftarBarangMasukDetail?.data?.detailBarangMasuks?.length > 0
+      ? true
+      : false;
+
   return {
-    handleSetIsActiveAksi,
-    isActiveAksi,
     handleShowModalDelete,
     handleCloseModalDelete,
     modalDeleteRef,
@@ -301,6 +364,16 @@ const useShowBarangMasuk = (params: { status?: StatusInventoriType }) => {
     dataUpdateBarangMasuk,
     hargaBeliController,
     jumlahStokController,
+
+    daftarBarangMasukDetail,
+    isLoadingBarangMasukDetail: isFetchingBarangMasukDetail,
+
+    handleSearch,
+    handleLimit,
+    handlePage,
+    handleSort,
+    sort,
+    isExistData,
   };
 };
 

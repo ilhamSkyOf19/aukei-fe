@@ -22,6 +22,8 @@ type Props = {
   hargaBeli?: boolean;
   hargaModal?: boolean;
   formInputRef?: RefObject<HTMLInputElement | null>;
+  produkIdChooses?: number[];
+  stockNotEnoughDisabled?: boolean;
 };
 const FormCariProdukInventori: FC<Props> = ({
   inputSearchRef,
@@ -37,6 +39,8 @@ const FormCariProdukInventori: FC<Props> = ({
   handleSetValueProdukId,
   hargaBeli,
   hargaModal,
+  produkIdChooses,
+  stockNotEnoughDisabled,
 }) => {
   // get pengguna
   const role = useAuthStore((state) => state.pengguna?.role);
@@ -57,6 +61,7 @@ const FormCariProdukInventori: FC<Props> = ({
         </div>
 
         <InputSearch
+          useSearchParams={false}
           ref={inputSearchRef}
           handleSearch={handleSearch}
           placeholder="Cari produk berdasarkan nama atau kode"
@@ -84,19 +89,29 @@ const FormCariProdukInventori: FC<Props> = ({
                 </div>
               ) : dataProdukForChoose?.data &&
                 dataProdukForChoose?.data?.length > 0 ? (
-                dataProdukForChoose?.data?.map((item, _) => (
-                  <CardProdukForChooseInventori
-                    key={item.id}
-                    hargaBeli={
-                      role === ROLE_INTERNAL_TYPE.OWNER ? hargaBeli : false
-                    }
-                    hargaModal={
-                      role === ROLE_INTERNAL_TYPE.OWNER ? hargaModal : false
-                    }
-                    data={item}
-                    handleSetValueProdukId={handleSetValueProdukId}
-                  />
-                ))
+                dataProdukForChoose?.data?.map((item, _) => {
+                  const isChoose = produkIdChooses?.includes(item.id);
+
+                  const stockNotEnough = stockNotEnoughDisabled
+                    ? item.stok === 0
+                    : undefined;
+
+                  return (
+                    <CardProdukForChooseInventori
+                      key={item.id}
+                      hargaBeli={
+                        role === ROLE_INTERNAL_TYPE.OWNER ? hargaBeli : false
+                      }
+                      hargaModal={
+                        role === ROLE_INTERNAL_TYPE.OWNER ? hargaModal : false
+                      }
+                      data={item}
+                      handleSetValueProdukId={handleSetValueProdukId}
+                      disabled={isChoose}
+                      stockNotEnoughDisabled={stockNotEnough}
+                    />
+                  );
+                })
               ) : (
                 <div className="w-full h-full flex flex-col justify-center items-center">
                   <p className="text-xs font-medium text-base-content/50">

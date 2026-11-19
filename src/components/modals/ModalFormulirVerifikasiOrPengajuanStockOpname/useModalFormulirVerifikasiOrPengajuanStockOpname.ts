@@ -193,21 +193,26 @@ const useModalFormulirVerifikasiOrPengajuanStockOpname = (params: Params) => {
     onSuccess: () => {
       // STOCK OPNAME
       if (stockOpnameId) {
-        queryClient.invalidateQueries({
-          queryKey: ["stock-opname-detail", stockOpnameId],
-        });
+        Promise.allSettled([
+          queryClient.invalidateQueries({
+            queryKey: ["stock-opname-detail", stockOpnameId],
+          }),
 
-        queryClient.invalidateQueries({
-          queryKey: ["riwayat-pengajuan-stock-opname", stockOpnameId],
-        });
+          queryClient.invalidateQueries({
+            queryKey: ["daftar-produk-stock-opname", stockOpnameId],
+          }),
 
-        queryClient.invalidateQueries({
-          queryKey: ["notifikasi-global"],
-        });
+          queryClient.invalidateQueries({
+            queryKey: ["riwayat-pengajuan-stock-opname", stockOpnameId],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: ["notifikasi-global"],
+          }),
 
-        queryClient.invalidateQueries({
-          queryKey: ["notifikasi-produk"],
-        });
+          queryClient.invalidateQueries({
+            queryKey: ["notifikasi-produk"],
+          }),
+        ]);
       }
 
       // BARANG MASUK

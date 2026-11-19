@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { parseId } from "../../../helpers/helpers";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BarangMasukServices } from "../../../services/barangMasuk.service";
@@ -29,7 +29,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
   // Ambil dan validasi id barang masuk dari URL params
   const { id } = useParams<{ id: string }>();
-  const validatedId = parseId(id);
+  const barangMasukIdFromParams = parseId(id);
 
   const pengguna = useAuthStore((state) => state.pengguna);
 
@@ -37,24 +37,37 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
 
   const navigate = useNavigate();
 
+  const currentPathname = useLocation().pathname;
+
+  const linkBack = currentPathname
+    .split("/")
+    .slice(0, pengguna?.role === ROLE_INTERNAL_TYPE.KASIR ? -1 : -2)
+    .join("/");
+
   // Invalidate seluruh query terkait detail barang masuk & notifikasi setelah suatu aksi berhasil
   const invalidateBarangMasukQueries = () => {
-    queryClient.invalidateQueries({
-      queryKey: ["barang-masuk-detail", validatedId],
-    });
+    Promise.allSettled([
+      queryClient.invalidateQueries({
+        queryKey: ["barang-masuk-detail", barangMasukIdFromParams],
+      }),
 
-    queryClient.invalidateQueries({
-      queryKey: ["notifikasi-global"],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["daftar-barang-masuk", barangMasukIdFromParams],
+      }),
 
-    queryClient.invalidateQueries({
-      queryKey: ["notifikasi-produk"],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-global"],
+      }),
 
-    // invalidated riwayat
-    queryClient.invalidateQueries({
-      queryKey: ["riwayat-pengajuan-barang-masuk", validatedId],
-    });
+      queryClient.invalidateQueries({
+        queryKey: ["notifikasi-produk"],
+      }),
+
+      // invalidated riwayat
+      queryClient.invalidateQueries({
+        queryKey: ["riwayat-pengajuan-barang-masuk", barangMasukIdFromParams],
+      }),
+    ]);
   };
 
   // Modal konfirmasi untuk aksi posting/cancel posting/cancel verifikasi/setuju
@@ -84,7 +97,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
         }
       | undefined,
   ) => {
-    if (dataBarangMasukDetail?.data?.detailBarangMasuks.length === 0) {
+    if (dataBarangMasukDetail?.data?.totalBarangMasuk === 0) {
       handleSetAlert("empty_barang_masuk");
       return;
     }
@@ -101,12 +114,11 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   // Ambil detail data barang masuk dari server
   const {
     data: dataBarangMasukDetail,
-    isLoading: isLoadingBarangMasukDetail,
     isFetching: isFetchingBarangMasukDetail,
   } = useQuery({
-    queryKey: ["barang-masuk-detail", validatedId],
-    queryFn: () => BarangMasukServices.detail({ id: validatedId! }),
-    enabled: !!validatedId,
+    queryKey: ["barang-masuk-detail", barangMasukIdFromParams],
+    queryFn: () => BarangMasukServices.detail({ id: barangMasukIdFromParams! }),
+    enabled: !!barangMasukIdFromParams,
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -142,7 +154,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
       )
         return;
 
-      if (dataBarangMasukDetail?.data?.detailBarangMasuks.length === 0) {
+      if (dataBarangMasukDetail?.data?.totalBarangMasuk === 0) {
         handleSetAlert("empty_barang_masuk");
         return;
       }
@@ -275,16 +287,11 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     modalDeleteRef,
   } = useDeleteBarangMasuk({
     redirect: () => {
-      navigate(
-        fromPengajuanBarang
-          ? "/dashboard/pengajuan-barang-masuk"
-          : "/dashboard/inventori",
-        {
-          state: {
-            toast: "deleted_barang_masuk",
-          },
+      navigate(linkBack, {
+        state: {
+          toast: "deleted_barang_masuk",
         },
-      );
+      });
     },
   });
 
@@ -311,7 +318,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
   // Proses setuju pengajuan barang masuk: konfirmasi, lalu verifikasi dengan status POSTED
   const handleSetuju = async () => {
     try {
-      if (!validatedId || !fromPengajuanBarang) return;
+      if (!barangMasukIdFromParams || !fromPengajuanBarang) return;
 
       const isConfirm = await confirm({
         bigTitle: "Apakah Anda yakin ingin menyetujui pengajuan barang masuk?",
@@ -324,7 +331,7 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
       }
 
       await mutateVerifikasiPengajuanBarang({
-        barangMasukId: validatedId,
+        barangMasukId: barangMasukIdFromParams,
         status: STATUS_INVENTORI_TYPE.POSTED,
       });
     } catch (error) {
@@ -371,20 +378,10 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     usePrintInvoiceBarangMasuk({ handleSetAlert: handleSetAlert });
 
   const informasiBarangMasuk = useMemo(() => {
-    const detailBarangMasuks =
-      dataBarangMasukDetail?.data?.detailBarangMasuks ?? [];
-
     return {
-      isLoadingBarangMasukDetail,
-      totalBox: detailBarangMasuks.reduce(
-        (acc, item) => acc + item.jumlahBox,
-        0,
-      ),
-      totalPcs: detailBarangMasuks.reduce(
-        (acc, item) => acc + item.jumlahStok,
-        0,
-      ),
-      totalBarangMasuk: detailBarangMasuks.length,
+      totalBox: dataBarangMasukDetail?.data?.totalBox,
+      totalPcs: dataBarangMasukDetail?.data?.totalPcs,
+      totalBarangMasuk: dataBarangMasukDetail?.data?.totalBarangMasuk,
       tanggalMasuk: dataBarangMasukDetail?.data?.tanggalMasuk,
       keterangan: dataBarangMasukDetail?.data?.keterangan ?? undefined,
       totalNilai: dataBarangMasukDetail?.data?.totalNilai ?? undefined,
@@ -396,18 +393,16 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
         dataBarangMasukDetail?.data?.tanggalDiajukan ?? undefined,
       isUpdate: isCanUpdate,
     };
-  }, [
-    dataBarangMasukDetail,
-    isLoadingBarangMasukDetail,
-    handleSetToast,
-    isCanUpdate,
-  ]);
+  }, [dataBarangMasukDetail, handleSetToast, isCanUpdate]);
+
+  const handleBack = () => {
+    navigate(linkBack);
+  };
 
   // Ekspos state & handler yang dibutuhkan oleh komponen UI detail barang masuk
   return {
     dataBarangMasukDetail,
-    isLoadingBarangMasukDetail:
-      isLoadingBarangMasukDetail || isFetchingBarangMasukDetail,
+    isLoadingBarangMasukDetail: isFetchingBarangMasukDetail,
 
     alert,
 
@@ -459,6 +454,9 @@ const useBarangMasukDetail = (params: { fromPengajuanBarang?: boolean }) => {
     isLoadingPrintInvoiceBarangMasuk,
     handlePrintInvoiceBarangMasuk,
     informasiBarangMasuk,
+    barangMasukIdFromParams,
+
+    handleBack,
   };
 };
 

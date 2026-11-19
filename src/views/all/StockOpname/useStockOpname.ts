@@ -288,6 +288,16 @@ const useStockOpname = (params: { fromPengajuan?: boolean }) => {
     return navigate(`${currentPathname}/${id}?page=1`);
   };
 
+  const location = useLocation();
+  useEffect(() => {
+    console.log(
+      "URL:",
+      location.pathname + location.search,
+      "state:",
+      location.state,
+    );
+  }, [location]);
+
   return {
     activeCluster,
     handleActiveCluster,

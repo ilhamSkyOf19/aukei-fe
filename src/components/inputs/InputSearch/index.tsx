@@ -23,6 +23,9 @@ type Props = {
   customHeight?: string;
   isLoading?: boolean;
   formInputRef?: RefObject<HTMLInputElement | null>;
+  withBg?: boolean;
+  useSearchParams?: boolean;
+  customLabel?: string;
 };
 
 const InputSearch = forwardRef<InputSearchRef, Props>(
@@ -38,18 +41,22 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
       withLabel,
       customHeight,
       formInputRef,
+      withBg,
+      customLabel,
+      useSearchParams: shouldUseSearchParams = true,
     },
     ref,
   ) => {
     const [searchParams] = useSearchParams();
 
-    const defaultValueSearch = searchParams.get("search") ?? "";
+    const defaultValueSearch = shouldUseSearchParams
+      ? (searchParams.get("search") ?? "")
+      : "";
 
     // Apakah component digunakan sebagai controlled component
     const isControlled = value !== undefined;
 
-    // State lokal untuk input.
-    // State ini tetap diperlukan walaupun controlled agar debounce bekerja.
+    // State lokal untuk input
     const [inputValue, setInputValue] = useState(
       isControlled ? value : defaultValueSearch,
     );
@@ -65,19 +72,17 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
     }, [isControlled, value]);
 
     /**
-     * Sinkronkan dengan query parameter ketika uncontrolled.
+     * Sinkronkan dengan query parameter ketika uncontrolled
+     * dan useSearchParams aktif.
      */
     useEffect(() => {
-      if (!isControlled) {
+      if (!isControlled && shouldUseSearchParams) {
         setInputValue(defaultValueSearch);
       }
-    }, [defaultValueSearch, isControlled]);
+    }, [defaultValueSearch, isControlled, shouldUseSearchParams]);
 
     /**
      * Debounce search.
-     *
-     * Baik controlled maupun uncontrolled akan melewati
-     * debounce yang sama.
      */
     useEffect(() => {
       const timer = setTimeout(() => {
@@ -115,7 +120,7 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
           <>
             {withLabel && (
               <span className="text-xs text-base-content/80 font-medium hidden md:block">
-                Cari
+                {customLabel ?? "Cari"}
               </span>
             )}
 
@@ -129,6 +134,7 @@ const InputSearch = forwardRef<InputSearchRef, Props>(
                 className={cn(
                   "h-full px-2.5 flex flex-row justify-start items-center gap-2 border border-base-content/50 rounded-xl w-full focus-within:ring-1 focus-within:ring-custom-secondary focus-within:border-custom-secondary transition-all duration-300 ease-in-out",
                   errorMessage && "border-error",
+                  withBg && "bg-base-100",
                 )}
               >
                 <label htmlFor="search">

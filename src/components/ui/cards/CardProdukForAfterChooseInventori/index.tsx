@@ -38,6 +38,7 @@ const CardProdukForAfterChooseInventori: FC<Props> = ({
               src={data.img}
               alt="foto produk"
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           </div>
 

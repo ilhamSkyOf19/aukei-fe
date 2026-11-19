@@ -20,6 +20,7 @@ type Props = {
   isGlobalLoading?: boolean;
   fromPengajuanBarang?: boolean;
   role?: RoleInternalType;
+  produkIdChooses?: number[];
 };
 const FormulirTambahBarangMasuk: FC<Props> = ({
   handleSetToast,
@@ -27,6 +28,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
   fromPengajuanBarang,
   isGlobalLoading,
   role,
+  produkIdChooses,
 }) => {
   const {
     dataProdukForChoose,
@@ -55,6 +57,13 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
     handleSetToast,
     handleSetAlert,
   });
+
+  const allProdukIdChooses: number[] = [
+    ...new Set([
+      ...produkChoose.map((item) => item.id),
+      ...(produkIdChooses || []),
+    ]),
+  ];
 
   return (
     <div
@@ -101,6 +110,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
             dataProdukForChoose={dataProdukForChoose}
             error={errors.produkId?.message}
             isLoadingProdukForChoose={isLoadingProdukForChoose}
+            produkIdChooses={allProdukIdChooses}
           />
 
           {/* input jumlah perbox */}
@@ -174,6 +184,7 @@ const FormulirTambahBarangMasuk: FC<Props> = ({
         modalRef={modalFormulirTambahBarangRef}
         handleCloseModal={handleCloseModalFormulirTambahBarang}
         role={role}
+        produkIdChooses={produkIdChooses}
       />
     </div>
   );

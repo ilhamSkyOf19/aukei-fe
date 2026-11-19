@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useModal from "../../../../hooks/useModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -13,12 +13,15 @@ import type { ErrorResponse } from "../../../../types/response.type";
 import { BarangKeluarDetailServices } from "../../../../services/barangKeluarDetail.service";
 import type { UpdateBarangKeluarDetailType } from "../../../../models/barangKeluarDetail.model";
 import { BarangKeluarDetailValidation } from "../../../../validations/barangKeluarDetail.validation";
+import { useFilter } from "../../../../hooks/useFilter";
+import { useFilterSearch } from "../../../../hooks/useFilterSearch";
 
 const useShowBarangKeluar = (params: {
+  barangKeluarId?: number | null;
   status?: StatusInventoriType;
   handleSetAlert: (data: string) => void;
 }) => {
-  const { status, handleSetAlert } = params;
+  const { status, handleSetAlert, barangKeluarId } = params;
 
   // query client
   const queryClient = useQueryClient();
@@ -28,6 +31,57 @@ const useShowBarangKeluar = (params: {
 
   // current pathname
   const currentPathname = useLocation().pathname;
+
+  const { filter: sort, setFilter: handleSort } = useFilter({
+    paramName: "sort",
+    allowQuery: ["asc", "desc"],
+    defaultValueCustom: "asc",
+  });
+
+  const { filter: page, setFilter: handlePage } = useFilter({
+    paramName: "page",
+    isNumber: true,
+  });
+
+  // Filter jumlah data per halaman (query param "limit")
+  const { filter: limit, setFilter: handleLimit } = useFilter({
+    paramName: "limit",
+    isNumber: true,
+  });
+
+  const { search, setSearch: handleSearch } = useFilterSearch("search");
+
+  const {
+    data: daftarBarangKeluarDetail,
+    refetch: refetchBarangKeluarDetail,
+    isFetching: isFetchingBarangKeluarDetail,
+  } = useQuery({
+    queryKey: [
+      "daftar-barang-keluar",
+      barangKeluarId,
+      { sort, page, limit, search },
+    ],
+    queryFn: () =>
+      BarangKeluarDetailServices.findByBarangKeluarId({
+        barangKeluarId: barangKeluarId!,
+        query: {
+          ...(sort && { sort }),
+          ...(page && { page }),
+          ...(limit && { limit }),
+          ...(search && { search }),
+        },
+      }),
+    enabled: !!barangKeluarId,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const invalidatedQueries = () => {
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["barang-keluar-detail"] }),
+      queryClient.invalidateQueries({ queryKey: ["daftar-barang-keluar"] }),
+    ]);
+  };
 
   // use modal
   const {
@@ -57,7 +111,7 @@ const useShowBarangKeluar = (params: {
         BarangKeluarDetailServices.delete(data),
       onSuccess: () => {
         // invalidate
-        queryClient.invalidateQueries({ queryKey: ["barang-keluar-detail"] });
+        invalidatedQueries();
 
         // set toast
         navigate(currentPathname, {
@@ -169,9 +223,7 @@ const useShowBarangKeluar = (params: {
         }),
       onSuccess: () => {
         // invalidate
-        queryClient.invalidateQueries({
-          queryKey: ["barang-keluar-detail"],
-        });
+        invalidatedQueries();
 
         // set toast
         navigate(currentPathname, {
@@ -230,8 +282,6 @@ const useShowBarangKeluar = (params: {
         };
       }
 
-      console.log(finalData);
-
       await mutateUpdate({ ...finalData, id: dataUpdate.id, status });
     } catch (error) {
       console.log(error);
@@ -240,6 +290,12 @@ const useShowBarangKeluar = (params: {
 
   // status
   const isStatusPosted = status === STATUS_INVENTORI_TYPE.POSTED;
+
+  const isExistData =
+    daftarBarangKeluarDetail?.data &&
+    daftarBarangKeluarDetail?.data?.detailBarangKeluars?.length > 0
+      ? true
+      : false;
 
   return {
     handleShowModalDelete,
@@ -262,6 +318,17 @@ const useShowBarangKeluar = (params: {
     handleShowModalUbahProduk,
     idBarangKeluar,
     dataUpdateBarangKeluar,
+
+    daftarBarangKeluarDetail,
+    isLoadingBarangKeluarDetail: isFetchingBarangKeluarDetail,
+
+    handleSort,
+    sort,
+    handleLimit,
+    handleSearch,
+    handlePage,
+
+    isExistData,
   };
 };
 

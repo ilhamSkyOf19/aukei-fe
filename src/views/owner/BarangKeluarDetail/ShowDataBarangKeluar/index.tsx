@@ -5,14 +5,12 @@ import {
   formatRupiahShort,
 } from "../../../../helpers/helpers";
 import DataEmpty from "../../../../components/messages/DataEmpty";
-import type { ResponseStructure } from "../../../../types/response.type";
 import type { FC } from "react";
 import { cn } from "../../../../utils/cn";
 import ModalDelete from "../../../../components/modals/ModalDelete";
 import type { UpdateBarangMasukDetailType } from "../../../../models/barangMasukDetail.model";
 import CardForm from "../../../../components/inputs/CardForm";
 import ButtonInline from "../../../../components/ui/button/ButtonInline";
-import type { ResponseBarangKeluarWithDetailType } from "../../../../models/barangKeluar.model";
 import useShowBarangKeluar from "./useShowBarangKeluar";
 import type { UpdateBarangKeluarDetailType } from "../../../../models/barangKeluarDetail.model";
 import ModalUbahProdukKeluar from "../../../../components/modals/ModalUbahProdukKeluar";
@@ -20,22 +18,26 @@ import {
   ROLE_INTERNAL_TYPE,
   STATUS_INVENTORI_TYPE,
   type RoleInternalType,
+  type StatusInventoriType,
 } from "../../../../types/constant.type";
 import InputNumber from "../../../../components/inputs/InputNumber";
 import ButtonUpdateTable from "../../../../components/ui/button/ButtonUpdateTable";
 import ButtonDeleteTable from "../../../../components/ui/button/ButtonDeleteTable";
 import LoadingFetch from "../../../../components/ui/LoadingFetch";
 import ButtonWithIcon from "../../../../components/ui/button/ButtonWithIcon";
+import PaginationAndLimit from "../../../../components/filters/PaginationAndLimit";
+import InputSearch from "../../../../components/inputs/InputSearch";
+import FilterSort from "../../../../components/filters/Sort";
 
 type Props = {
-  isLoadingBarangKeluarDetail?: boolean;
-  dataBarangKeluarDetail?: ResponseStructure<ResponseBarangKeluarWithDetailType | null>;
   role?: RoleInternalType;
   handleSetAlert: (data: string) => void;
+  barangKeluarId?: number | null;
+  status?: StatusInventoriType;
 };
 const ShowDataBarangKeluar: FC<Props> = ({
-  dataBarangKeluarDetail,
-  isLoadingBarangKeluarDetail,
+  barangKeluarId,
+  status,
   role,
   handleSetAlert,
 }) => {
@@ -60,37 +62,57 @@ const ShowDataBarangKeluar: FC<Props> = ({
     idBarangKeluar,
     modalUbahProdukRef,
     dataUpdateBarangKeluar,
+    daftarBarangKeluarDetail,
+    handleLimit,
+    handlePage,
+    handleSearch,
+    handleSort,
+    isExistData,
+    isLoadingBarangKeluarDetail,
+    sort,
   } = useShowBarangKeluar({
-    status: dataBarangKeluarDetail?.data?.status,
+    status,
     handleSetAlert: handleSetAlert,
+    barangKeluarId,
   });
-
-  // existing data
-  const isExistData =
-    dataBarangKeluarDetail?.data &&
-    dataBarangKeluarDetail?.data?.detailBarangKeluars?.length > 0
-      ? true
-      : false;
 
   // is rejected kasir
   const isRejectedKasir =
-    dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.REJECTED &&
+    status === STATUS_INVENTORI_TYPE.REJECTED &&
     role === ROLE_INTERNAL_TYPE.KASIR;
 
   // const is draft owner
   const isDrafOwner =
-    dataBarangKeluarDetail?.data?.status === STATUS_INVENTORI_TYPE.DRAFT &&
-    role === ROLE_INTERNAL_TYPE.OWNER;
+    status === STATUS_INVENTORI_TYPE.DRAFT && role === ROLE_INTERNAL_TYPE.OWNER;
 
   return (
     <>
+      <div className="w-full flex flex-row justify-between md:items-center items-end gap-2.5 mt-2.5">
+        <div className="flex-2 md:flex-none md:w-80 flex flex-row justify-start items-center">
+          <InputSearch
+            handleSearch={handleSearch}
+            placeholder="Cari berdasarkan nama"
+            withLabel
+            withBg
+            customLabel="Cari produk terpilih"
+          />
+        </div>
+
+        <FilterSort
+          setSort={handleSort}
+          value={sort}
+          customLabel={["A-Z", "Z-A"]}
+          customWidth="flex-1 md:flex-none md:w-30"
+        />
+      </div>
+
       {/* for sm */}
       <div className="w-full flex flex-col justify-start items-center gap-3 lg:hidden">
         {/* data empty */}
         {isLoadingBarangKeluarDetail ? (
           <LoadingFetch />
         ) : isExistData ? (
-          dataBarangKeluarDetail?.data?.detailBarangKeluars?.map((item) => (
+          daftarBarangKeluarDetail?.data?.detailBarangKeluars?.map((item) => (
             <div
               key={item.id}
               className="flex flex-col p-3 justify-start items-start w-full rounded-2xl md:rounded-xl bg-base-100 shadow-xs min-h-20 gap-1"
@@ -104,6 +126,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       src={item.produk.img}
                       alt="foto produk"
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   </div>
                 </div>
@@ -229,8 +252,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                 {role === ROLE_INTERNAL_TYPE.OWNER && <th>Total</th>}
                 {(isRejectedKasir ||
                   isDrafOwner ||
-                  dataBarangKeluarDetail?.data?.status ===
-                    STATUS_INVENTORI_TYPE.DRAFT) && <th>Aksi</th>}
+                  status === STATUS_INVENTORI_TYPE.DRAFT) && <th>Aksi</th>}
               </tr>
             </thead>
             <tbody>
@@ -243,7 +265,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                   </tr>
                 ))
               ) : isExistData ? (
-                dataBarangKeluarDetail?.data?.detailBarangKeluars.map(
+                daftarBarangKeluarDetail?.data?.detailBarangKeluars.map(
                   (item, index) => (
                     <tr
                       key={item.id}
@@ -257,7 +279,11 @@ const ShowDataBarangKeluar: FC<Props> = ({
                         <div className="flex items-center gap-3">
                           <div className="avatar">
                             <div className="mask mask-squircle w-10 h-10 lg:h-12 lg:w-12">
-                              <img src={item.produk.img} alt="Foto Produk" />
+                              <img
+                                src={item.produk.img}
+                                alt="Foto Produk"
+                                loading="lazy"
+                              />
                             </div>
                           </div>
                         </div>
@@ -310,8 +336,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                             {/* button update */}
                             {(isRejectedKasir ||
                               isDrafOwner ||
-                              dataBarangKeluarDetail?.data?.status ===
-                                STATUS_INVENTORI_TYPE.DRAFT) && (
+                              status === STATUS_INVENTORI_TYPE.DRAFT) && (
                               <ButtonInline
                                 handleKeyUpdate={() =>
                                   handleSetDataUpdate({
@@ -340,8 +365,7 @@ const ShowDataBarangKeluar: FC<Props> = ({
                       {/* detail */}
                       {(isRejectedKasir ||
                         isDrafOwner ||
-                        dataBarangKeluarDetail?.data?.status ===
-                          STATUS_INVENTORI_TYPE.DRAFT) && (
+                        status === STATUS_INVENTORI_TYPE.DRAFT) && (
                         <td>
                           <div className="flex flex-row justify-start items-center gap-2">
                             <ButtonUpdateTable
@@ -384,6 +408,17 @@ const ShowDataBarangKeluar: FC<Props> = ({
         </div>
       </div>
 
+      <PaginationAndLimit
+        currentPage={daftarBarangKeluarDetail?.data?.meta?.currentPage}
+        totalPage={daftarBarangKeluarDetail?.data?.meta?.totalPage}
+        limit={daftarBarangKeluarDetail?.data?.meta?.limit}
+        totalData={daftarBarangKeluarDetail?.data?.meta?.totalData}
+        setLimit={handleLimit}
+        setPage={handlePage}
+        emptyData={!isExistData}
+        isLoading={isLoadingBarangKeluarDetail}
+      />
+
       {/* modal delete */}
       <ModalDelete
         modalRef={modalDeleteRef}
@@ -398,13 +433,13 @@ const ShowDataBarangKeluar: FC<Props> = ({
         modalRef={modalUbahProdukRef}
         handleCloseModal={handleCloseModalUbahProduk}
         idBarangKeluar={idBarangKeluar}
-        status={dataBarangKeluarDetail?.data?.status}
+        status={status}
         dataUpdate={{
           jumlahStok: dataUpdateBarangKeluar?.jumlahStok,
           produkId: dataUpdateBarangKeluar?.produkId,
         }}
         role={role}
-        dataChooseIds={dataBarangKeluarDetail?.data?.detailBarangKeluars.map(
+        dataChooseIds={daftarBarangKeluarDetail?.data?.detailBarangKeluars.map(
           (item) => item.produk.id,
         )}
       />

@@ -85,6 +85,8 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
     handlePrintInvoiceBarangMasuk,
     isLoadingPrintInvoiceBarangMasuk,
     informasiBarangMasuk,
+    barangMasukIdFromParams,
+    handleBack,
   } = useBarangMasukDetail({ fromPengajuanBarang });
 
   return (
@@ -121,7 +123,7 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
         >
           {/* button back */}
           <div className="w-30">
-            <ButtonBackText label="Kembali" />
+            <ButtonBackText label="Kembali" handleClick={handleBack} />
           </div>
 
           {isLoadingBarangMasukDetail ? (
@@ -362,12 +364,10 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
 
         {/* informasi tanggal dan keterangan */}
         <InformasiBarangMasuk
-          isLoadingBarangMasukDetail={
-            informasiBarangMasuk.isLoadingBarangMasukDetail
-          }
-          totalBox={informasiBarangMasuk.totalBox}
-          totalPcs={informasiBarangMasuk.totalPcs}
-          totalBarangMasuk={informasiBarangMasuk.totalBarangMasuk}
+          isLoadingBarangMasukDetail={isLoadingBarangMasukDetail}
+          totalBox={informasiBarangMasuk.totalBox ?? 0}
+          totalPcs={informasiBarangMasuk.totalPcs ?? 0}
+          totalBarangMasuk={informasiBarangMasuk.totalBarangMasuk ?? 0}
           tanggalMasuk={informasiBarangMasuk.tanggalMasuk}
           keterangan={informasiBarangMasuk.keterangan}
           totalNilai={
@@ -391,15 +391,16 @@ const BarangMasukDetail: FC<Props> = ({ fromPengajuanBarang }) => {
             handleSetAlert={handleSetAlert}
             isGlobalLoading={isPendingPosting}
             role={pengguna?.role}
+            produkIdChooses={dataBarangMasukDetail?.data?.produkIdChooses}
           />
         )}
 
         {/* show data */}
         <ShowDataBarangMasuk
-          dataBarangMasukDetail={dataBarangMasukDetail}
-          isLoadingBarangMasukDetail={isLoadingBarangMasukDetail}
           fromPengajuanBarang={fromPengajuanBarang}
           role={pengguna?.role}
+          status={dataBarangMasukDetail?.data?.status}
+          barangMasukId={barangMasukIdFromParams}
         />
 
         {/* modal konfirmasi */}

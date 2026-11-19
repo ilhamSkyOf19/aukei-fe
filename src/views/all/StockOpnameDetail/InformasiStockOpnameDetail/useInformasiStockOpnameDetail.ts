@@ -51,6 +51,8 @@ const useInformasiStockOpnameDetail = (params: {
 
   const currentPathname = useLocation().pathname;
 
+  const linkBack = currentPathname.split("/").slice(0, -1).join("/");
+
   const {
     confirm,
     modalRef: modalKonfirmasiRef,
@@ -415,7 +417,7 @@ const useInformasiStockOpnameDetail = (params: {
         queryKey: ["stock-opname"],
       });
 
-      navigate("/dashboard/stok-opname?cluster=stockOpname", {
+      navigate(linkBack, {
         state: {
           toast: "deleted_stock_opname",
         },
@@ -607,7 +609,7 @@ const useInformasiStockOpnameDetail = (params: {
   }, [dataStockOpnameDetail?.data, handleSetData, isCanUpdate]);
 
   const handleBack = () => {
-    return navigate(currentPathname.split("/").slice(0, -1).join("/"));
+    return navigate(linkBack);
   };
 
   return {

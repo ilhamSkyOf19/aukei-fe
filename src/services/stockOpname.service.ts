@@ -3,6 +3,7 @@ import instanceAxios from "../libs/axios";
 import type {
   CreateStockOpnameForRequestType,
   ResponseDaftarProdukStockOpnameType,
+  ResponseStockOpnameForCancelPostedType,
   ResponseStockOpnameType,
   ResponseStockOpnameWithDetailAndStatistikType,
   ResponseStockOpnameWithDetailType,
@@ -123,9 +124,9 @@ export class StockOpnameServices {
 
   static async cancelPosted(
     id: number,
-  ): Promise<ResponseStructure<ResponseStockOpnameWithDetailType | null>> {
+  ): Promise<ResponseStructure<ResponseStockOpnameForCancelPostedType | null>> {
     const result = await instanceAxios.put<
-      ResponseStructure<ResponseStockOpnameWithDetailType | null>
+      ResponseStructure<ResponseStockOpnameForCancelPostedType | null>
     >(`/stock-opname/${id}/cancel-posted`);
 
     return result.data;

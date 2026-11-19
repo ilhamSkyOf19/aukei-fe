@@ -161,9 +161,7 @@ const ModalUbahProdukMasuk: FC<Props> = ({
                           <CardProdukForChooseInventori
                             disabled={
                               produkChoose?.id === item.id ||
-                              dataChooseIds?.some(
-                                (produk) => produk === item.id,
-                              )
+                              dataChooseIds?.includes(item.id)
                             }
                             hargaBeli={role === ROLE_INTERNAL_TYPE.OWNER}
                             key={item.id}

@@ -175,7 +175,7 @@ const BarangKeluar: FC<Props> = ({ fromPengajuanBarang }) => {
                 {/* BUAT FILTER */}
                 <div className="w-full lg:flex-6 md:flex-3 flex flex-row justify-start items-center gap-2.5 overflow-x-auto py-2.5 px-1.5 scrollbar-thin">
                   {isLoadingJenisKeluar ? (
-                    Array.from({ length: 8 }, (_, index) => (
+                    Array.from({ length: 5 }, (_, index) => (
                       <div
                         key={index}
                         className="w-20 h-8 skeleton bg-base-200"

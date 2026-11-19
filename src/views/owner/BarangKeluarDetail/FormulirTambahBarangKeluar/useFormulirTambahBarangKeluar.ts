@@ -114,9 +114,14 @@ const useFormulirTambahBarangKeluar = (params: {
       handleSetToast("barang_keluar_detail_add_success");
 
       // query
-      queryClient.invalidateQueries({
-        queryKey: ["barang-keluar-detail", validatedId],
-      });
+      Promise.allSettled([
+        queryClient.invalidateQueries({
+          queryKey: ["barang-keluar-detail", validatedId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["daftar-barang-keluar", validatedId],
+        }),
+      ]);
 
       // back focus
       formInputRef?.current?.focus();

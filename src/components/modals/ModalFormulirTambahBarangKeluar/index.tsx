@@ -2,9 +2,8 @@ import { type FC, type RefObject } from "react";
 import { cn } from "../../../utils/cn";
 import TitleModalFormulir from "../../ui/TitleModalFormulir";
 import ButtonCloseText from "../../ui/button/ButtonCloseText";
-import ButtonSubmitWithIcon from "../../ui/button/ButtonSubmitWithIcon";
 import InputNumber from "../../inputs/InputNumber";
-import { PackageMinus } from "lucide-react";
+import { PackageMinus, Plus } from "lucide-react";
 import InputSearch from "../../inputs/InputSearch";
 import Alert from "../../messages/Alert";
 import { ALERT_CONFIG_BARANG_MASUK_DETAIL } from "../../../types/alert.types";
@@ -16,16 +15,19 @@ import {
   ROLE_INTERNAL_TYPE,
   type RoleInternalType,
 } from "../../../types/constant.type";
+import ButtonWithIcon from "../../ui/button/ButtonWithIcon";
 type Props = {
   modalRef: RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
   role?: RoleInternalType;
+  produkIdChooses?: number[];
 };
 
 const ModalFormulirTambahBarangKeluar: FC<Props> = ({
   modalRef,
   handleCloseModal,
   role,
+  produkIdChooses,
 }) => {
   const {
     handleSubmit,
@@ -48,6 +50,10 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
   } = useModalFormulirTambahBarangKeluar({
     handleCloseModal,
   });
+
+  const allProdukIdChooses: number[] = [
+    ...new Set([produkChoose?.id ?? 0, ...(produkIdChooses || [])]),
+  ];
 
   return (
     <dialog ref={modalRef} id="my_modal_4" className="modal lg:hidden">
@@ -121,14 +127,22 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                         </div>
                       ) : dataProdukForChoose?.data &&
                         dataProdukForChoose?.data?.length > 0 ? (
-                        dataProdukForChoose?.data?.map((item, _) => (
-                          <CardProdukForChooseInventori
-                            hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
-                            key={item.id}
-                            data={item}
-                            handleSetValueProdukId={handleSetValueProdukId}
-                          />
-                        ))
+                        dataProdukForChoose?.data?.map((item, _) => {
+                          const isChoose = allProdukIdChooses?.includes(
+                            item.id,
+                          );
+                          const isStockNotEnough = item.stok === 0;
+                          return (
+                            <CardProdukForChooseInventori
+                              hargaModal={role === ROLE_INTERNAL_TYPE.OWNER}
+                              key={item.id}
+                              data={item}
+                              handleSetValueProdukId={handleSetValueProdukId}
+                              disabled={isChoose}
+                              stockNotEnoughDisabled={isStockNotEnough}
+                            />
+                          );
+                        })
                       ) : (
                         <div className="w-full h-full flex flex-col justify-center items-center">
                           <p className="text-xs font-medium text-base-content/50">
@@ -176,7 +190,9 @@ const ModalFormulirTambahBarangKeluar: FC<Props> = ({
                 disabled={isPendingBarangKeluarDetail}
               />
 
-              <ButtonSubmitWithIcon
+              <ButtonWithIcon
+                icon={Plus}
+                typeButton="submit"
                 label="Tambah Barang Keluar"
                 isLoading={isPendingBarangKeluarDetail}
               />
